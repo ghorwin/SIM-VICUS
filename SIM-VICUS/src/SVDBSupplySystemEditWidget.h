@@ -73,6 +73,8 @@ private slots:
 
 	void on_pushButtonColor_colorChanged();
 
+	void on_supplyFMUFile_editingFinished();
+
 
 private:
 	/*! Set up the modified variable of the model to true. */

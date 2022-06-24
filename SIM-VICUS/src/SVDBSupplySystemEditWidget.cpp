@@ -47,13 +47,10 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	// TODO: Anne
-//	// connect browse filename widget
-//	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
-//	// and set up
-//	m_ui->widgetBrowseFileNameTSVFile->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
-
-//	m_ui->widgetBrowseFileNameSupplyFMU->filename();
+	// connect browse filename widget
+	connect(m_ui->widgetBrowseFileNameSupplyFMU, SIGNAL(editingFinished()), this, SLOT(on_supplyFMUFile_editingFinished()));
+	// and set up
+	m_ui->widgetBrowseFileNameSupplyFMU->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
 
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
@@ -334,6 +331,12 @@ void SVDBSupplySystemEditWidget::on_pushButtonColor_colorChanged() {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
+}
+
+void SVDBSupplySystemEditWidget::on_supplyFMUFile_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+	m_current->m_supplyFMUPath = m_ui->widgetBrowseFileNameSupplyFMU->filename();
 }
 
 

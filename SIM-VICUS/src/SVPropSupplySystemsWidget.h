@@ -43,6 +43,8 @@ private slots:
 
 	void on_pushButtonAssignSupplySystem_clicked();
 
+	void on_pushButtonRemoveSupplySystem_clicked();
+
 private:
 	Ui::SVPropSupplySystemsWidget *m_ui;
 
