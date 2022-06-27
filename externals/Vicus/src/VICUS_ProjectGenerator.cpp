@@ -2677,8 +2677,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	// 1.) Create a new network
 
 	NANDRAD::HydraulicNetwork network;
-	network.m_id = VICUS::uniqueId(usedModelIds);
-	usedModelIds.push_back(network.m_id);
+	network.m_id = VICUS::uniqueIdAdd(usedModelIds);
 
 
 	// 2.) Create network components
@@ -2763,9 +2762,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	NANDRAD::KeywordList::setParameter(network.m_para, "HydraulicNetwork::para_t",
 						   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature, 20.);
 
-	// pre calucltions
+	// pre calculations
 
-	// calculate pressure loss, number of pipes and pipe lenght for all surafce heatings an
+	// calculate pressure loss, number of pipes and pipe lenght for all surafce heatings
 	std::vector<double> pipeLengths(dataSurfaceHeating.size(), 0.0);
 	std::vector<double> pressureLosses(dataSurfaceHeating.size(), 0.0);
 	std::vector<int> numbersOfPipes(dataSurfaceHeating.size(), 0);
@@ -2821,8 +2820,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		double density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 		double diameter = pipe->diameterInside();
 		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter);
-		double viskosity = fluid.m_kinematicViscosity.m_values.value(defaultFluidTemperature);
-		double reynolds = std::abs(maxVelocity) * diameter / viskosity;
+		double viscosity = fluid.m_kinematicViscosity.m_values.value(defaultFluidTemperature);
+		double reynolds = std::abs(maxVelocity) * diameter / viscosity;
 		double roughness = pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value;
 		double zeta = length/diameter * IBK::FrictionFactorSwamee(reynolds, diameter, roughness);
 		double pressureLoss = zeta * density / 2.0 * std::abs(maxVelocity) * maxVelocity;
@@ -2830,7 +2829,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		// store pressure loss
 		pressureLosses[i] = pressureLoss;
 		// and update maximum
-		maxPressureLoss = std::max(maxPressureLoss,pressureLoss);
+		maxPressureLoss = std::max(maxPressureLoss, pressureLoss);
 	}
 
 
@@ -2839,12 +2838,11 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	unsigned int mixerNodeId = 2 * dataSurfaceHeating.size() + 1;
 	unsigned int lastNodeId = mixerNodeId + 1;
 	unsigned int splitterNodeId = 1;
-
 	unsigned int controllerId = 0;
+
 	// create first element: pump
 	NANDRAD::HydraulicNetworkElement pumpElem;
-	pumpElem.m_id = VICUS::uniqueId(usedModelIds);
-	usedModelIds.push_back(pumpElem.m_id);
+	pumpElem.m_id = VICUS::uniqueIdAdd(usedModelIds);
 	pumpElem.m_componentId = 1;
 	pumpElem.m_displayName = "Mass flux controlled pump";
 	// last node is inlet node
@@ -2869,7 +2867,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	massFluxControl.m_controllerType = NANDRAD::HydraulicNetworkControlElement::CT_PController;
 	NANDRAD::KeywordList::setParameter(massFluxControl.m_para, "HydraulicNetworkControlElement::para_t",
 									   NANDRAD::HydraulicNetworkControlElement::P_Kp, 100000000.);
-	massFluxControl.m_maximumControllerResultValue = 50000;
+
+//	massFluxControl.m_maximumControllerResultValue = 50000;
 
 
 	network.m_controlElements.push_back(massFluxControl);
