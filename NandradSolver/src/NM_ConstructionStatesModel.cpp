@@ -24,6 +24,7 @@
 #include <algorithm>
 
 #include <IBK_messages.h>
+#include <IBK_physics.h>
 
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_ConstructionType.h>
@@ -159,7 +160,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 	// *** now resize the memory cache for results
 
-	unsigned int skalarResultCount = R_SolarRadiationFluxB+1;
+	unsigned int skalarResultCount = R_LongWaveRadiationFluxB+1;
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal code
 	}
@@ -170,7 +171,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 
 void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	int skalarResultCount = R_SolarRadiationFluxB+1;
+	int skalarResultCount = R_LongWaveRadiationFluxB+1;
 	if (m_moistureBalanceEnabled) {
 		/// \todo hygrothermal implementation
 //		varCount = 2; // more variables for hygrothermal calculation
@@ -311,7 +312,8 @@ unsigned int ConstructionStatesModel::interfaceBZoneID() const {
 }
 
 
-void ConstructionStatesModel::yInitial(double * y) const {
+void ConstructionStatesModel::
+yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
 	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 	for (unsigned i=0; i<m_nElements; ++i) {
@@ -452,8 +454,15 @@ int ConstructionStatesModel::update(const double * y) {
 			m_results[R_SolarRadiationFluxA] = m_con->m_interfaceA.m_solarAbsorption.radFlux(qRadGlobal);
 		}
 
-		// TODO : heat conduction BC
-		// TODO : long wave emission BC
+		// long wave radiation
+		if (m_con->m_interfaceA.m_zoneId == 0 && m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			double eps = m_con->m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+			double incomingLWRadiation = m_loads->qLWRad(m_con->m_id);
+			double TsA2 = m_TsA * m_TsA;
+			double radiationBalance = eps * (incomingLWRadiation - IBK::BOLTZMANN * TsA2 * TsA2);
+			// store absorbed flux
+			m_results[R_LongWaveRadiationFluxA] = radiationBalance;
+		}
 
 	}
 
@@ -469,8 +478,15 @@ int ConstructionStatesModel::update(const double * y) {
 			m_results[R_SolarRadiationFluxB] = m_con->m_interfaceB.m_solarAbsorption.radFlux(qRadGlobal);
 		}
 
-		// TODO : heat conduction BC
-		// TODO : long wave emission BC
+		// long wave radiation
+		if (m_con->m_interfaceB.m_zoneId == 0 && m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			double eps = m_con->m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+			double incomingLWRadiation = m_loads->qLWRad(m_con->m_id);
+			double TsB2 = m_TsB * m_TsB;
+			double radiationBalance = eps * (incomingLWRadiation - IBK::BOLTZMANN * TsB2 * TsB2);
+			// store absorbed flux
+			m_results[R_LongWaveRadiationFluxB] = radiationBalance;
+		}
 
 	}
 

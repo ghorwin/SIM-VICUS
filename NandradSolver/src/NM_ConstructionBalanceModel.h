@@ -51,6 +51,8 @@ public:
 		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
 		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
 		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
+		R_FluxLongWaveradiationA,			// Keyword: FluxLongWaveradiationA		[W]			'Long wave radiation flux across interface A (into construction)'
+		R_FluxLongWaveradiationB,			// Keyword: FluxLongWaveradiationB		[W]			'Long wave radiation flux across interface B (into construction)'
 		NUM_R
 	};
 
@@ -201,6 +203,10 @@ private:
 	double											m_fluxDensityShortWaveRadiationA = 0;
 	/*! Absorbed global radiation flux density at left side [W/m2] (positive from left to right). */
 	double											m_fluxDensityShortWaveRadiationB = 0;
+	/*! Absorbed minus emitted long wave radiation flux density at left side [W/m2] (positive from left to right). */
+	double											m_fluxDensityLongWaveRadiationA = 0;
+	/*! Absorbed minus emitted long wave radiation flux density at left side [W/m2] (positive from left to right). */
+	double											m_fluxDensityLongWaveRadiationB = 0;
 	/*! Number of ideal surface heating model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_surfaceHeatingCoolingModelCount = 0;
 
