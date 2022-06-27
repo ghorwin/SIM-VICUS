@@ -52,8 +52,14 @@ void SVPropSupplySystemsWidget::updateUi() {
 	m_supplySysSurfacesMap.clear();
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 
+		// we don't consider cis that have no supply system assigned
+		if (ci.m_idSupplySystem == VICUS::INVALID_ID)
+			continue;
+
 		// lookup supply system in DB
 		const VICUS::SupplySystem * supplySystem = db.m_supplySystems[ci.m_idSupplySystem];
+
+		// supplySystem can still be a null pointer in case there is no supply system with given id ...
 
 		// side A
 		if (ci.m_sideASurface != nullptr) {
@@ -80,10 +86,10 @@ void SVPropSupplySystemsWidget::updateUi() {
 	m_ui->tableWidgetSupplySystems->setRowCount(m_supplySysSurfacesMap.size());
 	int row=0;
 	for (std::map<const VICUS::SupplySystem*, std::set<const VICUS::Surface *> >::const_iterator
-		 it = m_supplySysSurfacesMap.begin(); it != m_supplySysSurfacesMap.end(); ++it, ++row)
-	{
+		 it = m_supplySysSurfacesMap.begin(); it != m_supplySysSurfacesMap.end(); ++it, ++row) {
+
 		QTableWidgetItem * item = new QTableWidgetItem();
-		// special handling for surfaces without supply system assigned
+		// special handling for surfaces with invalid supply system assigned
 		if (it->first == nullptr) {
 			item->setBackground(QColor(64,64,64)); // gray = invalid
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
