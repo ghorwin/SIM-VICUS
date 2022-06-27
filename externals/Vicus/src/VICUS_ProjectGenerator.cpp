@@ -326,6 +326,8 @@ public:
 	void generate(const VICUS::SupplySystem &supply,
 				  const std::vector<DataSurfaceHeating> &dataSurfaceHeating,
 				  std::vector<unsigned int> &usedModelIds,
+				  std::vector<unsigned int> &usedNetworkIds,
+				  std::vector<unsigned int> &usedNetworkElementIds,
 				  QStringList &errorStack);
 
 	// All definition lists below have the same size and share the same index
@@ -769,6 +771,14 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	}
 
 	// create networks for all used supplies
+	std::vector<unsigned int> usedNetworkIds;
+	// exclude all ids that are explicitely assigned by Vicus Networks
+	for (const VICUS::Network &net: m_geometricNetworks) {
+		usedNetworkIds.push_back(net.m_id);
+	}
+
+	// generate vector of ised network ids
+	std::vector<unsigned int> usedNetworkElementIds;
 	SupplySystemNetworkModelGenerator supplySystemNetworkModelGenerator(this);
 	supplySystemNetworkModelGenerator.m_placeholders = p.m_placeholders;
 
@@ -778,7 +788,7 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 
 		for(const VICUS::SupplySystem &supply : m_embeddedDB.m_supplySystems) {
 			if(supply.m_id == it->first) {
-				supplySystemNetworkModelGenerator.generate(supply, it->second, usedModelIds, errorStack);
+				supplySystemNetworkModelGenerator.generate(supply, it->second, usedModelIds, usedNetworkIds, usedNetworkElementIds,errorStack);
 				break;
 			}
 		}
@@ -2672,12 +2682,14 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 												   const std::vector<DataSurfaceHeating> & dataSurfaceHeating,
 												   std::vector<unsigned int> &usedModelIds,
+												   std::vector<unsigned int> &usedNetworkIds,
+												   std::vector<unsigned int> &usedNetworkElementIds,
 												   QStringList &errorStack)
 {
 	// 1.) Create a new network
 
 	NANDRAD::HydraulicNetwork network;
-	network.m_id = VICUS::uniqueIdAdd(usedModelIds);
+	network.m_id = VICUS::uniqueIdAdd(usedNetworkIds);
 
 
 	// 2.) Create network components
@@ -2842,7 +2854,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// create first element: pump
 	NANDRAD::HydraulicNetworkElement pumpElem;
-	pumpElem.m_id = VICUS::uniqueIdAdd(usedModelIds);
+	pumpElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 	pumpElem.m_componentId = 1;
 	pumpElem.m_displayName = "Mass flux controlled pump";
 	// last node is inlet node
@@ -2894,7 +2906,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		if(!IBK::nearly_equal<4>(lengthSupply, 0.0 ) ) {
 			// craetea supply pipe and connect to pump
 			NANDRAD::HydraulicNetworkElement pipeElem;
-			pipeElem.m_id = VICUS::uniqueId(usedModelIds);
+			pipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 			usedModelIds.push_back(pipeElem.m_id);
 
 			// connect to pipe properties
@@ -2922,7 +2934,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 		// create and fill a new network element
 		NANDRAD::HydraulicNetworkElement heaterElem;
-		heaterElem.m_id = VICUS::uniqueId(usedModelIds);
+		heaterElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 		usedModelIds.push_back(heaterElem.m_id);
 
 		// connect to pipe properties
@@ -2976,7 +2988,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// connect to ideal heating
 	NANDRAD::HydraulicNetworkElement idealHeaterElem;
-	idealHeaterElem.m_id = VICUS::uniqueId(usedModelIds);
+	idealHeaterElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 	usedModelIds.push_back(idealHeaterElem.m_id);
 	idealHeaterElem.m_inletNodeId = mixerNodeId;
 	idealHeaterElem.m_outletNodeId = lastNodeId;
@@ -3044,7 +3056,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// create summation model
 	NANDRAD::HeatLoadSummationModel summationModel;
-	summationModel.m_id = VICUS::uniqueId(usedModelIds);
+	summationModel.m_id = VICUS::uniqueIdAdd(usedModelIds);
 	usedModelIds.push_back(summationModel.m_id);
 	summationModel.m_displayName = std::string("Heat load summation ") + supply.m_displayName.encodedString();
 	summationModel.m_objectList = idealHeaterObjectList.m_name;
@@ -3054,7 +3066,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// create adapter model
 	NANDRAD::NetworkInterfaceAdapterModel adapterModel;
-	adapterModel.m_id = VICUS::uniqueId(usedModelIds);
+	adapterModel.m_id = VICUS::uniqueIdAdd(usedModelIds);
 	usedModelIds.push_back(adapterModel.m_id);
 	adapterModel.m_displayName = std::string("Network adapter ") + supply.m_displayName.encodedString();
 	adapterModel.m_summationModelId = summationModel.m_id;
@@ -3349,7 +3361,15 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	}
 
 	// *** create Nandrad Network
-	IBK_ASSERT(p.m_hydraulicNetworks.empty());
+	std::vector<unsigned int> allElementIds;
+
+	// we do not prove network ids for uniqueness here
+	for(const NANDRAD::HydraulicNetwork &network : p.m_hydraulicNetworks) {
+		for(const NANDRAD::HydraulicNetworkElement &element : network.m_elements)
+			allElementIds.push_back(element.m_id);
+	}
+
+
 	NANDRAD::HydraulicNetwork nandradNetwork;
 	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(vicusNetwork.m_modelType);
 	nandradNetwork.m_id = vicusNetwork.m_id;
@@ -3546,7 +3566,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	std::map<unsigned int, std::vector<unsigned int>> componentElementMap; // this map stores the NANDRAD element ids for each NANDRAD/VICUS component id
 	std::vector<unsigned int> allNodeIds = {};			// stores all nodeIds of the network (the ids which are used to connect elements)
-	std::vector<unsigned int> allElementIds = {};		// stores all element ids of the network
 	std::map<unsigned int, unsigned int> supplyNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD inlet node
 	std::map<unsigned int, unsigned int> returnNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD outlet node
 	std::map<unsigned int, std::vector<unsigned int> > nodeElementsMap; // a map that stores for each VICUS geometric node the NANDRAD element ids (which are part of the according subnetwork)
