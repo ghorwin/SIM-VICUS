@@ -372,6 +372,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonRemoveSelectedSurfaceHeati
 		// clear surface heating
 		ci.m_idSurfaceHeating = VICUS::INVALID_ID;
 		ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+		ci.m_idSupplySystem = VICUS::INVALID_ID;
 	}
 
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heatings"), cis);
