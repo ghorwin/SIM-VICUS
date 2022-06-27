@@ -217,6 +217,10 @@ bool Polygon3D::operator!=(const Polygon3D &other) const {
 
 
 const std::vector<Vector3D> & Polygon3D::vertexes() const {
+	FUNCID(Polygon3D::vertexes);
+	if(m_polyline.vertexes().empty())
+		throw IBK::Exception("Polyline does not contain any vertexes!", FUNC_ID);
+
 	if (m_dirty) {
 		// recompute 3D vertex cache
 
