@@ -2767,7 +2767,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// calculate pressure loss, number of pipes and pipe lenght for all surafce heatings an
 	std::vector<double> pipeLengths(dataSurfaceHeating.size(), 0.0);
-	std::vector<double> maxPressureLosses(dataSurfaceHeating.size(), 0.0);
+	std::vector<double> pressureLosses(dataSurfaceHeating.size(), 0.0);
 	std::vector<int> numbersOfPipes(dataSurfaceHeating.size(), 0);
 	// store pipe id
 	std::vector<unsigned int> pipeIds(dataSurfaceHeating.size(), 0);
@@ -2828,7 +2828,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		double pressureLoss = zeta * density / 2.0 * std::abs(maxVelocity) * maxVelocity;
 
 		// store pressure loss
-		maxPressureLosses[i] = pressureLoss;
+		pressureLosses[i] = pressureLoss;
 		// and update maximum
 		maxPressureLoss = std::max(maxPressureLoss,pressureLoss);
 	}
@@ -2885,9 +2885,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 	// generate parallel network
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
-		// calculte lenght of supply pipe for pressure equalization
-		double lengthSupply = (maxPressureLoss - maxPressureLosses[i])/maxPressureLosses[i] * pipeLengths[i]/
-				(double) numbersOfPipes[i];
+
+		// calculate lenght of supply pipe for pressure equailzation
+		double lengthSupply = (maxPressureLoss - pressureLosses[i]) / pressureLosses[i] * pipeLengths[i];
 
 		// we need a supply pipe
 		bool hasSupplyPipe = false;
@@ -2907,6 +2907,10 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 
 			NANDRAD::KeywordList::setParameter(pipeElem.m_para, "HydraulicNetworkElement::para_t",
 											   NANDRAD::HydraulicNetworkElement::P_Length, lengthSupply);
+
+			NANDRAD::KeywordList::setIntPara(pipeElem.m_intPara, "HydraulicNetworkElement::intPara_t",
+											   NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes, numbersOfPipes[i]);
+
 			// add element to hydraulic network
 			network.m_elements.push_back(pipeElem);
 
