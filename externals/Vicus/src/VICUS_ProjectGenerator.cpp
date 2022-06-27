@@ -2674,10 +2674,14 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 												   std::vector<unsigned int> &usedModelIds,
 												   QStringList &errorStack)
 {
-	// create a new network
+	// 1.) Create a new network
+
 	NANDRAD::HydraulicNetwork network;
 	network.m_id = VICUS::uniqueId(usedModelIds);
 	usedModelIds.push_back(network.m_id);
+
+
+	// 2.) Create network components
 
 	// create a smass flux controlled pump
 	NANDRAD::HydraulicNetworkComponent nandradPump;
@@ -2727,6 +2731,18 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	// add to component vector
 	network.m_components.push_back(nandradHeater);
 
+
+	// 3.) Create network fluid
+
+	//standard fluid model
+	NANDRAD::HydraulicFluid fluid;
+	fluid.defaultFluidWater();
+
+	network.m_fluid = fluid;
+
+
+	// 4.) Configurate network
+
 	// retrieve maximum mass flux through the supply branch
 	double maxMassFlux = 0.0;
 
@@ -2738,6 +2754,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 			maxMassFlux = supply.m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU].value;
 		break;
 		// not supported, yet
+		case VICUS::SupplySystem::ST_SubNetwork:
 		case VICUS::SupplySystem::ST_DatabaseFMU: break;
 		case VICUS::SupplySystem::NUM_ST: break;
 	}
@@ -2745,12 +2762,6 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	double defaultFluidTemperature = 20. + 273.15;
 	NANDRAD::KeywordList::setParameter(network.m_para, "HydraulicNetwork::para_t",
 						   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature, 20.);
-
-	//standard fluid model
-	NANDRAD::HydraulicFluid fluid;
-	fluid.defaultFluidWater();
-
-	network.m_fluid = fluid;
 
 	// pre calucltions
 
@@ -2822,6 +2833,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		maxPressureLoss = std::max(maxPressureLoss,pressureLoss);
 	}
 
+
+	// 5.) Create network elements
+
 	unsigned int mixerNodeId = 2 * dataSurfaceHeating.size() + 1;
 	unsigned int lastNodeId = mixerNodeId + 1;
 	unsigned int splitterNodeId = 1;
@@ -2867,7 +2881,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	pumpObjectList.m_filterID.m_ids.insert(pumpElem.m_id);
 
 	unsigned int nodeId = splitterNodeId;
-	//fill the map for quick work
+
+
+	// generate parallel network
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
 		// calculte lenght of supply pipe for pressure equalization
 		double lengthSupply = (maxPressureLoss - maxPressureLosses[i])/maxPressureLosses[i] * pipeLengths[i]/
@@ -2972,8 +2988,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	idealHeaterObjectList.m_filterID.m_ids.insert(idealHeaterElem.m_id);
 
 
-	// create pipe properties
-
+	// 6.) Create pipe properties
 
 	for(std::set<const VICUS::NetworkPipe *>::const_iterator
 		pipeDataIt = pipeData.begin(); pipeDataIt != pipeData.end(); ++pipeDataIt) {
@@ -3021,6 +3036,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	// add to network vector
 	m_hydraulicNetworks.push_back(network);
 
+
+	// 7.) Create interface translation models
+
 	// create summation model
 	NANDRAD::HeatLoadSummationModel summationModel;
 	summationModel.m_id = VICUS::uniqueId(usedModelIds);
@@ -3050,7 +3068,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	adapterObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 	adapterObjectList.m_filterID.m_ids.insert(adapterModel.m_id);
 
-	// create schedule parameter
+
+	// 8.) Create schedule parameter
 
 	std::vector<double> maxMassFluxVals(1, 0.0);
 	std::vector<double> supplyTempVals(1, 20.);
@@ -3103,7 +3122,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	m_objListNamesToNandradSchedules[adapterObjectList.m_name].push_back(supplyTempSchedule);
 
 
-	// create FMI description
+	// 9.) Create FMI description
 
 	switch(supply.m_supplyType) {
 		case VICUS::SupplySystem::ST_DatabaseFMU:
