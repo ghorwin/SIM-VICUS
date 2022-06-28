@@ -36,6 +36,8 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <QLine>
+#include <QEvent>
+#include <QKeyEvent>
 
 #include <IBK_StringUtils.h>
 
@@ -119,7 +121,7 @@ void SVGeometryView::saveScreenShot(const QString & imgFilePath) {
 
 
 void SVGeometryView::focusSceneView() {
-	m_sceneViewContainerWidget->setFocus();
+	// m_sceneViewContainerWidget->setFocus();
 }
 
 
@@ -160,27 +162,27 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 					return false;
 			}
 			onNumberKeyPressed(k);
-		break;
+			break;
 
 		case Qt::Key_X :
 			if (!m_ui->actionXLock->isVisible())
 				return false;
 			m_ui->actionXLock->trigger();
-		break;
+			break;
 
 		case Qt::Key_Y :
 			if (!m_ui->actionYLock->isVisible())
 				return false;
 			m_ui->actionYLock->trigger();
-		break;
+			break;
 
 		case Qt::Key_Z :
 			if (!m_ui->actionZLock->isVisible())
 				return false;
 			m_ui->actionZLock->trigger();
-		break;
+			break;
 
-		// *** F3 - toggle "snap mode" mode ****
+			// *** F3 - toggle "snap mode" mode ****
 		case Qt::Key_F3 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_snapEnabled) {
@@ -197,25 +199,25 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 			// all view modes that require snapping
 		} break;
 
-		// *** F4 - toggle "align coordinate system" mode ****
+			// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleAlignCoordinateSystem();
-		break;
+			break;
 
-		// *** F5 - toggle "move local coordinate system" mode ****
+			// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleTranslateCoordinateSystem();
-		break;
+			break;
 
-		// *** C - toggle parametrization and geometry mode ***
+			// *** C - toggle parametrization and geometry mode ***
 		case Qt::Key_C :
 			if (m_ui->actionToggleGeometryMode->isChecked())
 				switch2ParametrizationMode();
 			else
 				switch2GeometryMode();
-		break;
+			break;
 
 		default:
 			return false; // not our key
@@ -305,19 +307,23 @@ void SVGeometryView::onViewStateChanged() {
 	m_ui->actionSnap->blockSignals(false);
 
 	m_ui->actionMeasure->blockSignals(true);
-	m_ui->actionMeasure->setChecked(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance);
+	bool state = vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance;
+	m_ui->actionMeasure->setChecked(state);
 	m_ui->actionMeasure->blockSignals(false);
 
 	m_ui->actionXLock->blockSignals(true);
-	m_ui->actionXLock->setChecked(vs.m_locks == SVViewState::L_LocalX);
+	state = vs.m_locks == SVViewState::L_LocalX;
+	m_ui->actionXLock->setChecked(state);
 	m_ui->actionXLock->blockSignals(false);
 
 	m_ui->actionYLock->blockSignals(true);
-	m_ui->actionYLock->setChecked(vs.m_locks == SVViewState::L_LocalY);
+	state = vs.m_locks == SVViewState::L_LocalY;
+	m_ui->actionYLock->setChecked(state);
 	m_ui->actionYLock->blockSignals(false);
 
 	m_ui->actionZLock->blockSignals(true);
-	m_ui->actionZLock->setChecked(vs.m_locks == SVViewState::L_LocalZ);
+	state = vs.m_locks == SVViewState::L_LocalZ;
+	m_ui->actionZLock->setChecked(state);
 	m_ui->actionZLock->blockSignals(false);
 
 	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex);
@@ -339,10 +345,10 @@ void SVGeometryView::onViewStateChanged() {
 	m_actionCoordinateInput->setVisible(lockVisible);
 
 	bool localCoordinateSystemVisible =
-	(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
+			(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+			 vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+			 vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+			 vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
 		localCoordinateSystemVisible = false;
@@ -397,7 +403,7 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 			if (text.length()>0)
 				text = text.left(text.length()-1);
 		}
-		break;
+			break;
 		case Qt::Key_Return :
 		case Qt::Key_Enter : {
 			coordinateInputFinished();
@@ -473,45 +479,7 @@ void SVGeometryView::coordinateInputFinished() {
 	po->appendVertexOffset(offset);
 	// finally clear the coordinate input - next enter press will complete the polygon, if possible
 	m_lineEditCoordinateInput->clear();
-}
-
-
-void SVGeometryView::on_actionXLock_toggled(bool on) {
-	// switch toggle view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (on)
-		vs.m_locks = SVViewState::L_LocalX;
-	else
-		vs.m_locks = SVViewState::NUM_L;
-
-	SVViewStateHandler::instance().setViewState(vs);
-	focusSceneView();
-}
-
-
-void SVGeometryView::on_actionYLock_toggled(bool on) {
-	// switch toggle view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (on)
-		vs.m_locks = SVViewState::L_LocalY;
-	else
-		vs.m_locks = SVViewState::NUM_L;
-
-	SVViewStateHandler::instance().setViewState(vs);
-	focusSceneView();
-}
-
-
-void SVGeometryView::on_actionZLock_toggled(bool on) {
-	// switch toggle view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (on)
-		vs.m_locks = SVViewState::L_LocalZ;
-	else
-		vs.m_locks = SVViewState::NUM_L;
-
-	SVViewStateHandler::instance().setViewState(vs);
-	focusSceneView();
+	m_sceneViewContainerWidget->setFocus();
 }
 
 
@@ -552,7 +520,7 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_AddGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -573,7 +541,7 @@ void SVGeometryView::on_actionTranslateGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -596,7 +564,7 @@ void SVGeometryView::on_actionRotateGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -619,7 +587,7 @@ void SVGeometryView::on_actionScaleGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -642,7 +610,7 @@ void SVGeometryView::on_actionAlignGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -665,7 +633,7 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
@@ -691,6 +659,21 @@ void SVGeometryView::resizeEvent(QResizeEvent *event) {
 	moveMeasurementWidget(); // adjust position of measurement widget
 }
 
+bool SVGeometryView::eventFilter(QObject * obj, QEvent * event) {
+	if (obj == m_lineEditCoordinateInput && event->type() == QEvent::KeyPress) {
+		QKeyEvent *key = dynamic_cast<QKeyEvent *>(event);
+
+		if(key == nullptr)
+			return QObject::eventFilter(obj, event);
+
+		switch (key->key()) {
+			case Qt::Key_X : m_lineEditCoordinateInput->setText(""); m_ui->actionXLock->trigger(); break;
+			case Qt::Key_Y : m_lineEditCoordinateInput->setText(""); m_ui->actionYLock->trigger(); break;
+			case Qt::Key_Z : m_lineEditCoordinateInput->setText(""); m_ui->actionZLock->trigger(); break;
+		}
+	}
+	return QObject::eventFilter(obj, event);
+}
 
 // *** Private Functions ***
 
@@ -701,10 +684,11 @@ void SVGeometryView::setupToolBar() {
 	// the line edit for entering vertex coordinates
 	m_lineEditCoordinateInput = new QLineEdit(m_ui->geometryToolBar);
 	m_lineEditCoordinateInput->setToolTip(tr("Without axis lock, enter coordinates in format <x> <y> <z>. With axis lock enter only the offset in the respective axis direction."));
-	m_actionCoordinateInput = m_ui->geometryToolBar->insertWidget(m_ui->actionZLock, m_lineEditCoordinateInput);
+	m_actionCoordinateInput = m_ui->geometryToolBar->addWidget(m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
 	m_lineEditCoordinateInput->setMaximumWidth(400);
+	m_lineEditCoordinateInput->installEventFilter(this);
 
 	// stretcher
 	QWidget * spacerWidget = new QWidget;
@@ -746,3 +730,42 @@ void SVGeometryView::on_actionSnap_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
+
+void SVGeometryView::on_actionXLock_triggered(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks = SVViewState::L_LocalX;
+	else
+		vs.m_locks = SVViewState::NUM_L;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
+
+void SVGeometryView::on_actionYLock_triggered(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks = SVViewState::L_LocalY;
+	else
+		vs.m_locks = SVViewState::NUM_L;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
+
+void SVGeometryView::on_actionZLock_triggered(bool on) {
+	// switch toggle view state
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on)
+		vs.m_locks = SVViewState::L_LocalZ;
+	else
+		vs.m_locks = SVViewState::NUM_L;
+
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}
+
