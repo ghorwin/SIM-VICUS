@@ -57,6 +57,8 @@ public:
 		R_SurfaceTemperatureB,			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B'
 		R_SolarRadiationFluxA,			// Keyword: SolarRadiationFluxA		[W/m2]	'Solar radiation flux density into surface A'
 		R_SolarRadiationFluxB,			// Keyword: SolarRadiationFluxB		[W/m2]	'Solar radiation flux density into surface B'
+		R_LongWaveRadiationFluxA,		// Keyword: LongWaveRadiationFluxA	[W/m2]	'Absorbed minus emitted long wave radiation flux density for surface A'
+		R_LongWaveRadiationFluxB,		// Keyword: LongWaveRadiationFluxB	[W/m2]	'Absorbed minus emitted long wave radiation flux density for surface B'
 		NUM_R
 	};
 

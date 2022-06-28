@@ -217,6 +217,10 @@ bool Polygon3D::operator!=(const Polygon3D &other) const {
 
 
 const std::vector<Vector3D> & Polygon3D::vertexes() const {
+	FUNCID(Polygon3D::vertexes);
+	if(m_polyline.vertexes().empty())
+		throw IBK::Exception("Polyline does not contain any vertexes!", FUNC_ID);
+
 	if (m_dirty) {
 		// recompute 3D vertex cache
 
@@ -263,8 +267,14 @@ void Polygon3D::flip() {
 
 	// we also need to swap x and y coordinates of all polygon2D points
 	std::vector<IBKMK::Vector2D>		vertexes2D = m_polyline.vertexes();
+	std::vector<IBKMK::Vector2D>		vertexes2DNew;
 	for (IBKMK::Vector2D & v : vertexes2D)
 		std::swap(v.m_x, v.m_y);
+
+	// to comply with the flipped surface normal we also have to reverse the order 2D points
+	for (unsigned int i=vertexes2D.size(); i>0; --i)
+		vertexes2DNew.push_back(vertexes2D[i-1]);
+
 	m_polyline.setVertexes(vertexes2D);
 	m_dirty = true;
 }

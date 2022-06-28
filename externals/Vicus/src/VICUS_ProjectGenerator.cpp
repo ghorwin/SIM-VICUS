@@ -665,7 +665,8 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	return true;
 }
 
-bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<MappingElement> &mappings) const {
+bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<MappingElement> &mappings,
+								 bool addFloorAreaAndVolume) const {
 	FUNCID(Project::exportMappingTable);
 	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
 
@@ -682,7 +683,12 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ma
 		return false;
 	}
 
-	out << "VICUS room id\tNANDRAD room id\tVICUS room name\tNANDRAD room name\tzone template id\tzone template name" << std::endl;
+	out << "VICUS room id\tNANDRAD room id\tVICUS room name\tNANDRAD room name\tzone template id\tzone template name" ;
+
+	if(addFloorAreaAndVolume)
+		out <<  "\tFloor area [m2]\tVolume [m3]";
+
+	out << std::endl;
 	for(const auto &m : mappings){
 		out << m.m_idRoomVicus << "\t" << m.m_idRoomNandrad << "\t" << m.m_nameRoomVicus << "\t" << m.m_nameRoomNandrad << "\t";
 		if(m.m_idZoneTemplateVicus){
@@ -691,12 +697,19 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ma
 		}
 		else
 			out << "\t";
+
+		if(addFloorAreaAndVolume)
+			out << IBK::FormatString("%1\t%2").arg(m.m_floorArea,0,'f',2).arg(m.m_volume,0,'f',2);
 		out << std::endl;
 	}
 
 	out << "VICUS component instance id\tNANDRAD construction instance id" << std::endl;
 	// Todo later
 	out.close();
+	return true;
+}
+
+bool Project::exportAreaAndVolume() {
 	return true;
 }
 
@@ -914,6 +927,12 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				mapEle.m_idZoneTemplateVicus = INVALID_ID;
 				mapEle.m_nameRoomNandrad = name.toStdString();
 				mapEle.m_nameRoomVicus = r.m_displayName.toStdString();
+
+				if(!r.m_para[VICUS::Room::P_Area].empty())
+					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].get_value("m2");
+				if(!r.m_para[VICUS::Room::P_Volume].empty())
+					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].get_value("m3");
+
 				roomIdsToRoomNames[r.m_id] = name.toStdString();
 
 				// get zone templates names for mapping
@@ -964,6 +983,8 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid volume defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
 		}
+
+
 
 		if (!isZoneOk)
 			continue;

@@ -69,8 +69,8 @@ unsigned int uniqueId(const std::vector<T>& vec) {
 		idSet.insert(it->m_id);
 	unsigned int id = 1;
 	for (std::set<unsigned int>::const_iterator it = idSet.begin(); it != idSet.end(); ++it) {
-		if (*it - id > 1)
-			return id+1;
+		if (*it - id > 0) // Mind, that we want to find all spaces inside the id set
+			return id;
 		++id;
 	}
 	return id;

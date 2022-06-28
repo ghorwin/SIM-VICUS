@@ -654,6 +654,16 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 }
 
 
+double Loads::qLWRad(unsigned int objectID) const {
+	// view factor to sky
+	const double skyVis = skyVisibility(objectID);
+	const double Tamb = m_results[R_Temperature];
+	const double Tamb2 = Tamb * Tamb;
+	// incoming radiation from sky and from ground
+	return skyVis * m_results[R_LWSkyRadiation] + (1 - skyVis) * IBK::BOLTZMANN * Tamb2 * Tamb2;
+}
+
+
 double Loads::skyVisibility(unsigned int objectID) const {
 	// find unique surface id
 	std::map<unsigned int, unsigned int>::const_iterator it =

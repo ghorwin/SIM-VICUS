@@ -141,10 +141,12 @@ public:
 	/*! Returns true if no information exists.*/
 	bool empty() const { return !m_infoVect.empty(); }
 
+	static int m_pixelStep;
+
 private:
-	QTextDocument*			m_textDocument;	///< Internal text document.
+	QTextDocument*				m_textDocument;	///< Internal text document.
 	std::vector<TextFrameInfo>	m_infoVect;		///< Vector for text sizes for different line counts.
-	QString					m_text;			///< Last used text;
+	QString						m_text;			///< Last used text;
 
 	/*! Has the same functionality like set but uses the internal variables.*/
 	void setInternal();

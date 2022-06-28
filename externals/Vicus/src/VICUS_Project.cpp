@@ -933,7 +933,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);
 
-	if(!exportMappingTable(IBK::Path(nandradProjectPath), mappings)){
+	if(!exportMappingTable(IBK::Path(nandradProjectPath), mappings, true)){
 		errorStack.push_back(tr("Mapping table export failed!"));
 		throw IBK::Exception("Mapping table export failed!", FUNC_ID);
 	}

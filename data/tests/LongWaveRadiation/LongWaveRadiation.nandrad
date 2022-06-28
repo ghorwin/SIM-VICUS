@@ -6,7 +6,7 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFilePath>${Project Directory}/../climate/SimQuality_Testfall06_Klima.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -21,6 +21,7 @@
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
+			
 			<!-- Surface North Var 01 -->
 			<ConstructionInstance id="1" displayName="Surface North Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -41,8 +42,17 @@
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
+					
+					
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+					
+					
 				</InterfaceB>
 			</ConstructionInstance>
+			
+			
 			<!-- Surface East Var 02 -->
 			<ConstructionInstance id="2" displayName="Surface East Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -63,8 +73,17 @@
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
+					
+					
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				
+				
 				</InterfaceB>
 			</ConstructionInstance>
+			
+			
 			<!-- Surface South Var 01 -->
 			<ConstructionInstance id="3" displayName="Surface South Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -85,8 +104,18 @@
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
+					
+					
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+					
+					
 				</InterfaceB>
 			</ConstructionInstance>
+			
+		
+		
 			<!-- Surface West Var 01 -->
 			<ConstructionInstance id="4" displayName="Surface West Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -107,8 +136,15 @@
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
+					
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+					
 				</InterfaceB>
 			</ConstructionInstance>
+			
+			
 			<!-- Surface Roof Var 01 -->
 			<ConstructionInstance id="5" displayName="Surface Roof Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -129,8 +165,16 @@
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
+					
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+					
 				</InterfaceB>
 			</ConstructionInstance>
+			
+			
+			
 			<!-- Surface North Var 01 -->
 			<ConstructionInstance id="6" displayName="Surface Floor Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
@@ -194,26 +238,31 @@
 		
 		<Outputs>
 			<Definitions>
+
 				<OutputDefinition>
-					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zone Var01</ObjectListName>
+					<Quantity>Temperature</Quantity>
+					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+
 				<OutputDefinition>
-					<Quantity>SolarRadiationFluxB</Quantity>
+					<Quantity>LWSkyRadiation</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>LongWaveRadiationFluxB</Quantity>
 					<ObjectListName>ConstructionInstance</ObjectListName>
 					<GridName>hourly</GridName>
-				</OutputDefinition>				
+				</OutputDefinition>						
+				
 				<OutputDefinition>
-					<Quantity>FluxHeatConductionA</Quantity>
+					<Quantity>SurfaceTemperatureB</Quantity>
 					<ObjectListName>ConstructionInstance</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>SurfaceTemperatureA</Quantity>
-					<ObjectListName>ConstructionInstance</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
+				
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -233,6 +282,10 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
 			</ObjectList>
 			<ObjectList name="ConstructionInstance">
 				<FilterID>*</FilterID>

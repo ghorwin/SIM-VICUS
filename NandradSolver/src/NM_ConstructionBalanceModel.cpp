@@ -64,6 +64,8 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 		m_results[i] = 0;
 	m_fluxDensityShortWaveRadiationA = 0;
 	m_fluxDensityShortWaveRadiationB = 0;
+	m_fluxDensityLongWaveRadiationA = 0;
+	m_fluxDensityLongWaveRadiationB = 0;
 
 }
 
@@ -423,6 +425,19 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 		}
 		// TODO : Add dependency to short wave radiation flux in case this depends on controlled shading
 
+		// long wave emission
+		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveradiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+			// ydot of first element depends on boundary flux
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveradiationA] ) );
+		}
+		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveradiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+			// ydot of first element depends on boundary flux
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveradiationB] ) );
+		}
+
+
 		// remaining dependency pattern
 		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
 			// each ydot depends on the temperature in the cell itself
@@ -457,6 +472,7 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 
 
 int ConstructionBalanceModel::update() {
+
 	// process all interfaces and compute boundary fluxes
 	calculateBoundaryConditions(true, m_con->m_interfaceA);
 	calculateBoundaryConditions(false, m_con->m_interfaceB);
@@ -474,14 +490,14 @@ int ConstructionBalanceModel::update() {
 		double * ydot = &m_ydot[0];
 		const double * qHeatCond = &m_statesModel->m_fluxes_q[0];
 		const ConstructionStatesModel::Element * E = &m_statesModel->m_elements[0];
-		ydot[0] = m_fluxDensityHeatConductionA + m_fluxDensityShortWaveRadiationA; // left BC fluxes
+		ydot[0] = m_fluxDensityHeatConductionA + m_fluxDensityShortWaveRadiationA + m_fluxDensityLongWaveRadiationA; // left BC fluxes
 		for (unsigned int i=1; i<nElements; ++i) {
 			ydot[i-1] -= qHeatCond[i];	// Mind: we _subtract_ flux
 			ydot[i] = qHeatCond[i];		// Mind: we _set_ the positive flux
 			// finally divide by element volume (volume = dx * 1m2)
 			ydot[i-1] /= E[i-1].dx;
 		}
-		ydot[nElements-1] -= m_fluxDensityHeatConductionB + m_fluxDensityShortWaveRadiationB; // right BC fluxes
+		ydot[nElements-1] -= m_fluxDensityHeatConductionB + m_fluxDensityShortWaveRadiationB + m_fluxDensityLongWaveRadiationB; // right BC fluxes
 		ydot[nElements-1] /= E[nElements-1].dx;
 
 		// add active layer heat sources
@@ -572,6 +588,12 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 	m_results[R_FluxShortWaveRadiationA] = 0.0;
 	m_results[R_FluxShortWaveRadiationB] = 0.0;
 
+	m_fluxDensityLongWaveRadiationA = 0.0;
+	m_fluxDensityLongWaveRadiationB = 0.0;
+	m_results[R_FluxLongWaveradiationA] = 0.0;
+	m_results[R_FluxLongWaveradiationB] = 0.0;
+
+
 	// *** outside solar radiation boundary condition
 
 	if (iface.m_zoneId == 0 && iface.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
@@ -585,6 +607,23 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_SolarRadiationFluxB];
 			m_fluxDensityShortWaveRadiationB -= fluxDensity; // positive from left to right (out of construction)
 			m_results[R_FluxShortWaveRadiationB] += fluxDensity*m_area; // total flux [W], positive into construction
+		}
+	}
+
+
+	// *** outside long wave radiation boundary condition
+
+	if (iface.m_zoneId == 0 && iface.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+		// different calculation from left or right side
+		if (sideA) {
+			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxA];
+			m_fluxDensityLongWaveRadiationA = fluxDensity; // positive from left to right (into construction)
+			m_results[R_FluxLongWaveradiationA] = fluxDensity*m_area; // total flux [W], positive into construction
+		}
+		else {
+			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxB];
+			m_fluxDensityLongWaveRadiationB = -fluxDensity; // positive from left to right (into construction)
+			m_results[R_FluxLongWaveradiationB] = fluxDensity*m_area; // total flux [W], positive into construction
 		}
 	}
 

@@ -57,6 +57,7 @@ Table::Table(QTextDocument* textDocument, QSize size, QObject *parent) :
 	m_textDocumentOwner(false),
 	m_cols(0),
 	m_rows(0),
+	m_headerRows(0),
 	m_spacing(2),
 	m_margin(2),
 	m_outerFrameWidth(0.0),
@@ -86,6 +87,7 @@ void Table::clear() {
 	m_adjusted = false;
 	m_cols = 0;
 	m_rows = 0;
+	m_headerRows = 0;
 	m_scale = 1.0;
 	m_spacing = 2;
 	m_margin = 2;
@@ -107,7 +109,10 @@ void Table::setTableSize(QSize size) {
 	emit changed();
 }
 
-void Table::setColumnsRows(unsigned int cols, unsigned int rows) {
+void Table::setColumnsRows(unsigned int cols, unsigned int rows, unsigned int headerRows) {
+	// set here because has no influence on sizing
+	m_headerRows = headerRows;
+
 	// no change - no adjustment necessary
 	if( m_cols == cols && m_rows == rows)
 		return;
@@ -388,6 +393,7 @@ qreal Table::cellHeightSpace(const TableCell& cell) const {
 }
 
 void Table::setPaintProperties() {
+	TextFrameInformations::m_pixelStep = std::max(m_rows / 20, 5u);
 	for( unsigned int c=0; c<m_cols; ++c) {
 		// set text properties from text document
 		for( unsigned int r=0; r<m_rows; ++r) {
@@ -794,6 +800,7 @@ void Table::adjust(QPaintDevice* paintDevice) {
 
 	setPaintProperties();
 
+
 	// Take text rectangles for all cells without width constraint and
 	// creates a list of maximum cell width of each column
 	QVector<qreal> maxCellWidthsUnmerged;
@@ -861,7 +868,6 @@ void Table::adjust(QPaintDevice* paintDevice) {
 		mhTotal += m_rowHeights[r].m_size;
 	}
 	m_size.setHeight(mhTotal + 2 * m_margin * m_scale);
-
 	// set all cell rects
 	setCellRects();
 
@@ -1039,9 +1045,9 @@ void Table::drawTable(QPainter* painter, const QPointF& pos) {
 	if( m_rows <= 0 || m_cols <= 0)
 		return;
 
-	Q_ASSERT(painter != NULL);
+	Q_ASSERT(painter != nullptr);
 	QPaintDevice* device = painter->device();
-	Q_ASSERT(device != NULL);
+	Q_ASSERT(device != nullptr);
 
 	painter->fillRect(QRectF(pos, m_size), m_background);
 
@@ -1068,6 +1074,61 @@ void Table::drawTable(QPainter* painter, const QPointF& pos) {
 	}
 }
 
+std::vector<unsigned int> Table::fittingTableRows(QPaintDevice* paintDevice, qreal hfirst, qreal hrest) const {
+	// makes no sense to draw an empty table
+	if( m_rows <= 0 || m_cols <= 0)
+		return std::vector<unsigned int>(1, 0);
+
+	QSizeF size = tableSize();
+
+	if(size.height() <= hfirst)
+		return std::vector<unsigned int>(1, m_rows);
+
+	qreal headerHeight = 0;
+	for(unsigned int i=0; i<m_headerRows; ++i) {
+		headerHeight += m_cells[0][i].cellRect().height();
+	}
+	headerHeight += m_outerFrameWidth;
+
+	std::vector<unsigned int> res;
+	qreal dividedTableHeight = headerHeight;
+	for(unsigned int i = m_headerRows; i<m_rows; ++i) {
+		qreal currentHeight = m_cells[0][i].cellRect().height();
+		dividedTableHeight += currentHeight;
+		if(res.size() == 0 && (dividedTableHeight + m_outerFrameWidth) >= hfirst) {
+			res.push_back(i-1);
+			dividedTableHeight = headerHeight + currentHeight;
+		}
+		else if(res.size() > 0 && (dividedTableHeight + m_outerFrameWidth) >= hrest) {
+			res.push_back(i-1);
+			dividedTableHeight = headerHeight + currentHeight;
+		}
+	}
+	res.push_back(m_rows-1);
+	return res;
+}
+
+std::vector<Table*> Table::fittingTables(QPaintDevice* paintDevice, qreal hfirst, qreal hrest) {
+	std::vector<unsigned int> tableRows = fittingTableRows(paintDevice, hfirst, hrest);
+	std::vector<Table*> res;
+	if(tableRows.size() == 1) {
+		res.push_back(this);
+		return res;
+	}
+
+	int startRow = 0;
+	for(int i=0; i<tableRows.size(); ++i) {
+		int endRow = tableRows[i];
+		res.push_back(createSubTable(startRow, endRow));
+		Q_ASSERT(res.back() != nullptr);
+		res.back()->adjust(paintDevice);
+		startRow = endRow + 1;
+	}
+
+	return res;
+}
+
+
 void Table::frameRect(Table& table, int cLeft, int cRight, int rTop, int rBottom, int lineWidth) {
 	for( int i=rTop; i<=rBottom; ++i) {
 		table.cell(cLeft, i).setBorderWidth(QtExt::TableCell::LeftBorder, lineWidth);
@@ -1079,5 +1140,52 @@ void Table::frameRect(Table& table, int cLeft, int cRight, int rTop, int rBottom
 	}
 }
 
+Table* Table::createSubTable(unsigned int startRow, unsigned int endRow) {
+	if( startRow > endRow || startRow >= m_rows || endRow >= m_rows)
+		return nullptr;
+
+	Table* table = new Table(m_textDocument, m_size, parent());
+	unsigned int rowCount = endRow-startRow+1;
+	int usedHeaderRows = 0;
+	if(startRow <= m_headerRows-1) {
+		usedHeaderRows = (startRow - m_headerRows) * -1;
+		rowCount += m_headerRows - usedHeaderRows;
+	}
+	rowCount += m_headerRows - usedHeaderRows;
+	table->setColumnsRows(m_cols, rowCount, m_headerRows);
+
+	table->m_textDocumentOwner = false;
+	table->m_spacing = m_spacing;
+	table->m_margin = m_margin;
+	table->m_outerFrameWidth = m_outerFrameWidth;
+	table->m_innerFrameWidth = m_innerFrameWidth;
+	table->m_background = m_background;
+	table->m_scale = m_scale;
+	table->m_adjusted = false;
+	table->m_columnWidths = m_columnWidths;
+
+	for(unsigned int ci=0; ci<table->m_cols; ++ci) {
+//		if(m_headerRows > 0)
+//			table->m_HLines[ci][0] = m_HLines[ci][0];
+		for(unsigned int ri=0; ri<m_headerRows; ++ri) {
+			table->m_rowHeights[ri] = m_rowHeights[ri];
+			table->m_cells[ci][ri] = m_cells[ci][ri];
+//			table->m_VLines[ci][ri] = m_VLines[ci][ri];
+//			table->m_HLines[ci][ri+1] = m_HLines[ci][ri+1];
+		}
+		unsigned int realStartRow = startRow;
+		if(startRow <= m_headerRows -1) {
+			realStartRow += usedHeaderRows;
+		}
+		unsigned int newTableRow = m_headerRows;
+		for(unsigned int ri=realStartRow; ri<=endRow; ++ri) {
+			table->m_rowHeights[newTableRow] = m_rowHeights[ri];
+			table->m_cells[ci][newTableRow] = m_cells[ci][ri];
+//			table->m_VLines[ci][ri] = m_VLines[ci][ri];
+			++newTableRow;
+		}
+	}
+	return table;
+}
 
 } // namespace QtExt

@@ -311,6 +311,8 @@ private:
 		std::string								m_nameRoomVicus;
 		std::string								m_nameRoomNandrad;
 		std::string								m_zonetemplateName;
+		double									m_floorArea = 0;		// in m2
+		double									m_volume = 0;			// in m3
 	};
 
 
@@ -338,8 +340,14 @@ private:
 	bool generateShadingFactorsFile(const std::map<unsigned int, unsigned int> & surfaceIdsVicusToNandrad,
 									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
-	bool exportMappingTable(const IBK::Path & filepath, const std::vector<MappingElement> &mappings) const;
+	/*! Export mapping table for VICUS and NANDRAD room ids and names.
+		Also export zone template ids and names.
+	*/
+	bool exportMappingTable(const IBK::Path & filepath, const std::vector<MappingElement> &mappings,
+							bool addFloorAreaAndVolume = false) const;
 
+	/*! Export for each room VICUS and NANDRAD name, floor area [m2] and volume [m3] */
+	bool exportAreaAndVolume();
 
 	/*! Adds the given object to the m_objectPtr map but first checks if its ID is already in the map.
 		If there is an ID conflict, the function throws an IBK::Exception.

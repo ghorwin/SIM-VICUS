@@ -173,6 +173,12 @@ public:
 	*/
 	double qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const;
 
+	/*! Returns the long wave radiation from sky and ground on a given surface without considering the emmissivity of the surface.
+		\param objectID		Sensor id, construction instance id or emebdded obejct id
+		\return				The function returns the sum of long wave radiation from sky and ground
+	*/
+	double qLWRad(unsigned int objectID) const;
+
 	/*! Returns sky visibility of a given surface.
 		This function works essentially as the function above, but identifies the surface via a surfaceId.
 		\param objectID		Model object id

@@ -2981,21 +2981,38 @@ An Außenwänden liegt die Außenlufttemperatur
 \end_inset
 
  an und sorgt für konvektiven Wärmeaustasuch mit der Wandoberfläche.
- Zusätzlich wreden Wärmeeintrage durch Solarstrahlung (Strahlungsstromdichte
+ Zusätzlich werden Wärmeeintrage durch Solarstrahlung (Strahlungsstromdichte
  
 \begin_inset Formula $q_{rad,\alpha\beta}$
 \end_inset
 
-) an der Wandoberfläche adsorbiert.
+) an der Wandoberfläche absorbiert.
  Dabei bezeichne
 \begin_inset Formula $a_{W,i}$
 \end_inset
 
  den Absorptionskoeffizienten der Wand für Solarstrahlung.
+ Außerdem wird langwellige Strahlung vom Boden und vom Himmel absorbiert
+ sowie von der Wand emittiert.
+ Die Himmelsgegenstrahlung ist 
+\begin_inset Formula $q_{sky}$
+\end_inset
+
+ und der Sichtfaktor zum Huimmel ist 
+\begin_inset Formula $f_{sky}$
+\end_inset
+
+.
+ Der Boden strahlt vereinfacht mit Außenlufttemperatur 
+\begin_inset Formula $T_{A}$
+\end_inset
+
+.
 \begin_inset Formula 
 \begin{eqnarray*}
 q_{conv,W,i} & = & \alpha_{W,i}\left(T_{A}\left(t\right)-T_{W,i}\right)\\
-q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}
+q_{LW,rad,W,i} & = & \epsilon\left(f_{sky}q_{sky}+(1-f_{sky})\,\sigma T_{A}^{4}\right)-\epsilon\,\sigma T_{W,i}^{4}\\
+q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}+q_{LW,rad,W,i}
 \end{eqnarray*}
 
 \end_inset

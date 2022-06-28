@@ -80,7 +80,7 @@ public:
 		\param cols Column count.
 		\param rows Row count.
 	*/
-	void setColumnsRows(unsigned int cols, unsigned int rows);
+	void setColumnsRows(unsigned int cols, unsigned int rows, unsigned int headerRows = 0);
 
 	/*! Set the visible table rectangle (width and height).*/
 	void setTableSize(QSize size);
@@ -257,6 +257,14 @@ public:
 	/*! Returns the internal text document.*/
 	const QTextDocument* textDocument() const { return m_textDocument; }
 
+	/*! Calculates how many tables are necessary in order to fit on areas with the given size.
+		It return a vector of indexes of end rows for each sub table.
+	*/
+	std::vector<unsigned int> fittingTableRows(QPaintDevice* paintDevice, qreal hfirst, qreal hrest) const;
+
+	/*! Create number of tables which fits in the given heights.*/
+	std::vector<Table*> fittingTables(QPaintDevice* paintDevice, qreal hfirst, qreal hrest);
+
 	/*! Draw a frame around the given cell area with given width.*/
 	static void frameRect(Table& table, int cLeft, int cright, int rTop, int rBottom, int lineWidth);
 
@@ -269,6 +277,7 @@ private:
 	bool									m_textDocumentOwner;	///< True if the class instance is owner of the text document.
 	unsigned int							m_cols;					///< Coumn count.
 	unsigned int							m_rows;					///< Row count.
+	unsigned int							m_headerRows;			///< Number of header rows
 	std::vector<std::vector<TableCell> >	m_cells;				///< Cell array.
 	QVector<CellSizeFormater>				m_columnWidths;			///< Column format vector.
 	QVector<CellSizeFormater>				m_rowHeights;			///< Row format vector.
@@ -423,6 +432,9 @@ private:
 		Call of setCellRects before this function.
 	*/
 	void calcVerticalLines();
+
+	/*! Create a table which contains only the rows from startRow to endRow and the header rows.*/
+	Table* createSubTable(unsigned int startRow, unsigned int endRow);
 };
 
 /*! @file QtExt_Table.h
