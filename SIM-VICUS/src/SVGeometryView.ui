@@ -166,16 +166,25 @@
    </property>
   </action>
   <action name="actionXLock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>X</string>
    </property>
   </action>
   <action name="actionYLock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Y</string>
    </property>
   </action>
   <action name="actionZLock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Z</string>
    </property>
