@@ -110,7 +110,6 @@ public:
 	/*! Triggers actionToggleParamtrizationMode. */
 	void switch2ParametrizationMode();
 
-
 public slots:
 	/*! Handles selection changes and enables/disables button states. */
 	void onModified(int modificationType, ModificationInfo *);
@@ -129,11 +128,6 @@ private slots:
 	*/
 	void coordinateInputFinished();
 
-
-	void on_actionXLock_toggled(bool);
-	void on_actionYLock_toggled(bool);
-	void on_actionZLock_toggled(bool);
-
 	void on_actionToggleGeometryMode_triggered();
 	void on_actionToggleParametrizationMode_triggered();
 
@@ -147,11 +141,17 @@ private slots:
 	void on_actionMeasure_triggered(bool checked);
 	void on_actionSnap_triggered(bool on);
 
+	void on_actionXLock_triggered(bool checked);
+	void on_actionYLock_triggered(bool checked);
+	void on_actionZLock_triggered(bool checked);
+
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
 		without changing scene size (by moving left splitter).
 	*/
 	void resizeEvent(QResizeEvent *event);
+
+	bool eventFilter(QObject *obj, QEvent *event);
 
 private:
 	Ui::SVGeometryView			*m_ui;
