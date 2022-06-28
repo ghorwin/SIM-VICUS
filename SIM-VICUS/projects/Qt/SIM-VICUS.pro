@@ -91,6 +91,9 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
+	../../src/SVDBSupplySystemEditWidget.cpp \
+	../../src/SVDBSupplySystemTableModel.cpp \
+	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
@@ -259,7 +262,7 @@ SOURCES += \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
 	../../src/SVWelcomeScreen.cpp \
-    ../../src/actions/SVUndoCopySubSurfaces.cpp
+	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
@@ -269,6 +272,9 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
+	../../src/SVDBSupplySystemEditWidget.h \
+	../../src/SVDBSupplySystemTableModel.h \
+	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
@@ -445,7 +451,7 @@ HEADERS  += \
 	../../src/plugins/SVCommonPluginInterface.h \
 	../../src/plugins/SVDatabasePluginInterface.h \
 	../../src/plugins/SVImportPluginInterface.h \
-    ../../src/actions/SVUndoCopySubSurfaces.h
+	../../src/actions/SVUndoCopySubSurfaces.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
@@ -454,6 +460,7 @@ FORMS    += \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
 	../../src/SVDBSubNetworkEditWidget.ui \
+	../../src/SVDBSupplySystemEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \
@@ -512,6 +519,7 @@ FORMS    += \
 	../../src/SVPropModeSelectionWidget.ui \
 	../../src/SVPropNetworkEditWidget.ui \
 	../../src/SVPropSiteWidget.ui \
+	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
 	../../src/SVScheduleHolidayWidget.ui \
 	../../src/SVSimulationLocationOptions.ui \

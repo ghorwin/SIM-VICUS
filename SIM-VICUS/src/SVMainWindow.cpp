@@ -280,6 +280,12 @@ SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog(){
 	return m_dbPipeEditDialog;
 }
 
+SVDatabaseEditDialog *SVMainWindow::dbSupplySystemEditDialog() {
+	if (m_dbSupplySystemEditDialog == nullptr)
+		m_dbSupplySystemEditDialog = SVDatabaseEditDialog::createSupplySystemsEditDialog(this);
+	return m_dbSupplySystemEditDialog;
+}
+
 SVDatabaseEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	if (m_dbNetworkComponentEditDialog == nullptr)
 		m_dbNetworkComponentEditDialog = SVDatabaseEditDialog::createNetworkComponentEditDialog(this);
@@ -496,6 +502,10 @@ void SVMainWindow::on_actionDBControllers_triggered() {
 
 void SVMainWindow::on_actionDBSubNetworks_triggered() {
 	dbSubNetworkEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBSupplySystems_triggered() {
+	dbSupplySystemEditDialog()->edit();
 }
 
 void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
@@ -2109,6 +2119,5 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
 
 

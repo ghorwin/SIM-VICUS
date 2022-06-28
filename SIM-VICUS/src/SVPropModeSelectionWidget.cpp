@@ -51,6 +51,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Supply systems"), BT_SupplySystem);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
@@ -194,6 +195,7 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 				case BT_FloorManager:			vs.m_objectColorMode = SVViewState::OCM_None; break;
 				case BT_ZoneTemplates:			vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 				case BT_SurfaceHeating:			vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
+				case BT_SupplySystem:			vs.m_objectColorMode = SVViewState::OCM_SupplySystem; break;
 			}
 		break;
 

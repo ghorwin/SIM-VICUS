@@ -120,6 +120,7 @@ private:
 	static SVDatabaseEditDialog * createInfiltrationEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSurfaceHeatingSystemEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createVentilationNaturalEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createSupplySystemsEditDialog(QWidget * parent);
 
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);

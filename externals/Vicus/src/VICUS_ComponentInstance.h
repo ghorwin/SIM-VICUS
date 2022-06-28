@@ -33,6 +33,7 @@ namespace VICUS {
 
 class Surface;
 class Room;
+class SupplySystem;
 
 /*! Defines a construction/component of the building.
 	It is basically just a connection data member and does not hold any
@@ -68,16 +69,20 @@ public:
 	unsigned int						m_idSurfaceHeating				= INVALID_ID;	// XML:E
 	/*! ID of zone containing thermostat for control of surface heating. */
 	unsigned int						m_idSurfaceHeatingControlZone	= INVALID_ID;	// XML:E
+	/*! ID of an external supply object. */
+	unsigned int						m_idSupplySystem	= INVALID_ID;				// XML:E
+
 
 	// *** RUNTIME VARIABLES ***
 
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Surface		*m_sideASurface					= nullptr;
-	VICUS::Surface		*m_sideBSurface					= nullptr;
+	VICUS::Surface			*m_sideASurface					= nullptr;
+	VICUS::Surface			*m_sideBSurface					= nullptr;
 
-	VICUS::Room			*m_surfaceHeatingControlZone	= nullptr;
+	VICUS::Room				*m_surfaceHeatingControlZone	= nullptr;
+	VICUS::SupplySystem		*m_supplySystem					= nullptr;
 };
 
 } // namespace VICUS

@@ -134,6 +134,8 @@ public:
 	SVDatabaseEditDialog * dbWindowGlazingSystemEditDialog();
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbPipeEditDialog();
+	/*! Returns the supply system condition edit dialog. */
+	SVDatabaseEditDialog * dbSupplySystemEditDialog();
 	/*! Returns the network component edit dialog. */
 	SVDatabaseEditDialog *dbNetworkComponentEditDialog();
 	/*! Returns the schedule edit dialog. */
@@ -297,6 +299,7 @@ private slots:
 	void on_actionDBFluids_triggered();
 	void on_actionDBControllers_triggered();
 	void on_actionDBSubNetworks_triggered();
+	void on_actionDBSupplySystems_triggered();
 	void on_actionDBRemoveDuplicates_triggered();
 
 
@@ -333,6 +336,7 @@ private slots:
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
+
 
 
 private:
@@ -483,6 +487,7 @@ private:
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkControllerEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbSubNetworkEditDialog						= nullptr;
+	SVDatabaseEditDialog				*m_dbSupplySystemEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;

@@ -94,6 +94,9 @@
 #include "SVDBSubNetworkEditWidget.h"
 #include "SVDBSubNetworkTableModel.h"
 
+#include "SVDBSupplySystemEditWidget.h"
+#include "SVDBSupplySystemTableModel.h"
+
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
@@ -345,6 +348,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_NetworkComponents:		SVSettings::instance().m_db.m_networkComponents.removeUserElements(); break;
 			case SVDatabase::DT_NetworkControllers:		SVSettings::instance().m_db.m_networkControllers.removeUserElements(); break;
 			case SVDatabase::DT_SubNetworks:			SVSettings::instance().m_db.m_subNetworks.removeUserElements(); break;
+			case SVDatabase::DT_SupplySystems:			SVSettings::instance().m_db.m_supplySystems.removeUserElements(); break;
 			case SVDatabase::DT_Schedules:				SVSettings::instance().m_db.m_schedules.removeUserElements(); break;
 			case SVDatabase::DT_InternalLoads:			SVSettings::instance().m_db.m_internalLoads.removeUserElements(); break;
 			case SVDatabase::DT_ZoneControlThermostat:	SVSettings::instance().m_db.m_zoneControlThermostat.removeUserElements(); break;
@@ -633,6 +637,17 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog
 										  tr("Surface Heating/Cooling System Database"),
 														  tr("Surface Heating/Cooling System properties"), true
 										  );
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createSupplySystemsEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBSupplySystemTableModel(parent, SVSettings::instance().m_db),
+		new SVDBSupplySystemEditWidget(parent),
+		tr("Supply System Database"), tr("Supply system properties"), true
+	);
 	dlg->resize(1400,800);
 	return dlg;
 }

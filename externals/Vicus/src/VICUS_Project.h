@@ -40,9 +40,10 @@
 #include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_SupplySystem.h"
+#include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
-#include "VICUS_Network.h"
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
@@ -317,7 +318,8 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+	void generateBuildingProjectDataNeu(const QString &modelName,
+										NANDRAD::Project & p, QStringList & errorStack,
 										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 										std::vector<MappingElement> &mappings)const;
 

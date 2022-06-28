@@ -38,6 +38,7 @@
 #include "SVPropBuildingZoneTemplatesWidget.h"
 #include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "SVPropBuildingZoneProperty.h"
+#include "SVPropSupplySystemsWidget.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -54,6 +55,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceConnectionWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneTemplatesWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceHeatingWidget(this));
+	m_ui->stackedWidget->addWidget(new SVPropSupplySystemsWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneProperty(this));
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
@@ -83,7 +85,8 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_InterlinkedSurfaces		: m_ui->stackedWidget->setCurrentIndex(4); break;
 		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
 		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
-		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(7); break;
+		case BT_SupplySystem			: m_ui->stackedWidget->setCurrentIndex(7); break;
+		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(8); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -139,5 +142,6 @@ void SVPropBuildingEditWidget::updateUi() {
 	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->stackedWidget->widget(4))->updateUi();
 	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(5))->updateUi();
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(6))->updateUi();
-	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(7))->updateUi();
+	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->stackedWidget->widget(7))->updateUi();
+	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(8))->updateUi();
 }

@@ -52,6 +52,7 @@ public:
 		DT_NetworkComponents,
 		DT_NetworkControllers,
 		DT_SubNetworks,
+		DT_SupplySystems,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneControlThermostat,
@@ -170,6 +171,9 @@ public:
 
 	/*! Map of all hydraulic sub networks */
 	VICUS::Database<VICUS::SubNetwork>					m_subNetworks;
+
+	/*! Map of all database supply system elements. */
+	VICUS::Database<VICUS::SupplySystem>				m_supplySystems;
 
 	/*! Map of all database EPD elements */
 //	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;

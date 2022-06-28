@@ -156,6 +156,7 @@
     <addaction name="actionDBFluids"/>
     <addaction name="actionDBHydraulicComponents"/>
     <addaction name="actionDBSubNetworks"/>
+    <addaction name="actionDBSupplySystems"/>
     <addaction name="actionDBControllers"/>
     <addaction name="separator"/>
     <addaction name="actionDBRemoveDuplicates"/>
@@ -773,6 +774,14 @@
    </property>
    <property name="toolTip">
     <string>Co-Simulation with CO2 balances and CO2-based ventilation control model.</string>
+   </property>
+  </action>
+  <action name="actionDBSupplySystems">
+   <property name="text">
+    <string>Supply systems...</string>
+   </property>
+   <property name="toolTip">
+    <string>SupplySystems</string>
    </property>
   </action>
  </widget>

@@ -13,6 +13,7 @@ namespace Ui {
 
 namespace VICUS {
 	class ComponentInstance;
+	class SupplySystem;
 }
 
 /*! A property widget to assign and edit surface heatings. */
@@ -39,7 +40,7 @@ private slots:
 private:
 	Ui::SVPropBuildingSurfaceHeatingWidget *m_ui;
 
-	std::set<const VICUS::ComponentInstance*>	m_selectedComponentInstances;
+	std::set<const VICUS::ComponentInstance*>				m_selectedComponentInstances;
 };
 
 #endif // SVPropBuildingSurfaceHeatingWidgetH

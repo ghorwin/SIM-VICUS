@@ -484,6 +484,11 @@ void Project::updatePointers() {
 						if (r.m_id == ci.m_idSurfaceHeatingControlZone)
 							ci.m_surfaceHeatingControlZone = &r;
 		}
+		if (ci.m_idSupplySystem != VICUS::INVALID_ID) {
+			for (VICUS::SupplySystem & s : m_embeddedDB.m_supplySystems)
+				if (s.m_id == ci.m_idSupplySystem)
+					ci.m_supplySystem = &s;
+		}
 	}
 
 	// update pointers in subsurfaces
@@ -922,7 +927,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
 
-	generateBuildingProjectDataNeu(p, errorStack, surfaceIdsVicusToNandrad, mappings);
+	generateBuildingProjectDataNeu(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
+								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
 
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);

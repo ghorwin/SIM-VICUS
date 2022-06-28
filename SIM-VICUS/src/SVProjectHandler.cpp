@@ -831,6 +831,23 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 		);
 	}
 
+	// supply system-components
+	std::map<unsigned int, unsigned int> supplySystemsIDMap;
+	for (VICUS::SupplySystem & s : pro.m_embeddedDB.m_supplySystems) {
+
+		// replace IDs referenced from VICUS::ComponentInstance
+
+		for (VICUS::ComponentInstance & ci : pro.m_componentInstances) {
+			if(ci.m_idSupplySystem != VICUS::INVALID_ID)
+				replaceID(ci.m_idSupplySystem, supplySystemsIDMap);
+		}
+
+		importDBElement(s, db.m_supplySystems, supplySystemsIDMap,
+						"Supply system '%1' with #%2 imported -> new ID #%3.\n",
+						"Supply system '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
 
 	// *** Database Update Complete - now modify project to use the potentially modified IDs ***
 

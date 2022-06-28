@@ -1,15 +1,21 @@
-#include "SVPropBuildingSurfaceHeatingWidget.h"
+﻿#include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "ui_SVPropBuildingSurfaceHeatingWidget.h"
 
 #include <SV_Conversions.h>
+
+#include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include "SVStyle.h"
 #include "SVPropSurfaceHeatingDelegate.h"
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyComponentInstances.h"
+#include "SVUndoModifyProject.h"
+#include "SVUndoModifyNetwork.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVDBSupplySystemEditWidget.h"
 #include "SVZoneSelectionDialog.h"
 
 SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *parent) :
@@ -20,7 +26,7 @@ SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *
 	m_ui->verticalLayout->setMargin(0);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(6);
-	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B") << tr("Network"));
+	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B") << tr("Supply system"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
 	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -130,7 +136,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		// look-up surface heating system
 		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
 
-
 		// column 0 - valid icon, also stores unique ID of this component instance
 
 		QTableWidgetItem * item = new QTableWidgetItem;
@@ -188,9 +193,22 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
 
-		// column 5 - associated network
+		// column 5 - associated supply network
+		// look-up supply system
+		const VICUS::SupplySystem * supplySys = db.m_supplySystems[ci.m_idSupplySystem];
 
+		item = new QTableWidgetItem(surfaceNames);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
+		if (surfHeat == nullptr || supplySys == nullptr) {
+			item->setText("---");
+			item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		}
+		else {
+			item->setText(QtExt::MultiLangString2QString(supplySys->m_displayName));
+			item->setData(Qt::UserRole, ci.m_idSupplySystem);
+		}
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 5, item);
 	}
 	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
@@ -202,7 +220,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->labelSelectedCIWithActiveLayer->setText(tr("None"));
 		m_ui->pushButtonAssignSurfaceHeating->setEnabled(false);
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(false);
-		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(false);
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(false);
 	}
 	else {
@@ -211,7 +228,7 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 
 		// other buttons are only active if a configured surface heating component instances is selected
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(!selectedSurfaceHeatingCI.empty());
-		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(!selectedSurfaceHeatingCI.empty());
+
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
 }
@@ -224,7 +241,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_comboBoxSurfaceHeatingComponentFilte
 
 
 void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
-	if (item->column() == 2 || item->column() == 3) {
+	if (item->column() == 2 || item->column() == 3 || item->column() == 5) {
 		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
 		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
 		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
@@ -232,8 +249,10 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemChange
 			if (cis[i].m_id == ciID) {
 				if (item->column() == 2)
 					cis[i].m_idSurfaceHeating = item->data(Qt::UserRole).toUInt();
-				else
+				else if(item->column() == 3)
 					cis[i].m_idSurfaceHeatingControlZone = item->data(Qt::UserRole).toUInt();
+				else
+					cis[i].m_idSupplySystem = item->data(Qt::UserRole).toUInt();
 				break;
 			}
 		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
@@ -353,6 +372,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonRemoveSelectedSurfaceHeati
 		// clear surface heating
 		ci.m_idSurfaceHeating = VICUS::INVALID_ID;
 		ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+		ci.m_idSupplySystem = VICUS::INVALID_ID;
 	}
 
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heatings"), cis);
@@ -395,3 +415,5 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
 	undo->push();
 }
+
+

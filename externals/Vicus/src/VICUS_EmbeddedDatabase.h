@@ -42,6 +42,7 @@
 #include "VICUS_NetworkComponent.h"
 #include "VICUS_NetworkController.h"
 #include "VICUS_SubNetwork.h"
+#include "VICUS_SupplySystem.h"
 #include "VICUS_EPDDataset.h"
 #include "VICUS_Schedule.h"
 #include "VICUS_InternalLoad.h"
@@ -84,6 +85,9 @@ public:
 
 	/*! Map of all database subsurface components (holes/windows...). */
 	std::vector<VICUS::SurfaceHeating>					m_surfaceHeatings;					// XML:E
+
+	/*! Map of all database supply systems. */
+	std::vector<VICUS::SupplySystem>					m_supplySystems;				// XML:E
 
 	/*! Map of all database pipes */
 	std::vector<VICUS::NetworkPipe>						m_pipes;							// XML:E
