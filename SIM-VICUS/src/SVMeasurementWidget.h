@@ -60,8 +60,22 @@ public:
 	/*! Sets the end point based on the measurement object. */
 	void showEndPoint(const QVector3D &ep);
 
+	/*! Updates the measurement data and switches between local/global. */
+	void showMeasurement();
+
+	void setLocalAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis);
+
 	/*! Color of measurementLine. */
 	QColor							m_color = Qt::red;
+
+	/*! Local X Axis */
+	QVector3D						m_localXAxis;
+
+	/*! Local Y Axis */
+	QVector3D						m_localYAxis;
+
+	/*! Local Z Axis */
+	QVector3D						m_localZAxis;
 
 public slots:
 	/*! Updates the read only line edits on style change. */
@@ -73,11 +87,17 @@ private slots:
 
 	void on_pushButtonColor_colorChanged();
 
+	void on_checkBoxLocalMeasurement_toggled(bool checked);
+
 private:
 	Ui::SVMeasurementWidget			*m_ui;
 
 	/*! Cached value of start point, updated in showStartPoint. */
 	QVector3D						m_startPoint;
+	/*! Cached value of start point, updated in showEndPoint. */
+	QVector3D						m_endPoint;
+
+
 
 	/*! User preferences. */
 	SVPreferencesDialog				*m_preferencesDialog									= nullptr;
