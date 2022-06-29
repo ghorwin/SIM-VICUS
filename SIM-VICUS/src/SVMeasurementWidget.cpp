@@ -10,6 +10,10 @@
 #include "Vic3DMeasurementObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 
+#include <IBKMK_3DCalculations.h>
+
+#include <SV_Conversions.h>
+
 #include <QClipboard>
 #include <QTextStream>
 #include <QColorDialog>
@@ -61,16 +65,38 @@ void SVMeasurementWidget::showStartPoint(const QVector3D &sp) {
 }
 
 void SVMeasurementWidget::showEndPoint(const QVector3D &ep) {
+	m_endPoint = ep;
 	m_ui->lineEditEndX->setText(QString("%L1").arg((double)ep.x(), 0, 'f', 3) );
 	m_ui->lineEditEndY->setText(QString("%L1").arg((double)ep.y(), 0, 'f', 3) );
 	m_ui->lineEditEndZ->setText(QString("%L1").arg((double)ep.z(), 0, 'f', 3) );
 
-	QVector3D diff = ep - m_startPoint;
+	showMeasurement();
+}
+
+void SVMeasurementWidget::showMeasurement() {
+	QVector3D diff;
+	if(!m_ui->checkBoxLocalMeasurement->isChecked())
+		diff = m_endPoint - m_startPoint;
+	else {
+		IBKMK::Vector3D vLocal, point;
+
+		IBKMK::lineToPointDistance(QVector2IBKVector(m_startPoint), QVector2IBKVector(m_localXAxis), QVector2IBKVector(m_endPoint), vLocal.m_x, point);
+		IBKMK::lineToPointDistance(QVector2IBKVector(m_startPoint), QVector2IBKVector(m_localYAxis), QVector2IBKVector(m_endPoint), vLocal.m_y, point);
+		IBKMK::lineToPointDistance(QVector2IBKVector(m_startPoint), QVector2IBKVector(m_localZAxis), QVector2IBKVector(m_endPoint), vLocal.m_z, point);
+
+		diff = IBKVector2QVector(vLocal);
+	}
 
 	m_ui->lineEditDistance->setText(QString("%L1").arg((double)diff.length(), 0, 'f', 3) );
 	m_ui->lineEditDistX->setText(QString("%L1").arg((double)diff.x(), 0, 'f', 3) );
 	m_ui->lineEditDistY->setText(QString("%L1").arg((double)diff.y(), 0, 'f', 3) );
 	m_ui->lineEditDistZ->setText(QString("%L1").arg((double)diff.z(), 0, 'f', 3) );
+}
+
+void SVMeasurementWidget::setLocalAxes(const QVector3D & xAxis, const QVector3D & yAxis, const QVector3D & zAxis) {
+	m_localXAxis = xAxis;
+	m_localYAxis = yAxis;
+	m_localZAxis = zAxis;
 }
 
 void SVMeasurementWidget::on_pushButtonCopyInformation_clicked() {
@@ -109,5 +135,10 @@ void SVMeasurementWidget::onStyleChanged() {
 	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartX);
 	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartY);
 	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartZ);
+}
+
+
+void SVMeasurementWidget::on_checkBoxLocalMeasurement_toggled(bool on) {
+	showMeasurement();
 }
 
