@@ -891,7 +891,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	sFloor.m_displayName = tr("Floor");
 	sFloor.m_id = ++nextID;
 	sFloor.setPolygon3D(floor);
-	sFloor.m_displayColor = QColor(150,50,20,255);	//for floor
+	sFloor.m_displayColor = QColor("#566094");	//for floor
 
 	r.m_surfaces.push_back(sFloor);
 
@@ -922,7 +922,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_displayColor = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor(150,50,20,255);	//for roofs
 				}
 				else {
 					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
