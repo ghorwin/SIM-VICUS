@@ -103,6 +103,8 @@ SOURCES += \
 	../../src/SVPropBuildingSurfaceConnectionWidget.cpp \
 	../../src/SVPropBuildingSurfaceHeatingWidget.cpp \
 	../../src/SVPropBuildingZoneProperty.cpp \
+	../../src/SVPropBuildingZonePropertyTableModel.cpp \
+	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
@@ -281,6 +283,8 @@ HEADERS  += \
 	../../src/SVPropBuildingSurfaceConnectionWidget.h \
 	../../src/SVPropBuildingSurfaceHeatingWidget.h \
 	../../src/SVPropBuildingZoneProperty.h \
+	../../src/SVPropBuildingZonePropertyTableModel.h \
+	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
