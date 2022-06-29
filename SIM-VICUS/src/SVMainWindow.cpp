@@ -47,6 +47,10 @@
 #include <QSplitter>
 #include <QTextEdit>
 #include <QPluginLoader>
+#include <QScreen>
+#include <QApplication>
+#include <QGuiApplication>
+#include <QMessageBox>
 
 #include <numeric>
 
@@ -152,6 +156,11 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 #else
 	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
 #endif
+
+	this->setAttribute(Qt::WA_NativeWindow);
+	QWindow *window = this->window()->windowHandle();
+	connect(window, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
+
 }
 
 
@@ -615,6 +624,27 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 void SVMainWindow::moveEvent(QMoveEvent *event) {
 	QMainWindow::moveEvent(event);
 	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+	QScreen* pScreen = nullptr;
+	pScreen = QGuiApplication::screenAt(this->mapToGlobal({this->width()/2,0}));
+
+	if(pScreen == nullptr)
+			return;
+
+	SVSettings::instance().m_ratio = pScreen->devicePixelRatio();
+
+	if (m_showRatioHint && pScreen->devicePixelRatio() != this->window()->windowHandle()->devicePixelRatio()) {
+		m_showRatioHint = false;
+
+		qDebug() << "Screen pixel ratio: " << pScreen->devicePixelRatio();
+		qDebug() << "App pixel ratio: " << this->window()->windowHandle()->devicePixelRatio();
+		qDebug() << "Width / Hight: " << pScreen->geometry().width() << " / " << pScreen->geometry().height();
+		this->move(pScreen->geometry().center());
+		this->showMaximized();
+
+		QMessageBox::warning(this, QString(),
+							  tr("Screen scaling ratio has changed.\n"
+								 "Please save project and restart SIM-VICUS now in order to use scaling ratio of this monitor."));
+	}
 }
 
 
@@ -863,6 +893,11 @@ void SVMainWindow::onConfigurePluginTriggered() {
 	else if (updateNeeds & SVCommonPluginInterface::DatabaseUpdate) {
 		// TODO : update property widgets
 	}
+}
+
+void SVMainWindow::onScreenChanged(QScreen *screen) {
+	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
+	SVSettings::instance().m_ratio = screen->devicePixelRatio();
 }
 
 
