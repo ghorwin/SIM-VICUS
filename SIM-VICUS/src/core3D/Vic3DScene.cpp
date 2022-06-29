@@ -865,6 +865,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 		// now we handle the snapping rules and also the locking; updates local coordinate system location
 		snapLocalCoordinateSystem(pickObject);
+		m_measurementWidget->setLocalAxes(m_coordinateSystemObject.localXAxis(),
+										  m_coordinateSystemObject.localYAxis(),
+										  m_coordinateSystemObject.localZAxis());
 		// initially, we have not start point so we show the local coordinate system's position
 		if (m_measurementObject.m_startPoint == INVALID_POINT ) {
 			m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
