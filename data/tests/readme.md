@@ -186,7 +186,11 @@ Check with the developer (or with yourself), why this change caused a difference
 
 ### Too many Days of Failures for the Jenkins History
 
-If, for some strange reason, you failed to fix regression tests before the history in Jenkins is full and no successful run is still in the list, you need to search for the commit that caused the regression test. Do this by going back in time and checking out git commits until you find one that runs the test suite successfully. Once you find the commit that introduced the regression, start identifying the bug/change that caused it. 
+If, for some strange reason, you failed to fix regression tests before the history in Jenkins is full and no successful run is still in the list, you need to search for the commit that caused the regression test. Jenkins shows on the summary page
+
+https://baukli01.arch.tu-dresden.de/jenkins/view/Daily-Tests/
+
+the last successful run. You can use this to go back in time and checking out the respective git commits on this day until you find one that runs the test suite successfully. Once you find the commit that introduced the regression, start identifying the bug/change that caused it. 
 
 If you found a bug, **DO NOT** commit this with the currently checked-out repository position. Rather, check out the HEAD again, apply the fix there and make sure that the bug fix results in a fully working test suit.
 
