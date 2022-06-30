@@ -38,13 +38,13 @@ Computed results must be **identical** to previous runs (that's why we cannot us
 **Identical** means:
 
 - *Solver statistics (counters)* must be exactly the same, since any change in physical behavior
-  will (alsmost) always change the counters for iterations/convergence and error test failures and steps.
-  This is only true if the same platform/compiler is used for building and running the regression tests.
+  will (almost) always change the counters for iterations/convergence and error test failures and steps.
+  This only works if the *same platform/compiler* is used for building and running the regression tests.
   Hence we store test results for different combinations and compiler and platform (see below).
   
 - Content of result files must be identical (bytewise identical).
 
-*Note:* solver timings may be different (test suite will be run on different machines).
+*Note:* solver timings may be different (test suite will be run on different machines). This is not a failure criterion but *excessive differences* in simulation durations may hint on something nasty going on inside the numerical engine. Sometimes something as stupid as a `IBK_Message` inside an inner loop or a needless string operation.
 
 **Important:** To get deterministic results we only run the solver in sequential mode, i.e. with:
 
@@ -64,20 +64,20 @@ As of now, this is `gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1)` (GCC is i
 to the Ubuntu version).
 
 **Important:** After an OS update, you may need to update all regression test results. It is important that this OS-update-related 
-result update is *never* mixed up with regression test result updates due to development.
+change of reference results is *never* mixed up with regression test result updates due to development.
 
 
 ## Adding Test Cases
 
-When adding or updating regression tests, you need to be *very carefully*, otherwise
+When adding or updating regression tests, you need to be *very careful*, otherwise
 we risk to verify programming/modelling errors by accidentally submitting wrong test results.
 
-Hence, please *strictly* follow the regression test procedure described below. Be aware that creating good regression tests takes time - but this is time well spent since regression tests are the *key critical quality assurance method* to guarantee a reliable model solver!
+Hence, please ***strictly*** follow the regression test procedure described below. Be aware that creating good regression tests takes time - but this is time well spent since regression tests are the *key critical quality assurance method* to guarantee a reliable model solver!
 
 ### Designing a new Regression Test
 
-Regression tests are simple, limited tests of an individual isolated model feature/solver capability. Avoid dumping example projects or real life projects
-as regression test. A good regression test check for a single or few related features and is named accordingly. 
+Regression tests are simple, limited tests of an _individual_ isolated model feature/solver capability. Avoid dumping example projects or real life projects
+as regression test. A good regression test checks for a single or only a few related features, and should be named accordingly. 
 The execution time of a regression test **should never exceed 0.5 seconds.** 
 
 *Rationale:* we will have eventuelly hundrets of test cases and when we attempt to find and fix regression test errors due to code changes we need to run the test suite many many times.
@@ -154,18 +154,18 @@ First you need to run the test suite. Hereby, **you must use the same GCC and Ub
 Run the script 
 
 ```bash
-/build/cmake/run_tests.sh
+./build/cmake/run_tests.sh
 ```
 
 to execute the test suite locally. This will generate the temporary project result directories.
 
-The easiest way to check for differences is to simply update the reference results with the newly compute results *in the local working copy only*. For this purpose run the script 
+The easiest way to check for differences is to simply update the reference results with the newly computed results *in the local working copy only*. For this purpose run the script 
 
 ```
-/data/tests/update_refresults.sh
+./data/tests/update_refresults.sh
 ```
 
-which will copy all modified files over to the files existing already in the reference result subdirs. You can then use *SmartGit* or any *Meld* to show the differences in the * `/data/tests/*` directory. Use this to evaluate the impact of your code/test case changes.
+which will copy all modified files over to the files existing already in the reference result subdirs. You can then use *SmartGit* or *Meld* or plain *git* to show the differences in the * `/data/tests/*` directory. Use this to evaluate the impact of your code/test case changes.
 
 ### Updating the Reference Results in the Repository
 
