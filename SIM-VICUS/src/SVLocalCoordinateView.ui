@@ -274,6 +274,24 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="toolButtonInformation">
+     <property name="text">
+      <string>i</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
