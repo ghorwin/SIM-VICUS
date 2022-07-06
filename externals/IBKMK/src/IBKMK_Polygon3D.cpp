@@ -271,12 +271,19 @@ void Polygon3D::flip() {
 	for (IBKMK::Vector2D & v : vertexes2D)
 		std::swap(v.m_x, v.m_y);
 
+	// attention update offset
+	m_offset = m_offset + m_localX * vertexes2D.back().m_x + m_localY * vertexes2D.back().m_y;
+
+	// so now we have to update all points in 2D to new offset point
+	IBKMK::Vector2D offset2D = vertexes2D.back() - vertexes2D.front();
+
 	// to comply with the flipped surface normal we also have to reverse the order 2D points
 	for (unsigned int i=vertexes2D.size(); i>0; --i)
-		vertexes2DNew.push_back(vertexes2D[i-1]);
+		vertexes2DNew.push_back(vertexes2D[i-1]-offset2D);
 
-	m_polyline.setVertexes(vertexes2D);
+	m_polyline.setVertexes(vertexes2DNew);
 	m_dirty = true;
+	vertexes();
 }
 
 

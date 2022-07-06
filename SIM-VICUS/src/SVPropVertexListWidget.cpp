@@ -779,9 +779,9 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		// when looked from above, both floor and ceiling vertexes go anti-clock-wise,
 		unsigned int nextI = (i+1) % nVert;  // i = 0,1,2,3; nextI = 1,2,3,0
 
-		IBKMK::Vector3D p0 = floor.vertexes()[ i ];
-		IBKMK::Vector3D p1 = floor.vertexes()[ nextI ];
-		IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	// take offset as last point for rectangle; rounding errors by vector-sum?
+		IBKMK::Vector3D p0 = floor.vertexes()[ nextI ];
+		IBKMK::Vector3D p1 = floor.vertexes()[ i ];
+		IBKMK::Vector3D p2 = floor.vertexes()[ nextI ] + offset;	// take offset as last point for rectangle; rounding errors by vector-sum?
 
 		VICUS::Surface sWall;
 		sWall.m_id = ++nextID;

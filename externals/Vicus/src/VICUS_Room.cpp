@@ -26,6 +26,8 @@
 #include "VICUS_Room.h"
 #include "VICUS_KeywordList.h"
 
+#include <QDebug>
+
 #include "IBKMK_3DCalculations.h"
 
 namespace VICUS {
@@ -52,14 +54,28 @@ void Room::calculateVolume() {
 	//   - requires room to be fully enclosed by surfaces
 	//   - all surfaces must have normal vector pointing _into_ the room
 
+	qDebug() << "Volumenberechnung";
+
 	double vol = 0;
+	unsigned int surfaceCounter = 0;
 	// process all surfaces
 	for (const VICUS::Surface & s : m_surfaces) {
 
 		const PlaneTriangulationData &planeTri1 = s.geometry().triangulationData();
 		const std::vector<PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();
 
+		qDebug() << "Fläche: " << s.m_displayName;
+		qDebug() << "Flächennormale"
+				 << "\t" << s.geometry().normal().m_x
+				 << "\t" << s.geometry().normal().m_y
+				 << "\t" << s.geometry().normal().m_z;
+
 		// process all triangles of all holes
+		unsigned int holeCounter=0;
+		if(!holes.empty()){
+			qDebug() << "Fläche enthält " << holes.size() << " Löcher";
+			qDebug() << "Lochnr." << "\t" << "Teil" << "\t" << "Vol.berechnung";
+		}
 		for(const PlaneTriangulationData &hole : holes){
 
 			for (unsigned int i=0; i<hole.m_triangles.size(); ++i){
@@ -69,9 +85,23 @@ void Room::calculateVolume() {
 				IBK_ASSERT(!tri.isDegenerated());
 
 				// now compute determinant of matrix from points p0, p1, p2 and points [0,0,0]
-				const IBKMK::Vector3D & p0 = hole.m_vertexes[tri.i1];
-				const IBKMK::Vector3D & p1 = hole.m_vertexes[tri.i2];
-				const IBKMK::Vector3D & p2 = hole.m_vertexes[tri.i3];
+				IBKMK::Vector3D p0 = hole.m_vertexes[tri.i1];
+				IBKMK::Vector3D p1 = hole.m_vertexes[tri.i2];
+				IBKMK::Vector3D p2 = hole.m_vertexes[tri.i3];
+
+				IBKMK::Vector3D nTri = (p1-p0).crossProduct(p2-p0);
+				nTri.normalize();
+				IBKMK::Vector3D nDiff = nTri - s.geometry().normal();
+				double x = nDiff.magnitude();
+				if(nDiff.magnitude() > 1.5 ){
+					// jetzt stehen die Normalen in unterschiedliche Richtungen
+					// erwartet wird, dass die Normalen in die gleiche Richtung zeigen
+					// Daher wird die Reihenfolge der Punkte vertauscht
+
+					p2 = planeTri1.m_vertexes[tri.i2];
+					p1 = planeTri1.m_vertexes[tri.i3];
+
+				}
 
 				vol +=	p0.m_x * p1.m_y * p2.m_z +
 						p2.m_x * p0.m_y * p1.m_z +
@@ -80,10 +110,23 @@ void Room::calculateVolume() {
 						- p2.m_x * p1.m_y * p0.m_z
 						- p0.m_x * p2.m_y * p1.m_z
 						- p1.m_x * p0.m_y * p2.m_z;
+
+				double volDebug = p0.m_x * p1.m_y * p2.m_z +
+						p2.m_x * p0.m_y * p1.m_z +
+						p1.m_x * p2.m_y * p0.m_z
+
+						- p2.m_x * p1.m_y * p0.m_z
+						- p0.m_x * p2.m_y * p1.m_z
+						- p1.m_x * p0.m_y * p2.m_z;
+
+				qDebug() << holeCounter << "\t" << i << "\t" << volDebug;
+				++holeCounter;
 			}
 		}
 
 		// process all triangles outer bound
+
+		qDebug() << "Flächennr.\tTeil\tVol.berechnung";
 		for (unsigned int i=0; i<planeTri1.m_triangles.size(); ++i) {
 			const IBKMK::Triangulation::triangle_t &tri = planeTri1.m_triangles[i];
 			// Note: plane geometry takes care not to add degenerated triangles to triangulation data,
@@ -91,9 +134,22 @@ void Room::calculateVolume() {
 			IBK_ASSERT(!tri.isDegenerated());
 
 			// now compute determinant of matrix from points p0, p1, p2 and points [0,0,0]
-			const IBKMK::Vector3D & p0 = planeTri1.m_vertexes[tri.i1];
-			const IBKMK::Vector3D & p1 = planeTri1.m_vertexes[tri.i2];
-			const IBKMK::Vector3D & p2 = planeTri1.m_vertexes[tri.i3];
+			IBKMK::Vector3D p0 = planeTri1.m_vertexes[tri.i1];
+			IBKMK::Vector3D p1 = planeTri1.m_vertexes[tri.i2];
+			IBKMK::Vector3D p2 = planeTri1.m_vertexes[tri.i3];
+
+			IBKMK::Vector3D nTri = (p1-p0).crossProduct(p2-p0);
+			nTri.normalize();
+			IBKMK::Vector3D nDiff = nTri - s.geometry().normal();
+			double x = nDiff.magnitude();
+			if(nDiff.magnitude() > 1.5 ){
+				// jetzt stehen die Normalen in unterschiedliche Richtungen
+				// erwartet wird, dass die Normalen in die gleiche Richtung zeigen
+				// Daher wird die Reihenfolge der Punkte vertauscht
+				p2 = planeTri1.m_vertexes[tri.i2];
+				p1 = planeTri1.m_vertexes[tri.i3];
+
+			}
 
 			vol +=	p0.m_x * p1.m_y * p2.m_z +
 					p2.m_x * p0.m_y * p1.m_z +
@@ -102,6 +158,17 @@ void Room::calculateVolume() {
 					- p2.m_x * p1.m_y * p0.m_z
 					- p0.m_x * p2.m_y * p1.m_z
 					- p1.m_x * p0.m_y * p2.m_z;
+
+			double volDebug = p0.m_x * p1.m_y * p2.m_z +
+					p2.m_x * p0.m_y * p1.m_z +
+					p1.m_x * p2.m_y * p0.m_z
+
+					- p2.m_x * p1.m_y * p0.m_z
+					- p0.m_x * p2.m_y * p1.m_z
+					- p1.m_x * p0.m_y * p2.m_z;
+
+			qDebug() << surfaceCounter << "\t" << i << "\t" << volDebug;
+			++surfaceCounter;
 		}
 	}
 

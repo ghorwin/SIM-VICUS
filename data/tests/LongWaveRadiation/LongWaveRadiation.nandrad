@@ -2,7 +2,9 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>SimQuality Testfall 06.1</Comment>
+			<Comment>Simple test case for long wave radiation: We have 2 construction instances with identical parameters and orientation. 
+			The first one has an interface with long wave radiation, the second one has no long wave radiation. We can easily see the difference in the emitted LW radiation and the surface temperature.
+			</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
@@ -10,6 +12,9 @@
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">60</IBK:Parameter>
+			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
@@ -21,40 +26,10 @@
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
+
 			
-			<!-- Surface North Var 01 -->
-			<ConstructionInstance id="1" displayName="Surface North Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1000">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					
-					
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
-					</InterfaceLongWaveEmission>
-					
-					
-				</InterfaceB>
-			</ConstructionInstance>
-			
-			
-			<!-- Surface East Var 02 -->
-			<ConstructionInstance id="2" displayName="Surface East Var01">
+			<!-- Surface East with long wave interface -->
+			<ConstructionInstance id="1" displayName="Surface East Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
@@ -74,120 +49,29 @@
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
 					
-					
 					<InterfaceLongWaveEmission modelType="Constant">
 						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
 					</InterfaceLongWaveEmission>
-				
-				
+								
 				</InterfaceB>
-			</ConstructionInstance>
+				
+			</ConstructionInstance>			
+
+
 			
-			
-			<!-- Surface South Var 01 -->
-			<ConstructionInstance id="3" displayName="Surface South Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="14" zoneId="1000">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="15" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					
-					
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
-					</InterfaceLongWaveEmission>
-					
-					
-				</InterfaceB>
-			</ConstructionInstance>
-			
-		
-		
-			<!-- Surface West Var 01 -->
-			<ConstructionInstance id="4" displayName="Surface West Var01">
+			<!-- Surface East without long wave interface -->
+			<ConstructionInstance id="2" displayName="Surface East Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
-				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1000">
+				<InterfaceA id="12" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
-					</InterfaceLongWaveEmission>
-					
-				</InterfaceB>
-			</ConstructionInstance>
-			
-			
-			<!-- Surface Roof Var 01 -->
-			<ConstructionInstance id="5" displayName="Surface Roof Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1000">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					
-					<InterfaceLongWaveEmission modelType="Constant">
-						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
-					</InterfaceLongWaveEmission>
-					
-				</InterfaceB>
-			</ConstructionInstance>
-			
-			
-			
-			<!-- Surface North Var 01 -->
-			<ConstructionInstance id="6" displayName="Surface Floor Var01">
-				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1000">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="11" zoneId="0">
+				<InterfaceB id="13" zoneId="0">
 					<!--Interface to outside-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
@@ -196,7 +80,8 @@
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
-			</ConstructionInstance>
+			</ConstructionInstance>			
+			
 			
 		</ConstructionInstances>
 		
