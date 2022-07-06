@@ -59,9 +59,13 @@ public slots:
 
 private slots:
 	void on_toolButtonAlignCoordinateSystem_clicked();
-	void on_toolButtonMoveCoordinateSystem_clicked();
+    void on_toolButtonMoveCoordinateSystem_clicked();
+    void on_toolButtonInformation_clicked();
 
 private:
+    /*! Shows Information of selected surfaces and subsurfaces. */
+    void showInformation();
+
 	Ui::SVLocalCoordinateView *m_ui;
 
 	QVector3D				m_xAxis;

@@ -251,6 +251,9 @@ private slots:
 	/*! Triggered, when the menu action for configuring a plugin was triggered. */
 	void onConfigurePluginTriggered();
 
+	/*! Updates the device pixel ratio. */
+	void onScreenChanged(QScreen *screen);
+
 
 	// all menu action slots below
 
@@ -475,6 +478,8 @@ private:
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
+	/*! Scaling hint if screen ratio changes. */
+	bool						m_showRatioHint = true;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;

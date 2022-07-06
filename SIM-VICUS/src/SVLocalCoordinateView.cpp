@@ -31,6 +31,7 @@
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 #include "SVStyle.h"
+#include "SVProjectHandler.h"
 
 SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	QWidget(parent),
@@ -97,4 +98,100 @@ void SVLocalCoordinateView::on_toolButtonAlignCoordinateSystem_clicked() {
 void SVLocalCoordinateView::on_toolButtonMoveCoordinateSystem_clicked() {
 	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
 	geoView->handleGlobalKeyPress(Qt::Key_F5);
+}
+
+void SVLocalCoordinateView::on_toolButtonInformation_clicked() {
+	showInformation();
+}
+
+void SVLocalCoordinateView::showInformation() {
+	// update our selection lists
+	std::set<const VICUS::Object*> sel;
+
+	// first we get how many surfaces are selected
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+
+	std::vector<const VICUS::Surface*>			selSurfaces;
+	std::vector<const VICUS::SubSurface*>		selSubSurfaces;
+	// we also have to cache all existing names, so we take alle existing objects
+	selSurfaces.clear();
+	selSubSurfaces.clear();
+
+	unsigned int numSurfs = 0;
+	unsigned int numSubSurfs = 0;
+
+	double areaSurfs = 0;
+	double areaSubSurfs = 0;
+
+	std::set<unsigned int> handledSubSurfsIds;
+
+	// process all selected objects and sort them into vectors
+	for (const VICUS::Object * o : sel) {
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr) {
+			if (s->m_selected && s->m_visible) {
+				areaSurfs += s->geometry().area(2);
+				++numSurfs;
+				for (const VICUS::SubSurface &ss : s->subSurfaces()) {
+					if(handledSubSurfsIds.find(ss.m_id) != handledSubSurfsIds.end())
+						continue;
+
+					// we need to calculate the 3D Points of the Sub Surface
+					std::vector<IBKMK::Vector3D> subSurf3D;
+					for (unsigned int i=0; i<ss.m_polygon2D.vertexes().size(); ++i) {
+						const IBKMK::Vector2D &vertex = ss.m_polygon2D.vertexes()[i];
+						subSurf3D.push_back(s->geometry().offset() + s->geometry().localX()*vertex.m_x
+											+ s->geometry().localY()*vertex.m_y);
+					}
+					IBKMK::Polygon3D poly(subSurf3D);
+
+					double area = poly.polyline().area(2);
+					areaSurfs -= area;
+
+					if(ss.m_visible && ss.m_selected) {
+						handledSubSurfsIds.insert(ss.m_id);
+						areaSubSurfs += area;
+						++numSubSurfs;
+					}
+					//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+				}
+			}
+		}
+		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
+		if (ss != nullptr) {
+			if (ss->m_selected && ss->m_visible) {
+				if(handledSubSurfsIds.find(ss->m_id) != handledSubSurfsIds.end())
+					continue;
+
+				VICUS::Surface *surf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
+				if (surf == nullptr)
+					continue;
+
+				// we need to calculate the 3D Points of the Sub Surface
+				std::vector<IBKMK::Vector3D> subSurf3D;
+				for (unsigned int i=0; i<ss->m_polygon2D.vertexes().size(); ++i) {
+
+
+					const IBKMK::Vector2D &vertex = ss->m_polygon2D.vertexes()[i];
+					subSurf3D.push_back(surf->geometry().offset() + surf->geometry().localX()*vertex.m_x
+										+ surf->geometry().localY()*vertex.m_y);
+				}
+				IBKMK::Polygon3D poly(subSurf3D);
+
+				double area = poly.polyline().area(2);
+				if(surf->m_visible && surf->m_selected)
+					areaSurfs -= area;
+				handledSubSurfsIds.insert(ss->m_id);
+				areaSubSurfs += area;
+
+				++numSubSurfs;
+				//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+			}
+		}
+	}
+	QString surfaceInfo = QString ("Selected surfaces: %1\tArea: %2 m²\nSelected sub-surfaces: %3\tArea: %4 m²")
+			.arg(numSurfs).arg(areaSurfs).arg(numSubSurfs).arg(areaSubSurfs);
+	QMessageBox msg(QMessageBox::Information, tr("Selection Information"), surfaceInfo, QMessageBox::Ok, this);
+	msg.exec();
+
 }
