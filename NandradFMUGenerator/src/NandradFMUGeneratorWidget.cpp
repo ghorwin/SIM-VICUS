@@ -1496,7 +1496,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 	for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator
 		 varIt = m_project.m_fmiDescription.m_inputVariables.begin();
 		 varIt != m_project.m_fmiDescription.m_inputVariables.end();
-		 ++varIt, ++index)
+		 ++varIt)
 	{
 		// skip if variable with same valueref has been exported, already
 		if (alreadyExportedInputVars.find(varIt->m_fmiValueRef) != alreadyExportedInputVars.end())
@@ -1513,6 +1513,8 @@ bool  NandradFMUGeneratorWidget::generate() {
 		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
 		units.insert(varDef.m_unit.c_str());
 		modelVariables += varDesc;
+		// update index (only if variable was not already found
+		++index;
 	}
 
 	for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator
