@@ -162,7 +162,7 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 	m_screenShotMultiSampleFrameBuffer->bindDefault();
 
 	// restore main scene's viewport
-	m_mainScene.resize(sceneSize.width(), sceneSize.height(), devicePixelRatio());
+	m_mainScene.resize(sceneSize.width(), sceneSize.height(), 1);
 
 	// now downsample the framebuffers color buffer (all other buffers are not needed for the screenshot)
 	QOpenGLFramebufferObject::blitFramebuffer(
