@@ -157,10 +157,14 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
 #endif
 
-	this->setAttribute(Qt::WA_NativeWindow);
-	QWindow *window = this->window()->windowHandle();
-	connect(window, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
+	// manually specify keyboard shortcut again, since on Windows this is a "standard shortcut" and get's removed
+	// when setting up UI
+	m_ui->actionFileClose->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_W));
 
+	// enforce using a native window; we need this so we can call window() and retrieve scaling information
+	setAttribute(Qt::WA_NativeWindow);
+	QWindow *w = window()->windowHandle();
+	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 }
 
 
@@ -613,7 +617,7 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 	}
 
 	// store view settings
-	SVSettings::instance().m_navigationSplitterSize = m_geometryViewSplitter->sizes()[0] * SVSettings::instance().m_ratio;
+	SVSettings::instance().m_navigationSplitterSize = (int)(m_geometryViewSplitter->sizes()[0] * SVSettings::instance().m_ratio);
 
 	// store list of visible dock widgets
 	QStringList dockWidgetVisibility;
@@ -634,27 +638,6 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 void SVMainWindow::moveEvent(QMoveEvent *event) {
 	QMainWindow::moveEvent(event);
 	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
-	QScreen* pScreen = nullptr;
-	pScreen = QGuiApplication::screenAt(this->mapToGlobal({this->width()/2,0}));
-
-	if(pScreen == nullptr)
-			return;
-
-	SVSettings::instance().m_ratio = pScreen->devicePixelRatio();
-
-	if (m_showRatioHint && pScreen->devicePixelRatio() != this->window()->windowHandle()->devicePixelRatio()) {
-		m_showRatioHint = false;
-
-		qDebug() << "Screen pixel ratio: " << pScreen->devicePixelRatio();
-		qDebug() << "App pixel ratio: " << this->window()->windowHandle()->devicePixelRatio();
-		qDebug() << "Width / Hight: " << pScreen->geometry().width() << " / " << pScreen->geometry().height();
-		this->move(pScreen->geometry().center());
-		this->showMaximized();
-
-		QMessageBox::warning(this, QString(),
-							  tr("Screen scaling ratio has changed.\n"
-								 "Please save project and restart SIM-VICUS now in order to use scaling ratio of this monitor."));
-	}
 }
 
 
@@ -664,7 +647,7 @@ void SVMainWindow::setup() {
 	// send to the log widget even before the actual dock widget for the log has been created
 	m_logWidget = new SVLogWidget(this);
 	SVMessageHandler * msgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
-	connect(msgHandler, SIGNAL(msgReceived(int,QString)), m_logWidget, SLOT(onMsgReceived(int, QString)));
+	connect(msgHandler, &SVMessageHandler::msgReceived, m_logWidget, &SVLogWidget::onMsgReceived);
 
 	// *** setup welcome widget ***
 
@@ -727,9 +710,9 @@ void SVMainWindow::setup() {
 
 	m_undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
 	m_undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
-	m_undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+	m_undoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Z));
 	m_redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
-	m_redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+	m_redoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 	m_redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
@@ -904,6 +887,7 @@ void SVMainWindow::onConfigurePluginTriggered() {
 		// TODO : update property widgets
 	}
 }
+
 
 void SVMainWindow::onScreenChanged(QScreen *screen) {
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
@@ -1560,7 +1544,7 @@ void SVMainWindow::onUpdateActions() {
 		if (SVSettings::instance().m_navigationSplitterSize != 0) {
 			QList<int> sizes;
 			int availableWidth = width();
-			int navSplitterWidth = SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio;
+			int navSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
 			// guard against screen resolution changes, for example when SIM-VICUS was opened on an external
 			// 4K screen and splitter size was 1200 of 3800 and now the tool is opened again on laptop fullHD screen
 			// in Window mode where window is only about 1100 wide itself. Then, we rather want to limit the navigation

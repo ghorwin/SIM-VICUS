@@ -478,9 +478,6 @@ private:
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
-	/*! Scaling hint if screen ratio changes. */
-	bool						m_showRatioHint = true;
-
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
