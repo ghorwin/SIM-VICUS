@@ -13,6 +13,12 @@ QT += xml opengl network printsupport widgets svg
 
 CONFIG += c++11
 
+CONFIG(debug, debug|release) {
+	# during development, show console window with debug messages in addition to on-screen console
+	# (useful for dual-screen setups)
+	CONFIG += console
+}
+
 unix {
 	QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
