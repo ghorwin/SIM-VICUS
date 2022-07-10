@@ -101,8 +101,15 @@ void KeyboardMouseHandler::wheelEvent(QWheelEvent *event) {
 	QPoint numDegrees = event->angleDelta() / 8;
 
 	if (!numPixels.isNull()) {
-		m_wheelDelta += numPixels.y();
-	} else if (!numDegrees.isNull()) {
+		// on highres displays, numPixels may be really large, we limit this to 2
+		int pixels = std::abs(numPixels.x() )>0 ? numPixels.x() : numPixels.y();
+		if (pixels > 2)
+			pixels = 2;
+		else if (pixels < -2)
+			pixels = -2;
+		m_wheelDelta += pixels;
+	}
+	else if (!numDegrees.isNull()) {
 		QPoint numSteps = numDegrees / 15;
 
 		// unfortunately alt key changes x and y delta
