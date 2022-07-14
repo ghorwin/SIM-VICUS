@@ -136,7 +136,6 @@ private slots:
 
 	void on_radioButtonTranslationAbsolute_toggled(bool checked);
 	void on_radioButtonTranslationRelative_toggled(bool checked);
-	void on_radioButtonTranslationAbsoluteLCS_toggled(bool checked);
 	void on_radioButtonTranslationRelativeLCS_toggled(bool checked);
 	void on_lineEditTranslateX_editingFinishedSuccessfully();
 	void on_lineEditTranslateY_editingFinishedSuccessfully();

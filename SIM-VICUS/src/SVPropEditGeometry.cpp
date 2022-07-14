@@ -291,10 +291,6 @@ void SVPropEditGeometry::on_radioButtonTranslationRelative_toggled(bool) {
 	updateInputs();
 }
 
-void SVPropEditGeometry::on_radioButtonTranslationAbsoluteLCS_toggled(bool) {
-	updateInputs();
-}
-
 void SVPropEditGeometry::on_radioButtonTranslationRelativeLCS_toggled(bool) {
 	updateInputs();
 }
