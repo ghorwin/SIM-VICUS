@@ -54,13 +54,17 @@ public:
 
 private slots:
 	/*! Connected to custom button in button box. */
-	void onOpenFileClicked(bool checked);
+	void onOpenFileClicked();
 
 	/*! Connected to custom button in button box. */
-	void onReloadprojectClicked(bool checked);
+	void onEditLogClicked();
+
+	/*! Connected to custom button in button box. */
+	void onReloadprojectClicked();
 
 private:
 	Ui::SVLogFileDialog		*m_ui;
+	QPushButton				*m_pushButtonOpenLogInTextEditor;
 	QPushButton				*m_pushButtonOpenFileInTextEditor;
 	QPushButton				*m_pushButtonReloadProject;
 	QString					m_projectFilePath;

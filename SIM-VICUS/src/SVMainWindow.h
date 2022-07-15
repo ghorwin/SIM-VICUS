@@ -272,6 +272,7 @@ private slots:
 	void on_actionEditTextEditProject_triggered();
 	void on_actionEditPreferences_triggered();
 	void on_actionEditCleanProject_triggered();
+	void on_actionEditApplicationLog_triggered();
 
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
@@ -339,6 +340,7 @@ private slots:
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
+
 
 
 

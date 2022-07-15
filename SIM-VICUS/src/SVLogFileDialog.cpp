@@ -42,13 +42,13 @@ SVLogFileDialog::SVLogFileDialog(QWidget *parent) :
 	m_ui->setupUi(this);
 	resize(1400,600);
 
-	m_pushButtonOpenFileInTextEditor = m_ui->buttonBox->addButton(tr("Open file in text editor..."), QDialogButtonBox::ActionRole);
+	m_pushButtonOpenLogInTextEditor = m_ui->buttonBox->addButton(tr("Open log in text editor..."), QDialogButtonBox::ActionRole);
+	m_pushButtonOpenFileInTextEditor = m_ui->buttonBox->addButton(tr("Open project file in text editor..."), QDialogButtonBox::ActionRole);
 	m_pushButtonReloadProject = m_ui->buttonBox->addButton(tr("Reload project"), QDialogButtonBox::ActionRole);
 
-	connect(m_pushButtonOpenFileInTextEditor, SIGNAL(clicked(bool)),
-			this, SLOT(onOpenFileClicked(bool)));
-	connect(m_pushButtonReloadProject, SIGNAL(clicked(bool)),
-			this, SLOT(onReloadprojectClicked(bool)));
+	connect(m_pushButtonOpenLogInTextEditor, &QPushButton::clicked,		this, &SVLogFileDialog::onEditLogClicked);
+	connect(m_pushButtonOpenFileInTextEditor, &QPushButton::clicked,	this, &SVLogFileDialog::onOpenFileClicked);
+	connect(m_pushButtonReloadProject, &QPushButton::clicked,			this, &SVLogFileDialog::onReloadprojectClicked);
 }
 
 
@@ -76,12 +76,18 @@ void SVLogFileDialog::setLogFile(const QString & logfilepath, QString projectfil
 }
 
 
-void SVLogFileDialog::onOpenFileClicked(bool /*checked*/) {
+void SVLogFileDialog::onOpenFileClicked() {
 	SVSettings::instance().openFileInTextEditor(this, m_projectFilePath);
 }
 
-void SVLogFileDialog::onReloadprojectClicked(bool /*checked*/) {
-	const char * const FUNC_ID = "[SVLogFileDialog::onReloadprojectClicked]";
+
+void SVLogFileDialog::onEditLogClicked() {
+	SVSettings::instance().openFileInTextEditor(this, m_logFilePath);
+}
+
+
+void SVLogFileDialog::onReloadprojectClicked() {
+	FUNCID(SVLogFileDialog::onReloadprojectClicked);
 
 	SVProjectHandler::instance().setReload();
 	IBK::IBK_Message("\n------------------------------------------------------\n",IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);

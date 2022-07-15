@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -57,6 +57,7 @@
     </widget>
     <addaction name="actionEditTextEditProject"/>
     <addaction name="actionEditCleanProject"/>
+    <addaction name="actionEditApplicationLog"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionEditPreferences"/>
@@ -782,6 +783,18 @@
    </property>
    <property name="toolTip">
     <string>SupplySystems</string>
+   </property>
+  </action>
+  <action name="actionEditApplicationLog">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open application log in editor</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens an editor window for the application log file</string>
    </property>
   </action>
  </widget>

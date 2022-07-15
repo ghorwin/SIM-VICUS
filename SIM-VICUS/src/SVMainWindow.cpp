@@ -95,6 +95,7 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
 #include "SVDBDuplicatesDialog.h"
+#include "SVLogFileDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
@@ -1145,6 +1146,13 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 }
 
 
+void SVMainWindow::on_actionEditApplicationLog_triggered() {
+	SVLogFileDialog dlg;
+	dlg.setLogFile(QtExt::Directories::globalLogFile(), QString(), false);
+	dlg.exec();
+}
+
+
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to property edit mode
@@ -2138,5 +2146,7 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
+
 
 
