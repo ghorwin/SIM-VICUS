@@ -699,7 +699,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ma
 			out << "\t";
 
 		if(addFloorAreaAndVolume)
-			out << IBK::FormatString("%1\t%2").arg(m.m_floorArea,0,'f',2).arg(m.m_volume,0,'f',2);
+			out << "\t" << IBK::FormatString("%1\t%2").arg(m.m_floorArea,0,'f',2).arg(m.m_volume,0,'f',2);
 		out << std::endl;
 	}
 
