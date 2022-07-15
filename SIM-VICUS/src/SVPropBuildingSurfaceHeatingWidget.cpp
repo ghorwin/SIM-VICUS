@@ -302,6 +302,9 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeating_click
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}
@@ -364,6 +367,9 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonRemoveSelectedSurfaceHeati
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}
@@ -397,6 +403,9 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}

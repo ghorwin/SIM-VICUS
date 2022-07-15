@@ -144,7 +144,12 @@ void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_itemSelectionChanged
 	for (VICUS::ComponentInstance & ci : cis) {
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
+
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}
@@ -288,6 +293,9 @@ void SVPropSupplySystemsWidget::on_pushButtonAssignSupplySystem_clicked() {
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}
@@ -323,6 +331,9 @@ void SVPropSupplySystemsWidget::on_pushButtonRemoveSupplySystem_clicked()
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
 		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			// component instance may be nullptr
+			if(*ciIt == nullptr)
+				continue;
 			if ((*ciIt)->m_id == ci.m_id)
 				break;
 		}
