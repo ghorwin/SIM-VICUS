@@ -45,7 +45,7 @@ void SVUndoDeleteNetwork::undo() {
 	theProject().updatePointers();
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
 }
 
 
@@ -56,6 +56,6 @@ void SVUndoDeleteNetwork::redo() {
 	theProject().updatePointers();
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
 }
 

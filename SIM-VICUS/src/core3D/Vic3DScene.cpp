@@ -168,9 +168,10 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			updateCamera = true;
 		break;
 
-		case SVProjectHandler::NetworkModified :
+		case SVProjectHandler::NetworkGeometryChanged :
 			updateNetwork = true;
 			updateSelection = true;
+			refreshColors();
 		break;
 
 		case SVProjectHandler::ComponentInstancesModified : {
@@ -1963,17 +1964,13 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 				switch (ocm) {
 					case SVViewState::OCM_NetworkNode: {
-						for (const VICUS::NetworkNode & node: net.m_nodes){
-							if (node.m_type == VICUS::NetworkNode::NT_Source)
-								node.m_color = QColor(230, 138, 0); // orange
-							else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
-								node.m_color = QColor(119, 179, 0); // green
-							else // Building
-								node.m_color = QColor(0, 107, 179); // blue
-						}
+						net.setDefaultColors();
 					} break;
 					case SVViewState::OCM_NetworkEdge: {
+						for (const VICUS::NetworkNode & node: net.m_nodes)
+							node.m_color = Qt::lightGray;
 						for (const VICUS::NetworkEdge & edge: net.m_edges){
+							edge.m_color = Qt::lightGray;
 							unsigned int id = edge.m_idPipe;
 							if (db.m_pipes[id] != nullptr)
 								edge.m_color = db.m_pipes[id]->m_color;
@@ -1987,6 +1984,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					} break;
 					case SVViewState::OCM_NetworkSubNetworks: {
 						for (const VICUS::NetworkNode & node: net.m_nodes){
+							node.m_color = Qt::lightGray;
 							unsigned int id = node.m_idSubNetwork;
 							if (db.m_subNetworks[id] != nullptr)
 								node.m_color = db.m_subNetworks[id]->m_color;

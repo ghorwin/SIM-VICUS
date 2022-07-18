@@ -58,6 +58,7 @@ public:
 	enum PropertyWidgets {
 		M_AddGeometry,
 		M_EditGeometry,
+		M_EditNetwork,
 		M_VertexListWidget,
 		M_SiteProperties,
 		M_NetworkProperties,

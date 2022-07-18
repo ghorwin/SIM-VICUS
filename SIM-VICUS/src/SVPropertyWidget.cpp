@@ -38,11 +38,12 @@
 #include "SVPropAddGeometry.h"
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
-#include "SVPropNetworkEditWidget.h"
+#include "SVPropNetworkPropertiesWidget.h"
 #include "SVPropModeSelectionWidget.h"
 #include "SVPropBuildingEditWidget.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
+#include "SVPropEditNetwork.h"
 
 
 #include "Vic3DNewGeometryObject.h"
@@ -106,6 +107,10 @@ void SVPropertyWidget::onViewStateChanged() {
 			showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 		break;
 
+		case SVViewState::PM_EditNetwork :
+			showPropertyWidget<SVPropEditNetwork>(M_EditNetwork);
+		break;
+
 		case SVViewState::PM_VertexList:
 			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
 			setMinimumWidth(500);
@@ -133,15 +138,12 @@ void SVPropertyWidget::onViewStateChanged() {
 		} break;
 
 		case SVViewState::PM_NetworkProperties : {
-			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
-			SVPropNetworkEditWidget *propNetworkEditWidget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
+			showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
+			SVPropNetworkPropertiesWidget *propNetworkEditWidget = qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties]);
 			propNetworkEditWidget->m_propModeSelectionWidget = m_propModeSelectionWidget;
 			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
 			int networkPropertyType = m_propModeSelectionWidget->currentNetworkPropertyType();
 			propNetworkEditWidget->setPropertyMode(networkPropertyType);
-			// set current network id from combobox selection
-			unsigned int networkId  = m_propModeSelectionWidget->currentNetworkId();
-			propNetworkEditWidget->selectionChanged(networkId);
 		} break;
 	}
 }

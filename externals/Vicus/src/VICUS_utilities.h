@@ -50,6 +50,17 @@ const T * element(const std::vector<T> & vec, const std::string & name) {
 }
 
 
+/*! Utility function to find a vector element by name. */
+template <typename T>
+unsigned int elementIndex(const std::vector<T> & vec, unsigned int id) {
+	unsigned int i=0;
+	for (;i<vec.size(); ++i)
+		if (vec[i].m_id == id)
+			break;
+	return i;
+}
+
+
 /*! Utility function to find a vector element's index by name. */
 template <typename T>
 unsigned int elementIndex(const std::vector<T> & vec, const std::string & name) {

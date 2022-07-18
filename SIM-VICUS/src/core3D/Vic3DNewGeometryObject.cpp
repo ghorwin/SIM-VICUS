@@ -110,6 +110,7 @@ void NewGeometryObject::create(ShaderProgram * shaderProgram) {
 	m_indexBufferObject.release();
 
 	m_polygonGeometry = VICUS::PlaneGeometry();
+	m_polyLineGeometry = VICUS::PolyLine();
 }
 
 
@@ -200,6 +201,29 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
+		case NGM_Pipeline : {
+			// we dont accept z-postions other than 0.0
+			IBKMK::Vector3D pAdd;
+			if (p.m_z != 0.0)
+				pAdd = IBKMK::Vector3D(p.m_x, p.m_y, p.m_z);
+			else
+				pAdd = p;
+			m_vertexList.push_back(pAdd);
+			m_polyLineGeometry.setVertexes(m_vertexList);
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(pAdd);
+		} break;
+
+		case NGM_SubStations : {
+			// we dont accept z-postions other than 0.0
+			IBKMK::Vector3D pAdd;
+			if (p.m_z != 0.0)
+				pAdd = IBKMK::Vector3D(p.m_x, p.m_y, p.m_z);
+			else
+				pAdd = p;
+			m_vertexList.push_back(pAdd);
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(pAdd);
+		} break;
+
 		case NGM_Zone:
 		case NGM_Roof:
 		case NUM_NGM:
@@ -227,6 +251,15 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
+		case NGM_Pipeline :{
+			m_polyLineGeometry.setVertexes(m_vertexList);
+			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
+		}
+		break;
+		case NGM_SubStations :{
+			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
+		}
+		break;
 		case NGM_Zone :
 		case NGM_Roof :
 		case NUM_NGM :
@@ -247,6 +280,14 @@ void NewGeometryObject::removeLastVertex() {
 
 		case NGM_Zone :
 		case NGM_Roof :
+		case NGM_Pipeline :
+			Q_ASSERT(!m_vertexList.empty());
+			removeVertex(m_vertexList.size()-1);
+		break;
+		case NGM_SubStations :
+			Q_ASSERT(!m_vertexList.empty());
+			removeVertex(m_vertexList.size()-1);
+		break;
 		case NUM_NGM :
 			Q_ASSERT(false); // operation not allowed
 			return;
@@ -256,6 +297,7 @@ void NewGeometryObject::removeLastVertex() {
 
 void NewGeometryObject::clear() {
 	m_polygonGeometry.setPolygon( VICUS::Polygon3D() );
+	m_polyLineGeometry.setVertexes( std::vector<IBKMK::Vector3D>() );
 	m_generatedGeometry.clear();
 	m_vertexList.clear();
 	updateBuffers(false);
@@ -267,7 +309,10 @@ bool NewGeometryObject::canComplete() const {
 		case NGM_Rect :
 		case NGM_Polygon :
 			return m_polygonGeometry.isValid();
-
+		case NGM_Pipeline :
+			return m_polyLineGeometry.isValid();
+		case NGM_SubStations:
+			return !m_vertexList.empty();
 		case NGM_Zone :
 		case NGM_Roof :
 		case NUM_NGM :
@@ -363,6 +408,19 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 
 		case NGM_Roof :
 			return; // nothing to do here
+
+		case NGM_Pipeline :
+		case NGM_SubStations : {
+
+			// any change to the previously stored point?
+			if (m_localCoordinateSystemPosition == newPoint)
+				return;
+			// store new position
+			newPoint = p;
+			m_localCoordinateSystemPosition = newPoint;
+
+			updateBuffers(true);
+		} break;
 
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
@@ -1140,6 +1198,26 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		}
 		break;
 
+		case NGM_Pipeline :{
+
+			// put all the vertexes of the current polyline into buffer
+			for (const IBKMK::Vector3D & v : m_vertexList)
+				m_vertexBufferData.push_back( VertexC(IBKVector2QVector(v)) );
+
+			// last vertex in buffer is now the last placed vertex
+
+			if (!m_passiveMode) {
+				// now also add a vertex for the current coordinate system's position
+				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+			}
+		} break;
+
+		case NGM_SubStations : {
+			double radius = 0.5;
+			for (const IBKMK::Vector3D & v : m_vertexList)
+				addSphere(v, radius, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+		} break;
+
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
 			return;
@@ -1268,6 +1346,60 @@ void NewGeometryObject::renderOpaque() {
 				glDrawArrays(GL_LINE_STRIP, lineStartVertex, vertexCount);
 				lineStartVertex += vertexCount;
 			}
+		} break;
+
+		case NGM_Pipeline:
+
+			if (m_vertexBufferData.size() > 1) {
+
+				QColor lineCol;
+				if (m_polyLineGeometry.isValid()) {
+					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+						lineCol = QColor("#2ed655");
+					else
+						lineCol = QColor("#00ff48");
+				}
+				else {
+					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+						lineCol = QColor("#c31818");
+					else
+						lineCol = QColor("#ed1f1f");
+				}
+
+				m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+
+				size_t offset = 0;
+				glDrawArrays(GL_LINE_STRIP, 0, m_vertexList.size());
+				// start offset for the two lines of the local coordinate system - use the last vertex again
+				offset = m_vertexList.size()-1;
+
+				// set wireframe color
+				if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+					lineCol = QColor("#32c5ea");
+				else
+					lineCol = QColor("#106d90");
+
+				m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+				glDrawArrays(GL_LINE_STRIP, offset, 2);
+
+		} break;
+
+		case NGM_SubStations: {
+
+			if (m_vertexBufferData.size() > 1 && m_vertexList.size() > 0) {
+
+				QColor lineCol;
+				if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+					lineCol = QColor("#2ed655");
+				else
+					lineCol = QColor("#00ff48");
+
+				m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+
+				glDrawArrays(GL_LINE_STRIP, 0, m_vertexList.size());
+
+			}
+
 		} break;
 
 		case NUM_NGM :

@@ -93,5 +93,9 @@
         <file>gfx/actions/Coordinate-System.png</file>
         <file>gfx/actions/Bounding-Box.png</file>
         <file>doc/KeyboardMouseControls.html.de</file>
+        <file>gfx/actions/network.png</file>
+        <file>gfx/actions/neural.png</file>
+        <file>gfx/actions/info.png</file>
+        <file>gfx/actions/building_parameter.png</file>
     </qresource>
 </RCC>

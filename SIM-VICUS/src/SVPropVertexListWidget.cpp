@@ -53,6 +53,10 @@
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddBuildingLevel.h"
 #include "SVUndoAddZone.h"
+#include "SVUndoAddNetwork.h"
+#include "SVDatabaseEditDialog.h"
+#include "SVUndoNetworkAddPipeline.h"
+#include "SVUndoNetworkAddNodes.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -70,6 +74,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui->lineEditZoneHeight->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(),
 									tr("Zone height in [m]."),true, true);
 
+	m_ui->lineEditSubStationMaxHeatingDemand->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(),
+									tr("Maximum/Nominal heating demand [W]."), false, true);
+
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
 
 	on_radioButtonRoofHeight_toggled(m_ui->radioButtonRoofHeight->isChecked());
@@ -82,6 +89,8 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->pushButtonCancel2, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
 	connect(m_ui->pushButtonCancel3, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
 	connect(m_ui->pushButtonCancel4, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+	connect(m_ui->pushButtonCancelPipeline, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+	connect(m_ui->pushButtonCancelSubStation, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
 
 	connect(m_ui->toolButtonAddBuilding2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
 	connect(m_ui->toolButtonAddBuilding3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
@@ -133,17 +142,35 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	m_ui->pushButtonCompletePolygon->setEnabled(false);
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
+	// default titles
+	m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
+	m_ui->pushButtonCompletePolygon->setText("Complete polygon");
 
 	// initialize new geometry object
 	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
+			m_ui->groupBoxPolygonVertexes->setTitle("Rectangle vertexes");
+			m_ui->pushButtonCompletePolygon->setText("Complete Rectangle");
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 		case Vic3D::NewGeometryObject::NGM_Zone :
 		case Vic3D::NewGeometryObject::NGM_Roof :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
+			m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
+			m_ui->pushButtonCompletePolygon->setText("Complete polygon");
+		break;
+
+		case Vic3D::NewGeometryObject::NGM_Pipeline:
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Pipeline);
+			m_ui->groupBoxPolygonVertexes->setTitle("Polyline vertexes");
+			m_ui->pushButtonCompletePolygon->setText("Complete polyline");
+		break;
+		case Vic3D::NewGeometryObject::NGM_SubStations:
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_SubStations);
+			m_ui->groupBoxPolygonVertexes->setTitle("Vertexes");
+			m_ui->pushButtonCompletePolygon->setText("Complete vertexes");
 		break;
 
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
@@ -234,6 +261,17 @@ bool SVPropVertexListWidget::completePolygonIfPossible() {
 		case 3 :
 			m_ui->pushButtonCreateRoof->click();
 			return true;
+
+		case 4 :
+			if (m_ui->pushButtonCreatePipeline->isEnabled()) {
+				m_ui->pushButtonCreatePipeline->click();
+				return true;
+			} break;
+		case 5 :
+			if (m_ui->pushButtonCreateSubStation->isEnabled()) {
+				m_ui->pushButtonCreateSubStation->click();
+				return true;
+			} break;
 	}
 	return false;
 }
@@ -248,6 +286,8 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 	switch (mod) {
 		case SVProjectHandler::BuildingTopologyChanged:
 		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NetworkGeometryChanged:
+		case SVProjectHandler::NetworkDataChanged:
 		case SVProjectHandler::AllModified:
 			updateBuildingComboBox(m_ui->comboBoxBuilding);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
@@ -260,14 +300,19 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 
 			updateSurfaceComboBox(m_ui->comboBoxSurface);
+
+			updateNetworksComboBox(m_ui->comboBoxNetwork);
+			updateNetworksComboBox(m_ui->comboBoxNetwork2);
+			updateNetworkButtons();
 		break;
 		default: ;// nothing to be done here
 	}
 
 	updateButtonStates();
+
 	// We only need to handle changes of the building topology, in all other cases
 	// the "create new geometry" action is aborted and the widget will be hidden.
-	if (mod != SVProjectHandler::BuildingTopologyChanged) {
+	if (mod != SVProjectHandler::BuildingTopologyChanged && mod != SVProjectHandler::NetworkDataChanged) {
 		// clear the new geometry object
 		SVViewStateHandler::instance().m_newGeometryObject->clear();
 		// and reset view state, if we are still in vertex list mode
@@ -348,6 +393,21 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			updateRoofGeometry();
 		}
 		break;
+		case Vic3D::NewGeometryObject::NGM_Pipeline: {
+			m_ui->stackedWidget->setCurrentIndex(4);
+			updateNetworksComboBox(m_ui->comboBoxNetwork);
+			updatePipePropertiesComboBox();
+			updateNetworkButtons();
+		}
+		break;
+		case Vic3D::NewGeometryObject::NGM_SubStations: {
+			m_ui->stackedWidget->setCurrentIndex(5);
+			updateNetworksComboBox(m_ui->comboBoxNetwork2);
+			updateSubStationLineEdits();
+			updateNetworkButtons();
+		}
+		break;
+
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
 }
@@ -476,6 +536,32 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 	// now also select the matching item
 	reselectById(m_ui->comboBoxZone, (int)r.m_id);
 }
+
+
+void SVPropVertexListWidget::on_toolButtonAddNetwork_clicked(){
+	std::set<QString> existingNames;
+	for (const VICUS::Network & n : project().m_geometricNetworks)
+		existingNames.insert(n.m_displayName);
+	QString defaultName = VICUS::uniqueName(tr("Network"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add Network"), tr("New network name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+	// modify project
+	VICUS::Network n;
+	n.m_id = project().nextUnusedID();
+	n.m_displayName = text;
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Adding network '%1'").arg(n.m_displayName), n, false, false);
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
+
+	// now also select the matching item
+	reselectById(m_ui->comboBoxNetwork, (int)n.m_id);
+	reselectById(m_ui->comboBoxNetwork2, (int)n.m_id);
+}
+
+
+void SVPropVertexListWidget::on_toolButtonAddNetwork_2_clicked() {
+	on_toolButtonAddNetwork_clicked();
+}
+
 
 
 void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
@@ -1307,6 +1393,73 @@ void SVPropVertexListWidget::updateButtonStates() {
 }
 
 
+void SVPropVertexListWidget::updateNetworkButtons() {
+
+	// ** page pipeline: check if we can create a pipeline
+
+	// a network should be selected
+	bool canCreatePipeline = true;
+	unsigned int netId = m_ui->comboBoxNetwork->currentData().toUInt();
+	if (m_ui->comboBoxNetwork->currentIndex() == -1 || m_ui->comboBoxPipeProperties->currentIndex() == -1)
+		canCreatePipeline = false;
+	else if (netId == VICUS::INVALID_ID)
+		canCreatePipeline = false;
+	else {
+		const VICUS::Network * net = dynamic_cast<const VICUS::Network *>(project().objectById(netId));
+		Q_ASSERT(net != nullptr);
+		// check if a currently created point is inside an existing edge
+		// (if an existing node matches a currently created point exactly it is ok)
+		Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
+		for (const VICUS::NetworkEdge &e: net->m_edges) {
+			const VICUS::NetworkLine line(e);
+			for (const IBKMK::Vector3D &vec: geomObj->polyLineGeometry().vertexes()) {
+				if (line.containsPoint(vec))
+					canCreatePipeline = false;
+			}
+		}
+		// now also check if an existing edge is inside a currently created line
+		// (check if both nodes of the existing edge are inside the line)
+		for (const VICUS::NetworkEdge &e: net->m_edges) {
+			for (const VICUS::NetworkLine &line: geomObj->polyLineGeometry().lines()) {
+				if (line.containsPoint(e.m_node1->m_position) && line.containsPoint(e.m_node2->m_position))
+					canCreatePipeline = false;
+			}
+		}
+	}
+	m_ui->pushButtonCreatePipeline->setEnabled(canCreatePipeline);
+
+
+	// *** page sub stations
+
+	// a network should be selected
+	bool canCreateSubStation = true;
+	netId = m_ui->comboBoxNetwork2->currentData().toUInt();
+	if (m_ui->comboBoxNetwork2->currentIndex() == -1 ||
+		!m_ui->lineEditSubStationMaxHeatingDemand->isValid() ||
+		m_ui->lineEditSubStationName->text().isEmpty())
+		canCreateSubStation = false;
+	else if (netId == VICUS::INVALID_ID)
+		canCreateSubStation = false;
+	else {
+		const VICUS::Network * net = dynamic_cast<const VICUS::Network *>(project().objectById(netId));
+		Q_ASSERT(net != nullptr);
+		// check if a currently created point is inside an existing edge or matches any given node
+		Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
+		for (const VICUS::NetworkEdge &e: net->m_edges) {
+			const VICUS::NetworkLine line(e);
+			for (const IBKMK::Vector3D &point: geomObj->vertexList()) {
+				if ( line.containsPoint(point) ||
+					e.m_node1->m_position == point ||
+					e.m_node2->m_position == point )
+					canCreateSubStation = false;
+			}
+		}
+	}
+	m_ui->pushButtonCreateSubStation->setEnabled(canCreateSubStation);
+
+}
+
+
 void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
 	// remember currently selected component IDs
 	int compID = -1;
@@ -1369,6 +1522,43 @@ void SVPropVertexListWidget::updateSubSurfaceComponentComboBox(QComboBox * combo
 	reselectById(combo, compID);
 }
 
+
+void SVPropVertexListWidget::updateNetworksComboBox(QComboBox * combo) {
+
+	// remember currently selected ID
+	int currID = -1;
+	if (combo->currentIndex() != -1)
+		currID = combo->currentData().toInt();
+
+	combo->clear();
+	const VICUS::Project &p = project();
+	for (const auto &n : p.m_geometricNetworks)
+		combo->addItem(n.m_displayName, n.m_id);
+
+	// reselect previously selected components
+	reselectById(combo, currID);
+}
+
+
+void SVPropVertexListWidget::updatePipePropertiesComboBox() {
+	auto &combo = m_ui->comboBoxPipeProperties;
+
+	// remember currently selected ID
+	int currID = -1;
+	if (combo->currentIndex() != -1)
+		currID = combo->currentData().toInt();
+
+	combo->clear();
+
+	for (auto & p : SVSettings::instance().m_db.m_pipes)
+		combo->addItem(QtExt::MultiLangString2QString(p.second.m_displayName), p.first);
+
+	// reselect previously selected components
+	reselectById(combo, currID);
+
+}
+
+
 void SVPropVertexListWidget::updateRoofGeometry() {
 	// Guard against call when aborting/focus is lost during undo!
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
@@ -1407,6 +1597,13 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 }
 
 
+void SVPropVertexListWidget::updateSubStationLineEdits() {
+	// set default values
+	m_ui->lineEditSubStationMaxHeatingDemand->setValue(5000);
+	m_ui->lineEditSubStationName->setText("sub station");
+}
+
+
 void SVPropVertexListWidget::on_pushButtonRotateFloorPolygon_clicked() {
 
 	// rotate polygon to get a new roof shape
@@ -1438,5 +1635,64 @@ void SVPropVertexListWidget::on_checkBoxSubSurfaceGeometry_stateChanged(int) {
 
 void SVPropVertexListWidget::on_checkBoxSelectedSurfaces_stateChanged(int arg1) {
 	updateSurfaceComboBox(m_ui->comboBoxSurface, arg1);
+}
+
+
+void SVPropVertexListWidget::on_toolButtonEditPipeProperties_clicked() {
+	unsigned int currId = m_ui->comboBoxPipeProperties->currentData().toUInt();
+	unsigned int newId = SVMainWindow::instance().dbPipeEditDialog()->select(currId);
+	updatePipePropertiesComboBox();
+	unsigned int idSelect;
+	if (newId != VICUS::INVALID_ID)
+		idSelect = newId;
+	else
+		idSelect = currId;
+	reselectById(m_ui->comboBoxPipeProperties, (int)idSelect);
+}
+
+
+
+void SVPropVertexListWidget::on_pushButtonCreatePipeline_clicked() {
+
+	// this should actually never happen
+	if (m_ui->comboBoxNetwork->currentIndex() == -1){
+		QMessageBox::critical(this, QString(), tr("First select a network!"));
+		return;
+	}
+
+	unsigned int netId = m_ui->comboBoxNetwork->currentData().toUInt();
+	unsigned int pipeId = m_ui->comboBoxPipeProperties->currentData().toUInt();
+
+	Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
+
+	SVUndoNetworkAddPipeline *undo = new SVUndoNetworkAddPipeline(geomObj->polyLineGeometry().vertexes(), pipeId, netId);
+	undo->push();
+
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateSubStation_clicked() {
+
+	// this should actually never happen
+	if (m_ui->comboBoxNetwork2->currentIndex() == -1){
+		QMessageBox::critical(this, QString(), tr("First select a network!"));
+		return;
+	}
+
+	// collect	all points as VICUS::Nodes
+	double heatDemand = m_ui->lineEditSubStationMaxHeatingDemand->value();
+	QString name = m_ui->lineEditSubStationName->text();
+	Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
+	std::vector<VICUS::NetworkNode> nodes;
+	for (const IBKMK::Vector3D &v: geomObj->vertexList()){
+		VICUS::NetworkNode n(0, VICUS::NetworkNode::NT_Building, v, heatDemand);
+		n.m_displayName = name;
+		nodes.push_back(n);
+	}
+
+	// add them to network
+	unsigned int netId = m_ui->comboBoxNetwork2->currentData().toUInt();
+	SVUndoNetworkAddNodes *undo = new SVUndoNetworkAddNodes(nodes, netId);
+	undo->push();
 }
 

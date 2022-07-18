@@ -67,9 +67,12 @@ public:
 		ClimateLocationModified,
 		/*! Grid properties changed. */
 		GridModified,
-		/*! Network data changed. */
-		NetworkModified,
-		/*! Anything in the geometry (building, network, dump geometry, ...) has changed.
+		/*! Network geometry has changed (e.g. modfied/added nodes or edges). */
+		NetworkGeometryChanged,
+		/*! Network data structure has changed without impact on geometry (e.g. network has been added/renamed,
+		 *  but no edges or nodes have been modified). */
+		NetworkDataChanged,
+		/*! Anything in the geometry (building, dump geometry, ...) has changed.
 			Needs a complete redraw of scene, also view state is reset to "default mode".
 		*/
 		BuildingGeometryChanged,

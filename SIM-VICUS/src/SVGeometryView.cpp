@@ -52,6 +52,7 @@
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVPropEditNetwork.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent),
@@ -651,6 +652,25 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Copy);
 }
 
+
+void SVGeometryView::on_actionToggleEditNetworkGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditNetwork||
+			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_EditNetwork;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		vs.m_objectColorMode = SVViewState::OCM_None;
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditNetworkWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditNetworkWidget->updateComboBoxNetworks();
+	SVViewStateHandler::instance().m_propEditNetworkWidget->updateUi();
+}
+
+
 // *** Protected Functions ***
 
 
@@ -710,6 +730,7 @@ void SVGeometryView::setupToolBar() {
 	m_ui->actionToggleParametrizationMode->setChecked(false);
 	m_ui->actionToggleParametrizationMode->blockSignals(false);
 }
+
 
 void SVGeometryView::on_actionMeasure_triggered(bool on) {
 	m_ui->actionMeasure->setChecked(on);

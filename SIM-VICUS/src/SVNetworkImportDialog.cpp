@@ -128,8 +128,7 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 			m_ui->lineEditYOrigin->setText( QString("%L1").arg(m_network.m_origin.m_y));
 
 			m_network.updateExtends();
-			unsigned int networkIndex = (unsigned int) m_ui->comboBoxNetworkSelectionBox->currentIndex();
-			SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_network);
+			SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), m_network);
 			undo->push(); // modifies project and updates views
 		}
 

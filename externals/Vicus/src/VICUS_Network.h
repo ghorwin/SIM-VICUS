@@ -106,10 +106,15 @@ public:
 	Network copyWithBaseParameters(unsigned int newID);
 
 	/*! add Edge based on node ids */
-	void addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply);
+	void addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply, unsigned int pipePropId);
 
 	/*! add Edge using edge constructor */
 	void addEdge(const NetworkEdge &edge);
+
+	/*! add node to network based on coordinates and type and return the node id.
+	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node
+		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
+	unsigned int addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! reads csv-files from QGIS with multiple rows, containing "MULTILINESTRING"s and adds according nodes/edges to the network.
 		Lines that share a common node (identical coordinates) are automatically connected.
@@ -121,7 +126,7 @@ public:
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand, unsigned int nextId);
 
 	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
-	void generateIntersections(unsigned int nextUnusedId);
+	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & addedNodes, std::vector<unsigned int> & addedEdges);
 
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();
@@ -197,8 +202,14 @@ public:
 	/*! returns pointer to edge, which is identified by its two nodeIds */
 	NetworkEdge *edge(unsigned nodeId1, unsigned nodeId2);
 
+	/*! Returns pointer to edge, which is identified by its id */
+	NetworkEdge *edgeById(unsigned id);
+
 	/*! returns the index of the according edge in the m_edges vector */
 	unsigned int indexOfEdge(unsigned nodeId1, unsigned nodeId2);
+
+	/*! returns the index of the according edge in the m_edges vector */
+	unsigned int indexOfEdge(unsigned edgeId);
 
 	/*! returns the number of nodes with type NT_Building */
 	size_t numberOfBuildings() const;
@@ -209,7 +220,7 @@ public:
 	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB);
 
 	/*! sets default colors */
-	void setDefaultColors();
+	void setDefaultColors() const;
 
 	/*! sets the network object as well as all edges and nodes visible */
 	void setVisible(bool visible);
@@ -295,11 +306,6 @@ public:
 	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
 
 private:
-
-	/*! add node to network based on coordinates and type and return the node id.
-	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node
-		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
-	unsigned int addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! addNode using Node constructor for convenience,
 	 * does only copy position, type and maxHeatingDemand */

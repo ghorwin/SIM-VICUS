@@ -69,6 +69,7 @@ HEADERS += \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_PlaneTriangulationData.h \
+	../../src/VICUS_PolyLine.h \
 	../../src/VICUS_Polygon2D.h \
 	../../src/VICUS_Polygon3D.h \
 	../../src/VICUS_Project.h \
@@ -127,6 +128,7 @@ SOURCES += \
 	../../src/VICUS_OutputDefinition.cpp \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
+	../../src/VICUS_PolyLine.cpp \
 	../../src/VICUS_Polygon2D.cpp \
 	../../src/VICUS_Polygon3D.cpp \
 	../../src/VICUS_Project.cpp \

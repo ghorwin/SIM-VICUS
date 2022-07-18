@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -28,53 +28,52 @@
 
 #include "VICUS_NetworkEdge.h"
 
-#include <IBK_point.h>
+#include <IBKMK_Vector3D.h>
 
 namespace VICUS {
 
-/*! Line is a helper class that implements a range of 2D line operations.
-	It is meant to be constructed from an edge definition, and caches
-	the respective node coordinates, internally.
+/*! Line is a helper class that implements a range of line operations.
+	It is meant to be constructed from an edge definition.
+	It stores the line internally in vector form a*lambda + b.
 */
 
-extern const double	geometricResolution;		/// geometric resolution in m, points closer than that are assumed equal
+extern const double	GeometricResolution;		/// geometric resolution in m, points closer than that are assumed equal
 
 class NetworkLine {
 public:
 
-	NetworkLine(const IBK::point2D<double> &p1, const IBK::point2D<double> &p2):
-		m_p1(p1),
-		m_p2(p2)
+	NetworkLine(const IBKMK::Vector3D &p1, const IBKMK::Vector3D &p2):
+		m_a(p1),
+		m_b(p2-p1)
 	{}
 
 	NetworkLine(const NetworkEdge &e):
-		m_p1(e.m_node1->m_position.m_x, e.m_node1->m_position.m_y),
-		m_p2(e.m_node2->m_position.m_x, e.m_node2->m_position.m_y)
+		m_a(e.m_node1->m_position),
+		m_b(e.m_node2->m_position - e.m_node1->m_position)
 	{}
 
 	/*! return intersection point between two lines */
-	void intersection(const NetworkLine &line, IBK::point2D<double> &pInter) const;
+	void intersection(const NetworkLine &line, IBKMK::Vector3D & pInter) const;
 
-	/*! return othogonal projection of point on line */
-	void projectionFromPoint(const IBK::point2D<double> &point, IBK::point2D<double> &pProj) const;
-
-	/*! return orthogonal distance between point and line */
-	double distanceToPoint(const IBK::point2D<double> &point) const;
+	/*! returns distance between point and line, if point is not contained by line, the distance to the closest line endpoint is returned */
+	double distanceToPoint(const IBKMK::Vector3D & point) const;
 
 	/*! determines wether the given point is on the line, between the determining points but does not match any of the determining points */
-	bool containsPoint(const IBK::point2D<double> &point) const;
+	bool containsPoint(const IBKMK::Vector3D &point) const;
 
 	/*! length of line */
 	double length() const;
 
 	/*! retruns distance between two given points */
-	static double distanceBetweenPoints(const IBK::point2D<double> &point1, const IBK::point2D<double> &point2);
+	static double distanceBetweenPoints(const IBKMK::Vector3D & point1, const IBKMK::Vector3D & point2);
 
 	/*! checks wether the distance between two points is below the threshold */
 	static bool pointsMatch(const IBK::point2D<double> &point1, const IBK::point2D<double> &point2);
 
-	IBK::point2D<double>	m_p1;
-	IBK::point2D<double>	m_p2;
+	/*! Offset vector of line */
+	IBKMK::Vector3D			m_a;
+	/*! Direction vector of line */
+	IBKMK::Vector3D			m_b;
 
 };
 

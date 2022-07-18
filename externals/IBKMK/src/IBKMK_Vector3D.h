@@ -181,7 +181,7 @@ public:
 	}
 
 	/*! returns point2D with z=0 */
-	IBK::point2D<double> point2D(){
+	IBK::point2D<double> point2D() const{
 		return IBK::point2D<double>(m_x, m_y);
 	}
 

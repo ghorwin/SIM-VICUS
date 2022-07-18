@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>712</width>
-    <height>340</height>
+    <width>398</width>
+    <height>711</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
      <item>
       <widget class="QLabel" name="labelMethod">
        <property name="text">
@@ -57,7 +57,7 @@
      <property name="title">
       <string>Global Sensor Parameters</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
       <item row="0" column="0">
        <widget class="QLabel" name="labelHorizontal">
         <property name="text">
@@ -69,9 +69,16 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditHorizontal">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="labelHorizontalUnit">
+        <property name="text">
+         <string>W/m2</string>
         </property>
        </widget>
       </item>
@@ -86,13 +93,13 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditNorth">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="1" column="2">
        <widget class="QLabel" name="labelNorthUnit">
         <property name="text">
          <string>W/m2</string>
@@ -106,17 +113,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="2" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditEast">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
+      <item row="2" column="2">
        <widget class="QLabel" name="labelEastUnit">
         <property name="text">
          <string>W/m2</string>
@@ -134,13 +141,13 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditSouth">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="3" column="2">
        <widget class="QLabel" name="labelSouthUnit">
         <property name="text">
          <string>W/m2</string>
@@ -158,13 +165,13 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditWest">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
+      <item row="4" column="2">
        <widget class="QLabel" name="labelWestUnit">
         <property name="text">
          <string>W/m2</string>
@@ -178,25 +185,18 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="2">
+      <item row="5" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditDeadBand">
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
+      <item row="5" column="2">
        <widget class="QLabel" name="labelDeadBandUnit">
-        <property name="text">
-         <string>W/m2</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="labelHorizontalUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
@@ -222,14 +222,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>

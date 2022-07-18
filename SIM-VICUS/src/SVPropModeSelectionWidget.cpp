@@ -55,9 +55,6 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
-	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVPropModeSelectionWidget::onModified);
-
 	// we are in "Site" mode initially, so the rest is hidden
 	updateWidgetVisibility();
 }
@@ -88,75 +85,6 @@ void SVPropModeSelectionWidget::setBuildingPropertyType(BuildingPropertyTypes pt
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
 	updateWidgetVisibility();
-}
-
-
-void SVPropModeSelectionWidget::onModified(int modificationType, ModificationInfo * ) {
-	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
-	switch (modType) {
-		case SVProjectHandler::NetworkModified:
-		case SVProjectHandler::AllModified:
-		case SVProjectHandler::NodeStateModified:
-			// Based on current selection, switch into a specific building/network edit mode. For example, when
-			// "Network" mode is selected and a node is selected, we automatically switch to "Node" edit mode.
-			selectionChanged();
-			// Note: the call above may results in a view state change, when the selection causes
-			//		 the network property selection to change.
-			break;
-
-		default: ; // just to make compiler happy
-	}
-}
-
-
-void SVPropModeSelectionWidget::selectionChanged() {
-	if (m_ui->pushButtonNetwork->isChecked()) {
-		// update combo box with network selection, based on current selection
-
-		// get list of selected network-related objects
-		std::set<const VICUS::Object*> sel;
-		project().selectObjects(sel, VICUS::Project::SG_Network, true, true);
-
-		std::set<const VICUS::Network*> selectedNetworks;
-		// for all objects follow parent links up to top level and if this is a network, remember network in set of network objets
-		for (const VICUS::Object* o : sel) {
-			if (o->m_parent == nullptr) {
-				const VICUS::Network* n = dynamic_cast<const VICUS::Network*>(o);
-				Q_ASSERT(n != nullptr);
-				selectedNetworks.insert(n);
-			}
-			else {
-				const VICUS::Network* n = dynamic_cast<const VICUS::Network*>(o->m_parent);
-				Q_ASSERT(n != nullptr);
-				selectedNetworks.insert(n);
-			}
-		}
-
-		// rules:
-
-		// no network selected -> show all available networks and let user select one
-		// 1 network selected -> show network name and disable combo box
-		// more networks selected -> clear combo box and disable
-
-		m_ui->comboBoxSelectedNetwork->blockSignals(true);
-		m_ui->comboBoxSelectedNetwork->clear();
-		if (selectedNetworks.empty()) {
-			for (const VICUS::Network & n : project().m_geometricNetworks)
-				m_ui->comboBoxSelectedNetwork->addItem(n.m_displayName, n.m_id);
-			m_ui->comboBoxSelectedNetwork->setEnabled(true);
-		}
-		else if (selectedNetworks.size() == 1) {
-			m_ui->comboBoxSelectedNetwork->addItem((*selectedNetworks.begin())->m_displayName, (*selectedNetworks.begin())->m_id);
-			m_ui->comboBoxSelectedNetwork->setEnabled(false);
-		}
-		else {
-			m_ui->comboBoxSelectedNetwork->setEnabled(false);
-		}
-		m_ui->comboBoxSelectedNetwork->blockSignals(false);
-
-		// if selected network has changed (due to modification in combo box), also update the rest of the view
-		updateViewState();
-	}
 }
 
 
@@ -201,36 +129,19 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 
 		case SVViewState::PM_NetworkProperties:
 			switch (m_ui->comboBoxNetworkProperties->currentIndex()) {
-				// network
-				case 0 : vs.m_objectColorMode = SVViewState::OCM_Network; break;
-
 				// node: show node association
-				case 1 : vs.m_objectColorMode = SVViewState::OCM_NetworkNode; break;
-
+				case 0 : vs.m_objectColorMode = SVViewState::OCM_NetworkNode; break;
 				// pipe : show pipe association
-				case 2 : vs.m_objectColorMode = SVViewState::OCM_NetworkEdge; break;
-
+				case 1 : vs.m_objectColorMode = SVViewState::OCM_NetworkEdge; break;
 				// component: show network component association
-				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkSubNetworks; break;
-
+				case 2 : vs.m_objectColorMode = SVViewState::OCM_NetworkSubNetworks; break;
 				// component: show network component association
-				case 4 : vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange; break;
+				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange; break;
 			}
 		break;
 
 		default:; // just to make compiler happy
 	}
-}
-
-
-unsigned int SVPropModeSelectionWidget::currentNetworkId() const {
-	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
-}
-
-
-void SVPropModeSelectionWidget::setCurrentNetwork(unsigned networkId) {
-	return m_ui->comboBoxSelectedNetwork->setCurrentIndex(
-		m_ui->comboBoxSelectedNetwork->findData(networkId));
 }
 
 
@@ -292,11 +203,6 @@ void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool on) {
 
 	updateWidgetVisibility();
 
-	// block signals in this widget, since we do not want to let selectionChanged() change the viewstate already
-	blockSignals(true);
-	selectionChanged();
-	blockSignals(false);
-
 	updateViewState(); // tell the world that our edit mode has changed
 }
 
@@ -308,11 +214,6 @@ void SVPropModeSelectionWidget::on_pushButtonNetwork_toggled(bool on) {
 	if (!on) return;
 
 	updateWidgetVisibility();
-
-	// block signals in this widget, since we do not want to let selectionChanged() change the viewstate already
-	blockSignals(true);
-	selectionChanged();
-	blockSignals(false);
 
 	updateViewState(); // tell the world that our edit mode has changed
 }
@@ -346,10 +247,6 @@ void SVPropModeSelectionWidget::updateWidgetVisibility() {
 	bool showNetworkProps = m_ui->pushButtonNetwork->isChecked();
 	m_ui->labelNetworkProperties->setVisible(showNetworkProps);
 	m_ui->comboBoxNetworkProperties->setVisible(showNetworkProps);
-
-	m_ui->labelSelectedNetwork->setVisible(showNetworkProps);
-	m_ui->comboBoxSelectedNetwork->setVisible(showNetworkProps);
-
 	m_ui->labelBuildingProperties->setVisible(showBuildingProps);
 	m_ui->comboBoxBuildingProperties->setVisible(showBuildingProps);
 }
@@ -366,7 +263,3 @@ void SVPropModeSelectionWidget::updateViewState() {
 	SVViewStateHandler::instance().setViewState(vs);
 }
 
-
-void SVPropModeSelectionWidget::on_comboBoxSelectedNetwork_currentIndexChanged(int /*index*/) {
-	updateViewState();
-}

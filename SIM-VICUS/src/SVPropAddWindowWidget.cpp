@@ -84,7 +84,8 @@ void SVPropAddWindowWidget::onModified(int modificationType, ModificationInfo * 
 		case SVProjectHandler::SolverParametersModified:
 		case SVProjectHandler::ClimateLocationModified:
 		case SVProjectHandler::GridModified:
-		case SVProjectHandler::NetworkModified:
+		case SVProjectHandler::NetworkGeometryChanged:
+		case SVProjectHandler::NetworkDataChanged:
 		break;
 	}
 }

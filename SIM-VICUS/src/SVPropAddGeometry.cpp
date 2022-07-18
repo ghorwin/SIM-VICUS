@@ -59,6 +59,7 @@ void SVPropAddGeometry::onModified(int modificationType, ModificationInfo *) {
 	switch (modType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NetworkGeometryChanged:
 		case SVProjectHandler::NodeStateModified:
 			// When the building geometry has changed, we need to update the geometrical info
 			// in the widget based on the current selection.
@@ -141,6 +142,36 @@ void SVPropAddGeometry::on_pushButtonAddWindow_clicked() {
 }
 
 
+void SVPropAddGeometry::on_pushButtonAddPipeline_clicked() {
+	// reset new polygon object and set it into polygon mode
+	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Pipeline);
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Pipeline);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+}
+
+
+void SVPropAddGeometry::on_pushButtonAddSubStation_clicked() {
+	// reset new polygon object and set it into polygon mode
+	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_SubStations);
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_SubStations);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+}
+
+
 void SVPropAddGeometry::updateUi() {
 	// update our selection lists
 	std::set<const VICUS::Object*> sel;
@@ -168,4 +199,5 @@ void SVPropAddGeometry::updateUi() {
 		m_ui->pushButtonAddWindow->setEnabled(false);
 	}
 }
+
 

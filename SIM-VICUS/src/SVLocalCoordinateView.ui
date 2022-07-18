@@ -275,13 +275,6 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QToolButton" name="toolButtonInformation">
      <property name="text">
       <string>i</string>

@@ -189,7 +189,7 @@ void SVLocalCoordinateView::showInformation() {
 			}
 		}
 	}
-	QString surfaceInfo = QString ("Selected surfaces: %1\tArea: %2 m²\nSelected sub-surfaces: %3\tArea: %4 m²")
+	QString surfaceInfo = QString ("Selected surfaces:\t%1\tArea:\t%2 m²\nSelected sub-surfaces:\t%3\tArea:\t%4 m²")
 			.arg(numSurfs).arg(areaSurfs).arg(numSubSurfs).arg(areaSubSurfs);
 	QMessageBox msg(QMessageBox::Information, tr("Selection Information"), surfaceInfo, QMessageBox::Ok, this);
 	msg.exec();

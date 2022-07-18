@@ -46,6 +46,7 @@ class SVPropModeSelectionWidget;
 class SVLocalCoordinateView;
 class SVPropAddWindowWidget;
 class SVPreferencesDialog;
+class SVPropEditNetwork;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -109,6 +110,9 @@ public:
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
+
+	/*! Pointer to network edit widget. */
+	SVPropEditNetwork					*m_propEditNetworkWidget = nullptr;
 
 	/*! Pointer to local coordinate system view widget (shown in tool bar), only visible when local coordinate system is shown. */
 	SVLocalCoordinateView				*m_localCoordinateViewWidget = nullptr;

@@ -33,7 +33,7 @@
 class SVUndoModifyNetwork : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyNetwork)
 public:
-	SVUndoModifyNetwork(const QString & label, unsigned int networkIndex, const VICUS::Network & modNetwork);
+	SVUndoModifyNetwork(const QString & label, const VICUS::Network & modNetwork);
 
 	virtual void undo();
 	virtual void redo();

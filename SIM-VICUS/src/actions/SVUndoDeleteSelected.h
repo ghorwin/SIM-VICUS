@@ -41,7 +41,6 @@ public:
 
 private:
 
-
 	/*! Stores vector of component instances. */
 	std::vector<VICUS::ComponentInstance>				m_compInstances;
 	/*! Stores vector of sub-surface component instances. */
@@ -50,8 +49,9 @@ private:
 	std::vector<VICUS::Building>						m_buildings;
 	/*! Stores vector of anonymous surfaces. */
 	std::vector<VICUS::Surface>							m_plainGeometry;
+	/*! Stores vector of networks. */
+	std::vector<VICUS::Network>							m_networks;
 
-	// TODO Hauke : add network nodes/edges here
 };
 
 

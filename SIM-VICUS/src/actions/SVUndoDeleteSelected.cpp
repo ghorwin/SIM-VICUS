@@ -158,6 +158,58 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 		if (sideASurf != nullptr || sideBSurf != nullptr)
 			m_subCompInstances.push_back(modCi);
 	}
+
+
+	// *** Networks
+
+	// create a copy of all data structures that need something removed from
+	m_networks = project().m_geometricNetworks;
+	for (unsigned int idxNet=0; idxNet<m_networks.size(); /* no counter increase here */) {
+
+		VICUS::Network & net = m_networks[idxNet];
+
+		for (unsigned int idxNo=0; idxNo<net.m_nodes.size(); /* no counter increase here */) {
+			VICUS::NetworkNode &no = net.m_nodes[idxNo];
+			if (selectedUniqueIDs.find(no.m_id) != selectedUniqueIDs.end()) {
+				// when deleting a node, the connected edges also need to be deleted
+				for (const VICUS::NetworkEdge *e: no.m_edges) {
+					if (e != nullptr)
+						selectedUniqueIDs.insert(e->m_id);
+				}
+				net.m_nodes.erase(net.m_nodes.begin() + idxNo);
+			}
+			else
+				++idxNo;
+		}
+
+		for (unsigned int idxE=0; idxE<net.m_edges.size(); /* no counter increase here */) {
+			VICUS::NetworkEdge &e = net.m_edges[idxE];
+			if (selectedUniqueIDs.find(e.m_id) != selectedUniqueIDs.end()){
+				// if there is a mixer node connected, which is only connected to the current edge, we also delete that
+				if (e.m_node1->m_type == VICUS::NetworkNode::NT_Mixer && e.m_node1->m_edges.size()==1)
+					selectedUniqueIDs.insert(e.nodeId1());
+				if (e.m_node2->m_type == VICUS::NetworkNode::NT_Mixer && e.m_node2->m_edges.size()==1)
+					selectedUniqueIDs.insert(e.nodeId2());
+				net.m_edges.erase(net.m_edges.begin() + idxE);
+				}
+			else
+				++idxE;
+		}
+
+		// delete the additionally collected nodes
+		for (unsigned int idxNo=0; idxNo<net.m_nodes.size(); /* no counter increase here */) {
+			VICUS::NetworkNode &no = net.m_nodes[idxNo];
+			if (selectedUniqueIDs.find(no.m_id) != selectedUniqueIDs.end())
+				net.m_nodes.erase(net.m_nodes.begin() + idxNo);
+			else
+				++idxNo;
+		}
+
+		if (selectedUniqueIDs.find(net.m_id) != selectedUniqueIDs.end() && net.m_edges.empty() && net.m_nodes.empty())
+			m_networks.erase(m_networks.begin() + idxNet);
+		else
+			++idxNet;
+	}
 }
 
 
@@ -173,11 +225,13 @@ void SVUndoDeleteSelected::redo() {
 	prj.m_plainGeometry.swap(m_plainGeometry);
 	prj.m_componentInstances.swap(m_compInstances);
 	prj.m_subSurfaceComponentInstances.swap(m_subCompInstances);
+	prj.m_geometricNetworks.swap(m_networks);
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
 }
 

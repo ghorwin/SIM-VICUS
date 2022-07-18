@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1008</width>
-    <height>525</height>
+    <height>692</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -127,6 +127,11 @@
          <addaction name="actionScaleGeometry"/>
          <addaction name="actionAlignGeometry"/>
          <addaction name="actionCopyGeometry"/>
+         <addaction name="actionToggleEditNetworkGeometry"/>
+         <addaction name="separator"/>
+         <addaction name="actionactionBuildingParametrization"/>
+         <addaction name="actionNetworkParametrization"/>
+         <addaction name="actionSiteParametrization"/>
         </widget>
        </item>
       </layout>
@@ -292,6 +297,54 @@
    </property>
    <property name="toolTip">
     <string>Switches to &quot;Copy geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionToggleEditNetworkGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
+   </property>
+   <property name="text">
+    <string>actionToggleEditNetworkGeometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Network Geometry</string>
+   </property>
+  </action>
+  <action name="actionactionBuildingParametrization">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/building_parameter.png</normaloff>:/gfx/actions/building_parameter.png</iconset>
+   </property>
+   <property name="text">
+    <string>actionBuildingParametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Building Parametrization</string>
+   </property>
+  </action>
+  <action name="actionNetworkParametrization">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/network.png</normaloff>:/gfx/actions/network.png</iconset>
+   </property>
+   <property name="text">
+    <string>actionNetworkParametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Network Parametrization</string>
+   </property>
+  </action>
+  <action name="actionSiteParametrization">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/info.png</normaloff>:/gfx/actions/info.png</iconset>
+   </property>
+   <property name="text">
+    <string>actionSiteParametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Site Parametrization</string>
    </property>
   </action>
  </widget>

@@ -115,6 +115,8 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
+    ../../src/SVPropEditNetwork.cpp \
+    ../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -122,6 +124,8 @@ SOURCES += \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
+    ../../src/SVUndoNetworkAddNodes.cpp \
+    ../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -252,7 +256,6 @@ SOURCES += \
 	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
 	../../src/SVPropModeSelectionWidget.cpp \
-	../../src/SVPropNetworkEditWidget.cpp \
 	../../src/SVPropSiteWidget.cpp \
 	../../src/SVPropVertexListWidget.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
@@ -298,6 +301,8 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
+    ../../src/SVPropEditNetwork.h \
+    ../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
@@ -305,6 +310,8 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
+    ../../src/SVUndoNetworkAddNodes.h \
+    ../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/SV_Conversions.h \
@@ -440,7 +447,6 @@ HEADERS  += \
 	../../src/SVPropFloorManagerItemDelegate.h \
 	../../src/SVPropFloorManagerWidget.h \
 	../../src/SVPropModeSelectionWidget.h \
-	../../src/SVPropNetworkEditWidget.h \
 	../../src/SVPropSiteWidget.h \
 	../../src/SVPropVertexListWidget.h \
 	../../src/SVScheduleHolidayWidget.h \
@@ -525,9 +531,10 @@ FORMS    += \
 	../../src/SVPropBuildingZoneProperty.ui \
 	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
+	../../src/SVPropEditNetwork.ui \
 	../../src/SVPropFloorManagerWidget.ui \
 	../../src/SVPropModeSelectionWidget.ui \
-	../../src/SVPropNetworkEditWidget.ui \
+	../../src/SVPropNetworkPropertiesWidget.ui \
 	../../src/SVPropSiteWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \

@@ -145,6 +145,8 @@ private slots:
 	void on_actionYLock_triggered(bool checked);
 	void on_actionZLock_triggered(bool checked);
 
+	void on_actionToggleEditNetworkGeometry_triggered();
+
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
 		without changing scene size (by moving left splitter).

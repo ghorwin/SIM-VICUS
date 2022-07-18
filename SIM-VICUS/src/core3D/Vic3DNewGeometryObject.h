@@ -32,6 +32,7 @@
 #include "Vic3DVertex.h"
 
 #include <VICUS_PlaneGeometry.h>
+#include <VICUS_PolyLine.h>
 
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
@@ -119,6 +120,10 @@ public:
 		NGM_Zone,
 		/*! Mode when floor polygon is complete and roof preview is shown. */
 		NGM_Roof,
+		/*! Mode when pipeline is being created */
+		NGM_Pipeline,
+		/*! Mode when sub stations are being created */
+		NGM_SubStations,
 		/*! Invalid mode - i.e. no geometry to show/generate. */
 		NUM_NGM
 	};
@@ -140,7 +145,7 @@ public:
 	/*! This function clears the current buffer and vertex lists. */
 	void startNewGeometry(NewGeometryMode m) {
 		// when drawing polygons or rectangles, we always start from scratch
-		if (m == NGM_Rect || m == NGM_Polygon) {
+		if (m == NGM_Rect || m == NGM_Polygon || m == NGM_Pipeline || m==NGM_SubStations) {
 			clear();
 			m_passiveMode = false;
 		}
@@ -194,6 +199,10 @@ public:
 
 	/*! Provides read-only access to the current plane geometry. */
 	const VICUS::PlaneGeometry & planeGeometry() const { return m_polygonGeometry; }
+
+	/*! Provides read-only access to the current polyline geometry. */
+	const VICUS::PolyLine & polyLineGeometry() const { return m_polyLineGeometry; }
+
 	/*! Returns generated planes. */
 	const std::vector<VICUS::PlaneGeometry> & generatedGeometry() const { return m_generatedGeometry; }
 
@@ -258,6 +267,9 @@ private:
 
 	/*! Stores the current geometry of the painted polygon or floor polygon. */
 	VICUS::PlaneGeometry			m_polygonGeometry;
+
+	/*! Stores the current geometry of painted polyline (used for pipelines) */
+	VICUS::PolyLine					m_polyLineGeometry;
 
 	/*! Contains the additional geometry generated for zones and roofs.
 		For zones, the first is always the ceiling, and all the others are walls. The floor polygon is stored in m_planeGeometry;

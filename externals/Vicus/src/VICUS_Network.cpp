@@ -36,6 +36,8 @@
 #include <IBK_FileReader.h>
 #include <IBK_FluidPhysics.h>
 
+#include <IBKMK_3DCalculations.h>
+
 #include <fstream>
 #include <algorithm>
 
@@ -83,7 +85,7 @@ unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v,
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (const NetworkNode &n: m_nodes){
-			if (n.m_position.distanceTo(v) < geometricResolution)
+			if (n.m_position.distanceTo(v) < GeometricResolution)
 				return n.m_id;
 		}
 	}
@@ -101,8 +103,8 @@ unsigned int Network::addNode(unsigned int preferedId, const NetworkNode &node, 
 }
 
 
-void Network::addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
-	NetworkEdge e(id, nodeId1, nodeId2, supply, 0, INVALID_ID);
+void Network::addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply, unsigned int pipePropId) {
+	NetworkEdge e(id, nodeId1, nodeId2, supply, 0, pipePropId);
 	m_edges.push_back(e);
 	updateNodeEdgeConnectionPointers();
 	m_edges.back().setLengthFromCoordinates();
@@ -183,21 +185,21 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 }
 
 
-void Network::setDefaultColors() {
-	for (NetworkEdge & edge: m_edges)
+void Network::setDefaultColors() const{
+	for (const NetworkEdge & edge: m_edges)
 		edge.m_color = Qt::lightGray;
 	for (const NetworkNode & node: m_nodes) {
 		switch (node.m_type) {
 			case VICUS::NetworkNode::NT_Source:
-				node.m_color = Qt::darkGray;
+				node.m_color = QColor(230, 138, 0); // orange
 			break;
 			case VICUS::NetworkNode::NT_Building:
-				node.m_color = Qt::darkGray;
+				node.m_color = QColor(0, 107, 179); // blue
 			break;
 			case VICUS::NetworkNode::NT_Mixer:
-				node.m_color = Qt::lightGray;
+				node.m_color = QColor(119, 179, 0); // green
 			break;
-			default:;
+			case VICUS::NetworkNode::NUM_NT:;
 		}
 	}
 }
@@ -311,7 +313,7 @@ void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
 			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
 			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			addEdge(++nextId, n1, n2, true);
+			addEdge(++nextId, n1, n2, true, INVALID_ID);
 		}
 	}
 }
@@ -342,7 +344,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 }
 
 
-void Network::generateIntersections(unsigned int nextUnusedId){
+void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> &addedNodes, std::vector<unsigned int> &addedEdges){
 
 	bool foundIntersection = true;
 
@@ -354,14 +356,17 @@ void Network::generateIntersections(unsigned int nextUnusedId){
 				// calculate intersection
 				NetworkLine l1 = NetworkLine(m_edges[i1]);
 				NetworkLine l2 = NetworkLine(m_edges[i2]);
-				IBK::point2D<double> ps;
+				IBKMK::Vector3D ps;
 				l1.intersection(l2, ps);
 
 				// if it is within both lines: add node and edges, adapt exisiting nodes
 				if (l1.containsPoint(ps) && l2.containsPoint(ps)){
-					unsigned nInter = addNode(++nextUnusedId, IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
-					addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true);
-					addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true);
+					unsigned nInter = addNode(++nextUnusedId, ps, NetworkNode::NT_Mixer);
+					addedNodes.push_back(nInter);
+					addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true, m_edges[i1].m_idPipe);
+					addedEdges.push_back(nextUnusedId);
+					addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true, m_edges[i2].m_idPipe);
+					addedEdges.push_back(nextUnusedId);
 					m_edges[i1].changeNode1(nodeById(nInter));
 					m_edges[i2].changeNode1(nodeById(nInter));
 					updateNodeEdgeConnectionPointers();
@@ -388,43 +393,65 @@ void Network::connectBuildings(unsigned int nextUnusedId, const bool extendSuppl
 
 		// find closest supply edge
 		double distMin = std::numeric_limits<double>::max();
-		unsigned idEdgeMin = 0;
-		for (unsigned id=0; id<m_edges.size(); ++id){
-			if (!m_edges[id].m_supply)
+		unsigned int idxEdgeMin = std::numeric_limits<unsigned int>::max();
+		for (unsigned idx=0; idx<m_edges.size(); ++idx){
+			if (!m_edges[idx].m_supply)
 				continue;
-			double dist = NetworkLine(m_edges[id]).distanceToPoint(nodeById(idBuilding)->m_position.point2D());
+			double dist = NetworkLine(m_edges[idx]).distanceToPoint(nodeById(idBuilding)->m_position);
 			if (dist<distMin){
 				distMin = dist;
-				idEdgeMin = id;
+				idxEdgeMin = idx;
 			}
 		}
 
-		// branch node
-		NetworkLine lMin = NetworkLine(m_edges[idEdgeMin]);
-		IBK::point2D<double> pBranch;
+		// no supply edge found
+		if (idxEdgeMin == std::numeric_limits<unsigned int>::max())
+			return;
+
+		// calculate branch node
+		IBKMK::Vector3D pBranch;
 		unsigned idBranch;
-		lMin.projectionFromPoint(nodeById(idBuilding)->m_position.point2D(), pBranch);
-		// branch node is inside edge: split edge
-		if (lMin.containsPoint(pBranch)){
-			idBranch = addNode(++nextUnusedId, IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
-			addEdge(++nextUnusedId, m_edges[idEdgeMin].nodeId1(), idBranch, true);
-			m_edges[idEdgeMin].changeNode1(nodeById(idBranch));
-			updateNodeEdgeConnectionPointers();
-		}
-		// branch node is outside edge
-		else{
-			double dist1 = NetworkLine::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node1->m_position.point2D());
-			double dist2 = NetworkLine::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
-			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].nodeId1() : m_edges[idEdgeMin].nodeId2();
+		double lineFactor = 0;
+		IBKMK::Vector3D a1 = m_edges[idxEdgeMin].m_node1->m_position;
+		IBKMK::Vector3D a2 = m_edges[idxEdgeMin].m_node2->m_position;
+		IBKMK::Vector3D b = a2 - a1;
+		IBKMK::lineToPointDistance(a1, b, nodeById(idBuilding)->m_position, lineFactor, pBranch);
+
+		// check if branch point is "outside" edge, i.e. if it is not between both end points or less than 1 m away from them
+		if (lineFactor * b.magnitude() < 1 || lineFactor * b.magnitude() > b.magnitude() - 1) {
+			// now we look which end point of edge is closer to it
+			double dist1 = (pBranch - a1).magnitude();
+			double dist2 = (pBranch - a2).magnitude();
+			idBranch = (dist1 < dist2) ? m_edges[idxEdgeMin].nodeId1() : m_edges[idxEdgeMin].nodeId2();
+			// special case: the selected end point is not a mixer. We create a branch node 1 m away from this point
+			if (nodeById(idBranch)->m_type != NetworkNode::NT_Mixer) {
+				if (dist1 < dist2)
+					pBranch = a1 + b * (1.0/b.magnitude());
+				else
+					pBranch = a2 - b * (1.0/b.magnitude());
+				idBranch = addNode(++nextUnusedId, pBranch, NetworkNode::NT_Mixer);
+				addEdge(++nextUnusedId, m_edges[idxEdgeMin].nodeId1(), idBranch, true, m_edges[idxEdgeMin].m_idPipe);
+				m_edges[idxEdgeMin].changeNode1(nodeById(idBranch));
+				updateNodeEdgeConnectionPointers();
+			}
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes) {
-				nodeById(idBranch)->m_position = IBKMK::Vector3D(pBranch);
+				nodeById(idBranch)->m_position = pBranch;
 				for (NetworkEdge *e: nodeById(idBranch)->m_edges)
 					e->setLengthFromCoordinates();
 			}
 		}
-		// connect building to branch node
-		addEdge(++nextUnusedId, idBranch, idBuilding, false);
+
+		// branch node is "inside" edge: split edge
+		else {
+			idBranch = addNode(++nextUnusedId, pBranch, NetworkNode::NT_Mixer);
+			addEdge(++nextUnusedId, m_edges[idxEdgeMin].nodeId1(), idBranch, true, m_edges[idxEdgeMin].m_idPipe);
+			m_edges[idxEdgeMin].changeNode1(nodeById(idBranch));
+			updateNodeEdgeConnectionPointers();
+		}
+
+		// finally connect building to branch node
+		addEdge(++nextUnusedId, idBranch, idBuilding, false, m_edges[idxEdgeMin].m_idPipe);
 
 		idNextBuilding = nextUnconnectedBuilding();
 	}
@@ -441,7 +468,6 @@ int Network::nextUnconnectedBuilding() const{
 
 
 void Network::cleanDeadEnds(){
-
 	for (unsigned i=0; i<m_nodes.size(); ++i){
 		for (const NetworkNode &n: m_nodes){
 			// look if this is a dead end
@@ -872,10 +898,28 @@ NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
 	return nullptr;
 }
 
+NetworkEdge * Network::edgeById(unsigned id) {
+	for (NetworkEdge &e: m_edges){
+		if (e.m_id == id)
+			return &e;
+	}
+	IBK_ASSERT(false);
+	return nullptr;
+}
+
 
 unsigned int VICUS::Network::indexOfEdge(unsigned nodeId1, unsigned nodeId2){
 	for (unsigned int i=0; i<m_edges.size(); ++i){
 		if (m_edges[i].nodeId1() == nodeId1 && m_edges[i].nodeId2() == nodeId2)
+			return i;
+	}
+	IBK_ASSERT(false);
+	return 9999;
+}
+
+unsigned int Network::indexOfEdge(unsigned edgeId) {
+	for (unsigned int i=0; i<m_edges.size(); ++i){
+		if (m_edges[i].m_id == edgeId)
 			return i;
 	}
 	IBK_ASSERT(false);

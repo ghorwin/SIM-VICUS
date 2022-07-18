@@ -69,21 +69,10 @@ public:
 	/*! Sets the properties m_propertyWidgetMode and m_objectColorMode based on current selections in the widget. */
 	void viewStateProperties(SVViewState & vs) const;
 
-	/*! returns currently selected network id */
-	unsigned int currentNetworkId() const;
-
-	/*! Switches the network selection combo box to the entry with the given networkId. */
-	void setCurrentNetwork(unsigned networkId);
-
 	/*! Sets a meaningful view state based on current's property widget appearance, and whether we have selection or not.
 		This function is called when we turn off any intermediate modes, like "align coordinate system"-mode.
 	*/
 	void setDefaultViewState();
-
-
-public slots:
-	/*! Connected to SVProjectHandler::modified() */
-	void onModified(int modificationType, ModificationInfo * );
 
 private slots:
 	void on_pushButtonBuilding_toggled(bool checked);
@@ -96,14 +85,7 @@ private slots:
 
 	void on_comboBoxBuildingProperties_currentIndexChanged(int);
 
-	void on_comboBoxSelectedNetwork_currentIndexChanged(int index);
-
 private:
-	/*! Based on selected properties, switch to one of the specific edit modes, based on
-		the selected objects. Sends only out a view state change event, if the combo box value
-		has been modified.
-	*/
-	void selectionChanged();
 
 	/*! This is called whenever the user has made changes to any of the components in
 		this widget and updates the enabled/disabled states of all controls.

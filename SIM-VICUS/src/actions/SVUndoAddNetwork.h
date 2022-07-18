@@ -34,7 +34,7 @@
 class SVUndoAddNetwork : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoAddNetwork)
 public:
-	SVUndoAddNetwork(const QString & label, const VICUS::Network & addedNetwork);
+	SVUndoAddNetwork(const QString & label, const VICUS::Network & addedNetwork, bool networkGeometryModified=true, bool modifyFarDist=true);
 
 	virtual void undo();
 	virtual void redo();
@@ -45,6 +45,9 @@ private:
 	VICUS::Network	m_addedNetwork;
 
 	double			m_farDistance;
+
+	bool			m_networkGeometryModified;
+	bool			m_modifyFarDist;
 };
 
 

@@ -168,6 +168,17 @@ private slots:
 
 	void on_checkBoxSelectedSurfaces_stateChanged(int arg1);
 
+	void on_toolButtonEditPipeProperties_clicked();
+
+	void on_toolButtonAddNetwork_clicked();
+
+	void on_pushButtonCreatePipeline_clicked();
+
+
+	void on_toolButtonAddNetwork_2_clicked();
+
+	void on_pushButtonCreateSubStation_clicked();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
@@ -177,6 +188,9 @@ private:
 
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
 	void updateButtonStates();
+
+	/*! Updates the enabled/disable states of buttons for pipeline and sub stations */
+	void updateNetworkButtons();
 
 	/*! Populates the combo box with components of matching type:
 		0 - wall
@@ -188,6 +202,12 @@ private:
 
 	/*! Populates the combo box with sub surface components. */
 	void updateSubSurfaceComponentComboBox(QComboBox * combo);
+
+	/*! Populates the combo box with available networks */
+	void updateNetworksComboBox(QComboBox * combo);
+
+	/*! Populates the combo box with available pipe properties */
+	void updatePipePropertiesComboBox();
 
 	bool reselectById(QComboBox * combo, int id) const;
 
@@ -214,6 +234,9 @@ private:
 
 	/*! Takes modified input data from widget and transfers it to the new geometry object. */
 	void updateRoofGeometry();
+
+	/*! Updates the line edits used for substations */
+	void updateSubStationLineEdits();
 
 	Ui::SVPropVertexListWidget	*m_ui;
 

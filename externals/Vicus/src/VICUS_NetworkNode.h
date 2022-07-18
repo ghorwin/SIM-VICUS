@@ -134,7 +134,7 @@ public:
 	// *** RUNTIME VARIABLES ***
 
 	/*! Pointers to adjacent edges */
-	std::vector<NetworkEdge*>			m_edges;
+	std::vector<NetworkEdge*>					m_edges;
 
 	/*! The radius used for the visualization of this node in the 3D scene [m].
 		Updated whenever the scale factor Network::m_scaleNodes changes.

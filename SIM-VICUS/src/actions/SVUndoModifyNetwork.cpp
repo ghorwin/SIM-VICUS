@@ -25,14 +25,15 @@
 
 #include "SVUndoModifyNetwork.h"
 #include "SVProjectHandler.h"
-
 #include "SVSettings.h"
 
-SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, unsigned int networkIndex, const VICUS::Network & modNetwork) :
-	m_networkIndex(networkIndex),
+#include <VICUS_utilities.h>
+
+SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, const VICUS::Network & modNetwork) :
 	m_network(modNetwork)
 {
 	setText( label );
+	m_networkIndex = VICUS::elementIndex(theProject().m_geometricNetworks, m_network.m_id);
 }
 
 
@@ -45,7 +46,7 @@ void SVUndoModifyNetwork::undo() {
 	theProject().updatePointers();
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
 }
 
 

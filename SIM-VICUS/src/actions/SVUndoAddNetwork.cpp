@@ -27,9 +27,10 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 
-SVUndoAddNetwork::SVUndoAddNetwork(	const QString & label,
-								const VICUS::Network & addedNetwork) :
-	m_addedNetwork(addedNetwork)
+SVUndoAddNetwork::SVUndoAddNetwork(const QString & label, const VICUS::Network & addedNetwork, bool networkGeometryModified, bool modifyFarDist) :
+	m_addedNetwork(addedNetwork),
+	m_networkGeometryModified(networkGeometryModified),
+	m_modifyFarDist(modifyFarDist)
 {
 	setText( label );
 	double gridWidth = std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
@@ -43,18 +44,23 @@ void SVUndoAddNetwork::undo() {
 	Q_ASSERT(!theProject().m_geometricNetworks.empty());
 
 	theProject().m_geometricNetworks.pop_back();
-	if (theProject().m_geometricNetworks.empty())
-		return;
-	theProject().m_geometricNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
-	const SVDatabase & db = SVSettings::instance().m_db;
-	theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
 	theProject().updatePointers();
+	if (!theProject().m_geometricNetworks.empty()) {
+		const SVDatabase & db = SVSettings::instance().m_db;
+		theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
+	}
 
-	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+	if (m_modifyFarDist) {
+		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+		SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
+	}
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
-	SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
+	if (m_networkGeometryModified)
+		SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
+	else
+		SVProjectHandler::instance().setModified( SVProjectHandler::NetworkDataChanged);
+
 }
 
 
@@ -63,10 +69,17 @@ void SVUndoAddNetwork::redo() {
 
 	theProject().m_geometricNetworks.push_back(m_addedNetwork);
 	theProject().updatePointers();
-	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+
+	if (m_modifyFarDist) {
+		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+		SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
+	}
 
 	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
-	SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
+	if (m_networkGeometryModified)
+		SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
+	else
+		SVProjectHandler::instance().setModified( SVProjectHandler::NetworkDataChanged);
+
 }
 

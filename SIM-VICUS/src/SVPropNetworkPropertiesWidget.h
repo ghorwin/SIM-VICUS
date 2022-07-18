@@ -44,11 +44,11 @@ class ModificationInfo;
 class SVPropModeSelectionWidget;
 
 /*! A property widget for editing network properties. */
-class SVPropNetworkEditWidget : public QWidget {
+class SVPropNetworkPropertiesWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit SVPropNetworkEditWidget(QWidget *parent = nullptr);
-	~SVPropNetworkEditWidget();
+	explicit SVPropNetworkPropertiesWidget(QWidget *parent = nullptr);
+	~SVPropNetworkPropertiesWidget();
 
 	/*! Selects the respective edit mode for the widget.
 		This function is called whenever a selection change or edit mode change has occurred
@@ -62,7 +62,7 @@ public:
 		In any case, the currently shown input widgets must be updated according to the current
 		selection in the project.
 	*/
-	void selectionChanged(unsigned int networkId);
+	void onSelectionChanged();
 
 	SVPropModeSelectionWidget				* m_propModeSelectionWidget;
 
@@ -70,7 +70,6 @@ public slots:
 
 	/*! Connected to SVProjectHandler::modified(), we listen to changes in selections. */
 	void onModified( int modificationType, ModificationInfo * data );
-
 
 private slots:
 	void on_comboBoxNodeType_activated(int index);
@@ -81,25 +80,9 @@ private slots:
 
 	void on_checkBoxSupplyPipe_clicked();
 
-	void on_pushButtonSizePipeDimensions_clicked();
-
-	void on_pushButtonGenerateIntersections_clicked();
-
-	void on_pushButtonConnectBuildings_clicked();
-
-	void on_pushButtonReduceDeadEnds_clicked();
-
-	void on_pushButtonReduceRedundantNodes_clicked();
-
 	void on_lineEditHeatFlux_editingFinished();
 
 	void on_lineEditNodeMaxHeatingDemand_editingFinished();
-
-	void on_horizontalSliderScaleNodes_valueChanged(int value);
-
-	void on_horizontalSliderScaleEdges_valueChanged(int value);
-
-	void on_pushButtonSelectPipes_clicked();
 
 	void on_lineEditNodeDisplayName_editingFinished();
 
@@ -109,11 +92,9 @@ private slots:
 
 	void on_heatExchangeDataFile_editingFinished();
 
-	void on_comboBoxHeatExchangeType_activated(int index);
+	void on_comboBoxHeatExchangeType_activated(int);
 
 	void on_lineEditHXTransferCoefficient_editingFinished();
-
-	void on_pushButtonSelectFluid_clicked();
 
 	void on_pushButtonAssignPipe_clicked();
 
@@ -123,13 +104,7 @@ private slots:
 
 	void on_pushButtonAssignSubNetwork_clicked();
 
-	void on_pushButtonTempChangeIndicator_clicked();
-
-	void on_pushButtonRemoveSmallEdge_clicked();
-
 	void on_pushButtonRecalculateLength_clicked();
-
-	void on_pushButtonDeleteNetwork_clicked();
 
 	void on_pushButtonExchangePipe_clicked();
 
@@ -156,21 +131,14 @@ private:
 	/*! Update all information that can be updated when knowing only the network,
 	 * no edge/node need to be selected here
 	 */
-	void updateNetworkProperties();
+	void updateTableWidgets();
 
+	/*! Update heat exchange properties of nodes and edges */
 	void updateHeatExchangeProperties();
-
-	void modifySizingParams();
-
-	bool setNetwork();
 
 	void clearUI();
 
 	void setAllEnabled(bool enabled);
-
-	QString largestDiameter() const;
-
-	QString smallestDiameter() const;
 
 	void modifyHeatExchangeProperties();
 
@@ -198,16 +166,15 @@ private:
 		return true;
 	}
 
-	Ui::SVPropNetworkEditWidget		*m_ui;
+	Ui::SVPropNetworkEditWidget				*m_ui;
 
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
-	const VICUS::Network *			m_currentConstNetwork = nullptr;
+	const VICUS::Network					*m_currentNetwork = nullptr;
 
-	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
-	VICUS::Network					m_currentNetwork;
-
+	/*! The currently selected edges */
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
+	/*! The currently selected nodes */
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
 };
 
