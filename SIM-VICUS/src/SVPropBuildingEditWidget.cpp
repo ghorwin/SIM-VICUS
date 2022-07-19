@@ -107,7 +107,7 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 
 		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
 			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(6))->updateUi();
-			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(7))->updateUi();
+			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(8))->updateUi();
 		break;
 
 		// nothing to do for the remaining modification types
