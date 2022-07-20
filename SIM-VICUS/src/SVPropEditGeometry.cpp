@@ -205,7 +205,7 @@ bool SVPropEditGeometry::handleGlobalKeyPress(Qt::Key k) {
 			if (!m_ui->pushButtonCancel->isEnabled())
 				return false;
 			m_ui->pushButtonCancel->click();
-		break;
+			break;
 
 		default:
 			return false;
@@ -220,15 +220,15 @@ bool SVPropEditGeometry::handleGlobalKeyPress(Qt::Key k) {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
-	case SVProjectHandler::AllModified:
-	case SVProjectHandler::BuildingGeometryChanged:
-	case SVProjectHandler::NodeStateModified:
-		// When the building geometry has changed, we need to update the geometrical info
-		// in the widget based on the current selection.
-		updateUi();
-		break;
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NodeStateModified:
+			// When the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection.
+			updateUi();
+			break;
 
-	default: ; // just to make compiler happy
+		default: ; // just to make compiler happy
 	}
 }
 
@@ -559,9 +559,9 @@ void SVPropEditGeometry::updateRotationPreview() {
 		double oldOrientationDeg = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) / IBK::DEG2RAD;
 		if (oldOrientationDeg < 0)
 			oldOrientationDeg += 360;
-//		qDebug() << "Old orientation deg = " << oldOrientationDeg;
-//		qDebug() << "New orientation deg = " << oriDeg;
-//		qDebug() << "New 90-inclination deg = " << incliRad / IBK::DEG2RAD;
+		//		qDebug() << "Old orientation deg = " << oldOrientationDeg;
+		//		qDebug() << "New orientation deg = " << oriDeg;
+		//		qDebug() << "New 90-inclination deg = " << incliRad / IBK::DEG2RAD;
 
 		// we need to do two different rotations, one along the same orientation, but to different
 		// inclination - hereby the rotation axis is computed from old normal vector and new normal vector
@@ -580,14 +580,14 @@ void SVPropEditGeometry::updateRotationPreview() {
 			// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
 			// rotate to
 			IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
-	//		qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
+			//		qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
 
 			// we now also have to find the angle between both normals
 
 			double angle = angleBetweenVectorsDeg(m_normal, newNormal);
 
 			rotationInc = QQuaternion::fromAxisAndAngle(IBKVector2QVector(rotationAxis), (float)angle);
-	//		qDebug() << "Roation angle: " << angle << " °";
+			//		qDebug() << "Roation angle: " << angle << " °";
 		}
 
 		QQuaternion rotationOrientation;
@@ -861,8 +861,8 @@ void SVPropEditGeometry::adjustLocalCoordinateSystemForRotateToAngle() {
 		return;
 	// special handling when rotation mode with "orient to angle" is selected
 	if (m_ui->stackedWidget->currentIndex() == MT_Rotate &&
-		m_ui->radioButtonRotationAlignToAngles->isChecked() &&
-		!m_selSurfaces.empty())
+			m_ui->radioButtonRotationAlignToAngles->isChecked() &&
+			!m_selSurfaces.empty())
 	{
 		// check all selected surfaces and obtain their orientation/inclination
 		IBKMK::Vector3D normal;
@@ -950,8 +950,8 @@ void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
 	// for now we just reset the LCS based on the current selection - but actually, the state before starting the transform
 	// includes the (modified) location/orientation of the LCS _after_ the selection had been made
-//	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
-//	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
+	//	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
+	//	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
 	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	// also disable apply and cancel buttons
 	m_ui->pushButtonApply->setEnabled(false);
@@ -984,6 +984,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		// create a copy of the surface
 		VICUS::Surface modS(*s);
 		IBKMK::Polygon3D origPoly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
+		handledSurfaces.insert(s);
 
 		if (haveScaling) {
 			// local scaling involves translation, rotation _and_ changes to the local polyome... hence we better work
@@ -1077,62 +1078,72 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		//       surface - this may easily happen if, for example, a subsurface is translated out of its parent surface.
 		//       In this case the subsurface will still exist, but won't be a hole in the parent's surface geometry.
 		//       TODO : such invalid subsurfaces should be visualized somehow.... ???? -> TODO : Andreas
-#if 0
-		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
-		if (ss != nullptr) {
-			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
-			if (parentSurf != nullptr && ss->m_parent->m_selected && ss->m_parent->m_visible)
-				continue; // already handled by surface scaling
 
-			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
-				continue; // surface already handled
-
-			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
-			VICUS::Surface modS(*parentSurf);
-
-			// we cache our poldon data
-			IBKMK::Vector3D offset3d = modS.geometry().offset();
-			const IBKMK::Vector3D &localX = modS.geometry().localX();
-			const IBKMK::Vector3D &localY = modS.geometry().localY();
-
-			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
-			// now we also have to scale the sub surfaces
-			for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
-
-				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
-				newSubSurfs[i] = modS.subSurfaces()[i];
-
-				if (!modS.subSurfaces()[i].m_selected || !modS.subSurfaces()[i].m_visible)
-					continue;
-
-				// we only modify our selected sub surface
-				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
-				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
-
-
-				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
-					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
-
-					// we now calculate the 3D points of the sub surface
-					IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
-					rotate.rotateVector(v3D);
-					v3D = v3D + trans;
-
-					// and we calculate back the projection on the plane
-					// we have to take the offset of our new scaled polygon
-					IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
-				}
-
-				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-			}
-			handledSurfaces.insert(parentSurf);
-
-			// we update the 2D polyline
-			modS.setSubSurfaces(newSubSurfs);
-		}
-#endif
-		// TODO : Netzwerk zeugs
 	}
+
+	for (const VICUS::SubSurface *ss : m_selSubSurfaces) {
+
+		VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
+		if (parentSurf == nullptr)
+			continue; // just to be sure that we have a parental surface
+
+		if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
+			continue; // already handled by surface scaling
+
+		// copy our old surface and update its sub-surfaces
+		VICUS::Surface newSurf(*parentSurf);
+
+		// we cache our polygon data
+		const IBKMK::Vector3D &offset3d = newSurf.geometry().offset();
+		const IBKMK::Vector3D &localX = newSurf.geometry().localX();
+		const IBKMK::Vector3D &localY = newSurf.geometry().localY();
+
+		// we have to temporarily copy our old sub-surfaces
+		std::vector<VICUS::SubSurface> newSubSurfs = newSurf.subSurfaces();
+
+		for (unsigned int i=0; i<newSubSurfs.size(); ++i) {
+
+			// number of sub-surfaces and holes should always be equal
+			// Just in order to be safe
+			Q_ASSERT(newSurf.subSurfaces().size() == newSurf.geometry().holes().size());
+
+			// we only modify our selected sub surface
+			VICUS::SubSurface &subS = newSubSurfs[i];
+
+			// if the window is not selected we skip it
+			if (!subS.m_selected || !subS.m_visible)
+				continue;
+
+			// temporarily store our new sub-surface points
+			std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
+			// get the transformation matrix
+			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
+
+			for (unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j) {
+				const IBKMK::Vector2D &v2D = subS.m_polygon2D.vertexes()[j];
+
+				// we now calculate the 3D points of the sub surface
+				IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
+
+				v3D = QVector2IBKVector( transMat * IBKVector2QVector(v3D) );
+
+				// reconstruct the polygon with new vertexes
+				// we have to take the offset of our new scaled polygon
+				IBKMK::planeCoordinates(offset3d, localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
+			}
+
+			newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
+		}
+
+		handledSurfaces.insert(parentSurf);
+
+		// we update the 2D polyline
+		newSurf.setSubSurfaces(newSubSurfs);
+		modifiedSurfaces.push_back(newSurf);
+	}
+
+
+	// TODO : Netzwerk zeugs
 
 	// in case operation was executed without any selected objects - should be prevented
 	if (modifiedSurfaces.empty())
