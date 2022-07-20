@@ -491,8 +491,9 @@ void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromS
 
 		// process all componentInstances and for all that reference any of the selected surfaces, replace component
 		for (VICUS::ComponentInstance & ci : compInstances) {
-			std::set<const VICUS::Surface*>::iterator it = selectedSurfaces.find(ci.m_sideASurface);
-			if (it != selectedSurfaces.end()) {
+			std::set<const VICUS::Surface*>::iterator itA = selectedSurfaces.find(ci.m_sideASurface);
+			std::set<const VICUS::Surface*>::iterator itB = selectedSurfaces.find(ci.m_sideBSurface);
+			if (itA != selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
 				// if new component instance does not have an active layer, also remove the surface heating and control zone
 				// properties
@@ -500,11 +501,11 @@ void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromS
 					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
 					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
 				}
-				selectedSurfaces.erase(it);
-				continue;
+				selectedSurfaces.erase(itA);
+				// don't use continue here, we may also have sideBSurface in this component, so we want to erase the sideB surface as well
 			}
-			it = selectedSurfaces.find(ci.m_sideBSurface);
-			if (it != selectedSurfaces.end()) {
+
+			if (itB != selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
 				// if new component instance does not have an active layer, also remove the surface heating and control zone
 				// properties
@@ -512,7 +513,7 @@ void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromS
 					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
 					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
 				}
-				selectedSurfaces.erase(it);
+				selectedSurfaces.erase(itB);
 			}
 		}
 
