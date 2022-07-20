@@ -83,8 +83,6 @@ private:
 	void updateUi();
 
 	Ui::SVPropBuildingEditWidget	*m_ui;
-	/*! Stores the current property type (set in setPropertyType()). */
-	int								m_propertyType = -1;
 };
 
 

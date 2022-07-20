@@ -178,8 +178,6 @@ private:
 	/*! The currently selected nodes */
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
 
-	/*! Stores the current property type (set in setPropertyType()). */
-	int										m_propertyType = -1;
 };
 
 
