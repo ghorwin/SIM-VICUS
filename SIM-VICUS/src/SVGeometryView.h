@@ -105,10 +105,11 @@ public:
 	/*! Hides measurement widget and untoggles the button. */
 	void hideMeasurementWidget();
 
-	/*! Triggers actionToggleGeometryMode. */
-	void switch2GeometryMode();
-	/*! Triggers actionToggleParamtrizationMode. */
-	void switch2ParametrizationMode();
+	void switch2AddGeometry();
+
+	void switch2BuildingParametrization();
+
+	void switch2NetworkParametrization();
 
 public slots:
 	/*! Handles selection changes and enables/disables button states. */
@@ -128,10 +129,6 @@ private slots:
 	*/
 	void coordinateInputFinished();
 
-	void on_actionToggleGeometryMode_triggered();
-	void on_actionToggleParametrizationMode_triggered();
-
-	void on_actionAddGeometry_triggered();
 	void on_actionTranslateGeometry_triggered();
 	void on_actionRotateGeometry_triggered();
 	void on_actionScaleGeometry_triggered();
@@ -145,7 +142,15 @@ private slots:
 	void on_actionYLock_triggered(bool checked);
 	void on_actionZLock_triggered(bool checked);
 
-	void on_actionToggleEditNetworkGeometry_triggered();
+	void on_actionBuildingParametrization_triggered();
+
+	void on_actionAddGeometry_triggered();
+
+	void on_actionNetworkParametrization_triggered();
+
+	void on_actionSiteParametrization_triggered();
+
+	void on_actionEditNetworkGeometry_triggered();
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized

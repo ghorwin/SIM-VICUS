@@ -24,8 +24,6 @@ SVPropEditNetwork::SVPropEditNetwork(QWidget *parent) :
 
 	// connect with project handler
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified, this, &SVPropEditNetwork::onModified);
-
-	SVViewStateHandler::instance().m_propEditNetworkWidget = this;
 }
 
 SVPropEditNetwork::~SVPropEditNetwork()

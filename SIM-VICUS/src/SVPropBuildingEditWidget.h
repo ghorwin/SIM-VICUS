@@ -30,6 +30,9 @@
 
 #include <set>
 
+#include "SVConstants.h"
+
+
 namespace Ui {
 	class SVPropBuildingEditWidget;
 }
@@ -55,6 +58,8 @@ public:
 	*/
 	void setPropertyType(int buildingPropertyType);
 
+	int currentPropertyType();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
@@ -66,6 +71,9 @@ public slots:
 		changed.
 	*/
 	void onColorRefreshNeeded();
+
+private slots:
+	void on_comboBoxBuildingProperties_currentIndexChanged(int index);
 
 private:
 	/*! Updates all edit widgets to current project state.

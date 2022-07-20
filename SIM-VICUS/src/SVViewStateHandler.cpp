@@ -51,8 +51,10 @@ SVViewStateHandler::~SVViewStateHandler() {
 
 
 void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
-	m_viewState = newViewState;
-	emit viewStateChanged();
+	if (newViewState != m_viewState) {
+		m_viewState = newViewState;
+		emit viewStateChanged();
+	}
 }
 
 

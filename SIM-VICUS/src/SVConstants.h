@@ -91,17 +91,27 @@ enum BuildingPropertyTypes {
 	/*! Boundary conditions of component. */
 	BT_BoundaryConditions,
 	/*! Surface interlinking operations. */
-	BT_InterlinkedSurfaces,
-	/*! Floor manager. */
-	BT_FloorManager,
+	BT_SurfaceConnection,
 	/*! Zone templates. */
 	BT_ZoneTemplates,
 	/*! Surface heating */
 	BT_SurfaceHeating,
 	/*! Zone property */
 	BT_ZoneProperty,
-	/*! Supply system */
-	BT_SupplySystem
+	/*! Floor manager. */
+	BT_FloorManager
+};
+
+/*! Different edit/coloring modes. */
+enum NetworkPropertyTypes {
+	/*! Assigned node properties. */
+	NT_Node,
+	/*! Assigned edge properties. */
+	NT_Edge,
+	/*! Assigned sub station properties. */
+	NT_SubStation,
+	/*! Assigned heat exchange properties. */
+	NT_HeatExchange,
 };
 
 /*! \file SVConstants.h

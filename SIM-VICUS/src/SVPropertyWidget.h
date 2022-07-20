@@ -33,7 +33,6 @@ namespace IBKMK {
 	class Vector3D;
 }
 
-class SVPropModeSelectionWidget;
 class ModificationInfo;
 
 #include <SVViewState.h>
@@ -63,12 +62,17 @@ public:
 		M_SiteProperties,
 		M_NetworkProperties,
 		M_BuildingProperties,
-		M_FloorManager,
 		M_AddWindowWidget,
 		NUM_M
 	};
 
 	explicit SVPropertyWidget(QWidget * parent = nullptr);
+
+	/*! Shows the building property widget and sets the corresponding property type */
+	void setBuildingPropertyType(int buildingPropertyType);
+
+	/*! Shows the network property widget and sets the corresponding property type */
+	void setNetworkPropertyType(int networkPropertyType);
 
 public slots:
 
@@ -78,6 +82,11 @@ public slots:
 	void onViewStateChanged();
 
 private:
+
+	/*! Sets the according property widget visible: This functions basically calls the template function showPropertyWidget() and does some updates
+		It is only called by initialization and when view state has changed */
+	void setPropertyWidgetVisible(SVViewState::PropertyWidgetMode propertyWidgetMode);
+
 	/*! Convenience function for creating a widget, if not existing yet, adding it to
 		the layout and showing it.
 	*/
@@ -96,10 +105,9 @@ private:
 	/*! Pointer to property widget: add polygon */
 	QWidget					*m_propWidgets[NUM_M];
 
-	/*! The widget with property edit selection mode, shown when view is in
-		VM_PropertyEditMode.
-	*/
-	SVPropModeSelectionWidget * m_propModeSelectionWidget = nullptr;
+	/*! Stores the current property widget mode */
+	SVViewState::PropertyWidgetMode		m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+
 };
 
 #endif // SVPropertyWidgetH

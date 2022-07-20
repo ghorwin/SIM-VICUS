@@ -51,8 +51,8 @@
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
-#include "SVPropModeSelectionWidget.h"
 #include "SVPropEditNetwork.h"
+
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent),
@@ -212,13 +212,7 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 				m_sceneView->toggleTranslateCoordinateSystem();
 			break;
 
-			// *** C - toggle parametrization and geometry mode ***
-		case Qt::Key_C :
-			if (m_ui->actionToggleGeometryMode->isChecked())
-				switch2ParametrizationMode();
-			else
-				switch2GeometryMode();
-			break;
+		// TODO: shortcuts network and building edit mode
 
 		default:
 			return false; // not our key
@@ -239,19 +233,29 @@ void SVGeometryView::hideMeasurementWidget() {
 	m_ui->actionMeasure->setChecked(false);
 }
 
-
-void SVGeometryView::switch2GeometryMode() {
-	m_ui->actionToggleGeometryMode->trigger();
+void SVGeometryView::switch2AddGeometry() {
+	m_ui->actionAddGeometry->trigger();
 }
 
+void SVGeometryView::switch2BuildingParametrization() {
+	m_ui->actionBuildingParametrization->trigger();
+}
 
-void SVGeometryView::switch2ParametrizationMode() {
-	m_ui->actionToggleParametrizationMode->trigger();
+void SVGeometryView::switch2NetworkParametrization() {
+	m_ui->actionNetworkParametrization->trigger();
 }
 
 
 void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+
+	// toggle network buttons based on wether we have networks in the project
+	if (modType == SVProjectHandler::AllModified || modType == SVProjectHandler::NetworkDataChanged) {
+		const VICUS::Project &p = project();
+		m_ui->actionNetworkParametrization->setEnabled(!p.m_geometricNetworks.empty());
+		m_ui->actionEditNetworkGeometry->setEnabled(!p.m_geometricNetworks.empty());
+	}
+
 	switch (modType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
@@ -332,18 +336,14 @@ void SVGeometryView::onViewStateChanged() {
 	m_ui->actionYLock->setVisible(lockVisible);
 	m_ui->actionZLock->setVisible(lockVisible);
 
-	bool geometryModeActive = (vs.m_viewMode == SVViewState::VM_GeometryEditMode);
+	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
+	//       the associated actions.
+	m_actionCoordinateInput->setVisible(lockVisible);
+
+	bool geometryModeActive = vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry;
 	m_ui->geometryToolBar->setEnabled(geometryModeActive);
 	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
-	// Note: changing the check state doesn't trigger side effects
-	m_ui->actionToggleGeometryMode->setChecked(geometryModeActive);
-	m_ui->actionToggleParametrizationMode->setChecked(!geometryModeActive);
-
-	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
-	//       the associated actions.
-
-	m_actionCoordinateInput->setVisible(lockVisible);
 
 	bool localCoordinateSystemVisible =
 			(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
@@ -484,35 +484,13 @@ void SVGeometryView::coordinateInputFinished() {
 }
 
 
-void SVGeometryView::on_actionToggleGeometryMode_triggered() {
-	// switch view state to geometry edit mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	std::set<const VICUS::Object *> sel;
-	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-	// we choose the operation based on the selection state
-	if (sel.empty()) {
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-	}
-	else {
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-	}
-	vs.m_objectColorMode = SVViewState::OCM_None;
-	SVViewStateHandler::instance().setViewState(vs);
-}
 
-
-void SVGeometryView::on_actionToggleParametrizationMode_triggered() {
+void SVGeometryView::on_actionBuildingParametrization_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to property edit mode
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	// select property mode based on what's being selected in the mode selection
-	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
-	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
 	SVViewStateHandler::instance().setViewState(vs);
 }
 
@@ -521,20 +499,20 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_AddGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
-		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-		vs.m_objectColorMode = SVViewState::OCM_None;
-		// we choose the operation based on the selection state
-		std::set<const VICUS::Object *> sel;
-		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-		if (sel.empty())
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-		else
-			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		SVViewStateHandler::instance().setViewState(vs);
+	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	vs.m_objectColorMode = SVViewState::OCM_None;
+	// we choose the operation based on the selection state
+	std::set<const VICUS::Object *> sel;
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+	if (sel.empty())
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	else
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+	SVViewStateHandler::instance().setViewState(vs);
 	}
+
 }
 
 
@@ -542,10 +520,9 @@ void SVGeometryView::on_actionTranslateGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
@@ -565,10 +542,9 @@ void SVGeometryView::on_actionRotateGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
@@ -588,10 +564,9 @@ void SVGeometryView::on_actionScaleGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
@@ -611,10 +586,9 @@ void SVGeometryView::on_actionAlignGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
@@ -634,10 +608,9 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
 	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+		vs.inPropertyEditingMode())
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
@@ -653,21 +626,37 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 }
 
 
-void SVGeometryView::on_actionToggleEditNetworkGeometry_triggered() {
+void SVGeometryView::on_actionEditNetworkGeometry_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
-	if (vs.m_propertyWidgetMode != SVViewState::PM_EditNetwork||
-			vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditNetwork ||
+		vs.inPropertyEditingMode() )
 	{
 		vs.m_propertyWidgetMode = SVViewState::PM_EditNetwork;
-		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		vs.m_objectColorMode = SVViewState::OCM_None;
 		vs.m_sceneOperationMode = SVViewState::NUM_OM;
 		SVViewStateHandler::instance().setViewState(vs);
 	}
-	Q_ASSERT(SVViewStateHandler::instance().m_propEditNetworkWidget != nullptr);
-	SVViewStateHandler::instance().m_propEditNetworkWidget->updateComboBoxNetworks();
-	SVViewStateHandler::instance().m_propEditNetworkWidget->updateUi();
+}
+
+
+void SVGeometryView::on_actionNetworkParametrization_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_NetworkProperties;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVGeometryView::on_actionSiteParametrization_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
@@ -723,12 +712,11 @@ void SVGeometryView::setupToolBar() {
 	// *** Mode Switching Tool Bar ***
 
 	// initialize view mode buttons
-	m_ui->actionToggleGeometryMode->blockSignals(true);
-	m_ui->actionToggleGeometryMode->setChecked(true);
-	m_ui->actionToggleGeometryMode->blockSignals(false);
-	m_ui->actionToggleParametrizationMode->blockSignals(true);
-	m_ui->actionToggleParametrizationMode->setChecked(false);
-	m_ui->actionToggleParametrizationMode->blockSignals(false);
+	m_ui->actionAddGeometry->blockSignals(true);
+	m_ui->actionAddGeometry->setChecked(true);
+	m_ui->actionAddGeometry->blockSignals(false);
+
+	// TODO: set other actions unchecked ?
 }
 
 
@@ -789,4 +777,5 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
+
 

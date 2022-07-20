@@ -52,11 +52,11 @@
 #include "SVSettings.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoDeleteSelected.h"
-#include "SVPropModeSelectionWidget.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVMeasurementWidget.h"
 #include "SVMainWindow.h"
 #include "SVGeometryView.h"
+#include "SVPropertyWidget.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -124,7 +124,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			m_newGeometryObject.clear();
 			// set scene operation mode to "normal" if we are in place vertex mode
 			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			if (!vs.inPropertyEditingMode()) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
 				// we have no selection, switch to "add geometry" mode
 				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
@@ -149,7 +149,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
 			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			if (!vs.inPropertyEditingMode()) {
 				if (selectedObjects.empty()) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
 					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
@@ -176,7 +176,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+			if (vs.inPropertyEditingMode()) {
 				refreshColors();
 				if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
 					m_transparentBuildingObject.updateBuffers();
@@ -206,9 +206,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 				updateSelection = true;
 
 			// If we have a selection, switch scene operation mode to OM_SelectedGeometry.
-			// If we no longer have a selection, and we are in geometry mode+edit mode -> switch back to "AddGeometry"
+			// If we no longer have a selection, and we are in geometry mode+edit mode -> switch back to default operation mode NUM_OP
 			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			if (!vs.inPropertyEditingMode()) {
 				if (selectedObjects.empty()) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
 					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
@@ -253,7 +253,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 		// transfer data from building geometry to vertex array caches
 		const SVViewState & vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+		if (vs.inPropertyEditingMode())
 			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID); // only changes color set in objects
 		generateBuildingGeometry();
 		generateTransparentBuildingGeometry();
@@ -265,7 +265,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		// of network objects. Hence, we recolor the objects here. Note, for buildings, re-coloring
 		// operations are separate from building geometry modification operations.
 		const SVViewState & vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+		if (vs.inPropertyEditingMode())
 			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID); // only changes color set in objects
 		// we use the same shader as for building elements
 		m_networkGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
@@ -1220,7 +1220,7 @@ void Scene::setViewState(const SVViewState & vs) {
 	// if we are currently constructing geometry, and we switch the view mode to
 	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
-	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+	if (vs.inPropertyEditingMode()) {
 		leaveMeasurementMode(false);
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
@@ -1231,7 +1231,7 @@ void Scene::setViewState(const SVViewState & vs) {
 		}
 	}
 	else {
-		Q_ASSERT(vs.m_objectColorMode == SVViewState::OCM_None);
+//		Q_ASSERT(vs.m_objectColorMode == SVViewState::OCM_None);
 		if (m_lastColorMode != vs.m_objectColorMode) {
 			colorUpdateNeeded = true;
 		}
@@ -2187,8 +2187,6 @@ void Scene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 		m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
 		qDebug() << "Leaving 'Align coordinate system' mode";
 	}
-	// switch back to defined view state
-	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 }
 
 
@@ -2213,8 +2211,6 @@ void Scene::leaveCoordinateSystemTranslationMode(bool abort) {
 		// finish aligning coordinate system
 		qDebug() << "Leaving 'Translate coordinate system' mode";
 	}
-	// switch back to previous view state
-	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 }
 
 
@@ -2239,10 +2235,6 @@ void Scene::leaveMeasurementMode(bool setViewState) {
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 	m_measurementObject.reset();
 	qDebug() << "Leaving 'Measurement' mode";
-
-	// switch back to previous view state
-	if (setViewState)
-		SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 
 	SVViewStateHandler::instance().m_geometryView->hideMeasurementWidget();
 

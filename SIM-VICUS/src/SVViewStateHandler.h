@@ -42,7 +42,7 @@ class SVPropEditGeometry;
 class SVPropVertexListWidget;
 class SVMeasurementWidget;
 class SVGeometryView;
-class SVPropModeSelectionWidget;
+class SVPropertyWidget;
 class SVLocalCoordinateView;
 class SVPropAddWindowWidget;
 class SVPreferencesDialog;
@@ -120,10 +120,10 @@ public:
 	/*! Pointer to "place vertex" widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */
 	SVPropVertexListWidget				*m_propVertexListWidget = nullptr;
 
-	/*! Pointer to property mode selection widget - can be used to query required view state properties
+	/*! Pointer to property widget - can be used to query required view state properties
 		when switching edit modes.
 	*/
-	SVPropModeSelectionWidget			*m_propModeSelectionWidget = nullptr;
+	SVPropertyWidget					*m_propertyWidget = nullptr;
 
 	/*! Pointer to property widget for adding windows/doors. */
 	SVPropAddWindowWidget				*m_propAddWindowWidget = nullptr;

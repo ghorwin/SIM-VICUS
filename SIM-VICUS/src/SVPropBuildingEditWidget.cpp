@@ -38,7 +38,7 @@
 #include "SVPropBuildingZoneTemplatesWidget.h"
 #include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "SVPropBuildingZoneProperty.h"
-#include "SVPropSupplySystemsWidget.h"
+#include "SVPropFloorManagerWidget.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -47,7 +47,22 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->mainLayout->setMargin(0);
 
+	// populate combobox
+	m_ui->comboBoxBuildingProperties->blockSignals(true);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Component"), BT_Components);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Sub-Surfaces"), BT_SubSurfaceComponents);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Construction orientation"), BT_ComponentOrientation);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Surface connections/component instances"), BT_SurfaceConnection);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
+	m_ui->comboBoxBuildingProperties->blockSignals(false);
+	m_ui->comboBoxBuildingProperties->setCurrentIndex(0);
+
 	// Mind: order in which the widgets are added is important, see setPropertyType()
+	// Note: keep this order in sync with the enum and the combobox
 	m_ui->stackedWidget->addWidget(new SVPropBuildingComponentsWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSubComponentsWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingComponentOrientationWidget(this));
@@ -55,8 +70,8 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceConnectionWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneTemplatesWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceHeatingWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropSupplySystemsWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneProperty(this));
+	m_ui->stackedWidget->addWidget(new SVPropFloorManagerWidget(this));
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
@@ -75,20 +90,12 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
-	m_propertyType = buildingPropertyType;
+	m_ui->comboBoxBuildingProperties->setCurrentIndex(buildingPropertyType);
+}
 
-	switch ((BuildingPropertyTypes)buildingPropertyType) {
-		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(0); break;
-		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(1); break;
-		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(2); break;
-		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(3); break;
-		case BT_InterlinkedSurfaces		: m_ui->stackedWidget->setCurrentIndex(4); break;
-		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
-		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
-		case BT_SupplySystem			: m_ui->stackedWidget->setCurrentIndex(7); break;
-		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(8); break;
-		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
-	}
+
+int SVPropBuildingEditWidget::currentPropertyType() {
+	return m_ui->comboBoxBuildingProperties->currentIndex();
 }
 
 
@@ -106,8 +113,8 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		break;
 
 		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
-			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(6))->updateUi();
-			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(8))->updateUi();
+			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
+			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -136,13 +143,49 @@ void SVPropBuildingEditWidget::updateUi() {
 	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,
 	//                modify the update logic.
 
-	dynamic_cast<SVPropBuildingComponentsWidget*>(m_ui->stackedWidget->widget(0))->updateUi();
-	dynamic_cast<SVPropBuildingSubComponentsWidget*>(m_ui->stackedWidget->widget(1))->updateUi();
-	dynamic_cast<SVPropBuildingComponentOrientationWidget*>(m_ui->stackedWidget->widget(2))->updateUi();
-	dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->stackedWidget->widget(3))->updateUi();
-	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->stackedWidget->widget(4))->updateUi();
-	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(5))->updateUi();
-	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(6))->updateUi();
-	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->stackedWidget->widget(7))->updateUi();
-	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(8))->updateUi();
+	dynamic_cast<SVPropBuildingComponentsWidget*>(m_ui->stackedWidget->widget(BT_Components))->updateUi();
+	dynamic_cast<SVPropBuildingSubComponentsWidget*>(m_ui->stackedWidget->widget(BT_SubSurfaceComponents))->updateUi();
+	dynamic_cast<SVPropBuildingComponentOrientationWidget*>(m_ui->stackedWidget->widget(BT_ComponentOrientation))->updateUi();
+	dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->stackedWidget->widget(BT_BoundaryConditions))->updateUi();
+	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->stackedWidget->widget(BT_SurfaceConnection))->updateUi();
+	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(BT_ZoneTemplates))->updateUi();
+	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
+	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
+
+	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
+
+
+void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged(int /*index*/) {
+
+	BuildingPropertyTypes buildingPropType = (BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toUInt();
+
+	// show property page
+	switch (buildingPropType) {
+		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(BT_Components); break;
+		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(BT_SubSurfaceComponents); break;
+		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(BT_ComponentOrientation); break;
+		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(BT_BoundaryConditions); break;
+		case BT_SurfaceConnection		: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceConnection); break;
+		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneTemplates); break;
+		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceHeating); break;
+		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneProperty); break;
+		case BT_FloorManager			: m_ui->stackedWidget->setCurrentIndex(BT_FloorManager); break;
+	}
+
+	// set coloring mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	switch (buildingPropType) {
+		case BT_Components				: vs.m_objectColorMode = SVViewState::OCM_Components ; break;
+		case BT_SubSurfaceComponents	: vs.m_objectColorMode = SVViewState::OCM_SubSurfaceComponents; break;
+		case BT_ComponentOrientation	: vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
+		case BT_BoundaryConditions		: vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
+		case BT_SurfaceConnection		: vs.m_objectColorMode = SVViewState::OCM_InterlinkedSurfaces; break;
+		case BT_ZoneTemplates			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
+		case BT_SurfaceHeating			: vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
+		case BT_ZoneProperty			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
+		case BT_FloorManager			: vs.m_objectColorMode = SVViewState::OCM_None; break;
+	}
+	SVViewStateHandler::instance().setViewState(vs);
+}
+

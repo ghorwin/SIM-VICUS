@@ -255,7 +255,6 @@ SOURCES += \
 	../../src/SVPropertyWidget.cpp \
 	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
-	../../src/SVPropModeSelectionWidget.cpp \
 	../../src/SVPropSiteWidget.cpp \
 	../../src/SVPropVertexListWidget.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
@@ -446,7 +445,6 @@ HEADERS  += \
 	../../src/SVPropertyWidget.h \
 	../../src/SVPropFloorManagerItemDelegate.h \
 	../../src/SVPropFloorManagerWidget.h \
-	../../src/SVPropModeSelectionWidget.h \
 	../../src/SVPropSiteWidget.h \
 	../../src/SVPropVertexListWidget.h \
 	../../src/SVScheduleHolidayWidget.h \
@@ -533,7 +531,6 @@ FORMS    += \
 	../../src/SVPropEditGeometry.ui \
 	../../src/SVPropEditNetwork.ui \
 	../../src/SVPropFloorManagerWidget.ui \
-	../../src/SVPropModeSelectionWidget.ui \
 	../../src/SVPropNetworkPropertiesWidget.ui \
 	../../src/SVPropSiteWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \

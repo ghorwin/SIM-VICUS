@@ -117,19 +117,18 @@
          <property name="floatable">
           <bool>false</bool>
          </property>
-         <addaction name="actionToggleGeometryMode"/>
-         <addaction name="actionToggleParametrizationMode"/>
-         <addaction name="separator"/>
          <addaction name="actionAddGeometry"/>
          <addaction name="separator"/>
          <addaction name="actionTranslateGeometry"/>
          <addaction name="actionRotateGeometry"/>
          <addaction name="actionScaleGeometry"/>
+         <addaction name="separator"/>
          <addaction name="actionAlignGeometry"/>
          <addaction name="actionCopyGeometry"/>
-         <addaction name="actionToggleEditNetworkGeometry"/>
          <addaction name="separator"/>
-         <addaction name="actionactionBuildingParametrization"/>
+         <addaction name="actionEditNetworkGeometry"/>
+         <addaction name="separator"/>
+         <addaction name="actionBuildingParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
         </widget>
@@ -195,36 +194,6 @@
    </property>
    <property name="toolTip">
     <string>Z</string>
-   </property>
-  </action>
-  <action name="actionToggleGeometryMode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/3d-cube.png</normaloff>:/gfx/actions/3d-cube.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit Geometry</string>
-   </property>
-   <property name="toolTip">
-    <string>Turns on geometry edit mode</string>
-   </property>
-  </action>
-  <action name="actionToggleParametrizationMode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/layers.png</normaloff>:/gfx/actions/layers.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit properties</string>
-   </property>
-   <property name="toolTip">
-    <string>Turns on parametrization edit mode</string>
    </property>
   </action>
   <action name="actionAddGeometry">
@@ -299,25 +268,13 @@
     <string>Switches to &quot;Copy geometry&quot; property view</string>
    </property>
   </action>
-  <action name="actionToggleEditNetworkGeometry">
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
-   </property>
-   <property name="text">
-    <string>actionToggleEditNetworkGeometry</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit Network Geometry</string>
-   </property>
-  </action>
-  <action name="actionactionBuildingParametrization">
+  <action name="actionBuildingParametrization">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/building_parameter.png</normaloff>:/gfx/actions/building_parameter.png</iconset>
    </property>
    <property name="text">
-    <string>actionBuildingParametrization</string>
+    <string>Edit Building Parametrization</string>
    </property>
    <property name="toolTip">
     <string>Edit Building Parametrization</string>
@@ -329,7 +286,7 @@
      <normaloff>:/gfx/actions/network.png</normaloff>:/gfx/actions/network.png</iconset>
    </property>
    <property name="text">
-    <string>actionNetworkParametrization</string>
+    <string>Edit Network Parametrization</string>
    </property>
    <property name="toolTip">
     <string>Edit Network Parametrization</string>
@@ -345,6 +302,18 @@
    </property>
    <property name="toolTip">
     <string>Edit Site Parametrization</string>
+   </property>
+  </action>
+  <action name="actionEditNetworkGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Network Geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Network Geometry</string>
    </property>
   </action>
  </widget>

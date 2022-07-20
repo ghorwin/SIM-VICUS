@@ -25,3 +25,23 @@
 
 #include "SVViewState.h"
 
+
+bool SVViewState::operator!=(const SVViewState & other) const {
+
+	if (m_sceneOperationMode != other.m_sceneOperationMode)
+		return true;
+	if (m_propertyWidgetMode != other.m_propertyWidgetMode)
+		return true;
+	if (m_objectColorMode != other.m_objectColorMode)
+		return true;
+	if (m_colorModePropertyID != other.m_colorModePropertyID)
+		return true;
+	if (m_snapOptionMask != other.m_snapOptionMask)
+		return true;
+	if (m_snapEnabled != other.m_snapEnabled)
+		return true;
+	if (m_locks != other.m_locks)
+		return true;
+
+	return false;
+}

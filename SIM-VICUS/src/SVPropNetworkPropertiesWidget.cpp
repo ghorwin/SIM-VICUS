@@ -44,8 +44,8 @@
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVStyle.h"
-#include "SVPropModeSelectionWidget.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVConstants.h"
 
 
 SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
@@ -122,15 +122,34 @@ SVPropNetworkPropertiesWidget::~SVPropNetworkPropertiesWidget() {
 }
 
 
-void SVPropNetworkPropertiesWidget::setPropertyMode(int propertyIndex) {
-	qDebug() << "SVPropNetworkPropertiesWidget::setPropertyMode: propertyIndex =" << propertyIndex;
+void SVPropNetworkPropertiesWidget::on_comboBoxNetworkProperties_currentIndexChanged(int index) {
+	setPropertyType(index);
+}
 
-	switch (propertyIndex) {
-		case 0 : m_ui->stackedWidget->setCurrentIndex(0); break; // page Node
-		case 1 : m_ui->stackedWidget->setCurrentIndex(1); break; // page Edge
-		case 2 : m_ui->stackedWidget->setCurrentIndex(2); break; // page SubNetwork
-		case 3 : m_ui->stackedWidget->setCurrentIndex(3); break; // page HeatExchange
+
+void SVPropNetworkPropertiesWidget::setPropertyType(int networkPropertyType) {
+
+	// set page
+	switch (NetworkPropertyTypes(networkPropertyType)) {
+		case NT_Node			: m_ui->stackedWidget->setCurrentIndex(0); break; // page Node
+		case NT_Edge			: m_ui->stackedWidget->setCurrentIndex(1); break; // page Edge
+		case NT_SubStation		: m_ui->stackedWidget->setCurrentIndex(2); break; // page SubNetwork
+		case NT_HeatExchange	: m_ui->stackedWidget->setCurrentIndex(3); break; // page HeatExchange
 	}
+	// set coloring mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	switch (NetworkPropertyTypes(networkPropertyType)) {
+		case NT_Node			: vs.m_objectColorMode = SVViewState::OCM_NetworkNode ; break;
+		case NT_Edge			: vs.m_objectColorMode = SVViewState::OCM_NetworkEdge ; break;
+		case NT_SubStation		: vs.m_objectColorMode = SVViewState::OCM_NetworkSubNetworks ; break;
+		case NT_HeatExchange	: vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange ; break;
+	}
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+int SVPropNetworkPropertiesWidget::currentPropertyType() {
+	return m_ui->comboBoxNetworkProperties->currentIndex();
 }
 
 

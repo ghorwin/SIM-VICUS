@@ -41,7 +41,6 @@ namespace Ui {
 }
 
 class ModificationInfo;
-class SVPropModeSelectionWidget;
 
 /*! A property widget for editing network properties. */
 class SVPropNetworkPropertiesWidget : public QWidget {
@@ -49,12 +48,6 @@ class SVPropNetworkPropertiesWidget : public QWidget {
 public:
 	explicit SVPropNetworkPropertiesWidget(QWidget *parent = nullptr);
 	~SVPropNetworkPropertiesWidget();
-
-	/*! Selects the respective edit mode for the widget.
-		This function is called whenever a selection change or edit mode change has occurred
-		that needs an update of the scene mode or switch of active network.
-	*/
-	void setPropertyMode(int propertyIndex);
 
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
@@ -64,7 +57,13 @@ public:
 	*/
 	void onSelectionChanged();
 
-	SVPropModeSelectionWidget				* m_propModeSelectionWidget;
+	/*! Switches property widget into specific mode.
+		\param networkPropertyType Type of selected (network) property.
+	*/
+	void setPropertyType(int networkPropertyType);
+
+	/*! Returns the currrently selected property type */
+	int currentPropertyType();
 
 public slots:
 
@@ -117,6 +116,8 @@ private slots:
 	void on_pushButtonSelectNodesWithSubNetwork_clicked();
 
 	void on_tableWidgetSubNetworks_itemSelectionChanged();
+
+	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
 
 private:
 
@@ -176,6 +177,9 @@ private:
 
 	/*! The currently selected nodes */
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
+
+	/*! Stores the current property type (set in setPropertyType()). */
+	int										m_propertyType = -1;
 };
 
 

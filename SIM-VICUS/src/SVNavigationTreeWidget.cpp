@@ -332,7 +332,7 @@ void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
 	// we have different possible actions, for example, when editing geometry, Escape should cancel the current transformation.
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (vs.m_viewMode == SVViewState::VM_GeometryEditMode &&
+	if (!vs.inPropertyEditingMode() &&
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry &&
 		vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
 	{

@@ -13,7 +13,42 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Properties</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxNetworkProperties">
+       <item>
+        <property name="text">
+         <string>Node</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Edge</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SubNetwork</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>HeatExchange</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">

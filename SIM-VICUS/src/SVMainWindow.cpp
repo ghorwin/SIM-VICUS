@@ -84,7 +84,7 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
-#include "SVPropModeSelectionWidget.h"
+#include "SVPropertyWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
@@ -905,8 +905,7 @@ void SVMainWindow::on_actionFileNew_triggered() {
 
 	// create new project
 	m_projectHandler.newProject(); // emits updateActions()
-	if (SVViewStateHandler::instance().viewState().m_viewMode == SVViewState::VM_PropertyEditMode)
-		SVViewStateHandler::instance().m_geometryView->switch2GeometryMode();
+	SVViewStateHandler::instance().m_geometryView->switch2AddGeometry();
 }
 
 
@@ -1155,31 +1154,27 @@ void SVMainWindow::on_actionEditApplicationLog_triggered() {
 
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to property edit mode
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
-	// adjust appearance of selector widget
-	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_FloorManager);
 	SVViewStateHandler::instance().setViewState(vs);
 
-	SVViewStateHandler::instance().m_geometryView->switch2ParametrizationMode();
+	// adjust appearance of selector widget
+	SVViewStateHandler::instance().m_propertyWidget->setBuildingPropertyType(BT_FloorManager);
+
 }
 
 
 void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to property edit mode
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
 	// adjust appearance of selector widget
-	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_SurfaceHeating);
+	SVViewStateHandler::instance().m_propertyWidget->setBuildingPropertyType(BT_SurfaceHeating);
 	SVViewStateHandler::instance().setViewState(vs);
 
-	SVViewStateHandler::instance().m_geometryView->switch2ParametrizationMode();
+	SVViewStateHandler::instance().m_geometryView->switch2BuildingParametrization();
 }
 
 

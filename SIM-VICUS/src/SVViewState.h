@@ -49,22 +49,11 @@
 class SVViewState {
 public:
 
-	/*! Different basic view modes.
-		Depending on the view mode, different actions are available and
-		the rendering works differently.
-	*/
-	enum ViewMode {
-		/*! Standard mode - allows scene navigation and selection of
-			elements. Allows adding new geometry.
-			Property widgets related to geometry creation/modification are shown.
-		*/
-		VM_GeometryEditMode,
-		/*! Property edit mode - items in navigation tree view can be made active
-			and property widgets show physical properties/attributes.
-		*/
-		VM_PropertyEditMode,
-		NUM_VM
-	};
+	/*! Returns true if we are editing properties (for networks or buildings) and
+	 *  we want to use different coloring of the objects. */
+	bool inPropertyEditingMode() const {
+		return m_propertyWidgetMode == PM_NetworkProperties || m_propertyWidgetMode == PM_BuildingProperties;
+	}
 
 
 	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
@@ -214,7 +203,8 @@ public:
 		Snap_ObjectEdgeCenter	= 0x0008
 	};
 
-	ViewMode				m_viewMode				= VM_GeometryEditMode;
+	bool operator!=(const SVViewState &other) const;
+
 	SceneOperationMode		m_sceneOperationMode	= NUM_OM;
 	PropertyWidgetMode		m_propertyWidgetMode	= PM_AddGeometry;
 	/*! Indicates which color mode shall be used to color opaque geometry. */
