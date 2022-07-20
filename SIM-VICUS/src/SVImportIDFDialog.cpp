@@ -93,10 +93,15 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	try {
 		EP::IDFParser parser;
 		parser.read(IBK::Path(fname.toStdString()));
+//		if(parser.m_version > EP::VN_8_7) {
+//			throw IBK::Exception(IBK::FormatString("Energy Plus Version is not supported!\n"
+//												   "Only Versions up to 8.9.0 are supported.").arg(m_idfProject->m_version), FUNC_ID);
+//		}
 
 		IBK::IBK_Message("Parsing IDF...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		*m_idfProject = EP::Project();
 		m_idfProject->readIDF(parser);
+
 		m_ui->pushButtonImport->setEnabled(true);
 
 		IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
