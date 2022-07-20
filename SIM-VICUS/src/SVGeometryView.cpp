@@ -340,7 +340,8 @@ void SVGeometryView::onViewStateChanged() {
 	//       the associated actions.
 	m_actionCoordinateInput->setVisible(lockVisible);
 
-	bool geometryModeActive = vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry;
+	bool geometryModeActive = vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_AddGeometry;
 	m_ui->geometryToolBar->setEnabled(geometryModeActive);
 	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
