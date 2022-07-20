@@ -197,6 +197,9 @@
    </property>
   </action>
   <action name="actionAddGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/Add.png</normaloff>:/gfx/actions/Add.png</iconset>
@@ -209,6 +212,9 @@
    </property>
   </action>
   <action name="actionTranslateGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/move.png</normaloff>:/gfx/actions/move.png</iconset>
@@ -221,6 +227,9 @@
    </property>
   </action>
   <action name="actionRotateGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/rotating.png</normaloff>:/gfx/actions/rotating.png</iconset>
@@ -233,6 +242,9 @@
    </property>
   </action>
   <action name="actionScaleGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/resize.png</normaloff>:/gfx/actions/resize.png</iconset>
@@ -245,6 +257,9 @@
    </property>
   </action>
   <action name="actionAlignGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/Coordinate-System.png</normaloff>:/gfx/actions/Coordinate-System.png</iconset>
@@ -257,6 +272,9 @@
    </property>
   </action>
   <action name="actionCopyGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
@@ -269,6 +287,9 @@
    </property>
   </action>
   <action name="actionBuildingParametrization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/building_parameter.png</normaloff>:/gfx/actions/building_parameter.png</iconset>
@@ -281,6 +302,9 @@
    </property>
   </action>
   <action name="actionNetworkParametrization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/network.png</normaloff>:/gfx/actions/network.png</iconset>
@@ -293,6 +317,9 @@
    </property>
   </action>
   <action name="actionSiteParametrization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/info.png</normaloff>:/gfx/actions/info.png</iconset>
@@ -305,6 +332,9 @@
    </property>
   </action>
   <action name="actionEditNetworkGeometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>

@@ -111,6 +111,9 @@ public:
 
 	void switch2NetworkParametrization();
 
+	/*! Sets all actions in button bar to unchecked state */
+	void uncheckAllActionsInButtonBar();
+
 public slots:
 	/*! Handles selection changes and enables/disables button states. */
 	void onModified(int modificationType, ModificationInfo *);
