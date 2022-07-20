@@ -187,6 +187,11 @@ private:
 	/*! Initializes the pan operation. */
 	void panStart(const QPoint & localMousePos, PickObject & pickObject, bool reuseDepth);
 
+	/*! Sets a meaningful view state based on current's widget appearance, and whether we have selection or not.
+		This function is called when we turn off any intermediate modes, like "align coordinate system"-mode.
+	*/
+	void setDefaultViewState();
+
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
 	*/
