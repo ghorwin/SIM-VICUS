@@ -90,7 +90,11 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
-	m_ui->comboBoxBuildingProperties->setCurrentIndex(buildingPropertyType);
+	// if type has not changed we need to manually trigger the slot to get color update
+	if (buildingPropertyType != currentPropertyType())
+		m_ui->comboBoxBuildingProperties->setCurrentIndex(buildingPropertyType);
+	else
+		on_comboBoxBuildingProperties_currentIndexChanged(buildingPropertyType);
 }
 
 
@@ -151,12 +155,11 @@ void SVPropBuildingEditWidget::updateUi() {
 	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(BT_ZoneTemplates))->updateUi();
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
 	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
-
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 
 
-void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged(int /*index*/) {
+void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged(int index) {
 
 	BuildingPropertyTypes buildingPropType = (BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toUInt();
 
