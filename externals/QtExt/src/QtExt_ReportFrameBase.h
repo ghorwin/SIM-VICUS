@@ -89,8 +89,19 @@ public:
 	*/
 	QRectF	wholeFrameRect() const { return m_wholeFrameRect; }
 
-	/*! Add a item to the item list.*/
+	/*! Add a item to the item list.
+		\return Number of items in frame after adding this one.
+	*/
 	size_t addItem(ReportFrameItemBase* item);
+
+	/*! Add a two items to the item list which should be drawn side by side with given distance.
+		\param itemLeft Item on left side
+		\param dist Distance between the two items
+		\param itemRight Item on the right side
+		\return Number of items in frame after adding this one.
+		The function will set the x and y positions automatically. The user must set the right width of the items.
+	*/
+	size_t addItems(ReportFrameItemBase* itemLeft, int dist, ReportFrameItemBase* itemRight);
 
 	/*! Number of all items in the frame.*/
 	size_t itemCount() const { return m_items.size(); }
@@ -103,9 +114,7 @@ public:
 		\param heightFirst Rest height of the first page
 		\param heightRest Height of all other pages (whole page height).
 	*/
-	virtual unsigned int numberOfSubFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
-		return 1;
-	}
+	virtual unsigned int numberOfSubFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) const;
 
 	/*! Calculates the number of possible subframes in case the frame can be divided.
 		If the frame is dividable it return a vector of subframes.
@@ -113,9 +122,7 @@ public:
 		\param heightFirst Rest height of the first page
 		\param heightRest Height of all other pages (normally whole page height).
 	*/
-	virtual std::vector<ReportFrameBase*> subFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) {
-		return std::vector<ReportFrameBase*>(1, this);
-	}
+	virtual std::vector<ReportFrameBase*> subFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest);
 
 	/*! If true this frame will always be on a new page.*/
 	bool			m_onNewPage;
@@ -127,8 +134,10 @@ protected:
 	Report*												m_report;				///< Reference to report.
 	QTextDocument*										m_textDocument;			///< Pointer to text document object responsible for rendering text and images.
 	QRectF												m_wholeFrameRect;		///< Rectangle of the whole area.
-	std::vector<std::unique_ptr<ReportFrameItemBase>>	m_items;				///< List of items to be drawn
+	std::vector<std::shared_ptr<ReportFrameItemBase>>	m_items;				///< List of items to be drawn
 	std::vector<ReportFrameBase*>						m_currentSubFrames;		///< Store all subframes created from subFrames function
+
+	std::vector<size_t> lastItemOnPageList(QPaintDevice* paintDevice, double heightFirst, double heightRest) const;
 };
 
 } // namespace QtExt {

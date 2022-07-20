@@ -44,7 +44,7 @@ namespace QtExt {
 class ReportFrameItemTextFrame : public QtExt::ReportFrameItemBase
 {
 public:
-	ReportFrameItemTextFrame(TextFrame* textFrame, QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0);
+	ReportFrameItemTextFrame(TextFrame* textFrame, QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0, bool canPageBreakAfter = false);
 
 	/*! Create a surrounding rect based on the current settings and the given paintDevice and width.
 		This base version create a rect with the whole width and the height based on space before and after.
@@ -53,6 +53,9 @@ public:
 
 	/*! Draw the item with the given painter at the given position and set the position for the next item.*/
 	virtual void drawItem(QPainter* painter, QPointF& pos) override;
+
+//	/*! Clone the current text frame item.*/
+//	virtual ReportFrameItemBase* clone() const override;
 
 private:
 	TextFrame* m_textFrame;

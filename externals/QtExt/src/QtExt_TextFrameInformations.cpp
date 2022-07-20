@@ -51,18 +51,17 @@ namespace QtExt {
 int TextFrameInformations::m_pixelStep = 5;
 
 TextFrameInformations::TextFrameInformations() :
-		m_textDocument(0)
+	m_textDocument(0)
 {
 }
 
-TextFrameInformations::TextFrameInformations(QTextDocument* textDocument, const QString& text) :
-		m_textDocument(0)
-{
-	set(textDocument, text);
-}
+//TextFrameInformations::TextFrameInformations(QTextDocument* textDocument, const QString& text) :
+//		m_textDocument(0)
+//{
+//	set(textDocument, text);
+//}
 
 TextFrameInformations::~TextFrameInformations() {
-//	delete m_textDocument;
 }
 
 TextFrameInformations::TextFrameInformations(const TextFrameInformations& src)  :
@@ -116,21 +115,18 @@ bool checkValidLayout(QTextDocument* textDocument) {
 }
 
 
-void TextFrameInformations::set(QTextDocument* textDocument, const QString& text) {
+void TextFrameInformations::set(QTextDocument* textDocument, const QString& text, bool adaptive) {
 	m_textDocument = textDocument;
 	Q_ASSERT(m_textDocument != 0);
-	if( text != m_text) {
-		m_infoVect.clear();
-		m_text = text;
-	}
-	else {
+	if( text == m_text)
 		return;
-	}
+
+	m_infoVect.clear();
+	m_text = text;
 
 	// No text - no rect needed
-	if( text.isEmpty()) {
+	if( text.isEmpty())
 		return;
-	}
 
 	m_textDocument->setHtml(m_text);
 	m_textDocument->setDocumentMargin(0);
@@ -142,7 +138,8 @@ void TextFrameInformations::set(QTextDocument* textDocument, const QString& text
 	int linecount = m_textDocument->lineCount();
 	m_infoVect.emplace_back(TextFrameInfo(linecount, textSize.height(), textSize.width(), 1e10));
 
-//	return;
+	if(!adaptive)
+		return;
 
 	// now look for other widths
 	qreal currentHeight = textSize.height();
@@ -171,19 +168,19 @@ void TextFrameInformations::set(QTextDocument* textDocument, const QString& text
 	}
 }
 
-void TextFrameInformations::setInternal() {
-	set(m_textDocument, m_text);
+void TextFrameInformations::setInternal(bool adaptive) {
+	set(m_textDocument, m_text, adaptive);
 }
 
 
-TextFrameInformations::TextFrameInfo TextFrameInformations::sizeForMaximumWidth(qreal maxWidth) {
+TextFrameInformations::TextFrameInfo TextFrameInformations::sizeForMaximumWidth(qreal maxWidth, bool adaptive) {
 	if( m_text.isEmpty())
 		return TextFrameInformations::TextFrameInfo::nonValid(0);
 
 	// create internal vector if not already done
 	// first only for maximum width
 	if( m_infoVect.empty())
-		setInternal();
+		setInternal(adaptive);
 
 	// if internal vector is already empty somthing serious is wrong
 	if( m_infoVect.empty())

@@ -48,12 +48,15 @@ struct ConstructionViewSetup {
 	int							m_visibleItems = QtExt::ConstructionGraphicsScene::VI_All;
 	double						m_height = -1;
 	double						m_resolution = 1.0;
+	QColor						m_backgroundColor = Qt::white;
 };
 
 class ReportFrameItemConstructionView : public QtExt::ReportFrameItemBase
 {
 public:
-	ReportFrameItemConstructionView(const ConstructionViewSetup& constructionView, QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0);
+	ReportFrameItemConstructionView(const ConstructionViewSetup& constructionView, QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0, bool canPageBreakAfter = false);
+
+	~ReportFrameItemConstructionView();
 
 	/*! Create a surrounding rect based on the current settings and the given paintDevice and width.
 		This base version create a rect with the whole width and the height based on space before and after.
@@ -63,8 +66,12 @@ public:
 	/*! Draw the item with the given painter at the given position and set the position for the next item.*/
 	virtual void drawItem(QPainter* painter, QPointF& pos) override;
 
+//	/*! Clone the current frame item.*/
+//	virtual ReportFrameItemBase* clone() const override;
+
 private:
-	ConstructionGraphicsScene*	m_constructionScene;	QRect						m_rect;
+	ConstructionGraphicsScene*	m_constructionScene;
+//	QRect						m_rect;
 };
 
 } // namespace QtExt

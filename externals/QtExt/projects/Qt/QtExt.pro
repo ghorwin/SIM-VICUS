@@ -93,6 +93,7 @@ HEADERS += \
 	../../src/QtExt_Report.h \
 	../../src/QtExt_ReportFrameBase.h \
 	../../src/QtExt_ReportFrameItemBase.h \
+	../../src/QtExt_ReportFrameItemConstructionView.h \
 	../../src/QtExt_ReportFrameItemTable.h \
 	../../src/QtExt_ReportFrameItemTextFrame.h \
 	../../src/QtExt_ReportFrameLongTable.h \
@@ -170,6 +171,7 @@ SOURCES += \
 	../../src/QtExt_Report.cpp \
 	../../src/QtExt_ReportFrameBase.cpp \
 	../../src/QtExt_ReportFrameItemBase.cpp \
+	../../src/QtExt_ReportFrameItemConstructionView.cpp \
 	../../src/QtExt_ReportFrameItemTable.cpp \
 	../../src/QtExt_ReportFrameItemTextFrame.cpp \
 	../../src/QtExt_ReportFrameLongTable.cpp \

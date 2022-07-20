@@ -41,6 +41,7 @@
 #include "QtExt_PainterSaver.h"
 
 #include "QtExt_Report.h"
+#include "QtExt_ReportSettingsBase.h"
 
 namespace QtExt {
 
@@ -48,7 +49,7 @@ FooterFrame::FooterFrame(Report* report, QTextDocument* textDocument) :
 	ReportFrameBase(report, textDocument),
 	m_page(0),
 	m_headerFooterFont( report->m_textProperties.normalFont().family(), 10 ),
-	m_footerTable(textDocument)
+	m_footerTable(textDocument, false)
 {
 }
 
@@ -86,9 +87,9 @@ void FooterFrame::update(QPaintDevice* paintDevice, double width) {
 	// page count on right, but only set during drawing because only then the page count is known
 
 	// draw line at top of table
-	m_footerTable.cell(0,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->m_innerTableFrameWidth);
-	m_footerTable.cell(1,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->m_innerTableFrameWidth);
-	m_footerTable.cell(2,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->m_innerTableFrameWidth);
+	m_footerTable.cell(0,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->reportSettings()->m_innerTableFrameWidth);
+	m_footerTable.cell(1,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->reportSettings()->m_innerTableFrameWidth);
+	m_footerTable.cell(2,0).setBorderWidth(QtExt::TableCell::TopBorder, m_report->reportSettings()->m_innerTableFrameWidth);
 	m_footerTable.cell(0,0).setTopMargin( 1 ); // 1 mm space between text and top line
 	m_footerTable.cell(1,0).setTopMargin( 1 ); // 1 mm space between text and top line
 	m_footerTable.cell(2,0).setTopMargin( 1 ); // 1 mm space between text and top line

@@ -39,13 +39,14 @@
 #include <QPainter>
 
 #include "QtExt_Report.h"
+#include <QtExt_ReportSettingsBase.h>
 
 namespace QtExt {
 
 HeaderFrame::HeaderFrame(Report *report, QTextDocument* textDocument):
 	ReportFrameBase(report, textDocument),
 	m_logoMargin(5),
-	m_table(textDocument)
+	m_table(textDocument, false)
 {
 
 }
@@ -86,8 +87,8 @@ void HeaderFrame::update(QPaintDevice* paintDevice, double width) {
 	m_table.setCellText(0,0,m_registrationMessage);
 
 	// draw line at bottom of table
-	m_table.cell(0,0).setBorderWidth(QtExt::TableCell::BottomBorder, m_report->m_innerTableFrameWidth);
-	m_table.cell(1,0).setBorderWidth(QtExt::TableCell::BottomBorder, m_report->m_innerTableFrameWidth);
+	m_table.cell(0,0).setBorderWidth(QtExt::TableCell::BottomBorder, m_report->reportSettings()->m_innerTableFrameWidth);
+	m_table.cell(1,0).setBorderWidth(QtExt::TableCell::BottomBorder, m_report->reportSettings()->m_innerTableFrameWidth);
 
 	m_table.cell(0,0).setBottomMargin( 1 ); // 1 mm space between text and top line
 	m_table.cell(1,0).setBottomMargin( 1 ); // 1 mm space between text and top line

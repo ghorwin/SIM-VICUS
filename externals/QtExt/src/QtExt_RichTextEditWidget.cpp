@@ -54,7 +54,7 @@
 
 #include "QtExt_RichTextEditWidget.h"
 
-const QString rsrcPath = ":/master";
+const QString rsrcPath = ":/gfx/master";
 
 namespace QtExt {
 

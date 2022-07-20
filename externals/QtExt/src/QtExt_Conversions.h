@@ -62,7 +62,7 @@ inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
 
 /*! Utility function for conversion of a QString to an IBK::Path. */
 inline IBK::Path QString2Path(const QString & str) {
-	return IBK::Path(str.toUtf8().data());
+	return IBK::Path(str.toStdString());
 }
 
 /*! Utility function for conversion of a QString to an IBK::Path. */

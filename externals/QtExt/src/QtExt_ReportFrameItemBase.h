@@ -46,7 +46,7 @@ namespace QtExt {
 class ReportFrameItemBase
 {
 public:
-	ReportFrameItemBase(QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0);
+	ReportFrameItemBase(QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0, bool canPageBreakAfter = false);
 
 	/*! Create a surrounding rect based on the current settings and the given paintDevice and width.
 		This base version create a rect with the whole width and the height based on space before and after.
@@ -74,6 +74,14 @@ public:
 	/*! Set space after item.*/
 	void setXPos(double pos) { m_xPos = pos; }
 
+	/*! Set flag if the item should'n perform a Y step in setEndPos.
+		Can be used in order to draw items side by side.
+	*/
+	void setNoYStep(bool noYStep);
+
+	/*! Return break capability after the item. If true a page break is possible.*/
+	bool canPageBreakAfter() const { return m_canPageBreakAfter; }
+
 protected:
 
 	/*! Draw the item with the given painter at the given position.
@@ -86,6 +94,8 @@ protected:
 	*/
 	virtual void setCurrentRect() = 0;
 
+	void setInternals(ReportFrameItemBase* item) const;
+
 	QPaintDevice*	m_paintDevice;
 	QRectF			m_currentRect;
 	double			m_width;
@@ -93,6 +103,8 @@ protected:
 	double			m_spaceBefore;
 	double			m_spaceAfter;
 	double			m_xPos;
+	bool			m_canPageBreakAfter;
+	bool			m_noYStep = false;
 
 private:
 

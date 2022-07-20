@@ -37,8 +37,8 @@
 
 namespace QtExt {
 
-ReportFrameItemTable::ReportFrameItemTable(Table* table, QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore) :
-	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore),
+ReportFrameItemTable::ReportFrameItemTable(Table* table, QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore, bool canPageBreakAfter) :
+	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore, canPageBreakAfter),
 	m_table(table)
 {
 }
@@ -50,5 +50,10 @@ void ReportFrameItemTable::setCurrentRect() {
 void ReportFrameItemTable::drawItem(QPainter* painter, QPointF& pos) {
 	m_table->drawTable(painter, pos);
 }
+
+//ReportFrameItemBase* ReportFrameItemTable::clone() const {
+//	ReportFrameItemTable* res = new ReportFrameItemTable(*this);
+//	return res;
+//}
 
 } // namespace QtExt

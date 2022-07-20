@@ -39,18 +39,25 @@
 
 namespace QtExt {
 
-ReportFrameItemConstructionView::ReportFrameItemConstructionView(const ConstructionViewSetup& constructionViewSetup, QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore) :
-	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore),
+ReportFrameItemConstructionView::ReportFrameItemConstructionView(const ConstructionViewSetup& constructionViewSetup, QPaintDevice* paintDevice,
+																 double width, double spaceAfter, double spaceBefore, bool canPageBreakAfter) :
+	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore, canPageBreakAfter),
 	m_constructionScene(new ConstructionGraphicsScene(false, paintDevice))
 {
 	double height = constructionViewSetup.m_height <= 0 ? width / 2.0 : constructionViewSetup.m_height;
 //	width *= constructionViewSetup.m_resolution;
 //	height *= constructionViewSetup.m_resolution;
 	m_currentRect = QRect(0,0,width, height);
-	m_constructionScene->setup(m_rect, paintDevice, constructionViewSetup.m_resolution,
+	m_constructionScene->setup(m_currentRect.toRect(), paintDevice, constructionViewSetup.m_resolution,
 							  constructionViewSetup.m_layers, constructionViewSetup.m_leftLabel, constructionViewSetup.m_rightLabel,
 							  constructionViewSetup.m_visibleItems);
+	m_constructionScene->setBackground(constructionViewSetup.m_backgroundColor);
 }
+
+ReportFrameItemConstructionView::~ReportFrameItemConstructionView() {
+	delete m_constructionScene;
+}
+
 
 void ReportFrameItemConstructionView::setCurrentRect() {
 }
@@ -59,5 +66,10 @@ void ReportFrameItemConstructionView::drawItem(QPainter* painter, QPointF& pos) 
 	QRect drect(pos.x(), pos.y(), m_currentRect.width(), m_currentRect.height());
 	m_constructionScene->render(painter, drect);
 }
+
+//ReportFrameItemBase* ReportFrameItemConstructionView::clone() const {
+//	ReportFrameItemConstructionView* res = new ReportFrameItemConstructionView(*this);
+//	return res;
+//}
 
 } // namespace QtExt

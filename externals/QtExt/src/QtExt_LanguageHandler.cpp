@@ -92,11 +92,11 @@ QString LanguageHandler::langId() {
 	if (langid.isEmpty()) {
 		// try to determine language id from OS
 		QString localeName = QLocale::system().name();
-		IBK::IBK_Message( IBK::FormatString("System locale: '%1'.\n").arg(localeName.toUtf8().data()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		IBK::IBK_Message( IBK::FormatString("System locale: '%1'.\n").arg(localeName.toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		int pos = localeName.indexOf('_');
 		if (pos != -1)
 			localeName = localeName.left(pos);
-		IBK::IBK_Message( IBK::FormatString("Translation required for locale: '%1'.\n").arg(localeName.toUtf8().data()),
+		IBK::IBK_Message( IBK::FormatString("Translation required for locale: '%1'.\n").arg(localeName.toStdString()),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		langid = localeName;
 
@@ -150,7 +150,7 @@ void LanguageHandler::installTranslator(QString langId) {
 	// system translator first, filename is for example "qt_de"
 	systemTranslator = new QTranslator;
 	QFileInfo finfoQt(qtTranslationFilePath);
-	if (finfoQt.exists() && systemTranslator->load(finfoQt.fileName(), finfoQt.dir().absolutePath())) {
+	if (finfoQt.exists() && systemTranslator->load(finfoQt.baseName(), finfoQt.dir().absolutePath())) {
 		qApp->installTranslator(systemTranslator);
 		IBK::IBK_Message( IBK::FormatString("Qt translation file loaded successfully\n"),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -165,7 +165,7 @@ void LanguageHandler::installTranslator(QString langId) {
 
 	applicationTranslator = new QTranslator;
 	QFileInfo finfo(translationFilePath);
-	if (finfo.exists() && applicationTranslator->load(finfo.fileName(), finfo.dir().absolutePath())) {
+	if (finfo.exists() && applicationTranslator->load(finfo.baseName(), finfo.dir().absolutePath())) {
 		IBK::IBK_Message( IBK::FormatString("Application translator loaded successfully\n"),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		qApp->installTranslator(applicationTranslator);
@@ -174,7 +174,7 @@ void LanguageHandler::installTranslator(QString langId) {
 		config.setValue("LangID", langId);
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("Could not load application translator file: 'MasterSimulatorUI_%1'.\n").arg(langId.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("Could not load application translator file: '%1'.\n").arg(translationFilePath.toStdString()),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		delete applicationTranslator;
 		applicationTranslator = nullptr;

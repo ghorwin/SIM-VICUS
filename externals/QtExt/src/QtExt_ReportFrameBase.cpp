@@ -80,7 +80,15 @@ void ReportFrameBase::print(QPainter * p, const QRectF & frame) {
 }
 
 size_t ReportFrameBase::addItem(ReportFrameItemBase* item) {
-	m_items.push_back(std::unique_ptr<ReportFrameItemBase>(item));
+	m_items.push_back(std::shared_ptr<ReportFrameItemBase>(item));
+	return m_items.size() - 1;
+}
+
+size_t ReportFrameBase::addItems(ReportFrameItemBase* itemLeft, int dist, ReportFrameItemBase* itemRight) {
+	itemLeft->setNoYStep(true);
+	m_items.push_back(std::shared_ptr<ReportFrameItemBase>(itemLeft));
+	itemRight->setXPos(itemLeft->rect().width() + dist);
+	m_items.push_back(std::shared_ptr<ReportFrameItemBase>(itemRight));
 	return m_items.size() - 1;
 }
 
@@ -88,5 +96,91 @@ ReportFrameItemBase* ReportFrameBase::item(size_t index) {
 	Q_ASSERT(index < m_items.size());
 	return m_items[index].get();
 }
+
+unsigned int ReportFrameBase::numberOfSubFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
+	return lastItemOnPageList(paintDevice, heightFirst, heightRest).size();
+}
+
+std::vector<ReportFrameBase*> ReportFrameBase::subFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) {
+	clearSubFrames();
+	std::vector<size_t> liop = lastItemOnPageList(paintDevice, heightFirst, heightRest);
+	if(liop.size() == 1)
+		return m_currentSubFrames;
+
+	size_t start = 0;
+	for(size_t index : liop) {
+		ReportFrameBase* frame = new ReportFrameBase(m_report, m_textDocument);
+		for(size_t i=start; i<=index; ++i) {
+			frame->m_items.push_back(m_items[i]);
+		}
+		m_currentSubFrames.push_back(frame);
+		start = index + 1;
+	}
+	return m_currentSubFrames;
+}
+
+std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
+	double currentHeight = 0;
+	double totalHeight = 0;
+	std::vector<std::pair<double,unsigned int>> heightList;
+	for(size_t i =0; i<m_items.size(); ++i) {
+		currentHeight += m_items[i]->rect().height();
+		totalHeight += m_items[i]->rect().height();
+		if(m_items[i]->canPageBreakAfter()) {
+			heightList.push_back({currentHeight,i});
+			currentHeight = 0;
+		}
+	}
+	if(heightList.back().second < m_items.size() - 1) {
+		double lastHeight = 0;
+		for(size_t i=heightList.back().second+1; i<m_items.size(); ++i)
+			lastHeight += m_items[i]->rect().height();
+		heightList.push_back({lastHeight,m_items.size()-1});
+	}
+
+	if(heightList.empty())
+		heightList.push_back({totalHeight, m_items.size() - 1});
+
+	if(heightList.size() == 1 || totalHeight <= heightFirst)
+		return std::vector<size_t>(1, m_items.size() - 1);
+
+	std::vector<size_t> lastItemOnPage;
+	bool firstPage = true;
+	currentHeight = 0;
+	for(size_t i=0; i<heightList.size(); ++i) {
+		std::pair<double,unsigned int>& hi = heightList[i];
+		currentHeight += hi.first;
+		if(firstPage ) {
+			if(currentHeight >= heightFirst) {
+				if(i==0) {
+					lastItemOnPage.push_back(hi.second);
+					currentHeight = 0;
+				}
+				else {
+					lastItemOnPage.push_back(heightList[i-1].second);
+					currentHeight = hi.first;
+				}
+				firstPage = false;
+			}
+		}
+		else {
+			if(currentHeight >= heightRest) {
+				if(i==0) {
+					lastItemOnPage.push_back(hi.second);
+					currentHeight = 0;
+				}
+				else {
+					lastItemOnPage.push_back(heightList[i-1].second);
+					currentHeight = hi.first;
+				}
+			}
+		}
+	}
+	if(lastItemOnPage.back() < heightList.back().second)
+		lastItemOnPage.push_back(heightList.back().second);
+
+	return lastItemOnPage;
+}
+
 
 } // namespace QtExt {

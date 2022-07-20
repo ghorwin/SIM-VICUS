@@ -55,6 +55,10 @@ public:
 	/*! Text format used for main header.*/
 	QtExt::FormatTags		m_mainHeaderTextFormat;
 
+	qreal					m_outerTableFrameWidth;	///< Pen width for outer table frame line.
+
+	qreal					m_innerTableFrameWidth;	///< Pen width for inner table frame line.
+
 	static const int		m_frameIdStart = 2;
 
 };

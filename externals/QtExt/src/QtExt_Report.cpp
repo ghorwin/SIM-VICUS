@@ -66,8 +66,6 @@ Report::Report(ReportSettingsBase* reportSettings, int defaultFontSize) :
 		m_scale(1.0),
 		m_pageCount(0),
 		m_showPageNumbers(false),
-		m_outerTableFrameWidth(1.5),
-		m_innerTableFrameWidth(0.7),
 		m_headerFrame( this, m_textDocument),
 		m_footerFrame( this, m_textDocument),
 		m_fontFamily(reportSettings->m_fontFamily),

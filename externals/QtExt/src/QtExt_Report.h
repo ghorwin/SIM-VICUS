@@ -172,10 +172,6 @@ public:
 
 	bool							m_showPageNumbers;		///< If true page numbers will be shown in footer.
 
-	qreal							m_outerTableFrameWidth;	///< Pen width for outer table frame line.
-
-	qreal							m_innerTableFrameWidth;	///< Pen width for inner table frame line.
-
 signals:
 	/*! Send current progress state.
 		Maximum is FrameCount * 2.

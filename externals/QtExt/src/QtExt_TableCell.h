@@ -45,6 +45,8 @@
 
 namespace QtExt {
 
+class Table;
+
 /*! \brief Class TableCell contains all properties for a cell in a table.*/
 /*! This class is used in QtExt::TableWidget.*/
 class TableCell
@@ -64,7 +66,7 @@ public:
 	/*! Default constructor.
 		\param width Line width for the cell frame.
 	*/
-	TableCell(qreal width);
+	explicit TableCell(qreal width);
 
 	/*! Copy constructor.*/
 	TableCell(const TableCell&);
@@ -117,10 +119,10 @@ public:
 	/*! Returns the text size for a current maximum width.
 		A value of -1 marks infinite width.
 	*/
-	QSizeF textSize(qreal maxWidth);
+	QSizeF textSize(qreal maxWidth, bool adaptive);
 
 	/*! Return the used maximum width for calculating text width.*/
-	qreal textMaxWidth(qreal maxWidth);
+	qreal textMaxWidth(qreal maxWidth, bool adaptive);
 
 	/*! Returns the cell rectangle.*/
 	QRectF cellRect() const;
@@ -180,7 +182,7 @@ public:
 		Call of this this function is necessary before call of textSize.
 		\param textDocument should contain the correct paintDevice and font.
 	*/
-	void setPaintProperties(QTextDocument* textDocument);
+	void setPaintProperties(QTextDocument* textDocument, bool adaptive);
 
 private:
 	qreal			m_leftBorderWidth;		///< Width of the left border.

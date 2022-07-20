@@ -53,6 +53,42 @@ class QTextDocument;
 
 namespace QtExt {
 
+class TablePrepare {
+public:
+	TablePrepare() :
+		m_cols(1),
+		m_rows(2),
+		m_outerFrameWidth(1),
+		m_innerFrameWidth(1),
+		m_margin(0),
+		m_width(100),
+		m_backGround(Qt::white),
+		m_headerCount(1)
+	{}
+
+	void setSize(unsigned int cols, unsigned int rows, unsigned int headerRows) {
+		m_cols = cols;
+		m_rows = rows;
+		m_headerCount = headerRows;
+	}
+
+	TablePrepare get(unsigned int cols, unsigned int rows, unsigned int headerRows, qreal width) {
+		TablePrepare res = *this;
+		res.setSize(cols, rows, headerRows);
+		res.m_width = width;
+		return res;
+	}
+
+	unsigned int	m_cols;
+	unsigned int	m_rows;
+	qreal			m_outerFrameWidth;
+	qreal			m_innerFrameWidth;
+	qreal			m_margin;
+	double			m_width;
+	QColor			m_backGround;
+	bool			m_headerCount;
+};
+
 
 /*! \brief Class Table allows to create and draw a table with HTML-formated text.*/
 class Table : public QObject
@@ -66,7 +102,7 @@ public:
 		\param size Table size.
 		\param parent Parent object is responsible for delete.
 	*/
-	Table(QTextDocument* textDocument, QSize size = QSize(), QObject *parent = 0);
+	Table(QTextDocument* textDocument, bool adaptive, QSize size = QSize(), QObject *parent = 0);
 
 	/*! Destructor.
 		Deletes m_textDocument if necessary.
@@ -75,6 +111,9 @@ public:
 
 //	/*! Clones the actual table.*/
 //	Table* clone() const;
+
+	/*! Set the table from given prepare object.*/
+	void set(const TablePrepare& prep);
 
 	/*! Sets the table size.
 		\param cols Column count.
@@ -99,7 +138,7 @@ public:
 		\param row Row.
 		\param text Simple text or HTML sequence.
 	*/
-	void setCellText(unsigned int col, unsigned int row, const QString& text);
+	void setCellText(unsigned int col, unsigned int row, const QString& text, Qt::Alignment alignment = Qt::AlignLeft);
 
 	/*! Returns the cell spacing.*/
 	qreal spacing() const;
@@ -186,6 +225,11 @@ public:
 	*/
 	void setColumnSizeFormat(unsigned int col, CellSizeFormater::FormatType format, qreal fixedSize = 0);
 
+	/*! Set all columns to fixed formats which have a size in the given vector greater than 0.
+		The size must be given in percent (of the current width).
+	*/
+	void setFixedColumnSizes(std::vector<qreal> sizes);
+
 	/*! Set the size format type for the given row.
 		\param row Row index.
 		\param format New format type. Only CellSizeFormater::Fixed and CellSizeFormater::AutoMinimum are supported.
@@ -222,6 +266,14 @@ public:
 		\param width Line width for frame. Must not be below 0.
 	*/
 	void setInnerFrameWidth(qreal width);
+
+	/*! Set the border line width between two cols in a given row range.
+		\param leftCol Index of left column (right border will be changed)
+		\param rowStart First row
+		\param rowEnd Last row
+		\param lineWidth Width of the border line. Use 0 for delting border
+	*/
+	void setColumnBorderWidth(unsigned int leftCol, unsigned int rowStart, unsigned int rowEnd, qreal lineWidth);
 
 	/*! Returns the default font.*/
 	QFont defaultFont() const;
@@ -265,6 +317,9 @@ public:
 	/*! Create number of tables which fits in the given heights.*/
 	std::vector<Table*> fittingTables(QPaintDevice* paintDevice, qreal hfirst, qreal hrest);
 
+	/*! Return if the adaptive mode is switched on.*/
+	bool adaptive() const { return m_adaptive; }
+
 	/*! Draw a frame around the given cell area with given width.*/
 	static void frameRect(Table& table, int cLeft, int cright, int rTop, int rBottom, int lineWidth);
 
@@ -292,6 +347,7 @@ private:
 	QVector<QVector<LineProperties> >		m_VLines;				///< Vertical line array.
 	qreal									m_scale;				///< Scale factor from screen resolution to paint device resoultion.
 	bool									m_adjusted;				///< Saves the adjustment state.
+	bool									m_adaptive;				///< Table cells are adaptive or not
 
 	/*! Returns the surrounding text rectangle for the given text.
 		\param text Text string.

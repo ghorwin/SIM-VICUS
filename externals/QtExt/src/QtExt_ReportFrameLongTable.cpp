@@ -11,7 +11,7 @@ namespace QtExt {
 ReportFrameLongTable::ReportFrameLongTable(QtExt::Report* report, QTextDocument* textDocument) :
 	QtExt::ReportFrameBase(report, textDocument),
 	m_heading(textDocument),
-	m_table(textDocument),
+	m_table(textDocument, false),
 	m_headingSpace(0),
 	m_previousSpace(0),
 	m_headingHeight(0)

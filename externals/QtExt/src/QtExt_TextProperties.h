@@ -87,7 +87,7 @@ public:
 	const TextSizes&	H4() const { return m_textH4; }
 
 	/*! Text properties for small text.*/
-	const TextSizes&	small() const { return m_textSmall; }
+	const TextSizes&	smallText() const { return m_textSmall; }
 
 private:
 	QFont			m_normalFont;		///< Font used for normal text.

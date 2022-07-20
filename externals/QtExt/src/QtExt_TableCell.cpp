@@ -35,6 +35,8 @@
 
 #include "QtExt_TableCell.h"
 
+#include "QtExt_Table.h"
+
 namespace QtExt {
 
 TableCell::TableCell(qreal width) :
@@ -156,15 +158,15 @@ void TableCell::setMaxTextRect(const QRectF& rect) {
 	m_maxTextRect = rect;
 }
 
-QSizeF TableCell::textSize(qreal maxWidth) {
-	QSizeF size = m_textInfos.sizeForMaximumWidth(maxWidth).size();
+QSizeF TableCell::textSize(qreal maxWidth, bool adaptive) {
+	QSizeF size = m_textInfos.sizeForMaximumWidth(maxWidth, adaptive).size();
 	if(m_verticalText)
 		size.transpose();
 	return size;
 }
 
-qreal TableCell::textMaxWidth(qreal maxWidth) {
-	return m_textInfos.sizeForMaximumWidth(maxWidth).m_maxWidth;
+qreal TableCell::textMaxWidth(qreal maxWidth, bool adaptive) {
+	return m_textInfos.sizeForMaximumWidth(maxWidth, adaptive).m_maxWidth;
 }
 
 QRectF TableCell::cellRect() const {
@@ -231,8 +233,8 @@ void TableCell::setVerticalText(bool vertical) {
 	m_verticalText = vertical;
 }
 
-void TableCell::setPaintProperties(QTextDocument* textDocument) {
-	m_textInfos.set(textDocument, m_text);
+void TableCell::setPaintProperties(QTextDocument* textDocument, bool adaptive) {
+	m_textInfos.set(textDocument, m_text,adaptive);
 }
 
 

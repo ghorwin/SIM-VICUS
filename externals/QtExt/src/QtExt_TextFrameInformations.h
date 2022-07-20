@@ -111,8 +111,8 @@ public:
 	*/
 	TextFrameInformations();
 
-	/*! Constructor with necessary informations to create content.*/
-	TextFrameInformations(QTextDocument* textDocument, const QString& text);
+//	/*! Constructor with necessary informations to create content.*/
+//	TextFrameInformations(QTextDocument* textDocument, const QString& text);
 
 	~TextFrameInformations();
 
@@ -131,12 +131,12 @@ public:
 		\param lineEnd up to how many lines should go the calculation. 0 or 1 means only optimal width.
 		If the text and paintDevice isn't changed since the last call calculation will take place only if the lineEnd is bigger than the already existing.
 	*/
-	void set(QTextDocument* textDocument, const QString& text);
+	void set(QTextDocument* textDocument, const QString& text, bool adaptive);
 
 	/*! Gets the text size for a given maximum text width.
 		If the text size for the given width isn't already calculated a new calculation with the last parameters will occure.
 	*/
-	TextFrameInfo sizeForMaximumWidth(qreal maxWidth);
+	TextFrameInfo sizeForMaximumWidth(qreal maxWidth, bool adaptive);
 
 	/*! Returns true if no information exists.*/
 	bool empty() const { return !m_infoVect.empty(); }
@@ -149,7 +149,7 @@ private:
 	QString						m_text;			///< Last used text;
 
 	/*! Has the same functionality like set but uses the internal variables.*/
-	void setInternal();
+	void setInternal(bool adaptive);
 };
 
 } // namespace QtExt

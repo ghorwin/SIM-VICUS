@@ -9,12 +9,14 @@ namespace QtExt {
 ReportSettingsBase::ReportSettingsBase() :
 	m_showPageNumbers(true),
 	#ifdef Q_OS_WIN
-		m_fontFamily("Verdana"),
+	m_fontFamily("Verdana"),
 	#else
-		m_fontFamily("SansSerif"),
+	m_fontFamily("SansSerif"),
 	#endif
 	m_defaultFontPointSize(8),
-	m_mainHeaderTextFormat(QtExt::FT_Header1)
+	m_mainHeaderTextFormat(QtExt::FT_Header1),
+	m_outerTableFrameWidth(1.5),
+	m_innerTableFrameWidth(0.7)
 {
 	m_frames.insert(ReportHeader);
 	m_frames.insert(ReportFooter);

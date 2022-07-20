@@ -37,8 +37,8 @@
 
 namespace QtExt {
 
-ReportFrameItemTextFrame::ReportFrameItemTextFrame(TextFrame* textFrame, QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore) :
-	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore),
+ReportFrameItemTextFrame::ReportFrameItemTextFrame(TextFrame* textFrame, QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore, bool canPageBreakAfter) :
+	ReportFrameItemBase(paintDevice, width, spaceAfter, spaceBefore, canPageBreakAfter),
 	m_textFrame(textFrame)
 {
 }
@@ -50,5 +50,11 @@ void ReportFrameItemTextFrame::setCurrentRect() {
 void ReportFrameItemTextFrame::drawItem(QPainter* painter, QPointF& pos) {
 	m_textFrame->drawFrame(painter, pos, m_width);
 }
+
+//ReportFrameItemBase* ReportFrameItemTextFrame::clone() const {
+//	ReportFrameItemTextFrame* res = new ReportFrameItemTextFrame(*this);
+//	return res;
+//}
+
 
 } // namespace QtExt

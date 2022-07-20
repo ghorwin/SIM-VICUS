@@ -37,13 +37,14 @@
 
 namespace QtExt {
 
-ReportFrameItemBase::ReportFrameItemBase(QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore) :
+ReportFrameItemBase::ReportFrameItemBase(QPaintDevice* paintDevice, double width, double spaceAfter, double spaceBefore, bool canPageBreakAfter) :
 	m_paintDevice(paintDevice),
 	m_width(width),
 	m_visible(true),
 	m_spaceBefore(spaceBefore),
 	m_spaceAfter(spaceAfter),
 	m_xPos(0),
+	m_canPageBreakAfter(canPageBreakAfter),
 	m_oldXPos(0)
 {
 }
@@ -60,6 +61,30 @@ void ReportFrameItemBase::draw(QPainter* painter, QPointF& pos) {
 	setEndPos(pos);
 }
 
+void ReportFrameItemBase::setVisible(bool visible) {
+	m_visible = visible;
+}
+
+void ReportFrameItemBase::setNoYStep(bool noYStep) {
+	m_noYStep = noYStep;
+	if(m_noYStep)
+		m_canPageBreakAfter = false;
+}
+
+
+void ReportFrameItemBase::setInternals(ReportFrameItemBase* item) const {
+	Q_ASSERT(item != nullptr);
+	item->m_paintDevice = m_paintDevice;
+	item->m_currentRect = m_currentRect;
+	item->m_width = m_width;
+	item->m_visible = m_visible;
+	item->m_spaceBefore = m_spaceBefore;
+	item->m_spaceAfter = m_spaceAfter;
+	item->m_xPos = m_xPos;
+	item->m_canPageBreakAfter = m_canPageBreakAfter;
+}
+
+
 void ReportFrameItemBase::setStartPos(QPointF& pos) {
 	pos.ry() += m_spaceBefore;
 	m_oldXPos = pos.x();
@@ -67,7 +92,8 @@ void ReportFrameItemBase::setStartPos(QPointF& pos) {
 }
 
 void ReportFrameItemBase::setEndPos(QPointF& pos) {
-	pos.ry() += m_spaceAfter + m_currentRect.height();
+	if(!m_noYStep)
+		pos.ry() += m_spaceAfter + m_currentRect.height();
 	pos.rx() = m_oldXPos;
 }
 
