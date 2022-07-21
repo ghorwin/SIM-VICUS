@@ -1073,50 +1073,73 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 
 	switch (dbType) {
 		case DT_Materials:
+			Q_ASSERT(m_materials[id] != nullptr);
 			m_materials[id]->collectLocalChildren(localChildren); break;
 		case DT_Constructions:
+			Q_ASSERT(m_constructions[id] != nullptr);
 			m_constructions[id]->collectLocalChildren(localChildren); break;
 		case DT_Windows:
+			Q_ASSERT(m_windows[id] != nullptr);
 			m_windows[id]->collectLocalChildren(localChildren); break;
 		case DT_WindowGlazingSystems:
+			Q_ASSERT(m_windowGlazingSystems[id] != nullptr);
 			m_windowGlazingSystems[id]->collectLocalChildren(localChildren); break;
 		case DT_BoundaryConditions:
+			Q_ASSERT(m_boundaryConditions[id] != nullptr);
 			m_boundaryConditions[id]->collectLocalChildren(localChildren); break;
 		case DT_Components:
+			Q_ASSERT(m_components[id] != nullptr);
 			m_components[id]->collectLocalChildren(localChildren); break;
 		case DT_SubSurfaceComponents:
+			Q_ASSERT(m_subSurfaceComponents[id] != nullptr);
 			m_subSurfaceComponents[id]->collectLocalChildren(localChildren); break;
 		case DT_SurfaceHeating:
+			Q_ASSERT(m_surfaceHeatings[id] != nullptr);
 			m_surfaceHeatings[id]->collectLocalChildren(localChildren); break;
 		case DT_Pipes:
+			Q_ASSERT(m_pipes[id] != nullptr);
 			m_pipes[id]->collectLocalChildren(localChildren); break;
 		case DT_Fluids:
+			Q_ASSERT(m_fluids[id] != nullptr);
 			m_fluids[id]->collectLocalChildren(localChildren); break;
 		case DT_SubNetworks:
+			Q_ASSERT(m_subNetworks[id] != nullptr);
 			m_subNetworks[id]->collectLocalChildren(localChildren); break;
 		case DT_SupplySystems:
+			Q_ASSERT(m_supplySystems[id] != nullptr);
 			m_supplySystems[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:
+			Q_ASSERT(m_networkControllers[id] != nullptr);
 			m_networkControllers[id]->collectLocalChildren(localChildren);  break;
 		case DT_NetworkComponents:
+			Q_ASSERT(m_networkComponents[id] != nullptr);
 			m_networkComponents[id]->collectLocalChildren(localChildren); break;
 		case DT_Schedules:
+			Q_ASSERT(m_schedules[id] != nullptr);
 			m_schedules[id]->collectLocalChildren(localChildren); break;
 		case DT_InternalLoads:
+			Q_ASSERT(m_internalLoads[id] != nullptr);
 			m_internalLoads[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlThermostat:
+			Q_ASSERT(m_zoneControlThermostat[id] != nullptr);
 			m_zoneControlThermostat[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlShading:
+			Q_ASSERT(m_zoneControlShading[id] != nullptr);
 			m_zoneControlShading[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlNaturalVentilation:
+			Q_ASSERT(m_zoneControlVentilationNatural[id] != nullptr);
 			m_zoneControlVentilationNatural[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneIdealHeatingCooling:
+			Q_ASSERT(m_zoneIdealHeatingCooling[id] != nullptr);
 			m_zoneIdealHeatingCooling[id]->collectLocalChildren(localChildren); break;
 		case DT_VentilationNatural:
+			Q_ASSERT(m_ventilationNatural[id] != nullptr);
 			m_ventilationNatural[id]->collectLocalChildren(localChildren); break;
 		case DT_Infiltration:
+			Q_ASSERT(m_infiltration[id] != nullptr);
 			m_infiltration[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneTemplates:
+			Q_ASSERT(m_zoneTemplates[id] != nullptr);
 			m_zoneTemplates[id]->collectLocalChildren(localChildren); break;
 		case NUM_DT:
 			break;

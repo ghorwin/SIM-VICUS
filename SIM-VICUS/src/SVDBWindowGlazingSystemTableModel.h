@@ -60,7 +60,7 @@ public:
 	// ** SVAbstractDatabaseTableModel interface **
 
 	int columnIndexId() const override { return ColId; }
-	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_Windows; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_WindowGlazingSystems; }
 	virtual void resetModel() override;
 	QModelIndex addNewItem() override;
 	QModelIndex copyItem(const QModelIndex & index) override;
