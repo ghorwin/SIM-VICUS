@@ -220,7 +220,7 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 	QProgressDialog progressDialog(tr("Calculate floor area of selected rooms."), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
 	progressDialog.setMinimumDuration(1000);
-	progressDialog.show();
+//	progressDialog.show();
 
 	// ProgressBar initialization
 	CalculationProgress progressNotifyer;
@@ -254,6 +254,7 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
 	QProgressDialog progressDialog(tr("Calculate volumes of selected rooms."), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
 	progressDialog.setMinimumDuration(1000);
+//	progressDialog.show();
 
 	// ProgressBar initialization
 	CalculationProgress progressNotifyer;
@@ -287,6 +288,7 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
 	QProgressDialog progressDialog(tr("Calculate floor area of all rooms."), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
 	progressDialog.setMinimumDuration(1000);
+//	progressDialog.show();
 
 	// ProgressBar initialization
 	CalculationProgress progressNotifyer;
@@ -320,7 +322,7 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 	QProgressDialog progressDialog(tr("Calculate volumes of all rooms."), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
 	progressDialog.setMinimumDuration(1000);
-	progressDialog.show();
+//	progressDialog.show();
 
 	// ProgressBar initialization
 	CalculationProgress progressNotifyer;

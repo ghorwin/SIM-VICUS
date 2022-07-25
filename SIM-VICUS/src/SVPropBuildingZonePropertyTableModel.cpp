@@ -41,7 +41,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 	// constant access to selected room
 	const VICUS::Room &room = *m_rooms[(size_t)index.row()];
 
-	qDebug() << room.m_displayName;
+	// qDebug() << room.m_displayName;
 
 	switch (role) {
 		case Qt::DisplayRole :
@@ -86,9 +86,12 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 
 		case Qt::FontRole : {
 			//      with valid value -> black, bold
-			QFont f(m_itemFont);
-			f.setBold(true);
-			return f;
+			if(index.column() == 2 || index.column() == 3) {
+				QFont f(m_itemFont);
+				f.setBold(true);
+				f.setItalic(true);
+				return f;
+			}
 		}
 
 			// UserRole returns value reference
@@ -98,13 +101,14 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 		case Qt::ForegroundRole : {
 			// vars with INVALID values -> red text color
 			if (index.column() == 2)
-				if (room.m_para[VICUS::Room::P_Area].value < 0)
+				if (!room.m_para[VICUS::Room::P_Area].empty() && room.m_para[VICUS::Room::P_Area].get_value("m2") < 1e-2)
 					return QColor(Qt::red);
 			if (index.column() == 3)
-				if (room.m_para[VICUS::Room::P_Volume].value < 0)
+				if (!room.m_para[VICUS::Room::P_Volume].empty() && room.m_para[VICUS::Room::P_Volume].get_value("m3") < 1e-2)
 					return QColor(Qt::red);
 		}
 	}
+	return QVariant();
 }
 
 
@@ -153,7 +157,7 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 	bool valueOk;
 	double val = value.toDouble(&valueOk);
 
-	if(!valueOk || val<=0)
+	if(!valueOk || val<0)
 		return false;
 
 	QString text;
@@ -253,7 +257,7 @@ void SVPropBuildingZonePropertyTableModel::calulateFloorArea(Notification * noti
 	IBK::StopWatch w;
 	w.start();
 	notify->notify(0);
-	int roomsCompleted = 0;
+	int roomsCompleted = 1;
 
 	// make a copy of buildings data structure
 	std::vector<VICUS::Building>	buildings = project().m_buildings;
@@ -286,6 +290,8 @@ void SVPropBuildingZonePropertyTableModel::calulateFloorArea(Notification * noti
 	}
 	QString text = "Floor area calculation";
 
+	notify->notify(1);
+
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
 
@@ -301,7 +307,7 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(Notification * notify,
 	IBK::StopWatch w;
 	w.start();
 	notify->notify(0);
-	int roomsCompleted = 0;
+	int roomsCompleted = 1;
 
 	std::vector<VICUS::Building>	buildings = project().m_buildings;
 
@@ -334,6 +340,8 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(Notification * notify,
 		++roomsCompleted;
 	}
 	QString text = "Volume calculation";
+
+	notify->notify(1);
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
