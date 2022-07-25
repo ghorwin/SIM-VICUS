@@ -344,7 +344,9 @@ void SVGeometryView::onViewStateChanged() {
 	m_ui->actionZLock->setChecked(state);
 	m_ui->actionZLock->blockSignals(false);
 
-	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex);
+	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+						vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry /*||
+						vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance*/ );
 	m_ui->actionXLock->setVisible(lockVisible);
 	m_ui->actionYLock->setVisible(lockVisible);
 	m_ui->actionZLock->setVisible(lockVisible);
@@ -354,7 +356,8 @@ void SVGeometryView::onViewStateChanged() {
 	m_actionCoordinateInput->setVisible(lockVisible);
 
 	bool geometryModeActive = vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry ||
-							  vs.m_propertyWidgetMode == SVViewState::PM_AddGeometry;
+							  vs.m_propertyWidgetMode == SVViewState::PM_AddGeometry ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_VertexList;
 	m_ui->geometryToolBar->setEnabled(geometryModeActive);
 	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
