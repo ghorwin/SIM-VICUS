@@ -3,6 +3,8 @@
 
 #include <NANDRAD_FMIVariableDefinition.h>
 
+#include <IBK_NotificationHandler.h>
+
 #include <QAbstractTableModel>
 #include <QObject>
 #include <QFont>
@@ -11,6 +13,11 @@
 
 namespace VICUS {
 	class Room;
+};
+
+class Notification : public IBK::NotificationHandler {
+public:
+	bool	m_aborted = false;
 };
 
 
@@ -47,9 +54,9 @@ public:
 	// changes the selection of rooms for a given building index and building level index
 	void updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex);
 	// automatically calculates zone floor area for an item selection
-	void calulateFloorArea(const QModelIndexList &indexes);
+	void calulateFloorArea(Notification * notify, const QModelIndexList &indexes);
 	// automatically calculates zone volume for an item selection
-	void calulateVolume(const QModelIndexList &indexes);
+	void calulateVolume(Notification * notify, const QModelIndexList &indexes);
 	// assignes surfaces to a chosen room and returns true if succeeded (false otherwise)
 	bool assignSurfaces(const QModelIndex &index, QString &msg);
 

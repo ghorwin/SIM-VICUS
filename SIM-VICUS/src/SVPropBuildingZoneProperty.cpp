@@ -16,6 +16,23 @@
 #include "SVZoneSelectionDialog.h"
 
 #include <QSortFilterProxyModel>
+#include <QProgressDialog>
+
+class CalculationProgress : public Notification {
+public:
+	void notify() override {}
+	void notify(double percentage) override;
+
+	char				pad[7]; // fix padding, silences compiler warning
+	QProgressDialog		*m_dlg = nullptr;
+};
+
+void CalculationProgress::notify(double percentage) {
+	m_dlg->setValue((int)(m_dlg->maximum() * percentage));
+	qApp->processEvents();
+	if (m_dlg->wasCanceled())
+		m_aborted = true;
+}
 
 SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	QWidget(parent),
@@ -199,8 +216,25 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
 	Q_ASSERT(!indexes.empty());
 
+	// Create progress dialog
+	QProgressDialog progressDialog(tr("Calculate floor area of selected rooms."), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.setMinimumDuration(1000);
+	progressDialog.show();
+
+	// ProgressBar initialization
+	CalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
 	// perform calculation of room floor areas inside table model
-	m_zonePropertiesTableModel->calulateFloorArea(indexes);
+	m_zonePropertiesTableModel->calulateFloorArea(&progressNotifyer, indexes);
+
+	if (progressNotifyer.m_aborted) {
+		QMessageBox::information(this, QString(), tr("Calculation of floor areas was aborted."));
+		return;
+	}
+
+	progressDialog.hide();
 }
 
 
@@ -216,8 +250,24 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
 	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
 	Q_ASSERT(!indexes.empty());
 
-	// perform calculation of room volumes inside table model
-	m_zonePropertiesTableModel->calulateVolume(indexes);
+	// Create progress dialog
+	QProgressDialog progressDialog(tr("Calculate volumes of selected rooms."), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.setMinimumDuration(1000);
+
+	// ProgressBar initialization
+	CalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
+	// perform calculation of room floor areas inside table model
+	m_zonePropertiesTableModel->calulateVolume(&progressNotifyer, indexes);
+
+	if (progressNotifyer.m_aborted) {
+		QMessageBox::information(this, QString(), tr("Calculation of volumes was aborted."));
+		return;
+	}
+
+	progressDialog.hide();
 }
 
 
@@ -233,8 +283,24 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
 	if(indexes.empty())
 		return;
 
+	// Create progress dialog
+	QProgressDialog progressDialog(tr("Calculate floor area of all rooms."), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.setMinimumDuration(1000);
+
+	// ProgressBar initialization
+	CalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
 	// perform calculation of room floor areas inside table model
-	m_zonePropertiesTableModel->calulateFloorArea(indexes);
+	m_zonePropertiesTableModel->calulateFloorArea(&progressNotifyer, indexes);
+
+	if (progressNotifyer.m_aborted) {
+		QMessageBox::information(this, QString(), tr("Calculation of floor areas was aborted."));
+		return;
+	}
+
+	progressDialog.hide();
 }
 
 
@@ -250,13 +316,30 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 	if(indexes.empty())
 		return;
 
+	// Create progress dialog
+	QProgressDialog progressDialog(tr("Calculate volumes of all rooms."), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.setMinimumDuration(1000);
+	progressDialog.show();
+
+	// ProgressBar initialization
+	CalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
 	// perform calculation of room volumes inside table model
-	m_zonePropertiesTableModel->calulateVolume(indexes);
+	m_zonePropertiesTableModel->calulateVolume(&progressNotifyer, indexes);
+
+	if (progressNotifyer.m_aborted) {
+		QMessageBox::information(this, QString(), tr("Calculation of volumes was aborted."));
+		return;
+	}
+
+	progressDialog.hide();
 }
 
 
 void SVPropBuildingZoneProperty::updateTableView() {
-	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
+//	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
 
 	m_selectedProxyIndex = QModelIndex();
 	// TODO Dirk: pushButtonAssignSurface darf nur aktiv sein, wenn:

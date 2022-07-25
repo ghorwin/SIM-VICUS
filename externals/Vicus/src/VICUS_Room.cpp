@@ -54,7 +54,7 @@ void Room::calculateVolume() {
 	//   - requires room to be fully enclosed by surfaces
 	//   - all surfaces must have normal vector pointing _into_ the room
 
-	qDebug() << "Volumenberechnung";
+//	qDebug() << "Volumenberechnung";
 
 	double vol = 0;
 	unsigned int surfaceCounter = 0;
@@ -64,18 +64,18 @@ void Room::calculateVolume() {
 		const PlaneTriangulationData &planeTri1 = s.geometry().triangulationData();
 		const std::vector<PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();
 
-		qDebug() << "Fläche: " << s.m_displayName;
-		qDebug() << "Flächennormale"
-				 << "\t" << s.geometry().normal().m_x
-				 << "\t" << s.geometry().normal().m_y
-				 << "\t" << s.geometry().normal().m_z;
+//		qDebug() << "Fläche: " << s.m_displayName;
+//		qDebug() << "Flächennormale"
+//				 << "\t" << s.geometry().normal().m_x
+//				 << "\t" << s.geometry().normal().m_y
+//				 << "\t" << s.geometry().normal().m_z;
 
 		// process all triangles of all holes
 		unsigned int holeCounter=0;
-		if(!holes.empty()){
-			qDebug() << "Fläche enthält " << holes.size() << " Löcher";
-			qDebug() << "Lochnr." << "\t" << "Teil" << "\t" << "Vol.berechnung";
-		}
+//		if(!holes.empty()){
+//			qDebug() << "Fläche enthält " << holes.size() << " Löcher";
+//			qDebug() << "Lochnr." << "\t" << "Teil" << "\t" << "Vol.berechnung";
+//		}
 		for(const PlaneTriangulationData &hole : holes){
 
 			for (unsigned int i=0; i<hole.m_triangles.size(); ++i){
@@ -119,14 +119,14 @@ void Room::calculateVolume() {
 						- p0.m_x * p2.m_y * p1.m_z
 						- p1.m_x * p0.m_y * p2.m_z;
 
-				qDebug() << holeCounter << "\t" << i << "\t" << volDebug;
+//				qDebug() << holeCounter << "\t" << i << "\t" << volDebug;
 				++holeCounter;
 			}
 		}
 
 		// process all triangles outer bound
 
-		qDebug() << "Flächennr.\tTeil\tVol.berechnung";
+//		qDebug() << "Flächennr.\tTeil\tVol.berechnung";
 		for (unsigned int i=0; i<planeTri1.m_triangles.size(); ++i) {
 			const IBKMK::Triangulation::triangle_t &tri = planeTri1.m_triangles[i];
 			// Note: plane geometry takes care not to add degenerated triangles to triangulation data,
@@ -167,12 +167,14 @@ void Room::calculateVolume() {
 					- p0.m_x * p2.m_y * p1.m_z
 					- p1.m_x * p0.m_y * p2.m_z;
 
-			qDebug() << surfaceCounter << "\t" << i << "\t" << volDebug;
+//			qDebug() << surfaceCounter << "\t" << i << "\t" << volDebug;
 			++surfaceCounter;
 		}
 	}
 
 	vol /= 6;
+
+	qDebug() << m_displayName << "\t" << vol;
 
 	VICUS::KeywordList::setParameter(m_para,"Room::para_t", VICUS::Room::P_Volume, vol);
 }
