@@ -74,6 +74,7 @@
            <addaction name="actionSnap"/>
            <addaction name="separator"/>
            <addaction name="actionMeasure"/>
+           <addaction name="separator"/>
            <addaction name="actionXLock"/>
            <addaction name="actionYLock"/>
            <addaction name="actionZLock"/>
