@@ -48,6 +48,7 @@
 #include <VICUS_KeywordList.h>
 
 #include "SVClimateDataTableModel.h"
+#include "SVSettings.h"
 
 SVSettings * SVSettings::m_self = nullptr;
 
