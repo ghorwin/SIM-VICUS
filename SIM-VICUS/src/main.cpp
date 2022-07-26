@@ -27,6 +27,7 @@
 #include <QApplication>
 #include <QSplashScreen>
 #include <QTimer>
+#include <QScreen>
 
 #include <IBK_Exception.h>
 #include <IBK_messages.h>
@@ -206,6 +207,8 @@ int main(int argc, char *argv[]) {
 	if (!settings.m_flags[SVSettings::NoSplashScreen]) {
 		QPixmap pixmap;
 		pixmap.load(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen.png");
+		QScreen *s = a.primaryScreen();
+		pixmap.setDevicePixelRatio(s->devicePixelRatio());
 		splash.reset(new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint | Qt::SplashScreen));
 		splash->show();
 		QTimer::singleShot(5000, splash.get(), SLOT(close()));
