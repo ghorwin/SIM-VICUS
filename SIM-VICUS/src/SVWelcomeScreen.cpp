@@ -100,7 +100,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 	htmlPage.replace("${DEMO_CASES_LINK}", tr("Examples/Validation cases"));
 	htmlPage.replace("${TEMPLATES_LINK}", tr("Project templates"));
 
-	int size = SVSettings::instance().m_ratio;
+	int size = (int)SVSettings::instance().m_thumbNailSize;
 
 	if (m_pageType == PT_RecentFiles) {
 		// compose recent project file list table
@@ -145,7 +145,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			QFileInfo thumbFileInfo(thumbPath);
 			// check if file exists
 			if (thumbFileInfo.exists())
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width="" + size + "" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 			else
 				thumbPath = "&nbsp;";
 			thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
@@ -203,7 +203,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo Andreas: fix warning about bad resource loading (related to image files)
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width="" + size + "" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
 				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
@@ -263,7 +263,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo Andreas: fix warning about bad resource loading (related to image files)
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width="" + size + "" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
