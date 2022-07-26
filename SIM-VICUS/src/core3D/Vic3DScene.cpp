@@ -2244,6 +2244,7 @@ void Scene::leaveMeasurementMode(bool setViewState) {
 	SVViewStateHandler::instance().m_geometryView->hideMeasurementWidget();
 
 	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(QColor("burlywood"));
+	SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation = QVector3D(0,0,0);
 
 	// switch back to defined view state
 	// do we have any selected geometries
@@ -2537,6 +2538,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			}
 			axisLockOffset = QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation);
 		}
+	}
+	else if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
+		axisLockOffset = QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation);
 	}
 	// override user-selected axis lock for scaling operation
 	if (axisLoc != SVViewState::NUM_L)
@@ -2870,6 +2874,7 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 			// store new start point
 			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
+			m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 		}
 		else if (m_measurementObject.m_startPoint != INVALID_POINT && m_measurementObject.m_endPoint != INVALID_POINT) {
 			// first reset object and widget
@@ -2878,6 +2883,7 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 			// then start next measurement from current LCS position
 			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
+			m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 		}
 		else {
 			// finish measurement mode by fixing the end point
@@ -3038,6 +3044,7 @@ void Scene::setDefaultViewState() {
 	// or NUM mode (nothing)
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_locks = SVViewState::NUM_L; // no axis is locked
 
 	switch (vs.m_propertyWidgetMode) {
 		case SVViewState::PM_AddGeometry:

@@ -345,8 +345,8 @@ void SVGeometryView::onViewStateChanged() {
 	m_ui->actionZLock->blockSignals(false);
 
 	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-						vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry /*||
-						vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance*/ );
+						vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry ||
+						vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
 	m_ui->actionXLock->setVisible(lockVisible);
 	m_ui->actionYLock->setVisible(lockVisible);
 	m_ui->actionZLock->setVisible(lockVisible);
