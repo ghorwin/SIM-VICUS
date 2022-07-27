@@ -72,7 +72,6 @@
         <file>gfx/actions/move.png</file>
         <file>gfx/actions/3d-modeling.png</file>
         <file>gfx/actions/filter.png</file>
-        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen.png</file>
         <file>logo/icons/Icon_64.png</file>
         <file>gfx/actions/16x16/checkbox-inverted.png</file>
         <file>gfx/actions/24x24/toDB.png</file>
@@ -104,5 +103,7 @@
         <file>fonts/Manrope-Medium.otf</file>
         <file>fonts/Manrope-Regular.otf</file>
         <file>fonts/Manrope-SemiBold_0.otf</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-0.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-1.png</file>
     </qresource>
 </RCC>

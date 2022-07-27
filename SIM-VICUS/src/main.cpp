@@ -30,6 +30,7 @@
 #include <QScreen>
 #include <QPainter>
 #include <QFontDatabase>
+#include <QRandomGenerator>
 
 #include <IBK_Exception.h>
 #include <IBK_messages.h>
@@ -208,7 +209,8 @@ int main(int argc, char *argv[]) {
 
 	if (!settings.m_flags[SVSettings::NoSplashScreen]) {
 		QPixmap pixmap;
-		pixmap.load(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen.png");
+
+		pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(QRandomGenerator::global()->bounded(0,2)));
 
 		// is needed for high dpi screens to prevent bluring
 		double ratio = a.primaryScreen()->devicePixelRatio();
