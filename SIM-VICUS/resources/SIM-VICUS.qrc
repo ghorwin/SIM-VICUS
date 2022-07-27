@@ -97,5 +97,12 @@
         <file>gfx/actions/neural.png</file>
         <file>gfx/actions/info.png</file>
         <file>gfx/actions/building_parameter.png</file>
+        <file>fonts/Manrope-Bold.otf</file>
+        <file>fonts/Manrope-ExtraBold.otf</file>
+        <file>fonts/Manrope-ExtraLight.otf</file>
+        <file>fonts/Manrope-Light.otf</file>
+        <file>fonts/Manrope-Medium.otf</file>
+        <file>fonts/Manrope-Regular.otf</file>
+        <file>fonts/Manrope-SemiBold_0.otf</file>
     </qresource>
 </RCC>
