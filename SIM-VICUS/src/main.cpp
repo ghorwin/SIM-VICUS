@@ -211,15 +211,15 @@ int main(int argc, char *argv[]) {
 		pixmap.load(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen.png");
 
 		// is needed for high dpi screens to prevent bluring
-		QScreen *s = a.primaryScreen();
-		pixmap.setDevicePixelRatio(s->devicePixelRatio());
+		double ratio = a.primaryScreen()->devicePixelRatio();
+		pixmap.setDevicePixelRatio(ratio);
 
 		// Load custom font
 		int id = QFontDatabase::addApplicationFont(":/fonts/Manrope-Bold.otf");
 		QString family = QFontDatabase::applicationFontFamilies(id).at(0);
 		QFont font(family);
 		font.setBold(true);
-		font.setPixelSize(14);
+		font.setPixelSize(16/ratio);
 
 		// Create painter
 		QPainter painter(&pixmap);
@@ -228,18 +228,18 @@ int main(int argc, char *argv[]) {
 
 		// draw "Version"
 		painter.setPen(Qt::white);
-		painter.drawText(623, 513, 120, 20, Qt::AlignRight, QString("VERSION %1").arg(VICUS::VERSION));
+		painter.drawText(615.0/ratio, 548.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::VERSION));
 
 		id = QFontDatabase::addApplicationFont(":/fonts/Manrope-Medium.otf");
 		family = QFontDatabase::applicationFontFamilies(id).at(0);
 		font = QFont(family);
-		font.setPixelSize(13);
+		font.setPixelSize(14/ratio);
 		painter.setFont(font);
 
 		// Add beta information
 		painter.setPen(QColor("#CE4A4A"));
 		if(VICUS::VERSION[0] == '0')
-			painter.drawText(623, 535, 120, 20, Qt::AlignRight, QString("BETA-VERSION"));
+			painter.drawText(615.0/ratio, 572.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("BETA-VERSION"));
 
 		// show splash screen
 		splash.reset(new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint | Qt::SplashScreen));
