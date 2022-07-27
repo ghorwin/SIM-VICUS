@@ -791,6 +791,8 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 									 const IBKMK::Vector3D & offset, const IBKMK::Vector3D & xAxis,
 									 const IBKMK::Vector3D & yAxis, const IBKMK::Vector3D & zAxis)
 {
+	FUNCID(Project::boundingBox);
+
 	// store selected surfaces
 	if ( surfaces.empty() && subsurfaces.empty())
 		return IBKMK::Vector3D ( 0,0,0 );
@@ -804,6 +806,14 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
+		try {
+			s->polygon3D().vertexes();
+		}  catch (...) {
+			IBK::IBK_Message(IBK::FormatString("Surface '%1' does not contain vertexes!")
+							 .arg(s->m_displayName.toStdString()), IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
 		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
 
 			IBKMK::Vector3D vLocal, point;
