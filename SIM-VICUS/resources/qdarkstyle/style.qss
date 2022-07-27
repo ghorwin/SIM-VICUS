@@ -1006,6 +1006,7 @@ QPushButton {
   outline: none;
   border-radius: 3px;
   border: 1px solid #71777a;
+  padding: 5px 10px 5px 10px;
 }
 
 QPushButton:disabled {
