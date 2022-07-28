@@ -210,7 +210,7 @@ int main(int argc, char *argv[]) {
 	if (!settings.m_flags[SVSettings::NoSplashScreen]) {
 		QPixmap pixmap;
 
-		pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(QRandomGenerator::global()->bounded(0,2)));
+		pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(QRandomGenerator::global()->bounded(0,3)));
 
 		// is needed for high dpi screens to prevent bluring
 		double ratio = a.primaryScreen()->devicePixelRatio();

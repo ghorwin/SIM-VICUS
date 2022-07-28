@@ -105,5 +105,6 @@
         <file>fonts/Manrope-SemiBold_0.otf</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-0.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-1.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-2.png</file>
     </qresource>
 </RCC>
