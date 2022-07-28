@@ -1156,7 +1156,8 @@ void Scene::render() {
 
 	// *** movable coordinate system  ***
 
-	bool drawLocalCoordinateSystem = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+	bool drawLocalCoordinateSystem = vs.m_propertyWidgetMode != SVViewState::PM_BuildingProperties &&
+									(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 									  vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
 									  vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
 									  vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
