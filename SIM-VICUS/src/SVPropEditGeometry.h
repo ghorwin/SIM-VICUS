@@ -184,6 +184,9 @@ private slots:
 	void on_pushButtonApply_clicked();
 
 
+	void on_lineEditCopyX_textChanged(const QString &arg1);
+
+	void on_lineEditTranslateX_textChanged(const QString);
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
