@@ -30,6 +30,7 @@
 #include "VICUS_Constants.h"
 
 #include <vector>
+#include <string>
 
 namespace VICUS {
 
@@ -96,6 +97,9 @@ public:
 		at the corresponding time point.
 	*/
 	std::vector<double>		m_values;																// XML:E
+
+	/*! Holds error string in order to give users a tooltip in db dialog. */
+	mutable std::string		m_errorMsg;
 };
 
 } // namespace VICUS

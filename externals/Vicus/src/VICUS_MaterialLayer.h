@@ -82,6 +82,9 @@ public:
 
 	/*! Thickness of the material layer. */
 	IBK::Parameter					m_thickness;				// XML:E:required
+
+	/*! Holds error string in order to give users a tooltip in db dialog. */
+	mutable std::string				m_errorMsg;
 };
 
 } // namespace VICUS
