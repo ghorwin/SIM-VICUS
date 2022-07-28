@@ -1196,3 +1196,12 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 }
 
 
+void SVPropEditGeometry::on_lineEditCopyX_textChanged(const QString &xString){
+		onLineEditTextChanged(m_ui->lineEditCopyX);
+}
+
+
+void SVPropEditGeometry::on_lineEditTranslateX_textChanged(const QString /*&arg1*/){
+	onLineEditTextChanged(m_ui->lineEditTranslateX);
+}
+
