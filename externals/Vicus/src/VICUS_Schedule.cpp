@@ -92,13 +92,19 @@ bool Schedule::isValid(std::string &err, bool checkAnnualScheds, const std::map<
 		if (!m_annualSchedule.m_tsvFile.isValid()){
 
 			// check if we have data
-			if (m_annualSchedule.m_values.empty())
+			if (m_annualSchedule.m_values.empty()) {
+				m_errorMsg = "Annual schedule has empty values.";
 				return false;
-			if (!m_annualSchedule.m_values.valid())
+			}
+			if (!m_annualSchedule.m_values.valid()) {
+				m_errorMsg = "Annual schedule contains invalid values.";
 				return false;
+			}
 			// check that we have x and y unit set correctly
-			if (m_annualSchedule.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
+			if (m_annualSchedule.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS) {
+				m_errorMsg = "Annual schedule has wrong unit.";
 				return false;
+			}
 			// yUnit is not important -> Model defines unit later
 		}
 		else if(checkAnnualScheds){
@@ -115,23 +121,31 @@ bool Schedule::isValid(std::string &err, bool checkAnnualScheds, const std::map<
 				spline.m_tsvFile = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
 			}  catch (...) {
 				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				m_errorMsg = err;
 				return false;
 			}
 			try {
 				spline.readTsv();
 			}  catch (...) {
 				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				m_errorMsg = err;
 				return false;
 			}
 
 			// check if we have data
-			if (spline.m_values.empty())
+			if (spline.m_values.empty()) {
+				m_errorMsg = "Schedule data spline has empty values.";
 				return false;
-			if (!spline.m_values.valid())
+			}
+			if (!spline.m_values.valid()) {
+				m_errorMsg = "Schedule data spline contains invalid values.";
 				return false;
+			}
 			// check that we have x and y unit set correctly
-			if (spline.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
+			if (spline.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS) {
+				m_errorMsg = "Schedule data spline has wrong unit.";
 				return false;
+			}
 
 			// yUnit is not important -> Model defines unit later
 		}
@@ -149,12 +163,16 @@ bool Schedule::isValid() const {
 	// check that the period start days are increasing
 
 	// we must have at least one period
-	if (m_periods.empty())
+	if (m_periods.empty()) {
+		m_errorMsg = "Schedule has no periods, needs at least one.";
 		return false;
+	}
 
 	// first periods must have valid parameters itself
-	if (!m_periods[0].isValid())
+	if (!m_periods[0].isValid()) {
+		m_errorMsg = "First period of schedule is not valid.";
 		return false;
+	}
 
 	// first period must start at day 0
 	if (m_periods.front().m_intervalStartDay != 0)
@@ -164,10 +182,14 @@ bool Schedule::isValid() const {
 	// check that all intervals follow each other
 	for (unsigned int i=1; i<m_periods.size(); ++i) {
 		// period must have valid parameters itself
-		if (!m_periods[i].isValid())
+		if (!m_periods[i].isValid()) {
+			m_errorMsg = "Period #" + std::to_string(i) + " of schedule is not valid.";
 			return false;
-		if (m_periods[i].m_intervalStartDay <= lastIntervalStart)
+		}
+		if (m_periods[i].m_intervalStartDay <= lastIntervalStart) {
+			m_errorMsg = "Start day of period #" + std::to_string(i) + " is before start day of period before.";
 			return false;
+		}
 		lastIntervalStart = m_periods[i].m_intervalStartDay;
 	}
 

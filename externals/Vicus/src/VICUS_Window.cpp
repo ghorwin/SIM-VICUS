@@ -62,14 +62,19 @@ AbstractDBElement::ComparisonResult Window::equal(const AbstractDBElement *other
 
 
 bool Window::isValid() const {
-	if(m_id == INVALID_ID ||
-			m_idGlazingSystem == INVALID_ID)
+	if(m_id == INVALID_ID) {
+		m_errorMsg = "Window does not exist.";
 		return false;
+	}
+
+	if(m_idGlazingSystem == INVALID_ID) {
+		m_errorMsg = "Glazing system of window does not exist.";
+		return false;
+	}
 
 	double fractionFrame = 0;
 	switch (m_methodFrame) {
 		case VICUS::Window::M_None:
-
 		break;
 		case VICUS::Window::M_Fraction:{
 			try {
@@ -77,7 +82,8 @@ bool Window::isValid() const {
 													 "---", "---", 0, false, 1, false, nullptr);
 				if(!m_frame.isValid())
 					return false;
-			}  catch (...) {
+			}  catch (IBK::Exception &ex) {
+				m_errorMsg = ex.what();
 				return false;
 			}
 
@@ -87,16 +93,21 @@ bool Window::isValid() const {
 			try {
 				m_para[P_FrameWidth].checkedValue(KeywordList::Keyword("Window::para_t", P_FrameWidth),
 												  "m", "m", 0, false, 2, true, nullptr);
-				if(!m_frame.isValid())
+				if(!m_frame.isValid()) {
+					m_errorMsg = "Window frame is not valid.";
 					return false;
-			}  catch (...) {
+				}
+			}  catch (IBK::Exception &ex) {
+				m_errorMsg = ex.what();
 				return false;
 			}
 
 		}
 		break;
-		case VICUS::Window::NUM_M:
-		return false;
+		case VICUS::Window::NUM_M: {
+			m_errorMsg = "Window frame method is not set.";
+			return false;
+		}
 	}
 	switch (m_methodDivider) {
 		case VICUS::Window::M_None:
@@ -110,10 +121,13 @@ bool Window::isValid() const {
 				double maxVal = 1 - fractionFrame;
 				m_para[P_DividerFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_DividerFraction),
 													 "---", "---", 0, false, maxVal, false, nullptr);
-				if(!m_divider.isValid())
+				if(!m_divider.isValid()) {
+					m_errorMsg = "Window divider is not valid.";
 					return false;
+				}
 
-			}  catch (...) {
+			}  catch (IBK::Exception &ex) {
+				m_errorMsg = "Window divider fraction: " + std::string(ex.what());
 				return false;
 			}
 		}
@@ -122,9 +136,12 @@ bool Window::isValid() const {
 			try {
 				m_para[P_DividerWidth].checkedValue(KeywordList::Keyword("Window::para_t", P_DividerWidth),
 												  "m", "m", 0, false, 2, true, nullptr);
-				if(!m_divider.isValid())
+				if(!m_divider.isValid()) {
+					m_errorMsg = "Window divider is not valid.";
 					return false;
-			}  catch (...) {
+				}
+			}  catch (IBK::Exception &ex) {
+				m_errorMsg = "Window divider width: " + std::string(ex.what());
 				return false;
 			}
 		}

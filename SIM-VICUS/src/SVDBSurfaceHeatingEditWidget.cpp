@@ -62,8 +62,8 @@ SVDBSurfaceHeatingEditWidget::SVDBSurfaceHeatingEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("SurfaceHeating Model Name"));
 
-	m_ui->lineEditHeatingLimit->setup(0, 10000, tr("Maximum heating limit in W/m2."), true, true);
-	m_ui->lineEditCoolingLimit->setup(0, 10000, tr("Maximum heating limit in W/m2."), true, true);
+	m_ui->lineEditHeatingLimit->setup(0, 40000, tr("Maximum heating limit in W/m2."), true, true);
+	m_ui->lineEditCoolingLimit->setup(0, 40000, tr("Maximum cooling limit in W/m2."), true, true);
 	m_ui->lineEditPipeSpacing->setup(0, 5, tr("Maximum fluid velocity in m/s."), false, true);
 	m_ui->lineEditTemperaturDifference->setup(0, 80, tr("Temperature difference of supply and return fluid."), false, true);
 

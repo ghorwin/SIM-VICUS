@@ -123,6 +123,13 @@ QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role
 
 		case Role_Referenced:
 			return it->second.m_isReferenced;
+
+		case Qt::ToolTipRole: {
+			if(index.column() == ColCheck) {
+				if (!it->second.isValid(m_db->m_schedules))
+					return QString::fromStdString(it->second.m_errorMsg);
+			}
+		}
 	}
 
 	return QVariant();

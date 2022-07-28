@@ -103,6 +103,9 @@ public:
 	/*! If true, this element is referenced in the current project */
 	mutable bool					m_isReferenced = false;
 
+	/*! Holds error string in order to give users a tooltip in db dialog. */
+	mutable std::string				m_errorMsg;
+
 };
 
 } // namespace VICUS

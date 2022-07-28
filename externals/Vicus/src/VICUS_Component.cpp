@@ -34,35 +34,50 @@ bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS
 
 		// referenced construction instance exists and is valid?
 		const Construction * con = constructions[m_idConstruction];
-		if (con == nullptr)
+		if (con == nullptr) {
+			m_errorMsg = "Construction is not set.";
 			return false;
+		}
 
-		if (!con->isValid(materials))
+		if (!con->isValid(materials)) {
+			m_errorMsg = "Construction '" + con->m_displayName.string("de", true) + "' is not valid.";
 			return false;
+		}
 
 		const BoundaryCondition *bcA = bcs[m_idSideABoundaryCondition];
 		const BoundaryCondition *bcB = bcs[m_idSideBBoundaryCondition];
 
 		bool hasSetpointTemperature4OtherZone = false;
 
-		if (bcA == nullptr && bcB == nullptr)
+		if (bcA == nullptr && bcB == nullptr) {
+			m_errorMsg = "Boundary Condition A and B is not set.";
 			return false;
+		}
 
-		if (bcA != nullptr && !bcA->isValid(scheduleDB))
+		if (bcA != nullptr && !bcA->isValid(scheduleDB)) {
+			m_errorMsg = "Boundary Condition A is not valid.";
 			return false;
+		}
 
-		if (bcB != nullptr && !bcB->isValid(scheduleDB))
+		if (bcB != nullptr && !bcB->isValid(scheduleDB)) {
+			m_errorMsg = "Boundary Condition B is not valid.";
 			return false;
+		}
 
 		if( ( bcA != nullptr && bcB == nullptr && bcA->hasSetpointTemperatureForZone() ) ||
 				( bcB != nullptr && bcA == nullptr && bcB->hasSetpointTemperatureForZone() ) ||
 				( bcA != nullptr && bcB != nullptr &&
-				bcA->hasSetpointTemperatureForZone() && bcB->hasSetpointTemperatureForZone() ) )
+				bcA->hasSetpointTemperatureForZone() && bcB->hasSetpointTemperatureForZone() ) ) {
+			m_errorMsg = "";
 			return false;
+		}
 
 		if (m_activeLayerIndex != VICUS::INVALID_ID) {
-			if (m_activeLayerIndex >= con->m_materialLayers.size())
+			if (m_activeLayerIndex >= con->m_materialLayers.size()) {
+				m_errorMsg = "Actice layer index '" + std::to_string(m_activeLayerIndex) +
+						"' is bigger then number of layers '" + std::to_string(con->m_materialLayers.size()) + "'";
 				return false;
+			}
 		}
 		return true;
 

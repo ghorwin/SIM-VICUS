@@ -124,6 +124,14 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 
 		case Role_Referenced:
 			return it->second.m_isReferenced;
+
+		case Qt::ToolTipRole: {
+			if(index.column() == ColCheck) {
+				std::string errorMsg = "";
+				if (!it->second.isValid())
+					return QString::fromStdString(it->second.m_errorMsg);
+			}
+		}
 	}
 
 	return QVariant();

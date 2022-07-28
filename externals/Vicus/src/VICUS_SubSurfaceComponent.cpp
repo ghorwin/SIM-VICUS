@@ -35,23 +35,33 @@ bool SubSurfaceComponent::isValid(const VICUS::Database<VICUS::Window> & windows
 
 		// referenced construction instance exists and is valid?
 		const Window * win = windows[m_idWindow];
-		if (win == nullptr)
+		if (win == nullptr) {
+			m_errorMsg = "Window with id '" + std::to_string(m_idWindow) + "' does not exist.";
 			return false;
+		}
 
-		if (!win->isValid())
+		if (!win->isValid()) {
+			m_errorMsg = "Window '" + win->m_displayName.string("de", true) + "' does not exist.";
 			return false;
+		}
 
 		const BoundaryCondition *bcA = bcs[m_idSideABoundaryCondition];
 		const BoundaryCondition *bcB = bcs[m_idSideBBoundaryCondition];
 
-		if (bcA == nullptr && bcB == nullptr)
+		if (bcA == nullptr && bcB == nullptr) {
+			m_errorMsg = "Boundary conditions are not set.";
 			return false;
+		}
 
-		if (bcA != nullptr && !bcA->isValid(scheduleDB))
+		if (bcA != nullptr && !bcA->isValid(scheduleDB)) {
+			m_errorMsg = "Boundary condition A '" + bcA->m_displayName.string("de", true) + "' is not valid.";
 			return false;
+		}
 
-		if (bcB != nullptr && !bcB->isValid(scheduleDB))
+		if (bcB != nullptr && !bcB->isValid(scheduleDB)) {
+			m_errorMsg = "Boundary condition B '" + bcB->m_displayName.string("de", true) + "' is not valid.";
 			return false;
+		}
 
 
 		// TODO : Dirk, add other checks for valid/complete parametrization
@@ -60,6 +70,7 @@ bool SubSurfaceComponent::isValid(const VICUS::Database<VICUS::Window> & windows
 	}
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
+		m_errorMsg = ex.what();
 		return false;
 	}
 }

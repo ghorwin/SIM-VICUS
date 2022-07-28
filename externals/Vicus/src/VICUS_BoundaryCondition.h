@@ -88,6 +88,9 @@ public:
 	/*! Model for air flow calculation. */
 	NANDRAD::InterfaceAirFlow				m_airFlow;						// XML:E
 
+	/*! Holds error string in order to give users a tooltip in db dialog. */
+	mutable std::string						m_errorMsg;
+
 };
 
 } // namespace VICUS

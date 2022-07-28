@@ -29,17 +29,22 @@ namespace VICUS {
 
 bool MaterialLayer::isValid(const VICUS::Database<VICUS::Material> & materials) const {
 	const Material * mat = materials[m_idMaterial];
-	if (mat == nullptr)
+	if (mat == nullptr) {
+		m_errorMsg = "Material with id '" + std::to_string(m_idMaterial) +"' does not exist.";
 		return false; // error, material with this ID is not found
+	}
 
-	if (!mat->isValid(false))
+	if (!mat->isValid(false)) {
+		m_errorMsg = "Material '" + mat->m_displayName.string("de", true) + "' is not valid.";
 		return false;
+	}
 
 	try {
 		m_thickness.checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), false,
 								 "Thickness > 0 is required.");
 	} catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
+		m_errorMsg = "Material '" + mat->m_displayName.string("de", true) + "' has following error: " + ex.what();
 		return false;
 	}
 	return true;

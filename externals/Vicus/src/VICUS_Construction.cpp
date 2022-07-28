@@ -29,8 +29,11 @@ namespace VICUS {
 
 bool Construction::isValid(const VICUS::Database<Material> & materials) const {
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
-		if (!m_materialLayers[i].isValid(materials))
+		if (!m_materialLayers[i].isValid(materials)) {
+			const Material * mat = materials[m_materialLayers[i].m_idMaterial];
+			m_errorMsg = "Material '" + mat->m_displayName.string("de", true) + "' is not valid.";
 			return false; // error, invalid layer thickness
+		}
 	}
 	return true;
 }

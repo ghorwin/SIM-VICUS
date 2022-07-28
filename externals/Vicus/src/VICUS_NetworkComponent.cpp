@@ -41,6 +41,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(m_para[i], i);
 		} catch (...) {
+			m_errorMsg = "Standard parameters of component are invalid.";
 			return false;
 		}
 	}
@@ -51,6 +52,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 		try {
 			checkAdditionalParameter(m_para[i], i);
 		} catch (...) {
+			m_errorMsg = "Aditional parameters of component are invalid.";
 			return false;
 		}
 	}
@@ -61,6 +63,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 		try {
 			checkIntParameter(m_intPara[i], i);
 		} catch (...) {
+			m_errorMsg = "Integer parameters of component are invalid.";
 			return false;
 		}
 	}
@@ -71,19 +74,25 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 		return false;
 	for (unsigned int id: m_scheduleIds){
 		const Schedule *sched = scheduleDB[id];
-		if (sched == nullptr)
+		if (sched == nullptr) {
+			m_errorMsg = "Schedule is not set properly.";
 			return false;
+		}
 		// TODO: implement sched.isValid() ?
 		// problem: does currently not work properly for annual schedules
 	}
 
 	// check if required schedules are given
-	if (reqSchedules.size() != m_scheduleIds.size())
+	if (reqSchedules.size() != m_scheduleIds.size()) {
+		m_errorMsg = "Required schedules are not properly set.";
 		return false;
+	}
 
 	// pipe properties
-	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID)
+	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID) {
+		m_errorMsg = "Pipe properties are not set.";
 		return false;
+	}
 
 	return true;
 }

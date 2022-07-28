@@ -30,8 +30,10 @@ namespace VICUS {
 
 bool DailyCycle::isValid() const {
 
-	if (m_dayTypes.empty() || m_dayTypes.size()> 7+1)	//Mo, ..., Sun + Holiday
+	if (m_dayTypes.empty() || m_dayTypes.size()> 7+1) {	//Mo, ..., Sun + Holiday
+		m_errorMsg = "Daily cycle day types are not valid.";
 		return false;	// day types not valid
+	}
 
 	for (int dt : m_dayTypes) {
 		switch ((NANDRAD::Schedule::ScheduledDayType)dt) {
@@ -45,17 +47,22 @@ bool DailyCycle::isValid() const {
 			case NANDRAD::Schedule::ST_HOLIDAY:
 				break;
 
-			default:
+			default: {
+				m_errorMsg = "Daily cycle day types are not valid.";
 				return false;	// day type is not valid
-
+			}
 		}
 	}
 
-	if (m_values.size() != m_timePoints.size() || m_values.empty())
+	if (m_values.size() != m_timePoints.size() || m_values.empty()) {
+		m_errorMsg = "Daily cycle has empty values or size of timepoints and values do not match.";
 		return false;	// empty values or size not same of values and timepoints
+	}
 
-	if (m_timePoints[0] != 0.0)
+	if (m_timePoints[0] != 0.0) {
+		m_errorMsg = "Daily cycle start point is not zero.";
 		return false;	// start point is not 0
+	}
 
 	// checked time points vector and time point and value vectors have same size
 	return true;

@@ -58,7 +58,8 @@ bool Material::isValid(bool hygrothermalCalculation) const {
 	NANDRAD::Material mat = toNandrad();
 	try {
 		mat.checkParameters();
-	} catch (...) {
+	} catch (IBK::Exception &ex) {
+		m_errorMsg = ex.what();
 		return false;
 	}
 

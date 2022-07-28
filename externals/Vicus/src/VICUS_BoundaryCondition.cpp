@@ -31,16 +31,22 @@ bool BoundaryCondition::isValid(const Database<Schedule> & scheduleDB) const {
 	if (m_id == VICUS::INVALID_ID)
 		return false;
 
-	if(!m_heatConduction.isValid(scheduleDB))
+	if(!m_heatConduction.isValid(scheduleDB)) {
+		m_errorMsg = "Heat conduction is not valid.";
 		return false;
+	}
 
 	try {
 		m_longWaveEmission.checkParameters();
-		m_solarAbsorption.checkParameters();
-
-
 		// TODO : add vapor diffusion/air flow once needed
 	} catch (...) {
+		m_errorMsg = "Long wave emission is not valid.";
+		return false;
+	}
+	try {
+		m_solarAbsorption.checkParameters();
+	} catch (...) {
+		m_errorMsg = "Solar absorption is not valid.";
 		return false;
 	}
 

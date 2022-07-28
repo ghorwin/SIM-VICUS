@@ -55,26 +55,41 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 						return false;
 				}
 
-			}  catch (...) {
+			}  catch (IBK::Exception &ex) {
+				m_errorMsg = ex.what();
 				return false;
 			}
 
-			if (m_idActivitySchedule == INVALID_ID || m_idOccupancySchedule == INVALID_ID)
+			if (m_idActivitySchedule == INVALID_ID) {
+				m_errorMsg = "Activity schedule is not set.";
 				return false;
+			}
+			if (m_idOccupancySchedule == INVALID_ID) {
+				m_errorMsg = "Occupancy schedule is not set.";
+				return false;
+			}
 
 			// check schedules occ and act
 			// check if schedule ID is existing and valid
 			const Schedule * actSched = scheduleDB[m_idActivitySchedule];
-			if (actSched == nullptr)
+			if (actSched == nullptr) {
+				m_errorMsg = "Activity schedule with id '" + std::to_string(m_idActivitySchedule) + "' does not exist.";
 				return false;
-			if (!actSched->isValid())
+			}
+			if (!actSched->isValid()) {
+				m_errorMsg = "Activity schedule '" + actSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
+			}
 
 			const Schedule * occSched = scheduleDB[m_idOccupancySchedule];
-			if (occSched == nullptr)
+			if (occSched == nullptr) {
+				m_errorMsg = "Occupancy schedule with id '" + std::to_string(m_idActivitySchedule) + "' does not exist.";
 				return false;
-			if (!occSched->isValid())
+			}
+			if (!occSched->isValid()) {
+				m_errorMsg = "Occupancy schedule '" + actSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
+			}
 		}
 		break;
 
@@ -86,7 +101,8 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 					try {
 						m_para[P_PowerPerArea].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PowerPerArea),
 															"W/m2", "W/m2", 0, true, 1000, true, nullptr);
-					}  catch (...) {
+					}  catch (IBK::Exception &ex) {
+						m_errorMsg = ex.what();
 						return false;
 					}
 				}
@@ -95,27 +111,40 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 					try {
 						m_para[P_Power].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_Power),
 													 "W", "W", 0, true, 100000, true, nullptr);
-					}  catch (...) {
+					}  catch (IBK::Exception &ex) {
+						m_errorMsg = ex.what();
 						return false;
 					}
 				}
 				break;
-				case VICUS::InternalLoad::NUM_PM:	return false;
+				case VICUS::InternalLoad::NUM_PM: {
+					m_errorMsg = "Internal loads type is not defined.";
+					return false;
+				}
 			}
 
-			if (m_idPowerManagementSchedule == INVALID_ID)
+			if (m_idPowerManagementSchedule == INVALID_ID) {
+				m_errorMsg = "Power management schedule is not set.";
 				return false;
+			}
 
 			// check if schedule ID is existing and valid
 			const Schedule * powerSched = scheduleDB[m_idPowerManagementSchedule];
-			if (powerSched == nullptr)
+			if (powerSched == nullptr) {
+				m_errorMsg = "Power management schedule with id '" + std::to_string(m_idPowerManagementSchedule) + "' does not exist.";
 				return false;
-			if (!powerSched->isValid())
+			}
+			if (!powerSched->isValid()) {
+				m_errorMsg = "Power management '" + powerSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
+			}
 		}
 		break;
 
-		case NUM_MC:	return false;
+		case NUM_MC: {
+			m_errorMsg = "Internal load category is not set.";
+			return false;
+		}
 	}
 
 	try {
@@ -128,7 +157,8 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 			m_para[P_LatentHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LatentHeatFactor),
 													"---", "---", 0, true, 1, true, nullptr);
 		}
-	}  catch (...) {
+	}  catch (IBK::Exception &ex) {
+		m_errorMsg = ex.what();
 		return false;
 	}
 

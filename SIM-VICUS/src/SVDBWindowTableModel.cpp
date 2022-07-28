@@ -104,6 +104,13 @@ QVariant SVDBWindowTableModel::data ( const QModelIndex & index, int role) const
 
 		case Role_Local :
 			return it->second.m_local;
+
+		case Qt::ToolTipRole: {
+			if(index.column() == ColCheck) {
+				if (!it->second.isValid())
+					return QString::fromStdString(it->second.m_errorMsg);
+			}
+		}
 	}
 
 	return QVariant();
