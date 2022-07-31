@@ -85,8 +85,8 @@ std::string FormatString::str() const {
 				s += val2string(it->index);
 			}
 			else {
-				// look up the argument
-				int i = it->index-1;
+				// look up the argument; Note: it->index cannot be 0
+				unsigned int i = it->index-1;
 				s += m_arguments[i];
 			}
 		}
@@ -171,7 +171,7 @@ FormatString & FormatString::arg(size_t i, int fieldWidth) {
 #endif
 
 FormatString & FormatString::arg(double d, int fieldWidth, char format, int precision, const char & fillChar) {
-	if (format == 'g')
+	if (format == 'g' && fieldWidth == 0)
 		m_arguments.push_back(val2string(d));
 	else {
 		std::stringstream strm;
@@ -217,7 +217,7 @@ const FormatString & FormatString::operator+=(const std::string& s) {
 			}
 			else {
 				// we convert the number in the arg placeholder
-				int index = string2val<int>(arg_placeholder);
+				unsigned int index = string2val<unsigned int>(arg_placeholder);
 				// and store the token
 				m_tokens.push_back(FormatString::Token(std::string(), index));
 			}
@@ -242,8 +242,7 @@ std::string FormatString::operator+(const std::string& s) const {
 }
 
 std::string operator+(const std::string& lhs, const FormatString& rhs) {
-	// implement using operator+
-	return rhs.operator+(lhs);
+	return lhs + rhs.str();
 }
 
 std::ostream& operator<<(std::ostream& strm, const FormatString& fstr) {
