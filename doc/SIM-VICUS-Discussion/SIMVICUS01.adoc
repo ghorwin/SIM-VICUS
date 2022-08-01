@@ -1,6 +1,32 @@
-= Was ist SIM-VICUS
+= SIM-VICUS
+// Dirk Weiß <dirk.weiss@tu-dresden.de>
+// v0.7 (09.01.2022)
+// v0.7 date_on_line_above
+:Author Initials: Dirk Weiss
+:toc: left
+:toclevels: 3
+:toc-title: Inhaltsverzeichnis
+:icons: font
+:imagesdir: ./Images
+:numbered:
+:website: www.bauklimatik-ingenieure.de
+:source-highlighter: rouge
+:rouge-style: custom
+:title-page:
+:stylesdir: ../adoc_utils/css
+:stylesheet: roboto_ubuntu.css
+:tabsize: 2
+:title-page:
 
-Die Software SIM-VICUS ist eine leistungsfähige Eingabeoberfläche für die Erstellung von Gebäude- und Anlagensimulationen. Zur Simulation wird der Simulationskern https://www.bauklimatik-dresden.de/nandrad/index.php[NANDRAD] verwendet. Der Anwendungsbereich der Software umfasst folgende Szenarien:
+:caution-caption: Achtung
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:section-refsig: Abschnitt
+
+== Was ist SIM-VICUS
+
+Die Software SIM-VICUS ist eine Eingabeoberfläche (GUI) für die Erstellung von Gebäude- und Anlagensimulationen. Zur Simulation wird der Simulationskern https://www.bauklimatik-dresden.de/nandrad/index.php[NANDRAD] verwendet. Der Anwendung der Software erstreckt sich auf folgende Bereiche:
 
 * Bedarfsberechnung für Heizung, Kühlung und Strom (Energiesimulationen)
 * Berechnung von Raumtemperaturen und Analyse der Behaglichkeit
@@ -10,23 +36,126 @@ Die Software SIM-VICUS ist eine leistungsfähige Eingabeoberfläche für die Ers
 * Verschattungsanalysen
 * Untersuchung von Regelstrategien der Anlagentechnik
 
-Eingesetzt werden kann die Software von Ingenieuren zur erweiterten Planung von Gebäuden als auch von Mitarbeitern im universitären Umfeld.
+Die Software wird von Ingenieuren zur erweiterten Planung von Gebäuden als auch von Mitarbeitern im universitären Umfeld eingesetzt.
 
-= Download
+== Download
 
-Die Software kann derzeit nur auf Anfrage vom https://tu-dresden.de/bauklimatik[Institut für Bauklimatik] der TU Dresden bezogen werden. Ansprechpartner sind mailto:andreas.nicolai@tu-dresden.de[Herr Nicolai] und mailto:dirk.weiss@tu-dresden.de[Herr Weiß]. Die Software für alle Betriebssysteme geeignet.
+Die Software kann derzeit nur auf Anfrage vom https://tu-dresden.de/bauklimatik[Institut für Bauklimatik] der TU Dresden bezogen werden. Ansprechpartner sind mailto:andreas.nicolai@tu-dresden.de[Herr Nicolai] und mailto:dirk.weiss@tu-dresden.de[Herr Weiß]. Die Software ist für Windows, Linux und Mac Betriebssysteme geeignet.
 
-== Installation
+Zudem gibt es ein https://github.com/ghorwin/SIM-VICUS[öffentliches Repository]. Unter diesem kann der SIM-VICUS Quellcode eingesehen werden. Ebenso können dort Tickets angelegt werden, um Bugs (Fehler) und Features (Funktionen) zu dokumentieren.
+
+=== Installation
 
 TODO
 
-= Aufteilung der Oberfläche
+== Aufbau von SIM-VICUS
+
+An die Eingabeoberfläche SIM-VICUS ist über einen Datei-Export der thermischen Gebäudesimulationssolver NANDRAD angeschlossen. Dieser prozessiert bzw. berechnet die von SIM-VICUS erstellte Projektdatei und legt die Ergebnisse in Dateien ab. Diese Dateien haben ein Tabellenformat "tsv" (tab separated values) ähnlich dem csv-Format. Dieses Format kann von allen gängigen Tabellenkalkulationsprogrammen, wie beispielsweise Excel oder OpenOffice Calc, gelesen werden. Zur besseren Visualisierung und Datenauswertung eignet sich aber vor allem das instituseigene Programm https://www.bauklimatik-dresden.de/postproc/index.php[PostProc2]. Damit können sehr schnell grafische und tabellarische Auswertungen erstellt werden.
+
+Die Struktur erlaubt es weitere Solver durch einen Export anzubinden. So ist beispielsweise ein Export und ein anschließender Programmaufruf des Solvers auch für den Tagelichtsimulationssolver wie https://www.radiance-online.org/[Radiance] möglich. Dazu muss der Export der Eingabedatei im SIM-VICUS hinzugefügt werden.
+
+Weitere Funktionen im SIM-VICUS können im bestehenden Repository implenentiert werden. Es ist zudem möglich eigene Plugins zu entwickeln. Diese müssen nicht in einem öffentlichen Repository zur Verfügung stehen. Somit können öffentliche und nicht-öffentliche Bibliotheken über Lizenzen eingebunden werden. Eine Freischaltung der Lizenzen ist später durch einen Lizenzmanager geplant.
+
+[[ExistingFunctionsSIM-VICUS]]
+=== Welche Funktionen unterstützt SIM-VICUS derzeit
+
+Im folgenden befindet sich eine Übersicht der bereits implementierten Features. Diese werden in verschienden Kategorien strukturiert:
+
+* Import
+* Datenbanken
+
+==== Import
+
+Der Import gliedert sich in Geometriedaten mit und ohne Metadaten sowie in die Klimadaten. Als Metadaten werden zusätzliche Daten zur Geometrie angesehen. So bieten  Formate, wie beispielsweise IFC, zusätzliche Informationen zu Konstruktionen mit Schichtenaufbau und Materialparametern an. Weiterhin sind Imports über Pluginschnittstellen möglich.
+
+===== Geometrie mit und ohne Metadaten
+
+Derzeit wird nur der Geometrieimport mit Metainformationen über das IDF (import data format) von https://energyplus.net[energyplus] unterstützt. Am Import von IFC Dateien wird bereits gearbeitet.
+
+===== Klimadaten
+
+Für die Klimadaten wird das internationale epw-Format von https://energyplus.net/weather[energyplus] genutzt. Weiterhin wird das c6b-Format, welches der NANDRAD-Solver einliest, unterstützt. Über das Werkzeug https://www.bauklimatik-dresden.de/downloads.php[CCM-Editor] können weitere Datenformat in das epw bzw. c6b Format transformiert werden. Hierzu zählt besonders das "dat"-Format vom https://kunden.dwd.de/obt/[Deutschen Wetterdienst und dem BBSR] (Bundesamt für Bau-, Stadt- und Raumplanung). Dieser stellt für Deutschland über 360.000 Datensätze zur Verfügung. Dabei werden die TRY2015 (Test Reference Year) und die Zukunftsjahre 2045 in unterschiedlichen Ausprägungen mittel, sommerheiß und winterkalt bereitgestellt. Bereits enthalten sind die lokalen Klimaeffekte durch die hohe geometrische Auflösung von 1{nbsp}km^2^.
+
+==== Datenbanken
+
+Derzeit existiert eine Vielzahl von Daten in SIM-VICUS. Diese werden in Datenbanken strukturiert. Eine Übersicht der Daten wird nachfolgend dargestellt:
+
+* Materialien (opak)
+* Konstruktionen (opak)
+* Komponenten (opak)
+* Materialien (tranparent)
+* Konstruktionen (tranparent)
+* Komponenten (tranparent)
+* Randbedingungen
+* Zeitpläne
+* Innere Lasten
+* Zonensteuerung
+* Infiltration/Ventilation
+* Flächenheizsystem
+* Ideale Heiz-/Kühlssysteme
+* Nutzungsprofile
+* Rohre
+* Fluide
+* hydrauliche Komponenten
+* Teilnetzwerke
+
+Die Daten werden zur besseren Übersicht strukturiert. Dabei kapseln verschiedene Datenbanken andere.
+
+* Komponenten (opak)
+** Randbedingungen
+** Konstruktionen (opak)
+*** Materialien (opak)
+* Komponenten (tranparent)
+** Randbedingungen
+** Konstruktionen (tranparent)
+*** Materialien (tranparent)
+* Nutzungsprofile
+** Innere Lasten
+*** Personenlasten
+**** Zeitpläne
+*** elektrische Geräte
+**** Zeitpläne
+*** Lichtlasten
+**** Zeitpläne
+** Zonensteuerung
+*** Thermostate
+**** Zeitpläne
+** Infiltration/Ventilation
+*** Zeitpläne
+** Ideale Heiz-/Kühlsysteme
+
+Alle nicht aufgeführten Datenbanken werden zu einem späteren Zeitpunkt detaillierter beschrieben. In der ersten Hierachieebene sind Komponenten für transparente und opake Konstruktionen sowie die Nutzungsprofile zu nennen. Die Komponenten beinhalten die Bauteilaufbauten und Randbedingungen. Die Nutzungsprofile integrieren beispielsweise die Daten aus den Normen DIN V 18599 (Deutschland) oder SIA 2024 (Schweiz). Diese bilden Steuerung und Lasten eines Raumes oder von Raumgruppen ab.
+
+=== Welche Funktionen sind geplant
+
+Ebenso wie im <<ExistingFunctionsSIM-VICUS,vorangegangen Kapitel>> werden die geplanten Funktionen in Kategorien gegliedert.
+
+==== Import
+
+Geplante Importfeatures von rein geometrischen Datenformaten sind:
+
+* dwg
+* dxf
+
+Weiterhin sollen Datenformate mit Metainformationen für den Import implementiert werden:
+
+* gbXML
+* CityGML
+* osm (Open Streetmap)footnote:[https://jeffish.com/blog/osm-to-3d.html]
+
+==== Datenbanken
+
+Die Verschattungssteuerung ist in die SIM-VICUS Oberfläche zu implementieren.
+
+<<<
+
+== Aufteilung der Oberfläche
 
 
 
-= Funktionsleiste
+=== Funktionsleiste
 
-Die Funktionsleiste enthält verschieden Schnellfunktionen wie "neues Projekt", "Projekt laden" oder "Projekt speichern". Zudem wird entweder der Geometriebearbeitungsmodus und den Parametrisierungsmodus aktiviert. 
+Die Funktionsleiste enthält verschiedene Schnellfunktionen wie "neues Projekt", "Projekt laden" oder "Projekt speichern". Zudem wird entweder der Geometriebearbeitungsmodus oder der Parametrisierungsmodus aktiviert. 
 
 Liste der Funktionsfähigkeit:
 
@@ -40,16 +169,16 @@ Liste der Funktionsfähigkeit:
 
 
 
-= Geometriebearbeitung
+=== Geometriebearbeitung
 
 Im Geometriemodus können Flächen, Räume, etc. hinzugefügt oder editiert werden. Das Hinzufügen von Objekten ist nur bei aktiven "Add"-Button möglich. Wird hingegen der "Edit"-Button aktiviert sind Verschiebungen, Rotationen und Skalierungen von Objekten möglich. Weiterhin ist das Kopieren von Objekten möglich.
 
-== Add-Modus
+==== Add-Modus
 
 Innerhalb diese Modus können Flächen und Räume erstellt werden. 
 
 [[CreateSurfacePolygon]]
-=== Flächenerstellung
+===== Flächenerstellung
 
 Eine Fläche kann man entweder als Viereck (Rect-Button TODO UMBENNEN) wie beispielsweise Rechteck oder Parallelogramm oder als Polygon (Polygon-Button) erstellen. Sobald man den "Rect"- oder "Polygon"-Button aktiviert, schaltet das Optionsfenster in der Flächenmodus um. Durch klicken in der 3D-Szene können Punkte abgesetzt werden. Diese werden automatisch nach absetzen in der Tabelle im Optionsfenster eingetragen. Es ist möglich den letzten Punkt oder einen ausgewählten Punkt aus der bestehenden Eingabeliste zu löschen. 
 
@@ -57,16 +186,16 @@ Ein valides Polygon stellt sich durch eine grüne Linie und einer rot gefüllten
 
 Nachdem die Punkteingabe abgeschlossen wurde, wechselt das Optionsfenster in die Flächeneigenschaften. Darin können Name und Zuordnung eingetragen werden. Das Polygon kann als "vereinfachtes" Geometrieobjekt ohne Eigenschaften oder als Bauteil mit Raum- und Komponentenzuordnung abgelegt werden. Über den Button "Create surface" wird die Erstellung abgeschlossen.
 
-=== Raumerstellung
+===== Raumerstellung
 
 Bei der Raumerstellung wird zuerst die Fußbodenfläche erstellt. Dazu werden alle Schritte wie unter <<CreateSurfacePolygon, Flächenerstellung>> beschrieben durchgeführt. Nachdem Erstellung der Fußbodenfläche werden die Raumeigenschaften wie Name, Gebäude, Geschoss, Komponenten der Bauteile der Hüllfläche und die Raumhöhe zugewiesen. Durch einen Klick auf den Button "Create zone" werden die Eingaben übernommen und die Raumerstellung abgeschlossen.
 
-=== Dacherstellung
+===== Dacherstellung
 
 Die Dacherstellung ist bis auf die Dachauswahl identisch zur Raumerstellung. Zusätzlich werden Dachhöhe (Abstand Fußpfette bis Firstpfette) und Kniestockhöhe definiert. 
 
-=== Fenstererstellung
+==== Fenstererstellung
 
 Für die Fenstererstellung müssen eine oder mehrere Fläche selektiert werden. Anschließend wird das Button "Window/Door" aktiviert. Bei der Fenstererstellung müssen Prioritäten für die Fenstererstellung gesetzt werden. Priorisiert werden kann die Fensterhöhe, -breite, die Brüstungshöhe oder der Abstand zwischen zwei Fenstern. Weiterhin muss der Fensterflächenanteil angegeben werden. Dieser Fensterflächenanteil beschreibt die Rohbauöffnung. Zusätzlich wird jedem Fenster eine Fensterkomponente zugewiesen. Diese Komponente beschreibt die bauphysikalischen Parameter des Fensterpaketes.
 
-== Edit-Modus
+==== Edit-Modus
