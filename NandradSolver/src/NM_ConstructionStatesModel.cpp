@@ -110,8 +110,10 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// BC sanity checking has already been done during construction setup, so we can rely on valid/existing
 	// parameters here
 
-	bool haveRadiationBCA = m_con->m_interfaceA.m_zoneId == 0 && m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT;
-	bool haveRadiationBCB = m_con->m_interfaceB.m_zoneId == 0 && m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT;
+	bool haveRadiationBCA = m_con->m_interfaceA.m_zoneId == 0 && ( m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT ||
+			m_con->m_interfaceA.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT );
+	bool haveRadiationBCB = m_con->m_interfaceB.m_zoneId == 0 && ( m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT ||
+			m_con->m_interfaceB.m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT );
 	// if we have radiation data, register surface here
 	if (haveRadiationBCA || haveRadiationBCB)
 		loads.addSurface(m_con->m_id,
