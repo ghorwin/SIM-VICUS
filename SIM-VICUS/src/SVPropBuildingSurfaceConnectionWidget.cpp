@@ -206,8 +206,12 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(false);
 
 	// once table is complete (and won't be modified anylonger), select items
-	for (int r : selectedRows)
-		m_ui->tableWidgetInterlinkedSurfaces->selectRow(r);
+	if (m_ui->tableWidgetInterlinkedSurfaces->isVisible()) {
+		for (int r : selectedRows) {
+			m_ui->tableWidgetInterlinkedSurfaces->selectRow(r);
+		}
+	}
+
 
 	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 0, true);
 	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 1, true);
