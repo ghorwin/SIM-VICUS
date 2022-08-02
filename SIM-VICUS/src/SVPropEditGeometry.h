@@ -126,6 +126,9 @@ public slots:
 	*/
 	void onViewStateChanged();
 
+	/*! Is called when a line edit fields text has changed. */
+	void onLineEditTextEdited(const QString);
+
 protected:
 	/*! Event Filter: Needed for all scrolling specific inputs */
 	bool eventFilter(QObject *target, QEvent *event) override;
@@ -182,11 +185,6 @@ private slots:
 
 	void on_pushButtonCancel_clicked();
 	void on_pushButtonApply_clicked();
-
-
-	void on_lineEditCopyX_textChanged(const QString &arg1);
-
-	void on_lineEditTranslateX_textChanged(const QString);
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

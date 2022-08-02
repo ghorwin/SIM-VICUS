@@ -65,6 +65,7 @@
 #include <QLocale>
 #include <QWheelEvent>
 
+
 /*! helper function to compare two IBKMK vectors */
 template <int digits>
 bool vectors_equal(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
@@ -148,6 +149,25 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditCopyX->setFormatter(new LineEditFormater);
 	m_ui->lineEditCopyY->setFormatter(new LineEditFormater);
 	m_ui->lineEditCopyZ->setFormatter(new LineEditFormater);
+
+	connect(m_ui->lineEditCopyX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditCopyY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditCopyZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+
+	connect(m_ui->lineEditRotateInclination, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditRotateOrientation, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+
+	connect(m_ui->lineEditRotateX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditRotateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditRotateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+
+	connect(m_ui->lineEditScaleX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditScaleY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditScaleZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+
+	connect(m_ui->lineEditTranslateX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditTranslateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
 	for (int i=0; i<4; ++i)
 		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
@@ -238,6 +258,21 @@ void SVPropEditGeometry::onViewStateChanged() {
 	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
 		SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	}
+}
+
+void SVPropEditGeometry::onLineEditTextEdited(const QString) {
+
+	// We get our sender object
+	QObject* obj = sender();
+
+	// object should be always a line edit
+	QtExt::ValidatingLineEdit *edit = dynamic_cast<QtExt::ValidatingLineEdit *>(obj);
+
+	// Assert that object is a validating line edit
+	Q_ASSERT(edit != nullptr);
+
+	// Update all transformations.
+	onLineEditTextChanged(edit);
 }
 
 
@@ -1041,7 +1076,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			IBKMK::Vector3D localX = poly.localX();
 			IBKMK::Vector3D normal = poly.normal();
 			IBKMK::Vector3D offset = poly.offset();
-			IBKMK::Vector3D trans = QVector2IBKVector( translation );
+			IBKMK::Vector3D trans = QVector2IBKVector(translation);
 
 			if (rotation != QQuaternion()) {
 				// we rotate our axis and offset
@@ -1194,14 +1229,3 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 				m_selBuildings, localCopyTranslationVector());
 	undo->push();
 }
-
-
-void SVPropEditGeometry::on_lineEditCopyX_textChanged(const QString &xString){
-		onLineEditTextChanged(m_ui->lineEditCopyX);
-}
-
-
-void SVPropEditGeometry::on_lineEditTranslateX_textChanged(const QString /*&arg1*/){
-	onLineEditTextChanged(m_ui->lineEditTranslateX);
-}
-
