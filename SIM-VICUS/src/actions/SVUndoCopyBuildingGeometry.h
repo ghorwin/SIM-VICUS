@@ -45,6 +45,7 @@ public:
 	/*! Constructor, takes modified data to switch with project. */
 	SVUndoCopyBuildingGeometry(const QString & label,
 							 const std::vector<VICUS::Building> & modifiedBuilding,
+							 const std::vector<VICUS::Surface> & modifiedDumpGeometry,
 							 const std::vector<VICUS::ComponentInstance> & modifiedComponentInstances,
 							 const std::vector<VICUS::SubSurfaceComponentInstance> & modifiedSubSurfaceComponentInstances,
 							 const std::vector<unsigned int> & deselectedNodeIDs);
@@ -87,6 +88,7 @@ public:
 	*/
 	static SVUndoCopyBuildingGeometry * createUndoCopyBuildings(
 			const std::vector<const VICUS::Building *> & selectedBuildings,
+			const std::vector<const VICUS::Surface *> & selectedSurfaces,
 			const IBKMK::Vector3D & translation);
 
 	virtual void undo();
@@ -96,6 +98,9 @@ private:
 
 	/*! Cache for added item. */
 	std::vector<VICUS::Building>					m_modifiedBuilding;
+
+	/*! Cache for added dump geometry item. */
+	std::vector<VICUS::Surface>						m_modifiedPlainGeometry;
 
 	/*! If not empty, this vector contains component instances that are created alongside the room's surfaces. */
 	std::vector<VICUS::ComponentInstance>			m_modifiedComponentInstances;

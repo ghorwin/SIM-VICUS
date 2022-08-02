@@ -1226,6 +1226,6 @@ void SVPropEditGeometry::on_pushButtonCopyBuildingLevel_clicked() {
 
 void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyBuildings(
-				m_selBuildings, localCopyTranslationVector());
+				m_selBuildings, std::vector<const VICUS::Surface*>(), localCopyTranslationVector());
 	undo->push();
 }
