@@ -194,11 +194,11 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 				newCI.push_back(CI);
 				newCI.back().m_id = ++newID;
 				if (CI.m_idSideASurface == originalID) {
-					newCI.back().m_idSideASurface = s->m_id;
+					newCI.back().m_idSideASurface = newSurf.m_id;
 					newCI.back().m_idSideBSurface = VICUS::INVALID_ID; // make this a single-sided CI
 				}
 				else {
-					newCI.back().m_idSideBSurface = s->m_id;
+					newCI.back().m_idSideBSurface = newSurf.m_id;
 					newCI.back().m_idSideASurface = VICUS::INVALID_ID; // make this a single-sided CI
 				}
 				break;
@@ -394,7 +394,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(con
 
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingLevels(const std::vector<const VICUS::BuildingLevel *> & selectedBuildingLevels,
-																				  const IBKMK::Vector3D & translation)
+																					  const IBKMK::Vector3D & translation)
 {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
 	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
@@ -514,7 +514,126 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingL
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings(const std::vector<const VICUS::Building *> & selectedBuildings, const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation)
 {
-	return new SVUndoCopyBuildingGeometry(QString(), project().m_buildings, project().m_plainGeometry, project().m_componentInstances, project().m_subSurfaceComponentInstances, std::vector<unsigned int>());
+	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
+	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
+	std::vector<unsigned int>						deselectedObjectIDs;
+
+
+	// we take all selected building levels and copy them as new children of their building
+	unsigned int newID = project().nextUnusedID();
+
+	for(const VICUS::Building *b : selectedBuildings) {
+		VICUS::Building newB(*b);
+		newB.m_id = newID++;
+
+		for (VICUS::BuildingLevel &bl : newB.m_buildingLevels) {
+
+			// adjust elevation
+			bl.m_elevation += translation.m_z;
+			// now modify *all* ID s
+
+			bl.m_id = newID++;
+			for (unsigned int i=0; i<bl.m_rooms.size(); ++i) {
+				VICUS::Room & r = bl.m_rooms[i];
+				r.m_id = ++newID;
+				for (unsigned int j=0; j<r.m_surfaces.size(); ++j) {
+					VICUS::Surface & s = r.m_surfaces[j];
+					unsigned int originalID = s.m_id;
+					s.m_id = ++newID;
+					// apply transformation
+					IBKMK::Polygon3D poly = s.polygon3D();
+					poly.translate(translation);
+					s.setPolygon3D(poly);
+					// lookup potentially existing surface component instance and duplicate it
+					for (const VICUS::ComponentInstance & CI : project().m_componentInstances) {
+						if (CI.m_idSideASurface == originalID || CI.m_idSideBSurface == originalID) {
+							newCI.push_back(CI);
+							newCI.back().m_id = ++newID;
+							if (CI.m_idSideASurface == originalID) {
+								newCI.back().m_idSideASurface = s.m_id;
+								newCI.back().m_idSideBSurface = VICUS::INVALID_ID; // make this a single-sided CI
+							}
+							else {
+								newCI.back().m_idSideBSurface = s.m_id;
+								newCI.back().m_idSideASurface = VICUS::INVALID_ID; // make this a single-sided CI
+							}
+							break;
+						}
+					}
+
+					// copy sub-surfaces
+					for (unsigned int k=0; k<s.subSurfaces().size(); ++k) {
+						VICUS::SubSurface & sub = const_cast<VICUS::SubSurface &>(s.subSurfaces()[k]);
+						unsigned int originalID = sub.m_id;
+						sub.m_id = ++newID;
+						// NOTE: we only duplicate component instances (and subsurface component instances)
+
+						// lookup potentially existing, single-sided subsurface component instance and duplicate it as well
+						for (const VICUS::SubSurfaceComponentInstance & subCI : project().m_subSurfaceComponentInstances) {
+							if (subCI.m_idSideASurface == originalID || subCI.m_idSideBSurface == originalID) {
+								newSubCI.push_back(subCI);
+								newSubCI.back().m_id = ++newID;
+								if (subCI.m_idSideASurface == originalID) {
+									newSubCI.back().m_idSideASurface = sub.m_id;
+									newSubCI.back().m_idSideBSurface = VICUS::INVALID_ID; // make this a single-sided CI
+								}
+								else {
+									newSubCI.back().m_idSideBSurface = sub.m_id;
+									newSubCI.back().m_idSideASurface = VICUS::INVALID_ID; // make this a single-sided CI
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		newBuildings.push_back(newB);
+
+		// finally de-select everything in the original building level
+		bool found = false;
+		for (VICUS::Building & modB : newBuildings) {
+			if (modB.m_id == b->m_id) {
+				found = true;
+
+				// deselect old building
+				modB.m_selected = false;
+				deselectedObjectIDs.push_back(modB.m_id);
+
+				// now deselect all building levels
+				for (VICUS::BuildingLevel & modBl : modB.m_buildingLevels) {
+					// go through data structure and deselect all children and collect their IDs
+					deselectedObjectIDs.push_back(modBl.m_id);
+					modBl.m_selected = false;
+
+					// now deselect all rooms
+					for (VICUS::Room & r : modBl.m_rooms) {
+						deselectedObjectIDs.push_back(r.m_id);
+						r.m_selected = false;
+
+						// now deselct all surfaces
+						for (VICUS::Surface & s : r.m_surfaces) {
+							deselectedObjectIDs.push_back(s.m_id);
+							s.m_selected = false;
+
+							// now deselect all sub-surfaces
+							for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+								deselectedObjectIDs.push_back(sub.m_id);
+								const_cast<VICUS::SubSurface&>(sub).m_selected = false;
+							}
+						}
+					}
+
+				}
+			}
+			if (found) break;
+		}
+	}
+
+
+	return new SVUndoCopyBuildingGeometry(QString("Copied entire buildings"), newBuildings, project().m_plainGeometry, newCI, newSubCI, deselectedObjectIDs);
 }
 
 
