@@ -46,7 +46,7 @@ void SVUndoCopySurfaces::undo() {
 	for (const VICUS::Surface &s : m_copiedSurfaces ) {
 		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(s.m_parent);
 		if (r == nullptr)
-			theProject().m_plainGeometry.pop_back();
+			theProject().m_plainGeometry.m_surfaces.pop_back();
 		else
 			const_cast<VICUS::Room *>(r)->m_surfaces.pop_back();
 	}
@@ -78,7 +78,7 @@ void SVUndoCopySurfaces::redo() {
 	for (const VICUS::Surface &s : m_copiedSurfaces ) {
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
 		if (r == nullptr)
-			theProject().m_plainGeometry.push_back(s);
+			theProject().m_plainGeometry.m_surfaces.push_back(s);
 		else
 			const_cast<VICUS::Room *>(r)->m_surfaces.push_back(s);
 	}

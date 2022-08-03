@@ -82,7 +82,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	}
 
 	// search plain geometry
-	for (const VICUS::Surface & s : p.m_plainGeometry) {
+	for (const VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 		if (exclusive || nodeIDs.find(s.m_id) != nodeIDs.end())
 			storeState(s, m_nodeStates[s.m_id]);
 	}
@@ -223,7 +223,7 @@ void SVUndoTreeNodeState::redo() {
 	}
 
 	// search in plain geometry
-	for (VICUS::Surface & s : p.m_plainGeometry) {
+	for (VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 		if ((it = m_nodeStates.find(s.m_id)) != m_nodeStates.end()) {
 			setState(s, it->second);
 			modifiedIDs.push_back(it->first);

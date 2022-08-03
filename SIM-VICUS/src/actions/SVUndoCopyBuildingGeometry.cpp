@@ -49,7 +49,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 																				   const IBKMK::Vector3D & translation)
 {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
-	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry.m_surfaces);
 	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
 	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
 	std::vector<unsigned int>						deselectedObjectIDs;
@@ -148,7 +148,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation) {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
-	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry.m_surfaces);
 	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
 	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
 	std::vector<unsigned int>						deselectedObjectIDs;
@@ -282,7 +282,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(const std::vector<const VICUS::Room *> & selectedRooms, const IBKMK::Vector3D & translation) {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
-	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry.m_surfaces);
 	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
 	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
 	std::vector<unsigned int>						deselectedObjectIDs;
@@ -397,7 +397,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingL
 																					  const IBKMK::Vector3D & translation)
 {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
-	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry.m_surfaces);
 	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
 	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
 	std::vector<unsigned int>						deselectedObjectIDs;
@@ -515,7 +515,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingL
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings(const std::vector<const VICUS::Building *> & selectedBuildings, const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation)
 {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
-	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry);
+	std::vector<VICUS::Surface>						newPlainGeometry(project().m_plainGeometry.m_surfaces);
 	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
 	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
 	std::vector<unsigned int>						deselectedObjectIDs;
@@ -633,14 +633,14 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings
 	}
 
 
-	return new SVUndoCopyBuildingGeometry(QString("Copied entire buildings"), newBuildings, project().m_plainGeometry, newCI, newSubCI, deselectedObjectIDs);
+	return new SVUndoCopyBuildingGeometry(QString("Copied entire buildings"), newBuildings, project().m_plainGeometry.m_surfaces, newCI, newSubCI, deselectedObjectIDs);
 }
 
 
 void SVUndoCopyBuildingGeometry::undo() {
 
 	theProject().m_buildings.swap(m_modifiedBuilding);
-	theProject().m_plainGeometry.swap(m_modifiedPlainGeometry);
+	theProject().m_plainGeometry.m_surfaces.swap(m_modifiedPlainGeometry);
 	theProject().m_componentInstances.swap(m_modifiedComponentInstances);
 	theProject().m_subSurfaceComponentInstances.swap(m_modifiedSubSurfaceComponentInstances);
 

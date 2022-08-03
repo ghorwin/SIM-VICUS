@@ -95,8 +95,8 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 	}
 
 	// reserve memory for plain geometry and then copy all but selected surfaces
-	m_plainGeometry.reserve(project().m_plainGeometry.size());
-	for (const VICUS::Surface & s : project().m_plainGeometry) {
+	m_plainGeometry.reserve(project().m_plainGeometry.m_surfaces.size());
+	for (const VICUS::Surface & s : project().m_plainGeometry.m_surfaces) {
 		// not found? -> not marked for deletion!
 		if (selectedUniqueIDs.find(s.m_id) == selectedUniqueIDs.end())
 			m_plainGeometry.push_back(s); // copy surface over to data store
@@ -222,7 +222,7 @@ void SVUndoDeleteSelected::redo() {
 
 	VICUS::Project & prj = theProject();
 	prj.m_buildings.swap(m_buildings);
-	prj.m_plainGeometry.swap(m_plainGeometry);
+	prj.m_plainGeometry.m_surfaces.swap(m_plainGeometry);
 	prj.m_componentInstances.swap(m_compInstances);
 	prj.m_subSurfaceComponentInstances.swap(m_subCompInstances);
 	prj.m_geometricNetworks.swap(m_networks);

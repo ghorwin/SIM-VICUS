@@ -51,8 +51,8 @@ void SVUndoAddSurface::undo() {
 		const_cast<VICUS::Room*>(r)->m_surfaces.pop_back();
 	}
 	else {
-		Q_ASSERT(!theProject().m_plainGeometry.empty());
-		theProject().m_plainGeometry.pop_back();
+		Q_ASSERT(!theProject().m_plainGeometry.m_surfaces.empty());
+		theProject().m_plainGeometry.m_surfaces.pop_back();
 	}
 	if (m_componentInstance.m_idComponent != VICUS::INVALID_ID) {
 		Q_ASSERT(!theProject().m_componentInstances.empty());
@@ -77,7 +77,7 @@ void SVUndoAddSurface::redo() {
 	}
 	else {
 		// add to anonymous geometry
-		theProject().m_plainGeometry.push_back(m_addedSurface);
+		theProject().m_plainGeometry.m_surfaces.push_back(m_addedSurface);
 	}
 
 	if (m_componentInstance.m_idComponent != VICUS::INVALID_ID) {

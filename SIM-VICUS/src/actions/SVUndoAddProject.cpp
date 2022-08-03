@@ -47,8 +47,8 @@ SVUndoAddProject::SVUndoAddProject(const QString & label, const VICUS::Project &
 										  p.m_componentInstances.begin(), p.m_componentInstances.end() );
 	m_project.m_subSurfaceComponentInstances.insert(m_project.m_subSurfaceComponentInstances.end(),
 										  p.m_subSurfaceComponentInstances.begin(), p.m_subSurfaceComponentInstances.end() );
-	m_project.m_plainGeometry.insert(m_project.m_plainGeometry.end(),
-										  p.m_plainGeometry.begin(), p.m_plainGeometry.end() );
+	m_project.m_plainGeometry.m_surfaces.insert(m_project.m_plainGeometry.m_surfaces.end(),
+										  p.m_plainGeometry.m_surfaces.begin(), p.m_plainGeometry.m_surfaces.end() );
 	m_project.m_geometricNetworks.insert(m_project.m_geometricNetworks.end(),
 										  p.m_geometricNetworks.begin(), p.m_geometricNetworks.end() );
 }
