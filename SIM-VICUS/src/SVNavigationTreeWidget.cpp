@@ -257,17 +257,17 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	// Dumb plain geometry
-	if (!prj.m_plainGeometry.empty()) {
+	if (!prj.m_plainGeometry.m_surfaces.empty()) {
 		QTreeWidgetItem * plainGeo = new QTreeWidgetItem(QStringList() << tr("Obstacles/Shading Geometry"), QTreeWidgetItem::Type);
 		m_treeItemMap[0] = plainGeo;
 		plainGeo->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		plainGeo->setData(0, SVNavigationTreeItemDelegate::NodeID, 0); // not a child node
-		plainGeo->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-		plainGeo->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
+		plainGeo->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, prj.m_plainGeometry.m_visible);
+		plainGeo->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, prj.m_plainGeometry.m_selected);
 		root->addChild(plainGeo);
 
 
-		for (const VICUS::Surface & s : prj.m_plainGeometry) {
+		for (const VICUS::Surface & s : prj.m_plainGeometry.m_surfaces) {
 			QTreeWidgetItem * surface = new QTreeWidgetItem(QStringList() << s.m_displayName, QTreeWidgetItem::Type);
 			m_treeItemMap[s.m_id] = surface;
 			plainGeo->addChild(surface);
