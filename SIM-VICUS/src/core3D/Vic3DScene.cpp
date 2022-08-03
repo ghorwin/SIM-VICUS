@@ -1382,7 +1382,7 @@ void Scene::generateBuildingGeometry() {
 	}
 
 	// now the plain geometry
-	for (const VICUS::Surface & s : p.m_plainGeometry) {
+	for (const VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 
 		// remember where the vertexes for this surface start in the buffer
 		m_buildingGeometryObject.m_vertexStartMap[s.m_id] = currentVertexIndex;
@@ -2061,7 +2061,7 @@ void Scene::deselectAll() {
 	}
 
 	// now the plain geometry
-	for (const VICUS::Surface & s : p.m_plainGeometry) {
+	for (const VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 		if (s.m_selected)
 			objIDs.insert(s.m_id);
 	}
@@ -2382,7 +2382,7 @@ void Scene::pick(PickObject & pickObject) {
 
 	// *** now try plain geometry ***
 
-	for (const VICUS::Surface & s : prj.m_plainGeometry) {
+	for (const VICUS::Surface & s : prj.m_plainGeometry.m_surfaces) {
 		// skip invisible or inactive surfaces
 		if (!s.m_visible)
 			continue;
