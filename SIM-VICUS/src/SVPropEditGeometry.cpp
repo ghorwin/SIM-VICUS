@@ -553,6 +553,11 @@ void SVPropEditGeometry::updateUi() {
 	m_ui->pushButtonCopyRoom->setEnabled(!m_selRooms.empty());
 	m_ui->pushButtonCopyBuildingLevel->setEnabled(!m_selBuildingLevels.empty());
 	m_ui->pushButtonCopyBuilding->setEnabled(!m_selBuildings.empty());
+
+	bool noSelection = m_selSurfaces.empty() && m_selSubSurfaces.empty() &&
+			m_selRooms.empty() && m_selBuildingLevels.empty() && m_selBuildings.empty();
+
+	setEnabled(!noSelection);
 }
 
 

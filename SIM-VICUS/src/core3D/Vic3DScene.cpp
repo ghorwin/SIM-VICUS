@@ -211,7 +211,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		if (!vs.inPropertyEditingMode()) {
 			if (selectedObjects.empty()) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+				// vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 			}
 			else {
 				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
