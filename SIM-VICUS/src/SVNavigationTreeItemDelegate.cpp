@@ -138,16 +138,16 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				bool visible = index.data(VisibleFlag).toBool();
 				bool withoutChildren = mouseEvent->modifiers() & Qt::ShiftModifier;
 				unsigned int nodeID = index.data(NodeID).toUInt();
-				if (nodeID != 0) {
-					// compose an undo action that shows/hides objects
-					SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Visibility changed"),
-																		   SVUndoTreeNodeState::VisibilityState,
-																		   nodeID,
-																		   !withoutChildren,
-																		   !visible);
-					action->push();
-					return false; // handled
-				}
+
+				// compose an undo action that shows/hides objects
+				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Visibility changed"),
+																	   SVUndoTreeNodeState::VisibilityState,
+																	   nodeID,
+																	   !withoutChildren,
+																	   !visible);
+				action->push();
+				return false; // handled
+
 			}
 			iconRect = QRect(targetRect.x() + 18, targetRect.y(), 16, 16);
 			if (iconRect.contains(mouseEvent->x(), mouseEvent->y())) {
@@ -155,16 +155,15 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				bool selected = index.data(SelectedFlag).toBool();
 				bool withoutChildren = mouseEvent->modifiers() & Qt::ShiftModifier;
 				unsigned int nodeID = index.data(NodeID).toUInt();
-				if (nodeID != 0) {
-					// compose an undo action that selects/de-selects objects
-					SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
-																		   SVUndoTreeNodeState::SelectedState,
-																		   nodeID,
-																		   !withoutChildren,
-																		   !selected);
-					action->push();
-					return false; // handled
-				}
+				// compose an undo action that selects/de-selects objects
+				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
+																	   SVUndoTreeNodeState::SelectedState,
+																	   nodeID,
+																	   !withoutChildren,
+																	   !selected);
+				action->push();
+				return false; // handled
+
 			}
 		}
 
