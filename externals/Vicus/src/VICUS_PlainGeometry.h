@@ -53,10 +53,10 @@ public:
 	std::vector<Surface>						m_surfaces; 			// XML:E
 
 	/*! Indicates whether all children elements are visible. */
-	bool										m_visible;				// XML:A
+	bool										m_visible = true;				// XML:A
 
 	/*! Indicates whether all children elements are selected. */
-	bool										m_selected;				// XML:A
+	bool										m_selected = false;
 
 
 private:

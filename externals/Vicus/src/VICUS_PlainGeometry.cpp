@@ -36,6 +36,10 @@ void PlainGeometry::readXML(const TiXmlElement * element) {
 	const TiXmlElement * c = element->FirstChildElement();
 	while (c) {
 		const std::string & cName = c->ValueStr();
+		// needed in order to read old flat hierarchy
+		// <PlainGeometry>
+		//		<Surface/>
+		// </PlainGeometry>
 		if (cName == "Surface") {
 			try {
 				surf.readXML(c);
@@ -43,22 +47,22 @@ void PlainGeometry::readXML(const TiXmlElement * element) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Error reading Surface tag.") ), FUNC_ID);
 			}
-			// remove Polygon3D element from parent, to avoid getting spammed with "unknown Polygon3D" warning
-			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
-			break;
+			// copy surface to plain geometry
+			m_surfaces.push_back(surf);
+			// next surface
+			c = c->NextSiblingElement();
 		}
-		c = c->NextSiblingElement();
+		else
+			break;
 	}
 
 	readXMLPrivate(element);
-	// copy surface to plain geometry
-	m_surfaces.push_back(surf);
-
 }
 
-TiXmlElement * writeXMLPrivate(TiXmlElement * parent)  {
-
-	TiXmlElement * e = new TiXmlElement("Polygon3D");
+TiXmlElement * PlainGeometry::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = writeXMLPrivate(parent);
+	// now add Polygon3D
+	// m_geometry.polygon3D().writeXML(e);
 	return e;
 }
 
