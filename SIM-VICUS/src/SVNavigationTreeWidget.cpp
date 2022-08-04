@@ -110,8 +110,13 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				Q_ASSERT(itemId != m_treeItemMap.end());
 				QTreeWidgetItem * item = itemId->second;
 				m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
-				item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, o->m_visible);
-				item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, o->m_selected);
+				if(ID == 0) { // Special handling for plain geometry
+					item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, project().m_plainGeometry.m_visible);
+					item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, project().m_plainGeometry.m_selected);
+				} else {
+					item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, o->m_visible);
+					item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, o->m_selected);
+				}
 				m_ui->treeWidget->blockSignals(false);
 			}
 
@@ -273,8 +278,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			plainGeo->addChild(surface);
 			surface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 			surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.m_id);
-			surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
-			surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+			surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, prj.m_plainGeometry.m_visible && s.m_visible);
+			surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, prj.m_plainGeometry.m_selected && s.m_selected);
 		}
 	}
 
