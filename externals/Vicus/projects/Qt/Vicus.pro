@@ -179,6 +179,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Outputs.cpp \
 	../../src/ncg/ncg_VICUS_OutputDefinition.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
+        ../../src/ncg/ncg_VICUS_PlainGeometry.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
@@ -202,4 +203,4 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
-	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp
+	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp \
