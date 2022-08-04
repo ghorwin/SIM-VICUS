@@ -363,7 +363,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 	mergedProject.m_geometricNetworks.insert(mergedProject.m_geometricNetworks.end(), other.m_geometricNetworks.begin(), other.m_geometricNetworks.end());
 	mergedProject.m_componentInstances.insert(mergedProject.m_componentInstances.end(), other.m_componentInstances.begin(), other.m_componentInstances.end());
 	mergedProject.m_subSurfaceComponentInstances.insert(mergedProject.m_subSurfaceComponentInstances.end(), other.m_subSurfaceComponentInstances.begin(), other.m_subSurfaceComponentInstances.end());
-	mergedProject.m_plainGeometry.insert(mergedProject.m_plainGeometry.end(), other.m_plainGeometry.begin(), other.m_plainGeometry.end());
+	mergedProject.m_plainGeometry.m_surfaces.insert(mergedProject.m_plainGeometry.m_surfaces.end(), other.m_plainGeometry.m_surfaces.begin(), other.m_plainGeometry.m_surfaces.end());
 
 	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Merged imported project"), mergedProject);
 	undo->push();
@@ -1095,7 +1095,7 @@ void SVProjectHandler::updateSurfaceColors() {
 	}
 
 	// plain geometry surfaces will be silver
-	for (VICUS::Surface &s : m_project->m_plainGeometry) {
+	for (VICUS::Surface &s : m_project->m_plainGeometry.m_surfaces) {
 		if (s.m_color == QColor::Invalid) {
 			s.m_color = QColor("#C0C0C0");
 		}

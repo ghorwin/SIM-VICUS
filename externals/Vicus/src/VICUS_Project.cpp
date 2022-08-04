@@ -531,7 +531,7 @@ void Project::updatePointers() {
 
 	// plain geometry
 
-	for (VICUS::Surface & s : m_plainGeometry)
+	for (VICUS::Surface & s : m_plainGeometry.m_surfaces)
 		addAndCheckForUniqueness(&s);
 
 
@@ -632,7 +632,7 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 
 	// Dumb plain geometry
 	if (sg & SG_Obstacle) {
-		for (const VICUS::Surface & s : m_plainGeometry) {
+		for (const VICUS::Surface & s : m_plainGeometry.m_surfaces) {
 			if (selectionCheck(s, takeSelected, takeVisible))
 				selectedObjs.insert(&s);
 		}

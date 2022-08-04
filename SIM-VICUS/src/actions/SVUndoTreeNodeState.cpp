@@ -82,10 +82,14 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	}
 
 	// search plain geometry
-	for (const VICUS::Surface & s : p.m_plainGeometry) {
+	for (const VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 		if (exclusive || nodeIDs.find(s.m_id) != nodeIDs.end())
 			storeState(s, m_nodeStates[s.m_id]);
 	}
+
+	// we have a special handling for the parent node
+	if (exclusive || nodeIDs.find(0) != nodeIDs.end())
+		storeState(p.m_plainGeometry, m_nodeStates[0]);
 
 	// search in networks
 	for (const VICUS::Network & n : p.m_geometricNetworks) {
@@ -163,6 +167,12 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 			// also store IDs of all children
 			obj->collectChildIDs(nodeIDs);
 		}
+		// Since VICUS::PlainGeometry is not derived from VICUS::Object there is no hierarchy
+		// therefore we need to handle all surfaces in an extra loop and add their IDs 
+		if(nodeID == 0) {
+			for (const VICUS::Surface &s : project().m_plainGeometry.m_surfaces)
+				nodeIDs.insert(s.m_id);
+		}
 	}
 
 	// now use the regular constructor to create the undo action
@@ -223,11 +233,16 @@ void SVUndoTreeNodeState::redo() {
 	}
 
 	// search in plain geometry
-	for (VICUS::Surface & s : p.m_plainGeometry) {
+	for (VICUS::Surface & s : p.m_plainGeometry.m_surfaces) {
 		if ((it = m_nodeStates.find(s.m_id)) != m_nodeStates.end()) {
 			setState(s, it->second);
 			modifiedIDs.push_back(it->first);
 		}
+	}
+
+	if ((it = m_nodeStates.find(0)) != m_nodeStates.end()) {
+		setState(const_cast<VICUS::PlainGeometry&>(project().m_plainGeometry), it->second);
+		modifiedIDs.push_back(0);
 	}
 
 	// search in networks

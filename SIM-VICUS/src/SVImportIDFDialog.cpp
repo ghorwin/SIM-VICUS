@@ -1357,7 +1357,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 		surf.m_color = surf.m_displayColor = QColor("#67759d");
 
-		vp.m_plainGeometry.push_back(surf);
+		vp.m_plainGeometry.m_surfaces.push_back(surf);
 
 		IBK::IBK_Message( IBK::FormatString("  %1 [#%2]\n")
 						  .arg(surf.m_displayName.toStdString())
@@ -1402,7 +1402,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 
 	// now translate entire geometry to the center of the scene
 	IBKMK::Vector3D trans(-centerX, -centerY, 0);
-	for (VICUS::Surface & s : vp.m_plainGeometry) {
+	for (VICUS::Surface & s : vp.m_plainGeometry.m_surfaces) {
 		std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon3D().vertexes();
 		for (IBKMK::Vector3D & v : vertexes)
 			v += trans;

@@ -50,6 +50,7 @@
 #include "VICUS_ComponentInstance.h"
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
+#include "VICUS_PlainGeometry.h"
 
 
 namespace VICUS {
@@ -274,7 +275,7 @@ public:
 	std::vector<SubSurfaceComponentInstance>			m_subSurfaceComponentInstances;		// XML:E
 
 	/*! Vector with plain (dumb) geometry. */
-	std::vector<Surface>								m_plainGeometry;			// XML:E
+	PlainGeometry										m_plainGeometry;			// XML:E
 
 	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
 		These placeholders are read from the path placeholders section of the project file and hold

@@ -88,18 +88,6 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "PlainGeometry") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "Surface")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Surface obj;
-					obj.readXML(c2);
-					m_plainGeometry.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "IfcFilePath")
 				m_ifcFilePath = IBK::Path(c->GetText());
 			else if (cName == "SolverParameter")
@@ -112,6 +100,8 @@ void Project::readXML(const TiXmlElement * element) {
 				m_outputs.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
+			else if (cName == "PlainGeometry")
+				m_plainGeometry.readXML(c);
 			else if (cName == "EmbeddedDatabase")
 				m_embeddedDB.readXML(c);
 			else if (cName == "FMIDescription")
@@ -193,17 +183,7 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_plainGeometry.empty()) {
-		TiXmlElement * child = new TiXmlElement("PlainGeometry");
-		e->LinkEndChild(child);
-
-		for (std::vector<Surface>::const_iterator it = m_plainGeometry.begin();
-			it != m_plainGeometry.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
+	m_plainGeometry.writeXML(e);
 
 	m_embeddedDB.writeXML(e);
 
