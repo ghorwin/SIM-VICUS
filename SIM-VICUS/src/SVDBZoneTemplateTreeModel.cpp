@@ -121,7 +121,7 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 
 		int subTemplateIndex = index.row();
 		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference((unsigned int)subTemplateIndex);
-
+		bool valid = false;
 		switch (role) {
 			case Role_SubTemplateType :
 				return subType;
@@ -155,7 +155,7 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 				if (index.column() == ColCheck) {
 					const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
 					if (dbElement != nullptr) {
-						bool valid = false;
+
 						switch (subType) {
 							case VICUS::ZoneTemplate::ST_IntLoadPerson:
 							case VICUS::ZoneTemplate::ST_IntLoadEquipment:
@@ -188,6 +188,13 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 				}
 			} break;
 
+			case Qt::ToolTipRole: {
+				if(index.column() == ColCheck) {
+					if (!it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
+										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
+						return QString::fromStdString(it->second.m_errorMsg);
+				}
+			}
 		}
 	}
 
