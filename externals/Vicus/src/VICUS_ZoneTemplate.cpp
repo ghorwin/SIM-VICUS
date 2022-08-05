@@ -43,8 +43,10 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const
 {
 
-	if (m_id == INVALID_ID)
+	if (m_id == INVALID_ID) {
+		m_errorMsg = "ID of zone template is invalid.";
 		return false;
+	}
 
 	// test all referenced sub-template types
 	unsigned int count = 0;
@@ -61,52 +63,76 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 			case ZoneTemplate::ST_IntLoadOther:
 			case ZoneTemplate::ST_IntLoadEquipment: {
 				const InternalLoad *intLoad = intLoadDB[id];
-				if (intLoad == nullptr)
+				if (intLoad == nullptr) {
+					m_errorMsg = "Internal load with ID '" + std::to_string(id) + "' does not exist.";
 					return false;
-				if (!intLoad->isValid(schedulesDB))
+				}
+				if (!intLoad->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Internal load '%1' is invalid.").arg(intLoad->m_displayName).str();
 					return false;
+				}
 			}
 			break;
 
 			case ZoneTemplate::ST_ControlThermostat: {
 				const ZoneControlThermostat *thermo = thermostatDB[id];
-				if (thermo == nullptr)
+				if (thermo == nullptr) {
+					IBK::FormatString("Zone control thermostat with ID '%1' does not exist.").arg(id).str();
 					return false;
-				if (!thermo->isValid(schedulesDB))
+				}
+				if (!thermo->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Zone control thermostat '%1' is invalid.").arg(thermo->m_displayName).str();
 					return false;
+				}
 			}
 			break;
 
 			case ZoneTemplate::ST_Infiltration: {
 				const Infiltration *inf = infiltraionDB[id];
-				if (inf == nullptr)
+				if (inf == nullptr) {
+					IBK::FormatString("Infiltration model with ID '%1' does not exist.").arg(id).str();
 					return false;
-				if (!inf->isValid())
+				}
+				if (!inf->isValid()) {
+					m_errorMsg = IBK::FormatString("Infiltration model '%1' is invalid.").arg(inf->m_displayName).str();
 					return false;
+				}
 			}
 			break;
 
 			case ZoneTemplate::ST_VentilationNatural: {
 				const VentilationNatural *venti = ventilationDB[id];
-				if (venti == nullptr)
+				if (venti == nullptr) {
+					IBK::FormatString("Natural ventilation model with ID '%1' does not exist.").arg(id).str();
 					return false;
-				if (!venti->isValid(schedulesDB))
+				}
+				if (!venti->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Natural ventilation model '%1' is invalid.").arg(venti->m_displayName).str();
 					return false;
+				}
 			}
 			break;
 
 			case ZoneTemplate::ST_IdealHeatingCooling: {
 				const ZoneIdealHeatingCooling *ideal = idealHeatingCoolingDB[id];
-				if (ideal == nullptr)
+				if (ideal == nullptr) {
+					IBK::FormatString("Ideal heating model with ID '%1' does not exist.").arg(id).str();
 					return false;
-				if (!ideal->isValid())
+				}
+				if (!ideal->isValid()) {
+					m_errorMsg = IBK::FormatString("Ideal heating model  '%1' is invalid.").arg(ideal->m_displayName).str();
 					return false;
+				}
 				// ideal heating/cooling always requires a valid thermostat
 				const ZoneControlThermostat *thermo = thermostatDB[m_idReferences[ST_ControlThermostat]];
-				if (thermo == nullptr)
+				if (thermo == nullptr) {
+					IBK::FormatString("Zone control thermostat with ID '%1' does not exist.").arg(m_idReferences[ST_ControlThermostat]).str();
 					return false;
-				if (!thermo->isValid(schedulesDB))
+				}
+				if (!thermo->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Zone control thermostat '%1' is invalid.").arg(thermo->m_displayName).str();
 					return false;
+				}
 			}
 			break;
 
