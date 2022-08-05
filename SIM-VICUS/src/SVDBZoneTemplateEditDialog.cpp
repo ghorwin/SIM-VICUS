@@ -75,6 +75,7 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	// specific setup for DB table view
 	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColCheck, QHeaderView::Fixed);
 	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColColor, QHeaderView::Fixed);
+	m_ui->treeView->setSortingEnabled(true);
 
 	connect(m_editWidget, &SVDBZoneTemplateEditWidget::selectSubTemplate,
 			this, &SVDBZoneTemplateEditDialog::onSelectSubTemplate);
@@ -320,3 +321,17 @@ void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID
 		}
 	}
 }
+
+void SVDBZoneTemplateEditDialog::on_treeView_expanded(const QModelIndex &index) {
+	m_ui->treeView->resizeColumnToContents(0);
+	m_ui->treeView->resizeColumnToContents(1);
+	// we add a bit more width since automatic resizing not fully working
+	m_ui->treeView->setColumnWidth(1, m_ui->treeView->columnWidth(1) + 100);
+}
+
+
+void SVDBZoneTemplateEditDialog::on_treeView_collapsed(const QModelIndex &index) {
+	m_ui->treeView->resizeColumnToContents(0);
+	m_ui->treeView->resizeColumnToContents(1);
+}
+

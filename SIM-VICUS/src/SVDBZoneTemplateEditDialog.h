@@ -86,6 +86,10 @@ private slots:
 
 	void onSelectSubTemplate(unsigned int zoneTemplateID, VICUS::ZoneTemplate::SubTemplateType subTemplateType);
 
+	void on_treeView_expanded(const QModelIndex &index);
+
+	void on_treeView_collapsed(const QModelIndex &index);
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.
