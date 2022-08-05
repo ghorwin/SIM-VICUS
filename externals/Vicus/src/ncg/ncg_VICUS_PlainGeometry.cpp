@@ -43,8 +43,6 @@ void PlainGeometry::readXMLPrivate(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
-			else if (attribName == "selected")
-				m_selected = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -87,8 +85,6 @@ TiXmlElement * PlainGeometry::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_visible != PlainGeometry().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
-	if (m_selected != PlainGeometry().m_selected)
-		e->SetAttribute("selected", IBK::val2string<bool>(m_selected));
 
 	if (!m_surfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("Surfaces");
