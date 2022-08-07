@@ -42,19 +42,7 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Flag") {
-				IBK::Flag f;
-				NANDRAD::readFlagElement(c, f);
-				bool success = false;
-				try {
-					Flags ftype = (Flags)KeywordList::Enumeration("ViewSettings::Flags", f.name());
-					m_flags[ftype] = f; success=true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "CameraTranslation") {
+			if (cName == "CameraTranslation") {
 				try {
 					m_cameraTranslation = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
@@ -96,12 +84,6 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ViewSettings");
 	parent->LinkEndChild(e);
 
-
-	for (int i=0; i<NUM_F; ++i) {
-		if (!m_flags[i].name().empty()) {
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
-		}
-	}
 	TiXmlElement::appendSingleAttributeElement(e, "CameraTranslation", nullptr, std::string(), m_cameraTranslation.toString());
 
 	m_cameraRotation.writeXML(e);

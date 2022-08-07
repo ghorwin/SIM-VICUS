@@ -44,11 +44,6 @@ class ViewSettings {
 	VICUS_READWRITE_PRIVATE
 public:
 
-	enum Flags {
-		F_GridVisible,		// Keyword: GridVisible			'Grid is visible'
-		NUM_F
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! C'tor, initializes defaults. */
@@ -71,8 +66,6 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	IBK::Flag							m_flags[NUM_F];					// XML:E
-
 	/*! Camera position. */
 	IBKMK::Vector3D						m_cameraTranslation;			// XML:E
 
@@ -90,8 +83,6 @@ public:
 
 
 inline bool ViewSettings::operator!=(const ViewSettings & other) const {
-	for (unsigned int i=0; i<NUM_F; ++i)
-		if (m_flags[i] != other.m_flags[i]) return true;
 	if (m_cameraTranslation != other.m_cameraTranslation) return true;
 	if (m_cameraRotation != other.m_cameraRotation) return true;
 	if (m_farDistance != other.m_farDistance) return true;
