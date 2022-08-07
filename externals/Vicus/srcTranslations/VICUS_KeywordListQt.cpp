@@ -239,7 +239,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Ideal surface conditioning");
 	tr("Water-based surface conditioning: either ideal or part of a hydraulic network");
 	tr("Air change rate");
-	tr("Grid is visible");
 	tr("None");
 	tr("Fraction of area");
 	tr("Constant width");
