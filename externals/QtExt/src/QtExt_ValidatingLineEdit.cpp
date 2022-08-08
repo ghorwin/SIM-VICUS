@@ -185,15 +185,13 @@ void ValidatingLineEdit::onEditingFinished() {
 
 void ValidatingLineEdit::onTextChanged ( const QString& ) {
 	if (!isEnabled()) {
-		QPalette palEdit;
-		setPalette(palEdit);
+		setStyleSheet("");
 		setToolTip("");
 		return;
 	}
 	if (isReadOnly()) {
 		QPalette palEdit;
-		palEdit.setColor(QPalette::Base, Style::ReadOnlyEditFieldBackground);
-		setPalette(palEdit);
+		setStyleSheet("QLineEdit { background-color: "+ Style::ReadOnlyEditFieldBackground +";}");
 		setToolTip("");
 		return;
 	}
