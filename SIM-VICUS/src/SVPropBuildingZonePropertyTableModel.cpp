@@ -361,7 +361,7 @@ bool SVPropBuildingZonePropertyTableModel::assignSurfaces(const QModelIndex & in
 	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
 
 	// retieve a copy of the selected room
-	VICUS::Room room = *m_rooms[(size_t)index.row()];
+	VICUS::Room &room = *vp.roomByID(m_rooms[(size_t)index.row()]->m_id);
 
 	// we get the selected surfaces
 	std::vector<const VICUS::Surface*> surfs;
