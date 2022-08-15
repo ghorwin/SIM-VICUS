@@ -102,11 +102,21 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
 						return QString::fromStdString(it->second.m_errorMsg);
 				}
-			}
+			} break;
+
+			case Role_BuiltIn :
+				return it->second.m_builtIn;
+
+			case Role_Local :
+				return it->second.m_local;
+
+			case Role_Referenced:
+				return it->second.m_isReferenced;
 		}
 	}
+
+	// sub-template
 	else {
-		// sub-template
 
 		QModelIndex templateIndex = index.parent();
 
@@ -122,6 +132,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 		int subTemplateIndex = index.row();
 		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference((unsigned int)subTemplateIndex);
 		bool valid = false;
+
+		const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
+
 		switch (role) {
 			case Role_SubTemplateType :
 				return subType;
@@ -134,7 +147,6 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					case ColId		: return zt.m_idReferences[subType];
 					case ColType	: return VICUS::KeywordListQt::Description("ZoneTemplate::SubTemplateType", subType);
 					case ColName	: {
-						const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
 						if (dbElement == nullptr)
 							return tr("<invalid ID reference>");
 						else
@@ -145,7 +157,6 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 
 			case Qt::BackgroundRole : {
 				if (index.column() == ColColor) {
-					const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
 					if (dbElement != nullptr)
 						return dbElement->m_color;
 				}
@@ -153,7 +164,6 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 
 			case Qt::DecorationRole : {
 				if (index.column() == ColCheck) {
-					const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
 					if (dbElement != nullptr) {
 
 						switch (subType) {
@@ -194,7 +204,22 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
 						return QString::fromStdString(it->second.m_errorMsg);
 				}
-			}
+			} break;
+
+			case Role_BuiltIn : {
+				if (dbElement != nullptr)
+					return dbElement->m_builtIn;
+			} break;
+
+			case Role_Local : {
+				if (dbElement != nullptr)
+					return dbElement->m_local;
+			} break;
+
+			case Role_Referenced: {
+				if (dbElement != nullptr)
+					return dbElement->m_isReferenced;
+			} break;
 		}
 	}
 
@@ -214,9 +239,6 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 				}
 			} // switch
 			break;
-
-		case Role_BuiltIn :
-			return it->second.m_builtIn;
 	}
 
 	return QVariant();
@@ -395,6 +417,22 @@ void SVDBZoneTemplateTreeModel::setItemModified(unsigned int id) {
 	int rows = rowCount(left);
 	QModelIndex right = index(rows-1, NumColumns-1, left);
 	emit dataChanged(left, right);
+}
+
+
+void SVDBZoneTemplateTreeModel::setItemLocal(const QModelIndex & index, bool local) {
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+
+	// if we have a zone template make it local
+	if (m_db->m_zoneTemplates[id] != nullptr)
+		m_db->m_zoneTemplates[id]->m_local = local;
+
+	//	Note: We don't need to add sub templates manually here, they will be added as referenced elements
+
+	m_db->m_zoneTemplates.m_modified = true;
+	setItemModified(id);
 }
 
 

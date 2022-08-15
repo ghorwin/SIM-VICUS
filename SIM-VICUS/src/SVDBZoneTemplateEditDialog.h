@@ -90,6 +90,12 @@ private slots:
 
 	void on_treeView_collapsed(const QModelIndex &index);
 
+	void on_toolButtonStoreInUserDB_clicked();
+
+	void on_toolButtonRemoveFromUserDB_clicked();
+
+	void on_pushButtonRemoveUnusedElements_clicked();
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.

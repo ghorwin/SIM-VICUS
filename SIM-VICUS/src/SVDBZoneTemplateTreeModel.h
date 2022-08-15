@@ -77,6 +77,9 @@ public:
 	/*! Tells the model that an item has been modified, triggers a dataChanged() signal. */
 	void setItemModified(unsigned int id);
 
+	/*! Sets property m_local of element, does nothing if index does not exist. */
+	void setItemLocal(const QModelIndex &index, bool local);
+
 	/*! Returns an index for a given Id. */
 	QModelIndex indexById(unsigned int id) const;
 

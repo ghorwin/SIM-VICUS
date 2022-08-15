@@ -362,9 +362,11 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		}
 
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType()); // by default the "m_isReferenced" property is off after reading the user DB
+
 		// update "isReferenced" property of all elements
 		if (SVProjectHandler::instance().isValid())
 			SVSettings::instance().m_db.updateReferencedElements(project());
+
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());

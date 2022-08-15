@@ -100,7 +100,7 @@
       <item row="1" column="4">
        <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
         <property name="toolTip">
-         <string>Moves DB element from user  database to local project.</string>
+         <string>Moves DB element from user database to local project.</string>
         </property>
         <property name="text">
          <string/>

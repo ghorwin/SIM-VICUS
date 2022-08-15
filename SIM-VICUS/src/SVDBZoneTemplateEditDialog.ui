@@ -15,12 +15,32 @@
   </property>
   <layout class="QGridLayout" name="gridLayoutMaster">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBoxTableView">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Zone Templates</string>
      </property>
-     <layout class="QGridLayout" name="gridLayoutTableView">
-      <item row="1" column="3">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="3">
+       <widget class="QToolButton" name="toolButtonStoreInUserDB">
+        <property name="toolTip">
+         <string>Stores local project DB element in user database.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/toDB.png</normaloff>:/gfx/actions/24x24/toDB.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5" colspan="2">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -33,7 +53,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QToolButton" name="toolButtonAdd">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -47,7 +67,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="2" column="2">
        <widget class="QToolButton" name="toolButtonRemove">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -61,7 +81,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QToolButton" name="toolButtonCopy">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
@@ -75,7 +95,27 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="4">
+      <item row="2" column="4">
+       <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
+        <property name="toolTip">
+         <string>Moves DB element from user database to local project.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/fromDB.png</normaloff>:/gfx/actions/24x24/fromDB.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="7">
        <widget class="QTreeView" name="treeView">
         <property name="alternatingRowColors">
          <bool>true</bool>
@@ -101,8 +141,29 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="pushButtonReloadUserDB">
+       <property name="toolTip">
+        <string>Reloads user database from directory</string>
+       </property>
        <property name="text">
         <string>Reload user database</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRemoveUnusedElements">
+       <property name="toolTip">
+        <string>Removes project-local database elements that are currently nowhere referenced.</string>
+       </property>
+       <property name="text">
+        <string>Remove unused local elements</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/broom.png</normaloff>:/gfx/actions/24x24/broom.png</iconset>
        </property>
       </widget>
      </item>

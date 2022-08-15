@@ -38,9 +38,12 @@
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
 #include "SVViewStateHandler.h"
+#include "SVProjectHandler.h"
+#include "SVDBDialogAddDependentElements.h"
 
 #include "SVDBZoneTemplateEditWidget.h"
 #include "SVDBZoneTemplateTreeModel.h"
+
 
 SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -48,7 +51,7 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 {
 	// dialog most only be created by main window
 	m_ui->setupUi(this);
-	m_ui->gridLayoutTableView->setMargin(4);
+	m_ui->groupBox->layout()->setMargin(4);
 
 	m_dbModel = new SVDBZoneTemplateTreeModel(this, SVSettings::instance().m_db);
 	m_editWidget = new SVDBZoneTemplateEditWidget(this);
@@ -102,6 +105,12 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(true);
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
+
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
 
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
@@ -124,6 +133,12 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
+
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
@@ -213,12 +228,14 @@ void SVDBZoneTemplateEditDialog::on_toolButtonRemove_clicked() {
 }
 
 
-void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/) {
+void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &current, const QModelIndex &/*previous*/) {
 	// if there is no selection, deactivate all buttons that need a selection
 	if (!current.isValid()) {
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->toolButtonStoreInUserDB->setEnabled(false);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(false);
 		m_groupBox->setEnabled(false);
 		m_editWidget->updateInput(-1, -1, VICUS::ZoneTemplate::NUM_ST); // nothing selected
 	}
@@ -227,16 +244,23 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
-		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
+		bool builtIn = sourceIndex.data(Role_BuiltIn).toBool();
+		bool isZoneTemplate = sourceIndex.internalPointer() == nullptr;
+		m_ui->toolButtonRemove->setEnabled(!builtIn && isZoneTemplate);
 
-		m_ui->toolButtonCopy->setEnabled(true);
+		// only elements which are local and not built-in can be stored to user DB
+		bool local = sourceIndex.data(Role_Local).toBool();
+		m_ui->toolButtonStoreInUserDB->setEnabled(local && !builtIn && isZoneTemplate);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(!local && !builtIn && isZoneTemplate);
+
+		m_ui->toolButtonCopy->setEnabled(isZoneTemplate);
 		m_ui->treeView->setCurrentIndex(current);
 		// retrieve current ID
 		int id = sourceIndex.data(Role_Id).toInt();
 		int subTemplateID = -1;
 		VICUS::ZoneTemplate::SubTemplateType subTemplateType = VICUS::ZoneTemplate::NUM_ST;
 		// sub-template selected?
-		if (sourceIndex.internalPointer() != nullptr) {
+		if (!isZoneTemplate) {
 			subTemplateID = id;
 			QModelIndex parentIndex = sourceIndex.parent();
 			id = parentIndex.data(Role_Id).toInt();
@@ -255,6 +279,12 @@ void SVDBZoneTemplateEditDialog::on_pushButtonReloadUserDB_clicked() {
 		// tell db to drop all user-defined items and re-read the DB
 		SVSettings::instance().m_db.m_zoneTemplates.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_ZoneTemplates);
+
+		// update "isRferenced" property of all elements
+		if (SVProjectHandler::instance().isValid()){
+			SVSettings::instance().m_db.updateReferencedElements(project());
+		}
+
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
@@ -333,5 +363,52 @@ void SVDBZoneTemplateEditDialog::on_treeView_expanded(const QModelIndex &index) 
 void SVDBZoneTemplateEditDialog::on_treeView_collapsed(const QModelIndex &index) {
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
+}
+
+
+void SVDBZoneTemplateEditDialog::on_toolButtonStoreInUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->treeView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, false);
+	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex());
+
+	// find local children
+	unsigned int id = sourceIndex.data(Role_Id).toUInt();
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	SVSettings::instance().m_db.findLocalChildren(SVDatabase::DT_ZoneTemplates, id, localChildren);
+
+	// ask user if child elements should be added to user DB as well
+	if (localChildren.size() > 0) {
+		SVDBDialogAddDependentElements diag(this);
+		diag.setup(localChildren);
+		int res = diag.exec();
+		if (res == QDialog::Accepted) {
+			for (VICUS::AbstractDBElement *el: localChildren)
+				el->m_local = false;
+		}
+	}
+}
+
+
+void SVDBZoneTemplateEditDialog::on_toolButtonRemoveFromUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->treeView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, true);
+	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex());
+}
+
+
+void SVDBZoneTemplateEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
+	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+		// tell db to drop all user-defined items and re-read the DB
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.removeNotReferencedLocalElements(SVDatabase::DT_ZoneTemplates, project());
+		// tell model to reset completely
+		m_dbModel->resetModel();
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+	}
 }
 
