@@ -21,7 +21,7 @@ public:
 	~SVPropBuildingSurfaceConnectionWidget();
 
 	/*! Updates user interface. */
-	void updateUi();
+	void updateUi(bool /*onlySelectionModified*/);
 
 private slots:
 	void on_pushButtonRemoveComponentInstance_clicked();

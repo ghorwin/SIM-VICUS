@@ -80,7 +80,7 @@ private:
 		This function gathers data needed by multiple edit widgets and then
 		calls the updateUi() functions in the individual widgets.
 	*/
-	void updateUi();
+	void updateUi(bool onlyNodeStateModified);
 
 	Ui::SVPropBuildingEditWidget	*m_ui;
 };

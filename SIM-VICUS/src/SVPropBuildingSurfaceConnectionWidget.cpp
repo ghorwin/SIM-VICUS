@@ -46,7 +46,7 @@ SVPropBuildingSurfaceConnectionWidget::~SVPropBuildingSurfaceConnectionWidget() 
 }
 
 
-void SVPropBuildingSurfaceConnectionWidget::updateUi() {
+void SVPropBuildingSurfaceConnectionWidget::updateUi(bool /*onlySelectionModified*/) {
 	// get all visible "building" type objects in the scene
 	std::vector<const VICUS::Surface *> selectedSurfaces; // note: we use a set, because we want to quickly remove items later
 	project().selectedSurfaces(selectedSurfaces, VICUS::Project::SG_Building); // visible and selected surfaces
