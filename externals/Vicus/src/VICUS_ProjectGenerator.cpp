@@ -795,10 +795,8 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	SupplySystemNetworkModelGenerator supplySystemNetworkModelGenerator(this);
 	supplySystemNetworkModelGenerator.m_placeholders = p.m_placeholders;
 
-	for(std::map<unsigned int, std::vector<DataSurfaceHeating> >::iterator
-		it = supplyIdToSurfaceHeatings.begin(); it != supplyIdToSurfaceHeatings.end(); ++it) {
+	for(std::map<unsigned int, std::vector<DataSurfaceHeating> >::iterator it = supplyIdToSurfaceHeatings.begin(); it != supplyIdToSurfaceHeatings.end(); ++it) {
 		// find supply component
-
 		for(const VICUS::SupplySystem &supply : m_embeddedDB.m_supplySystems) {
 			if(supply.m_id == it->first) {
 				supplySystemNetworkModelGenerator.generate(supply, it->second, usedModelIds, usedNetworkIds, usedNetworkElementIds,errorStack);
@@ -2788,7 +2786,6 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		// not supported, yet
 		case VICUS::SupplySystem::ST_SubNetwork:
 		case VICUS::SupplySystem::ST_DatabaseFMU: break;
-		case VICUS::SupplySystem::NUM_ST: break;
 	}
 
 	double defaultFluidTemperature = 20. + 273.15;

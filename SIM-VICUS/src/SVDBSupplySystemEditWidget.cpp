@@ -60,29 +60,33 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 
 	// fill combo box
 	m_ui->comboBoxSupplyType->blockSignals(true);
-	for (unsigned int i=0; i < VICUS::SupplySystem::NUM_ST; ++i)
+	std::vector<VICUS::SupplySystem::supplyType_t> entries = { VICUS::SupplySystem::ST_StandAlone,
+															   VICUS::SupplySystem::ST_DatabaseFMU,
+															   VICUS::SupplySystem::ST_UserDefinedFMU,
+															   VICUS::SupplySystem::ST_SubNetwork };
+	for (VICUS::SupplySystem::supplyType_t entry: entries)
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
-								  .arg(VICUS::KeywordListQt::Description("SupplySystem::supplyType_t", (int)i))
-								  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::supplyType_t", (int)i)), i);
-	// set invalid supply type
-	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
+										  .arg(VICUS::KeywordListQt::Description("SupplySystem::supplyType_t", entry))
+										  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::supplyType_t", entry)), entry);
+
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
+
 	// add all options to staggered widget: reorder
 	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_StandAlone, m_ui->pageStandAlone);
 	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_DatabaseFMU, m_ui->pageDatabaseFMU);
 	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_UserDefinedFMU, m_ui->pageUserDefinedFMU);
-	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::NUM_ST, m_ui->pageEmpty);
-
-	// simply deactivate staggered widget
-	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_SubNetwork, m_ui->pageSubNetwork);
 
 	// set all minimum and maximum value
 	m_ui->lineEditMaxMassFlux->setMinimum(0.0);
 	m_ui->lineEditSupplyTemp->setMinimum(0.0);
 	m_ui->lineEditMaxMassFluxFMU->setMinimum(0.0);
 	m_ui->lineEditHeatingPowerFMU->setMinimum(0.0);
+
+	// line edit for sub network is read only
+	m_ui->lineEditSubNetwork->setReadOnly(true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -112,9 +116,6 @@ void SVDBSupplySystemEditWidget::updateInput(int id) {
 	if (!isEnabled) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		// simply deactivate staggered widget
-		m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
-
 		return;
 	}
 
@@ -183,6 +184,13 @@ void SVDBSupplySystemEditWidget::updateInput(int id) {
 	else {
 		m_ui->lineEditHeatingPowerFMU->setValue(m_current->m_para[VICUS::SupplySystem::P_HeatingPowerFMU].get_value("kW"));
 	}
+
+
+	// Vicus sub network
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::SubNetwork *subNet = db.m_subNetworks[m_current->m_idSubNetwork];
+	if (subNet != nullptr)
+		m_ui->lineEditSubNetwork->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
 
 	// enable stagged widget
 	m_ui->stackedWidgetSupply->blockSignals(false);
@@ -271,19 +279,14 @@ void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int i
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
-	if(index != m_current->m_supplyType) {
+	VICUS::SupplySystem::supplyType_t supplyType = (VICUS::SupplySystem::supplyType_t) m_ui->comboBoxSupplyType->currentData().toUInt();
+	// set supply type
+	m_current->m_supplyType = supplyType;
+	// set suitable staged widget
+	m_ui->stackedWidgetSupply->setCurrentIndex(supplyType);
 
-		// set supply type
-		m_current->m_supplyType = (VICUS::SupplySystem::supplyType_t) index;
-		// set suitable staged widget
-		m_ui->stackedWidgetSupply->blockSignals(true);
-		// choose page in staggered widget for suitable parametrization
-		m_ui->stackedWidgetSupply->setCurrentIndex(index);
-		m_ui->stackedWidgetSupply->blockSignals(false);
-
-		// update view
-		modelModify();
-	}
+	// update view
+	modelModify();
 }
 
 
@@ -333,8 +336,7 @@ void SVDBSupplySystemEditWidget::on_pushButtonColor_colorChanged() {
 	}
 }
 
-void SVDBSupplySystemEditWidget::on_supplyFMUFile_editingFinished()
-{
+void SVDBSupplySystemEditWidget::on_supplyFMUFile_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	m_current->m_supplyFMUPath = m_ui->widgetBrowseFileNameSupplyFMU->filename();
 }
@@ -345,4 +347,17 @@ void SVDBSupplySystemEditWidget::modelModify() {
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
+
+
+void SVDBSupplySystemEditWidget::on_toolButtonSubNetwork_clicked() {
+	Q_ASSERT(m_current != nullptr);
+	unsigned int id = m_current->m_idSubNetwork;
+	unsigned int newId = SVMainWindow::instance().dbSubNetworkEditDialog()->select(id);
+	m_current->m_idSubNetwork = newId;
+	// set name of supply system to name of sub network
+	if (SVSettings::instance().m_db.m_subNetworks[newId] != nullptr)
+		m_current->m_displayName = SVSettings::instance().m_db.m_subNetworks[newId]->m_displayName;
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
 

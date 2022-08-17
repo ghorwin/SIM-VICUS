@@ -37,9 +37,15 @@
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Database.h"
 
 
 namespace VICUS {
+
+class SubNetwork;
+class NetworkComponent;
+class NetworkController;
+class Schedule;
 
 /*! Defines the base structure of a generic network:
 	A generic network may be generated for surface heating FMU export. We bundle
@@ -50,13 +56,12 @@ class SupplySystem : public AbstractDBElement {
 	Q_DECLARE_TR_FUNCTIONS(SupplySystem)
 public:
 
-	/*! Supplier supported by the generic network model. */
+	/*! Supplier supported by the generic network model. We don't have a NUM_ST as this would not make any sence. */
 	enum supplyType_t {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
-		ST_SubNetwork,			// Keyword: SubNetwork					'VIVUS sub network loaded from a database and parametrized by the user'
+		ST_SubNetwork,			// Keyword: SubNetwork					'User defined sub network'
 		ST_DatabaseFMU,			// Keyword: DatabaseFMU					'Supply FMU loaded from a database and parametrized by the user'
-		ST_UserDefinedFMU,		// Keyword: UserDefinedFMU				'User defined supply FMU'
-		NUM_ST
+		ST_UserDefinedFMU		// Keyword: UserDefinedFMU				'User defined supply FMU'
 	};
 
 	/*! Network parameters.
@@ -82,7 +87,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if the network definition is valid. */
-	bool isValid() const;
+	bool isValid(const Database<SubNetwork> &subNetworkDB, const Database<VICUS::NetworkComponent> & compDB, const Database<VICUS::NetworkController> & ctrlDB, const Database<VICUS::Schedule> & scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
@@ -94,13 +99,18 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Network supply type. */
-	supplyType_t			m_supplyType = NUM_ST;				// XML:A:required
+	supplyType_t			m_supplyType = ST_StandAlone;		// XML:A:required
 	/*! Parameters for stand alone mode. */
 	IBK::Parameter			m_para[NUM_P];						// XML:E
 	/*! FMU path for Database FMU mode. */
 	QString					m_supplyFMUPath;					// XML:E
 	/*! Id for database FMU. */
-	unsigned int			m_supplyFMUId = VICUS::INVALID_ID;	// XML:E
+	IDType					m_supplyFMUId = VICUS::INVALID_ID;	// XML:E
+	/*! Id of vicus sub network */
+	IDType					m_idSubNetwork = VICUS::INVALID_ID;	// XML:E
+
+	// *** runtime variables ***
+	const mutable	VICUS::SubNetwork		* m_subNetwork = nullptr;
 };
 
 

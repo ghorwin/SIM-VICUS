@@ -39,6 +39,7 @@
 #include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "SVPropBuildingZoneProperty.h"
 #include "SVPropFloorManagerWidget.h"
+#include "SVPropSupplySystemsWidget.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -56,6 +57,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Surface connections/component instances"), BT_SurfaceConnection);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Supply Systems"), BT_SupplySystems);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
@@ -70,6 +72,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceConnectionWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneTemplatesWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceHeatingWidget(this));
+	m_ui->stackedWidget->addWidget(new SVPropSupplySystemsWidget(this));
 	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneProperty(this));
 	m_ui->stackedWidget->addWidget(new SVPropFloorManagerWidget(this));
 
@@ -158,6 +161,7 @@ void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
 	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->stackedWidget->widget(BT_SurfaceConnection))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(BT_ZoneTemplates))->updateUi();
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
+	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->stackedWidget->widget(BT_SupplySystems))->updateUi();
 	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
@@ -176,6 +180,7 @@ void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged
 		case BT_SurfaceConnection		: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceConnection); break;
 		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneTemplates); break;
 		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceHeating); break;
+		case BT_SupplySystems			: m_ui->stackedWidget->setCurrentIndex(BT_SupplySystems); break;
 		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneProperty); break;
 		case BT_FloorManager			: m_ui->stackedWidget->setCurrentIndex(BT_FloorManager); break;
 	}
@@ -190,6 +195,7 @@ void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged
 		case BT_SurfaceConnection		: vs.m_objectColorMode = SVViewState::OCM_InterlinkedSurfaces; break;
 		case BT_ZoneTemplates			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 		case BT_SurfaceHeating			: vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
+		case BT_SupplySystems			: vs.m_objectColorMode = SVViewState::OCM_SupplySystems; break;
 		case BT_ZoneProperty			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 		case BT_FloorManager			: vs.m_objectColorMode = SVViewState::OCM_None; break;
 	}

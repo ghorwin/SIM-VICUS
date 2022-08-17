@@ -1770,7 +1770,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	case SVViewState::OCM_ComponentOrientation:
 	case SVViewState::OCM_SurfaceHeating:
 	case SVViewState::OCM_BoundaryConditions:
-	case SVViewState::OCM_SupplySystem: {
+	case SVViewState::OCM_SupplySystems: {
 		// now color all surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// lookup component definition
@@ -1826,7 +1826,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 				break;
 
-			case SVViewState::OCM_SupplySystem: {
+			case SVViewState::OCM_SupplySystems: {
 				// lookup surface heating definition
 				const VICUS::SupplySystem * supplySys = db.m_supplySystems[ci.m_idSupplySystem];
 				if (supplySys != nullptr) {
@@ -1925,7 +1925,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_NetworkHeatExchange:
 			case SVViewState::OCM_SurfaceHeating:
 			case SVViewState::OCM_InterlinkedSurfaces:
-			case SVViewState::OCM_SupplySystem:
+			case SVViewState::OCM_SupplySystems:
 				break;
 			} // switch
 		}
@@ -2003,7 +2003,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_SurfaceHeating:
 			case SVViewState::OCM_Network:
 			case SVViewState::OCM_InterlinkedSurfaces:
-			case SVViewState::OCM_SupplySystem:
+			case SVViewState::OCM_SupplySystems:
 				break;
 			}
 		}

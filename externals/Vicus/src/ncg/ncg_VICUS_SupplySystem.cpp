@@ -90,7 +90,9 @@ void SupplySystem::readXML(const TiXmlElement * element) {
 			else if (cName == "SupplyFMUPath")
 				m_supplyFMUPath = QString::fromStdString(c->GetText());
 			else if (cName == "SupplyFMUId")
-				m_supplyFMUId = NANDRAD::readPODElement<unsigned int>(c, cName);
+				m_supplyFMUId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSubNetwork")
+				m_idSubNetwork = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -116,8 +118,6 @@ TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_supplyType != NUM_ST)
-		e->SetAttribute("supplyType", KeywordList::Keyword("SupplySystem::supplyType_t",  m_supplyType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
@@ -127,7 +127,9 @@ TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 	if (!m_supplyFMUPath.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "SupplyFMUPath", nullptr, std::string(), m_supplyFMUPath.toStdString());
 	if (m_supplyFMUId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "SupplyFMUId", nullptr, std::string(), IBK::val2string<unsigned int>(m_supplyFMUId));
+			TiXmlElement::appendSingleAttributeElement(e, "SupplyFMUId", nullptr, std::string(), IBK::val2string<unsigned int>(m_supplyFMUId));
+	if (m_idSubNetwork != VICUS::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "IdSubNetwork", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSubNetwork));
 	return e;
 }
 

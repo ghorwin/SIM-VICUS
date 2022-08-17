@@ -31,7 +31,10 @@ AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement 
 }
 
 
-bool SupplySystem::isValid() const
+bool SupplySystem::isValid(const Database<SubNetwork> &subNetworkDB,
+						   const Database<NetworkComponent> &compDB,
+						   const Database<NetworkController> &ctrlDB,
+						   const Database<Schedule> &scheduleDB) const
 {
 	FUNCID(SupplySystem::isValid);
 	try {
@@ -48,7 +51,6 @@ bool SupplySystem::isValid() const
 		}
 
 		// check parameters for database mode
-
 		if(m_supplyType == ST_DatabaseFMU) {
 			if(m_supplyFMUId == VICUS::INVALID_ID) {
 				throw IBK::Exception("Database FMU is not set!", FUNC_ID);
@@ -82,10 +84,21 @@ bool SupplySystem::isValid() const
 												   "Maximum heating power flux must be > 0");
 			return true;
 		}
+
+		// check sub network
+		if (m_supplyType == ST_SubNetwork) {
+			m_subNetwork = subNetworkDB[m_idSubNetwork];
+			if (m_subNetwork != nullptr) {
+				if (m_subNetwork->isValid(compDB, ctrlDB, scheduleDB))
+					return true;
+			}
+		}
+
 		return false;
 
 	} catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
+		m_errorMsg = ex.what();
 		return false;
 	}
 }

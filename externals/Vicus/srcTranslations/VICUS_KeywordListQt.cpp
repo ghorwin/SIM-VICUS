@@ -224,7 +224,7 @@ KeywordListQt::KeywordListQt() {
 	tr("A door");
 	tr("Some other component type");
 	tr("Stand-alone mode with given mass flux and suppply temperature");
-	tr("VIVUS sub network loaded from a database and parametrized by the user");
+	tr("User defined sub network");
 	tr("Supply FMU loaded from a database and parametrized by the user");
 	tr("User defined supply FMU");
 	tr("Maximum mass flux into the network, needed for pump control");

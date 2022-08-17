@@ -96,6 +96,8 @@ enum BuildingPropertyTypes {
 	BT_ZoneTemplates,
 	/*! Surface heating */
 	BT_SurfaceHeating,
+	/*! Supply Systems */
+	BT_SupplySystems,
 	/*! Zone property */
 	BT_ZoneProperty,
 	/*! Floor manager. */

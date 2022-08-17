@@ -76,6 +76,8 @@ private slots:
 	void on_supplyFMUFile_editingFinished();
 
 
+	void on_toolButtonSubNetwork_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

@@ -1454,7 +1454,7 @@ namespace VICUS {
 			case 38 :
 			switch (t) {
 				case 0 : return "Stand-alone mode with given mass flux and suppply temperature";
-				case 1 : return "VIVUS sub network loaded from a database and parametrized by the user";
+				case 1 : return "User defined sub network";
 				case 2 : return "Supply FMU loaded from a database and parametrized by the user";
 				case 3 : return "User defined supply FMU";
 			} break;

@@ -104,7 +104,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="pageStandAlone">
          <layout class="QFormLayout" name="formLayout_3">
@@ -130,7 +130,37 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="pageSubNetwork"/>
+        <widget class="QWidget" name="pageSubNetwork">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLineEdit" name="lineEditSubNetwork"/>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButtonSubNetwork">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>314</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="pageDatabaseFMU"/>
         <widget class="QWidget" name="pageUserDefinedFMU">
          <layout class="QFormLayout" name="formLayout_2">
@@ -166,7 +196,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="pageEmpty"/>
        </widget>
       </item>
      </layout>
