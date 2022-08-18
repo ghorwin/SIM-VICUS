@@ -239,7 +239,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 //	else {
 		std::set<const VICUS::Object*> sel;
 		// take all, regardless of visibility or selection state
-		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), false, false);
+		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), true, true);
 		// filter out surfaces
 		m_selSurfaces.clear();
 		m_selSubSurfaces.clear();
@@ -337,6 +337,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// double minArea = 0.1; //1e-4;
 
 	for (const VICUS::Surface *s: m_selSurfaces) {
+
+		if( !s->geometry().isValid() )
+			continue;
 
 		if ( s->m_componentInstance == nullptr )
 			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors

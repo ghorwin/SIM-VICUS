@@ -116,9 +116,9 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		createSunNormals();
 
 	// prepare target memory
-	m_shadingFactors.resize(m_sunConeNormals.size());
+	m_shadingFactors.resize(m_surfaces.size());
 	for (std::vector<double> & sf : m_shadingFactors) {
-		sf.resize(m_surfaces.size(), 0); // fully shaded, i.e. default since we do not handle night-time
+		sf.resize(m_sunConeNormals.size(), 0); // fully shaded, i.e. default since we do not handle night-time
 	}
 
 	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
@@ -155,6 +155,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			if (notify->m_aborted)
 				continue; // skip ahead to quickly stop loop
 
+			std::vector<double> shadingFactors (m_sunConeNormals.size());
 
 			// readability improvement
 			const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
@@ -167,7 +168,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 2. for each center point perform intersection tests again _all_ obstacle polygons
 
 
-//			IBK::IBK_Message(IBK::FormatString("Taking surface with id '%1'").arg(so.m_id));
+			IBK::IBK_Message(IBK::FormatString("Taking surface with id '%1'").arg(so.m_id));
 
 			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
 
@@ -189,23 +190,13 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				// 3. store shaded/not shaded information for sub-polygon and its surface area
 				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
 				// 5. store in result vector
-
-
-//				IBK::IBK_Message(IBK::FormatString("Storing shading factor '%3' for surface with "
-//												   "id '%1' with sun cone normal '%2'")
-//								 .arg(so.m_id)
-//								 .arg(i)
-//								 .arg(sf));
-
-				m_shadingFactors[i][(unsigned int)surfCounter] = sf;
-
+				shadingFactors[i] = sf;
 
 
 				// master thread 0 updates the progress dialog; this should be good enough for longer runs
 	#if defined(_OPENMP)
 				if ( omp_get_thread_num() == 0) {
 	#endif
-	//				std::cout << surfacesCompleted << "  " << w.difference() << std::endl;
 					// only notify every second or so
 					if (!notify->m_aborted && w.difference() > 100) {
 						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
@@ -216,6 +207,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 			}
 
+#if defined(_OPENMP)
+#pragma omp critical
+#endif
+			m_shadingFactors[(unsigned int)surfCounter] = shadingFactors;
 
 			// increase number of completed surfaces (done by all threads)
 	#if defined(_OPENMP)
@@ -223,8 +218,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 			++surfacesCompleted;
 
-			IBK::IBK_Message(IBK::FormatString("Surface with id '%1' completed")
-							 .arg(so.m_id));
+//			IBK::IBK_Message(IBK::FormatString("Surface with id '%1' completed")
+//							 .arg(so.m_id));
 
 		}
 		catch (...) {
@@ -245,6 +240,18 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 
 	std::vector< double >			   timePoints;
 	std::vector< std::vector<double> > data;
+
+	std::vector<std::vector<double>> shadingFactors(m_shadingFactors[0].size());
+	for (std::vector<double> &shadFactor : shadingFactors)
+		shadFactor.resize(m_shadingFactors.size());
+
+	for(unsigned int i=0; i<m_shadingFactors.size(); ++i) {
+		for(unsigned int j=0; j<m_shadingFactors[i].size(); ++j) {
+			shadingFactors[j][i] = m_shadingFactors[i][j];
+		}
+	}
+
+	m_shadingFactors = shadingFactors;
 
 	if (!path.isValid())
 		throw IBK::Exception("Invalid filename or no filename set.", FUNC_ID);
