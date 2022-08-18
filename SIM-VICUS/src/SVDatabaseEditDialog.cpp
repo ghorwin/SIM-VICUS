@@ -254,6 +254,7 @@ void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
@@ -266,6 +267,9 @@ void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
 	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	if (proxyIndex.isValid())
 		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
+	// in case index has not changed after action: we trigger the slot manually to ensure an update of the editing widget
+	if (currentProxyIndex == m_ui->tableView->currentIndex())
+		onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
@@ -280,6 +284,9 @@ void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
 		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	// in case index has not changed after action: we trigger the slot manually to ensure an update of the editing widget
+	if (currentProxyIndex == m_ui->tableView->currentIndex())
+		onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
@@ -291,6 +298,9 @@ void SVDatabaseEditDialog::on_toolButtonRemove_clicked() {
 	// last construction removed? clear input widget
 	if (m_dbModel->rowCount() == 0)
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+	// in case index has not changed after action: we trigger the slot manually to ensure an update of the editing widget
+	if (currentProxyIndex == m_ui->tableView->currentIndex())
+		onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
