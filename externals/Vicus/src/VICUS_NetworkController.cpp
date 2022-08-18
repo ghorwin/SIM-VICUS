@@ -141,6 +141,11 @@ void NetworkController::checkParameters() const {
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_PressureDifferenceWorstpoint : {
+					m_para[P_PressureDifferenceSetpoint].checkedValue("PressureDifferenceSetpoint", "Pa", "Pa",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
 			case NUM_CP:
 				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
 		}
@@ -183,6 +188,25 @@ void NetworkController::checkParameters() const {
 	catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, "Missing/invalid parameters.", FUNC_ID);
 	}
+}
+
+
+NetworkController::para_t NetworkController::setPointType(ControlledProperty controlledProperty) {
+	switch (controlledProperty) {
+		case CP_TemperatureDifference:
+		case CP_TemperatureDifferenceOfFollowingElement:
+			return P_TemperatureDifferenceSetpoint;
+		case CP_MassFlux:
+			return P_MassFluxSetpoint;
+		case CP_PressureDifferenceWorstpoint:
+			return P_PressureDifferenceSetpoint;
+		case CP_PumpOperation:
+			return P_HeatLossOfFollowingElementThreshold;
+		case CP_ThermostatValue:
+		case NUM_CP:
+			return NUM_P; // no parameter to be set here
+	}
+
 }
 
 

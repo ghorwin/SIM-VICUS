@@ -59,8 +59,8 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for (int i=0; i<VICUS::NetworkComponent::NUM_MT; ++i)
-		m_ui->comboBoxComponentType->addItem(QString("%1")
-											 .arg(VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i)),
+		m_ui->comboBoxComponentType->addItem(VICUS::camelCase2ReadableString(
+											 VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i)),
 											 i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
@@ -95,14 +95,14 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	m_current = nullptr; // disable edit triggers
 
+	// clear input controls
+	m_ui->lineEditName->setString(IBK::MultiLanguageString());
+	m_ui->lineEditSchedule1->clear();
+	m_ui->lineEditSchedule2->clear();
+
 	if (id == -1) {
 		// disable all controls - note: this does not disable signals of the components below
 		setEnabled(false);
-
-		// clear input controls
-		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		m_ui->lineEditSchedule1->clear();
-		m_ui->lineEditSchedule2->clear();
 
 		// construction property info fields
 		m_ui->comboBoxComponentType->blockSignals(true);
@@ -139,6 +139,13 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSchedule1->setEnabled(reqScheduleNames.size()==1 || reqScheduleNames.size()==2);
 	m_ui->toolButtonSchedule2->setEnabled(reqScheduleNames.size()==2);
 
+	// update schedule labels
+	m_ui->labelSchedule1->clear();
+	m_ui->labelSchedule2->clear();
+	if (reqScheduleNames.size()>0)
+		m_ui->labelSchedule1->setText(VICUS::camelCase2ReadableString(reqScheduleNames[0]));
+	if (reqScheduleNames.size()>1)
+		m_ui->labelSchedule2->setText(VICUS::camelCase2ReadableString(reqScheduleNames[1]));
 
 	// update Schedule names (based on existing schedules)
 	if (m_current->m_scheduleIds.size()>0){
@@ -336,11 +343,9 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 	std::vector<unsigned int> paraVecInt = m_current->requiredIntParameter(m_current->m_modelType);
 
 	if (ct != m_current->m_modelType) {
-		// set new model type and name
-		QString name = QString("new %1").arg(VICUS::KeywordList::Keyword("NetworkComponent::ModelType", ct));
-		m_current->m_displayName = IBK::MultiLanguageString(name.toStdString());
+		// set new model type
 		m_current->m_modelType = ct;
-		// we keep parameters which are still valid
+		// we keep those parameters tat are still valid
 		for (unsigned int i=0; i<VICUS::NetworkComponent::NUM_P; ++i){
 			if (std::find(paraVecStd.begin(), paraVecStd.end(), i) != paraVecStd.end() ||
 				std::find(paraVecAdd.begin(), paraVecAdd.end(), i) != paraVecAdd.end() ||

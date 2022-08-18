@@ -99,48 +99,45 @@
       <string>Edit network element</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Component</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
+      <item row="1" column="2">
        <widget class="QToolButton" name="toolButtonEditComponent">
         <property name="text">
          <string>...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEditElementName"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Element Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelController">
         <property name="text">
          <string>Controller</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="lineEditController"/>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="checkBoxElementHasHeatExchange">
+        <property name="text">
+         <string>has heat exchange with ambient</string>
+        </property>
+       </widget>
       </item>
-      <item row="3" column="2">
+      <item row="2" column="2">
        <widget class="QToolButton" name="toolButtonEditController">
         <property name="text">
          <string>...</string>
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelComponent">
+        <property name="text">
+         <string>Component</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditController"/>
+      </item>
+      <item row="1" column="1">
        <widget class="QLineEdit" name="lineEditComponent">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -150,10 +147,14 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="checkBoxElementHasHeatExchange">
+      <item row="2" column="3">
+       <widget class="QToolButton" name="toolButtonRemoveController">
         <property name="text">
-         <string>has Heat Exchange</string>
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
         </property>
        </widget>
       </item>

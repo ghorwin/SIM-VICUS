@@ -100,9 +100,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Kd-parameter");
 	tr("Target temperature difference");
 	tr("Target mass flux");
-	tr("Threshold value for PumpOperation property when OnOffController is used");
-	tr("Integral part will be set to zero if controller error is above this value");
-	tr("Setpoint of pressure difference for worstpoint controller");
+	tr("Threshold value for pump operation");
+	tr("Reset value for controller integral part");
+	tr("Target pressure difference");
 	tr("ID of zone containing thermostat");
 	tr("Pipe length");
 	tr("Number of parallel pipes");

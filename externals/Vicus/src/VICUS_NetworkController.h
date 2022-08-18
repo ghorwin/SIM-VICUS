@@ -68,14 +68,14 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_Kp,								// Keyword: Kp								[---]	'Kp-parameter'
-		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
-		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
-		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
-		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
-		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
-		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
-		P_PressureDifferenceSetpoint,			// Keyword: PressureDifferenceSetpoint				[Pa]	'Setpoint of pressure difference for worstpoint controller'
+		P_Kp,									// Keyword: Kp										[---]	'Kp-parameter'
+		P_Ki,									// Keyword: Ki										[---]	'Ki-parameter'
+		P_Kd,									// Keyword: Kd										[---]	'Kd-parameter'
+		P_TemperatureDifferenceSetpoint,		// Keyword: TemperatureDifferenceSetpoint			[K]		'Temperature difference'
+		P_MassFluxSetpoint,						// Keyword: MassFluxSetpoint						[kg/s]	'Mass flux'
+		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for pump operation'
+		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Reset value for controller integral part'
+		P_PressureDifferenceSetpoint,			// Keyword: PressureDifferenceSetpoint				[Pa]	'Pressure difference'
 		NUM_P
 	};
 
@@ -102,6 +102,9 @@ public:
 
 	/*! A copy of NANDRAD::HydraulicNetworkControlElement::checkParameters */
 	void checkParameters() const;
+
+	/*! Returns the parameter / type of set point for the given type of controlled property */
+	static para_t setPointType(ControlledProperty controlledProperty);
 
 
 	// *** PUBLIC MEMBER VARIABLES added for VICUS ***

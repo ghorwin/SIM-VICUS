@@ -1562,9 +1562,9 @@ namespace NANDRAD {
 				case 2 : return "Kd-parameter";
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
-				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
-				case 6 : return "Integral part will be set to zero if controller error is above this value";
-				case 7 : return "Setpoint of pressure difference for worstpoint controller";
+				case 5 : return "Threshold value for pump operation";
+				case 6 : return "Reset value for controller integral part";
+				case 7 : return "Target pressure difference";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :

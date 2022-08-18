@@ -1384,11 +1384,11 @@ namespace VICUS {
 				case 0 : return "Kp-parameter";
 				case 1 : return "Ki-parameter";
 				case 2 : return "Kd-parameter";
-				case 3 : return "Target temperature difference";
-				case 4 : return "Target mass flux";
-				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
-				case 6 : return "Integral part will be set to zero if controller error is above this value";
-				case 7 : return "Setpoint of pressure difference for worstpoint controller";
+				case 3 : return "Temperature difference";
+				case 4 : return "Mass flux";
+				case 5 : return "Threshold value for pump operation";
+				case 6 : return "Reset value for controller integral part";
+				case 7 : return "Pressure difference";
 			} break;
 			// NetworkController::References
 			case 30 :

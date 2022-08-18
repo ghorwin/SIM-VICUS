@@ -207,6 +207,8 @@ void checkForUniqueIDs(const std::vector<const T*> & vec, std::set<unsigned int>
 	}
 }
 
+/*! Takes a string in camel case notation as input and returns a QString whith a space before each capital letter. */
+QString camelCase2ReadableString(const std::string &original);
 
 } // namespace VICUS
 

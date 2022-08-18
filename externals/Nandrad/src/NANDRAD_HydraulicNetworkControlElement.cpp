@@ -153,7 +153,7 @@ std::vector<HydraulicNetworkControlElement::ControllerType> HydraulicNetworkCont
 		case CP_MassFlux:
 		case CP_PressureDifferenceWorstpoint:
 		case CP_ThermostatValue:
-			return {CT_PController, CT_PIController, CT_PIDController};
+			return {CT_PController, CT_PIController};
 		case NUM_CP:
 			return {};
 	}

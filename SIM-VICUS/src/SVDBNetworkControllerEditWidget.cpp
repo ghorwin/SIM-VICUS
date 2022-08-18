@@ -4,12 +4,11 @@
 #include "SVDBNetworkControllerTableModel.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-
-#include <VICUS_Schedule.h>
-
 #include <SV_Conversions.h>
 
-#include <VICUS_KeywordList.h>
+#include <VICUS_Schedule.h>
+#include <VICUS_KeywordListQt.h>
+
 
 
 SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent) :
@@ -59,6 +58,7 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditSetpoint->clear();
 		m_ui->lineEditSchedule->clear();
+		m_ui->lineEditSchedule->setReadOnly(true);
 		m_ui->lineEditKp->clear();
 		m_ui->lineEditKi->clear();
 		m_ui->comboBoxProperty->setCurrentIndex(-1);
@@ -84,68 +84,61 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 	// controlled property
 	int propIdx = m_ui->comboBoxProperty->findData(m_current->m_controlledProperty);
 	m_ui->comboBoxProperty->setCurrentIndex(propIdx);
+	VICUS::NetworkController::ControlledProperty controlledProperty = VICUS::NetworkController::ControlledProperty(propIdx);
 
-	// set point / schedule
-	switch (VICUS::NetworkController::ControlledProperty(propIdx)) {
+	// define some properties based on current controlled property
+	QString controlledPropertyName;
+	bool schedulePossible = false;
+	bool maxControllerValuePossible = false;
+	switch (controlledProperty) {
 		case VICUS::NetworkController::CP_TemperatureDifference:
 		case VICUS::NetworkController::CP_TemperatureDifferenceOfFollowingElement:{
-			m_ui->radioButtonFixedSetPoint->setText(tr("Set Point Temperature Difference [K]"));
-			m_ui->radioButtonSchedule->setEnabled(true);
-			m_ui->lineEditSchedule->setEnabled(true);
-			m_ui->toolButtonSchedule->setEnabled(true);
-			m_ui->groupBoxMaximumOutput->setEnabled(true);
-			m_ui->radioButtonSchedule->setText(tr("Schedule Temperature Difference [K]"));
-			if (m_current->m_modelType == VICUS::NetworkController::MT_Constant)
-				m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_TemperatureDifferenceSetpoint].value);
-			else if (setPointSched != nullptr)
-				m_ui->lineEditSchedule->setText(QtExt::MultiLangString2QString(setPointSched->m_displayName));
-			break;
-		}
+			controlledPropertyName = tr("Temperature Difference [K]");
+			schedulePossible = true;
+			maxControllerValuePossible = true;
+		} break;
 		case VICUS::NetworkController::CP_MassFlux :{
-			m_ui->radioButtonFixedSetPoint->setText(tr("Set Point Mass Flux [kg/s]"));
-			m_ui->radioButtonSchedule->setEnabled(true);
-			m_ui->lineEditSchedule->setEnabled(true);
-			m_ui->toolButtonSchedule->setEnabled(true);
-			m_ui->groupBoxMaximumOutput->setEnabled(true);
-			m_ui->radioButtonSchedule->setText(tr("Schedule Mass Flux [kg/s]"));
-			if (m_current->m_modelType == VICUS::NetworkController::MT_Constant)
-				m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_MassFluxSetpoint].value);
-			else if (setPointSched != nullptr)
-				m_ui->lineEditSchedule->setText(QtExt::MultiLangString2QString(setPointSched->m_displayName));
-			break;
-		}
+			controlledPropertyName = tr("Mass Flux [kg/s]");
+			schedulePossible = true;
+			maxControllerValuePossible = true;
+		} break;
 		case VICUS::NetworkController::CP_PumpOperation :{
-			m_ui->radioButtonFixedSetPoint->setText(tr("Heat Flux Threshold of Following Element [W]"));
-			m_ui->radioButtonSchedule->setText("");
-			m_ui->radioButtonSchedule->setEnabled(false);
-			m_ui->lineEditSchedule->setEnabled(false);
-			m_ui->toolButtonSchedule->setEnabled(false);
-			m_ui->groupBoxMaximumOutput->setEnabled(false);
-			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold].value);
-			break;
-		}
+			controlledPropertyName = tr("Heat Flux Threshold of Following Element [W]");
+			schedulePossible = false;
+			maxControllerValuePossible = false;
+		} break;
 		case VICUS::NetworkController::CP_PressureDifferenceWorstpoint :{
-			m_ui->radioButtonFixedSetPoint->setText(tr("Pressure Difference at worst point [Pa]"));
-			m_ui->radioButtonSchedule->setText("");
-			m_ui->radioButtonSchedule->setEnabled(false);
-			m_ui->lineEditSchedule->setEnabled(false);
-			m_ui->toolButtonSchedule->setEnabled(false);
-			m_ui->groupBoxMaximumOutput->setEnabled(false);
-			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_PressureDifferenceSetpoint].value);
-			break;
-		}
-		case VICUS::NetworkController::CP_ThermostatValue:
-			m_ui->radioButtonFixedSetPoint->setText(tr("Thermostat Value [-]"));
-			m_ui->radioButtonSchedule->setText("");
-			m_ui->radioButtonSchedule->setEnabled(false);
-			m_ui->lineEditSchedule->setEnabled(false);
-			m_ui->toolButtonSchedule->setEnabled(false);
-			m_ui->groupBoxMaximumOutput->setEnabled(false);
-			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::CP_ThermostatValue].value);
-			break;
+			controlledPropertyName = tr("Pressure Difference at worst point [Pa]");
+			schedulePossible = false;
+			maxControllerValuePossible = false;
+		} break;
+		case VICUS::NetworkController::CP_ThermostatValue: {
+			controlledPropertyName = tr("Thermostat Value [-]");
+			schedulePossible = false;
+			maxControllerValuePossible = false;
+		} break;
 		case VICUS::NetworkController::NUM_CP:
 			break;
 	}
+
+	// enable states and text
+	m_ui->radioButtonFixedSetPoint->setText(tr("Set point ") + controlledPropertyName);
+	m_ui->radioButtonSchedule->setEnabled(schedulePossible);
+	if (schedulePossible)
+		m_ui->radioButtonSchedule->setText(tr("Schedule ") + controlledPropertyName);
+	else
+		m_ui->radioButtonSchedule->setText("");
+	m_ui->toolButtonSchedule->setEnabled(m_ui->radioButtonSchedule->isChecked());
+	m_ui->groupBoxMaximumOutput->setEnabled(maxControllerValuePossible);
+	m_ui->toolButtonRemoveSchedule->setEnabled(setPointSched != nullptr);
+
+	// update content
+	m_ui->lineEditSetpoint->clear();
+	m_ui->lineEditSchedule->clear();
+	if (m_current->m_modelType == VICUS::NetworkController::MT_Constant)
+		m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::setPointType(controlledProperty)].value);
+	else if (setPointSched != nullptr)
+		m_ui->lineEditSchedule->setText(QtExt::MultiLangString2QString(setPointSched->m_displayName));
 
 	// setup combobox controller type
 	m_ui->comboBoxControllerType->clear();
@@ -164,16 +157,14 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 	m_ui->lineEditKi->setEnabled(m_current->m_controllerType == VICUS::NetworkController::CT_PIController);
 	m_ui->lineEditKi->setValue(m_current->m_para[VICUS::NetworkController::P_Ki].value);
 	m_ui->lineEditMaxControllerResultValue->setValue(m_current->m_maximumControllerResultValue);
-	m_ui->radioButtonSchedule->setChecked(m_current->m_modelType == VICUS::NetworkController::MT_Scheduled);
+	m_ui->radioButtonSchedule->setChecked(m_current->m_modelType == VICUS::NetworkController::MT_Scheduled && !schedulePossible);
 	m_ui->radioButtonFixedSetPoint->setChecked(m_current->m_modelType == VICUS::NetworkController::MT_Constant);
-	toggleLineEdits();
-
+	m_ui->lineEditSetpoint->setEnabled(m_current->m_modelType == VICUS::NetworkController::MT_Constant);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->lineEditSetpoint->setReadOnly(!isEditable);
-	m_ui->lineEditSchedule->setReadOnly(!isEditable);
 	m_ui->lineEditKp->setReadOnly(!isEditable);
 	m_ui->lineEditKi->setReadOnly(!isEditable);
 }
@@ -185,11 +176,6 @@ void SVDBNetworkControllerEditWidget::modelModify() {
 
 }
 
-void SVDBNetworkControllerEditWidget::toggleLineEdits()
-{
-	m_ui->lineEditSetpoint->setEnabled(m_current->m_modelType == VICUS::NetworkController::MT_Constant);
-	m_ui->lineEditSchedule->setEnabled(m_current->m_modelType == VICUS::NetworkController::MT_Scheduled);
-}
 
 void SVDBNetworkControllerEditWidget::on_lineEditName_editingFinished()
 {
@@ -207,35 +193,11 @@ void SVDBNetworkControllerEditWidget::on_lineEditSetpoint_editingFinished()
 		return;
 
 	Q_ASSERT(m_current != nullptr);
-	switch (m_current->m_controlledProperty) {
-		case VICUS::NetworkController::CP_TemperatureDifference:
-		case VICUS::NetworkController::CP_TemperatureDifferenceOfFollowingElement:{
-			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
-											   VICUS::NetworkController::P_TemperatureDifferenceSetpoint,
-											   m_ui->lineEditSetpoint->value());
-		} break;
-
-		case VICUS::NetworkController::CP_MassFlux:{
-			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
-											   VICUS::NetworkController::P_MassFluxSetpoint,
-											   m_ui->lineEditSetpoint->value());
-		} break;
-
-		case VICUS::NetworkController::CP_PumpOperation:{
-			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
-											   VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold,
-											   m_ui->lineEditSetpoint->value());
-		} break;
-
-		case VICUS::NetworkController::CP_PressureDifferenceWorstpoint:{
-			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
-											   VICUS::NetworkController::P_PressureDifferenceSetpoint,
-											   m_ui->lineEditSetpoint->value());
-		} break;
-
-		case VICUS::NetworkController::CP_ThermostatValue :
-		case VICUS::NetworkController::NUM_CP:
-			break;
+	VICUS::NetworkController::para_t setPointParaType = VICUS::NetworkController::setPointType(m_current->m_controlledProperty);
+	if (setPointParaType != VICUS::NetworkController::NUM_P) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
+										   setPointParaType,
+										   m_ui->lineEditSetpoint->value());
 	}
 	modelModify();
 }
@@ -275,7 +237,8 @@ void SVDBNetworkControllerEditWidget::on_radioButtonSchedule_clicked(bool checke
 		m_current->m_modelType = VICUS::NetworkController::MT_Scheduled;
 		modelModify();
 	}
-	toggleLineEdits();
+	m_ui->lineEditSetpoint->setEnabled(false);
+	m_ui->toolButtonSchedule->setEnabled(checked);
 }
 
 void SVDBNetworkControllerEditWidget::on_radioButtonFixedSetPoint_clicked(bool checked)
@@ -284,7 +247,8 @@ void SVDBNetworkControllerEditWidget::on_radioButtonFixedSetPoint_clicked(bool c
 		m_current->m_modelType = VICUS::NetworkController::MT_Constant;
 		modelModify();
 	}
-	toggleLineEdits();
+	m_ui->lineEditSetpoint->setEnabled(true);
+	m_ui->toolButtonSchedule->setEnabled(false);
 }
 
 void SVDBNetworkControllerEditWidget::on_toolButtonSchedule_clicked()
@@ -346,3 +310,12 @@ void SVDBNetworkControllerEditWidget::on_lineEditMaxControllerResultValue_editin
 		modelModify();
 	}
 }
+
+void SVDBNetworkControllerEditWidget::on_toolButtonRemoveSchedule_clicked()
+{
+	Q_ASSERT(m_current != nullptr);
+	m_current->m_idReferences[VICUS::NetworkController::ID_Schedule] = VICUS::INVALID_ID;
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+

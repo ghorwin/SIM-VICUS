@@ -74,9 +74,9 @@ public:
 		P_Kd,									// Keyword: Kd										[---]	'Kd-parameter'
 		P_TemperatureDifferenceSetpoint,		// Keyword: TemperatureDifferenceSetpoint			[K]		'Target temperature difference'
 		P_MassFluxSetpoint,						// Keyword: MassFluxSetpoint						[kg/s]	'Target mass flux'
-		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
-		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
-		P_PressureDifferenceSetpoint,			// Keyword: PressureDifferenceSetpoint				[Pa]	'Setpoint of pressure difference for worstpoint controller'
+		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for pump operation'
+		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Reset value for controller integral part'
+		P_PressureDifferenceSetpoint,			// Keyword: PressureDifferenceSetpoint				[Pa]	'Target pressure difference'
 		NUM_P
 	};
 

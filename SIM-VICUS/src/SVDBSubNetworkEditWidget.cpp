@@ -18,21 +18,20 @@ SVDBSubNetworkEditWidget::SVDBSubNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->tableWidgetElements->setColumnCount(1);
-	m_ui->tableWidgetElements->setHorizontalHeaderLabels(QStringList() << tr("Network Elements"));
+	m_ui->tableWidgetElements->setColumnCount(2);
+	m_ui->tableWidgetElements->setHorizontalHeaderLabels(QStringList() << QString() << tr("Network Elements"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetElements);
 	m_ui->tableWidgetElements->setSortingEnabled(false);
-	m_ui->tableWidgetElements->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	m_ui->tableWidgetElements->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetElements->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetElements->horizontalHeader()->setStretchLastSection(true);
 }
 
-SVDBSubNetworkEditWidget::~SVDBSubNetworkEditWidget()
-{
+SVDBSubNetworkEditWidget::~SVDBSubNetworkEditWidget() {
 	delete m_ui;
 }
 
-void SVDBSubNetworkEditWidget::setup(SVDatabase *db, SVAbstractDatabaseTableModel *dbModel)
-{
+void SVDBSubNetworkEditWidget::setup(SVDatabase *db, SVAbstractDatabaseTableModel *dbModel) {
 	m_db = db;
 	m_dbModel = dynamic_cast<SVDBSubNetworkTableModel*>(dbModel);
 
@@ -40,8 +39,8 @@ void SVDBSubNetworkEditWidget::setup(SVDatabase *db, SVAbstractDatabaseTableMode
 	m_ui->lineEditController->setReadOnly(true);
 }
 
-void SVDBSubNetworkEditWidget::updateInput(int id)
-{
+
+void SVDBSubNetworkEditWidget::updateInput(int id) {
 	m_currentSubNet = nullptr; // disable edit triggers
 
 	if (id == -1) {
@@ -77,7 +76,6 @@ void SVDBSubNetworkEditWidget::updateInput(int id)
 	bool isEditable = !m_currentSubNet->m_builtIn;
 	m_ui->lineEditComponent->setReadOnly(!isEditable);
 	m_ui->lineEditController->setReadOnly(!isEditable);
-	m_ui->lineEditElementName->setReadOnly(!isEditable);
 	m_ui->lineEditSubNetworkName->setReadOnly(!isEditable);
 	m_ui->toolButtonAdd->setEnabled(isEditable);
 	m_ui->toolButtonRemove->setEnabled(isEditable);
@@ -94,7 +92,7 @@ void SVDBSubNetworkEditWidget::modelModify() {
 
 void SVDBSubNetworkEditWidget::updateTableWidget() {
 	m_ui->tableWidgetElements->blockSignals(true);
-	m_ui->tableWidgetElements->clear();
+	m_ui->tableWidgetElements->setRowCount(0);
 	m_ui->tableWidgetElements->blockSignals(false);
 
 	if (m_currentSubNet == nullptr)
@@ -102,38 +100,57 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 
 	int row = 0;
 	m_ui->tableWidgetElements->blockSignals(true);
-	m_ui->tableWidgetElements->setRowCount(m_currentSubNet->m_elements.size());
+	m_ui->tableWidgetElements->setRowCount(2 * m_currentSubNet->m_elements.size());
 	for (const VICUS::NetworkElement &el: m_currentSubNet->m_elements){
-		QTableWidgetItem * item = new QTableWidgetItem();
-		item->setText(el.m_displayName);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+		// one row: set down arrow
+		QTableWidgetItem *item = new QTableWidgetItem;
+		item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+		item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 		m_ui->tableWidgetElements->setItem(row, 0, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+		item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+		item->setIcon(QIcon(":/gfx/actions/24x24/down.png"));
+		m_ui->tableWidgetElements->setItem(row, 1, item);
+
+		++row;
+
+		// newt row: element
+
+		// column 1 - color of component
+		item = new QTableWidgetItem;
+		item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+		item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[el.m_componentId];
+		if (comp == nullptr)
+			item->setBackground(QColor(0,0,0));
+		else
+			item->setBackground(comp->m_color);
+		m_ui->tableWidgetElements->setItem(row, 0, item);
+
+		// column 2 - element name
+		item = new QTableWidgetItem();
+		item->setText(el.m_displayName);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		m_ui->tableWidgetElements->setItem(row, 1, item);
+
 		++row;
 	}
 
-	if (m_ui->tableWidgetElements->rowCount() > 0){
-		m_ui->tableWidgetElements->selectRow(m_ui->tableWidgetElements->rowCount()-1);
-	}
 	m_ui->tableWidgetElements->blockSignals(false);
-
-	updateElementProperties();
 }
 
 void SVDBSubNetworkEditWidget::updateElementProperties()
 {
 	Q_ASSERT(m_currentSubNet != nullptr);
 
-	// get current row = idx of current element
-	m_currentElementIdx = m_ui->tableWidgetElements->currentRow();
-
-
-	// TODO Hauke: disable controller line edit if the according component can not use a controller
-
-	// rework entire widget ???
-
+	// get index of current element (= minus 1 and div by 2, to account for arrows)
+	m_currentElementIdx = (unsigned int) (m_ui->tableWidgetElements->currentRow() - 1) / 2;
 
 	// if we have at least one element: update infos
-	if (m_currentElementIdx >= 0){
+	if (m_currentElementIdx >= 0 && (unsigned int)m_currentElementIdx < m_currentSubNet->m_elements.size()){
 
 		const VICUS::NetworkElement &elem = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx];
 
@@ -142,18 +159,29 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 
 		// line edits
 		m_ui->groupBoxEditElement->setEnabled(true);
-		m_ui->lineEditElementName->setText(elem.m_displayName);
 		if (m_db->m_networkComponents[elem.m_componentId] != nullptr)
 			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(
 												 m_db->m_networkComponents[elem.m_componentId]->m_displayName));
 		else
 			m_ui->lineEditComponent->clear();
 
-		if (m_db->m_networkControllers[elem.m_controlElementId] != nullptr)
+		// enable controller line edit
+		std::vector<NANDRAD::HydraulicNetworkControlElement::ControlledProperty> availableCtrProps;
+		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[elem.m_componentId];
+		if (comp != nullptr)
+			availableCtrProps = NANDRAD::HydraulicNetworkControlElement::availableControlledProperties(NANDRAD::HydraulicNetworkComponent::ModelType(comp->m_modelType));
+		m_ui->lineEditController->setEnabled(availableCtrProps.size() > 0);
+		m_ui->labelController->setEnabled(availableCtrProps.size() > 0);
+		m_ui->toolButtonEditController->setEnabled(availableCtrProps.size() > 0);
+
+		// update controller line edit
+		m_ui->toolButtonRemoveController->setEnabled(false);
+		m_ui->lineEditController->clear();
+		if (m_db->m_networkControllers[elem.m_controlElementId] != nullptr) {
 			m_ui->lineEditController->setText(QtExt::MultiLangString2QString(
 												  m_db->m_networkControllers[elem.m_controlElementId]->m_displayName));
-		else
-			m_ui->lineEditController->clear();
+			m_ui->toolButtonRemoveController->setEnabled(true);
+		}
 
 	}
 	else
@@ -231,16 +259,6 @@ void SVDBSubNetworkEditWidget::on_tableWidgetElements_itemSelectionChanged()
 }
 
 
-void SVDBSubNetworkEditWidget::on_lineEditElementName_editingFinished()
-{
-	if (m_currentElementIdx >= 0){
-		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_displayName =
-																	m_ui->lineEditElementName->text();
-		modelModify();
-		updateTableWidget();
-	}
-}
-
 void SVDBSubNetworkEditWidget::on_toolButtonEditComponent_clicked()
 {
 	Q_ASSERT((unsigned int)m_currentElementIdx < m_currentSubNet->m_elements.size());
@@ -252,11 +270,11 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditComponent_clicked()
 	if (newId == VICUS::INVALID_ID)
 		return;
 
-	if (newId != compId){
-		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_componentId = newId;
-		modelModify();
-		updateElementProperties();
-	}
+	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_componentId = newId;
+	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_displayName = QtExt::MultiLangString2QString(m_db->m_networkComponents[newId]->m_displayName);
+	modelModify();
+	updateElementProperties();
+	updateTableWidget(); // for name and color
 }
 
 void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
@@ -275,7 +293,6 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
 		modelModify();
 		updateElementProperties();
 	}
-
 }
 
 
@@ -295,3 +312,19 @@ void SVDBSubNetworkEditWidget::on_checkBoxElementHasHeatExchange_clicked(bool ch
 		updateElementProperties();
 	}
 }
+
+void SVDBSubNetworkEditWidget::on_toolButtonRemoveController_clicked() {
+	Q_ASSERT((unsigned int)m_currentElementIdx < m_currentSubNet->m_elements.size());
+	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_controlElementId = VICUS::INVALID_ID;
+	modelModify();
+	updateElementProperties();
+}
+
+
+void SVDBSubNetworkEditWidget::on_tableWidgetElements_itemChanged(QTableWidgetItem *item) {
+	Q_ASSERT((unsigned int)m_currentElementIdx < m_currentSubNet->m_elements.size());
+	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_displayName = item->text();
+	modelModify();
+	updateElementProperties();
+}
+

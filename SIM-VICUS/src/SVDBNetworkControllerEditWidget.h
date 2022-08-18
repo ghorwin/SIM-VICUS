@@ -50,11 +50,11 @@ private slots:
 
 	void on_lineEditMaxControllerResultValue_editingFinished();
 
+	void on_toolButtonRemoveSchedule_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
-
-	void toggleLineEdits();
 
 	Ui::SVDBNetworkControllerEditWidget *m_ui;
 

@@ -36,4 +36,15 @@ QString uniqueName(const QString & baseName, const std::set<QString> & existingN
 	return trialName;
 }
 
+
+QString camelCase2ReadableString(const std::string & original) {
+	QString readableString;
+	for (char s: original){
+		if (isupper(s))
+			readableString += " ";
+		readableString += s;
+	}
+	return readableString;
+}
+
 } // namespace VICUS
