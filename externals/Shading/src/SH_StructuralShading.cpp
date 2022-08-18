@@ -121,6 +121,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		sf.resize(m_surfaces.size(), 0); // fully shaded, i.e. default since we do not handle night-time
 	}
 
+	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
+
 #if defined(_OPENMP)
 	int threadCount = 1;
 
@@ -137,7 +139,6 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		}
 	}
 #endif
-
 	IBK::StopWatch totalTimer;
 	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
@@ -146,60 +147,90 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	notify->notify(0);
 	int surfacesCompleted = 0;
 
-
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(static,1)
 #endif
 	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
-		if (notify->m_aborted)
-			continue; // skip ahead to quickly stop loop
-
-		// readability improvement
-		const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
-
-		// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
-
-		ShadedSurfaceObject surfaceObject;
-		surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
-
-		// 2. for each center point perform intersection tests again _all_ obstacle polygons
-
-		for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+		try {
 			if (notify->m_aborted)
 				continue; // skip ahead to quickly stop loop
 
-			double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
-			// if sun does not shine uppon surface, no shading factor needed
-			if(angle >= 90)
-				continue;
 
-			double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], m_obstacles);
+			// readability improvement
+			const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
 
-			// 3. store shaded/not shaded information for sub-polygon and its surface area
-			// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
-			// 5. store in result vector
-			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
-			// master thread 0 updates the progress dialog; this should be good enough for longer runs
-#if defined(_OPENMP)
-			if ( omp_get_thread_num() == 0) {
-#endif
-//				std::cout << surfacesCompleted << "  " << w.difference() << std::endl;
-				// only notify every second or so
-				if (!notify->m_aborted && w.difference() > 1000) {
-					notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
-					w.start();
+			// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
+
+			ShadedSurfaceObject surfaceObject;
+			surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
+
+			// 2. for each center point perform intersection tests again _all_ obstacle polygons
+
+
+//			IBK::IBK_Message(IBK::FormatString("Taking surface with id '%1'").arg(so.m_id));
+
+			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+
+				if (notify->m_aborted)
+					continue; // skip ahead to quickly stop loop
+
+				double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
+				// if sun does not shine uppon surface, no shading factor needed
+				if(angle >= 90)
+					continue;
+
+//				IBK::IBK_Message(IBK::FormatString("Calculating shading factor for surface with "
+//												   "id '%1' with sun cone normal '%2'")
+//								 .arg(so.m_id)
+//								 .arg(i));
+
+				double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], m_obstacles);
+
+				// 3. store shaded/not shaded information for sub-polygon and its surface area
+				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
+				// 5. store in result vector
+
+
+//				IBK::IBK_Message(IBK::FormatString("Storing shading factor '%3' for surface with "
+//												   "id '%1' with sun cone normal '%2'")
+//								 .arg(so.m_id)
+//								 .arg(i)
+//								 .arg(sf));
+
+				m_shadingFactors[i][(unsigned int)surfCounter] = sf;
+
+
+
+				// master thread 0 updates the progress dialog; this should be good enough for longer runs
+	#if defined(_OPENMP)
+				if ( omp_get_thread_num() == 0) {
+	#endif
+	//				std::cout << surfacesCompleted << "  " << w.difference() << std::endl;
+					// only notify every second or so
+					if (!notify->m_aborted && w.difference() > 100) {
+						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
+						w.start();
+					}
+	#if defined(_OPENMP)
 				}
-#if defined(_OPENMP)
+	#endif
 			}
-#endif
+
+
+			// increase number of completed surfaces (done by all threads)
+	#if defined(_OPENMP)
+	#pragma omp critical
+	#endif
+			++surfacesCompleted;
+
+			IBK::IBK_Message(IBK::FormatString("Surface with id '%1' completed")
+							 .arg(so.m_id));
+
 		}
-
-
-		// increase number of completed surfaces (done by all threads)
-#if defined(_OPENMP)
-#pragma omp critical
-#endif
-		++surfacesCompleted;
+		catch (...) {
+			notify->m_aborted = true;
+			IBK::IBK_Message(IBK::FormatString("Shading calculation encountered errors"), IBK::MSG_ERROR, FUNC_ID);
+		}
 
 	} // omp for loop
 	notify->notify(1.0);

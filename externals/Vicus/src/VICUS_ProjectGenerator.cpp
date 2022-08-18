@@ -16,6 +16,7 @@
 #include <CCM_ClimateDataLoader.h>
 
 #include "VICUS_utilities.h"
+#include "VICUS_Constants.h"
 
 #include <fstream>
 
@@ -2046,7 +2047,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
 		const double REL_TOL_AREAS = 0.05;
-		double minArea = 0.1; //1e-4;
+		// double minArea = 0.1; //1e-4;
 		double area = 0;
 
 		// save surface ids for shading factor file later
@@ -2104,7 +2105,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				constrInstNandrad.m_displayName = compInstaVicus.m_sideASurface->m_displayName.toStdString();
 			}
 
-			if(area<minArea){
+			if(area<MIN_AREA){
 				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideASurface->m_id)
 							.arg(compInstaVicus.m_sideASurface->m_displayName);
@@ -2144,7 +2145,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			// set area parameter
 			area = compInstaVicus.m_sideBSurface->geometry().area();
 
-			if(area<minArea){
+			if(area<MIN_AREA){
 				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideBSurface->m_id)
 							.arg(compInstaVicus.m_sideBSurface->m_displayName);

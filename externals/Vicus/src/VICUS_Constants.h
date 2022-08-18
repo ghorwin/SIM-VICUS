@@ -36,6 +36,9 @@ extern const char * const LONG_VERSION;
 /*! Defines an invalid id */
 extern unsigned int INVALID_ID;
 
+/*! Minimum area for export of surfaces. */
+extern const double MIN_AREA;
+
 extern const char * XML_READ_ERROR;
 extern const char * XML_READ_UNKNOWN_ATTRIBUTE;
 extern const char * XML_READ_UNKNOWN_ELEMENT;

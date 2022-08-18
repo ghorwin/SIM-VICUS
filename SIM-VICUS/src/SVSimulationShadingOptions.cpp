@@ -43,6 +43,7 @@
 #include <VICUS_Surface.h>
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>
+#include "VICUS_Constants.h"
 
 #include <SH_StructuralShading.h>
 
@@ -327,20 +328,27 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// *** compose vector with selected surfaces
 	std::vector<unsigned int> surfaceIDs; // holds IDs of calculated surfaces
 	std::vector<std::string> surfaceDisplayNames; // holds corresponding display names of calculated surfaces
+
+	// hold reference to project
+	VICUS::Project &p = const_cast<VICUS::Project &>(project());
+	SVSettings::instance().m_db.updateEmbeddedDatabase(p);
+	p.updatePointers();
+
+	// double minArea = 0.1; //1e-4;
+
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
 		if ( s->m_componentInstance == nullptr )
 			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
+
+		if(const_cast<VICUS::Surface *>(s)->geometry().area() < VICUS::MIN_AREA)
+			continue; // we skip small surfaces, since they are not exported to NANDRAD anyway
 
 		// we want to take only surface connected to ambient, that means, the associated component instance
 		// must have one zone with ID 0 assigned
 		bool hasSideAValidId = s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID;
 		if (hasSideAValidId && s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
 			continue; // skip inside constructions
-
-		VICUS::Project p = project();
-		SVSettings::instance().m_db.updateEmbeddedDatabase(p);
-		p.updatePointers();
 
 		// check if this is an surface to outside air and not to ground
 		const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
@@ -370,6 +378,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		}
 		else
 			continue;
+
+		qDebug() << "Added surface " << s->m_displayName << " to shading calculation";
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
@@ -424,6 +434,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id,
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
+
+		qDebug() << "Adding sub-surface '" << ss->m_displayName << "'";
 	}
 
 	m_shading->setGeometry(selSurf, selObst);
