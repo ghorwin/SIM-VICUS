@@ -73,9 +73,10 @@ public:
 			m_isObstacle(isObstacle)
 		{}
 
-		unsigned int		m_id;								///< Unique id of shading object
-		IBKMK::Polygon3D	m_polygon;							///< polygon of shading object
-		bool				m_isObstacle;						///< indicates whether it is an obstacle
+		std::set<unsigned int>	m_visibleSurfaces;				///< Set with ids of visible objects for this object
+		unsigned int			m_id;							///< Unique id of shading object
+		IBKMK::Polygon3D		m_polygon;						///< polygon of shading object
+		bool					m_isObstacle;					///< indicates whether it is an obstacle
 	};
 
 	StructuralShading() : m_startTime(2007,0) {}
@@ -128,6 +129,9 @@ private:
 	*/
 	int findSimilarNormals(const IBKMK::Vector3D &sunNormal) const;
 
+	/*! Precalculates all visible surfaces and obstacles to surfaces. */
+	void findVisibleSurfaces();
+
 	// ** input variables **
 
 	int													m_timeZone = 13;
@@ -139,7 +143,7 @@ private:
 	double												m_sunConeDeg = 3;
 
 	IBK::Time											m_startTime;
-	unsigned int										m_duration = 365*24*3600;				/// Duration in [s]
+	unsigned int										m_duration = 365*24*3600;			/// Duration in [s]
 	unsigned int										m_samplingPeriod = 3600;			/// Sampling peroid/step size in [s]
 
 	std::vector<ShadingObject>							m_obstacles;						///< Shading obstacles

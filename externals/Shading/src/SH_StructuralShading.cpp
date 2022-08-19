@@ -26,6 +26,7 @@
 #include <IBK_StopWatch.h>
 
 #include <IBKMK_Vector3D.h>
+#include <IBKMK_3DCalculations.h>
 
 #include <CCM_SunPositionModel.h>
 #include <CCM_SolarRadiationModel.h>
@@ -121,6 +122,9 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		sf.resize(m_sunConeNormals.size(), 0); // fully shaded, i.e. default since we do not handle night-time
 	}
 
+	// Find visible shading surfaces for each surface
+	findVisibleSurfaces();
+
 	std::vector<std::vector<double>> finalShadingFactors = m_shadingFactors;
 
 	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
@@ -150,7 +154,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	int surfacesCompleted = 0;
 
 #if defined(_OPENMP)
-#pragma omp parallel for schedule(static, 1)
+#pragma omp parallel for schedule(dynamic, 1)
 #endif
 	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
 		try {
@@ -169,6 +173,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 			std::vector<IBKMK::Vector3D> sunConeNormals;
 			std::vector<ShadingObject> obstacles;
+			std::vector<ShadingObject> shadingObstacles;
 
 
 #if defined(_OPENMP)
@@ -180,6 +185,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 #pragma omp critical
 #endif
 			obstacles = m_obstacles;
+
+			for(ShadingObject &shading : m_obstacles)
+				if(so.m_visibleSurfaces.find(shading.m_id) != so.m_visibleSurfaces.end())
+					shadingObstacles.push_back(shading);
 
 			// 2. for each center point perform intersection tests again _all_ obstacle polygons
 			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
@@ -193,7 +202,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				if(angle >= 90)
 					continue;
 
-				double sf = surfaceObject.calcShadingFactor(sunConeNormals[i], obstacles);
+				double sf = surfaceObject.calcShadingFactor(sunConeNormals[i], shadingObstacles);
 
 //				// 3. store shaded/not shaded information for sub-polygon and its surface area
 //				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
@@ -489,6 +498,27 @@ int StructuralShading::findSimilarNormals(const IBKMK::Vector3D &sunNormal) cons
 	}
 
 	return -1;
+}
+
+void StructuralShading::findVisibleSurfaces() {
+
+	for(ShadingObject &surf : m_surfaces) {
+		for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+			for(const ShadingObject &obst : m_obstacles) {
+				for(const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
+					double linefactor = 0;
+					IBKMK::Vector3D p;
+
+					IBKMK::lineToPointDistance(surf.m_polygon.vertexes()[i], surf.m_polygon.normal(), v, linefactor, p);
+
+					if (linefactor>0) {
+						surf.m_visibleSurfaces.insert(obst.m_id);
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 } // namespace TH
