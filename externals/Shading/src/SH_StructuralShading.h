@@ -129,7 +129,10 @@ private:
 	*/
 	int findSimilarNormals(const IBKMK::Vector3D &sunNormal) const;
 
-	/*! Precalculates all visible surfaces and obstacles to surfaces. */
+	/*! Finds all visible surfaces and obstacles that are shading a surface.
+		This is only the case if at least one point lies in front of our surface.
+		Fills in all ids of visible surfaces in ShadingObject membervariable m_visibleObjects
+	*/
 	void findVisibleSurfaces();
 
 	// ** input variables **

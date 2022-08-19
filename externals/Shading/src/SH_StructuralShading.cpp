@@ -501,17 +501,23 @@ int StructuralShading::findSimilarNormals(const IBKMK::Vector3D &sunNormal) cons
 }
 
 void StructuralShading::findVisibleSurfaces() {
-
+	// Finding shading partners for all surfaces
 	for(ShadingObject &surf : m_surfaces) {
+		// iterate through all vertex points of surface
 		for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+			// iterate through all possible shading objects
 			for(const ShadingObject &obst : m_obstacles) {
+				// iterate through all vertexes of shading objects
 				for(const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
 					double linefactor = 0;
 					IBKMK::Vector3D p;
 
+					// determining if we have at least one point in front of our surface
 					IBKMK::lineToPointDistance(surf.m_polygon.vertexes()[i], surf.m_polygon.normal(), v, linefactor, p);
 
-					if (linefactor>0) {
+					// Tolerance to skip all possible windows that are inside our window
+					if (linefactor>1e-4) {
+						// store the surface that lies in front
 						surf.m_visibleSurfaces.insert(obst.m_id);
 						break;
 					}
