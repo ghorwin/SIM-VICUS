@@ -155,7 +155,7 @@ private:
 
 	/*! Shading factors for each sunCone and surface.
 		\code
-		m_shadingFactors[sunConeIndex][surfaceIndex] = ... ; // shading factor of surface and sun cone
+		m_shadingFactors[surfaceIndex][sunConeIndex] = ... ; // shading factor of surface and sun cone
 
 		// writing shading factors to file
 		//

@@ -121,6 +121,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		sf.resize(m_sunConeNormals.size(), 0); // fully shaded, i.e. default since we do not handle night-time
 	}
 
+	std::vector<std::vector<double>> finalShadingFactors = m_shadingFactors;
+
 	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
 
 #if defined(_OPENMP)
@@ -148,7 +150,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	int surfacesCompleted = 0;
 
 #if defined(_OPENMP)
-#pragma omp parallel for schedule(static,1)
+#pragma omp parallel for schedule(static, 1)
 #endif
 	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
 		try {
@@ -165,31 +167,37 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			ShadedSurfaceObject surfaceObject;
 			surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
 
+			std::vector<IBKMK::Vector3D> sunConeNormals;
+			std::vector<ShadingObject> obstacles;
+
+
+#if defined(_OPENMP)
+#pragma omp critical
+#endif
+			sunConeNormals = m_sunConeNormals;
+
+#if defined(_OPENMP)
+#pragma omp critical
+#endif
+			obstacles = m_obstacles;
+
 			// 2. for each center point perform intersection tests again _all_ obstacle polygons
-
-
-			IBK::IBK_Message(IBK::FormatString("Taking surface with id '%1'").arg(so.m_id));
-
 			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
 
 				if (notify->m_aborted)
 					continue; // skip ahead to quickly stop loop
 
-				double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
-				// if sun does not shine uppon surface, no shading factor needed
+
+				double angle = angleVectors(sunConeNormals[i], so.m_polygon.normal());
+//				// if sun does not shine uppon surface, no shading factor needed
 				if(angle >= 90)
 					continue;
 
-//				IBK::IBK_Message(IBK::FormatString("Calculating shading factor for surface with "
-//												   "id '%1' with sun cone normal '%2'")
-//								 .arg(so.m_id)
-//								 .arg(i));
+				double sf = surfaceObject.calcShadingFactor(sunConeNormals[i], obstacles);
 
-				double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], m_obstacles);
-
-				// 3. store shaded/not shaded information for sub-polygon and its surface area
-				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
-				// 5. store in result vector
+//				// 3. store shaded/not shaded information for sub-polygon and its surface area
+//				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
+//				// 5. store in result vector
 				shadingFactors[i] = sf;
 
 
@@ -199,7 +207,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 					// only notify every second or so
 					if (!notify->m_aborted && w.difference() > 100) {
-						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
+						notify->notify(double(surfacesCompleted*sunConeNormals.size() + i) / (m_surfaces.size()*sunConeNormals.size()) );
 						w.start();
 					}
 	#if defined(_OPENMP)
@@ -207,24 +215,18 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 			}
 
-#if defined(_OPENMP)
-#pragma omp critical
-#endif
 			m_shadingFactors[(unsigned int)surfCounter] = shadingFactors;
 
 			// increase number of completed surfaces (done by all threads)
-	#if defined(_OPENMP)
-	#pragma omp critical
-	#endif
-			++surfacesCompleted;
-
-//			IBK::IBK_Message(IBK::FormatString("Surface with id '%1' completed")
-//							 .arg(so.m_id));
+#if defined(_OPENMP)
+#pragma omp critical
+#endif
+			 ++surfacesCompleted;
 
 		}
 		catch (...) {
-			notify->m_aborted = true;
-			IBK::IBK_Message(IBK::FormatString("Shading calculation encountered errors"), IBK::MSG_ERROR, FUNC_ID);
+			// notify->m_aborted = true;
+			// IBK::IBK_Message(IBK::FormatString("Shading calculation encountered errors"), IBK::MSG_ERROR, FUNC_ID);
 		}
 
 	} // omp for loop
