@@ -58,7 +58,7 @@ void SupplySystem::readXML(const TiXmlElement * element) {
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "supplyType")
 				try {
-					m_supplyType = (supplyType_t)KeywordList::Enumeration("SupplySystem::supplyType_t", attrib->ValueStr());
+					m_supplyType = (SupplyType)KeywordList::Enumeration("SupplySystem::SupplyType", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -118,6 +118,8 @@ TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+	if (m_supplyType != NUM_ST)
+		e->SetAttribute("supplyType", KeywordList::Keyword("SupplySystem::SupplyType",  m_supplyType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

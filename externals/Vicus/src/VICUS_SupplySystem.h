@@ -57,11 +57,12 @@ class SupplySystem : public AbstractDBElement {
 public:
 
 	/*! Supplier supported by the generic network model. We don't have a NUM_ST as this would not make any sence. */
-	enum supplyType_t {
+	enum SupplyType {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
 		ST_SubNetwork,			// Keyword: SubNetwork					'User defined sub network'
 		ST_DatabaseFMU,			// Keyword: DatabaseFMU					'Supply FMU loaded from a database and parametrized by the user'
-		ST_UserDefinedFMU		// Keyword: UserDefinedFMU				'User defined supply FMU'
+		ST_UserDefinedFMU,		// Keyword: UserDefinedFMU				'User defined supply FMU'
+		NUM_ST
 	};
 
 	/*! Network parameters.
@@ -99,7 +100,7 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Network supply type. */
-	supplyType_t			m_supplyType = ST_StandAlone;		// XML:A:required
+	SupplyType				m_supplyType = ST_StandAlone;		// XML:A:required
 	/*! Parameters for stand alone mode. */
 	IBK::Parameter			m_para[NUM_P];						// XML:E
 	/*! FMU path for Database FMU mode. */

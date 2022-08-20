@@ -73,7 +73,7 @@ namespace VICUS {
 		"Outputs::flag_t",
 		"Room::para_t",
 		"SubSurfaceComponent::SubSurfaceComponentType",
-		"SupplySystem::supplyType_t",
+		"SupplySystem::SupplyType",
 		"SupplySystem::para_t",
 		"SurfaceHeating::para_t",
 		"SurfaceHeating::Type",
@@ -459,7 +459,7 @@ namespace VICUS {
 				case 1 : return "Door";
 				case 2 : return "Miscellaneous";
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return "StandAlone";
@@ -954,7 +954,7 @@ namespace VICUS {
 				case 1 : return "Door";
 				case 2 : return "Miscellaneous";
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return "StandAlone";
@@ -1450,7 +1450,7 @@ namespace VICUS {
 				case 1 : return "A door";
 				case 2 : return "Some other component type";
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return "Stand-alone mode with given mass flux and suppply temperature";
@@ -1945,7 +1945,7 @@ namespace VICUS {
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return "";
@@ -2440,7 +2440,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2935,7 +2935,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3156,7 +3156,7 @@ namespace VICUS {
 			case 36 : return 2;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 37 : return 3;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 : return 4;
 			// SupplySystem::para_t
 			case 39 : return 4;
@@ -3280,7 +3280,7 @@ namespace VICUS {
 			case 36 : return 1;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 37 : return 2;
-			// SupplySystem::supplyType_t
+			// SupplySystem::SupplyType
 			case 38 : return 3;
 			// SupplySystem::para_t
 			case 39 : return 3;
