@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.7">
+<VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Di Apr 13 17:44:07 2021</Created>
-		<LastEdited>Do. Dez. 23 19:59:05 2021</LastEdited>
+		<LastEdited>Sa. Aug. 20 10:21:28 2022</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -20,11 +24,17 @@
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
 				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -40,21 +50,26 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<GridSpacing>10</GridSpacing>
-			<GridWidth>100</GridWidth>
-			<CameraTranslation>-29.5068 -29.5124 24.3882</CameraTranslation>
+			<CameraTranslation>31.1871 -25.9252 27.0633</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.910421</Wp>
-				<X>-0.387887</X>
-				<Y>-0.0607875</Y>
-				<Z>-0.12965</Z>
+				<Wp>0.830343</Wp>
+				<X>0.479739</X>
+				<Y>0.141618</Y>
+				<Z>0.245254</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="200" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
 		</ViewSettings>
 		<Buildings>
-			<Building id="1" displayName="Building">
+			<Building id="1000" displayName="Building">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="Level">
+					<BuildingLevel id="100" displayName="Level">
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
@@ -62,29 +77,23 @@
 								<IBK:Parameter name="Area" unit="m2">1</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">2.700000048</IBK:Parameter>
 								<Surfaces>
-									<Surface id="60" displayName="091">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-52 -10 0, -50 -10 0, -50 -10 2, -52 -10 2</Polygon3D>
+									<Surface id="60" displayName="091" displayColor="#c8c88c">
+										<Polygon3D offset="-52 -10 0" normal="0 -1 0" localX="1 0 0">0 0, 2 0, 2 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="1" displayName="093">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-32 -10 0, -30 -10 0, -30 -10 2, -32 -10 2</Polygon3D>
+									<Surface id="1" displayName="093" displayColor="#c8c88c">
+										<Polygon3D offset="-32 -10 0" normal="0 -1 0" localX="1 0 0">0 0, 2 0, 2 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="160" displayName="094">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5 -5 0, 10 -5 0, 10 -5 5, 5 -5 5</Polygon3D>
+									<Surface id="160" displayName="094" displayColor="#c8c88c">
+										<Polygon3D offset="5 -5 0" normal="0 -1 0" localX="1 0 0">0 0, 5 0, 5 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="2" displayName="092">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-42 -10 0, -40 -10 0, -40 -10 2, -42 -10 2</Polygon3D>
+									<Surface id="2" displayName="092" displayColor="#c8c88c">
+										<Polygon3D offset="-42 -10 0" normal="0 -1 0" localX="1 0 0">0 0, 2 0, 2 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="4" displayName="096">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>20 5 0, 20 10 0, 20 10 5, 20 5 5</Polygon3D>
+									<Surface id="4" displayName="096" displayColor="#c8c88c">
+										<Polygon3D offset="20 5 0" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="3" displayName="095">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>20 47 0.499999, 20 49 0.499999, 20 49 2.5, 20 47 2.5</Polygon3D>
+									<Surface id="3" displayName="095" displayColor="#c8c88c">
+										<Polygon3D offset="20 47 0.499999" normal="1 0 0" localX="0 1 0">0 0, 2 0, 2 2, 0 2</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -102,39 +111,41 @@
 			<ComponentInstance id="21" idComponent="1001" idSideASurface="3" />
 		</ComponentInstances>
 		<PlainGeometry>
-			<Surface id="1" displayName="New surface">
-				<Polygon3D>-49 -10 2.5, -49 -11 2.5, -53 -11 2.5, -53 -10 2.5</Polygon3D>
-			</Surface>
-			<Surface id="2" displayName="New surface [2]">
-				<Polygon3D>-33 -10 2.5, -29 -10 2.5, -29 -11 2.5, -33 -11 2.5</Polygon3D>
-			</Surface>
-			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>-33 -10 2.5, -33 -11 2.5, -33 -11 -0.499996, -33 -10 -0.5</Polygon3D>
-			</Surface>
-			<Surface id="4" displayName="New surface [4]">
-				<Polygon3D>-29 -10 -0.5, -29 -11 -0.5, -29 -11 2.5, -29 -10 2.5</Polygon3D>
-			</Surface>
-			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>-43 -10 2.5, -43 -11 2.5, -43 -11 -0.499996, -43 -10 -0.5</Polygon3D>
-			</Surface>
-			<Surface id="4" displayName="New surface [4]">
-				<Polygon3D>-39 -10 -0.5, -39 -11 -0.5, -39 -11 2.5, -39 -10 2.5</Polygon3D>
-			</Surface>
-			<Surface id="5" displayName="New surface [5]">
-				<Polygon3D>0 -10 10, 15 -10 10, 15 -10 0, 0 -10 0</Polygon3D>
-			</Surface>
-			<Surface id="2" displayName="New surface [2]">
-				<Polygon3D>20 46 3, 20 50 3, 21 50 3, 21 46 3</Polygon3D>
-			</Surface>
-			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>20 46 2.99998, 21 46 2.99999, 21 46 1.09673e-05, 20 46 -1.57356e-05</Polygon3D>
-			</Surface>
-			<Surface id="4" displayName="New surface [4]">
-				<Polygon3D>20 50 2.14844e-13, 21 50 -1.90735e-06, 21 50 3, 20 50 3</Polygon3D>
-			</Surface>
-			<Surface id="5" displayName="New surface [5]">
-				<Polygon3D>25 0 10, 25 15 10, 25 15 0, 25 0 0</Polygon3D>
-			</Surface>
+			<Surfaces>
+				<Surface id="91" displayName="New surface">
+					<Polygon3D offset="-49 -10 2.5" normal="-0 -0 -1" localX="0 -1 0">0 0, 1 0, 1 4, 0 4</Polygon3D>
+				</Surface>
+				<Surface id="92" displayName="New surface [2]">
+					<Polygon3D offset="-33 -10 2.5" normal="0 0 -1" localX="1 0 0">0 0, 4 0, 4 1, 0 1</Polygon3D>
+				</Surface>
+				<Surface id="93" displayName="New surface [3]">
+					<Polygon3D offset="-33 -10 2.5" normal="1 0 0" localX="0 -1 0">0 0, 1 0, 1 3, 0 3</Polygon3D>
+				</Surface>
+				<Surface id="94" displayName="New surface [4]">
+					<Polygon3D offset="-29 -10 -0.5" normal="-1 0 0" localX="0 -1 0">0 0, 1 0, 1 3, 0 3</Polygon3D>
+				</Surface>
+				<Surface id="97" displayName="New surface [3]">
+					<Polygon3D offset="-43 -10 2.5" normal="1 0 0" localX="0 -1 0">0 0, 1 0, 1 3, 0 3</Polygon3D>
+				</Surface>
+				<Surface id="98" displayName="New surface [4]">
+					<Polygon3D offset="-39 -10 -0.5" normal="-1 0 0" localX="0 -1 0">0 0, 1 0, 1 3, 0 3</Polygon3D>
+				</Surface>
+				<Surface id="95" displayName="New surface [5]">
+					<Polygon3D offset="0 -10 10" normal="-0 1 0" localX="1 0 0">0 0, 15 0, 15 10, 0 10</Polygon3D>
+				</Surface>
+				<Surface id="122" displayName="New surface [2]">
+					<Polygon3D offset="20 46 3" normal="0 0 -1" localX="0 1 0">0 0, 4 0, 4 1, 0 1</Polygon3D>
+				</Surface>
+				<Surface id="123" displayName="New surface [3]">
+					<Polygon3D offset="20 46 2.99998" normal="-0 1 0" localX="1 0 1e-05">0 0, 1 0, 0.99997 2.99998, -3e-05 3</Polygon3D>
+				</Surface>
+				<Surface id="124" displayName="New surface [4]">
+					<Polygon3D offset="20 50 2.14844e-13" normal="0 -1 0" localX="1 0 -1.90735e-06">0 0, 1 0, 0.999994 3, -5.72205e-06 3</Polygon3D>
+				</Surface>
+				<Surface id="125" displayName="New surface [5]">
+					<Polygon3D offset="25 0 10" normal="-1 0 0" localX="0 1 0">0 0, 15 0, 15 10, 0 10</Polygon3D>
+				</Surface>
+			</Surfaces>
 		</PlainGeometry>
 		<EmbeddedDatabase>
 			<Materials>
