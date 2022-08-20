@@ -1421,10 +1421,10 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	};
 	bool isInf = idSubTempInf != VICUS::INVALID_ID;
 	bool isVenti = idSubTempVent != VICUS::INVALID_ID;
-	VentiType ventiType;
-	if(isInf && !isVenti)				ventiType = V_Infiltration;
-	else if(!isInf && isVenti)			ventiType = V_Ventilation;
-	else if(isInf && isVenti)			ventiType = V_InfAndVenti;
+	Q_ASSERT(isInf || isVenti); // one of both must be set, otherwise a check above was missing
+	VentiType ventiType = V_InfAndVenti; // default to both
+	if (!isVenti)		ventiType = V_Infiltration;
+	if(!isInf)			ventiType = V_Ventilation;
 
 	// prüfe den zeitplan auf das maximum
 	// bei nur INFILTRATION werden nur die parameter gerprüft
@@ -1512,7 +1512,6 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			ventilationSchedule = ventilationSchedule.add(infVal);
 		}
 
-		bool errorOccured = false;
 		// check schedule values
 		if(ctrlVentilation != nullptr) {
 			// check schedule values
@@ -1527,7 +1526,6 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 										   "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
 										   "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
 					errorStack.push_back(errmsg);
-					errorOccured = true;
 					break;
 				}
 			}
@@ -2046,8 +2044,6 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
-		const double REL_TOL_AREAS = 0.05;
-		// double minArea = 0.1; //1e-4;
 		double area = 0;
 
 		// save surface ids for shading factor file later
@@ -2069,9 +2065,10 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				// check if both areas are approximately the same
 
 #define ABS_TEST
-#if defined (ABS_TEST)
+#ifdef ABS_TEST
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 #else
+				const double REL_TOL_AREAS = 0.05;
 				// relative error check
 				// area is set as reference
 				if (std::fabs(areaB-area)/area > REL_TOL_AREAS) {
@@ -2081,15 +2078,15 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 									  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_idSideASurface)
 									  .arg(compInstaVicus.m_idSideBSurface)
 									  .arg(area).arg(areaB)
-									  .arg(compInstaVicus.m_sideASurface->m_displayName)
-									  .arg(compInstaVicus.m_sideBSurface->m_displayName));
+									  .arg(compInstaVicus.m_sideASurface->m_displayName,
+										   compInstaVicus.m_sideBSurface->m_displayName));
 				}
 
 				/// TODO Dirk :	do we need to also store a displayname for each component instance/construction instance?
 				///				We could also name internal walls automatically using zone names, such as
 				///				"Wall between 'Bath' and 'Kitchen'".
 				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2'")
-						.arg(compInstaVicus.m_sideASurface->m_displayName).arg(compInstaVicus.m_sideBSurface->m_displayName).toStdString();
+						.arg(compInstaVicus.m_sideASurface->m_displayName, compInstaVicus.m_sideBSurface->m_displayName).toStdString();
 			}
 			else {
 
