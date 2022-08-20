@@ -125,8 +125,6 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	// Find visible shading surfaces for each surface
 	findVisibleSurfaces();
 
-	std::vector<std::vector<double>> finalShadingFactors = m_shadingFactors;
-
 	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
 
 #if defined(_OPENMP)
@@ -161,7 +159,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			if (notify->m_aborted)
 				continue; // skip ahead to quickly stop loop
 
-			std::vector<double> shadingFactors (m_sunConeNormals.size());
+			// thread-local storage of computed shading factors, initialize with 0 (fully shaded)
+			std::vector<double> shadingFactors (m_sunConeNormals.size(), 0.0);
 
 			// readability improvement
 			const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
@@ -171,23 +170,11 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			ShadedSurfaceObject surfaceObject;
 			surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
 
-			std::vector<IBKMK::Vector3D> sunConeNormals;
-			std::vector<ShadingObject> obstacles;
 			std::vector<ShadingObject> shadingObstacles;
 
-
-#if defined(_OPENMP)
-#pragma omp critical
-#endif
-			sunConeNormals = m_sunConeNormals;
-
-#if defined(_OPENMP)
-#pragma omp critical
-#endif
-			obstacles = m_obstacles;
-
-			for(ShadingObject &shading : m_obstacles)
-				if(so.m_visibleSurfaces.find(shading.m_id) != so.m_visibleSurfaces.end())
+			// must only use read-only access to shared-memory variables
+			for (const ShadingObject &shading : m_obstacles)
+				if (so.m_visibleSurfaces.find(shading.m_id) != so.m_visibleSurfaces.end())
 					shadingObstacles.push_back(shading);
 
 			// 2. for each center point perform intersection tests again _all_ obstacle polygons
@@ -196,13 +183,12 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				if (notify->m_aborted)
 					continue; // skip ahead to quickly stop loop
 
-
-				double angle = angleVectors(sunConeNormals[i], so.m_polygon.normal());
+				double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
 //				// if sun does not shine uppon surface, no shading factor needed
-				if(angle >= 90)
+				if (angle >= 90)
 					continue;
 
-				double sf = surfaceObject.calcShadingFactor(sunConeNormals[i], shadingObstacles);
+				double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], shadingObstacles);
 
 //				// 3. store shaded/not shaded information for sub-polygon and its surface area
 //				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
@@ -216,7 +202,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 					// only notify every second or so
 					if (!notify->m_aborted && w.difference() > 100) {
-						notify->notify(double(surfacesCompleted*sunConeNormals.size() + i) / (m_surfaces.size()*sunConeNormals.size()) );
+						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
 						w.start();
 					}
 	#if defined(_OPENMP)
@@ -224,13 +210,15 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	#endif
 			}
 
-			m_shadingFactors[(unsigned int)surfCounter] = shadingFactors;
+			// m_shadingFactors[surfCounter] is our thread-specific storage location
+			// hence we can write to shared memory without critical section
+			m_shadingFactors[(unsigned int)surfCounter].swap(shadingFactors);
 
-			// increase number of completed surfaces (done by all threads)
+			// increase number of completed surfaces (done by all threads, hence in critical section)
 #if defined(_OPENMP)
 #pragma omp critical
 #endif
-			 ++surfacesCompleted;
+			++surfacesCompleted;
 
 		}
 		catch (...) {
