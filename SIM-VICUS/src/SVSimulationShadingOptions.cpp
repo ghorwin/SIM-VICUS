@@ -344,7 +344,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		if ( s->m_componentInstance == nullptr )
 			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
 
-		if(const_cast<VICUS::Surface *>(s)->geometry().area() < VICUS::MIN_AREA)
+		if(const_cast<VICUS::Surface *>(s)->geometry().area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
 			continue; // we skip small surfaces, since they are not exported to NANDRAD anyway
 
 		// we want to take only surface connected to ambient, that means, the associated component instance

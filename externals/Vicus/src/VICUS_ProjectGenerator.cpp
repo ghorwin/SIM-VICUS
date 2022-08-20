@@ -2105,7 +2105,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				constrInstNandrad.m_displayName = compInstaVicus.m_sideASurface->m_displayName.toStdString();
 			}
 
-			if(area<MIN_AREA){
+			if(area<MIN_AREA_FOR_EXPORTED_SURFACES){
 				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideASurface->m_id)
 							.arg(compInstaVicus.m_sideASurface->m_displayName);
@@ -2145,7 +2145,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			// set area parameter
 			area = compInstaVicus.m_sideBSurface->geometry().area();
 
-			if(area<MIN_AREA){
+			if(area<MIN_AREA_FOR_EXPORTED_SURFACES){
 				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideBSurface->m_id)
 							.arg(compInstaVicus.m_sideBSurface->m_displayName);
