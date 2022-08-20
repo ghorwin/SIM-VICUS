@@ -60,11 +60,11 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 
 	// fill combo box
 	m_ui->comboBoxSupplyType->blockSignals(true);
-	std::vector<VICUS::SupplySystem::supplyType_t> entries = { VICUS::SupplySystem::ST_StandAlone,
+	std::vector<VICUS::SupplySystem::SupplyType> entries = { VICUS::SupplySystem::ST_StandAlone,
 															   VICUS::SupplySystem::ST_DatabaseFMU,
 															   VICUS::SupplySystem::ST_UserDefinedFMU,
 															   VICUS::SupplySystem::ST_SubNetwork };
-	for (VICUS::SupplySystem::supplyType_t entry: entries)
+	for (VICUS::SupplySystem::SupplyType entry: entries)
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
 										  .arg(VICUS::KeywordListQt::Description("SupplySystem::supplyType_t", entry))
 										  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::supplyType_t", entry)), entry);
@@ -279,7 +279,7 @@ void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int i
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
-	VICUS::SupplySystem::supplyType_t supplyType = (VICUS::SupplySystem::supplyType_t) m_ui->comboBoxSupplyType->currentData().toUInt();
+	VICUS::SupplySystem::SupplyType supplyType = (VICUS::SupplySystem::SupplyType) m_ui->comboBoxSupplyType->currentData().toUInt();
 	// set supply type
 	m_current->m_supplyType = supplyType;
 	// set suitable staged widget
