@@ -24,6 +24,7 @@
 #include <IBK_UnitVector.h>
 #include <IBK_physics.h>
 #include <IBK_StopWatch.h>
+#include <IBK_math.h>
 
 #include <IBKMK_Vector3D.h>
 #include <IBKMK_3DCalculations.h>
@@ -119,7 +120,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	// prepare target memory
 	m_shadingFactors.resize(m_surfaces.size());
 	for (std::vector<double> & sf : m_shadingFactors) {
-		sf.resize(m_sunConeNormals.size(), 0); // fully shaded, i.e. default since we do not handle night-time
+		sf.resize(m_sunConeNormals.size(), 0.0); // initialize with 0, i.e. fully shaded; this is the default since we do not handle night-time
+		// Note: resize on an existing vector doesn't do anything, and also doesn't reset existing values in the vector
+		//       Hence, we need to manually set all values to zero again
+		IBK::set_zero(sf);
 	}
 
 	// Find visible shading surfaces for each surface
@@ -159,8 +163,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			if (notify->m_aborted)
 				continue; // skip ahead to quickly stop loop
 
-			// thread-local storage of computed shading factors, initialize with 0 (fully shaded)
-			std::vector<double> shadingFactors (m_sunConeNormals.size(), 0.0);
+			// our thread "owns" the shading factor vector, hence we can directly write to it without
+			// openmp blocking sections
+			// 'shadingFactors' is just a readability improvement to the existing vector
+			std::vector<double> & shadingFactors = m_shadingFactors[(unsigned int)surfCounter];
 
 			// readability improvement
 			const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
@@ -209,10 +215,6 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				}
 	#endif
 			}
-
-			// m_shadingFactors[surfCounter] is our thread-specific storage location
-			// hence we can write to shared memory without critical section
-			m_shadingFactors[(unsigned int)surfCounter].swap(shadingFactors);
 
 			// increase number of completed surfaces (done by all threads, hence in critical section)
 #if defined(_OPENMP)
