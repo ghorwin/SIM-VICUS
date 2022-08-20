@@ -2784,6 +2784,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		// not supported, yet
 		case VICUS::SupplySystem::ST_SubNetwork:
 		case VICUS::SupplySystem::ST_DatabaseFMU: break;
+		case VICUS::SupplySystem::NUM_ST: break; // just to make compiler happy
 	}
 
 	double defaultFluidTemperature = 20. + 273.15;
