@@ -276,7 +276,6 @@ bool IdealSurfaceHeatingCoolingModelGenerator::calculateSupplyTemperature(const 
 	double lowerSupplyHeatLimit = std::min<double>(supplySetpoints[0], supplySetpoints[1]);
 	double upperSupplyHeatLimit = std::max<double>(supplySetpoints[0], supplySetpoints[1]);
 	double lowerSupplyCoolLimit = std::min<double>(supplySetpoints[2], supplySetpoints[3]);
-	double upperSupplyCoolLimit = std::max<double>(supplySetpoints[2], supplySetpoints[3]);
 
 	double lowerOutHeatLimit = std::min<double>(outdoorSetpoints[0], outdoorSetpoints[1]);
 	double upperOutHeatLimit = std::max<double>(outdoorSetpoints[0], outdoorSetpoints[1]);
@@ -290,13 +289,13 @@ bool IdealSurfaceHeatingCoolingModelGenerator::calculateSupplyTemperature(const 
 
 	double deltaX = outdoorSetpoints[0] - outdoorSetpoints[1];
 	double mHeat = 0;
-	if(deltaX != 0)
+	if(deltaX != 0.)
 		mHeat = (supplySetpoints[0] - supplySetpoints[1]) / deltaX;
 	double nHeat =  supplySetpoints[0] - mHeat * outdoorSetpoints[0];
 
 	deltaX = outdoorSetpoints[2] - outdoorSetpoints[3];
 	double mCool = 0;
-	if(deltaX != 0)
+	if(deltaX != 0.)
 		mCool = (supplySetpoints[2] - supplySetpoints[3]) / deltaX;
 	double nCool = supplySetpoints[2] - mCool * outdoorSetpoints[2];
 
@@ -537,7 +536,7 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 			// skip Aziumuth and Altitude
 			if (cap == "Azimuth" || cap == "Altitude")
 				continue;
-			unsigned int id;
+			unsigned int id = VICUS::INVALID_ID;
 			std::string displayName;
 			try {
 				// when reading tsv-files, the headers have format "<id>" or "<id> '<display name>'"
@@ -555,7 +554,7 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 				else
 					displayName = subSurf->m_displayName.toStdString();
 			} catch (...) {
-				IBK::IBK_Message( IBK::FormatString("  Invalid surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
+				IBK::IBK_Message( IBK::FormatString("  Invalid surface ID '%1' in shading factor file.").arg(cap), IBK::MSG_ERROR);
 				haveError = true;
 				continue;
 			}
@@ -891,12 +890,12 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	p.m_schedules.m_scheduleGroups.insert(supplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.begin(), supplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.end());
 
 	// *** FMI Descriptions ***
-	if(!supplySystemNetworkModelGenerator.m_inputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+	if(!supplySystemNetworkModelGenerator.m_inputVariables.empty() ) {
 		if(p.m_fmiDescription.m_modelName.empty())
 			p.m_fmiDescription.m_modelName = modelName.toStdString();
 		p.m_fmiDescription.m_inputVariables.insert(p.m_fmiDescription.m_inputVariables.end(), supplySystemNetworkModelGenerator.m_inputVariables.begin(), supplySystemNetworkModelGenerator.m_inputVariables.end());
 	}
-	if(!supplySystemNetworkModelGenerator.m_outputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+	if(!supplySystemNetworkModelGenerator.m_outputVariables.empty() ) {
 		if(p.m_fmiDescription.m_modelName.empty())
 			p.m_fmiDescription.m_modelName = modelName.toStdString();
 		p.m_fmiDescription.m_outputVariables.insert(p.m_fmiDescription.m_outputVariables.end(), supplySystemNetworkModelGenerator.m_outputVariables.begin(), supplySystemNetworkModelGenerator.m_outputVariables.end());
