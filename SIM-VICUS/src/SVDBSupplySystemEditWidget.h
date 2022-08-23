@@ -69,7 +69,7 @@ private slots:
 	void on_lineEditMaxMassFluxFMU_editingFinished();
 	void on_lineEditHeatingPowerFMU_editingFinished();
 	void on_pushButtonFMUPath_clicked();
-	void on_comboBoxSupplyType_currentIndexChanged(int index);
+	void on_comboBoxSupplyType_currentIndexChanged(int);
 
 	void on_pushButtonColor_colorChanged();
 
