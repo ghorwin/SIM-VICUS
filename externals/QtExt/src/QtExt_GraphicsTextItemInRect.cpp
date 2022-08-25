@@ -33,46 +33,42 @@
 	Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
 */
 
-#ifndef QtExt_ReportFrameItemConstructionViewH
-#define QtExt_ReportFrameItemConstructionViewH
+#include "QtExt_GraphicsTextItemInRect.h"
 
-#include "QtExt_ReportFrameItemBase.h"
-#include "QtExt_ConstructionGraphicsScene.h"
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 namespace QtExt {
 
-struct ConstructionViewSetup {
-	QVector<ConstructionLayer>								m_layers;
-	QString													m_leftLabel;
-	QString													m_rightLabel;
-	int														m_visibleItems = QtExt::ConstructionGraphicsScene::VI_All;
-	double													m_height = -1;
-	double													m_resolution = 1.0;
-	QColor													m_backgroundColor = Qt::white;
-	QVector<QtExt::ConstructionGraphicsScene::LineMarker>	m_lineMarker;
-	QtExt::ConstructionGraphicsScene::AreaMarker			m_areaMarker;
-};
-
-class ReportFrameItemConstructionView : public QtExt::ReportFrameItemBase
+GraphicsTextItemInRect::GraphicsTextItemInRect(const QString &text, QGraphicsItem *parent) :
+	QGraphicsTextItem(text, parent),
+	m_rectFillColor(Qt::white),
+	m_rectFramePen(QBrush(Qt::black), 2, Qt::SolidLine),
+	m_margin(2)
 {
-public:
-	ReportFrameItemConstructionView(const ConstructionViewSetup& constructionView, QPaintDevice* paintDevice, double width, double spaceAfter = 0, double spaceBefore = 0, bool canPageBreakAfter = false);
+}
 
-	~ReportFrameItemConstructionView();
+void GraphicsTextItemInRect::paint(QPainter *painter,
+									  const QStyleOptionGraphicsItem *option,
+									  QWidget *widget)
+{
+	QStyleOptionGraphicsItem myOption = *option;
+//	bool selected = option->state & QStyle::State_Selected;
+//	myOption.state &= ~QStyle::State_Selected; // delete selected state in order to draw own one
 
-	/*! Create a surrounding rect based on the current settings and the given paintDevice and width.
-		This base version create a rect with the whole width and the height based on space before and after.
-	*/
-	virtual void setCurrentRect() override;
+	QRectF boundingRect = QGraphicsTextItem::boundingRect();
+	painter->save();
 
-	/*! Draw the item with the given painter at the given position and set the position for the next item.*/
-	virtual void drawItem(QPainter* painter, QPointF& pos) override;
+	QRectF rect = boundingRect.adjusted(m_margin*-1, m_margin*-1,m_margin,m_margin);
 
-private:
-	ConstructionGraphicsScene*	m_constructionScene;
-//	QRect						m_rect;
-};
+	painter->setPen(m_rectFramePen);
+	painter->setBrush(m_rectFillColor);
+	painter->drawRect(rect);
+
+	painter->restore();
+
+	QGraphicsTextItem::paint(painter, &myOption, widget);
+
+}
 
 } // namespace QtExt
-
-#endif // QtExt_ReportFrameItemConstructionViewH

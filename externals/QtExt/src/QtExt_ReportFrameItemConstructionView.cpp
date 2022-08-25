@@ -48,10 +48,15 @@ ReportFrameItemConstructionView::ReportFrameItemConstructionView(const Construct
 //	width *= constructionViewSetup.m_resolution;
 //	height *= constructionViewSetup.m_resolution;
 	m_currentRect = QRect(0,0,width, height);
+	for(const auto& line : constructionViewSetup.m_lineMarker) {
+		m_constructionScene->addLinemarker(line);
+	}
+	if(constructionViewSetup.m_areaMarker.valid())
+	m_constructionScene->setAreaMarker(constructionViewSetup.m_areaMarker);
+	m_constructionScene->setBackground(constructionViewSetup.m_backgroundColor);
 	m_constructionScene->setup(m_currentRect.toRect(), paintDevice, constructionViewSetup.m_resolution,
 							  constructionViewSetup.m_layers, constructionViewSetup.m_leftLabel, constructionViewSetup.m_rightLabel,
 							  constructionViewSetup.m_visibleItems);
-	m_constructionScene->setBackground(constructionViewSetup.m_backgroundColor);
 }
 
 ReportFrameItemConstructionView::~ReportFrameItemConstructionView() {
@@ -66,10 +71,5 @@ void ReportFrameItemConstructionView::drawItem(QPainter* painter, QPointF& pos) 
 	QRect drect(pos.x(), pos.y(), m_currentRect.width(), m_currentRect.height());
 	m_constructionScene->render(painter, drect);
 }
-
-//ReportFrameItemBase* ReportFrameItemConstructionView::clone() const {
-//	ReportFrameItemConstructionView* res = new ReportFrameItemConstructionView(*this);
-//	return res;
-//}
 
 } // namespace QtExt

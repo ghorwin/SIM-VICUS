@@ -276,14 +276,17 @@ void Report::updateFrames(QPaintDevice* paintDevice) {
 			++currentPage;
 			currentFrame = mainFrame; // reset frame to full content frame
 		}
+		double restHeight = currentFrame.height();
+		double mainHeight = mainFrame.height();
 
-		if (currentFrame.height() < h) {
+		if (restHeight < h) {
 			unsigned int subFrameNumber = frame->numberOfSubFrames(paintDevice, currentFrame.height(), mainFrame.height());
 			// frame is not divisible
 			if(subFrameNumber == 1) {
-				if(currentFrame.height() < mainFrame.height()) {
+				if(restHeight < mainHeight) {
 					++currentPage;
 					currentFrame = mainFrame; // reset frame to full content frame
+					restHeight = mainHeight;
 				}
 				else {
 					// frame is too high and not divisible - what to do?
@@ -299,6 +302,12 @@ void Report::updateFrames(QPaintDevice* paintDevice) {
 				}
 
 				m_reportFramesInfos.back().m_frame = subFrames.front();
+				h = m_reportFramesInfos.back().m_frame->wholeFrameRect().height();
+				if(restHeight < h) {
+					++currentPage;
+					currentFrame = mainFrame; // reset frame to full content frame
+					restHeight = mainHeight;
+				}
 				setCurrentFrameInfo(m_reportFramesInfos.back(), currentFrame, currentPage);
 				for(size_t si=1; si<subFrames.size(); ++si) {
 					++currentPage;

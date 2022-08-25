@@ -69,6 +69,7 @@ HEADERS += \
 	../../src/QtExt_FilterComboBox.h \
 	../../src/QtExt_FooterFrame.h \
 	../../src/QtExt_GraphicsRectItemWithHatch.h \
+	../../src/QtExt_GraphicsTextItemInRect.h \
 	../../src/QtExt_HeaderFrame.h \
 	../../src/QtExt_IconButton.h \
 	../../src/QtExt_LanguageHandler.h \
@@ -150,6 +151,7 @@ SOURCES += \
 	../../src/QtExt_FilterComboBox.cpp \
 	../../src/QtExt_FooterFrame.cpp \
 	../../src/QtExt_GraphicsRectItemWithHatch.cpp \
+	../../src/QtExt_GraphicsTextItemInRect.cpp \
 	../../src/QtExt_HeaderFrame.cpp \
 	../../src/QtExt_IconButton.cpp \
 	../../src/QtExt_LanguageHandler.cpp \

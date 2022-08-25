@@ -137,6 +137,14 @@ protected:
 	std::vector<std::shared_ptr<ReportFrameItemBase>>	m_items;				///< List of items to be drawn
 	std::vector<ReportFrameBase*>						m_currentSubFrames;		///< Store all subframes created from subFrames function
 
+	/*! Create a list of frame numbers that fits in the given page heights.
+		\param paintDevice Used paint device. Necessary for height calculations
+		\param heightFirst Rest height of the current page
+		\param heightRest Height of an empty page
+		The vector contains the numbers of the last frame that fits on a page.
+		It must contain at least the number of the last subframe.
+		A subframe consists of all items between two page breaks.
+	*/
 	std::vector<size_t> lastItemOnPageList(QPaintDevice* paintDevice, double heightFirst, double heightRest) const;
 };
 

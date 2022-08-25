@@ -59,6 +59,7 @@ public:
 
 	qreal					m_innerTableFrameWidth;	///< Pen width for inner table frame line.
 
+	//* Start for additional frame Ids. Can be used from derived classes to set correct start for new type enums.*/
 	static const int		m_frameIdStart = 2;
 
 };

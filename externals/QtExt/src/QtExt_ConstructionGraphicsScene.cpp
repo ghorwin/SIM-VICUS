@@ -50,6 +50,7 @@
 #include <QPainter>
 
 #include "QtExt_TextFrame.h"
+#include "QtExt_GraphicsTextItemInRect.h"
 
 namespace QtExt {
 
@@ -158,6 +159,7 @@ ConstructionGraphicsScene::ConstructionGraphicsScene(bool onScreen, QPaintDevice
 	QGraphicsScene(parent),
 	m_xiLeft(0),
 	m_xiRight(0),
+	m_airLayer(0),
 	m_wallWidth(0),
 	m_textHeight10(15),
 	m_textWidthT10(10),
@@ -228,6 +230,17 @@ QGraphicsTextItem* ConstructionGraphicsScene::addText(const QString& text, const
 	return textItem;
 }
 
+QGraphicsTextItem* ConstructionGraphicsScene::addTextInRect(const QString& text, const QFont& font) {
+	GraphicsTextItemInRect* textItem = new GraphicsTextItemInRect(text);
+	addItem(textItem);
+	textItem->document()->documentLayout()->setPaintDevice(m_device);
+	setAlignment(textItem->document(), Qt::AlignVCenter);
+	textItem->setFont(font);
+	textItem->setFillColor(Qt::white);
+	textItem->setRectFramePen(QPen(QBrush(Qt::black), 2));
+	textItem->setDefaultTextColor(contrastColor(textItem->fillColor(), Qt::black));
+	return textItem;
+}
 QtExt::GraphicsRectItemWithHatch* ConstructionGraphicsScene::addHatchedRect ( qreal x, qreal y, qreal w, qreal h, QtExt::HatchingType hatchType, int hatchDistance,
 											const QPen & hatchPen, const QPen & pen, const QBrush & brush ) {
 
@@ -256,8 +269,8 @@ QString ConstructionGraphicsScene::dimLabel(double d) {
 }
 
 void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double res,
-						 const QVector<ConstructionLayer>& layers,
-						 const QString & leftLabel, const QString & rightLabel,
+									  const QVector<ConstructionLayer>& layers,
+									  const QString & leftLabel, const QString & rightLabel,
 									  int visibleItems)
 {
 
@@ -332,9 +345,28 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 	if(m_visibleDimensions)
 		drawDimensions();
 	drawWall();
+	drawMarkerLines();
+	drawMarkerArea();
 
 	setSceneRect(m_frame);
 	emit changed(QList<QRectF>() << frame);
+}
+
+void ConstructionGraphicsScene::clearLineMarkers() {
+	if(!m_lineMarker.empty()) {
+		m_lineMarker.clear();
+		m_externalChange = true;
+	}
+}
+
+void ConstructionGraphicsScene::addLinemarker(double pos, const QPen& pen, const QString& name) {
+	m_lineMarker.push_back({pos,pen,name});
+	m_externalChange = true;
+}
+
+void ConstructionGraphicsScene::addLinemarker(const LineMarker& lineMarker) {
+	m_lineMarker.push_back(lineMarker);
+	m_externalChange = true;
 }
 
 void ConstructionGraphicsScene::setBackground(const QColor& bkgColor) {
@@ -349,6 +381,15 @@ void ConstructionGraphicsScene::markLayer(int layerIndex) {
 		m_markedLayer = layerIndex;
 		m_externalChange = true;
 	}
+}
+
+void ConstructionGraphicsScene::setAreaMarker(const AreaMarker& am) {
+	m_areaMarker = am;
+}
+
+void ConstructionGraphicsScene::removeAreaMarker() {
+	m_areaMarker.m_xStart = 0;
+	m_areaMarker.m_xEnd = 0;
 }
 
 
@@ -384,30 +425,30 @@ void ConstructionGraphicsScene::calculatePositions() {
 
 	// calculation x positions
 	int axis_left, axis_right; // for axes and description
-	int air_layer;             // for boundary layer
+	int m_airLayer;             // for boundary layer
 
 	if (m_onScreen) {
 		axis_left = 40;
 		axis_right = 50;
-		air_layer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0));
+		m_airLayer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0));
 	} else {
 		axis_left = static_cast<int>(5 * m_res);
 		axis_right = static_cast<int>(5 * m_res);
-		air_layer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0 * m_res));
+		m_airLayer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0 * m_res));
 	}
 	if(!m_visibleBoundaryLabels) {
-		air_layer = 0;
+		m_airLayer = 0;
 	}
 
 	m_xiLeft = m_innerFrame.left() + axis_left;
 	m_xiRight = m_innerFrame.right() - axis_right;
 
 	// calculate width of wall itself in pixdel
-	int pixwidth = m_xiRight - m_xiLeft - 2 * air_layer;
+	int pixwidth = m_xiRight - m_xiLeft - 2 * m_airLayer;
 
 	// resize vector for x positions
 	m_xpos.resize(m_inputData.size() + 1);
-	m_xpos[0] = m_xiLeft + air_layer; // left wall boundary
+	m_xpos[0] = m_xiLeft + m_airLayer; // left wall boundary
 
 	// calculate scaling factor for wall coordinates in pixel/m
 	double dw = pixwidth/m_wallWidth;
@@ -661,6 +702,60 @@ void ConstructionGraphicsScene::drawWall() {
 		insideRight->setPos(m_xpos.back() + (outerBond - textWidth) / 2, yt - 2);
 		insideRight->setDefaultTextColor(contrastColor(m_backgroundColor, Qt::black));
 	}
+}
+
+void ConstructionGraphicsScene::drawMarkerLines() {
+	if(m_lineMarker.empty())
+		return;
+
+	const int yt = m_innerFrame.top();
+	const int yb = m_innerFrame.bottom();
+	const int xl = m_xpos.front();
+	int pixwidth = m_xiRight - m_xiLeft - 2 * m_airLayer;
+	double dw = pixwidth/m_wallWidth;
+
+	int number = 1;
+	qreal lastHeight = 0;
+	for(const auto& line : m_lineMarker) {
+		QPen pen = line.m_pen;
+		pen.setWidthF(pen.widthF() * m_res);
+		int pos = (number-1) % 2;
+		int xpos = xl + static_cast<int>(line.m_pos * dw);
+		addLine(xpos, yb, xpos, yt, pen);
+
+		// numbering
+		QGraphicsTextItem* numberText = addTextInRect(line.m_name, m_axisTitleFont);
+		setAlignment(numberText->document(), Qt::AlignVCenter);
+		int textWidth = numberText->document()->idealWidth();
+		numberText->setPos(xpos + (textWidth) / 2, (yb - yt) / 2 + pos * (lastHeight + 2));
+		numberText->setDefaultTextColor(contrastColor(m_backgroundColor, Qt::black));
+		lastHeight = numberText->boundingRect().height();
+		++number;
+	}
+}
+
+void ConstructionGraphicsScene::drawMarkerArea() {
+	if(!m_areaMarker.valid())
+		return;
+
+	const int yt = m_innerFrame.top();
+	const int yb = m_innerFrame.bottom();
+	const int xl = m_xpos.front();
+	int pixwidth = m_xiRight - m_xiLeft - 2 * m_airLayer;
+	double dw = pixwidth/m_wallWidth;
+
+	QPen pen = m_areaMarker.m_framePen;
+	pen.setWidthF(pen.widthF() * m_res);
+	int xposStart = xl + static_cast<int>(m_areaMarker.m_xStart * dw);
+	int xposEnd = xl + static_cast<int>(m_areaMarker.m_xEnd * dw);
+
+	int hatchDist = std::max((xposEnd - xposStart) / 20, (int)(m_internalPens->m_hatchingPen.widthF() * 3));
+	m_internalPens->m_hatchingPen.setColor( Qt::gray);
+
+	QGraphicsRectItem* rectItem = addHatchedRect(xposStart, yt, xposEnd - xposStart, yb - yt, QtExt::HT_CrossHatchOblique, hatchDist, m_internalPens->m_hatchingPen,
+				   pen, m_areaMarker.m_areaBrush);
+	rectItem->setFlag(QGraphicsItem::ItemIsSelectable, false);
+
 }
 
 
