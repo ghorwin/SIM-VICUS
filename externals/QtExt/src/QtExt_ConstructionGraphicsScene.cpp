@@ -360,7 +360,7 @@ void ConstructionGraphicsScene::clearLineMarkers() {
 }
 
 void ConstructionGraphicsScene::addLinemarker(double pos, const QPen& pen, const QString& name) {
-	m_lineMarker.push_back({pos,pen,name});
+	m_lineMarker.push_back(LineMarker{pos,pen,name});
 	m_externalChange = true;
 }
 

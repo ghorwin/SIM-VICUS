@@ -60,6 +60,15 @@ public:
 	};
 
 	struct LineMarker {
+
+		LineMarker(double pos, const QPen& pen, const QString& name):
+			m_pos(pos),
+			m_pen(pen),
+			m_name(name)
+		{}
+
+
+
 		double	m_pos = 0;
 		QPen	m_pen;
 		QString	m_name;
