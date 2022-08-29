@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Air Network with two channels and one door.
+			</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<!-- We start with thermahydraulic modelling and extend to hygrothermal case later-->
+			<HydraulicNetwork id="1" displayName="Air network with ventilator, inlet and outlet channel, door."
+						modelType="ThermalHydraulicNetwork" referenceElementId="201">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
+				<!-- Fluid is air-->
+				<HydraulicFluid id="1" displayName="Air">
+					<IBK:Parameter name="Density" unit="kg/m3">1.205</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1006</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.0262</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 90 </X>
+						<Y unit="m2/s">17.2e-06 17.2e-06</Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<PipeProperties>
+					<!-- Should channels be modelled as pipes? Or do we need another data structure?-->
+					<HydraulicNetworkPipeProperties id="1">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
+						<IBK:Parameter name="UValueWall" unit="W/mK">5</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>						
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<!-- Ventilator == Pump?-->
+					<HydraulicNetworkComponent id="1" displayName="Ventilator (constant pressure)" modelType="ConstantPressurePump">
+						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<!-- Channel == Pipe?-->
+					<HydraulicNetworkComponent id="2" displayName="Adiabatic channel" modelType="SimplePipe"/>
+<!-- 					<HydraulicNetworkComponent id="3" displayName="Element with flow resistance for opened and closed" modelType="SimpleOpening">
+						<!-- Which parameters have to be filled?
+						<IBK:Parameter name="DischargeCoefficient" unit="---">10</IBK:Parameter>
+						<IBK:Parameter name="CrackMassFlowCoefficient" unit="kg/sm">10</IBK:Parameter>
+						<IBK:Parameter name="CrackMassFlowExponent" unit="---">0.7</IBK:Parameter>
+					</HydraulicNetworkComponent>--->
+				</Components>
+				<Elements>
+					<!-- Ventilator: connects from outlet zone with id 0 to an internal network node-->
+					<HydraulicNetworkElement id="101" inletZoneId="0" outletNodeId="1" componentId="1" displayName="Ventilator" />
+					<!-- Inlet channel: connects from internal node to zone with id 1-->
+					<HydraulicNetworkElement id="201" inletNodeId="1" outletZoneId="1" componentId="2" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<!-- Outlet channel: connects from zone with id 1 to outside-->
+					<HydraulicNetworkElement id="301" inletZoneId="1" outletZoneId="0" componentId="2" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">5</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<!-- Outside door: connects from inside zone (id = 1) to outside
+					<HydraulicNetworkElement id="401" inletZoneId="1" outletZoneId="0" componentId="3" displayName="Door-->
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<Schedules />
+
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Channels</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zone</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Pump">
+				<FilterID>101</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Channels">
+				<FilterID>201,301</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zone">
+				<FilterID>1</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+
+	</Project>
+</NandradProject>
