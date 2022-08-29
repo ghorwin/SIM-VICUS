@@ -220,6 +220,28 @@ private:
 	};
 
 
+	/*!	Detailed description of node behaviour: calculated values, value
+		references and zone references.
+
+		This struct groups all data assembled for a network node.
+	*/
+	struct NodeProperties {
+		/*! Standard constructor. */
+		NodeProperties(unsigned int nodeId, unsigned int zoneId): m_nodeId(nodeId), m_zoneId(zoneId) { }
+
+		/*! Comparison operator via id. */
+		bool operator==(unsigned int x) const { return m_nodeId == x || m_zoneId == x; }
+
+		/*! Node id. */
+		unsigned int						m_nodeId = NANDRAD::INVALID_ID;
+		/*! Zone id. */
+		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
+
+		/*! Zone properties for heat exchange to zone (nullptr if no heat exchange with a zone is defined). */
+		ZoneProperties						*m_zoneProperties = nullptr;
+	};
+
+
 	/*! Zone ID. */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
@@ -241,6 +263,9 @@ private:
 
 	/*! Physical properties of all network elements (size = ThermalNetworkModelImpl::m_flowElements.size()).*/
 	std::vector<FlowElementProperties>				m_flowElementProperties;
+
+	/*! Physical properties of all network nodes (size = ...).*/
+	std::vector<NodeProperties>						m_nodeProperties;
 
 	/*! Vector of all additional model quantities for outputs. */
 	std::vector<QuantityDescription>				m_modelQuantities;

@@ -68,6 +68,12 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// copy element ids
 	m_elementIds = hydrNetworkModel.m_elementIds;
 
+	// copy node ids
+	m_nodeIds = hydrNetworkModel.m_nodeIds;
+
+	// copy zone node ids
+	m_zoneNodeIds = hydrNetworkModel.m_zoneNodeIds;
+
 	// We now loop over all flow elements of the network and create a corresponding thermal
 	// model objects for _each_ of the hydraulic calculation objects.
 	// The model objects are stored in m_p->m_flowElements vector.

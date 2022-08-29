@@ -70,8 +70,13 @@ public:
 
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
+	/*! Container with external references to temperatures for each node (may be null if
+	 * no reference is given). */
+	std::vector<const double*>						m_nodalTemperatureRefs;
 	/*! Container with temperatures for each node. */
 	std::vector<double>								m_nodalTemperatures;
+	/*! Container with heat load for each node. */
+	std::vector<double>								m_heatLoads;
 	/*! Container with global pointer to calculated mass fluxes.
 		Pointer maps to calculated fluid mass fluxes from HydraulicNetworkModel.
 	*/

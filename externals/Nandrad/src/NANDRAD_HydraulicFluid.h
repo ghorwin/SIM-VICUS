@@ -50,6 +50,9 @@ public:
 	/*! Populates the HydraulicFluid object with properties of water. */
 	void defaultFluidWater();
 
+	/*! Populates the HydraulicFluid object with properties of air. */
+	void defaultFluidAir();
+
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(int networkModelType);
 

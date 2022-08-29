@@ -59,8 +59,38 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
 		m_flowElementProperties.push_back(FlowElementProperties(m_statesModel->m_network->m_elements[i].m_id));
 
+	// *** Node/Zone Interface Objects ***
+
 	// Note: the vector m_flowElementProperties will not be changed in size lateron, so we can store persistent
 	//       pointers to vector elements and their data members.
+
+	IBK_ASSERT(m_statesModel->m_zoneNodeIds.size() == m_statesModel->m_nodeIds.size());
+	// register zone properties for all requested nodes
+	for (unsigned int i = 0; i < m_statesModel->m_nodeIds.size(); ++i) {
+
+		// rterieve node and zone id (one of both ids must exist)
+		unsigned int nodeId = m_statesModel->m_nodeIds[i];
+		unsigned int zoneId = m_statesModel->m_zoneNodeIds[i];
+
+		// create node property
+		NodeProperties nodeProp(nodeId, zoneId);
+
+		// no zone connected
+		if(zoneId == NANDRAD::INVALID_ID) {
+			m_nodeProperties.push_back(nodeProp);
+			continue;
+		}
+
+		// a nodal zone may only be registered once
+		IBK_ASSERT(std::find(m_zoneProperties.begin(), m_zoneProperties.end(), zoneId) == m_zoneProperties.end());
+
+		// add a new entry for each zone
+		m_zoneProperties.push_back(ZoneProperties(zoneId)); // Note: does not invalidate pointers already in list!
+		// store pointer to newly added object (last object = first from end)
+		nodeProp.m_zoneProperties = &(*m_zoneProperties.rbegin());
+
+		m_nodeProperties.push_back(nodeProp);
+	}
 
 	// process all flow elements
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
@@ -304,6 +334,26 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// register reference
 	inputRefs.push_back(inputRef);
 
+	// copy node temperatures for substantial elements as zones and
+	// accept invalid references
+	for(const NodeProperties &nodeProp : m_nodeProperties) {
+		InputReference inputRef;
+		inputRef.m_id = nodeProp.m_zoneId;
+
+		// special case: outside zone
+		if(nodeProp.m_zoneId == 0) {
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+			inputRef.m_name = std::string("Temperature");
+		}
+		else {
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			inputRef.m_name = std::string("AirTemperature");
+		}
+
+		inputRef.m_required = false;
+		// register reference
+		inputRefs.push_back(inputRef);
+	}
 
 	std::vector<InputReference> modelInputRefs;
 	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
@@ -360,14 +410,22 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 
-	//
 	unsigned int resultValIdx = 1;
+
+	// resultValIdx now points to the first input reference towards temperature nodes
+
+	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + resultValIdx; // Mind the index increase here
+
+	// copy node temperatures for substantial elements as zones
+	for(unsigned int i = 0; i < m_statesModel->m_p->m_nodalTemperatureRefs.size(); ++i, ++valRefIt) {
+		if(*valRefIt != nullptr) {
+			m_statesModel->m_p->m_nodalTemperatureRefs[i] = *valRefIt;
+		}
+	}
 
 	// resultValIdx now points to the first input reference past the active layer/zone temperatures
 
 	// now provide elements with their specific input quantities
-	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + resultValIdx; // Mind the index increase here
-
 	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		m_statesModel->m_p->m_flowElements[i]->setInputValueRefs(valRefIt);
 
@@ -520,6 +578,17 @@ int ThermalNetworkBalanceModel::update() {
 		// set zone heat fluxes to 0
 		for (ZoneProperties &zoneProp : m_zoneProperties)
 			zoneProp.m_zoneHeatLoad = 0.0;
+
+		// first treat all zones that act as nodes
+		for(unsigned int i = 0; i < m_nodeProperties.size(); ++i) {
+
+			ZoneProperties *zoneProp = m_nodeProperties[i].m_zoneProperties;
+			if(zoneProp == nullptr)
+				continue;
+
+			// a zone node may only occur once
+			zoneProp->m_zoneHeatLoad = m_statesModel->m_p->m_heatLoads[i];
+		}
 
 		for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 

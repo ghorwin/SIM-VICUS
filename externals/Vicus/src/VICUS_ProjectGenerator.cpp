@@ -3650,6 +3650,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// 1. copy the element and create a unique element id for it
 			unsigned int id = uniqueIdAdd(allElementIds);
 			NANDRAD::HydraulicNetworkElement newElement(id, elem.m_inletNodeId, elem.m_outletNodeId,
+														NANDRAD::INVALID_ID, NANDRAD::INVALID_ID,
 														elem.m_componentId, elem.m_controlElementId);
 
 			// 2. set the new elements inlet and outlet id using the map that we created
@@ -3827,6 +3828,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		NANDRAD::HydraulicNetworkElement supplyPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
+													VICUS::INVALID_ID,
+													VICUS::INVALID_ID,
 													networkPipeComponent.m_id,
 													edge->m_idPipe,
 													edge->length());
@@ -3841,6 +3844,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		NANDRAD::HydraulicNetworkElement returnPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
+													VICUS::INVALID_ID,
+													VICUS::INVALID_ID,
 													networkPipeComponent.m_id,
 													edge->m_idPipe,
 													edge->length());

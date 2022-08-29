@@ -41,18 +41,6 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "inletNodeId"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'inletNodeId' attribute.") ), FUNC_ID);
-
-		if (!TiXmlAttribute::attributeByName(element, "outletNodeId"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'outletNodeId' attribute.") ), FUNC_ID);
-
-		if (!TiXmlAttribute::attributeByName(element, "componentId"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'componentId' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -63,6 +51,10 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				m_inletNodeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "outletNodeId")
 				m_outletNodeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "inletZoneId")
+				m_inletZoneId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "outletZoneId")
+				m_outletZoneId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "componentId")
 				m_componentId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "pipePropertiesId")
@@ -135,6 +127,10 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("inletNodeId", IBK::val2string<IDType>(m_inletNodeId));
 	if (m_outletNodeId != NANDRAD::INVALID_ID)
 		e->SetAttribute("outletNodeId", IBK::val2string<IDType>(m_outletNodeId));
+	if (m_inletZoneId != NANDRAD::INVALID_ID)
+		e->SetAttribute("inletZoneId", IBK::val2string<IDType>(m_inletZoneId));
+	if (m_outletZoneId != NANDRAD::INVALID_ID)
+		e->SetAttribute("outletZoneId", IBK::val2string<IDType>(m_outletZoneId));
 	if (m_componentId != NANDRAD::INVALID_ID)
 		e->SetAttribute("componentId", IBK::val2string<IDType>(m_componentId));
 	if (m_pipePropertiesId != NANDRAD::INVALID_ID)

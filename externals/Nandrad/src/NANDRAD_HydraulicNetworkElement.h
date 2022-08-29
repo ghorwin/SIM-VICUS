@@ -52,10 +52,12 @@ public:
 
 	/*! C'tor for pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+							unsigned int inletZoneId, unsigned int outletZoneId,
 							unsigned int componentId, unsigned int pipeID, double length);
 
 	/*! C'tor for a network element other than pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+							unsigned int inletZoneId, unsigned int outletZoneId,
 							unsigned int componentId, unsigned int controlElementId);
 
 	/*! Parameters for the element . */
@@ -93,11 +95,15 @@ public:
 	*/
 	IDType							m_id				= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Inlet node ID. */
-	IDType							m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A
 	/*! Outlet node ID. */
-	IDType							m_outletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_outletNodeId		= NANDRAD::INVALID_ID;				// XML:A
+	/*! Inlet node ID. */
+	IDType							m_inletZoneId		= NANDRAD::INVALID_ID;				// XML:A
+	/*! Outlet node ID. */
+	IDType							m_outletZoneId		= NANDRAD::INVALID_ID;				// XML:A
 	/*! Hydraulic component ID. */
-	IDType							m_componentId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_componentId		= NANDRAD::INVALID_ID;				// XML:A
 	/*! Pipe ID (only needed for elements that are pipes). */
 	IDType							m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
 

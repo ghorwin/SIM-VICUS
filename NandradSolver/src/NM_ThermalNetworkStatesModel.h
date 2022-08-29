@@ -148,6 +148,12 @@ private:
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
 
+	/*! Storage of all node ids. */
+	std::vector<unsigned int>						m_nodeIds;
+
+	/*! Storage of all zone node ids. */
+	std::vector<unsigned int>						m_zoneNodeIds;
+
 	/*! Vector with references to mean fluid temperatures (size = m_elementIds.size()).
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;
