@@ -65,7 +65,7 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(const Project & prj) ;
+	void checkParameters(const Project & prj, std::set<unsigned int> &otherZoneIds) ;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
