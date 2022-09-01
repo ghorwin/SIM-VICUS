@@ -484,8 +484,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 			// process all referenced materials and lookup matching VICUS material IDs
 			for (const std::string & matLay : construction.m_layers) {
 				// find material by name
-				unsigned int opaqueIdx = VICUS::elementIndex(prj.m_materials, matLay);
-				unsigned int windowIdx = VICUS::elementIndex(prj.m_windowMaterial, matLay);
+				unsigned int opaqueIdx = VICUS::elementIndex(prj.m_materials, matLay, false);
+				unsigned int windowIdx = VICUS::elementIndex(prj.m_windowMaterial, matLay, false);
 				unsigned int blindIdx, shadeIdx, screenIdx;
 
 				if (opaqueIdx < prj.m_materials.size()) {
@@ -913,7 +913,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 		VICUS::Component com;
 		com.m_id = ++nextID;
 		// lookup construction
-		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName);
+		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName, false);
 		if (conIdx == prj.m_constructions.size()) {
 			// also convert names in error message
 			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from BSD '%2' is not defined in IDF file.")
@@ -1175,7 +1175,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 		}
 
 		// lookup construction
-		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, fsd.m_constructionName);
+		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, fsd.m_constructionName, false);
 		if (conIdx == prj.m_constructions.size()) {
 			// also convert names in error message
 			IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not defined in IDF file.")
