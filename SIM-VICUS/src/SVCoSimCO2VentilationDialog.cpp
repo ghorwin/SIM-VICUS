@@ -1378,6 +1378,10 @@ void SVCoSimCO2VentilationDialog::on_pushButtonGenerate_clicked() {
 	// generate NANDRAD FMU
 
 	resourceDir = m_nandradFMUBaseDir + "/resources";
+	IBK::Path resDir(resourceDir.toStdString());
+	if(!resDir.exists()){
+		IBK::Path::makePath(resDir);
+	}
 	QString nandradProjectFile = resourceDir + "/Project.nandrad";
 	QStringList errorStack;
 
