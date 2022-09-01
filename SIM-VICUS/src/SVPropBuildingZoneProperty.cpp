@@ -11,12 +11,16 @@
 #include "SVUndoModifyBuildingLevel.h"
 #include "SVUndoModifyRoom.h"
 #include "SVUndoModifyBuildingTopology.h"
+#include "SVUndoModifyProject.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVZoneSelectionDialog.h"
 
 #include <QSortFilterProxyModel>
 #include <QProgressDialog>
+
+#include <RC_Project.h>
+#include <RC_ClippingSurface.h>
 
 class CalculationProgress : public Notification {
 public:
@@ -402,3 +406,15 @@ void SVPropBuildingZoneProperty::updateTableView() {
 void SVPropBuildingZoneProperty::on_lineEditNameFilter_textChanged(const QString &name) {
 	m_zonePropertiesProxyModel->setNameFilter(name);
 }
+
+void SVPropBuildingZoneProperty::on_pushButtonClipping_clicked() {
+	VICUS::Project newProject (project());
+	RC::Project clippingPrj(newProject, 2, 0.5);
+	clippingPrj.findParallelSurfaces();
+	clippingPrj.findSurfacesInRange();
+	clippingPrj.clipSurfaces();
+
+	SVUndoModifyProject *undo = new SVUndoModifyProject("Update vicus project", clippingPrj.newPrjVicus());
+	undo->push();
+}
+

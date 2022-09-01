@@ -37,6 +37,8 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lIBKMK \
 	-lsundials \
 	-lSuiteSparse \
+	-lRoomClipper \
+	-lclipper \
 	-lqwt6
 
 win32 {
@@ -67,6 +69,8 @@ INCLUDEPATH = \
 	../../../externals/QuaZIP/src \
 	../../../externals/QuaZIP/src/zlib \
 	../../../externals/IDFReader/src \
+	../../../externals/clipper/src \
+	../../../externals/RoomClipper/src \
 	../../../externals/QtExt/src
 
 DEPENDPATH = $${INCLUDEPATH}
@@ -83,6 +87,8 @@ PRE_TARGETDEPS += \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/IDFReader.lib \
+	$$PWD/../../../externals/lib$${DIR_PREFIX}/clipper.lib \
+	$$PWD/../../../externals/lib$${DIR_PREFIX}/RoomClipper.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
 }
 
@@ -115,8 +121,8 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
-    ../../src/SVPropEditNetwork.cpp \
-    ../../src/SVPropNetworkPropertiesWidget.cpp \
+	../../src/SVPropEditNetwork.cpp \
+	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -124,8 +130,8 @@ SOURCES += \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
-    ../../src/SVUndoNetworkAddNodes.cpp \
-    ../../src/SVUndoNetworkAddPipeline.cpp \
+	../../src/SVUndoNetworkAddNodes.cpp \
+	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -300,8 +306,8 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
-    ../../src/SVPropEditNetwork.h \
-    ../../src/SVPropNetworkPropertiesWidget.h \
+	../../src/SVPropEditNetwork.h \
+	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
@@ -309,8 +315,8 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
-    ../../src/SVUndoNetworkAddNodes.h \
-    ../../src/SVUndoNetworkAddPipeline.h \
+	../../src/SVUndoNetworkAddNodes.h \
+	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/SV_Conversions.h \
