@@ -23,15 +23,18 @@ void RC::Project::findParallelSurfaces() {
 		}
 	}
 
-	for(VICUS::Surface *s1 : surfaces){
-		for(VICUS::Surface *s2 : surfaces){
+	for(const VICUS::Surface *s1 : surfaces){
+		for(const VICUS::Surface *s2 : surfaces){
 
 			// skip same surfaces
 			if(s1 == s2)
 				continue;
 
-			VICUS::Surface &surf1 = *s1;
-			VICUS::Surface &surf2 = *s2;
+			const VICUS::Surface &surf1 = *s1;
+			const VICUS::Surface &surf2 = *s2;
+
+			if(surf1.m_parent->m_id == surf2.m_parent->m_id)
+				continue; // only surfaces of different rooms are clipped
 
 			// skip already handled surfaces
 			if(m_connections.find(surf1.m_id) != m_connections.end())
@@ -45,12 +48,15 @@ void RC::Project::findParallelSurfaces() {
 			if(angle > m_normalDeviationInDeg)
 				continue;
 
-			// save parallel surfaces
-			m_clippingSurfaces.push_back(ClippingSurface(surf1.m_id));
-			m_clippingSurfaces.back().m_clippingObjects.push_back(ClippingObject(surf2.m_id,999) );
 
-			m_clippingSurfaces.push_back(ClippingSurface(surf2.m_id));
-			m_clippingSurfaces.back().m_clippingObjects.push_back(ClippingObject(surf1.m_id,999) );
+			// save parallel surfaces
+			ClippingSurface &cs = getClippingSurfaceById(surf1.m_id);
+			cs.m_clippingObjects.push_back(ClippingObject(surf2.m_id, surf2, 999) );
+
+			ClippingSurface &cs2 = getClippingSurfaceById(surf2.m_id);
+			cs2.m_clippingObjects.push_back(ClippingObject(surf1.m_id, surf1, 999) );
+
+			qDebug() << s1->m_id << ": " << s1->m_displayName << " | " << s2->m_id << ": "<< s2->m_displayName ;
 
 			m_connections[surf1.m_id].insert(surf2.m_id);
 			m_connections[surf2.m_id].insert(surf1.m_id);
@@ -62,16 +68,12 @@ void RC::Project::findSurfacesInRange() {
 	for(std::map<unsigned int, std::set<unsigned int>>::iterator	it = m_connections.begin();
 																	it != m_connections.end();
 																	++it){
-		VICUS::Surface *s1 = dynamic_cast<VICUS::Surface*>(m_prjVicus.objectById(it->first));
-		Q_ASSERT(s1 != nullptr);
-
 		// look for clipping surface
 		ClippingSurface &cs = getClippingSurfaceById(it->first);
+		const VICUS::Surface &s1 = cs.m_vicusSurface;
 
 		std::vector<ClippingObject> newClippingObjects;
 		for(unsigned int idSurf2 : it->second){
-			VICUS::Surface *s2 = dynamic_cast<VICUS::Surface*>(m_prjVicus.objectById(idSurf2));
-			Q_ASSERT(s2 != nullptr);
 
 			// get our co object
 			unsigned int idx2 = 0 ;
@@ -80,11 +82,12 @@ void RC::Project::findSurfacesInRange() {
 					break;
 			}
 			ClippingObject &co = cs.m_clippingObjects[idx2];
+			const VICUS::Surface &s2 = co.m_vicusSurface;
 
 			// clipping object is for normalized directional vectors equal the distance of the two points
 			IBKMK::Vector3D rayEndPoint;
-			IBKMK::lineToPointDistance( s1->geometry().offset(),s1->geometry().normal().normalized(),
-										s2->geometry().offset(), co.m_distance, rayEndPoint);
+			IBKMK::lineToPointDistance( s1.geometry().offset(), s1.geometry().normal().normalized(),
+										s2.geometry().offset(), co.m_distance, rayEndPoint);
 			if(co.m_distance > m_maxDistanceOfSurfaces || co.m_distance < 0)
 				continue;
 
@@ -98,42 +101,57 @@ void RC::Project::findSurfacesInRange() {
 
 void RC::Project::clipSurfaces() {
 
+	unsigned int id = m_newPrjVicus.nextUnusedID();
+
 	for(std::map<unsigned int, std::set<unsigned int>>::iterator	it = m_connections.begin();
 																	it != m_connections.end();
 																	++it){
-		VICUS::Surface *s1 = dynamic_cast<VICUS::Surface*>(m_prjVicus.objectById(it->first));
-		Q_ASSERT(s1 != nullptr);
 
 		// look for clipping surface
 		ClippingSurface &cs = getClippingSurfaceById(it->first);
+		VICUS::Surface s1 = cs.m_vicusSurface;
+		VICUS::Room *r = m_newPrjVicus.roomByID(s1.m_parent->m_id);
 
 		for(ClippingObject co : cs.m_clippingObjects){
-			VICUS::Surface *s2 = dynamic_cast<VICUS::Surface*>(m_prjVicus.objectById(co.m_vicusId));
-			Q_ASSERT(s2 != nullptr);
+			const VICUS::Surface &s2 = co.m_vicusSurface;
 
 			// init all cutting objects
 			std::vector<IBKMK::Polygon2D> mainDiffs, mainIntersections;
 			IBKMK::Polygon2D hole;
 
 			// calculate new projection points onto our main polygon plane (clipper works 2D)
-			std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
+			std::vector<IBKMK::Vector2D> vertexes(s2.geometry().polygon2D().vertexes().size());
+			qDebug() << s2.m_displayName << " | " << s1.m_displayName;
 			for(unsigned int i=0; i<vertexes.size(); ++i){
-				const IBKMK::Vector3D &p = s2->geometry().polygon3D().vertexes()[i];
+
+				if(s2.geometry().polygon3D().vertexes().empty())
+					continue;
+
+				const IBKMK::Vector3D &p = s2.geometry().polygon3D().vertexes()[i];
+				qDebug() << "x: " << p.m_x << "y: " << p.m_y << "z: " << p.m_z;
 				// project points onto the plane
-				IBKMK::planeCoordinates(s1->geometry().offset(), s1->geometry().localX(), s1->geometry().localY(),
-										p, vertexes[i].m_x, vertexes[i].m_y);
+				try {
+					IBKMK::planeCoordinates(s1.geometry().offset(), s1.geometry().localX(), s1.geometry().localY(),
+											p-co.m_distance*s1.geometry().normal(), vertexes[i].m_x, vertexes[i].m_y);
+
+				}  catch (...) {
+					continue;
+				}
 			}
 
 			// do clipping with clipper lib
-			doClipperClipping(s1->geometry().polygon2D(), vertexes, mainDiffs, mainIntersections, hole);
+			doClipperClipping(s1.geometry().polygon2D(), vertexes, mainDiffs, mainIntersections, hole);
 
 			for(IBKMK::Polygon2D &poly : mainIntersections) {
-				VICUS::Surface newSurf(*s1);
-				newSurf.m_id = m_prjVicus.nextUnusedID();
+
+				if(!poly.isValid())
+					continue;
+
+				s1.m_id = ++id;
 
 				// calculate new offset 3D
-				IBKMK::Vector3D newOffset3D = newSurf.geometry().offset() + newSurf.geometry().localX() * poly.vertexes()[0].m_x
-																		+ newSurf.geometry().localY() * poly.vertexes()[0].m_y;
+				IBKMK::Vector3D newOffset3D = s1.geometry().offset()	+ s1.geometry().localX() * poly.vertexes()[0].m_x
+																		+ s1.geometry().localY() * poly.vertexes()[0].m_y;
 				// calculate new ofsset 2D
 				IBKMK::Vector2D newOffset2D = poly.vertexes()[0];
 
@@ -142,11 +160,13 @@ void RC::Project::clipSurfaces() {
 					const_cast<IBKMK::Vector2D &>(v) -= newOffset2D;
 
 				// update VICUS Surface with new geometry
-				const_cast<IBKMK::Polygon2D&>(newSurf.geometry().polygon2D()).setVertexes(poly.vertexes());
-				const_cast<VICUS::Polygon3D&>(newSurf.geometry().polygon3D()).setTranslation(newOffset3D);
+				const_cast<IBKMK::Polygon2D&>(s1.geometry().polygon2D()).setVertexes(poly.vertexes());
+				const_cast<VICUS::Polygon3D&>(s1.geometry().polygon3D()).setTranslation(newOffset3D);
 
-				VICUS::Room *r = dynamic_cast<VICUS::Room*>(m_newPrjVicus.objectById(s1->m_parent->m_id));
-				r->m_surfaces.push_back(newSurf);
+				qDebug() << "Surface count before: " << r->m_surfaces.size();
+				r->m_surfaces.push_back(s1);
+				r->updateParents();
+				qDebug() << "Surface count after: " << r->m_surfaces.size();
 			}
 		}
 	}
@@ -155,10 +175,20 @@ void RC::Project::clipSurfaces() {
 RC::ClippingSurface& RC::Project::getClippingSurfaceById(unsigned int id) {
 	// look for clipping surface
 	unsigned int idx = 0 ;
+	bool found = false;
 	for(;idx<m_clippingSurfaces.size(); ++idx) {
-		if(id == m_clippingSurfaces[idx].m_vicusId)
+		if(id == m_clippingSurfaces[idx].m_vicusId) {
+			found = true;
 			break;
+		}
 	}
+	if (!found) {
+		const VICUS::Surface *surf = dynamic_cast<const VICUS::Surface*>(m_prjVicus.objectById(id));
+		Q_ASSERT(surf != nullptr);
+		m_clippingSurfaces.push_back(ClippingSurface(id, *surf));
+		return m_clippingSurfaces.back();
+	}
+
 	return m_clippingSurfaces[idx];
 }
 

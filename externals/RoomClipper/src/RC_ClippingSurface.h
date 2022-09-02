@@ -11,8 +11,9 @@ struct ClippingObject {
 
 	ClippingObject() {}
 
-	ClippingObject(unsigned int id, double distance) :
+	ClippingObject(unsigned int id, const VICUS::Surface &surf, double distance) :
 		m_vicusId(id),
+		m_vicusSurface(surf),
 		m_distance(distance)
 	{}
 
@@ -21,6 +22,7 @@ struct ClippingObject {
 	}
 
 	unsigned int					m_vicusId;					///< id of clipping surface
+	VICUS::Surface					m_vicusSurface;				///< Pointer to vicus surfaces
 	double							m_distance;					///< distance to clipping object
 
 };
@@ -30,11 +32,14 @@ class ClippingSurface
 public:
 	ClippingSurface(){}
 
-	ClippingSurface(unsigned int id):
-		m_vicusId(id)
+	ClippingSurface(unsigned int id, const VICUS::Surface &surf):
+		m_vicusId(id),
+		m_vicusSurface(surf)
 	{}
 
-	unsigned int					m_vicusId;					///< point to our original surface
+	unsigned int					m_vicusId;					///< id of vicus surface
+
+	VICUS::Surface					m_vicusSurface;				///< Pointer to vicus surface
 
 	std::vector<ClippingObject>		m_clippingObjects;			///< set with clipping objects
 

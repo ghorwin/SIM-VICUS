@@ -24,6 +24,7 @@ public:
 		m_maxDistanceOfSurfaces(maxDistanceOfSurfaces)
 	{
 		m_newPrjVicus = m_prjVicus;
+		m_newPrjVicus.updatePointers();
 	}
 
 
@@ -51,7 +52,7 @@ private:
 						   std::vector<IBKMK::Polygon2D> &mainIntersections,
 						   IBKMK::Polygon2D &hole, bool normalInterpolation = false);
 
-	VICUS::Project									m_prjVicus;					///< copy of VICUS project
+	const VICUS::Project							m_prjVicus;					///< copy of VICUS project
 
 	VICUS::Project									m_newPrjVicus;				///< VICUS project with added surfaces
 
