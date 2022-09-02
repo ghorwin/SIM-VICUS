@@ -53,7 +53,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id) {
 		m_ui->lineEditController->clear();
 		m_ui->lineEditController->setDisabled(true);
 		m_ui->tableWidgetElements->blockSignals(true);
-		m_ui->tableWidgetElements->clear();
+		m_ui->tableWidgetElements->setRowCount(0);
 		m_ui->tableWidgetElements->blockSignals(false);
 
 		// Note: color button is disabled, hence color is gray
