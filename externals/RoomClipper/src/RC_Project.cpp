@@ -110,7 +110,14 @@ void RC::Project::clipSurfaces() {
 		// look for clipping surface
 		ClippingSurface &cs = getClippingSurfaceById(it->first);
 		VICUS::Surface s1 = cs.m_vicusSurface;
+
+		IBKMK::Vector3D localX = s1.geometry().localX();
+		IBKMK::Vector3D localY = s1.geometry().localY();
+		IBKMK::Vector3D offset = s1.geometry().offset();
+		QString displayName = s1.m_displayName;
+
 		VICUS::Room *r = m_newPrjVicus.roomByID(s1.m_parent->m_id);
+		unsigned int surfIdx = 0;
 
 		// init all cutting objects
 		std::vector<IBKMK::Polygon2D> mainDiffs, mainIntersections, clippingPolygons;
@@ -122,7 +129,7 @@ void RC::Project::clipSurfaces() {
 		// delete original surfaces
 		unsigned int eraseIdx = 0;
 		for(;eraseIdx<r->m_surfaces.size(); ++eraseIdx){
-			if(r->m_surfaces[eraseIdx].m_id == s1.m_parent->m_id)
+			if(r->m_surfaces[eraseIdx].m_id == s1.m_id)
 				break;
 		}
 		r->m_surfaces.erase(r->m_surfaces.begin()+eraseIdx);
@@ -145,7 +152,7 @@ void RC::Project::clipSurfaces() {
 				qDebug() << "x: " << p.m_x << "y: " << p.m_y << "z: " << p.m_z;
 				// project points onto the plane
 				try {
-					IBKMK::planeCoordinates(s1.geometry().offset(), s1.geometry().localX(), s1.geometry().localY(),
+					IBKMK::planeCoordinates(s1.geometry().offset(), localX, localY,
 											p-co.m_distance*s1.geometry().normal(), vertexes[i].m_x, vertexes[i].m_y);
 
 				}  catch (...) {
@@ -164,10 +171,11 @@ void RC::Project::clipSurfaces() {
 					continue;
 
 				s1.m_id = ++id;
+				s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
 
 				// calculate new offset 3D
-				IBKMK::Vector3D newOffset3D = s1.geometry().offset()	+ s1.geometry().localX() * poly.vertexes()[0].m_x
-						+ s1.geometry().localY() * poly.vertexes()[0].m_y;
+				IBKMK::Vector3D newOffset3D = offset	+ localX * poly.vertexes()[0].m_x
+														+ localY * poly.vertexes()[0].m_y;
 				// calculate new ofsset 2D
 				IBKMK::Vector2D newOffset2D = poly.vertexes()[0];
 
@@ -199,10 +207,11 @@ void RC::Project::clipSurfaces() {
 				continue;
 
 			s1.m_id = ++id;
+			s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
 
 			// calculate new offset 3D
-			IBKMK::Vector3D newOffset3D = s1.geometry().offset()	+ s1.geometry().localX() * poly.vertexes()[0].m_x
-					+ s1.geometry().localY() * poly.vertexes()[0].m_y;
+			IBKMK::Vector3D newOffset3D = offset	+ localX * poly.vertexes()[0].m_x
+													+ localY * poly.vertexes()[0].m_y;
 			// calculate new ofsset 2D
 			IBKMK::Vector2D newOffset2D = poly.vertexes()[0];
 

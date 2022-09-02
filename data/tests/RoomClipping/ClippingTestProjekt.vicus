@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Fr Sep 2 12:27:31 2022</Created>
-		<LastEdited>Fr Sep 2 12:27:31 2022</LastEdited>
+		<LastEdited>Fr Sep 2 15:51:06 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -11,12 +11,12 @@
 			<TimeZone>13</TimeZone>
 		</Location>
 		<ViewSettings>
-			<CameraTranslation>-22.3275 -53.895 11.0451</CameraTranslation>
+			<CameraTranslation>-8.80029 -52.1035 17.5412</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.717948</Wp>
-				<X>0.572412</X>
-				<Y>-0.246783</Y>
-				<Z>-0.309827</Z>
+				<Wp>0.891892</Wp>
+				<X>0.441041</X>
+				<Y>-0.0443688</Y>
+				<Z>-0.0896469</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -48,16 +48,16 @@
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
 									<Surface id="12" displayName="Floor" displayColor="#566094">
-										<Polygon3D offset="1.07327 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+										<Polygon3D offset="4.71592 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
-									<Surface id="14" displayName="Ceiling" displayColor="#963214">
-										<Polygon3D offset="-8.92673 -30 5.46" normal="-0 0 1" localX="0 -1 0">0 0, 10 0, 10 10, 0 10</Polygon3D>
-									</Surface>
-									<Surface id="16" displayName="Wall 1" displayColor="#c8c88c">
-										<Polygon3D offset="1.07327 -40 2.76" normal="1 0 0" localX="0 1 0">0 0, 10 0, 10 2.7, 0 2.7</Polygon3D>
-									</Surface>
-									<Surface id="22" displayName="Wall 4" displayColor="#c8c88c">
-										<Polygon3D offset="1.07327 -30 2.76" normal="0 1 -0" localX="-1 0 0">0 0, 10 0, 10 2.7, 0 2.7</Polygon3D>
+								</Surfaces>
+							</Room>
+							<Room id="13" displayName="Room">
+								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
+								<Surfaces>
+									<Surface id="15" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="-6.682 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -69,22 +69,11 @@
 		<ComponentInstances>
 			<ComponentInstance id="3" idComponent="1011" idSideASurface="5" />
 			<ComponentInstance id="13" idComponent="50014" idSideASurface="12" />
-			<ComponentInstance id="15" idComponent="1011" idSideASurface="14" />
-			<ComponentInstance id="17" idComponent="1001" idSideASurface="16" />
-			<ComponentInstance id="23" idComponent="1001" idSideASurface="22" />
+			<ComponentInstance id="16" idComponent="50014" idSideASurface="15" />
 		</ComponentInstances>
 		<PlainGeometry />
 		<EmbeddedDatabase>
 			<Materials>
-				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-				</Material>
 				<Material id="10003" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#a2b84b">
 					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 					<Manufacturer>generic</Manufacturer>
@@ -168,14 +157,6 @@
 				</Material>
 			</Materials>
 			<Constructions>
-				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
 				<Construction id="1009" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
 					<UsageType>Ceiling</UsageType>
 					<MaterialLayers>
@@ -252,12 +233,6 @@
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1001</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-				</Component>
 				<Component id="1011" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
 					<Type>Ceiling</Type>
 					<IdConstruction>1009</IdConstruction>
