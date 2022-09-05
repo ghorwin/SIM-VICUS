@@ -2811,16 +2811,18 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			subNetComponentIds.insert(comp->m_id);
 
 			// check and collect controller
-			const VICUS::NetworkController *ctrl = dbNetworkCtrl[elem.m_controlElementId];
-			if (ctrl == nullptr) {
-				QString msg = qApp->tr("Network controller with id #%1 does not exist in database").arg(elem.m_controlElementId);
-				errorStack.append(msg);
-				throw IBK::Exception(msg.toStdString(), FUNC_ID);
+			if (elem.m_controlElementId != INVALID_ID) {
+				const VICUS::NetworkController *ctrl = dbNetworkCtrl[elem.m_controlElementId];
+				if (ctrl == nullptr) {
+					QString msg = qApp->tr("Network controller with id #%1 does not exist in database").arg(elem.m_controlElementId);
+					errorStack.append(msg);
+					throw IBK::Exception(msg.toStdString(), FUNC_ID);
+				}
+				if (!ctrl->isValid(dbSchedules))
+						errorStack.append(qApp->tr("Network controller with id #%1 has invalid parameters").arg(elem.m_controlElementId));
+				else
+					subNetControllerIds.insert(ctrl->m_id);
 			}
-			if (!ctrl->isValid(dbSchedules))
-				errorStack.append(qApp->tr("Network controller with id #%1 has invalid parameters").arg(elem.m_controlElementId));
-
-			subNetControllerIds.insert(ctrl->m_id);
 
 			// collect schedules ids
 			for (unsigned int id: comp->m_scheduleIds)
@@ -2842,6 +2844,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			nandradComp.m_polynomCoefficients = comp->m_polynomCoefficients;
 			if (comp->m_pipePropertiesId != INVALID_ID)
 				allPipeIds.insert(comp->m_pipePropertiesId);
+
+			network.m_components.push_back(nandradComp);
 		}
 
 		// transfer controller
@@ -2858,6 +2862,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 				nandradCtr.m_para[i] = ctr->m_para[i];
 			for (unsigned int i=0; i<NANDRAD::HydraulicNetworkControlElement::NUM_ID; ++i)
 				nandradCtr.m_idReferences[i] = ctr->m_idReferences[i];
+
+			network.m_controlElements.push_back(nandradCtr);
 		}
 
 		// remember all inlet / outlet node ids
@@ -2867,6 +2873,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			if (elem.m_inletNodeId != SubNetwork::OUTLET_ID)
 				allNetworkNodeIds.push_back(elem.m_outletNodeId);
 		}
+
 
 		// transfer elements
 		std::map<unsigned int, std::vector<unsigned int>> components2ElementsMap;
@@ -2885,6 +2892,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			}
 			else
 				nandradElement.m_inletNodeId = elem.m_inletNodeId;
+
 			if (elem.m_outletNodeId == SubNetwork::OUTLET_ID) {
 				nandradElement.m_outletNodeId = uniqueIdAdd(allNetworkNodeIds);
 				systemSplitterNodeId = nandradElement.m_outletNodeId; // we remember this node id for pipe connection later
@@ -2916,6 +2924,10 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			// transfer element
 			network.m_elements.push_back(nandradElement);
 		}
+
+		// set reference element id
+		Q_ASSERT(network.m_elements.size()>0);
+		network.m_referenceElementId = network.m_elements[0].m_id;
 
 		// create object lists
 		std::map<unsigned int, std::string> schedule2ObjectListMap;
@@ -3098,9 +3110,13 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	NANDRAD::ObjectList idealHeaterObjectList;
 	NANDRAD::ObjectList pumpObjectList;
 
-	// If there is no Vicus Subnetwork:
+	// If there is no Vicus Subnetwork: create pump and heater
 
 	if (supplySystem.m_supplyType != SupplySystem::ST_SubNetwork) {
+
+		// create id's for system splitter / mixer
+		systemMixerNodeId = uniqueIdAdd(allNetworkNodeIds);
+		systemSplitterNodeId = uniqueIdAdd(allNetworkNodeIds);
 
 		// create pump
 		pumpElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
@@ -3135,6 +3151,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 
 		// connect to ideal heating
 		idealHeaterElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
+		idealHeaterElem.m_displayName = "Ideal heater";
 		idealHeaterElem.m_componentId = nandradHeater.m_id;
 		idealHeaterElem.m_inletNodeId = systemMixerNodeId;
 		idealHeaterElem.m_outletNodeId = pumpElem.m_inletNodeId;
@@ -3161,6 +3178,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			// craetea supply pipe and connect to pump
 			NANDRAD::HydraulicNetworkElement supplyPipeElem;
 			supplyPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
+			// meaningful display name
+			supplyPipeElem.m_displayName = IBK::FormatString("supply pipe zone id %1 ").arg(dataSurfaceHeating[i].m_controlledZoneId).str();
 			// connect to pipe properties
 			supplyPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
 			// connect to component 'Supply pipe'
@@ -3185,6 +3204,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		// create and fill a new network element
 		NANDRAD::HydraulicNetworkElement underfloorPipeElem;
 		underfloorPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
+		// meaningful display name
+		underfloorPipeElem.m_displayName = IBK::FormatString("underfloor pipe zone id %1 ").arg(dataSurfaceHeating[i].m_controlledZoneId).str();
 		// connect to pipe properties
 		underfloorPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
 		// connect to component 'Underfloor heating'
