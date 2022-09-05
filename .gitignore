@@ -47,6 +47,7 @@ Makefile*
 *.vcxproj.user
 *.~p2
 *.autosave
+object_script.*
 
 *.lyx~
 *.lyx\#
