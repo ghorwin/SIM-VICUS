@@ -50,7 +50,7 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 	// connect browse filename widget
 	connect(m_ui->widgetBrowseFileNameSupplyFMU, SIGNAL(editingFinished()), this, SLOT(on_supplyFMUFile_editingFinished()));
 	// and set up
-	m_ui->widgetBrowseFileNameSupplyFMU->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->widgetBrowseFileNameSupplyFMU->setup("", true, true, tr("FMU file (*.fmu)"), SVSettings::instance().m_dontUseNativeDialogs);
 
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);

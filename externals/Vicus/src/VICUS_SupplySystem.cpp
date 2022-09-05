@@ -17,10 +17,15 @@ AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement 
 	// check parameters
 
 	if (m_supplyType != otherSupSys->m_supplyType ||
-			m_para != otherSupSys->m_para ||
-			m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
-			m_idSupplyFMU != otherSupSys->m_idSupplyFMU)
+		m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
+		m_idSupplyFMU != otherSupSys->m_idSupplyFMU ||
+		m_idSubNetwork != otherSupSys->m_idSubNetwork)
 		return Different;
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (m_para[i] != otherSupSys->m_para[i])
+			return Different;
+	}
 
 	// check meta data
 
