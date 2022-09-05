@@ -211,8 +211,7 @@ public:
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath,
-									const std::vector<unsigned int> &usedElementIds) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 
 
 	// *** STATIC FUNCTIONS ***
@@ -324,8 +323,7 @@ private:
 	void generateBuildingProjectDataNeu(const QString &modelName,
 										NANDRAD::Project & p, QStringList & errorStack,
 										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										std::vector<MappingElement> &mappings,
-										std::vector<unsigned int> & usedNetworkElementIds)const;
+										std::vector<MappingElement> &mappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,

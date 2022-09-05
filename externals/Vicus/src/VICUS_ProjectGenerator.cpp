@@ -717,8 +717,7 @@ bool Project::exportAreaAndVolume() {
 
 void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-											 std::vector<MappingElement> &mappings,
-											 std::vector<unsigned int> &usedNetworkElementIds) const{
+											 std::vector<MappingElement> &mappings) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -794,7 +793,9 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 		usedNetworkIds.push_back(net.m_id);
 	}
 
-	// generate vector of used network ids
+	// vector that holds all network element ids, will be filled within the loop
+	std::vector<unsigned int> usedNetworkElementIds;
+
 	SupplySystemNetworkModelGenerator supplySystemNetworkModelGenerator(this);
 	supplySystemNetworkModelGenerator.m_placeholders = p.m_placeholders;
 
@@ -804,7 +805,7 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 		for(const VICUS::SupplySystem &supplySystem : m_embeddedDB.m_supplySystems) {
 			if(supplySystem.m_id == it->first) {
 				std::vector<DataSurfaceHeating> &surfaceHeatings = it->second;
-				supplySystemNetworkModelGenerator.generate(supplySystem, surfaceHeatings, usedModelIds, usedNetworkIds, usedNetworkElementIds,errorStack);
+				supplySystemNetworkModelGenerator.generate(supplySystem, surfaceHeatings, usedModelIds, usedNetworkIds, usedNetworkElementIds, errorStack);
 				break;
 			}
 		}
@@ -3542,8 +3543,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 // *** NETWORK STUFF ***
 
-void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath,
-										 const std::vector<unsigned int> & usedElementIds) const {
+void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath) const {
 	FUNCID(Project::generateNetworkProjectData);
 
 	// get selected Vicus Network
