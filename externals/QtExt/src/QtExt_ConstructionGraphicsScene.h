@@ -61,6 +61,7 @@ public:
 
 	struct LineMarker {
 
+		LineMarker() = default;
 		LineMarker(double pos, const QPen& pen, const QString& name):
 			m_pos(pos),
 			m_pen(pen),
