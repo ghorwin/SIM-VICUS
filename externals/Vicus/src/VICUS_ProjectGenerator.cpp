@@ -327,6 +327,7 @@ public:
 				  const std::vector<DataSurfaceHeating> &dataSurfaceHeating,
 				  std::vector<unsigned int> &usedModelIds,
 				  std::vector<unsigned int> &usedNetworkIds,
+				  std::vector<unsigned int> &usedNetworkElementIds,
 				  QStringList &errorStack);
 
 	// All definition lists below have the same size and share the same index
@@ -716,7 +717,8 @@ bool Project::exportAreaAndVolume() {
 
 void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-											 std::vector<MappingElement> &mappings) const{
+											 std::vector<MappingElement> &mappings,
+											 std::vector<unsigned int> &usedNetworkElementIds) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -796,12 +798,13 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	SupplySystemNetworkModelGenerator supplySystemNetworkModelGenerator(this);
 	supplySystemNetworkModelGenerator.m_placeholders = p.m_placeholders;
 
+	// at the moment, we generate a new network element id for all generic networks and predfined networks
 	for(std::map<unsigned int, std::vector<DataSurfaceHeating> >::iterator it = supplyIdToSurfaceHeatings.begin(); it != supplyIdToSurfaceHeatings.end(); ++it) {
 		// find supply component
 		for(const VICUS::SupplySystem &supplySystem : m_embeddedDB.m_supplySystems) {
 			if(supplySystem.m_id == it->first) {
 				std::vector<DataSurfaceHeating> &surfaceHeatings = it->second;
-				supplySystemNetworkModelGenerator.generate(supplySystem, surfaceHeatings, usedModelIds, usedNetworkIds, errorStack);
+				supplySystemNetworkModelGenerator.generate(supplySystem, surfaceHeatings, usedModelIds, usedNetworkIds, usedNetworkElementIds,errorStack);
 				break;
 			}
 		}
@@ -2708,6 +2711,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 												 const std::vector<DataSurfaceHeating> & dataSurfaceHeating,
 												   std::vector<unsigned int> &usedModelIds,
 												   std::vector<unsigned int> &usedNetworkIds,
+												   std::vector<unsigned int> &usedNetworkElementIds,
 												   QStringList &errorStack) {
 	FUNCID(SupplySystemNetworkModelGenerator::generate);
 
@@ -2719,7 +2723,6 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 
 	// 2.) Create network components
 	std::vector<unsigned int> allNetworkComponentIds;
-	std::vector<unsigned int> allNetworkElementIds;
 	std::vector<unsigned int> allNetworkControllerIds;
 	std::vector<unsigned int> allNetworkNodeIds;
 	unsigned int systemSplitterNodeId = INVALID_ID; // the node of the splitter (outlet node of supply system = splitter for pipe network)
@@ -2869,8 +2872,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		for (const NetworkElement &elem: subNetwork->m_elements) {
 
 			NANDRAD::HydraulicNetworkElement nandradElement;
-			nandradElement.m_id = elem.m_id;
-			allNetworkElementIds.push_back(elem.m_id);
+			nandradElement.m_id = uniqueIdAdd(usedNetworkElementIds);
 			nandradElement.m_displayName = elem.m_displayName.toStdString();
 			nandradElement.m_componentId = elem.m_componentId;
 			nandradElement.m_controlElementId = elem.m_controlElementId;
@@ -2908,7 +2910,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			}
 			// remember elements for each component, which has schedules (for object list)
 			if (!comp->m_scheduleIds.empty())
-				components2ElementsMap[elem.m_componentId].push_back(elem.m_id);
+				components2ElementsMap[elem.m_componentId].push_back(nandradElement.m_id);
 
 			// transfer element
 			network.m_elements.push_back(nandradElement);
@@ -3100,7 +3102,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	if (supplySystem.m_supplyType != SupplySystem::ST_SubNetwork) {
 
 		// create pump
-		pumpElem.m_id = VICUS::uniqueIdAdd(allNetworkElementIds);
+		pumpElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 		pumpElem.m_componentId = nandradPump.m_id;
 		pumpElem.m_displayName = "Mass flux controlled pump";
 		pumpElem.m_inletNodeId = uniqueIdAdd(allNetworkNodeIds);
@@ -3131,7 +3133,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		pumpObjectList.m_filterID.m_ids.insert(pumpElem.m_id);
 
 		// connect to ideal heating
-		idealHeaterElem.m_id = VICUS::uniqueIdAdd(allNetworkElementIds);
+		idealHeaterElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 		idealHeaterElem.m_componentId = nandradHeater.m_id;
 		idealHeaterElem.m_inletNodeId = systemMixerNodeId;
 		idealHeaterElem.m_outletNodeId = pumpElem.m_inletNodeId;
@@ -3157,7 +3159,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		if(!IBK::nearly_equal<4>(lengthSupply, 0.0 ) ) {
 			// craetea supply pipe and connect to pump
 			NANDRAD::HydraulicNetworkElement supplyPipeElem;
-			supplyPipeElem.m_id = VICUS::uniqueIdAdd(allNetworkElementIds);
+			supplyPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 			// connect to pipe properties
 			supplyPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
 			// connect to component 'Supply pipe'
@@ -3181,7 +3183,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 
 		// create and fill a new network element
 		NANDRAD::HydraulicNetworkElement underfloorPipeElem;
-		underfloorPipeElem.m_id = VICUS::uniqueIdAdd(allNetworkElementIds);
+		underfloorPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
 		// connect to pipe properties
 		underfloorPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
 		// connect to component 'Underfloor heating'
@@ -3540,7 +3542,8 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 // *** NETWORK STUFF ***
 
-void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath) const {
+void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath,
+										 const std::vector<unsigned int> & usedElementIds) const {
 	FUNCID(Project::generateNetworkProjectData);
 
 	// get selected Vicus Network

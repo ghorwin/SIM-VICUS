@@ -102,7 +102,7 @@ public:
 	/*! FMU path for Database FMU mode. */
 	QString					m_supplyFMUPath;					// XML:E
 	/*! Id for database FMU. */
-	IDType					m_supplyFMUId = VICUS::INVALID_ID;	// XML:E
+	IDType					m_idSupplyFMU = VICUS::INVALID_ID;	// XML:E
 	/*! Id of vicus sub network */
 	IDType					m_idSubNetwork = VICUS::INVALID_ID;	// XML:E
 

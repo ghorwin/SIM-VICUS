@@ -937,8 +937,9 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
 
+	std::vector<unsigned int> usedNetworkElementIds;
 	generateBuildingProjectDataNeu(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
-								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
+								   p, errorStack, surfaceIdsVicusToNandrad, mappings, usedNetworkElementIds);
 
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);
@@ -959,7 +960,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	generateNetworkProjectData(p, errorStack, nandradProjectPath);
+	generateNetworkProjectData(p, errorStack, nandradProjectPath, usedNetworkElementIds);
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during network data conversion.", FUNC_ID);
 
