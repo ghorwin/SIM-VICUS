@@ -645,7 +645,7 @@ void ConstructionGraphicsScene::drawWall() {
 		int width = m_xpos[i] - left;
 
 		QtExt::HatchingType hatching = m_inputData[i-1].m_hatch;
-		if((i-1) == markedLayer) {
+		if (int(i)-1 == markedLayer) {
 			hatchDist = std::max(width / 20, (int)(m_internalPens->m_hatchingPen.widthF() * 3));
 			hatching = QtExt::HT_LinesObliqueLeftToRight;
 			m_internalPens->m_hatchingPen.setColor(QtExt::contrastColor(m_inputData[i-1].m_color, Qt::black));
