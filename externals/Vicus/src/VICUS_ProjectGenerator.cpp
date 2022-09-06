@@ -334,11 +334,10 @@ public:
 
 	std::vector<NANDRAD::HydraulicNetwork>					m_hydraulicNetworks;
 	std::vector<NANDRAD::ObjectList>						m_objLists;
-	std::map<std::string, std::vector<NANDRAD::Schedule> >	m_objListNamesToNandradSchedules;
+	std::map<std::string, std::vector<NANDRAD::Schedule> >	m_scheduleGroups;
+	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter>> m_annualSchedules;
 	std::vector<NANDRAD::HeatLoadSummationModel>			m_summationModels;
 	std::vector<NANDRAD::NetworkInterfaceAdapterModel>		m_adapterModels;
-	NANDRAD::Schedules										m_schedules;
-
 	std::map< std::string, IBK::Path>						m_placeholders;
 
 	// FMU descriptions for connection of an external supply
@@ -878,10 +877,14 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.begin(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.end());
 	p.m_schedules.m_annualSchedules.insert(idealSurfaceHeatCoolGenerator.m_constructionIdToNandradSplines.begin(), idealSurfaceHeatCoolGenerator.m_constructionIdToNandradSplines.end());
 
-	// Schedules from supply systems
-	// TODO
+	// *** Supply systems
 
-	// *** Summation and adapter models ... ***
+	// -> Schedules
+	p.m_objectLists.insert(p.m_objectLists.end(), supplySystemNetworkModelGenerator.m_objLists.begin(), supplySystemNetworkModelGenerator.m_objLists.end());
+	p.m_schedules.m_scheduleGroups.insert(supplySystemNetworkModelGenerator.m_scheduleGroups.begin(), supplySystemNetworkModelGenerator.m_scheduleGroups.end());
+	p.m_schedules.m_annualSchedules.insert(supplySystemNetworkModelGenerator.m_annualSchedules.begin(), supplySystemNetworkModelGenerator.m_annualSchedules.end());
+
+	// -> Summation and adapter models ***
 	if(!supplySystemNetworkModelGenerator.m_summationModels.empty())
 		p.m_models.m_heatLoadSummationModels.insert(p.m_models.m_heatLoadSummationModels.begin(),
 													supplySystemNetworkModelGenerator.m_summationModels.begin(),
@@ -892,14 +895,12 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 													supplySystemNetworkModelGenerator.m_adapterModels.begin(),
 													supplySystemNetworkModelGenerator.m_adapterModels.end() );
 
-	// *** Networks ... ***
+	// -> Networks
 	p.m_hydraulicNetworks.insert(p.m_hydraulicNetworks.end(),
 								 supplySystemNetworkModelGenerator.m_hydraulicNetworks.begin(),
 								 supplySystemNetworkModelGenerator.m_hydraulicNetworks.end());
-	p.m_objectLists.insert(p.m_objectLists.end(), supplySystemNetworkModelGenerator.m_objLists.begin(), supplySystemNetworkModelGenerator.m_objLists.end());
-	p.m_schedules.m_scheduleGroups.insert(supplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.begin(), supplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.end());
 
-	// *** FMI Descriptions ***
+	// -> FMI Descriptions
 	if(!supplySystemNetworkModelGenerator.m_inputVariables.empty() ) {
 		if(p.m_fmiDescription.m_modelName.empty())
 			p.m_fmiDescription.m_modelName = modelName.toStdString();
@@ -911,6 +912,7 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 		p.m_fmiDescription.m_outputVariables.insert(p.m_fmiDescription.m_outputVariables.end(), supplySystemNetworkModelGenerator.m_outputVariables.begin(), supplySystemNetworkModelGenerator.m_outputVariables.end());
 	}
 }
+
 
 
 void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
@@ -2792,7 +2794,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			throw IBK::Exception(msg.toStdString(), FUNC_ID);
 		}
 
-		// transfer sub network data
+		// *** Transfer sub network data
 		std::set<unsigned int> subNetComponentIds;
 		std::set<unsigned int> subNetControllerIds;
 		std::set<unsigned int> subNetScheduleIds;
@@ -2832,7 +2834,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		if (!errorStack.empty())
 			return;
 
-		// transfer components
+		// *** Transfer components
 		for (unsigned int compId: subNetComponentIds) {
 			const VICUS::NetworkComponent *comp = dbNetworkComps[compId];
 			NANDRAD::HydraulicNetworkComponent nandradComp;
@@ -2848,7 +2850,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 			network.m_components.push_back(nandradComp);
 		}
 
-		// transfer controller
+		// *** Transfer controller
 		for (unsigned int ctrId: subNetControllerIds) {
 			const VICUS::NetworkController *ctr = dbNetworkCtrl[ctrId];
 			NANDRAD::HydraulicNetworkControlElement nandradCtr;
@@ -2875,7 +2877,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		}
 
 
-		// transfer elements
+		// *** Transfer elements
 		std::map<unsigned int, std::vector<unsigned int>> components2ElementsMap;
 		for (const NetworkElement &elem: subNetwork->m_elements) {
 
@@ -2929,49 +2931,50 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		Q_ASSERT(network.m_elements.size()>0);
 		network.m_referenceElementId = network.m_elements[0].m_id;
 
-		// create object lists
-		std::map<unsigned int, std::string> schedule2ObjectListMap;
+		// *** Transfer schedules and create object lists
 		for(auto it=components2ElementsMap.begin(); it!=components2ElementsMap.end(); ++it){
+
+			// get component and required schedule names
 			const NetworkComponent *comp = dbNetworkComps[it->first];
 			Q_ASSERT(comp!=nullptr);
-			NANDRAD::ObjectList objList;
-			objList.m_name = comp->m_displayName.encodedString() + " elements";
-			objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			for (unsigned int elemId: it->second)
-				objList.m_filterID.m_ids.insert(elemId);
-			m_objLists.push_back(objList);
-			// remember object list names for each schedule
-			for (unsigned int schedId: comp->m_scheduleIds)
-				schedule2ObjectListMap[schedId] = objList.m_name;
+			NANDRAD::HydraulicNetworkComponent::ModelType modelType = NetworkComponent::nandradNetworkComponentModelType(comp->m_modelType);
+			std::vector<std::string> schedNames = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(modelType);
+			Q_ASSERT(schedNames.size() == comp->m_scheduleIds.size()); // this has been checked in isValid() above
 
-			// create a schedule group for each object list
-			m_schedules.m_scheduleGroups[objList.m_name] = std::vector<NANDRAD::Schedule>();
-		}
+			// for each schedule we create an object list and schedule group
+			for (unsigned int i=0; i<comp->m_scheduleIds.size(); ++i) {
 
-		// check and transfer schedules
-		for (unsigned int schedId: subNetScheduleIds){
+				// check schedule
+				unsigned int schedId = comp->m_scheduleIds[i];
+				const Schedule *sched = dbSchedules[schedId];
+				if (sched == nullptr) {
+					QString msg = qApp->tr("Schedule with id #%1 does not exist in database").arg(schedId);
+					errorStack.append(msg);
+					continue;
+				}
+				std::string err;
+				if (!sched->isValid(err, true, m_placeholders)){
+					errorStack.append(QString::fromStdString(err));
+					continue;
+				}
 
-			// check
-			const Schedule *sched = dbSchedules[schedId];
-			if (sched == nullptr) {
-				QString msg = qApp->tr("Schedule with id #%1 does not exist in database").arg(schedId);
-				errorStack.append(msg);
-				throw IBK::Exception(msg.toStdString(), FUNC_ID);
+				// create object list
+				NANDRAD::ObjectList objList;
+				objList.m_name = comp->m_displayName.string() + " - " + sched->m_displayName.string();
+				objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				for (unsigned int elemId: it->second)
+					objList.m_filterID.m_ids.insert(elemId);
+				m_objLists.push_back(objList);
+
+				// transfer schedule
+				m_scheduleGroups[objList.m_name] = std::vector<NANDRAD::Schedule>();
+				std::vector<NANDRAD::LinearSplineParameter> splines;
+				sched->insertIntoNandradSchedulegroup(schedNames[i], m_scheduleGroups[objList.m_name], splines, m_placeholders);
+				// annual schedules handled separately
+				if (!splines.empty())
+					m_annualSchedules[objList.m_name].push_back(splines[0]);
 			}
-			std::string err;
-			if (!sched->isValid(err, true, m_placeholders))
-				errorStack.append(QString::fromStdString(err));
-
-			// transfer
-			std::string objListName = schedule2ObjectListMap[schedId];
-			std::vector<NANDRAD::LinearSplineParameter> splines;
-			sched->insertIntoNandradSchedulegroup(sched->m_displayName.encodedString(), m_schedules.m_scheduleGroups[objListName], splines, m_placeholders);
-			// annual schedules handled separately
-			if (!splines.empty())
-				m_schedules.m_annualSchedules[objListName].push_back(splines[0]);
-
 		}
-
 
 	} // end if model type SubNetwork
 
@@ -3003,7 +3006,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	// 4.) Configurate network
 
 	// retrieve maximum mass flux through the supply branch
-	double maxMassFlux = 0.0;
+	double maxMassFlux = 1.0; // default value in case no value is given
 
 	switch (supplySystem.m_supplyType) {
 		case VICUS::SupplySystem::ST_StandAlone:
@@ -3014,6 +3017,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		break;
 		// not supported, yet
 		case VICUS::SupplySystem::ST_SubNetwork:
+			maxMassFlux = 1.0; // for the dimensioning of supply pipe lengths, the exact value does not matter
+			break;
 		case VICUS::SupplySystem::ST_DatabaseFMU: break;
 		case VICUS::SupplySystem::NUM_ST: break; // just to make compiler happy
 	}
@@ -3036,10 +3041,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i){
 		const DataSurfaceHeating &dsh = dataSurfaceHeating[i];
 
-		const SurfaceHeating * surfSys = element(m_project->m_embeddedDB.m_surfaceHeatings, dsh.m_heatingSystemId);
+		const SurfaceHeating * surfHeating = element(m_project->m_embeddedDB.m_surfaceHeatings, dsh.m_heatingSystemId);
 
-
-		if(surfSys == nullptr || !surfSys->isValid(pipeDB)){
+		if(surfHeating == nullptr || !surfHeating->isValid(pipeDB)){
 			errorStack.append(qApp->tr("Invalid surface heating/cooling system #%1 referenced from room #%2.")
 							  .arg(dsh.m_heatingSystemId)
 							  .arg(dsh.m_controlledZoneId)
@@ -3048,11 +3052,11 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		}
 
 		//create a system for nandrad
-		Q_ASSERT(surfSys->m_type == SurfaceHeating::T_PipeRegister);
+		Q_ASSERT(surfHeating->m_type == SurfaceHeating::T_PipeRegister);
 
 		//get area of the construction instance
 		double area= dsh.m_area;
-		double pipeSpacing = surfSys->m_para[SurfaceHeating::P_PipeSpacing].value;
+		double pipeSpacing = surfHeating->m_para[SurfaceHeating::P_PipeSpacing].value;
 		double length = area / pipeSpacing;
 		//set pipe length to max 120 m
 		int numberPipes=1;
@@ -3066,20 +3070,20 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		// store number of pipes
 		numbersOfPipes[i] = numberPipes;
 		// store pipe id
-		surfHeatingPipeIds[i] = surfSys->m_idPipe;
+		surfHeatingPipeIds[i] = surfHeating->m_idPipe;
 
 		// store vicus pipe id
-		allPipeIds.insert(surfSys->m_idPipe);
+		allPipeIds.insert(surfHeating->m_idPipe);
 
 		// check pipe
-		const NetworkPipe * pipe = pipeDB[surfSys->m_idPipe];
+		const NetworkPipe * pipe = pipeDB[surfHeating->m_idPipe];
 		if (pipe == nullptr) {
-			QString msg = qApp->tr("Pipe with id #%1 does not exist in database").arg(surfSys->m_idPipe);
+			QString msg = qApp->tr("Pipe with id #%1 does not exist in database").arg(surfHeating->m_idPipe);
 			errorStack.append(msg);
 			continue;
 		}
 		if (!pipe->isValid()){
-			errorStack.append(qApp->tr("Pipe with id #%1 has invalid parameters").arg(surfSys->m_idPipe));
+			errorStack.append(qApp->tr("Pipe with id #%1 has invalid parameters").arg(surfHeating->m_idPipe));
 			continue;
 		}
 
@@ -3145,7 +3149,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		network.m_controlElements.push_back(massFluxControl);
 
 		// create a pump object list
-		pumpObjectList.m_name = std::string("Pump ") + supplySystem.m_displayName.encodedString();
+		pumpObjectList.m_name = std::string("Pump ") + supplySystem.m_displayName.string();
 		pumpObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 		pumpObjectList.m_filterID.m_ids.insert(pumpElem.m_id);
 
@@ -3159,7 +3163,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		network.m_elements.push_back(idealHeaterElem);
 
 		// create a ideal heater object list
-		idealHeaterObjectList.m_name = std::string("Ideal heater ") + supplySystem.m_displayName.encodedString();
+		idealHeaterObjectList.m_name = std::string("Ideal heater ") + supplySystem.m_displayName.string();
 		idealHeaterObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 		idealHeaterObjectList.m_filterID.m_ids.insert(idealHeaterElem.m_id);
 	}
@@ -3309,7 +3313,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		NANDRAD::HeatLoadSummationModel summationModel;
 		summationModel.m_id = VICUS::uniqueIdAdd(usedModelIds);
 		usedModelIds.push_back(summationModel.m_id);
-		summationModel.m_displayName = std::string("Heat load summation ") + supplySystem.m_displayName.encodedString();
+		summationModel.m_displayName = std::string("Heat load summation ") + supplySystem.m_displayName.string();
 		summationModel.m_objectList = idealHeaterObjectList.m_name;
 
 		// add to model vector
@@ -3319,7 +3323,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 		NANDRAD::NetworkInterfaceAdapterModel adapterModel;
 		adapterModel.m_id = VICUS::uniqueIdAdd(usedModelIds);
 		usedModelIds.push_back(adapterModel.m_id);
-		adapterModel.m_displayName = std::string("Network adapter ") + supplySystem.m_displayName.encodedString();
+		adapterModel.m_displayName = std::string("Network adapter ") + supplySystem.m_displayName.string();
 		adapterModel.m_summationModelId = summationModel.m_id;
 		// change fluid capacity pareameter name
 		adapterModel.m_fluidHeatCapacity.set("FluidHeatCapacity", fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value,
@@ -3378,14 +3382,14 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 
 		// add new schedule and object list: pump
 		m_objLists.push_back(pumpObjectList);
-		m_objListNamesToNandradSchedules[pumpObjectList.m_name].push_back(massFluxSetSchedule);
+		m_scheduleGroups[pumpObjectList.m_name].push_back(massFluxSetSchedule);
 		// ideal heater
 		m_objLists.push_back(idealHeaterObjectList);
-		m_objListNamesToNandradSchedules[idealHeaterObjectList.m_name].push_back(supplyTempSchedule);
+		m_scheduleGroups[idealHeaterObjectList.m_name].push_back(supplyTempSchedule);
 		// adapter model
 		m_objLists.push_back(adapterObjectList);
-		m_objListNamesToNandradSchedules[adapterObjectList.m_name].push_back(massFluxSchedule);
-		m_objListNamesToNandradSchedules[adapterObjectList.m_name].push_back(supplyTempSchedule);
+		m_scheduleGroups[adapterObjectList.m_name].push_back(massFluxSchedule);
+		m_scheduleGroups[adapterObjectList.m_name].push_back(supplyTempSchedule);
 
 
 		// 9.) Create FMI description
