@@ -76,14 +76,6 @@
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
-						<HydraulicNetworkHeatExchange modelType="TemperatureSplineEvaporator">
-							<!-- ExternalHeatTransferCoefficient 
-							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter> -->
-							<LinearSplineParameter name="Temperature" interpolationMethod="linear">
-								  <X unit="h">0 12 13 48</X>
-								  <Y unit="C">0 0 10 10</Y>
-							</LinearSplineParameter>
-						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -101,8 +93,18 @@
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
-				</ScheduleGroup>
+				</ScheduleGroup>				
 			</ScheduleGroups>
+			
+			<AnnualSchedules>
+				<ScheduleGroup objectList="heat pump evapo">					
+					<AnnualSchedule name="EvaporatorMeanTemperatureSchedule">
+						<X unit="h">0 12 13 48</X>
+						<Y unit="C">0 0 10 10</Y>
+					</AnnualSchedule>						
+				</ScheduleGroup>
+			</AnnualSchedules>
+			
 		</Schedules>
 		<Outputs>
 			<Definitions>
@@ -163,6 +165,10 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 			<ObjectList name="heat pump">
+				<FilterID>1003</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="heat pump evapo">
 				<FilterID>1003</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
