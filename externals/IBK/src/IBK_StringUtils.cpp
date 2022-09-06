@@ -188,14 +188,14 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 						throw std::exception();
 					vec.push_back(val);
 				} catch (...) {
-					throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 				}
 #else
 				// try to parse from begin of number to this position
 				double val;
 				auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
 				if (answer.ec != std::errc())
-					throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 				vec.push_back(val);
 #endif // IBK_USE_STOD
 			}
@@ -219,13 +219,13 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 				throw;
 			vec.push_back(val);
 		} catch (...) {
-			throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 		}
 #else
 		double val;
 		auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
 		if (answer.ec != std::errc())
-			throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 		vec.push_back(val);
 #endif // IBK_USE_STOD
 	}
