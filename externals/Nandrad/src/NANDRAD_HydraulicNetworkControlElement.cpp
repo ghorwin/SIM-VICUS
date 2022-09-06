@@ -36,7 +36,7 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 
 				if (m_modelType == MT_Constant)
 					m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
-						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+						 std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
 			case CP_ThermostatValue: {

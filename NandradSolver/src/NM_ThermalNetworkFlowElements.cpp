@@ -1159,10 +1159,10 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 			m_condenserMeanTemperature = m_meanTemperature;
 
 			// get scheduled temperatures
-			IBK_ASSERT(m_heatExchangeEvaporatorTemperatureRef != nullptr);
+			IBK_ASSERT(m_evaporatorMeanTemperatureRef != nullptr);
 			IBK_ASSERT(m_condenserOutletSetpointRef != nullptr);
-			m_evaporatorMeanTemperature = *m_heatExchangeEvaporatorTemperatureRef;
-			const double outletSetpointTemperature = *m_condenserOutletSetpointRef;
+			m_evaporatorMeanTemperature = *m_evaporatorMeanTemperatureRef;
+			double outletSetpointTemperature = *m_condenserOutletSetpointRef;
 
 			// condenser heat flux (heating power required by building/added to fluid)
 			m_condenserHeatFlux = m_massFlux * m_fluidHeatCapacity * (outletSetpointTemperature - m_inflowTemperature);
@@ -1183,7 +1183,7 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP; // heat taken from source
 					m_heatLoss = - m_condenserHeatFlux; // negative, because building "removes" this heat from the fluid and heat loss is defined as positive quantity
 					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux;
-					m_temperatureDifference = m_meanTemperature - m_inflowTemperature;
+					m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
 				}
 			}
 
@@ -1215,7 +1215,7 @@ void TNHeatPumpVariable::inputReferences(std::vector<InputReference> & inputRefs
 			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 			ref.m_required = true;
-			ref.m_name.m_name = "HeatExchangeTemperatureEvaporator";
+			ref.m_name.m_name = "EvaporatorMeanTemperatureSchedule";
 			inputRefs.push_back(ref);
 			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
 			inputRefs.push_back(ref);
@@ -1236,7 +1236,7 @@ void TNHeatPumpVariable::setInputValueRefs(std::vector<const double *>::const_it
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
 		} break;
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide: {
-			m_heatExchangeEvaporatorTemperatureRef = *(resultValueRefs++); // TemperatureEvaporator
+			m_evaporatorMeanTemperatureRef = *(resultValueRefs++); // TemperatureEvaporator
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
 		} break;
 		default : ;
@@ -1259,8 +1259,8 @@ void TNHeatPumpVariable::dependencies(const double * ydot, const double * y, con
 	if (m_heatExchangeCondensorHeatLossRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeCondensorHeatLossRef));
 	// add evaporator temperature
-	if (m_heatExchangeEvaporatorTemperatureRef != nullptr)
-		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeEvaporatorTemperatureRef));
+	if (m_evaporatorMeanTemperatureRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_evaporatorMeanTemperatureRef));
 }
 
 
@@ -1274,7 +1274,7 @@ void TNHeatPumpVariable::calculateCOP() {
 	if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
 		IBK_FastMessage(IBK::VL_ALL)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
 										  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
-											IBK::MSG_WARNING, FUNC_ID, IBK::VL_ALL);
+											IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 	}
 	// now calculate COP depending on model and check if it is valid
 	else {
@@ -1299,7 +1299,7 @@ void TNHeatPumpVariable::calculateCOP() {
 			m_COP = 0;
 			IBK_FastMessage(IBK::VL_ALL)(IBK::FormatString("COP is <= 1 in HeatPumpVariable, "
 																"flow element with id '%1'\n").arg(m_flowElement->m_id),
-																IBK::MSG_WARNING, FUNC_ID, IBK::VL_ALL);
+																IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 		}
 	}
 }
