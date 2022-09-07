@@ -200,7 +200,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
-	tr("Building");
+	tr("SubStation");
 	tr("Mixer");
 	tr("Source");
 	tr("Outer diameter (not including optional insulation)");

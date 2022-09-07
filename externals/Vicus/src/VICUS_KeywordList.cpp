@@ -415,7 +415,7 @@ namespace VICUS {
 			// NetworkNode::NodeType
 			case 32 :
 			switch (t) {
-				case 0 : return "Building";
+				case 0 : return "SubStation";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
@@ -910,7 +910,7 @@ namespace VICUS {
 			// NetworkNode::NodeType
 			case 32 :
 			switch (t) {
-				case 0 : return "Building";
+				case 0 : return "SubStation";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
@@ -1406,7 +1406,7 @@ namespace VICUS {
 			// NetworkNode::NodeType
 			case 32 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "Building";
+				case 0 : if (no_description != nullptr) *no_description = true; return "SubStation";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Mixer";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Source";
 			} break;

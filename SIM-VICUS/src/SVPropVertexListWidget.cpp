@@ -1685,7 +1685,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSubStation_clicked() {
 	Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
 	std::vector<VICUS::NetworkNode> nodes;
 	for (const IBKMK::Vector3D &v: geomObj->vertexList()){
-		VICUS::NetworkNode n(0, VICUS::NetworkNode::NT_Building, v, heatDemand);
+		VICUS::NetworkNode n(0, VICUS::NetworkNode::NT_SubStation, v, heatDemand);
 		n.m_displayName = name;
 		nodes.push_back(n);
 	}

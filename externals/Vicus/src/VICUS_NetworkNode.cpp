@@ -60,7 +60,7 @@ void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes
 
 void NetworkNode::updateIsDeadEnd(){
 	// buildings or sources are never dead ends
-	if (m_type == NT_Building || m_type == NT_Source){
+	if (m_type == NT_SubStation || m_type == NT_Source){
 		m_isDeadEnd = false;
 		return;
 	}

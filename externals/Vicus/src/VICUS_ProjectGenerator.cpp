@@ -3593,7 +3593,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	// buildings can only have one connected edge
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
-		if (node.m_type == VICUS::NetworkNode::NT_Building && node.m_edges.size()>1 ) {
+		if (node.m_type == VICUS::NetworkNode::NT_SubStation && node.m_edges.size()>1 ) {
 			errorStack.append(tr("Node with id #%1 has more than one edge connected, but is a building.")
 								 .arg(node.m_id));
 		}
@@ -3989,7 +3989,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			foundPump = true;
 			// now store the Nandrad element ids for all buildings in the pump element
 			for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
-				if (node.m_type == VICUS::NetworkNode::NT_Building)
+				if (node.m_type == VICUS::NetworkNode::NT_SubStation)
 					it->m_observedPressureDiffElementIds.m_values[node.m_id] = nodeElementsMap.at(node.m_id);
 			}
 		}

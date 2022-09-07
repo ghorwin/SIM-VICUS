@@ -166,7 +166,7 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 	for (const VICUS::NetworkNode & no : m_nodes) {
 		double radius = 1 * m_scaleNodes / 100;
 		switch (no.m_type) {
-			case NetworkNode::NT_Building: {
+			case NetworkNode::NT_SubStation: {
 				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
 				if (no.m_maxHeatingDemand.value > 0)
 					radius *= no.m_maxHeatingDemand.value / 1000;
@@ -193,7 +193,7 @@ void Network::setDefaultColors() const{
 			case VICUS::NetworkNode::NT_Source:
 				node.m_color = QColor(230, 138, 0); // orange
 			break;
-			case VICUS::NetworkNode::NT_Building:
+			case VICUS::NetworkNode::NT_SubStation:
 				node.m_color = QColor(0, 107, 179); // blue
 			break;
 			case VICUS::NetworkNode::NT_Mixer:
@@ -338,7 +338,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 			continue;
 		// add node
 		unsigned id = addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - m_origin,
-				NetworkNode::NT_Building);
+				NetworkNode::NT_SubStation);
 		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
@@ -460,7 +460,7 @@ void Network::connectBuildings(unsigned int nextUnusedId, const bool extendSuppl
 
 int Network::nextUnconnectedBuilding() const{
 	for (const NetworkNode &nBuilding: m_nodes){
-		if (nBuilding.m_type == NetworkNode::NT_Building && nBuilding.m_edges.size()==0)
+		if (nBuilding.m_type == NetworkNode::NT_SubStation && nBuilding.m_edges.size()==0)
 			return (int)nBuilding.m_id;
 	}
 	return -1;
@@ -611,7 +611,7 @@ void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<Ne
 	minPathMap.clear();
 	for (const NetworkNode &node: m_nodes) {
 
-		if (node.m_type != NetworkNode::NT_Building)
+		if (node.m_type != NetworkNode::NT_SubStation)
 			continue;
 
 		// there must be a defined maximum heating demand
@@ -929,7 +929,7 @@ unsigned int Network::indexOfEdge(unsigned edgeId) {
 size_t Network::numberOfBuildings() const{
 	size_t count = 0;
 	for (const NetworkNode &n: m_nodes){
-		if (n.m_type == NetworkNode::NT_Building)
+		if (n.m_type == NetworkNode::NT_SubStation)
 			++count;
 	}
 	return count;
@@ -978,7 +978,7 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(10);
 	for (const NetworkNode &n: m_nodes){
-		if (n.m_type==NetworkNode::NT_Building)
+		if (n.m_type==NetworkNode::NT_SubStation)
 			f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand.value << std::endl;
 	}
 	f.close();

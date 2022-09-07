@@ -70,8 +70,8 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 									VICUS::NetworkNode::NT_Mixer);
 	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Source),
 									VICUS::NetworkNode::NT_Source);
-	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Building),
-									VICUS::NetworkNode::NT_Building);
+	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_SubStation),
+									VICUS::NetworkNode::NT_SubStation);
 	m_ui->comboBoxNodeType->blockSignals(false);
 	m_ui->comboBoxNodeType->setCurrentIndex(0);
 

@@ -285,20 +285,26 @@ void SVPropEditNetwork::on_pushButtonSizePipeDimensions_clicked() {
 
 	const SVDatabase & db = SVSettings::instance().m_db;
 	const VICUS::NetworkFluid * fluid = db.m_fluids[network.m_idFluid];
-	if (fluid == nullptr)
-		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
-							.arg(network.m_idFluid), FUNC_ID);
+	try {
+		// check for fluid
+		if (fluid == nullptr)
+			throw IBK::Exception(tr("Could not find fluid with id #%1 in fluid database")
+								.arg(network.m_idFluid).toStdString(), FUNC_ID);
+		// filter out list of available pipes
+		std::vector<const VICUS::NetworkPipe*> availablePipes;
+		for (unsigned int pipeID : network.m_availablePipes) {
+			const VICUS::NetworkPipe * pipe = db.m_pipes[pipeID];
+			if (pipe == nullptr) // skip unavailable/undefined pipes
+				continue;
+			availablePipes.push_back(pipe);
+		}
 
-	// filter out list of available pipes
-	std::vector<const VICUS::NetworkPipe*> availablePipes;
-	for (unsigned int pipeID : network.m_availablePipes) {
-		const VICUS::NetworkPipe * pipe = db.m_pipes[pipeID];
-		if (pipe == nullptr) // skip unavailable/undefined pipes
-			continue;
-		availablePipes.push_back(pipe);
+		// run algorithm
+		network.sizePipeDimensions(fluid, availablePipes);
+
+	}  catch (IBK::Exception &ex) {
+		QMessageBox::critical(this, tr("Error sizing pipes"), ex.what());
 	}
-
-	network.sizePipeDimensions(fluid, availablePipes);
 
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), network);
 	undo->push(); // modifies project and updates views
