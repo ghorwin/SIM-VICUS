@@ -61,9 +61,17 @@ private slots:
 	void on_lineEditHeatCapacity_editingFinished();
 	void on_lineEditThermalConductivity_editingFinished();
 
+	void on_toolButtonAddViscosityPoint_clicked();
+
+	void on_toolButtonRemoveViscosityPoint_clicked();
+
+	void on_tableWidgetViscosity_cellChanged(int row, int column);
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	void modifyViscosity();
 
 	Ui::SVDBNetworkFluidEditWidget *m_ui;
 

@@ -151,6 +151,10 @@ void SVDBNetworkFluidTableModel::resetModel() {
 QModelIndex SVDBNetworkFluidTableModel::addNewItem() {
 	VICUS::NetworkFluid f;
 	f.m_displayName.setEncodedString("en:<new fluid>");
+	f.m_kinematicViscosity.m_values.setValues({0,10},{2e-6, 1e-6}); // we always need at least 2 points!
+	f.m_kinematicViscosity.m_name = "KinematicViscosity"; // important for isValid()
+	f.m_kinematicViscosity.m_xUnit = IBK::Unit("C");
+	f.m_kinematicViscosity.m_yUnit = IBK::Unit("m2/s");
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_fluids.add( f );
 	endInsertRows();
