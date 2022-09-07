@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Fr Sep 2 12:27:31 2022</Created>
-		<LastEdited>Fr Sep 2 15:51:06 2022</LastEdited>
+		<LastEdited>Mi. Sept. 7 13:43:46 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -34,29 +34,29 @@
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
-							<Room id="3" displayName="Room">
+							<Room id="3" displayName="RaumA">
 								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
-									<Surface id="5" displayName="Ceiling" displayColor="#963214">
+									<Surface id="5" displayName="Decke" displayColor="#963214">
 										<Polygon3D offset="-10 -30 2.7" normal="-0 0 1" localX="0 -1 0">0 0, 10 0, 10 10, 0 10</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="10" displayName="Room">
+							<Room id="10" displayName="RaumOst">
 								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
-									<Surface id="12" displayName="Floor" displayColor="#566094">
+									<Surface id="12" displayName="Boden2" displayColor="#566094">
 										<Polygon3D offset="4.71592 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
-							<Room id="13" displayName="Room">
+							<Room id="13" displayName="RaumWest">
 								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
-									<Surface id="15" displayName="Floor" displayColor="#566094">
+									<Surface id="15" displayName="Boden" displayColor="#566094">
 										<Polygon3D offset="-6.682 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 								</Surfaces>
