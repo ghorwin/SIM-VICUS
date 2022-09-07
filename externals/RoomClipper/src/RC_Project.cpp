@@ -300,7 +300,7 @@ void RC::Project::doClipperClipping(const IBKMK::Polygon2D &surf,
 
 		std::vector<IBKMK::Vector2D> vert2D;
 		for(const ClipperLib::IntPoint &ip : path) {
-			vert2D.push_back(IBKMK::Vector2D(ip.X/SCALE_FACTOR, ip.Y/SCALE_FACTOR));
+			vert2D.push_back(IBKMK::Vector2D((double)ip.X/SCALE_FACTOR, (double)ip.Y/SCALE_FACTOR));
 		}
 		poly.setVertexes(vert2D);
 	}
@@ -313,7 +313,7 @@ void RC::Project::doClipperClipping(const IBKMK::Polygon2D &surf,
 
 		std::vector<IBKMK::Vector2D> vert2D;
 		for(const ClipperLib::IntPoint &ip : path) {
-			vert2D.push_back(IBKMK::Vector2D(ip.X/SCALE_FACTOR, ip.Y/SCALE_FACTOR));
+			vert2D.push_back(IBKMK::Vector2D((double)ip.X/SCALE_FACTOR, (double)ip.Y/SCALE_FACTOR));
 		}
 		poly.setVertexes(vert2D);
 	}
