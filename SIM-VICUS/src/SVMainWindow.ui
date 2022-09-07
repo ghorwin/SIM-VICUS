@@ -29,6 +29,7 @@
       <string>Import</string>
      </property>
      <addaction name="actionFileImportEneryPlusIDF"/>
+     <addaction name="actionFileImportNetworkGISData"/>
     </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
@@ -103,12 +104,6 @@
     </property>
     <addaction name="actionToolsExternalPostProcessing"/>
     <addaction name="actionToolsCCMeditor"/>
-   </widget>
-   <widget class="QMenu" name="menuNetworks">
-    <property name="title">
-     <string>&amp;Networks</string>
-    </property>
-    <addaction name="actionNetworkImport"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
     <property name="title">
@@ -194,7 +189,6 @@
    <addaction name="menuEdit"/>
    <addaction name="menuDatabases"/>
    <addaction name="menuBuildings"/>
-   <addaction name="menuNetworks"/>
    <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
    <addaction name="menuTools"/>
@@ -795,6 +789,11 @@
    </property>
    <property name="toolTip">
     <string>Opens an editor window for the application log file</string>
+   </property>
+  </action>
+  <action name="actionFileImportNetworkGISData">
+   <property name="text">
+    <string>Network GIS data ..</string>
    </property>
   </action>
  </widget>

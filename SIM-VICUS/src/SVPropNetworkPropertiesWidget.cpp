@@ -101,8 +101,8 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 
 	// validating line edits
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
-	m_ui->lineEditNodeX->setup(0, std::numeric_limits<double>::max(), tr("x position of node"), true, true);
-	m_ui->lineEditNodeY->setup(0, std::numeric_limits<double>::max(), tr("y position of node"), true, true);
+	m_ui->lineEditNodeX->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("x position of node"), true, true);
+	m_ui->lineEditNodeY->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("y position of node"), true, true);
 	m_ui->lineEditHeatFlux->setup(0, std::numeric_limits<double>::max(), tr("value of constant heat flux"), true, true);
 	m_ui->lineEditTemperature->setup(0, std::numeric_limits<double>::max(), tr("value of constant temperature"), true, true);
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("maximum heating demand at this node"), false, true);

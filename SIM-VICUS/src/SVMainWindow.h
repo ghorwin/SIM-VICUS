@@ -310,10 +310,6 @@ private slots:
 	void on_actionBuildingFloorManager_triggered();
 	void on_actionBuildingSurfaceHeatings_triggered();
 
-
-	void on_actionNetworkImport_triggered();
-
-
 	void on_actionToolsExternalPostProcessing_triggered();
 	void on_actionToolsCCMeditor_triggered();
 
@@ -341,8 +337,7 @@ private slots:
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
 
-
-
+	void on_actionFileImportNetworkGISData_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

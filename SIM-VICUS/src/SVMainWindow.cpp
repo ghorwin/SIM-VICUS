@@ -1178,17 +1178,6 @@ void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 }
 
 
-
-void SVMainWindow::on_actionNetworkImport_triggered() {
-	// opens import network dialog
-	if (m_networkImportDialog == nullptr)
-		m_networkImportDialog = new SVNetworkImportDialog(this);
-
-	m_networkImportDialog->edit();
-}
-
-
-
 void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	// we need a saved project, before we can start the simulation
 	// we require a saved project with at least one network definition
@@ -1456,6 +1445,15 @@ void SVMainWindow::onActionSwitchLanguage() {
 	QString langId = a->data().toString();
 	SVSettings::instance().m_langId = langId;
 	QMessageBox::information(this, tr("Languange changed"), tr("Please restart the software to activate the new language!"));
+}
+
+
+void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
+	// opens import network dialog
+	if (m_networkImportDialog == nullptr)
+		m_networkImportDialog = new SVNetworkImportDialog(this);
+
+	m_networkImportDialog->edit();
 }
 
 

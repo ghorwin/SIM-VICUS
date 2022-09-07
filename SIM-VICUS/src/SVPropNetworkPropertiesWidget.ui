@@ -27,17 +27,17 @@
       <widget class="QComboBox" name="comboBoxNetworkProperties">
        <item>
         <property name="text">
-         <string>Node</string>
+         <string>Nodes</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Edge</string>
+         <string>Pipeline</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>SubNetwork</string>
+         <string>SubNetworks</string>
         </property>
        </item>
        <item>
@@ -63,54 +63,36 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
-          </item>
-          <item row="0" column="0">
            <widget class="QLabel" name="label_15">
             <property name="text">
              <string>Node id</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_17">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>y</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_14">
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>Type</string>
+             <string>y-Position [m]</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="5" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelNodeId">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
+          </item>
+          <item row="3" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
              <string>Maximum heating demand [W]</string>
@@ -118,120 +100,134 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="comboBoxNodeType"/>
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
           </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="labelNodeId">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_17">
             <property name="text">
-             <string/>
+             <string>x-Position [m]</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
           </item>
-          <item row="5" column="0" colspan="2">
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="1" column="0">
-             <widget class="QFrame" name="frameMixer">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QFrame" name="frameSubStation">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Mixer</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Sub Station</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Source</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QFrame" name="frameSource">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Box</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxNodeType"/>
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="1" column="0">
+          <widget class="QFrame" name="frameMixer">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QFrame" name="frameSubStation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Mixer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Sub Station</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QFrame" name="frameSource">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Box</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer name="verticalSpacer">
@@ -253,7 +249,7 @@
        <item>
         <widget class="QGroupBox" name="groupBoxEdge">
          <property name="title">
-          <string>Edit Edge</string>
+          <string>Edit Pipeline</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="4" column="0">
