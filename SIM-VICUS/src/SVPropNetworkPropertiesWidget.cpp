@@ -65,8 +65,8 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 									VICUS::NetworkNode::NT_Mixer);
 	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Source),
 									VICUS::NetworkNode::NT_Source);
-	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Building),
-									VICUS::NetworkNode::NT_Building);
+	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_SubStation),
+									VICUS::NetworkNode::NT_SubStation);
 
 	// connect browse filename widget
 	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
@@ -113,6 +113,10 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 	// disable buttons related to table widgets
 	on_tableWidgetPipes_itemSelectionChanged();
 	on_tableWidgetSubNetworks_itemSelectionChanged();
+
+	m_ui->frameSource->setStyleSheet(".QFrame { background-color: #e68a00; }"); //QColor(230, 138, 0), orange
+	m_ui->frameMixer->setStyleSheet(".QFrame { background-color: #77b300; }"); //QColor(119, 179, 0), green
+	m_ui->frameSubStation->setStyleSheet(".QFrame { background-color: #006bb3; }"); // QColor(0, 107, 179); // blue
 
 }
 
@@ -253,7 +257,7 @@ void SVPropNetworkPropertiesWidget::updateNodeProperties() {
 
 	// if node type is not uniform, no editing will be allowed
 	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_currentNodes[0]->m_type));
-	m_ui->lineEditNodeMaxHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
+	m_ui->lineEditNodeMaxHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_SubStation);
 	m_ui->lineEditNodeX->setEnabled(m_currentNodes.size() == 1);
 	m_ui->lineEditNodeY->setEnabled(m_currentNodes.size() == 1);
 
@@ -298,12 +302,10 @@ void SVPropNetworkPropertiesWidget::updateEdgeProperties() {
 	if (m_currentEdges.size() == 1){
 		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
 		m_ui->lineEditEdgeDisplayName->setText(m_currentEdges[0]->m_displayName);
-		m_ui->labelTempChangeIndicator->setText(QString("%1 K/K").arg(m_currentEdges[0]->m_tempChangeIndicator));
 	}
 	else{
 		m_ui->labelPipeLength->clear();
 		m_ui->lineEditEdgeDisplayName->clear();
-		m_ui->labelTempChangeIndicator->clear();
 	}
 
 	// update supply property
@@ -873,9 +875,12 @@ void SVPropNetworkPropertiesWidget::on_pushButtonSelectEdgesWithPipe_clicked() {
 
 	// collect edges
 	std::set<unsigned int> edgeIds;
-	for (const VICUS::NetworkEdge &e: m_currentNetwork->m_edges) {
-		if (e.m_idPipe == pipeId)
-			edgeIds.insert(e.m_id);
+	const VICUS::Project &p = project();
+	for (const VICUS::Network &network: p.m_geometricNetworks) {
+		for (const VICUS::NetworkEdge &e: network.m_edges) {
+			if (e.m_idPipe == pipeId)
+				edgeIds.insert(e.m_id);
+		}
 	}
 
 	const VICUS::NetworkPipe * pipe = SVSettings::instance().m_db.m_pipes[pipeId];
@@ -891,9 +896,6 @@ void SVPropNetworkPropertiesWidget::on_pushButtonSelectEdgesWithPipe_clicked() {
 
 
 void SVPropNetworkPropertiesWidget::on_pushButtonExchangePipe_clicked() {
-	VICUS::Project p = project();
-	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
-	Q_ASSERT(network!=nullptr);
 
 	// get pipeId from current item
 	QTableWidgetItem *item = m_ui->tableWidgetPipes->currentItem();
@@ -906,13 +908,16 @@ void SVPropNetworkPropertiesWidget::on_pushButtonExchangePipe_clicked() {
 	if (newId == oldId || newId==VICUS::INVALID_ID)
 		return;
 
-	// modify edges
-	for (VICUS::NetworkEdge &e: network->m_edges) {
-		if (e.m_idPipe == oldId)
-			e.m_idPipe = newId;
+	VICUS::Project p = project();
+	for (VICUS::Network &network: p.m_geometricNetworks) {
+		// modify edges
+		for (VICUS::NetworkEdge &e: network.m_edges) {
+			if (e.m_idPipe == oldId)
+				e.m_idPipe = newId;
+		}
+		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), network);
+		undo->push(); // modifies project and updates views
 	}
-	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), *network);
-	undo->push(); // modifies project and updates views
 }
 
 
@@ -926,10 +931,6 @@ void SVPropNetworkPropertiesWidget::on_tableWidgetPipes_itemSelectionChanged() {
 
 void SVPropNetworkPropertiesWidget::on_pushButtonExchangeSubNetwork_clicked() {
 
-	VICUS::Project p = project();
-	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
-	Q_ASSERT(network!=nullptr);
-
 	// get id from current item
 	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->currentItem();
 	if (item == nullptr)
@@ -941,33 +942,39 @@ void SVPropNetworkPropertiesWidget::on_pushButtonExchangeSubNetwork_clicked() {
 	if (newId == oldId || newId==VICUS::INVALID_ID)
 		return;
 
-	// modify nodes
-	for (VICUS::NetworkNode &n: network->m_nodes) {
-		if (n.m_idSubNetwork == oldId)
-			n.m_idSubNetwork = newId;
+	VICUS::Project p = project();
+	for (VICUS::Network &network: p.m_geometricNetworks) {
+		// modify nodes
+		for (VICUS::NetworkNode &n: network.m_nodes) {
+			if (n.m_idSubNetwork == oldId)
+				n.m_idSubNetwork = newId;
+		}
+		// undo
+		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), network);
+		undo->push(); // modifies project and updates views
 	}
-	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), *network);
-	undo->push(); // modifies project and updates views
 }
 
 
 void SVPropNetworkPropertiesWidget::on_pushButtonSelectNodesWithSubNetwork_clicked() {
-	Q_ASSERT(m_currentNetwork != nullptr);
 
 	// get pipeId from current item
 	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->currentItem();
 	if (item == nullptr)
 		return;
-	unsigned int id = item->data(Qt::UserRole).toUInt();
+	unsigned int currentId = item->data(Qt::UserRole).toUInt();
 
 	// collect sub networks
 	std::set<unsigned int> nodeIds;
-	for (const VICUS::NetworkNode &n: m_currentNetwork->m_nodes) {
-		if (n.m_idSubNetwork == id)
-			nodeIds.insert(n.m_id);
+	const VICUS::Project &p = project();
+	for (const VICUS::Network &network: p.m_geometricNetworks) {
+		for (const VICUS::NetworkNode &n: network.m_nodes) {
+			if (n.m_idSubNetwork == currentId)
+				nodeIds.insert(n.m_id);
+		}
 	}
 
-	const VICUS::SubNetwork * sub = SVSettings::instance().m_db.m_subNetworks[id];
+	const VICUS::SubNetwork * sub = SVSettings::instance().m_db.m_subNetworks[currentId];
 	QString undoText;
 	if (sub != nullptr)
 		undoText = tr("Select nodes with sub network '%1'.").arg(QtExt::MultiLangString2QString(sub->m_displayName));

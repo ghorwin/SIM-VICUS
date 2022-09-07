@@ -132,7 +132,7 @@
       <item row="0" column="1">
        <widget class="QPushButton" name="pushButtonConnectBuildings">
         <property name="text">
-         <string>connect buildings</string>
+         <string>connect sub stations</string>
         </property>
        </widget>
       </item>
@@ -147,32 +147,6 @@
        <widget class="QPushButton" name="pushButtonReduceDeadEnds">
         <property name="text">
          <string>reduce dead ends</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxRemoveShortEdges">
-     <property name="title">
-      <string>remove short edges</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QLabel" name="label_24">
-        <property name="text">
-         <string>threshold [m]</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditThresholdSmallEdge"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonRemoveSmallEdge">
-        <property name="text">
-         <string>remove short edges</string>
         </property>
        </widget>
       </item>
@@ -260,6 +234,36 @@
        <widget class="QPushButton" name="pushButtonSizePipeDimensions">
         <property name="text">
          <string>size pipes</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxRemoveShortEdges">
+     <property name="title">
+      <string>remove short edges</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string>threshold [m]</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditThresholdSmallEdge">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonRemoveSmallEdge">
+        <property name="text">
+         <string>remove short edges</string>
         </property>
        </widget>
       </item>
