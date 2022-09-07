@@ -229,6 +229,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		networkItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, n.m_selected);
 		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);
 		enode->setFlags(Qt::ItemIsEnabled); // cannot select "Edges"
+		enode->setData(0, SVNavigationTreeItemDelegate::NodeID, 0);
 		networkItem->addChild(enode);
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
@@ -247,6 +248,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 		QTreeWidgetItem * nnode = new QTreeWidgetItem(QStringList() << tr("Nodes"), QTreeWidgetItem::Type);
 		nnode->setFlags(Qt::ItemIsEnabled); // cannot select "Nodes"
+		nnode->setData(0, SVNavigationTreeItemDelegate::NodeID, 0);
 		networkItem->addChild(nnode);
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
