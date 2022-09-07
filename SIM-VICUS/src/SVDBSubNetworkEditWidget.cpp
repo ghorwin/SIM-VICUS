@@ -159,15 +159,15 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 
 		// line edits
 		m_ui->groupBoxEditElement->setEnabled(true);
-		if (m_db->m_networkComponents[elem.m_componentId] != nullptr)
-			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(
-												 m_db->m_networkComponents[elem.m_componentId]->m_displayName));
+		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[elem.m_componentId];
+		if (comp != nullptr)
+			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(comp->m_displayName));
 		else
 			m_ui->lineEditComponent->clear();
 
 		// enable controller line edit
 		std::vector<NANDRAD::HydraulicNetworkControlElement::ControlledProperty> availableCtrProps;
-		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[elem.m_componentId];
+
 		if (comp != nullptr)
 			availableCtrProps = NANDRAD::HydraulicNetworkControlElement::availableControlledProperties(NANDRAD::HydraulicNetworkComponent::ModelType(comp->m_modelType));
 		m_ui->lineEditController->setEnabled(availableCtrProps.size() > 0);

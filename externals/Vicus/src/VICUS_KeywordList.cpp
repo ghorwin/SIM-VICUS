@@ -322,11 +322,10 @@ namespace VICUS {
 				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
 				case 9 : return "HeatPumpVariableSourceSide";
 				case 10 : return "HeatPumpOnOffSourceSide";
-				case 11 : return "HeatPumpOnOffSourceSideWithBuffer";
-				case 12 : return "ControlledValve";
+				case 11 : return "ControlledValve";
+				case 12 : return "ConstantPressureLossValve";
 				case 13 : return "IdealHeaterCooler";
-				case 14 : return "ConstantPressureLossValve";
-				case 15 : return "PressureLossElement";
+				case 14 : return "PressureLossElement";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -817,11 +816,10 @@ namespace VICUS {
 				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
 				case 9 : return "HeatPumpVariableSourceSide";
 				case 10 : return "HeatPumpOnOffSourceSide";
-				case 11 : return "HeatPumpOnOffSourceSideWithBuffer";
-				case 12 : return "ControlledValve";
+				case 11 : return "ControlledValve";
+				case 12 : return "ConstantPressureLossValve";
 				case 13 : return "IdealHeaterCooler";
-				case 14 : return "ConstantPressureLossValve";
-				case 15 : return "PressureLossElement";
+				case 14 : return "PressureLossElement";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -1302,22 +1300,21 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 23 :
 			switch (t) {
-				case 0 : return "Pipe with a single fluid volume and with heat exchange";
-				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
-				case 2 : return "Pump with constant/externally defined pressure";
-				case 3 : return "Pump with constant/externally defined mass flux";
-				case 4 : return "Pump with pressure head controlled based on flow controller";
-				case 5 : return "Pump with linear pressure head curve (dp-v controlled pump)";
-				case 6 : return "Simple heat exchanger with given heat flux";
-				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
-				case 8 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
-				case 9 : return "Heat pump with variable heating power based on polynom for COP, installed at source side";
+				case 0 : return "Pipe with a single fluid volume";
+				case 1 : return "Pipe with discretized fluid volume";
+				case 2 : return "Pump with defined pressure head";
+				case 3 : return "Pump with defined mass flux";
+				case 4 : return "Pump with controlled pressure head";
+				case 5 : return "Pump with linear pressure head curve";
+				case 6 : return "Simple heat exchanger";
+				case 7 : return "Heat pump installed at source side, based on carnot efficiency";
+				case 8 : return "Heat pump installed at supply side, based on carnot efficiency";
+				case 9 : return "Heat pump installed at source side, based on polynom for COP";
 				case 10 : return "On-off-type heat pump based on polynoms for heating power and el. power, installed at source side";
-				case 11 : return "On-off-type heat pump based on polynoms for heating power and el. power, installed at source side";
-				case 12 : return "Valve with associated control model";
-				case 13 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
-				case 14 : return "Valve with constant pressure loss";
-				case 15 : return "Adiabatic element with pressure loss defined by zeta-value";
+				case 11 : return "Controlled valve";
+				case 12 : return "Valve with constant pressure loss";
+				case 13 : return "Ideal heater with predefined supply temperature";
+				case 14 : return "Adiabatic element with pressure loss defined by zeta-value";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -1812,7 +1809,6 @@ namespace VICUS {
 				case 12 : return "";
 				case 13 : return "";
 				case 14 : return "";
-				case 15 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -2307,7 +2303,6 @@ namespace VICUS {
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
-				case 15 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -2802,7 +2797,6 @@ namespace VICUS {
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
-				case 15 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -3127,7 +3121,7 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 2;
 			// NetworkComponent::ModelType
-			case 23 : return 16;
+			case 23 : return 15;
 			// NetworkComponent::para_t
 			case 24 : return 25;
 			// NetworkComponent::intPara_t
@@ -3251,7 +3245,7 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 1;
 			// NetworkComponent::ModelType
-			case 23 : return 15;
+			case 23 : return 14;
 			// NetworkComponent::para_t
 			case 24 : return 24;
 			// NetworkComponent::intPara_t

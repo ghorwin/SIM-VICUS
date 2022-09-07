@@ -1425,9 +1425,6 @@ void TNHeatPumpOnOff::setInflowTemperature(double Tinflow) {
 		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide){
 			m_heatLoss = m_evaporatorHeatFlux;
 		}
-		else {
-			// TODO MT_HeatPumpRealSupplySide
-		}
 
 	}
 
@@ -1490,9 +1487,8 @@ void TNHeatPumpOnOff::internalDerivatives(double *ydot) {
 
 
 
-
 // *** TNHeatPumpVariable ***
-
+#if 0
 TNHeatPumpWithBuffer::TNHeatPumpWithBuffer(const NANDRAD::HydraulicFluid & fluid,
 									   const NANDRAD::HydraulicNetworkElement & e) :
 	m_flowElement(&e)
@@ -1690,6 +1686,6 @@ void TNHeatPumpWithBuffer::dependencies(const double * ydot, const double * y, c
 	if (m_DHWDemandRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_DHWDemandRef));
 }
-
+#endif
 
 } // namespace NANDRAD_MODEL

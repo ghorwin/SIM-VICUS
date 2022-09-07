@@ -4354,8 +4354,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger ||
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide ||
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide ||
-				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide ||
-				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide) {
+				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide ||
+				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide) {
 				// create summation model
 				const NANDRAD::ObjectList &objList = objectListMap[comp->m_id];
 				NANDRAD::HeatLoadSummationModel sumModel;

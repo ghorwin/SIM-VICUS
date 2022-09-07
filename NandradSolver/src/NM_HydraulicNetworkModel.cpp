@@ -159,7 +159,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide :
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer :
+//			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
 			case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement:
 			{

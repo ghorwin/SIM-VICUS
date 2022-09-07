@@ -51,7 +51,7 @@ public:
 	/*! Outlet node ID. */
 	IDType							m_outletNodeId		= VICUS::INVALID_ID;				// XML:A:required
 	/*! Network component ID. */
-	IDType							m_componentId		= VICUS::INVALID_ID;				// XML:A:required
+	IDType							m_componentId		= VICUS::INVALID_ID;				// XML:A
 
 	/*! Optional reference to a flow controller element. */
 	IDType							m_controlElementId	= VICUS::INVALID_ID;				// XML:A

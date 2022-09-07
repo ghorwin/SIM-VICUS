@@ -785,9 +785,8 @@ private:
 
 
 
-
 // **** TNHeatPumpWithBuffer ***
-
+#if 0
 class TNHeatPumpWithBuffer : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
@@ -912,7 +911,7 @@ private:
 	const double							m_densityWater = 1000;
 
 };
-
+#endif
 
 
 
