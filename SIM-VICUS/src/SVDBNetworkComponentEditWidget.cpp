@@ -70,9 +70,13 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->tableWidgetParameters->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	m_ui->tableWidgetParameters->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	m_ui->tableWidgetParameters->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetParameters);
 	m_ui->tableWidgetParameters->setSortingEnabled(false);
+
+	m_ui->tableWidgetPolynomCoefficients->horizontalHeader()->setVisible(false);
+	m_ui->tableWidgetPolynomCoefficients->verticalHeader()->setVisible(true);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPolynomCoefficients);
+	m_ui->tableWidgetPolynomCoefficients->setSortingEnabled(false);
 
 	updateInput(-1);
 }
@@ -173,7 +177,9 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	}
 
 	// populate table widget with parameters
-	populateTableWidget();
+	updateParameterTableWidget();
+
+	updatePolynomCoeffTableWidget();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
@@ -184,8 +190,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 
 
-void SVDBNetworkComponentEditWidget::populateTableWidget(){
-	FUNCID(SVDBNetworkComponentEditWidget::populateTableWidget);
+void SVDBNetworkComponentEditWidget::updateParameterTableWidget() const{
+	FUNCID(SVDBNetworkComponentEditWidget::updateParameterTableWidget);
 
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
 			VICUS::NetworkComponent::nandradNetworkComponentModelType(m_current->m_modelType);
@@ -315,6 +321,75 @@ void SVDBNetworkComponentEditWidget::populateTableWidget(){
 
 	m_ui->tableWidgetParameters->blockSignals(false);
 	m_ui->tableWidgetParameters->resizeColumnsToContents();
+}
+
+
+void SVDBNetworkComponentEditWidget::updatePolynomCoeffTableWidget() const {
+
+	m_ui->groupBoxPolynomCoefficients->setEnabled(false);
+	m_ui->tableWidgetPolynomCoefficients->blockSignals(true);
+	m_ui->tableWidgetPolynomCoefficients->clearContents();
+	m_ui->tableWidgetPolynomCoefficients->setRowCount(0);
+	m_ui->tableWidgetPolynomCoefficients->setColumnCount(0);
+
+	unsigned int rowCount=0;
+	unsigned int columnCount=0;
+	bool isOptional = false;
+	std::vector<std::string> header;
+	switch (m_current->m_modelType ) {
+		case VICUS::NetworkComponent::MT_HeatPumpOnOffSourceSide: {
+			header = {"QdotCondensator", "ElectricalPower"};
+			columnCount = 6;
+			isOptional = false;
+		} break;
+		case VICUS::NetworkComponent::MT_HeatPumpVariableSourceSide: {
+			header = {"COP"};
+			columnCount = 6;
+			isOptional = false;
+		} break;
+		case VICUS::NetworkComponent::MT_ConstantPressurePump: {
+			header = {"MaximumElectricalPower", "PressureHead"};
+			columnCount = 3;
+			isOptional = true;
+		} break;
+		default: {
+			m_ui->tableWidgetPolynomCoefficients->blockSignals(false);
+			return;
+		}
+	}
+
+	// set header, row and column count
+	m_ui->groupBoxPolynomCoefficients->setEnabled(true);
+	m_ui->tableWidgetPolynomCoefficients->verticalHeader()->setVisible(true);
+	rowCount = header.size();
+	m_ui->tableWidgetPolynomCoefficients->setRowCount((int)rowCount);
+	m_ui->tableWidgetPolynomCoefficients->setColumnCount((int)columnCount);
+
+	// better to read reference
+	const std::map<std::string, std::vector<double> > &values = m_current->m_polynomCoefficients.m_values;
+
+	QFont font;
+	font.setItalic(isOptional);
+
+	// in case the value map is empty we write zeros into the table, otherwise we use the according values
+	for (unsigned int row=0; row<rowCount; ++row) {
+		// set header
+		QTableWidgetItem *headItem = new QTableWidgetItem( QString::fromStdString(header[row]));
+		headItem->setFont(font);
+		m_ui->tableWidgetPolynomCoefficients->setVerticalHeaderItem((int)row, headItem);
+		// populate values
+		for (unsigned int col=0; col<columnCount; ++col) {
+			double val = 0; // default value
+			// if we have a value in the map, use that
+			if (values.find(header[row]) != values.end() && col < values.at(header[row]).size() )
+				val = values.at(header[row])[col];
+			QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(val));
+			item->setFont(font);
+			m_ui->tableWidgetPolynomCoefficients->setItem((int)row, (int)col, item);
+		}
+	}
+	m_ui->tableWidgetPolynomCoefficients->resizeRowsToContents();
+	m_ui->tableWidgetPolynomCoefficients->blockSignals(false);
 }
 
 
@@ -553,7 +628,7 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 void SVDBNetworkComponentEditWidget::modelModify() {
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
-	populateTableWidget();
+	updateParameterTableWidget();
 }
 
 
@@ -579,3 +654,39 @@ void SVDBNetworkComponentEditWidget::on_toolButtonPipeProperties_clicked()
 	}
 	updateInput((int)m_current->m_id);
 }
+
+
+void SVDBNetworkComponentEditWidget::on_tableWidgetPolynomCoefficients_cellChanged(int row, int /*column*/) {
+
+	std::string header = m_ui->tableWidgetPolynomCoefficients->verticalHeaderItem(row)->text().toStdString();
+
+	m_current->m_polynomCoefficients.m_values[header].clear();
+	bool allZero = true;
+	for (int col=0; col<m_ui->tableWidgetPolynomCoefficients->columnCount(); ++col) {
+
+		// check number
+		QString text = m_ui->tableWidgetPolynomCoefficients->item(row, col)->text();
+		bool ok = false;
+		double val=0;
+		if (!text.isEmpty()) {
+			val = QtExt::Locale().toDouble(text, &ok);
+			if (!ok)
+				val = text.toDouble(&ok);
+		}
+		// set value back
+		if (ok)
+			m_current->m_polynomCoefficients.m_values[header].push_back(val);
+		else
+			m_current->m_polynomCoefficients.m_values[header].push_back(0);
+
+		if (m_current->m_polynomCoefficients.m_values[header][(unsigned int)col]>0 ||
+			m_current->m_polynomCoefficients.m_values[header][(unsigned int)col]<0)
+			allZero = false;
+	}
+	// if all values are zero we remove this entry (so if it is optional it would still be considered valid)
+	if (allZero)
+		m_current->m_polynomCoefficients.m_values.erase(header);
+
+	updateInput((int)m_current->m_id);
+}
+

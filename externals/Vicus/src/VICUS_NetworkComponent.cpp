@@ -32,6 +32,7 @@ namespace VICUS {
 
 
 bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
+	FUNCID(NetworkComponent::isValid);
 
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = nandradNetworkComponentModelType(m_modelType);
 
@@ -91,6 +92,49 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 	// pipe properties
 	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID) {
 		m_errorMsg = "Pipe properties are not set.";
+		return false;
+	}
+
+
+	try {
+		// check data table heat pumps
+		if (m_modelType == MT_HeatPumpOnOffSourceSide ) { //|| m_modelType == MT_HeatPumpOnOffSourceSideWithBuffer) {
+			if (m_polynomCoefficients.m_values.at("QdotCondensator").size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+			if (m_polynomCoefficients.m_values.at("ElectricalPower").size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'ElectricalPower' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+		}
+		if (m_modelType == MT_HeatPumpVariableSourceSide) {
+			if (m_polynomCoefficients.m_values.at("COP").size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'COP' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+		}
+
+		// check data table pumps:
+		// if there is a data table, it should have correct entries
+		// if correct entries exist, they should have correct number of parameters
+		if (m_modelType == MT_ConstantPressurePump || m_modelType == MT_ControlledPump || m_modelType == MT_VariablePressurePump) {
+			if (!m_polynomCoefficients.m_values.empty()) {
+				if (m_polynomCoefficients.m_values.find("MaximumElectricalPower") == m_polynomCoefficients.m_values.end() ||
+					m_polynomCoefficients.m_values.find("MaximumPressureHead") == m_polynomCoefficients.m_values.end() )
+					throw IBK::Exception(IBK::FormatString("'%1' data table should contain entries 'MaximumElectricalPower' and 'MaximumPressureHead'.")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+				// data table should have correct number of parameters
+				if (m_polynomCoefficients.m_values.at("MaximumElectricalPower").empty() && m_polynomCoefficients.m_values.at("MaximumElectricalPower").size() != 3 )
+					throw IBK::Exception(IBK::FormatString("'%1' polynom coefficient parameter 'MaximumElectricalPower' should have exactly 3 values (quadratic polynom).")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+				if (m_polynomCoefficients.m_values.at("MaximumPressureHead").empty() && m_polynomCoefficients.m_values.at("MaximumPressureHead").size() != 3 )
+					throw IBK::Exception(IBK::FormatString("'%1' polynom coefficient parameter 'MaximumPressureHead' should have exactly 3 values (quadratic polynom).")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+			}
+		}
+	}  catch (IBK::Exception &ex) {
+		m_errorMsg = ex.what();
+		return false;
+	} catch (std::exception &ex) {
+		m_errorMsg = ex.what();
 		return false;
 	}
 

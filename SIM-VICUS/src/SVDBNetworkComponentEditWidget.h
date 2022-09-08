@@ -84,11 +84,15 @@ private slots:
 
 	void on_toolButtonPipeProperties_clicked();
 
+	void on_tableWidgetPolynomCoefficients_cellChanged(int row, int);
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
-	void populateTableWidget();
+	void updateParameterTableWidget() const;
+
+	void updatePolynomCoeffTableWidget() const;
 
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 

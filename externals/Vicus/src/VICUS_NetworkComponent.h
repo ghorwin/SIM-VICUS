@@ -65,7 +65,7 @@ public:
 		MT_HeatPumpVariableIdealCarnotSourceSide,	// Keyword: HeatPumpVariableIdealCarnotSourceSide	'Heat pump installed at source side, based on carnot efficiency'
 		MT_HeatPumpVariableIdealCarnotSupplySide,	// Keyword: HeatPumpVariableIdealCarnotSupplySide	'Heat pump installed at supply side, based on carnot efficiency'
 		MT_HeatPumpVariableSourceSide,		// Keyword: HeatPumpVariableSourceSide		'Heat pump installed at source side, based on polynom for COP'
-		MT_HeatPumpOnOffSourceSide,			// Keyword: HeatPumpOnOffSourceSide			'On-off-type heat pump based on polynoms for heating power and el. power, installed at source side'
+		MT_HeatPumpOnOffSourceSide,			// Keyword: HeatPumpOnOffSourceSide			'Heat pump (on-off) at source side, based on polynoms for heating power and el. power'
 //		xMT_HeatPumpOnOffSourceSideWithBuffer,	// xKeyword: HeatPumpOnOffSourceSideWithBuffer			'On-off-type heat pump based on polynoms for heating power and el. power, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Controlled valve'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'

@@ -142,7 +142,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump installed at source side, based on carnot efficiency");
 	tr("Heat pump installed at supply side, based on carnot efficiency");
 	tr("Heat pump installed at source side, based on polynom for COP");
-	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
+	tr("Heat pump (on-off) at source side, based on polynoms for heating power and el. power");
 	tr("Controlled valve");
 	tr("Valve with constant pressure loss");
 	tr("Ideal heater with predefined supply temperature");

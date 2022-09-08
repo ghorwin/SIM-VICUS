@@ -1310,7 +1310,7 @@ namespace VICUS {
 				case 7 : return "Heat pump installed at source side, based on carnot efficiency";
 				case 8 : return "Heat pump installed at supply side, based on carnot efficiency";
 				case 9 : return "Heat pump installed at source side, based on polynom for COP";
-				case 10 : return "On-off-type heat pump based on polynoms for heating power and el. power, installed at source side";
+				case 10 : return "Heat pump (on-off) at source side, based on polynoms for heating power and el. power";
 				case 11 : return "Controlled valve";
 				case 12 : return "Valve with constant pressure loss";
 				case 13 : return "Ideal heater with predefined supply temperature";
