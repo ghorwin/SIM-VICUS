@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Fr Sep 2 12:27:31 2022</Created>
-		<LastEdited>Mi. Sept. 7 13:43:46 2022</LastEdited>
+		<LastEdited>Do. Sept. 8 10:21:06 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -11,12 +11,12 @@
 			<TimeZone>13</TimeZone>
 		</Location>
 		<ViewSettings>
-			<CameraTranslation>-8.80029 -52.1035 17.5412</CameraTranslation>
+			<CameraTranslation>-5.50146 -45.5973 5.15914</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.891892</Wp>
-				<X>0.441041</X>
-				<Y>-0.0443688</Y>
-				<Z>-0.0896469</Z>
+				<Wp>0.74908</Wp>
+				<X>0.656273</X>
+				<Y>0.0595619</Y>
+				<Z>0.0679895</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -59,6 +59,9 @@
 									<Surface id="15" displayName="Boden" displayColor="#566094">
 										<Polygon3D offset="-6.682 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
+									<Surface id="16" displayName="Boden3" displayColor="#566094">
+										<Polygon3D offset="-6.082 -30 2.86" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+									</Surface>
 								</Surfaces>
 							</Room>
 						</Rooms>
@@ -70,6 +73,7 @@
 			<ComponentInstance id="3" idComponent="1011" idSideASurface="5" />
 			<ComponentInstance id="13" idComponent="50014" idSideASurface="12" />
 			<ComponentInstance id="16" idComponent="50014" idSideASurface="15" />
+			<ComponentInstance id="18" idComponent="50014" idSideASurface="16" />
 		</ComponentInstances>
 		<PlainGeometry />
 		<EmbeddedDatabase>
