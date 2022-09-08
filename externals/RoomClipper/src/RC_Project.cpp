@@ -135,114 +135,107 @@ void RC::Project::clipSurfaces() {
 		r->m_surfaces.erase(r->m_surfaces.begin()+eraseIdx);
 		r->updateParents();
 
-		bool firstRun = true;
+		for(ClippingObject &co : cs.m_clippingObjects){
+			const VICUS::Surface &s2 = co.m_vicusSurface;
 
-		while(firstRun){
-			firstRun = false;
+			IBKMK::Polygon2D hole;
 
-			for(ClippingObject &co : cs.m_clippingObjects){
-				const VICUS::Surface &s2 = co.m_vicusSurface;
+			// calculate new projection points onto our main polygon plane (clipper works 2D)
+			std::vector<IBKMK::Vector2D> vertexes(s2.geometry().polygon2D().vertexes().size());
+			qDebug() << s2.m_displayName << " | " << s1.m_displayName;
+			for(unsigned int i=0; i<vertexes.size(); ++i){
 
-				IBKMK::Polygon2D hole;
+				if(s2.geometry().polygon3D().vertexes().empty())
+					continue;
 
-				// calculate new projection points onto our main polygon plane (clipper works 2D)
-				std::vector<IBKMK::Vector2D> vertexes(s2.geometry().polygon2D().vertexes().size());
-				qDebug() << s2.m_displayName << " | " << s1.m_displayName;
-				for(unsigned int i=0; i<vertexes.size(); ++i){
+				const IBKMK::Vector3D &p = s2.geometry().polygon3D().vertexes()[i];
+				qDebug() << "Point outside plane x: " << p.m_x << "y: " << p.m_y << "z: " << p.m_z;
+				IBKMK::Vector3D pNew = p-co.m_distance*s1.geometry().normal();
+				qDebug() << "Point inside plane x: " << pNew.m_x << "y: " << pNew.m_y << "z: " << pNew.m_z;
+				// project points onto the plane
+				try {
+					IBKMK::planeCoordinates(offset, localX, localY,
+											p-co.m_distance*s1.geometry().normal(), vertexes[i].m_x, vertexes[i].m_y);
 
-					if(s2.geometry().polygon3D().vertexes().empty())
-						continue;
-
-					const IBKMK::Vector3D &p = s2.geometry().polygon3D().vertexes()[i];
-					qDebug() << "Point outside plane x: " << p.m_x << "y: " << p.m_y << "z: " << p.m_z;
-					IBKMK::Vector3D pNew = p-co.m_distance*s1.geometry().normal();
-					qDebug() << "Point inside plane x: " << pNew.m_x << "y: " << pNew.m_y << "z: " << pNew.m_z;
-					// project points onto the plane
-					try {
-						IBKMK::planeCoordinates(offset, localX, localY,
-												p-co.m_distance*s1.geometry().normal(), vertexes[i].m_x, vertexes[i].m_y);
-
-					}  catch (...) {
-						continue;
-					}
+				}  catch (...) {
+					continue;
 				}
-
-				if(vertexes.size()>1000 || vertexes.empty()){
-					int x=0;
-				}
-
-
-				for(const IBKMK::Polygon2D &ppp : clippingPolygons)
-					qDebug() << "Anzahl der Punkte: " << ppp.vertexes().size();
-
-				qDebug() << "Es wird jetzt Fläche '" << s1.m_displayName << "' von Fläche '" << s2.m_displayName << "' geschnitten.";
-
-				std::vector<IBKMK::Polygon2D> mainDiffsTemp, mainIntersectionsTemp;
-				unsigned int maxSize = clippingPolygons.size();
-				for(unsigned int i=0; i<maxSize; ++i){
-					// do clipping with clipper lib
-					doClipperClipping(clippingPolygons.back(), vertexes, mainDiffsTemp, mainIntersectionsTemp, hole);
-					clippingPolygons.pop_back();
-					mainDiffs.insert(mainDiffs.end(), mainDiffsTemp.begin(), mainDiffsTemp.end());
-					mainIntersections.insert(mainIntersections.end(), mainIntersectionsTemp.begin(), mainIntersectionsTemp.end());
-				}
-
-				for(IBKMK::Polygon2D &poly : mainIntersections) {
-
-					if(!poly.isValid())
-						continue;
-
-					s1.m_id = ++id;
-					s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
-
-					// calculate new offset 3D
-					IBKMK::Vector3D newOffset3D = offset	+ localX * poly.vertexes()[0].m_x
-															+ localY * poly.vertexes()[0].m_y;
-					// calculate new ofsset 2D
-					IBKMK::Vector2D newOffset2D = poly.vertexes()[0];
-
-					// move our points
-					for(const IBKMK::Vector2D &v : poly.vertexes())
-						const_cast<IBKMK::Vector2D &>(v) -= newOffset2D;
-
-					// update VICUS Surface with new geometry
-					const_cast<IBKMK::Polygon2D&>(s1.geometry().polygon2D()).setVertexes(poly.vertexes());
-					IBKMK::Polygon3D poly3D = s1.geometry().polygon3D();
-					poly3D.setTranslation(newOffset3D);
-					s1.setPolygon3D(poly3D);		// now marked dirty = true
-
-					r->m_surfaces.push_back(s1);
-					r->updateParents();
-				}
-
-				// check diff for valid ...
-
-				std::vector<unsigned int>	erasePos;
-
-				for(unsigned int idx = 0; idx<mainDiffs.size(); ++idx){
-					IBKMK::Polygon2D &diffPoly = mainDiffs[idx];
-					if(diffPoly.vertexes().empty()){
-						erasePos.insert(erasePos.begin(), idx);
-						continue;
-					}
-					if(diffPoly.vertexes().size()>1000){
-						int iiioi = 0;
-					}
-					clippingPolygons.push_back(diffPoly);
-				}
-
-				for(unsigned int idx : erasePos)
-					mainDiffs.erase(mainDiffs.begin() + idx);
-
-
-				if(mainDiffs.empty())
-					break;
-
-				mainIntersections.clear();
-				mainDiffs.clear();
 			}
-		}
 
+			if(vertexes.size()>1000 || vertexes.empty()){
+				int x=0;
+			}
+
+
+			for(const IBKMK::Polygon2D &ppp : clippingPolygons)
+				qDebug() << "Anzahl der Punkte: " << ppp.vertexes().size();
+
+			qDebug() << "Es wird jetzt Fläche '" << s1.m_displayName << "' von Fläche '" << s2.m_displayName << "' geschnitten.";
+
+			std::vector<IBKMK::Polygon2D> mainDiffsTemp, mainIntersectionsTemp;
+			unsigned int maxSize = clippingPolygons.size();
+			for(unsigned int i=0; i<maxSize; ++i){
+				// do clipping with clipper lib
+				doClipperClipping(clippingPolygons.back(), vertexes, mainDiffsTemp, mainIntersectionsTemp, hole);
+				clippingPolygons.pop_back();
+				mainDiffs.insert(mainDiffs.end(), mainDiffsTemp.begin(), mainDiffsTemp.end());
+				mainIntersections.insert(mainIntersections.end(), mainIntersectionsTemp.begin(), mainIntersectionsTemp.end());
+			}
+
+			for(IBKMK::Polygon2D &poly : mainIntersections) {
+
+				if(!poly.isValid())
+					continue;
+
+				s1.m_id = ++id;
+				s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
+
+				// calculate new offset 3D
+				IBKMK::Vector3D newOffset3D = offset	+ localX * poly.vertexes()[0].m_x
+						+ localY * poly.vertexes()[0].m_y;
+				// calculate new ofsset 2D
+				IBKMK::Vector2D newOffset2D = poly.vertexes()[0];
+
+				// move our points
+				for(const IBKMK::Vector2D &v : poly.vertexes())
+					const_cast<IBKMK::Vector2D &>(v) -= newOffset2D;
+
+				// update VICUS Surface with new geometry
+				const_cast<IBKMK::Polygon2D&>(s1.geometry().polygon2D()).setVertexes(poly.vertexes());
+				IBKMK::Polygon3D poly3D = s1.geometry().polygon3D();
+				poly3D.setTranslation(newOffset3D);
+				s1.setPolygon3D(poly3D);		// now marked dirty = true
+
+				r->m_surfaces.push_back(s1);
+				r->updateParents();
+			}
+
+			// check diff for valid ...
+
+			std::vector<unsigned int>	erasePos;
+
+			for(unsigned int idx = 0; idx<mainDiffs.size(); ++idx){
+				IBKMK::Polygon2D &diffPoly = mainDiffs[idx];
+				if(diffPoly.vertexes().empty()){
+					erasePos.insert(erasePos.begin(), idx);
+					continue;
+				}
+				if(diffPoly.vertexes().size()>1000){
+					int iiioi = 0;
+				}
+				clippingPolygons.push_back(diffPoly);
+			}
+
+			for(unsigned int idx : erasePos)
+				mainDiffs.erase(mainDiffs.begin() + idx);
+
+
+			if(mainDiffs.empty())
+				break;
+
+			mainIntersections.clear();
+			mainDiffs.clear();
+		}
 
 		// push back polygon rests
 		for(IBKMK::Polygon2D &poly : clippingPolygons) {
@@ -272,7 +265,6 @@ void RC::Project::clipSurfaces() {
 			r->m_surfaces.push_back(s1);
 			r->updateParents();
 		}
-
 	}
 }
 
