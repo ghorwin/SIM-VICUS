@@ -3910,8 +3910,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 			// 5. if this element is the one which shall exchange heat: we copy the respective heat exchange properties from the node
 			// we recognize this using the original element id (origElem.m_id)
-			if (elem.m_id == sub->m_idHeatExchangeElement)
+			if (elem.m_id == sub->m_idHeatExchangeElement) {
 				newElement.m_heatExchange = node.m_heatExchange;
+				newElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances);
+			}
 
 			// 6. SPECIAL CASE: pipes which are used in a sub network for e.g. ground heat exchangers (not the general network edge pipes)
 			if (comp->m_modelType == VICUS::NetworkComponent::MT_SimplePipe ||
@@ -4074,6 +4076,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													edge->length());
 		supplyPipe.m_displayName = "SupplyPipe." + pipeName.str();
 		supplyPipe.m_heatExchange = edge->m_heatExchange;
+		supplyPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances);
 		nandradNetwork.m_elements.push_back(supplyPipe);
 		componentElementMap[networkPipeComponent.m_id].push_back(supplyPipe.m_id);
 
@@ -4088,6 +4091,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													edge->length());
 		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
 		returnPipe.m_heatExchange = edge->m_heatExchange;
+		returnPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances);
 		nandradNetwork.m_elements.push_back(returnPipe);
 		componentElementMap[networkPipeComponent.m_id].push_back(returnPipe.m_id);
 
