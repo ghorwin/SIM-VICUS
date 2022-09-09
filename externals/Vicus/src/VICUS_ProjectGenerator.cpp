@@ -736,7 +736,7 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	for (const Schedule & sched : m_embeddedDB.m_schedules) {
 		std::string err;
 		if (!sched.isValid(err, true, p.m_placeholders))
-			errorStack.append(tr("Schedule #%1 '%2'.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
+			errorStack.append(tr("Schedule #%1 '%2' is invalid.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
 	}
 	if (!errorStack.isEmpty())	return;
 
@@ -3583,8 +3583,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	// if there is no network selected return - this is not an error, but the usual case for simple building energy
 	// simulations
-	if (VICUS::element(m_geometricNetworks, networkId) == nullptr)
+	if (VICUS::element(m_geometricNetworks, networkId) == nullptr) {
+		errorStack.append("No valid network selected for simulation.");
 		return;
+	}
 
 	// create temporary copy of network
 	VICUS::Network vicusNetwork = *VICUS::element(m_geometricNetworks, networkId);
@@ -3899,7 +3901,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
 			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(id);
-			newElement.m_displayName = IBK::replace_string(name.toStdString(), " ", "_");
+			std::string newName = IBK::replace_string(name.toStdString(), " ", "-");
+			newElement.m_displayName = IBK::replace_string(newName, ".", "-");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
 			if (node.m_type == VICUS::NetworkNode::NT_Source)
@@ -4324,7 +4327,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				continue;
 			}
 			if (sched->m_haveAnnualSchedule){
-				p.m_schedules.m_annualSchedules[objList.m_name].push_back(sched->m_annualSchedule);
+				// copy schedule and change name
+				NANDRAD::LinearSplineParameter annualSched = sched->m_annualSchedule;
+				annualSched.m_name = requiredScheduleNames[i];
+				p.m_schedules.m_annualSchedules[objList.m_name].push_back(annualSched);
 			}
 			else
 				addVicusScheduleToNandradProject(*sched, requiredScheduleNames[i], p.m_schedules, objList.m_name);
@@ -4379,6 +4385,15 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	 // we are DONE !!!
 	 // finally add to nandrad project
 	p.m_hydraulicNetworks.push_back(nandradNetwork);
+
+	// we always need one dummy zone
+	if (p.m_zones.empty()) {
+		NANDRAD::Zone z;
+		z.m_type = NANDRAD::Zone::ZT_Active;
+		NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, 1);
+		NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, 1);
+		p.m_zones.push_back(z);
+	}
 
 }
 
