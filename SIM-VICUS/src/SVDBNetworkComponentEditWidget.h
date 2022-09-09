@@ -38,7 +38,8 @@ namespace VICUS {
 
 class SVDBNetworkComponentTableModel;
 class SVDatabase;
-
+class QwtPlot;
+class QwtPlotCurve;
 
 /*! Edit widget for network components.
 
@@ -90,9 +91,11 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
-	void updateParameterTableWidget() const;
+	void updateParameterTableWidget(bool readOnly) const;
 
-	void updatePolynomCoeffTableWidget() const;
+	void updatePolynomCoeffTableWidget(bool readOnly) const;
+
+	void updatePolynomPlot();
 
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 
@@ -107,6 +110,15 @@ private:
 		A nullptr pointer means that there is no component to edit.
 	*/
 	VICUS::NetworkComponent				*m_current;
+
+	/*! The curve used to plot the polynoms. */
+	std::vector<QwtPlotCurve*>			m_curves1;
+	std::vector<QwtPlotCurve*>			m_curves2;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>					m_xData;
+	std::vector<std::vector<double>>	m_yData1;
+	std::vector<std::vector<double>>	m_yData2;
 };
 
 #endif // SVDBNetworkComponentEditWidgetH

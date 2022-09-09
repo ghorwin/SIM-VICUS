@@ -130,6 +130,20 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 			}
 		}
+
+		// for MT_ConstantPressurePump and MT_VariablePressurePump, we enforce existance of complete parameter set (pump efficiency,
+		// maximum pressure head and maximum electric power) once one of the parameters or maximum pressure head and maximum electric power
+		// is given
+		if (m_modelType == MT_ConstantPressurePump || m_modelType == MT_VariablePressurePump) {
+			// general case
+			if(!m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].name.empty() &&
+					m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].empty())
+				throw IBK::Exception("Missing paramneter 'MaximumPressureHead'!", FUNC_ID);
+			if(!m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].name.empty() &&
+					m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].empty())
+				throw IBK::Exception("Missing paramneter 'PumpMaximumElectricalPower'!", FUNC_ID);
+		}
+
 	}  catch (IBK::Exception &ex) {
 		m_errorMsg = ex.what();
 		return false;

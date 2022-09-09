@@ -32,9 +32,9 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <SV_Conversions.h>
-
+#include "SV_Conversions.h"
 #include "SVConstants.h"
+
 
 SVDBNetworkComponentTableModel::SVDBNetworkComponentTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),

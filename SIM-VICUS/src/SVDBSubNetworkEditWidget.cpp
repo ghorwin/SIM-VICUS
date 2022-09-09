@@ -71,6 +71,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id) {
 	m_ui->lineEditSubNetworkName->setString(m_currentSubNet->m_displayName);
 
 	updateTableWidget();
+	updateElementProperties();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_currentSubNet->m_builtIn;
@@ -142,8 +143,8 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 	m_ui->tableWidgetElements->blockSignals(false);
 }
 
-void SVDBSubNetworkEditWidget::updateElementProperties()
-{
+void SVDBSubNetworkEditWidget::updateElementProperties() {
+
 	Q_ASSERT(m_currentSubNet != nullptr);
 
 	// get index of current element (= minus 1 and div by 2, to account for arrows)

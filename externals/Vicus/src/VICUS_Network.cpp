@@ -51,8 +51,8 @@ namespace VICUS {
 Network::Network() {
 
 	// set default parameters for pipe sizing
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureSetpoint, 278.15);
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureSetpoint, 20);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 4);
 	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
 
 	// other default parameters

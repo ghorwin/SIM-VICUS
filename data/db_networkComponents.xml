@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NetworkComponents>
+	<NetworkComponent id="1" displayName="DE: WILO cronoline il-e-1001-45-11-2 |EN: WILO cronoline il-e-1001-45-11-2" color="#8ecae6" modelType="ConstantPressurePump">
+		<IBK:Parameter name="PressureHead" unit="Bar">1</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.72</IBK:Parameter>
+		<IBK:Parameter name="FractionOfMotorInefficienciesToFluidStream" unit="---">0.01</IBK:Parameter>
+		<IBK:Parameter name="MaximumPressureHead" unit="Bar">2.8</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">11000</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+		<PolynomCoefficients>MaximumElectricalPower:-679895,120588,7344.8;MaximumPressureHead:-4e+07,882647,224022;</PolynomCoefficients>
+	</NetworkComponent>
+	<NetworkComponent id="2" displayName="DE: WILO para G 25/8 speedIII |EN: WILO para G 25/8 speedIII" color="#219ebc" modelType="ConstantPressurePump">
+		<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+		<IBK:Parameter name="PressureLossCoefficient" unit="---">160</IBK:Parameter>
+		<IBK:Parameter name="PressureHead" unit="Bar">0.4</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.45</IBK:Parameter>
+		<IBK:Parameter name="FractionOfMotorInefficienciesToFluidStream" unit="---">0.9</IBK:Parameter>
+		<IBK:Parameter name="MaximumPressureHead" unit="Pa">110000</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">75</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+	</NetworkComponent>
+	<NetworkComponent id="3" displayName="DE: WILO Stratos-Para 25/1-8 10V |EN: WILO Stratos-Para 25/1-8 10V" color="#023047" modelType="ConstantPressurePump">
+		<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+		<IBK:Parameter name="PressureLossCoefficient" unit="---">160</IBK:Parameter>
+		<IBK:Parameter name="PressureHead" unit="Bar">0.4</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.55</IBK:Parameter>
+		<IBK:Parameter name="FractionOfMotorInefficienciesToFluidStream" unit="---">0.9</IBK:Parameter>
+		<IBK:Parameter name="MaximumPressureHead" unit="Bar">1.05</IBK:Parameter>
+		<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">130</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+	</NetworkComponent>
+	<NetworkComponent id="4" displayName="DE: Waterkotte Ecotouch 5029.5 |EN: Waterkotte Ecotouch 5029.5" color="#ffb703" modelType="HeatPumpVariableSourceSide">
+		<ScheduleIds>6006</ScheduleIds>
+		<IBK:Parameter name="HydraulicDiameter" unit="mm">80</IBK:Parameter>
+		<IBK:Parameter name="PressureLossCoefficient" unit="---">800</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+		<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
+		<PolynomCoefficients>COP:-47.1938,0.55908,-0.143389,-0.00273061,0.000714288,0.0012619;</PolynomCoefficients>
+	</NetworkComponent>
+	<NetworkComponent id="5" displayName="DE: Waterkotte Ecotouch 5007.5 |EN: Waterkotte Ecotouch 5007.5" color="#fb8500" modelType="HeatPumpVariableSourceSide">
+		<ScheduleIds>6006</ScheduleIds>
+		<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+		<IBK:Parameter name="PressureLossCoefficient" unit="---">200</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+		<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
+		<PolynomCoefficients>COP:-74.6562,0.587361,-0.00138056,-0.00445167,0.00168697,0.00177084;</PolynomCoefficients>
+	</NetworkComponent>
+</NetworkComponents>

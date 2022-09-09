@@ -24,6 +24,12 @@ SVPropEditNetwork::SVPropEditNetwork(QWidget *parent) :
 
 	// connect with project handler
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified, this, &SVPropEditNetwork::onModified);
+
+	// validating line edits
+	m_ui->lineEditMaxPressureDrop->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), tr("Maximum pressure drop per pipe length"), true, true);
+	m_ui->lineEditTemperatureDifference->setup(0.1, std::numeric_limits<double>::max(), tr("Temperature difference at sub station"), true, true);
+	m_ui->lineEditTemperatureSetpoint->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Fluid temperature for calculation of viscosity"), true, true);
+	m_ui->lineEditThresholdSmallEdge->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), tr("Pipes shorter than this value will be removed"), true, true);
 }
 
 SVPropEditNetwork::~SVPropEditNetwork()
@@ -104,9 +110,9 @@ void SVPropEditNetwork::updateUi() {
 	m_ui->horizontalSliderScaleNodes->setValue((int)m_currentNetwork->m_scaleNodes);
 
 	// Pipe sizing algotithm parameters
-	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
-	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentNetwork->m_para[VICUS::Network::P_TemperatureDifference].value);
-	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
+	m_ui->lineEditTemperatureSetpoint->setValue(m_currentNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
+	m_ui->lineEditTemperatureDifference->setValue(m_currentNetwork->m_para[VICUS::Network::P_TemperatureDifference].value);
+	m_ui->lineEditMaxPressureDrop->setValue(m_currentNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
 }
 
 
@@ -114,8 +120,8 @@ void SVPropEditNetwork::updateComboBoxNetworks() {
 	// remember selected id
 	unsigned int id = m_ui->comboBoxCurrentNetwork->currentData().toUInt();
 	// fill combobox
-	m_ui->comboBoxCurrentNetwork->clear();
 	m_ui->comboBoxCurrentNetwork->blockSignals(true);
+	m_ui->comboBoxCurrentNetwork->clear();
 	const VICUS::Project &p = project();
 	for (const VICUS::Network &n : p.m_geometricNetworks)
 		m_ui->comboBoxCurrentNetwork->addItem(n.m_displayName, n.m_id);
@@ -316,33 +322,37 @@ void SVPropEditNetwork::on_comboBoxCurrentNetwork_currentIndexChanged(int /*inde
 }
 
 
-void SVPropEditNetwork::on_doubleSpinBoxMaximumPressureLoss_valueChanged(double /*arg1*/) {
+void SVPropEditNetwork::on_lineEditMaxPressureDrop_editingFinishedSuccessfully() {
+	 if (!m_ui->lineEditMaxPressureDrop->isValid())
+		 return;
 	Q_ASSERT(VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id) != nullptr);
 	VICUS::Network network = *VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id);
 	VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_MaxPressureLoss,
-									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
+									 m_ui->lineEditMaxPressureDrop->value());
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), network);
 	undo->push(); // modifies project and updates views
 }
 
 
-void SVPropEditNetwork::on_doubleSpinBoxTemperatureSetpoint_valueChanged(double /*arg1*/) {
+void SVPropEditNetwork::on_lineEditTemperatureSetpoint_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditTemperatureSetpoint->isValid())
+		return;
 	Q_ASSERT(VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id) != nullptr);
 	VICUS::Network network = *VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id);
-	network.m_para[VICUS::Network::P_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_TemperatureSetpoint),
-																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
-																	   IBK::Unit("C"));
+	VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_TemperatureSetpoint,
+									 m_ui->lineEditTemperatureSetpoint->value());
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), network);
 	undo->push(); // modifies project and updates views
 }
 
 
-void SVPropEditNetwork::on_doubleSpinBoxTemperatureDifference_valueChanged(double /*arg1*/) {
+void SVPropEditNetwork::on_lineEditTemperatureDifference_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditTemperatureDifference->isValid())
+		return;
 	Q_ASSERT(VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id) != nullptr);
 	VICUS::Network network = *VICUS::element(project().m_geometricNetworks, m_currentNetwork->m_id);
 	VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_TemperatureDifference,
-									 m_ui->doubleSpinBoxTemperatureDifference->value());
+									 m_ui->lineEditTemperatureDifference->value());
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), network);
 	undo->push(); // modifies project and updates views
 }
-
