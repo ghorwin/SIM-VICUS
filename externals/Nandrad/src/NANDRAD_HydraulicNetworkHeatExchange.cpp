@@ -31,7 +31,8 @@ namespace NANDRAD {
 
 void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, IBK::Path> &placeholders,
 												   const std::vector<Zone> &zones,
-												   const std::vector<ConstructionInstance> &conInstances)
+												   const std::vector<ConstructionInstance> &conInstances,
+												   bool keepTsvFileValues)
 {
 	FUNCID(HydraulicNetworkHeatExchange::checkParameters);
 
@@ -62,6 +63,10 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
 																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 																  "Temperature must be > 0 K.");
+					if (!keepTsvFileValues) {
+						m_splPara[SPL_Temperature].m_name = "Temperature";
+						m_splPara[SPL_Temperature].m_values.clear(); // this is necessary to not save both values and tsv-filename to the NANDRAD file
+					}
 				} catch (IBK::Exception &ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
 				}
@@ -81,6 +86,10 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
 																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 																  "Temperature must be > 0 K.");
+					if (!keepTsvFileValues) {
+						m_splPara[SPL_Temperature].m_name = "Temperature";
+						m_splPara[SPL_Temperature].m_values.clear(); // this is necessary to not save both values and tsv-filename to the NANDRAD file
+					}
 				} catch (IBK::Exception &ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
 				}
@@ -132,6 +141,10 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 															   IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 															   std::numeric_limits<double>::max(), false,
 															   nullptr);
+					if (!keepTsvFileValues) {
+						m_splPara[SPL_HeatLoss].m_name = "HeatLoss";
+						m_splPara[SPL_HeatLoss].m_values.clear();
+					}
 				} catch (IBK::Exception &ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'HeatLoss'."), FUNC_ID);
 				}

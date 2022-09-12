@@ -177,7 +177,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 
 		// check for valid heat exchange parameters
 		if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T)
-			m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+			m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances, true);
 	}
 	else if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T) {
 		IBK::IBK_Message("HydraulicNetworkHeatExchange parameter in element #%1 has no effect for HydraulicNetwork calculation.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
