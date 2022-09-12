@@ -30,6 +30,12 @@ SVPropEditNetwork::SVPropEditNetwork(QWidget *parent) :
 	m_ui->lineEditTemperatureDifference->setup(0.1, std::numeric_limits<double>::max(), tr("Temperature difference at sub station"), true, true);
 	m_ui->lineEditTemperatureSetpoint->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Fluid temperature for calculation of viscosity"), true, true);
 	m_ui->lineEditThresholdSmallEdge->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), tr("Pipes shorter than this value will be removed"), true, true);
+
+
+	// hide some features for now
+	m_ui->pushButtonReduceRedundantNodes->setVisible(false);
+	m_ui->groupBoxRemoveShortEdges->setVisible(false);
+
 }
 
 SVPropEditNetwork::~SVPropEditNetwork()

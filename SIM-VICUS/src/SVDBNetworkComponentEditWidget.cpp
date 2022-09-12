@@ -201,6 +201,10 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
+	if (!isEditable) {
+		m_ui->toolButtonSchedule1->setEnabled(false);
+		m_ui->toolButtonSchedule2->setEnabled(false);
+	}
 }
 
 
@@ -436,9 +440,6 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 	QString yLabel1, yLabel2;
 	std::vector<QString> curveLabels1, curveLabels2;
 	switch (m_current->m_modelType ) {
-		case VICUS::NetworkComponent::MT_HeatPumpOnOffSourceSide: {
-
-		} break;
 		case VICUS::NetworkComponent::MT_HeatPumpVariableSourceSide: {
 
 			// if invalid polynom, do nothing

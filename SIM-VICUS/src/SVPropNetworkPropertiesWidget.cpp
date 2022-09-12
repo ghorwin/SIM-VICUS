@@ -831,6 +831,7 @@ void SVPropNetworkPropertiesWidget::on_pushButtonEditPipe_clicked()
 	if (item != nullptr)
 		currentId = item->data(Qt::UserRole).toUInt();
 	SVMainWindow::instance().dbPipeEditDialog()->edit(currentId);
+	updateTableWidgets(); // for color update
 }
 
 
@@ -841,6 +842,7 @@ void SVPropNetworkPropertiesWidget::on_pushButtonEditSubNetworks_clicked()
 	if (item != nullptr)
 		currentId = item->data(Qt::UserRole).toUInt();
 	SVMainWindow::instance().dbSubNetworkEditDialog()->edit(currentId);
+	updateTableWidgets(); // for color update
 }
 
 
@@ -959,6 +961,7 @@ void SVPropNetworkPropertiesWidget::on_pushButtonExchangeSubNetwork_clicked() {
 		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), network);
 		undo->push(); // modifies project and updates views
 	}
+	updateTableWidgets(); // for color update
 }
 
 
@@ -992,8 +995,7 @@ void SVPropNetworkPropertiesWidget::on_pushButtonSelectNodesWithSubNetwork_click
 }
 
 
-void SVPropNetworkPropertiesWidget::on_tableWidgetSubNetworks_itemSelectionChanged()
-{
+void SVPropNetworkPropertiesWidget::on_tableWidgetSubNetworks_itemSelectionChanged() {
 	bool enabled = m_ui->tableWidgetSubNetworks->currentRow() != -1;
 	m_ui->pushButtonEditSubNetworks->setEnabled(enabled);
 	m_ui->pushButtonSelectNodesWithSubNetwork->setEnabled(enabled);
