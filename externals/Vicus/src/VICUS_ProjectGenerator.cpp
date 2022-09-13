@@ -3912,7 +3912,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// we recognize this using the original element id (origElem.m_id)
 			if (elem.m_id == sub->m_idHeatExchangeElement) {
 				newElement.m_heatExchange = node.m_heatExchange;
-				newElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+				try {
+					newElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+				}  catch (std::exception &ex) {
+					errorStack.append(tr("Problem in heat exchange definition of element '%1'\n%2").arg(elem.m_displayName).arg(ex.what()));
+				}
+
 			}
 
 			// 6. SPECIAL CASE: pipes which are used in a sub network for e.g. ground heat exchangers (not the general network edge pipes)
@@ -4076,7 +4081,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													edge->length());
 		supplyPipe.m_displayName = "SupplyPipe." + pipeName.str();
 		supplyPipe.m_heatExchange = edge->m_heatExchange;
-		supplyPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+		try {
+			supplyPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+		}  catch (std::exception &ex) {
+			errorStack.append(tr("Problem in heat exchange definition of pipe '%1':\n%2").arg(QString::fromStdString(supplyPipe.m_displayName))
+							  .arg(ex.what()));
+		}
 		nandradNetwork.m_elements.push_back(supplyPipe);
 		componentElementMap[networkPipeComponent.m_id].push_back(supplyPipe.m_id);
 
@@ -4091,7 +4101,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													edge->length());
 		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
 		returnPipe.m_heatExchange = edge->m_heatExchange;
-		returnPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+		try {
+			returnPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+		}  catch (std::exception &ex) {
+			errorStack.append(tr("Problem in heat exchange definition of pipe '%1':\n%2").arg(QString::fromStdString(returnPipe.m_displayName))
+							  .arg(ex.what()));
+		}
 		nandradNetwork.m_elements.push_back(returnPipe);
 		componentElementMap[networkPipeComponent.m_id].push_back(returnPipe.m_id);
 
@@ -4331,12 +4346,18 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				continue;
 			}
 			if (sched->m_haveAnnualSchedule){
-				// copy schedule and change name
+				// copy schedule and check it
 				NANDRAD::LinearSplineParameter annualSched = sched->m_annualSchedule;
-				if (annualSched.m_name != requiredScheduleNames[i])
-					errorStack.append(tr("Schedule name in file '%1' should be '%3'.")
-									  .arg(QString::fromStdString(annualSched.m_tsvFile.str())).arg(QString::fromStdString(requiredScheduleNames[i])));
-
+//				try {
+//					annualSched.m_tsvFile.withReplacedPlaceholders(p.m_placeholders);
+//					annualSched.checkAndInitialize(requiredScheduleNames[i], IBK::Unit("m"), IBK::Unit("m"), IBK::Unit("m"),
+//												   std::numeric_limits<double>::lowest(), false,
+//												   std::numeric_limits<double>::max(), false, "", true);
+//					annualSched.m_values.clear();
+//				} catch (std::exception &ex) {
+//					errorStack.append(tr("Error reading in schedule file '%1':\n%2")
+//									  .arg(QString::fromStdString(annualSched.m_tsvFile.str())).arg(ex.what()));
+//				}
 				p.m_schedules.m_annualSchedules[objList.m_name].push_back(annualSched);
 			}
 			else

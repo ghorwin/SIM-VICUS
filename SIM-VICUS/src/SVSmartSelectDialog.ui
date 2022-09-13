@@ -124,7 +124,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidgetNetworkSelections">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <property name="documentMode">
           <bool>true</bool>
@@ -211,7 +211,7 @@
          </widget>
          <widget class="QWidget" name="tabEdges">
           <attribute name="title">
-           <string>Edges</string>
+           <string>Pipes</string>
           </attribute>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">

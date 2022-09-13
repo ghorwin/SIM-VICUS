@@ -59,8 +59,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// replace place holders
 				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
-					//  check the spline and convert it to base units automatically
-					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
+					//  check the spline and convert it to base units automatically, we don't check for the name as it does not matter for the solver
+					m_splPara[SPL_Temperature].checkAndInitialize("", IBK::Unit("s"), IBK::Unit("K"),
 																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 																  "Temperature must be > 0 K.");
 					if (!keepTsvFileValues) {
@@ -82,8 +82,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// replace place holders
 				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
-					//  check the spline and convert it to base units automatically
-					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
+					//  check the spline and convert it to base units automatically, we don't check for the name as it does not matter for the solver
+					m_splPara[SPL_Temperature].checkAndInitialize("", IBK::Unit("s"), IBK::Unit("K"),
 																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 																  "Temperature must be > 0 K.");
 					if (!keepTsvFileValues) {
@@ -136,8 +136,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// replace place holders
 				m_splPara[SPL_HeatLoss].m_tsvFile = m_splPara[SPL_HeatLoss].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
-					//  check the spline and convert it to base units automatically
-					m_splPara[SPL_HeatLoss].checkAndInitialize("HeatLoss", IBK::Unit("s"), IBK::Unit("J/s"),
+					//  check the spline and convert it to base units automatically, we don't check for the name as it does not matter for the solver
+					m_splPara[SPL_HeatLoss].checkAndInitialize("", IBK::Unit("s"), IBK::Unit("J/s"),
 															   IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 															   std::numeric_limits<double>::max(), false,
 															   nullptr);
