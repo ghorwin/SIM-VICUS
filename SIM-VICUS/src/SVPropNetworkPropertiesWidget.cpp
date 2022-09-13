@@ -46,6 +46,7 @@
 #include "SVStyle.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVConstants.h"
+#include "SVTimeSeriesPreviewDialog.h"
 
 
 SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
@@ -67,12 +68,6 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 									VICUS::NetworkNode::NT_Source);
 	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_SubStation),
 									VICUS::NetworkNode::NT_SubStation);
-
-	// connect browse filename widget
-	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
-
-	// and set up
-	m_ui->widgetBrowseFileNameTSVFile->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
 
 	// setup table widgets
 	m_ui->tableWidgetPipes->setColumnCount(2);
@@ -477,7 +472,7 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 	m_ui->lineEditHeatFlux->clear();
 	m_ui->lineEditTemperature->clear();
 	m_ui->lineEditHXTransferCoefficient->clear();
-	m_ui->widgetBrowseFileNameTSVFile->setFilename("");
+	m_ui->labelHeatExchangeSpline->setText("");
 
 	// in case we have a mixed selection of nodes and edges
 	// or no object selected at all: don't proceed
@@ -542,7 +537,8 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 	m_ui->labelHeatFlux->setEnabled(false);
 	m_ui->lineEditHeatFlux->setEnabled(false);
 	m_ui->labelDataFile->setEnabled(false);
-	m_ui->widgetBrowseFileNameTSVFile->setEnabled(false);
+	m_ui->labelHeatExchangeSpline->setEnabled(false);
+	m_ui->toolButtonHeatExchangeSpline->setEnabled(false);
 	m_ui->labelZoneId->setEnabled(false);
 	m_ui->comboBoxZoneId->setEnabled(false);
 
@@ -572,16 +568,18 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_TemperatureSpline:
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_TemperatureSplineEvaporator:{
 			m_ui->labelDataFile->setEnabled(true);
-			m_ui->widgetBrowseFileNameTSVFile->setEnabled(true);
+			m_ui->labelHeatExchangeSpline->setEnabled(true);
 			m_ui->labelHXTransferCoefficient->setEnabled(true);
 			m_ui->lineEditHXTransferCoefficient->setEnabled(true);
+			m_ui->toolButtonHeatExchangeSpline->setEnabled(true);
 			break;
 		}
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatLossSplineCondenser:
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatingDemandSpaceHeating:
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatLossSpline:{
 			m_ui->labelDataFile->setEnabled(true);
-			m_ui->widgetBrowseFileNameTSVFile->setEnabled(true);
+			m_ui->labelHeatExchangeSpline->setEnabled(true);
+			m_ui->toolButtonHeatExchangeSpline->setEnabled(true);
 			break;
 		}
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_TemperatureConstructionLayer:
@@ -603,12 +601,12 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 		m_ui->lineEditHXTransferCoefficient->setValue(hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value);
 
 	if (hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange ::SPL_HeatLoss].m_tsvFile.isValid())
-		m_ui->widgetBrowseFileNameTSVFile->setFilename(QString::fromStdString(
-												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_tsvFile.str()));
+		m_ui->labelHeatExchangeSpline->setText(QString::fromStdString(
+												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_name));
 
 	if (hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange ::SPL_Temperature].m_tsvFile.isValid())
-		m_ui->widgetBrowseFileNameTSVFile->setFilename(QString::fromStdString(
-												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_tsvFile.str()));
+		m_ui->labelHeatExchangeSpline->setText(QString::fromStdString(
+												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_name));
 }
 
 
@@ -630,7 +628,7 @@ void SVPropNetworkPropertiesWidget::clearUI(){
 	m_ui->lineEditHeatFlux->clear();
 	m_ui->lineEditTemperature->clear();
 	m_ui->lineEditHXTransferCoefficient->clear();
-	m_ui->widgetBrowseFileNameTSVFile->setFilename("");
+	m_ui->labelHeatExchangeSpline->clear();
 	m_ui->comboBoxHeatExchangeType->clear();
 	m_ui->tableWidgetHeatExchange->clearContents();
 }
@@ -651,96 +649,93 @@ void SVPropNetworkPropertiesWidget::setAllEnabled(bool enabled) {
 void SVPropNetworkPropertiesWidget::modifyHeatExchangeProperties() {
 
 	NANDRAD::HydraulicNetworkHeatExchange hx;
+	if (!m_currentNodes.empty())
+		hx = m_currentNodes[0]->m_heatExchange;
+	else if (!m_currentEdges.empty())
+		hx = m_currentEdges[0]->m_heatExchange;
+	else
+		return; // this should never happen
+
+	// store splines
+	NANDRAD::LinearSplineParameter splTemp = hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature];
+	NANDRAD::LinearSplineParameter splHeatLoss = hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
+
+	// now clear all
+	hx = NANDRAD::HydraulicNetworkHeatExchange();
 
 	// set model type
 	NANDRAD::HydraulicNetworkHeatExchange::ModelType modelType =
 			NANDRAD::HydraulicNetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
 	hx.m_modelType = modelType;
 
-	// if adiabatic skip reading all parameters
-	if (hx.m_modelType != NANDRAD::HydraulicNetworkHeatExchange::NUM_T){
+	// set parameters depending on model type
+	switch (hx.m_modelType) {
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant: {
+			// set heat loss
+			if (m_ui->lineEditHeatFlux->isValid())
+				NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
+												 NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss,
+												 m_ui->lineEditHeatFlux->value());
+			else
+				hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].clear();
+		} break;
 
-		// set heat loss
-		if (m_ui->lineEditHeatFlux->isValid())
-			NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
-											 NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss,
-											 m_ui->lineEditHeatFlux->value());
-		else
-			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].clear();
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant: {
+			// set temperature
+			if (m_ui->lineEditTemperature->isValid())
+				NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
+												 NANDRAD::HydraulicNetworkHeatExchange::P_Temperature,
+												 m_ui->lineEditTemperature->value());
+			else
+				hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].clear();
+			// set external hx coefficient
+			if (m_ui->lineEditHXTransferCoefficient->isValid())
+				NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
+												 NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient,
+												 m_ui->lineEditHXTransferCoefficient->value());
+			else
+				hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
+		} break;
 
-		// set temperature
-		if (m_ui->lineEditTemperature->isValid())
-			NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
-											 NANDRAD::HydraulicNetworkHeatExchange::P_Temperature,
-											 m_ui->lineEditTemperature->value());
-		else
-			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].clear();
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
+			// reset spline
+			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = splTemp;
+			// set external hx coefficient
+			if (m_ui->lineEditHXTransferCoefficient->isValid())
+				NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
+												 NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient,
+												 m_ui->lineEditHXTransferCoefficient->value());
+			else
+				hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
 
-		// set external hx coefficient
-		if (m_ui->lineEditHXTransferCoefficient->isValid())
-			NANDRAD::KeywordList::setParameter(hx.m_para, "HydraulicNetworkHeatExchange::para_t",
-											 NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient,
-											 m_ui->lineEditHXTransferCoefficient->value());
-		else
-			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
+		} break;
 
-		// set data file
-		IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
-		tsvFile = SVProjectHandler::instance().replacePathPlaceholders(tsvFile);
-		if (tsvFile.isValid() && (modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline ||
-								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser ||
-								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating)){
-			// get relative file path
-			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",
-																	 NANDRAD::LinearSplineParameter::I_LINEAR,
-																	IBK::Path("${Project Directory}" / tsvFile.relativePath(curr)));
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_wrapMethod = NANDRAD::LinearSplineParameter::C_CYCLIC;
-		}
-		else
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter();
-
-		if (tsvFile.isValid() && modelType == NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline){
-			// get relative file path
-			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = NANDRAD::LinearSplineParameter("Temperature",
-																	 NANDRAD::LinearSplineParameter::I_LINEAR,
-																	IBK::Path("${Project Directory}" / tsvFile.relativePath(curr)));
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_wrapMethod = NANDRAD::LinearSplineParameter::C_CYCLIC;
-		}
-		else
-			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = NANDRAD::LinearSplineParameter();
-
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+			// reset spline
+			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = splTemp;
+		break;
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			// reset spline
+			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = splHeatLoss;
+		break;
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating:
+		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
+			break;
 	}
 
-	// get network and set properties
-	VICUS::Project p = project();
-	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
-	Q_ASSERT(network!=nullptr);
-
-	// set hx properties to nodes
-	if (!m_currentNodes.empty()){
-		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
-			network->nodeById(nodeConst->m_id)->m_heatExchange = hx;
-		}
-	}
-
-	// set hx properties to edges
-	if (!m_currentEdges.empty()){
-		for (const VICUS::NetworkEdge * edge: m_currentEdges){
-			network->edge(edge->nodeId1(), edge->nodeId2())->m_heatExchange = hx;
-		}
-	}
-
-	network->updateNodeEdgeConnectionPointers();
-	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), *network);
-	undo->push(); // modifies project and updates views
+	// set hx properties to nodes / edges
+	if (!m_currentNodes.empty())
+		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
+	if (!m_currentEdges.empty())
+		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
 }
 
 
 
-void SVPropNetworkPropertiesWidget::on_comboBoxNodeType_activated(int index)
-{
+void SVPropNetworkPropertiesWidget::on_comboBoxNodeType_activated(int index) {
 	modifyNodeProperty(&VICUS::NetworkNode::m_type, VICUS::NetworkNode::NodeType(
 		m_ui->comboBoxNodeType->currentData().toUInt()) );
 }
@@ -1036,5 +1031,46 @@ void SVPropNetworkPropertiesWidget::modifyNodeProperty(TNodeProp property, const
 
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), *network);
 	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkPropertiesWidget::on_toolButtonHeatExchangeSpline_clicked() {
+
+	Q_ASSERT(m_currentNetwork!=nullptr);
+
+	// get type of spline (temperature or heat flux)
+	NANDRAD::HydraulicNetworkHeatExchange::ModelType modelType =
+			NANDRAD::HydraulicNetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
+	NANDRAD::HydraulicNetworkHeatExchange::splinePara_t splType = NANDRAD::HydraulicNetworkHeatExchange::NUM_SPL;
+	switch (modelType) {
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature;
+		break;
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss;
+		break;
+		default:
+			return; // we can only set a spline for the above model types
+	}
+
+	NANDRAD::HydraulicNetworkHeatExchange hx;
+	if (!m_currentNodes.empty())
+		hx = m_currentNodes[0]->m_heatExchange;
+	else if (!m_currentEdges.empty())
+		hx = m_currentEdges[0]->m_heatExchange;
+	else
+		return; // this should never happen
+
+	NANDRAD::LinearSplineParameter &spl = hx.m_splPara[splType];
+	SVTimeSeriesPreviewDialog *diag = new SVTimeSeriesPreviewDialog(this);
+	diag->select(spl);
+
+	// set hx properties to nodes / edges
+	if (!m_currentNodes.empty())
+		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
+	if (!m_currentEdges.empty())
+		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
 }
 

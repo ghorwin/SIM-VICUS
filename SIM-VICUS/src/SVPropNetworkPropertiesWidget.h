@@ -119,6 +119,8 @@ private slots:
 
 	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
 
+	void on_toolButtonHeatExchangeSpline_clicked();
+
 private:
 
 	/*! Update information related to one or multiple nodes
