@@ -77,10 +77,6 @@ public:
 	/*! Local Z Axis */
 	QVector3D						m_localZAxis;
 
-public slots:
-	/*! Updates the read only line edits on style change. */
-	void onStyleChanged();
-
 
 private slots:
 	void on_pushButtonCopyInformation_clicked();
