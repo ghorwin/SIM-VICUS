@@ -106,5 +106,8 @@
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-0.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-1.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-2.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-3.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-4.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-5.png</file>
     </qresource>
 </RCC>
