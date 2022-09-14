@@ -167,25 +167,6 @@ void SVStyle::formatListView(QListView * v) {
 #endif
 }
 
-void SVStyle::formatLineEditReadOnly(QLineEdit *v) {
-	// set palette
-	QString borderColor, fontColor;
-
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		borderColor = "#888888";
-		fontColor = "#afafaf";
-	}
-	else if (SVSettings::instance().m_theme == SVSettings::TT_White) {
-		borderColor = "#363636";
-		fontColor = "#2b2e31";
-	} // probably we will have a third design sometimes
-
-	QString styleSheet = QString("QLineEdit {color: %1; border: 1px solid %2;} "
-								 "QLineEdit:hover, QLineEdit:focus { border: 1px solid %2;}").arg(fontColor).arg(borderColor);
-	v->setStyleSheet(styleSheet);
-}
-
-
 void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->header()->setMinimumSectionSize(19);
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
