@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
 		QPixmap pixmap;
 
 #if QT_VERSION >= 0x050A00
-		int pixmapIdx = QRandomGenerator::global()->bounded(0,3);
+		int pixmapIdx = QRandomGenerator::global()->bounded(0,6);
 #else
 
 		std::srand(std::time(nullptr));
