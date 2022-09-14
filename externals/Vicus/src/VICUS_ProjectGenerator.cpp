@@ -3915,7 +3915,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				try {
 					newElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
 				}  catch (std::exception &ex) {
-					errorStack.append(tr("Problem in heat exchange definition of element '%1'\n%2").arg(elem.m_displayName).arg(ex.what()));
+					errorStack.append(tr("Problem in heat exchange definition of node #%1\n%2").arg(node.m_id).arg(ex.what()));
 				}
 
 			}

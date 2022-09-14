@@ -602,11 +602,11 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 
 	if (hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange ::SPL_HeatLoss].m_tsvFile.isValid())
 		m_ui->labelHeatExchangeSpline->setText(QString::fromStdString(
-												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_name));
+												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_tsvFile.str()));
 
 	if (hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange ::SPL_Temperature].m_tsvFile.isValid())
 		m_ui->labelHeatExchangeSpline->setText(QString::fromStdString(
-												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_name));
+												hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_tsvFile.str()));
 }
 
 
@@ -999,6 +999,56 @@ void SVPropNetworkPropertiesWidget::on_tableWidgetSubNetworks_itemSelectionChang
 
 
 
+void SVPropNetworkPropertiesWidget::on_toolButtonHeatExchangeSpline_clicked() {
+
+	Q_ASSERT(m_currentNetwork!=nullptr);
+
+	// get type of spline (temperature or heat flux)
+	NANDRAD::HydraulicNetworkHeatExchange::ModelType modelType =
+			NANDRAD::HydraulicNetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
+	NANDRAD::HydraulicNetworkHeatExchange::splinePara_t splType = NANDRAD::HydraulicNetworkHeatExchange::NUM_SPL;
+	switch (modelType) {
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature;
+		break;
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss;
+		break;
+		default:
+			return; // we can only set a spline for the above model types
+	}
+
+	NANDRAD::HydraulicNetworkHeatExchange hx;
+	if (!m_currentNodes.empty())
+		hx = m_currentNodes[0]->m_heatExchange;
+	else if (!m_currentEdges.empty())
+		hx = m_currentEdges[0]->m_heatExchange;
+	else
+		return; // this should never happen
+
+	NANDRAD::LinearSplineParameter &spl = hx.m_splPara[splType];
+	SVTimeSeriesPreviewDialog *diag = new SVTimeSeriesPreviewDialog(this);
+	diag->select(spl);
+
+	// naming needs to be always like this
+	if (splType == NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature)
+		spl.m_name = "Temperature";
+	else if (splType == NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss)
+		spl.m_name = "HeatLoss";
+	else
+		return;
+
+	// set hx properties to nodes / edges
+	if (!m_currentNodes.empty())
+		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
+	if (!m_currentEdges.empty())
+		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
+}
+
+
+
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkPropertiesWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value) {
 
@@ -1033,44 +1083,4 @@ void SVPropNetworkPropertiesWidget::modifyNodeProperty(TNodeProp property, const
 	undo->push(); // modifies project and updates views
 }
 
-
-void SVPropNetworkPropertiesWidget::on_toolButtonHeatExchangeSpline_clicked() {
-
-	Q_ASSERT(m_currentNetwork!=nullptr);
-
-	// get type of spline (temperature or heat flux)
-	NANDRAD::HydraulicNetworkHeatExchange::ModelType modelType =
-			NANDRAD::HydraulicNetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
-	NANDRAD::HydraulicNetworkHeatExchange::splinePara_t splType = NANDRAD::HydraulicNetworkHeatExchange::NUM_SPL;
-	switch (modelType) {
-		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
-			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature;
-		break;
-		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-			splType = NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss;
-		break;
-		default:
-			return; // we can only set a spline for the above model types
-	}
-
-	NANDRAD::HydraulicNetworkHeatExchange hx;
-	if (!m_currentNodes.empty())
-		hx = m_currentNodes[0]->m_heatExchange;
-	else if (!m_currentEdges.empty())
-		hx = m_currentEdges[0]->m_heatExchange;
-	else
-		return; // this should never happen
-
-	NANDRAD::LinearSplineParameter &spl = hx.m_splPara[splType];
-	SVTimeSeriesPreviewDialog *diag = new SVTimeSeriesPreviewDialog(this);
-	diag->select(spl);
-
-	// set hx properties to nodes / edges
-	if (!m_currentNodes.empty())
-		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
-	if (!m_currentEdges.empty())
-		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
-}
 

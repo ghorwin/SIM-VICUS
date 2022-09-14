@@ -34,8 +34,6 @@ private slots:
 
 	void on_radioButtonInterpolationLinear_toggled(bool checked);
 
-	void on_lineEditName_textChanged(const QString &arg1);
-
 private:
 	void updateAnnualDataDiagram() const;
 

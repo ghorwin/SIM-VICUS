@@ -84,12 +84,8 @@ void SVTimeSeriesPreviewDialog::updateInput() {
 }
 
 
-void SVTimeSeriesPreviewDialog::updateName() {
-	m_ui->lineEditName->setText(QString::fromStdString(m_data.m_name));
-}
-
-
 void SVTimeSeriesPreviewDialog::select(NANDRAD::LinearSplineParameter & data) {
+
 	// copy spline data
 	m_data = data;
 
@@ -205,8 +201,6 @@ void SVTimeSeriesPreviewDialog::updateColumnIndexList() {
 	}
 	// special case: only two columns, just compose linear spline parameter and populate diagram
 	if (reader.m_captions.size() == 2) {
-		m_data.m_name = reader.m_captions[1];
-		updateName();
 		updateAnnualDataDiagram();
 		return;
 	}
@@ -282,10 +276,6 @@ void SVTimeSeriesPreviewDialog::on_listWidgetColumnSelection_currentItemChanged(
 	if (current == nullptr)
 		return; // do nothing
 
-	// set name
-	m_data.m_name = current->data(Qt::UserRole+2).toString().toStdString();
-	updateName();
-
 	// get column index
 	int currentListItem = current->data(Qt::UserRole).toInt();
 	if (currentListItem < 0) {
@@ -313,10 +303,5 @@ void SVTimeSeriesPreviewDialog::on_radioButtonInterpolationLinear_toggled(bool c
 		m_data.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_LINEAR;
 	else
 		m_data.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_CONSTANT;
-}
-
-
-void SVTimeSeriesPreviewDialog::on_lineEditName_textChanged(const QString &arg1) {
-	m_data.m_name = arg1.toStdString();
 }
 
