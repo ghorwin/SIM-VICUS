@@ -96,6 +96,9 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 		m_ui->groupBoxSelectedRooms->setEnabled(true);
 	}
 
+	// update push button for selected zone assignement
+	m_ui->pushButtonAssignSelectedZoneTemplate->setEnabled(!rooms.empty());
+
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// update selection-related info
@@ -202,6 +205,9 @@ void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_itemSelectio
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonSelectObjectsWithZoneTemplate->setEnabled(enabled);
+
+	// the assign-from-table button is only available when there is at least one surface selected
+	m_ui->pushButtonAssignSelectedZoneTemplate->setEnabled(enabled);
 }
 
 
