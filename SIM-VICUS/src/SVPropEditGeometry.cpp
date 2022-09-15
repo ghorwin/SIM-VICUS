@@ -1051,8 +1051,8 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
 			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
 			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_x) > 1e-4);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_y) > 1e-4);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_x - lowerValuesOrig.m_x) > 1e-4);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_y - lowerValuesOrig.m_y) > 1e-4);
 			double scaleX = upperValuesNew.m_x/upperValuesOrig.m_x;
 			double scaleY = upperValuesNew.m_y/upperValuesOrig.m_y;
 
