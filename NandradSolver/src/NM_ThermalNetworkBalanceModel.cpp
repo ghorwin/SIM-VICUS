@@ -339,18 +339,20 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	for(const NodeProperties &nodeProp : m_nodeProperties) {
 		InputReference inputRef;
 		inputRef.m_id = nodeProp.m_zoneId;
+		inputRef.m_required = false;
 
 		// special case: outside zone
 		if(nodeProp.m_zoneId == 0) {
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 			inputRef.m_name = std::string("Temperature");
+			inputRef.m_required = true;
 		}
 		else {
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			inputRef.m_name = std::string("AirTemperature");
+			inputRef.m_required = true;
 		}
 
-		inputRef.m_required = false;
 		// register reference
 		inputRefs.push_back(inputRef);
 	}
