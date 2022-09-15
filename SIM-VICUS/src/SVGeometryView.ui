@@ -279,7 +279,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+     <normaloff>:/gfx/actions/copy_building.png</normaloff>:/gfx/actions/copy_building.png</iconset>
    </property>
    <property name="text">
     <string>Copy geometry</string>
