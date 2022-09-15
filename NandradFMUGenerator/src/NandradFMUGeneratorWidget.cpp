@@ -203,10 +203,15 @@ void NandradFMUGeneratorWidget::setup() {
 	// *** transfer general parameters
 
 	m_ui->lineEditNandradProjectFilePath->setText( QString::fromStdString(m_nandradFilePath.str()) );
+	QString modelName;
 	if (!m_autoExportModelName.isEmpty())
-		m_ui->lineEditModelName->setText( m_autoExportModelName );
+		modelName = m_autoExportModelName;
 	else
-		m_ui->lineEditModelName->setText( QString::fromStdString(m_project.m_fmiDescription.m_modelName) );
+		modelName = QString::fromStdString(m_project.m_fmiDescription.m_modelName) ;
+	// replace some chars that are not allowed
+	modelName.replace("_","-");
+	modelName.replace(" ","-");
+	m_ui->lineEditModelName->setText(modelName);
 	m_ui->lineEditTargetDirectory->setFilename( QString::fromStdString(m_fmuExportDirectory.str()) );
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
