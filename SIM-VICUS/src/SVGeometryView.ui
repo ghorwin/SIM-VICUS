@@ -264,7 +264,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/Coordinate-System.png</normaloff>:/gfx/actions/Coordinate-System.png</iconset>
+     <normaloff>:/gfx/actions/misc_operations.png</normaloff>:/gfx/actions/misc_operations.png</iconset>
    </property>
    <property name="text">
     <string>Align geometry</string>
