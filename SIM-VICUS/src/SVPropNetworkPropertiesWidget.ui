@@ -52,32 +52,32 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageNode">
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QGroupBox" name="groupBoxNode">
+        <widget class="QGroupBox" name="groupBoxEditNode">
          <property name="title">
           <string>Edit Node</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxNodeType"/>
+          </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Node id</string>
             </property>
            </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>y-Position [m]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
           </item>
           <item row="1" column="1">
            <widget class="QLabel" name="labelNodeId">
@@ -86,45 +86,45 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Maximum heating demand [W]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>x-Position [m]</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_19">
+           <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Name</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_14">
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEditNodeName"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Type</string>
+             <string>Maximum heating demand [W]</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboBoxNodeType"/>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>x-Position [m]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>y-Position [m]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaximumHeatingDemand"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeXPosition"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeYPosition"/>
           </item>
          </layout>
         </widget>

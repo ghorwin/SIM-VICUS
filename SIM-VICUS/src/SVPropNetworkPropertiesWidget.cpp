@@ -95,12 +95,11 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 	m_ui->tableWidgetSubNetworks->horizontalHeader()->setStretchLastSection(true);
 
 	// validating line edits
-	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
-	m_ui->lineEditNodeX->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("x position of node"), true, true);
-	m_ui->lineEditNodeY->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("y position of node"), true, true);
+	m_ui->lineEditNodeMaximumHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
+	m_ui->lineEditNodeXPosition->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("x position of node"), true, true);
+	m_ui->lineEditNodeYPosition->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("y position of node"), true, true);
 	m_ui->lineEditHeatFlux->setup(0, std::numeric_limits<double>::max(), tr("value of constant heat flux"), true, true);
 	m_ui->lineEditTemperature->setup(0, std::numeric_limits<double>::max(), tr("value of constant temperature"), true, true);
-	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("maximum heating demand at this node"), false, true);
 	m_ui->lineEditHXTransferCoefficient->setup(0, std::numeric_limits<double>::max(), tr("convective heat exchange coefficient, set =0 to neglect"), true, true);
 
 	onModified(SVProjectHandler::AllModified, nullptr);
@@ -177,9 +176,9 @@ void SVPropNetworkPropertiesWidget::onModified(int modificationType, Modificatio
 			if(!m_currentEdges.empty()){
 				updateEdgeProperties();
 			}
-			if(!m_currentEdges.empty() || !m_currentNodes.empty()){
-				updateHeatExchangeProperties();
-			}
+//			if(!m_currentEdges.empty() || !m_currentNodes.empty()){
+//				updateHeatExchangeProperties();
+//			}
 
 		} break;
 		default: ; // just to make compiler happy
@@ -247,32 +246,32 @@ void SVPropNetworkPropertiesWidget::updateNodeProperties() {
 
 	// enable / disable widgets
 	bool uniformNodeType = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_type);
-	m_ui->groupBoxNode->setEnabled(uniformNodeType);
+	m_ui->groupBoxEditNode->setEnabled(uniformNodeType && m_currentEdges.empty());
 	m_ui->groupBoxSelectedSubNetwork->setEnabled(!m_currentNodes.empty() && m_currentEdges.empty());
 
 	// if node type is not uniform, no editing will be allowed
 	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_currentNodes[0]->m_type));
-	m_ui->lineEditNodeMaxHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_SubStation);
-	m_ui->lineEditNodeX->setEnabled(m_currentNodes.size() == 1);
-	m_ui->lineEditNodeY->setEnabled(m_currentNodes.size() == 1);
+	m_ui->lineEditNodeMaximumHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_SubStation);
+	m_ui->lineEditNodeXPosition->setEnabled(m_currentNodes.size() == 1);
+	m_ui->lineEditNodeYPosition->setEnabled(m_currentNodes.size() == 1);
 
 	if (m_currentNodes.size() == 1){
 		m_ui->labelNodeId->setText(QString("%1").arg(m_currentNodes[0]->m_id));
-		m_ui->lineEditNodeDisplayName->setText(m_currentNodes[0]->m_displayName);
-		m_ui->lineEditNodeX->setValue(m_currentNodes[0]->m_position.m_x);
-		m_ui->lineEditNodeY->setValue(m_currentNodes[0]->m_position.m_y);
+		m_ui->lineEditNodeName->setText(m_currentNodes[0]->m_displayName);
+		m_ui->lineEditNodeXPosition->setValue(m_currentNodes[0]->m_position.m_x);
+		m_ui->lineEditNodeYPosition->setValue(m_currentNodes[0]->m_position.m_y);
 	}
 	else{
 		m_ui->labelNodeId->clear();
-		m_ui->lineEditNodeDisplayName->clear();
-		m_ui->lineEditNodeX->clear();
-		m_ui->lineEditNodeY->clear();
+		m_ui->lineEditNodeName->clear();
+		m_ui->lineEditNodeXPosition->clear();
+		m_ui->lineEditNodeYPosition->clear();
 	}
 
 	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_maxHeatingDemand))
-		m_ui->lineEditNodeMaxHeatingDemand->setValue(m_currentNodes[0]->m_maxHeatingDemand.value);
+		m_ui->lineEditNodeMaximumHeatingDemand->setValue(m_currentNodes[0]->m_maxHeatingDemand.value);
 	else
-		m_ui->lineEditNodeMaxHeatingDemand->clear();
+		m_ui->lineEditNodeMaximumHeatingDemand->clear();
 
 	// current sub network name
 	m_ui->labelSelectedSubNetwork->clear();
@@ -613,10 +612,10 @@ void SVPropNetworkPropertiesWidget::updateHeatExchangeProperties() {
 void SVPropNetworkPropertiesWidget::clearUI(){
 
 	m_ui->labelNodeId->clear();
-	m_ui->lineEditNodeX->clear();
-	m_ui->lineEditNodeY->clear();
-	m_ui->lineEditNodeDisplayName->clear();
-	m_ui->lineEditNodeMaxHeatingDemand->clear();
+	m_ui->lineEditNodeXPosition->clear();
+	m_ui->lineEditNodeYPosition->clear();
+	m_ui->lineEditNodeName->clear();
+	m_ui->lineEditNodeMaximumHeatingDemand->clear();
 
 	m_ui->labelPipeLength->clear();
 	m_ui->lineEditEdgeDisplayName->clear();
@@ -635,7 +634,7 @@ void SVPropNetworkPropertiesWidget::clearUI(){
 
 
 void SVPropNetworkPropertiesWidget::setAllEnabled(bool enabled) {
-	m_ui->groupBoxNode->setEnabled(enabled);
+	m_ui->groupBoxEditNode->setEnabled(enabled);
 	m_ui->groupBoxEdge->setEnabled(enabled);
 	m_ui->groupBoxHeatExchange->setEnabled(enabled);
 	m_ui->groupBoxCurrentHeatExchange->setEnabled(enabled);
@@ -740,35 +739,33 @@ void SVPropNetworkPropertiesWidget::on_comboBoxNodeType_activated(int index) {
 		m_ui->comboBoxNodeType->currentData().toUInt()) );
 }
 
-void SVPropNetworkPropertiesWidget::on_lineEditNodeX_editingFinished()
-{
-	if (!m_ui->lineEditNodeX->isValid() || !m_ui->lineEditNodeY->isValid())
+
+void SVPropNetworkPropertiesWidget::on_lineEditNodeXPosition_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditNodeXPosition->isValid() || !m_ui->lineEditNodeYPosition->isValid())
 		return;
-	IBKMK::Vector3D	vec(m_ui->lineEditNodeX->value(), m_ui->lineEditNodeY->value(), 0);
+	IBKMK::Vector3D	vec(m_ui->lineEditNodeXPosition->value(), m_ui->lineEditNodeYPosition->value(), 0);
 	modifyNodeProperty(&VICUS::NetworkNode::m_position, vec);
 }
 
-void SVPropNetworkPropertiesWidget::on_lineEditNodeY_editingFinished()
-{
-	if (!m_ui->lineEditNodeX->isValid() || !m_ui->lineEditNodeY->isValid())
-		return;
-	IBKMK::Vector3D	vec(m_ui->lineEditNodeX->value(), m_ui->lineEditNodeY->value(), 0);
-	modifyNodeProperty(&VICUS::NetworkNode::m_position, vec);
-}
 
+void SVPropNetworkPropertiesWidget::on_lineEditNodeYPosition_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditNodeXPosition->isValid() || !m_ui->lineEditNodeYPosition->isValid())
+		return;
+	IBKMK::Vector3D	vec(m_ui->lineEditNodeXPosition->value(), m_ui->lineEditNodeYPosition->value(), 0);
+	modifyNodeProperty(&VICUS::NetworkNode::m_position, vec);
+
+}
 void SVPropNetworkPropertiesWidget::on_checkBoxSupplyPipe_clicked()
 {
 	modifyEdgeProperty(&VICUS::NetworkEdge::m_supply, m_ui->checkBoxSupplyPipe->isChecked());
 }
 
 
-void SVPropNetworkPropertiesWidget::on_lineEditNodeMaxHeatingDemand_editingFinished()
-{
-	if (m_ui->lineEditNodeMaxHeatingDemand->isValid())
+void SVPropNetworkPropertiesWidget::on_lineEditNodeMaximumHeatingDemand_editingFinishedSuccessfully() {
+	if (m_ui->lineEditNodeMaximumHeatingDemand->isValid())
 		modifyNodeProperty(&VICUS::NetworkNode::m_maxHeatingDemand,
-						   IBK::Parameter("MaxHeatingDemand", m_ui->lineEditNodeMaxHeatingDemand->value(), "W"));
+						   IBK::Parameter("MaxHeatingDemand", m_ui->lineEditNodeMaximumHeatingDemand->value(), "W"));
 }
-
 
 void SVPropNetworkPropertiesWidget::on_lineEditHeatFlux_editingFinished()
 {
@@ -792,9 +789,9 @@ void SVPropNetworkPropertiesWidget::on_lineEditHXTransferCoefficient_editingFini
 	modifyHeatExchangeProperties();
 }
 
-void SVPropNetworkPropertiesWidget::on_lineEditNodeDisplayName_editingFinished()
+void SVPropNetworkPropertiesWidget::on_lineEditNodeName_editingFinished()
 {
-	modifyNodeProperty(&VICUS::NetworkNode::m_displayName, m_ui->lineEditNodeDisplayName->text());
+	modifyNodeProperty(&VICUS::NetworkNode::m_displayName, m_ui->lineEditNodeName->text());
 }
 
 
