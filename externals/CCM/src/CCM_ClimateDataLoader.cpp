@@ -938,17 +938,21 @@ void ClimateDataLoader::readClimateDataBBSRDat(const IBK::Path & fname, bool hea
 
 		// read until end of header is found
 		std::string line;
-		std::getline(in, line);
-		while (line.find(HEADER_END1) == std::string::npos)
-			std::getline(in, line);
+		bool found = false;
+		while(std::getline(in, line)) {
+			if(line.find(HEADER_END2) != std::string::npos) {
+				found = true;
+				break;
+			}
+		}
 
-		if (!in)
-			throw IBK::Exception( IBK::FormatString("Error reading last header line with table captions."), FUNC_ID);
+		if (!found)
+			throw IBK::Exception( IBK::FormatString("Error reading last header line with ***."), FUNC_ID);
 
 		// next line must contain ***
-		std::getline(in, line);
-		if (line.find(HEADER_END2) == std::string::npos)
-			throw IBK::Exception( IBK::FormatString("Missing '***' at end of header."), FUNC_ID);
+//		std::getline(in, line);
+//		if (line.find(HEADER_END2) == std::string::npos)
+//			throw IBK::Exception( IBK::FormatString("Missing '***' at end of header."), FUNC_ID);
 
 		if (headerOnly)
 			return;
@@ -1393,7 +1397,7 @@ void ClimateDataLoader::writeClimateDataEPW(const IBK::Path & fname) {
 			.arg(m_longitudeInDegree)
 			.arg(m_timeZone)
 			.arg(m_elevation).str();
-	epwHeader += "\nDESIGN CONDITIONS,No";
+	epwHeader += "\nDESIGN CONDITIONS,0";
 	epwHeader += "\nTYPICAL/EXTREME PERIODS,0";
 	epwHeader += "\nGROUND TEMPERATURES,0";
 	epwHeader += "\nHOLIDAYS/DAYLIGHT SAVINGS,No,0,0,0";
@@ -1675,17 +1679,20 @@ void ClimateDataLoader::readDescriptionCCD(const IBK::Path &fname) {
 }
 
 
-bool ClimateDataLoader::hasValidTimePoints() const {
+bool ClimateDataLoader::hasValidTimePoints(std::string* errmsg) const {
 	// if no time point vector is given, we always return true
 	if (m_dataTimePoints.empty())
 		return true;
 	for (unsigned int i=1; i<m_dataTimePoints.size(); ++i) {
-		if (m_dataTimePoints[i-1] > m_dataTimePoints[i])
+		if (m_dataTimePoints[i-1] > m_dataTimePoints[i]) {
+			if(errmsg != nullptr) {
+				*errmsg = "Error at position " + std::to_string(i) + "  at data point " + std::to_string(m_dataTimePoints[i-1]);
+			}
 			return false;
+		}
 	}
 	return true;
 }
-
 
 void ClimateDataLoader::updateCheckBits() {
 	// clear checkbits

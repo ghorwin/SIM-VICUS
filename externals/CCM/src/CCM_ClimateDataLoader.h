@@ -152,7 +152,7 @@ public:
 	void readClimateDataIBK(const IBK::Path & fname, bool headerOnly=false);
 
 	/*! Read climate data set from BBSR (reference years from 2017, with Lambert transformation)
-		\param fname Full path to c6b file.
+		\param fname Full path to dat file.
 		\param headerOnly If true, reader stops after reading header (object is in incomplete state afterwards)
 		\warning Call this function on an empty object, only. Otherwise the resulting state is
 				 undefined.
@@ -230,7 +230,7 @@ public:
 		(strictly monotonic increasing).
 		If m_dataTimePoints is empty (i.e. not used), the function always returns true.
 	*/
-	bool hasValidTimePoints() const;
+	bool hasValidTimePoints(std::string* errmsg = nullptr) const;
 
 	/*! Processes currently stored data and updates the check bits. */
 	void updateCheckBits();
