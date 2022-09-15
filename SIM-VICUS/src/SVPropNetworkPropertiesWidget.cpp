@@ -176,9 +176,9 @@ void SVPropNetworkPropertiesWidget::onModified(int modificationType, Modificatio
 			if(!m_currentEdges.empty()){
 				updateEdgeProperties();
 			}
-//			if(!m_currentEdges.empty() || !m_currentNodes.empty()){
-//				updateHeatExchangeProperties();
-//			}
+			if(!m_currentEdges.empty() || !m_currentNodes.empty()){
+				updateHeatExchangeProperties();
+			}
 
 		} break;
 		default: ; // just to make compiler happy
