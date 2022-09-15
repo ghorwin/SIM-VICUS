@@ -347,7 +347,7 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 			inputRef.m_name = std::string("Temperature");
 			inputRef.m_required = true;
 		}
-		else {
+		else if(nodeProp.m_zoneId != NANDRAD::INVALID_ID){
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			inputRef.m_name = std::string("AirTemperature");
 			inputRef.m_required = true;
