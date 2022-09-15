@@ -1048,13 +1048,12 @@ void SVPropNetworkPropertiesWidget::on_toolButtonHeatExchangeSpline_clicked() {
 
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkPropertiesWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value) {
-
-	Q_ASSERT(m_currentNetwork!=nullptr);
+	if (m_currentNetwork == nullptr || m_currentEdges.empty())
+		return;
 	VICUS::Project p = project();
 	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
 	Q_ASSERT(network!=nullptr);
 
-	Q_ASSERT(!m_currentEdges.empty());
 	for (const VICUS::NetworkEdge * edgeConst: m_currentEdges)
 		network->edgeById(edgeConst->m_id)->*property = value;
 
@@ -1066,13 +1065,12 @@ void SVPropNetworkPropertiesWidget::modifyEdgeProperty(TEdgeProp property, const
 
 template<typename TNodeProp, typename Tval>
 void SVPropNetworkPropertiesWidget::modifyNodeProperty(TNodeProp property, const Tval &value) {
-
-	Q_ASSERT(m_currentNetwork!=nullptr);
+	if (m_currentNetwork == nullptr || m_currentNodes.empty())
+		return;
 	VICUS::Project p = project();
 	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
 	Q_ASSERT(network!=nullptr);
 
-	Q_ASSERT(!m_currentNodes.empty());
 	for (const VICUS::NetworkNode * nodeConst: m_currentNodes)
 		network->nodeById(nodeConst->m_id)->*property = value;
 
