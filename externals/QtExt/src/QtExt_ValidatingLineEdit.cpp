@@ -191,7 +191,7 @@ void ValidatingLineEdit::onTextChanged ( const QString& ) {
 	}
 	if (isReadOnly()) {
 		QPalette palEdit;
-		setStyleSheet("QLineEdit:enabled { background-color: "+ Style::ReadOnlyEditFieldBackground +"; color: 'white'}");
+		setStyleSheet("QLineEdit:enabled { background-color: "+ Style::ReadOnlyEditFieldBackground +"; color: 'black'}");
 		setToolTip("");
 		return;
 	}
