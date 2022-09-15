@@ -308,7 +308,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/network.png</normaloff>:/gfx/actions/network.png</iconset>
+     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
    </property>
    <property name="text">
     <string>Edit Network Parametrization</string>
@@ -338,7 +338,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
+     <normaloff>:/gfx/actions/NetworkGeo.png</normaloff>:/gfx/actions/NetworkGeo.png</iconset>
    </property>
    <property name="text">
     <string>Edit Network Geometry</string>

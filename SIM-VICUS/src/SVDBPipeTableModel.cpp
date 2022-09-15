@@ -169,7 +169,7 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_HeatCapacityWall, 1900);
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DensityWall, 960);
 
-	pipe.m_categoryName.setEncodedString("PE");
+	pipe.m_categoryName.setString("PE", QtExt::LanguageHandler::instance().langId().toStdString());
 	pipe.m_displayName = pipe.nameFromData();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());

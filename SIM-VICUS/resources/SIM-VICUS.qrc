@@ -109,5 +109,6 @@
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-3.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-4.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen-5.png</file>
+        <file>gfx/actions/NetworkGeo.png</file>
     </qresource>
 </RCC>

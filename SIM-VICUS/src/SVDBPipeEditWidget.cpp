@@ -45,6 +45,9 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Pipe identification name"));
 
+	// The name is not supposed to be changed by the user! Its still possible to use whatever category.
+	m_ui->lineEditName->setReadOnly(true);
+
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditCategory->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
@@ -58,6 +61,7 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
 	m_ui->lineEditWallHeatCapacity->setup(0, std::numeric_limits<double>::max(), tr("Pipe wall heat capacity"), false, true);
 	m_ui->lineEditWallDensity->setup(0, std::numeric_limits<double>::max(), tr("Pipe wall density"), false, true);
+
 }
 
 
@@ -142,7 +146,6 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	if (pipe->m_builtIn)
 		isEditable = false;
 
-	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->lineEditCategory->setReadOnly(!isEditable);
 	m_ui->lineEditWallLambda->setReadOnly(!isEditable);
 	m_ui->lineEditOuterDiameter->setReadOnly(!isEditable);
@@ -269,5 +272,6 @@ void SVDBPipeEditWidget::updateNameFromData() {
 		IBK::MultiLanguageString newName = m_current->nameFromData();
 		m_current->m_displayName = newName;
 		// Note: no need to call modelModify here, since it is called anyway from callers of this function
+		m_ui->lineEditName->setString(m_current->m_displayName);
 	}
 }
