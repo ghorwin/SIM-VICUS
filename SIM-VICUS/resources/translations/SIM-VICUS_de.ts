@@ -103,7 +103,7 @@
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="44"/>
         <source>Initial temperature of the fluid</source>
-        <translation>Anfangstemperatur der Flüssigkeit</translation>
+        <translation>Anfangstemperatur des Fluids</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="45"/>
@@ -113,7 +113,7 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="117"/>
         <source>Pipe with a single fluid volume and with heat exchange</source>
-        <translation>Rohrleitung mit einem einzigen Fluidvolumen und mit Wärmeübertragung</translation>
+        <translation>Rohrleitung mit einem Fluidvolumen und mit Wärmeübertragung</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="118"/>
@@ -166,7 +166,7 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="60"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="149"/>
         <source>Adiabatic element with pressure loss defined by zeta-value</source>
-        <translation>Adiabatisches Element mit durch den Zeta-Wert definiertem Druckverlust</translation>
+        <translation>Adiabates Element mit definiertem Zeta-Wert</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="61"/>
@@ -184,7 +184,7 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="63"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="152"/>
         <source>Pump predefined pressure head</source>
-        <translation>Vordefinierte Druckhöhe der Pumpe</translation>
+        <translation type="unfinished">Pumpe mit definierter Förderhöhe</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="64"/>
@@ -201,7 +201,7 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="66"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="155"/>
         <source>Fraction of pump heat loss due to inefficiency that heats up the fluid</source>
-        <translation>Anteil des Wärmeverlusts der Pumpe aufgrund von Ineffizienz, der die Flüssigkeit erwärmt</translation>
+        <translation>Anteil des Wärmeverlusts der Pumpe aufgrund von Ineffizienz, der das Fluid erwärmt</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="67"/>
@@ -417,13 +417,13 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="46"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="135"/>
         <source>Pipe with a single fluid volume</source>
-        <translation>Rohr mit einem einzigen Flüssigkeitsvolumen</translation>
+        <translation>Rohr mit einem Fluidvolumen</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="47"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="136"/>
         <source>Pipe with discretized fluid volume</source>
-        <translation>Rohr mit diskretisiertem Flüssigkeitsvolumen</translation>
+        <translation>Rohr mit diskretisiertem Fluidvolumen</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="48"/>
@@ -441,7 +441,7 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="50"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="139"/>
         <source>Pump with controlled pressure head</source>
-        <translation>Pumpe mit geregelter Druckhöhe</translation>
+        <translation>Pumpe mit geregelter Förderhöhe</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="51"/>
@@ -459,7 +459,7 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="53"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="142"/>
         <source>Heat pump installed at source side, based on carnot efficiency</source>
-        <translation>Quellenseitig installierte Wärmepumpe, basierend auf Carnot-Effizienz</translation>
+        <translation>Wärmepumpe quellenseitig installiert, basierend auf Carnot-Effizienz</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="54"/>
@@ -471,25 +471,25 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="55"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="144"/>
         <source>Heat pump installed at source side, based on polynom for COP</source>
-        <translation>Quellenseitig installierte Wärmepumpe, basierend auf Polynom für COP</translation>
+        <translation>Wärmepumpe quellenseitig installiert, basierend auf Polynom für COP</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="56"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="145"/>
         <source>Heat pump (on-off) at source side, based on polynoms for heating power and el. power</source>
-        <translation>Wärmepumpe (Ein-Aus) auf der Quellenseite, basierend auf Polynomen für Heizleistung und el. Energie</translation>
+        <translation>Wärmepumpe (on-off) quellenseitig installiert, basierend auf Polynomen für Heizleistung und el. Energie</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="57"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="146"/>
         <source>Controlled valve</source>
-        <translation>Gesteuertes Ventil</translation>
+        <translation>Geregeltes Ventil</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="59"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="148"/>
         <source>Ideal heater with predefined supply temperature</source>
-        <translation>Ideale Heizung mit vordefinierter Vorlauftemperatur</translation>
+        <translation>Ideale Heizer mit vordefinierter Vorlauftemperatur</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="102"/>
@@ -1977,12 +1977,12 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="127"/>
         <source>Fluid temperature for hydraulic calculation, else initial temperature</source>
-        <translation>Flüssigkeitstemperatur für hydraulische Berechnung, sonst Anfangstemperatur</translation>
+        <translation>Fluidtemperatur für hydraulische Berechnung, sonst Anfangstemperatur</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="128"/>
         <source>Initial Fluid temperature for thermo-hydraulic calculation</source>
-        <translation>Anfängliche Flüssigkeitstemperatur für die thermohydraulische Berechnung</translation>
+        <translation>Anfängliche Fluidtemperatur für die thermohydraulische Berechnung</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="129"/>
@@ -2047,12 +2047,12 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="202"/>
         <source>SubStation</source>
-        <translation>Unterstation</translation>
+        <translation>Übergabestation</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="226"/>
         <source>User defined sub network</source>
-        <translation>Benutzerdefiniertes Subnetzwerk</translation>
+        <translation>Benutzerdefinierte Anlage</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="203"/>
@@ -2188,7 +2188,7 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="236"/>
         <source>Maximum fluid velocity</source>
-        <translation>Maximale Flüssigkeitsgeschwindigkeit</translation>
+        <translation>Maximale Fluidgeschwindigkeit</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="237"/>
@@ -3150,7 +3150,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="420"/>
         <source>Fluids</source>
-        <translation>Flüssigkeit</translation>
+        <translation>Fluide</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="425"/>
@@ -3165,7 +3165,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="435"/>
         <source>SubNetworks</source>
-        <translation>Subnetzwerke</translation>
+        <translation>Anlagen</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="440"/>
@@ -3948,7 +3948,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="46"/>
         <source>Controlled Property</source>
-        <translation type="unfinished">Kontroll-Eigenschaften</translation>
+        <translation type="unfinished">Geregelte Größe</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="75"/>
@@ -3963,12 +3963,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="82"/>
         <source>Schedule</source>
-        <translation>Zeitlicher Ablauf</translation>
+        <translation>Zeitplan</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="103"/>
         <source>Controller Type</source>
-        <translation>Controller-Typ</translation>
+        <translation>Reglereigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="109"/>
@@ -3988,7 +3988,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="142"/>
         <source>Maximum Controller Output </source>
-        <translation>Maximale Controller-Ausgabe</translation>
+        <translation>Maximaler Regler Stellwert</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="148"/>
@@ -4074,7 +4074,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="20"/>
         <source>Fluid description</source>
-        <translation>Flüssigkeitsbeschreibung</translation>
+        <translation>Fluidbeschreibung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="42"/>
@@ -4110,7 +4110,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.cpp" line="52"/>
         <source>Fluid identification name</source>
-        <translation>Name der Flüssigkeitsidentifikation</translation>
+        <translation>Name der Fluididentifikation</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.cpp" line="60"/>
+        <source>Temperature [C]</source>
+        <translation type="unfinished">Temperatur [C]</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.cpp" line="61"/>
+        <source>Kinematische Viskosität [m²/s]</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.cpp" line="218"/>
@@ -4149,12 +4159,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="27"/>
         <source>Insulation thickness:</source>
-        <translation>Dämmstärke:</translation>
+        <translation>Stärke der Isolierung:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="44"/>
         <source>Wall thermal conductivity:</source>
-        <translation>Wärmeleitfähigkeit der Wand:</translation>
+        <translation>Wärmeleitfähigkeit Rohrwand:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="54"/>
@@ -4166,7 +4176,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="68"/>
         <source>Wall roughness:</source>
-        <translation>Wandrauheit:</translation>
+        <translation>Rohrrauigkeit:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="75"/>
@@ -4181,17 +4191,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="92"/>
         <source>Wall density:</source>
-        <translation>Wanddichte:</translation>
+        <translation>Dichte Rohrwand:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="102"/>
         <source>Wall thickness:</source>
-        <translation>Wandstärke:</translation>
+        <translation>Stärke Rohrwand:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="116"/>
         <source>Effective conductivity per m pipe length:</source>
-        <translation>Effektive Leitfähigkeit pro m Rohrlänge:</translation>
+        <translation>Effektiver U-Wert pro m Rohrlänge:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="126"/>
@@ -4206,7 +4216,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="216"/>
         <source>Wall specific heat capacity:</source>
-        <translation>Wandspezifische Wärmekapazität:</translation>
+        <translation>Wärmekapazität Rohrwand:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="226"/>
@@ -4224,49 +4234,49 @@ p, li { white-space: pre-wrap; }
         <translation>Pipe-Identifikationsname</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="51"/>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="54"/>
         <source>Pipe category</source>
         <translation>Kategorie Rohr</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="53"/>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="56"/>
         <source>Thermal conductivity</source>
         <translation>Wärmeleitfähigkeit</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="54"/>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="57"/>
         <source>Outer diameter</source>
         <translation>Außendurchmesser</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="55"/>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="58"/>
         <source>Roughness</source>
         <translation>Rauheit</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="56"/>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="59"/>
         <source>Wall thickness</source>
         <translation>Wandstärke</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="57"/>
-        <source>Thermal conductivity of the insulation material</source>
-        <translation>Wärmeleitfähigkeit des Isolationsmaterials</translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="58"/>
-        <source>Insulation thickness</source>
-        <translation>Dicke der Isolierung</translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBPipeEditWidget.cpp" line="59"/>
-        <source>Pipe wall heat capacity</source>
-        <translation>Wärmekapazität der Rohrwand</translation>
-    </message>
-    <message>
         <location filename="../../src/SVDBPipeEditWidget.cpp" line="60"/>
+        <source>Thermal conductivity of the insulation material</source>
+        <translation>Wärmeleitfähigkeit Isolierung</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="61"/>
+        <source>Insulation thickness</source>
+        <translation>Stärke Isolierung</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="62"/>
+        <source>Pipe wall heat capacity</source>
+        <translation>Wärmekapazität Rohrwand</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBPipeEditWidget.cpp" line="63"/>
         <source>Pipe wall density</source>
-        <translation>Rohrwanddichte</translation>
+        <translation>Dichte Rohrwand</translation>
     </message>
 </context>
 <context>
@@ -5034,7 +5044,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="72"/>
         <source>Maximum fluid velocity in m/s.</source>
-        <translation>Maximale Flüssigkeitsgeschwindigkeit in m/s.</translation>
+        <translation>Maximale Fluidgeschwindigkeit in m/s.</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="73"/>
@@ -5876,7 +5886,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneTemplateEditDialog.ui" line="162"/>
         <source>Remove unused local elements</source>
-        <translation>Entfernen Sie nicht verwendete lokale Elemente</translation>
+        <translation>Entferne nicht verwendete lokale Elemente</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditDialog.ui" line="186"/>
@@ -5886,12 +5896,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneTemplateEditDialog.ui" line="193"/>
         <source>Cancel</source>
-        <translation>Absagen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditDialog.ui" line="200"/>
         <source>Close</source>
-        <translation>Nah dran</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditDialog.cpp" line="67"/>
@@ -6102,7 +6112,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.ui" line="162"/>
         <source>Remove unused local elements</source>
-        <translation>Entfernen Sie nicht verwendete lokale Elemente</translation>
+        <translation>Entferne nicht verwendete lokale Elemente</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.ui" line="189"/>
@@ -6112,12 +6122,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.ui" line="199"/>
         <source>Cancel</source>
-        <translation>Absagen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.ui" line="209"/>
         <source>Close</source>
-        <translation>Nah dran</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="342"/>
@@ -6337,42 +6347,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="683"/>
         <source>Network Pipes Database</source>
-        <translation>Network Pipes-Datenbank</translation>
+        <translation>Rohr Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="683"/>
         <source>Network Pipes Properties</source>
-        <translation>Eigenschaften von Netzwerkleitungen</translation>
+        <translation>Rohreigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="694"/>
         <source>Network Fluids Database</source>
-        <translation>Network Fluids-Datenbank</translation>
+        <translation>Fluid Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="694"/>
         <source>Network Fluids Properties</source>
-        <translation>Eigenschaften von Netzwerkflüssigkeiten</translation>
+        <translation>Fluideigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="705"/>
         <source>Network Controllers Database</source>
-        <translation>Netzwerkcontroller-Datenbank</translation>
+        <translation>Netzwerkcontroller Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="705"/>
         <source>Network Controllers Properties</source>
-        <translation>Eigenschaften von Netzwerkcontrollern</translation>
+        <translation>Eigenschaften Netzwerkcontroller</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="716"/>
         <source>Sub Networks Database</source>
-        <translation>Subnetzwerk-Datenbank</translation>
+        <translation>Anlagen Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="716"/>
         <source>Sub Networks Properties</source>
-        <translation>Eigenschaften von Subnetzwerken</translation>
+        <translation>Eigenschaften Anlagen</translation>
     </message>
 </context>
 <context>
@@ -6399,122 +6409,122 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="152"/>
+        <location filename="../../src/SVGeometryView.ui" line="153"/>
         <source>Snap</source>
         <translation>Schnapp</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="155"/>
+        <location filename="../../src/SVGeometryView.ui" line="156"/>
         <source>Toggles object snap on/off (F3)</source>
         <translation>Schaltet den Objektfang ein/aus (F3)</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="167"/>
+        <location filename="../../src/SVGeometryView.ui" line="168"/>
         <source>Measure</source>
         <translation>Messen</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="170"/>
+        <location filename="../../src/SVGeometryView.ui" line="171"/>
         <source>Toggles distance measurement mode on/off</source>
         <translation>Schaltet den Entfernungsmessmodus ein/aus</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="178"/>
+        <location filename="../../src/SVGeometryView.ui" line="179"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="186"/>
+        <location filename="../../src/SVGeometryView.ui" line="187"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="194"/>
-        <location filename="../../src/SVGeometryView.ui" line="197"/>
+        <location filename="../../src/SVGeometryView.ui" line="195"/>
+        <location filename="../../src/SVGeometryView.ui" line="198"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="209"/>
+        <location filename="../../src/SVGeometryView.ui" line="210"/>
         <source>Add geometry</source>
         <translation>Geometrie hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="212"/>
+        <location filename="../../src/SVGeometryView.ui" line="213"/>
         <source>Switches to &quot;Add geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie hinzufügen&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="224"/>
+        <location filename="../../src/SVGeometryView.ui" line="225"/>
         <source>Translate geometry</source>
         <translation>Geometrie übersetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="227"/>
+        <location filename="../../src/SVGeometryView.ui" line="228"/>
         <source>Switches to &quot;Move geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie verschieben&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="239"/>
-        <location filename="../../src/SVGeometryView.ui" line="254"/>
+        <location filename="../../src/SVGeometryView.ui" line="240"/>
+        <location filename="../../src/SVGeometryView.ui" line="255"/>
         <source>Rotate geometry</source>
         <translation>Geometrie drehen</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="242"/>
+        <location filename="../../src/SVGeometryView.ui" line="243"/>
         <source>Switches to &quot;Rotate geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie drehen&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="257"/>
+        <location filename="../../src/SVGeometryView.ui" line="258"/>
         <source>Switches to &quot;Scale geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie skalieren&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="269"/>
+        <location filename="../../src/SVGeometryView.ui" line="270"/>
         <source>Align geometry</source>
         <translation>Geometrie ausrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="272"/>
+        <location filename="../../src/SVGeometryView.ui" line="273"/>
         <source>Switches to &quot;Align geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie ausrichten&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="284"/>
+        <location filename="../../src/SVGeometryView.ui" line="285"/>
         <source>Copy geometry</source>
         <translation>Geometrie kopieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="287"/>
+        <location filename="../../src/SVGeometryView.ui" line="288"/>
         <source>Switches to &quot;Copy geometry&quot; property view</source>
         <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie kopieren&quot;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="299"/>
-        <location filename="../../src/SVGeometryView.ui" line="302"/>
+        <location filename="../../src/SVGeometryView.ui" line="300"/>
+        <location filename="../../src/SVGeometryView.ui" line="303"/>
         <source>Edit Building Parametrization</source>
         <translation>Gebäudeparametrierung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="314"/>
-        <location filename="../../src/SVGeometryView.ui" line="317"/>
+        <location filename="../../src/SVGeometryView.ui" line="315"/>
+        <location filename="../../src/SVGeometryView.ui" line="318"/>
         <source>Edit Network Parametrization</source>
         <translation>Netzwerkparametrierung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="329"/>
+        <location filename="../../src/SVGeometryView.ui" line="330"/>
         <source>actionSiteParametrization</source>
         <translation>actionSiteParametrierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="332"/>
+        <location filename="../../src/SVGeometryView.ui" line="333"/>
         <source>Edit Site Parametrization</source>
         <translation>Site-Parametrisierung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.ui" line="344"/>
-        <location filename="../../src/SVGeometryView.ui" line="347"/>
+        <location filename="../../src/SVGeometryView.ui" line="345"/>
+        <location filename="../../src/SVGeometryView.ui" line="348"/>
         <source>Edit Network Geometry</source>
         <translation>Netzwerkgeometrie bearbeiten</translation>
     </message>
@@ -7049,7 +7059,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="563"/>
         <source>Fluids...</source>
-        <translation>Medien/Flüssigkeiten...</translation>
+        <translation>Medien/Fluide...</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="566"/>
@@ -7140,7 +7150,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="654"/>
         <source>Sub networks...</source>
-        <translation>Teilnetzwerke...</translation>
+        <translation>Anlagen...</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="659"/>
@@ -7992,12 +8002,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="80"/>
         <source>import pipeline</source>
-        <translation>Pipeline importieren</translation>
+        <translation>Rohrnetz importieren</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="90"/>
         <source>import sub stations</source>
-        <translation>Unterstationen importieren</translation>
+        <translation>Übergabestationen importieren</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="99"/>
@@ -8475,49 +8485,49 @@ p, li { white-space: pre-wrap; }
         <translation>Fügen Sie geometrische Primitive hinzu</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="26"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="33"/>
         <source>Rect</source>
         <translation>Rechteck</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="33"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="26"/>
         <source>Polygon</source>
         <translation type="unfinished">Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="72"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="56"/>
         <source>Physical Components</source>
         <translation>Physikalische Komponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="78"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="62"/>
         <source>Window/Door</source>
         <translation>Fenster Tür</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="98"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="89"/>
         <source>Roof</source>
         <translation>Dach</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="105"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="82"/>
         <source>Zone</source>
         <translation>Zone</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="131"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="99"/>
         <source>Network</source>
         <translation>Netzwerk</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="137"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="105"/>
         <source>Pipeline</source>
-        <translation>Pipeline</translation>
+        <translation>Rohrnetz</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="144"/>
+        <location filename="../../src/SVPropAddGeometry.ui" line="112"/>
         <source>Sub Stations</source>
-        <translation>Unterstationen</translation>
+        <translation>Übergabestationen</translation>
     </message>
 </context>
 <context>
@@ -9952,7 +9962,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="112"/>
         <source>select fluid...</source>
-        <translation>Flüssigkeit auswählen...</translation>
+        <translation>Fluid auswählen...</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="135"/>
@@ -9962,12 +9972,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="149"/>
         <source>reduce redundant nodes</source>
-        <translation>Redundante Knoten reduzieren</translation>
+        <translation>Redundante Knoten entfernen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="142"/>
         <source>reduce dead ends</source>
-        <translation>Sackgassen reduzieren</translation>
+        <translation>Rohre ohne Anbindung entfernen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="122"/>
@@ -9977,7 +9987,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="128"/>
         <source>connect sub stations</source>
-        <translation>Nebenstellen verbinden</translation>
+        <translation>Übergabestationen verbinden</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="174"/>
@@ -10013,7 +10023,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="290"/>
         <source>Scale Pipes</source>
-        <translation>Scale-Rohre</translation>
+        <translation>Rohrnetz skalieren</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="159"/>
@@ -10023,7 +10033,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="165"/>
         <source>select available pipes...</source>
-        <translation>verfügbare Rohre selektieren...</translation>
+        <translation>verfügbare Rohre auswählen...</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="181"/>
@@ -10038,7 +10048,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="218"/>
         <source>size pipes</source>
-        <translation>Größe Rohre</translation>
+        <translation>Rohrnetz dimensionieren</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.ui" line="241"/>
@@ -10063,12 +10073,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.cpp" line="30"/>
         <source>Temperature difference at sub station</source>
-        <translation>Temperaturunterschied an der Unterstation</translation>
+        <translation>Temperaturunterschied an der Übergabestation</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.cpp" line="31"/>
         <source>Fluid temperature for calculation of viscosity</source>
-        <translation>Flüssigkeitstemperatur zur Berechnung der Viskosität</translation>
+        <translation>Fluidtemperatur zur Berechnung der Viskosität</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.cpp" line="32"/>
@@ -10100,7 +10110,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditNetwork.cpp" line="303"/>
         <source>Could not find fluid with id #%1 in fluid database</source>
-        <translation>Flüssigkeit mit der ID #%1 konnte in der Flüssigkeitsdatenbank nicht gefunden werden</translation>
+        <translation>Fluid mit der ID #%1 konnte in der Fluiddatenbank nicht gefunden werden</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditNetwork.cpp" line="318"/>
@@ -10291,25 +10301,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="35"/>
         <source>Pipeline</source>
-        <translation>Pipeline</translation>
+        <translation>Rohrnetz</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="40"/>
         <source>SubNetworks</source>
-        <translation>Subnetzwerke</translation>
+        <translation>Anlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="75"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="116"/>
         <source>y-Position [m]</source>
         <translation>y-Position [m]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="108"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="109"/>
         <source>x-Position [m]</source>
         <translation>x-Position [m]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="115"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="92"/>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="268"/>
         <source>Name</source>
         <translation>Name</translation>
@@ -10325,17 +10335,17 @@ p, li { white-space: pre-wrap; }
         <translation>Knoten bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="68"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="78"/>
         <source>Node id</source>
         <translation>Knoten-ID</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="98"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="102"/>
         <source>Maximum heating demand [W]</source>
         <translation>Maximaler Heizbedarf [W]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="122"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="68"/>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="653"/>
         <source>Type</source>
         <translation>Typ</translation>
@@ -10403,17 +10413,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="439"/>
         <source>Sub networks used in current project</source>
-        <translation>Im aktuellen Projekt verwendete Unternetzwerke</translation>
+        <translation>Im aktuellen Projekt verwendete Anlagen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="503"/>
         <source>Selected sub network</source>
-        <translation>Ausgewähltes Subnetzwerk</translation>
+        <translation>Ausgewählte Anlage</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="511"/>
         <source>Assign sub network...</source>
-        <translation>Subnetzwerk zuweisen...</translation>
+        <translation>Anlage zuweisen...</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="579"/>
@@ -10453,12 +10463,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="187"/>
         <source>Mixer</source>
-        <translation>Rührgerät</translation>
+        <translation type="unfinished">Mixer</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="194"/>
         <source>Sub Station</source>
-        <translation>Unterstation</translation>
+        <translation>Übergabestation</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="201"/>
@@ -10468,7 +10478,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="252"/>
         <source>Edit Pipeline</source>
-        <translation>Pipeline bearbeiten</translation>
+        <translation>Rohrnetz bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="663"/>
@@ -10486,12 +10496,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="82"/>
         <source>Heat Exchange Types</source>
-        <translation>Arten von Wärmetauschern</translation>
+        <translation>Wärmetaustauschtypen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="90"/>
         <source>Sub Networks</source>
-        <translation>Unternetzwerke</translation>
+        <translation>Anlagen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="98"/>
@@ -10519,53 +10529,52 @@ p, li { white-space: pre-wrap; }
         <translation>Wert der konstanten Temperatur</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="103"/>
         <source>maximum heating demand at this node</source>
-        <translation>maximaler Wärmebedarf an diesem Knoten</translation>
+        <translation type="vanished">maximaler Wärmebedarf an diesem Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="104"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="103"/>
         <source>convective heat exchange coefficient, set =0 to neglect</source>
         <translation>Konvektionswärmetauschkoeffizient, setze =0 zur Vernachlässigung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="369"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="368"/>
         <source>&lt;invalid pipe id&gt;</source>
         <translation>&lt;ungültige Pipe-ID&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="414"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="413"/>
         <source>&lt;invalid sub network id&gt;</source>
-        <translation>&lt;ungültige Subnetzwerk-ID&gt;</translation>
+        <translation>&lt;ungültige Anlagen-ID&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="865"/>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="921"/>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="956"/>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="1064"/>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="1082"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="862"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="918"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="953"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="1060"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="1077"/>
         <source>Network modified</source>
         <translation>Netzwerk geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="892"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="889"/>
         <source>Select edges with pipe &apos;%1&apos;.</source>
         <translation>Wählen Sie Kanten mit dem Rohr &apos;%1&apos; aus.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="894"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="891"/>
         <source>Select edges with invalid/missing pipe.</source>
         <translation>Kanten mit ungültigem/fehlendem Rohr auswählen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="984"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="981"/>
         <source>Select nodes with sub network &apos;%1&apos;.</source>
-        <translation>Wählen Sie Knoten mit dem Subnetzwerk „%1“ aus.</translation>
+        <translation>Wählen Sie Knoten mit dem Anlagen „%1“ aus.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="986"/>
+        <location filename="../../src/SVPropNetworkPropertiesWidget.cpp" line="983"/>
         <source>Select nodes with invalid/missing sub network.</source>
-        <translation>Knoten mit ungültigem/fehlendem Subnetzwerk auswählen.</translation>
+        <translation>Knoten mit ungültiger/fehlender Anlage auswählen.</translation>
     </message>
 </context>
 <context>
@@ -10932,7 +10941,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="987"/>
         <source>Pipeline properties</source>
-        <translation>Pipeline-Eigenschaften</translation>
+        <translation>Rohrnetzeigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="996"/>
@@ -10949,17 +10958,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="1031"/>
         <source>Create Pipeline</source>
-        <translation>Pipeline erstellen</translation>
+        <translation>Rohrnetz erstellen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="1094"/>
         <source>Create Sub Stations</source>
-        <translation>Unterstationen erstellen</translation>
+        <translation>Übergabestationen erstellen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="1108"/>
         <source>Sub Station properties</source>
-        <translation>Eigenschaften von Unterstationen</translation>
+        <translation>Eigenschaften von Übergabestationen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="1114"/>
@@ -11477,7 +11486,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="50"/>
         <source>Default/initial fluid temperature [C]:</source>
-        <translation>Standard-/Anfangsflüssigkeitstemperatur [C]:</translation>
+        <translation>Standard-/Anfangsfluidtemperatur [C]:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="57"/>
@@ -12226,7 +12235,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationStartNandrad.cpp" line="453"/>
         <source>Cancel</source>
-        <translation>Absagen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.cpp" line="462"/>

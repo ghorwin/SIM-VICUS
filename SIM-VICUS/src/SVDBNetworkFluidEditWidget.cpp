@@ -57,8 +57,8 @@ SVDBNetworkFluidEditWidget::SVDBNetworkFluidEditWidget(QWidget *parent) :
 	m_ui->tableWidgetViscosity->blockSignals(true);
 	m_ui->tableWidgetViscosity->setColumnCount(2);
 	m_ui->tableWidgetViscosity->verticalHeader()->setVisible(false);
-	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(0, new QTableWidgetItem("Temperature [C]"));
-	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(1, new QTableWidgetItem("Kinematic Viscosity [m²/s]"));
+	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Temperature [C]")));
+	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Kinematic Viscosity [m²/s]")));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetViscosity);
 	m_ui->tableWidgetViscosity->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	m_ui->tableWidgetViscosity->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
