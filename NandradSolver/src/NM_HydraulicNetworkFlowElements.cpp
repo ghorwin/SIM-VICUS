@@ -717,9 +717,13 @@ double HNAbstractPowerLimitedPumpModel::efficiency(const double & mdot, const do
 		PelMax = m_coefficientsPelMax[0] * Vdot * Vdot + m_coefficientsPelMax[1] * Vdot + m_coefficientsPelMax[2];
 	else
 		PelMax = m_maxElectricalPower;
-
 	double eta = maximumPressureHead(Vdot_star * m_density) * Vdot_star / PelMax;
-	return eta;
+
+	// is always >0
+	if (eta>0)
+		return eta;
+	else
+		return 0;
 }
 
 
@@ -727,6 +731,9 @@ double HNAbstractPowerLimitedPumpModel::electricalPower(const double & mdot, con
 	double Pel = 0;
 	if (eta > 0)
 		Pel = mdot/m_density * dp / eta;
+	// Pel is always >0, if flow is backwards it is 0.
+	if (Pel<0)
+		Pel=0;
 	// for simple linear model: cut maximum power
 	if (m_isPowerLimited && m_coefficientsPelMax.empty() && Pel > m_maxElectricalPower)
 		return m_maxElectricalPower;
