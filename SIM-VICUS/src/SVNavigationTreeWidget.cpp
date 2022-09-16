@@ -253,7 +253,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			QString name = QString("[%1] %2").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type));
+			QString name = QString("[%1] %2 %3").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type)).arg(nod.m_displayName);
 			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[nod.m_id] = no;
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.m_id);

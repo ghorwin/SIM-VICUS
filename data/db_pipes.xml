@@ -210,4 +210,14 @@
 		<IBK:Parameter name="ThicknessInsulation" unit="mm">31</IBK:Parameter>
 		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.026</IBK:Parameter>
 	</NetworkPipe>
+	<NetworkPipe id="105" displayName="PE insulated 63 x 5,8" color="#8f0000" categoryName="PE insulated">
+		<IBK:Parameter name="DiameterOutside" unit="mm">63</IBK:Parameter>
+		<IBK:Parameter name="ThicknessWall" unit="mm">5.8</IBK:Parameter>
+		<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.35</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">2000</IBK:Parameter>
+		<IBK:Parameter name="DensityWall" unit="kg/m3">940</IBK:Parameter>
+		<IBK:Parameter name="ThicknessInsulation" unit="mm">31</IBK:Parameter>
+		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.026</IBK:Parameter>
+	</NetworkPipe>
 </NetworkPipes>

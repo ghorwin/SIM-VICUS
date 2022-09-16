@@ -3897,10 +3897,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
 			newElement.m_outletNodeId = subNetNodeIdMap[elem.m_outletNodeId];
 
-			// 3. get component name in display name
+			// 3. create display name
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(id);
+			QString name = QString("%1#%2_(%3)").arg(node.m_displayName).arg(node.m_id).arg(elem.m_displayName);
 			std::string newName = IBK::replace_string(name.toStdString(), " ", "-");
 			newElement.m_displayName = IBK::replace_string(newName, ".", "-");
 

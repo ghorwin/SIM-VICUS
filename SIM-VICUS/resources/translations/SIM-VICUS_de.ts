@@ -6684,12 +6684,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVLogFileDialog.cpp" line="45"/>
         <source>Open log in text editor...</source>
-        <translation>Log in Texteditor öffnen...</translation>
+        <translation>Logdatei in Texteditor öffnen...</translation>
     </message>
     <message>
         <location filename="../../src/SVLogFileDialog.cpp" line="46"/>
         <source>Open project file in text editor...</source>
-        <translation>Protokoll im Texteditor öffnen...</translation>
+        <translation>Projektdatei im Texteditor öffnen...</translation>
     </message>
     <message>
         <location filename="../../src/SVLogFileDialog.cpp" line="47"/>
@@ -8110,7 +8110,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVOutputGridEditDialog.ui" line="20"/>
         <source>Output grid details</source>
-        <translation>Details des Ausgangsrasters</translation>
+        <translation>Details des Ausgaberasters</translation>
     </message>
     <message>
         <location filename="../../src/SVOutputGridEditDialog.ui" line="42"/>
@@ -11408,7 +11408,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="20"/>
         <source>Initial conditions</source>
-        <translation>Ausgangsbedingungen</translation>
+        <translation>Anfangsbedingungen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="26"/>
@@ -11458,7 +11458,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationModelOptions.cpp" line="57"/>
         <source>Initial temperature to be used for zones/constructions etc.</source>
-        <translation>Ausgangstemperatur, die für Zonen/Konstruktionen usw. zu verwenden ist.</translation>
+        <translation>Anfangstemperatur, die für Zonen/Konstruktionen usw. zu verwenden ist.</translation>
     </message>
 </context>
 <context>
@@ -11578,7 +11578,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="27"/>
         <source>Output grids</source>
-        <translation>Ausgangsgitter</translation>
+        <translation>Ausgabegitter</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="116"/>
@@ -11593,7 +11593,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="247"/>
         <source>Available outputs</source>
-        <translation>Verfügbare Ausgänge</translation>
+        <translation>Verfügbare Ausgaben</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="255"/>
@@ -11678,7 +11678,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationOutputOptions.cpp" line="77"/>
         <source>Output grid</source>
-        <translation>Ausgangsgitter</translation>
+        <translation>Ausgabegitter</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationOutputOptions.cpp" line="168"/>
@@ -11688,7 +11688,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationOutputOptions.cpp" line="491"/>
         <source>New output grid</source>
-        <translation>Neues Ausgangsraster</translation>
+        <translation>Neues Ausgaberaster</translation>
     </message>
 </context>
 <context>
@@ -12068,12 +12068,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationStartNandrad.ui" line="205"/>
         <source>Write statistics for each internal solver step</source>
-        <translation>Schreiben Sie Statistiken für jeden internen Lösungsschritt</translation>
+        <translation>Schreibe Statistiken für jeden internen Lösungsschritt</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.ui" line="212"/>
         <source>Close console window when finished</source>
-        <translation>Schließen Sie das Konsolenfenster, wenn Sie fertig sind</translation>
+        <translation>Schließe Konsolenfenster nach Simulationsende</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.ui" line="235"/>
@@ -12128,7 +12128,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationStartNandrad.ui" line="390"/>
         <source>Outputs</source>
-        <translation>Ausgänge</translation>
+        <translation>Ausgaben</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.ui" line="395"/>
