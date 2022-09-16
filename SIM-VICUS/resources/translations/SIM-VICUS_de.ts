@@ -8535,7 +8535,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Bilden</translation>
+        <translation>Transparente oder opake Teilflächen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="25"/>
@@ -8570,7 +8570,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="107"/>
         <source>Max. number:</source>
-        <translation>max. Nummer:</translation>
+        <translation>max. Anzahl:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="120"/>
@@ -8585,7 +8585,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="137"/>
         <source>Door/opaque sub-surface</source>
-        <translation type="unfinished">Tür/opake Teilfläche</translation>
+        <translation>Tür/opake Teilfläche</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="144"/>
@@ -8610,17 +8610,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="212"/>
         <source>Window-sill height [m]:</source>
-        <translation>Fensterbankhöhe [m]:</translation>
+        <translation>Brüstungshöhe [m]:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="235"/>
         <source>Distance in-between [m]:</source>
-        <translation>Abstand dazwischen [m]:</translation>
+        <translation>Fensterabstand [m]:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="273"/>
         <source>Create</source>
-        <translation>Schaffen</translation>
+        <translation>Erstellen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="27"/>
@@ -8635,7 +8635,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="29"/>
         <source>Window-sill height in [m] must be &gt; 0.</source>
-        <translation>Fensterbankhöhe in [m] muss &gt; 0 sein.</translation>
+        <translation>Brüstungshöhe in [m] muss &gt; 0 sein.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="30"/>
@@ -8650,7 +8650,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="32"/>
         <source>Window area percentage must be between 0 .. 100%.</source>
-        <translation>Der Prozentsatz der Fensterfläche muss zwischen 0 .. 100 % liegen.</translation>
+        <translation>Der Fensterflächenanteil muss zwischen 0 .. 100 % liegen.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="283"/>
@@ -8665,7 +8665,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.cpp" line="311"/>
         <source>Added sub-surfaces/windows</source>
-        <translation type="unfinished">Teilflächen/Fenster hinzugefügt</translation>
+        <translation>Teilflächen/Fenster hinzugefügt</translation>
     </message>
 </context>
 <context>
