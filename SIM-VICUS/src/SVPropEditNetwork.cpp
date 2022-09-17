@@ -100,7 +100,7 @@ void SVPropEditNetwork::updateUi() {
 	}
 
 	if (m_currentNetwork->checkConnectedGraph()){
-		m_ui->labelNetworkConnected->setText("Network is connected");
+		m_ui->labelNetworkConnected->setText(tr("Network is connected"));
 		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: green}");
 	}
 	else{

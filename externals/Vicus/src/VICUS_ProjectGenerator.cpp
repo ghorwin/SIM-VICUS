@@ -4246,46 +4246,46 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 	}
 
-	std::string projectName = IBK::Path(nandradProjectPath).filename().withoutExtension().str();
-	IBK::Path additionalFilesDir(IBK::Path(nandradProjectPath).withoutExtension() + "_networkInfoFiles");
-	if (!additionalFilesDir.exists())
-		IBK::Path::makePath(additionalFilesDir);
+//	std::string projectName = IBK::Path(nandradProjectPath).filename().withoutExtension().str();
+//	IBK::Path additionalFilesDir(IBK::Path(nandradProjectPath).withoutExtension() + "_networkInfoFiles");
+//	if (!additionalFilesDir.exists())
+//		IBK::Path::makePath(additionalFilesDir);
 
-	// write mapping file
-	if (vicusNetwork.m_hasHeatExchangeWithGround) {
-		std::ofstream f;
-		IBK::Path filePath = additionalFilesDir / projectName + ".mapping";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
-		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
-		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
-			unsigned int soilId = it->first;
-			f << soilId << "\t";
-			for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
-				f << supplyId << ",";
-			f << "\t";
-			for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
-				f << returnId << ",";
-			f << std::endl;
-		}
-		f.close();
+//	// write mapping file
+//	if (vicusNetwork.m_hasHeatExchangeWithGround) {
+//		std::ofstream f;
+//		IBK::Path filePath = additionalFilesDir / projectName + ".mapping";
+//		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
+//		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+//		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
+//			unsigned int soilId = it->first;
+//			f << soilId << "\t";
+//			for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
+//				f << supplyId << ",";
+//			f << "\t";
+//			for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
+//				f << returnId << ",";
+//			f << std::endl;
+//		}
+//		f.close();
 
-		vicusNetwork.writeNetworkNodesCSV(additionalFilesDir / projectName + "_NetworkNodes.csv");
-		vicusNetwork.writeNetworkEdgesCSV(additionalFilesDir / projectName + "_NetworkEdges.csv");
+//		vicusNetwork.writeNetworkNodesCSV(additionalFilesDir / projectName + "_NetworkNodes.csv");
+//		vicusNetwork.writeNetworkEdgesCSV(additionalFilesDir / projectName + "_NetworkEdges.csv");
 
-		// write NANDRAD ids for the path of each building
-		filePath = additionalFilesDir / projectName + ".paths";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
-		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
-			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-			for (const NetworkEdge * edge: shortestPath){
-				f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
-			}
-			f << std::endl;
-		}
-		f.close();
+//		// write NANDRAD ids for the path of each building
+//		filePath = additionalFilesDir / projectName + ".paths";
+//		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
+//		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+//			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+//			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+//			for (const NetworkEdge * edge: shortestPath){
+//				f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+//			}
+//			f << std::endl;
+//		}
+//		f.close();
 
-	}
+//	}
 
 
 	// Note: at this point the componentElementMap references component ids which may only exist in NANDRAD,
