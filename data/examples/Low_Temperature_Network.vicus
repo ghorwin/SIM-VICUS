@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.8">
+	<ProjectInfo>
+		<Created>Fr Sep 16 15:42:40 2022</Created>
+		<LastEdited>Sa Sep 17 12:02:01 2022</LastEdited>
+	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">C:/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
+	<Project>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-06</IBK:Parameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Stundenwerte">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">false</IBK:Flag>
+			<IBK:Flag name="CreateDefaultNetworkOutputs">true</IBK:Flag>
+			<IBK:Flag name="CreateDefaultNetworkSummationModels">true</IBK:Flag>
+		</Outputs>
+		<ViewSettings>
+			<CameraTranslation>-328.593 -112.574 364.302</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.833419</Wp>
+				<X>0.382328</X>
+				<Y>-0.171458</Y>
+				<Z>-0.360325</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="700" spacing="100">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
+		</ViewSettings>
+		<GeometricNetworks>
+			<Network id="3" displayName="Netzwerk" idFluid="10010002" modelType="ThermalHydraulicNetwork">
+				<Nodes>
+					<NetworkNode id="5" type="Source" idSubNetwork="1110001">
+						<Position>0.317727 -40.7375 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Kollektortemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="10" type="Mixer">
+						<Position>-80.9402 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="16" type="Mixer">
+						<Position>46.6331 264.473 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="25" displayName="MFH" type="SubStation" idSubNetwork="1110002">
+						<Position>-208.372 189.726 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">20000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/MFH3_0.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="26" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-157.283 181.884 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="27" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-127.186 136.796 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="29" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-104.641 73.3085 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="30" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-43.9772 43.3995 1.13687e-13</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="31" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>80.6023 106.464 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="32" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>25.1824 163.552 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="33" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>76.8298 187.065 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="34" displayName="MFH" type="SubStation" idSubNetwork="1110002">
+						<Position>26.7897 241.778 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">20000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/MFH3_0.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="35" displayName="MFH" type="SubStation" idSubNetwork="1110002">
+						<Position>81.896 246.345 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">20000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/MFH3_0.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="36" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>133.261 288.423 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="37" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>160.564 245.439 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="39" type="Mixer">
+						<Position>-208.372 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="42" type="Mixer">
+						<Position>-157.283 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="45" type="Mixer">
+						<Position>-127.186 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="49" type="Mixer">
+						<Position>-80.9402 73.3085 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="52" type="Mixer">
+						<Position>-43.9772 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="55" type="Mixer">
+						<Position>46.6331 106.464 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="58" type="Mixer">
+						<Position>46.6331 163.552 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="61" type="Mixer">
+						<Position>46.6331 187.065 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="64" type="Mixer">
+						<Position>46.6331 241.778 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="67" type="Mixer">
+						<Position>81.896 264.473 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="70" type="Mixer">
+						<Position>133.261 264.473 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="73" type="Mixer">
+						<Position>160.564 264.473 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="77" type="Mixer">
+						<Position>0.317727 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="80" type="Mixer">
+						<Position>-80.9402 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="83" type="Mixer">
+						<Position>46.6331 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="87" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-64.0383 184.612 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="89" displayName="MFH" type="SubStation" idSubNetwork="1110002">
+						<Position>-60.2567 127.389 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">20000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/MFH3_0.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="90" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>-182.421 138.591 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="91" displayName="EFH" type="SubStation" idSubNetwork="1110003">
+						<Position>22.6178 83.9834 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/EFH_11.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="92" displayName="MFH" type="SubStation" idSubNetwork="1110002">
+						<Position>-23.9629 82.004 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">20000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss">
+								<TSVFile>${Project Directory}/DataFiles/MFH3_0.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="94" type="Mixer">
+						<Position>-64.0383 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="97" type="Mixer">
+						<Position>-80.9402 127.389 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="100" type="Mixer">
+						<Position>-182.421 161.846 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="103" type="Mixer">
+						<Position>22.6178 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="106" type="Mixer">
+						<Position>-23.9629 60.7296 0</Position>
+						<IBK:Parameter name="MaxHeatingDemand" unit="W">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange />
+					</NetworkNode>
+				</Nodes>
+				<Edges>
+					<NetworkEdge supply="true" idPipe="8" idNode1="52" idNode2="10">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>36.963</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="7" idNode1="64" idNode2="16">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>22.6944</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="100" idNode2="39">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>25.9514</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="39" idNode2="25">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>27.8801</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="7" idNode1="45" idNode2="42">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>30.097</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="42" idNode2="26">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>20.0382</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="7" idNode1="80" idNode2="45">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>46.2459</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="45" idNode2="27">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>25.0494</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="10" idNode2="49">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>12.5788</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="49" idNode2="29">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>23.7007</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="106" idNode2="52">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>20.0143</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="52" idNode2="30">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>17.3302</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="83" idNode2="55">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>45.7348</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="55" idNode2="31">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>33.9692</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="55" idNode2="58">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>57.0879</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="58" idNode2="32">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>21.4507</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="58" idNode2="61">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>23.5127</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="61" idNode2="33">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>30.1967</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="61" idNode2="64">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>54.7131</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="64" idNode2="34">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>19.8435</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="7" idNode1="16" idNode2="67">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>35.2629</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="67" idNode2="35">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>18.1279</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="67" idNode2="70">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>51.3649</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="70" idNode2="36">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>23.9506</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="70" idNode2="73">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>27.3035</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="73" idNode2="37">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>19.0336</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="10" idNode1="77" idNode2="5">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>101.467</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="97" idNode2="49">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>54.0802</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="103" idNode2="77">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>22.3001</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="80" idNode2="94">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>16.9019</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="94" idNode2="87">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>22.7661</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="7" idNode1="80" idNode2="97">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>34.4572</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="97" idNode2="89">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>20.6835</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="6" idNode1="42" idNode2="100">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>25.1375</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="100" idNode2="90">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>23.2549</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="8" idNode1="83" idNode2="103">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>24.0153</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="3" idNode1="103" idNode2="91">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>23.2537</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="9" idNode1="77" idNode2="106">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>24.2806</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="true" idPipe="5" idNode1="106" idNode2="92">
+						<HydraulicNetworkHeatExchange modelType="TemperatureSpline">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">0</IBK:Parameter>
+							<LinearSplineParameter name="Temperature">
+								<TSVFile>${Project Directory}/DataFiles/Netztemperatur.tsv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+						<Length>21.2744</Length>
+					</NetworkEdge>
+				</Edges>
+				<AvailablePipes>1,2,3,4,5,6,7,8,9,10,11,12,13</AvailablePipes>
+				<Origin>0 0 0</Origin>
+				<Type>DoublePipe</Type>
+				<IBK:Parameter name="TemperatureSetpoint" unit="C">0</IBK:Parameter>
+				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
+				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">100</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">5</IBK:Parameter>
+				<IBK:Parameter name="MaxPipeDiscretization" unit="m">5</IBK:Parameter>
+				<ScaleNodes>30</ScaleNodes>
+				<ScaleEdges>41</ScaleEdges>
+				<SelectedForSimulation>1</SelectedForSimulation>
+				<HasHeatExchangeWithGround>false</HasHeatExchangeWithGround>
+				<NetworkBuriedPipeProperties>
+					<IBK:Parameter name="PipeSpacing" unit="m">0.5</IBK:Parameter>
+					<IBK:Parameter name="PipeDepth" unit="m">0.8</IBK:Parameter>
+					<NumberOfSoilModels>10</NumberOfSoilModels>
+				</NetworkBuriedPipeProperties>
+				<PipeModel>DynamicPipe</PipeModel>
+			</Network>
+		</GeometricNetworks>
+		<Buildings>
+			<Building id="1" displayName="Gebäude">
+				<BuildingLevels>
+					<BuildingLevel id="2" displayName="Erdgeschoss">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<PlainGeometry />
+		<EmbeddedDatabase>
+			<Pipes>
+				<NetworkPipe id="1" displayName="PE 25 x 2.3" color="#ffaf64" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">25</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">2.3</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.07</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="3" displayName="PE 40 x 3.7" color="#ec9b66" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">40</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">3.7</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="5" displayName="PE 63 x 5.8" color="#d88668" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">63</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">5.8</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="6" displayName="PE 75 x 6.8" color="#cf7c69" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">75</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">6.8</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="7" displayName="PE 90 x 8.2" color="#c5726a" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">90</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">8.2</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="8" displayName="PE 110 x 10" color="#bb686b" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">110</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">10</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="9" displayName="PE 125 x 11.4" color="#b25e6c" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">125</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">11.4</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+				<NetworkPipe id="10" displayName="PE 160 x 14.6" color="#a8536c" categoryName="PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">160</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">14.6</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.4</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+			</Pipes>
+			<Fluids>
+				<NetworkFluid id="10010002" displayName="DE: Ethylenglykol 30 %, 0°C |EN: ethylene glycol 30 %, 0°C" color="#ffa52c">
+					<IBK:Parameter name="Density" unit="kg/m3">1052</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">3780</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.448</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">-10 0 10 20 30 40 50 </X>
+						<Y unit="m2/s">6.43e-06 4.45e-06 3.17e-06 2.33e-06 1.76e-06 1.37e-06 1.1e-06 </Y>
+					</LinearSplineParameter>
+				</NetworkFluid>
+			</Fluids>
+			<NetworkComponents>
+				<NetworkComponent id="4" displayName="DE: Waterkotte Ecotouch 5029.5 |EN: Waterkotte Ecotouch 5029.5" color="#ffb703" modelType="HeatPumpVariableSourceSide">
+					<ScheduleIds>6006</ScheduleIds>
+					<IBK:Parameter name="HydraulicDiameter" unit="mm">80</IBK:Parameter>
+					<IBK:Parameter name="PressureLossCoefficient" unit="---">800</IBK:Parameter>
+					<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
+					<PolynomCoefficients>COP:-47.1938,0.55908,-0.143389,-0.00273061,0.000714288,0.0012619;</PolynomCoefficients>
+				</NetworkComponent>
+				<NetworkComponent id="5" displayName="DE: Waterkotte Ecotouch 5007.5 |EN: Waterkotte Ecotouch 5007.5" color="#fb8500" modelType="HeatPumpVariableSourceSide">
+					<ScheduleIds>6006</ScheduleIds>
+					<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+					<IBK:Parameter name="PressureLossCoefficient" unit="---">200</IBK:Parameter>
+					<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
+					<PolynomCoefficients>COP:-74.6562,0.587361,-0.00138056,-0.00445167,0.00168697,0.00177084;</PolynomCoefficients>
+				</NetworkComponent>
+				<NetworkComponent id="1105015" displayName="DE: Geothermal Collector |EN: pump 1 bar" color="#aa557f" modelType="DynamicPipe">
+					<IBK:IntPara name="NumberParallelPipes">100</IBK:IntPara>
+					<PipePropertiesId>1</PipePropertiesId>
+					<IBK:Parameter name="PressureHead" unit="Bar">1</IBK:Parameter>
+					<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.5</IBK:Parameter>
+					<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+					<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">10</IBK:Parameter>
+					<IBK:Parameter name="PipeLength" unit="m">75</IBK:Parameter>
+				</NetworkComponent>
+				<NetworkComponent id="1105016" displayName="DE: WILO cronoline il-e-1001-45-11-2 |EN: WILO cronoline il-e-1001-45-11-2" color="#8ecae6" modelType="ConstantPressurePump">
+					<IBK:Parameter name="PressureHead" unit="Bar">0.7</IBK:Parameter>
+					<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.72</IBK:Parameter>
+					<IBK:Parameter name="FractionOfMotorInefficienciesToFluidStream" unit="---">0.01</IBK:Parameter>
+					<IBK:Parameter name="MaximumPressureHead" unit="Bar">2.8</IBK:Parameter>
+					<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">11000</IBK:Parameter>
+					<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					<PolynomCoefficients>MaximumElectricalPower:-679895,120588,7344.8;MaximumPressureHead:-4e+07,882647,224022;</PolynomCoefficients>
+				</NetworkComponent>
+				<NetworkComponent id="10020002" displayName="DE: ControlledValve" modelType="ControlledValve">
+					<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+					<IBK:Parameter name="PressureLossCoefficient" unit="---">1</IBK:Parameter>
+					<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+				</NetworkComponent>
+			</NetworkComponents>
+			<NetworkControllers>
+				<NetworkController id="1107505" displayName="EN: dTemp Controller following 4 K" modelType="Constant" controllerType="PController" controlledProperty="TemperatureDifferenceOfFollowingElement">
+					<ThermostatZone>0</ThermostatZone>
+					<Schedule>0</Schedule>
+					<MaximumControllerResultValue>0</MaximumControllerResultValue>
+					<IBK:Parameter name="Kp" unit="---">10000</IBK:Parameter>
+					<IBK:Parameter name="Ki" unit="---">5</IBK:Parameter>
+					<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">4</IBK:Parameter>
+					<IBK:Parameter name="RelControllerErrorForIntegratorReset" unit="---">0.7</IBK:Parameter>
+				</NetworkController>
+			</NetworkControllers>
+			<SubNetworks>
+				<SubNetwork id="1110001" displayName="EN: Zentrale" color="#8ebe00" idHeatExchangeElement="2">
+					<Elements>
+						<NetworkElement id="1" inletNodeId="333333" outletNodeId="1" componentId="1105016" displayName="WILO cronoline il-e-1001-45-11-2" />
+						<NetworkElement id="2" inletNodeId="1" outletNodeId="666666" componentId="1105015" displayName="Geothermal Collector" />
+					</Elements>
+				</SubNetwork>
+				<SubNetwork id="1110002" displayName="EN: MFH Anlage" color="#d60000" idHeatExchangeElement="2">
+					<Elements>
+						<NetworkElement id="1" inletNodeId="333333" outletNodeId="1" componentId="10020002" controlElementId="1107505" displayName="ControlledValve" />
+						<NetworkElement id="2" inletNodeId="1" outletNodeId="666666" componentId="4" displayName="Waterkotte Ecotouch 5029.5" />
+					</Elements>
+				</SubNetwork>
+				<SubNetwork id="1110003" displayName="EN: EFH Anlage" color="#2d00c3" idHeatExchangeElement="2">
+					<Elements>
+						<NetworkElement id="1" inletNodeId="333333" outletNodeId="1" componentId="10020002" controlElementId="1107505" displayName="ControlledValve" />
+						<NetworkElement id="2" inletNodeId="1" outletNodeId="666666" componentId="5" displayName="Waterkotte Ecotouch 5007.5" />
+					</Elements>
+				</SubNetwork>
+			</SubNetworks>
+			<Schedules>
+				<Schedule id="6006" displayName="DE: Condenser Mean Temperature |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
