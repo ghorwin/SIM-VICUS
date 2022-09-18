@@ -76,8 +76,8 @@ public:
 
 	// Convenience query functions, using Polygon3D for data delivery
 
-	/*! Returns the offset point (origin of the plane's local coordinate system) */
 	const VICUS::Polygon3D & polygon3D() const { return m_polygon; }
+	/*! Returns the offset point (origin of the plane's local coordinate system) */
 	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
