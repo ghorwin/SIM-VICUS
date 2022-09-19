@@ -191,13 +191,7 @@ void SVPropAddGeometry::updateUi() {
 	}
 
 	// handling if surfaces are selected
-	if (surfaceCount == 1) {
-		// enable "add subsurface" button
-		m_ui->pushButtonAddWindow->setEnabled(true);
-	}
-	else {
-		m_ui->pushButtonAddWindow->setEnabled(false);
-	}
+	m_ui->pushButtonAddWindow->setEnabled(surfaceCount > 1);
 }
 
 
