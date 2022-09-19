@@ -71,8 +71,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	for (int i=0; i<4; ++i)
 		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 
-	m_ui->lineEditZoneHeight->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(),
-									tr("Zone height in [m]."),true, true);
+	m_ui->lineEditZoneHeight->setup(0, std::numeric_limits<double>::max(), tr("Zone height in [m]."),false, true);
+	m_ui->lineEditRoofInclination->setup(0, 90, tr("Zone inclination in [Deg]."),false, false);
+	m_ui->lineEditFlapTileHeight->setup(0, std::numeric_limits<double>::max(), tr("Zone flap tile height in [m]."),false, true);
 
 	m_ui->lineEditSubStationMaxHeatingDemand->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(),
 									tr("Maximum/Nominal heating demand [W]."), false, true);
@@ -936,6 +937,14 @@ void SVPropVertexListWidget::on_lineEditRoofHeight_editingFinishedSuccessfully()
 	updateRoofGeometry();
 }
 
+void SVPropVertexListWidget::on_lineEditRoofInclination_editingFinishedSuccessfully() {
+	on_lineEditRoofHeight_editingFinishedSuccessfully();
+}
+
+void SVPropVertexListWidget::on_lineEditFlapTileHeight_editingFinishedSuccessfully() {
+	on_lineEditRoofHeight_editingFinishedSuccessfully();
+}
+
 
 void SVPropVertexListWidget::on_comboBoxRoofType_currentIndexChanged(int /*index*/) {
 	updateRoofGeometry();
@@ -1695,4 +1704,8 @@ void SVPropVertexListWidget::on_pushButtonCreateSubStation_clicked() {
 	SVUndoNetworkAddNodes *undo = new SVUndoNetworkAddNodes(nodes, netId);
 	undo->push();
 }
+
+
+
+
 
