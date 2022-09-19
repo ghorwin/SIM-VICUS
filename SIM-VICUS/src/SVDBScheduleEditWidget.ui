@@ -49,7 +49,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageDailyCycle">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -704,6 +704,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QtExt::BrowseFilenameWidget</class>
    <extends>QWidget</extends>
    <header>QtExt_BrowseFilenameWidget.h</header>
@@ -716,12 +722,6 @@
    <class>SVDBScheduleDailyCycleEditWidget</class>
    <extends>QWidget</extends>
    <header>SVDBScheduleDailyCycleEditWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QWidget</extends>
-   <header location="global">qwt_plot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -67,7 +67,6 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 					// Note: description is too long here for "Type"
 				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType",
 																				 it->second.m_modelType);
-				case ColSource				: return it->second.sourceName();
 			}
 		} break;
 
@@ -133,7 +132,6 @@ QVariant SVDBNetworkComponentTableModel::headerData(int section, Qt::Orientation
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
 				case ColType				: return tr("Type");
-				case ColSource				: return tr("Source");
 				default: ;
 			}
 		} break;
@@ -197,7 +195,6 @@ void SVDBNetworkComponentTableModel::setColumnResizeModes(QTableView * tableView
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColName, QHeaderView::Stretch);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColSource, QHeaderView::Fixed);
 }
 
 
