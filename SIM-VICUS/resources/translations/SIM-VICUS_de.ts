@@ -4084,7 +4084,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="55"/>
         <source>Fluid properties</source>
-        <translation>Fluideigenschaften</translation>
+        <translation>Fluideigenten</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="61"/>
@@ -9229,7 +9229,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="90"/>
         <source>Create connections</source>
-        <translation>Verbindungen schaffen</translation>
+        <translation>Verbindungen erzeugen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="20"/>
@@ -10787,7 +10787,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="129"/>
         <source>Create surface</source>
-        <translation>Oberfläche schaffen</translation>
+        <translation>Oberfläche erzeugen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="175"/>
