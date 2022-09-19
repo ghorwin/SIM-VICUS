@@ -114,6 +114,10 @@ void Surface::flip() {
 		m_subSurfaces[i].m_polygon2D = m_geometry.holes()[i];
 }
 
+void Surface::changeOrigin(unsigned int idx) {
+	m_geometry.changeOrigin(idx);
+}
+
 
 
 } // namespace VICUS

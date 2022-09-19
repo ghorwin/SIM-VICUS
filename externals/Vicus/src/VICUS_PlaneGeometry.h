@@ -116,6 +116,8 @@ public:
 	*/
 	void flip();
 
+	void changeOrigin(unsigned int idx);
+
 	// Getter functions for triangulation data (lazy evaluation)
 
 	/*! Returns the triangulation data for the opaque surface (excluding holes). */
