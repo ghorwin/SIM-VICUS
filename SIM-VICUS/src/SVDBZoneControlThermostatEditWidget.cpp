@@ -223,33 +223,45 @@ void SVDBZoneControlThermostatEditWidget::updatePlot(){
 	m_ui->widgetPlot->replot();
 	m_ui->widgetPlot->setEnabled(false);
 
+	m_xDataCooling.clear();
+	m_xDataHeating.clear();
+	m_yDataCooling.clear();
+	m_yDataHeating.clear();
+
 	if (m_current == nullptr)
 		return;
 
 	VICUS::Schedule *schedHeating = m_db->m_schedules[m_current->m_idHeatingSetpointSchedule];
 	VICUS::Schedule *schedCooling = m_db->m_schedules[m_current->m_idCoolingSetpointSchedule];
-	if (schedHeating==nullptr)
-		return;
 
-	createDataVectorFromSchedule(*schedHeating, m_xDataHeating, m_yDataHeating);
-	createDataVectorFromSchedule(*schedCooling, m_xDataCooling, m_yDataCooling);
+	if(schedHeating != nullptr){
+		createDataVectorFromSchedule(*schedHeating, m_xDataHeating, m_yDataHeating);
+	}
+	if(schedCooling != nullptr){
+		createDataVectorFromSchedule(*schedCooling, m_xDataCooling, m_yDataCooling);
+
+	}
 
 	// now do all the plotting
 	m_ui->widgetPlot->setEnabled(true);
 
 	// heating curve
-	m_curveHeating = addConfiguredCurve(m_ui->widgetPlot);
-	configureCurveTheme(m_curveHeating);
-	m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
-	m_curveHeating->setTitle("Heating Curve");
-	m_curveHeating->setPen("#9a031e", 2);
+	if(m_xDataHeating.size()>1) {
+		m_curveHeating = addConfiguredCurve(m_ui->widgetPlot);
+		configureCurveTheme(m_curveHeating);
+		m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
+		m_curveHeating->setTitle("Heating Curve");
+		m_curveHeating->setPen("#9a031e", 2);
+	}
 
 	// cooling curve
-	m_curveCooling = addConfiguredCurve(m_ui->widgetPlot);
-	configureCurveTheme(m_curveCooling);
-	m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
-	m_curveCooling->setTitle("Cooling Curve");
-	m_curveCooling->setPen("#3d5a80", 2);
+	if(m_xDataCooling.size()>1) {
+		m_curveCooling = addConfiguredCurve(m_ui->widgetPlot);
+		configureCurveTheme(m_curveCooling);
+		m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
+		m_curveCooling->setTitle("Cooling Curve");
+		m_curveCooling->setPen("#3d5a80", 2);
+	}
 
 	QFont ft;
 	ft.setPointSize(10);
@@ -318,12 +330,11 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSche
 void SVDBZoneControlThermostatEditWidget::createDataVectorFromSchedule(const VICUS::Schedule & sched, std::vector<double> & time, std::vector<double> & vals) {
 
 	// we dont consider annual schedule here
-	if (sched.m_periods.size()>0) {
-		if (sched.m_periods[0].isValid())
-			sched.m_periods[0].createWeekDataVector(time, vals);
-	}
-	else
+	if (sched.m_periods.empty() || !sched.m_periods[0].isValid())
 		return;
+	else {
+		sched.m_periods[0].createWeekDataVector(time, vals);
+	}
 
 	// convert time points to days
 	for (double & d : time)
