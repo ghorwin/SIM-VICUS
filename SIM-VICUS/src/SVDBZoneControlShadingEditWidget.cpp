@@ -68,9 +68,10 @@ SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *pare
 	m_ui->lineEditDeadBand->setup(0, 1400, tr("Dead Band for all Parameters."), true, true);
 	m_ui->lineEditHorizontal->setup(0, 1400, tr("Global Radiation Sensor Horizontal."), true, true);
 
+	setEnabled(false);
 
 	// initial state is "nothing selected"
-	updateInput(-1);
+//	updateInput(-1);
 }
 
 

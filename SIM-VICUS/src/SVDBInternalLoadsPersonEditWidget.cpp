@@ -352,8 +352,7 @@ void SVDBInternalLoadsPersonEditWidget::updatePlot() {
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::createDataVectorFromSchedule(const VICUS::Schedule & sched,
-																	 std::vector<double> & time, std::vector<double> & vals) {
+void SVDBInternalLoadsPersonEditWidget::createDataVectorFromSchedule(const VICUS::Schedule & sched, std::vector<double> & time, std::vector<double> & vals) {
 
 	// we dont consider annual schedule here
 	if (sched.m_periods.size()>0) {

@@ -38,6 +38,7 @@ namespace VICUS {
 
 class SVDBZoneControlThermostatTableModel;
 class SVDatabase;
+class QwtPlotCurve;
 
 class SVDBZoneControlThermostatEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -69,6 +70,13 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	void updatePlot();
+
+	/*! This functions creates vectors for plotting, could be implemented in VICUS::Schedule as well */
+	static void createDataVectorFromSchedule(const VICUS::Schedule &sched,
+											 std::vector<double> &time, std::vector<double> &vals);
+
+
 	Ui::SVDBZoneControlThermostatEditWidget				*m_ui;
 
 	/*! Cached pointer to database object. */
@@ -82,6 +90,16 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::ZoneControlThermostat						*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curveHeating;
+	QwtPlotCurve									*m_curveCooling;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xDataHeating;
+	std::vector<double>								m_yDataHeating;
+	std::vector<double>								m_xDataCooling;
+	std::vector<double>								m_yDataCooling;
 };
 
 #endif // SVDBZoneControlThermostatEditWidgetH

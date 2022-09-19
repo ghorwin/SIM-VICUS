@@ -37,6 +37,11 @@
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVSettings.h"
+#include "SVChartUtils.h"
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_legend.h>
 
 SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -71,6 +76,9 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditTolerance->setup(0.1, 50, tr("Thermostat tolerance for heating and/or cooling mode. Min 0.1 K, Max 50 K."), true, true);
+
+	// create chart
+	configureChart(m_ui->widgetPlot);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -147,6 +155,8 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 	m_ui->toolButtonRemoveCoolingSetpointSchedule->setEnabled(!isbuiltIn);
 
 	m_ui->lineEditTolerance->setEnabled(!isbuiltIn);
+
+	updatePlot();
 }
 
 
@@ -206,6 +216,57 @@ void SVDBZoneControlThermostatEditWidget::modelModify() {
 }
 
 
+void SVDBZoneControlThermostatEditWidget::updatePlot(){
+
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotCurve );
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotMarker );
+	m_ui->widgetPlot->replot();
+	m_ui->widgetPlot->setEnabled(false);
+
+	if (m_current == nullptr)
+		return;
+
+	VICUS::Schedule *schedHeating = m_db->m_schedules[m_current->m_idHeatingSetpointSchedule];
+	VICUS::Schedule *schedCooling = m_db->m_schedules[m_current->m_idCoolingSetpointSchedule];
+	if (schedHeating==nullptr)
+		return;
+
+	createDataVectorFromSchedule(*schedHeating, m_xDataHeating, m_yDataHeating);
+	createDataVectorFromSchedule(*schedCooling, m_xDataCooling, m_yDataCooling);
+
+	// now do all the plotting
+	m_ui->widgetPlot->setEnabled(true);
+
+	// heating curve
+	m_curveHeating = addConfiguredCurve(m_ui->widgetPlot);
+	configureCurveTheme(m_curveHeating);
+	m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
+	m_curveHeating->setTitle("Heating Curve");
+	m_curveHeating->setPen("#9a031e", 2);
+
+	// cooling curve
+	m_curveCooling = addConfiguredCurve(m_ui->widgetPlot);
+	configureCurveTheme(m_curveCooling);
+	m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
+	m_curveCooling->setTitle("Cooling Curve");
+	m_curveCooling->setPen("#3d5a80", 2);
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(tr("Ambient Temperature [C]"));
+	xl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(tr("Supply Temperature [C]"));
+	yl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
+	m_ui->widgetPlot->replot();
+
+	QwtLegend* legend2 = new QwtLegend;
+	m_ui->widgetPlot->insertLegend(legend2, QwtPlot::TopLegend);
+
+}
+
+
 void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
@@ -252,3 +313,47 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSche
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+
+
+void SVDBZoneControlThermostatEditWidget::createDataVectorFromSchedule(const VICUS::Schedule & sched, std::vector<double> & time, std::vector<double> & vals) {
+
+	// we dont consider annual schedule here
+	if (sched.m_periods.size()>0) {
+		if (sched.m_periods[0].isValid())
+			sched.m_periods[0].createWeekDataVector(time, vals);
+	}
+	else
+		return;
+
+	// convert time points to days
+	for (double & d : time)
+		d /= 24;
+
+	Q_ASSERT(time.size() == vals.size());
+	// if we are in "constant" mode, duplicate values to get steps
+	if (!sched.m_useLinearInterpolation) {
+		std::vector<double> timepointsCopy;
+		std::vector<double> dataCopy;
+		for (unsigned int i = 0; i<time.size(); ++i) {
+			timepointsCopy.push_back(time[i]);
+			// get next time point, unless it is the last, in this case we use "end of week = 7 d"
+			double nexttp = 7;
+			if (i+1<time.size())
+				nexttp = time[i+1]-2./(24*3600);
+			timepointsCopy.push_back(nexttp);
+			dataCopy.push_back(vals[i]);
+			dataCopy.push_back(vals[i]);
+		}
+		// copy data to schedule
+		time.swap(timepointsCopy);
+		vals.swap(dataCopy);
+	}
+	else {
+		// special handling for time series with just one point (constant schedule for all days)
+		if (time.size() == 1) {
+			time.push_back(7);
+			vals.push_back(vals.back());
+		}
+	}
+}
+
