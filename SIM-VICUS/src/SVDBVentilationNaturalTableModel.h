@@ -32,6 +32,7 @@
 
 #include <VICUS_VentilationNatural.h>
 
+
 /*! Model for accessing the natural ventilation in database. */
 class SVDBVentilationNaturalTableModel : public SVAbstractDatabaseTableModel {
 	Q_OBJECT
@@ -81,6 +82,7 @@ private:
 
 	/*! Pointer to the entire database (not owned). */
 	SVDatabase		* m_db;
+
 };
 
 #endif // SVDBVentilationNaturalTableModelH

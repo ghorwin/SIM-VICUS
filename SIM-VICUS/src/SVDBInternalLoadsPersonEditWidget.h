@@ -38,6 +38,8 @@ namespace VICUS {
 
 class SVDBInternalLoadsTableModel;
 class SVDatabase;
+class QwtPlotCurve;
+
 
 class SVDBInternalLoadsPersonEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -69,6 +71,8 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	void updatePlot();
+
 	Ui::SVDBInternalLoadsPersonEditWidget	*m_ui;
 
 	/*! Cached pointer to database object. */
@@ -82,6 +86,18 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::InternalLoad						*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curve;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xData;
+	std::vector<double>								m_yData;
+
+	/*! This functions creates vectors for plotting, could be implemented in VICUS::Schedule as well */
+	static void createDataVectorFromSchedule(const VICUS::Schedule &sched,
+											 std::vector<double> &time, std::vector<double> &vals);
+
 };
 
 #endif // SVDBInternalLoadsPersonEditWidgetH

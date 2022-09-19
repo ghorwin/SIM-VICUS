@@ -38,6 +38,8 @@ namespace VICUS {
 
 class SVDBVentilationNaturalTableModel;
 class SVDatabase;
+class QwtPlotCurve;
+
 
 class SVDBVentilationNaturalEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -59,6 +61,8 @@ private slots:
 	void on_lineEditAirChangeRate_editingFinishedSuccessfully();
 	void on_toolButtonSelectSchedule_clicked();
 
+	void updatePlot();
+
 
 private:
 
@@ -78,6 +82,13 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::VentilationNatural						*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curve;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xData;
+	std::vector<double>								m_yData;
 };
 
 #endif // SVDBVentilationNaturalEditWidgetH

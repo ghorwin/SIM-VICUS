@@ -14,25 +14,15 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayoutMaster">
-   <item row="5" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>30</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="labelDisplayName">
+   <item row="2" column="3">
+    <widget class="QToolButton" name="toolButtonSelectSchedule">
      <property name="text">
-      <string>Name:</string>
+      <string>...</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="labelScheduleHeating">
@@ -41,13 +31,10 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="4">
-    <widget class="QLabel" name="label">
+   <item row="1" column="3">
+    <widget class="QLabel" name="labelConvectiveFactorUnit">
      <property name="text">
-      <string>Hier muss bitte ein SCI Chart wie im CCM für die Diagramme rein. Wichtig dabei man muss vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+      <string>1/h</string>
      </property>
     </widget>
    </item>
@@ -55,16 +42,6 @@
     <widget class="QLabel" name="labelAirChangeRate">
      <property name="text">
       <string>Air Change Rate:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-   </item>
-   <item row="2" column="3">
-    <widget class="QToolButton" name="toolButtonSelectSchedule">
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -87,6 +64,23 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelDisplayName">
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditAirChangeRate">
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="3">
     <widget class="QtExt::ColorButton" name="pushButtonColor">
      <property name="sizePolicy">
@@ -104,22 +98,8 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditAirChangeRate">
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QLabel" name="labelConvectiveFactorUnit">
-     <property name="text">
-      <string>1/h</string>
-     </property>
-    </widget>
+   <item row="4" column="0" colspan="3">
+    <widget class="QwtPlot" name="widgetPlot" native="true"/>
    </item>
   </layout>
  </widget>
@@ -128,6 +108,15 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
@@ -135,9 +124,10 @@
    <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
   <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

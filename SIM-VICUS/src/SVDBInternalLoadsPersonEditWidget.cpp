@@ -37,6 +37,11 @@
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVSettings.h"
+#include "SVChartUtils.h"
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+
 
 SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -62,6 +67,8 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 
 	m_ui->lineEditPersonCount->setup(0, 10000, tr("Person count according to the given unit"), true, true);
 	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);
+
+	configureChart(m_ui->widgetPlot);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -151,6 +158,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->toolButtonRemoveActivitySchedule->setEnabled(!isbuiltIn);
 	m_ui->toolButtonRemoveOccupancySchedule->setEnabled(!isbuiltIn);
 
+	updatePlot();
 }
 
 
@@ -188,6 +196,8 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 	}
 
 	m_ui->labelPersonCountUnit->setText(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", index));
+
+	updatePlot();
 }
 
 
@@ -204,10 +214,11 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinishedSu
 		case VICUS::InternalLoad::NUM_PCM:							paraName = VICUS::InternalLoad::NUM_P;				break;
 	}
 	if (m_current->m_para[paraName].empty() ||
-			val != m_current->m_para[paraName].value)
+		val != m_current->m_para[paraName].value)
 	{
 		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 		modelModify();
+		updatePlot();
 	}
 }
 
@@ -261,6 +272,127 @@ void SVDBInternalLoadsPersonEditWidget::modelModify() {
 	m_db->m_internalLoads.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBInternalLoadsPersonEditWidget::updatePlot() {
+
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotCurve );
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotMarker );
+	m_ui->widgetPlot->replot();
+	m_ui->widgetPlot->setEnabled(false);
+
+	if (m_current == nullptr)
+		return;
+
+	// multiply by scalar
+	double factor = 1;
+	QString label = " ";
+	if (m_current->m_personCountMethod == VICUS::InternalLoad::PCM_PersonCount) {
+		label = tr("Power [W]");
+		if (!m_current->m_para[VICUS::InternalLoad::P_PersonCount].empty())
+			factor = m_current->m_para[VICUS::InternalLoad::P_PersonCount].value;
+	}
+	else if (m_current->m_personCountMethod == VICUS::InternalLoad::PCM_PersonPerArea) {
+		label = tr("Power per area [W/m²]");
+		if (!m_current->m_para[VICUS::InternalLoad::PCM_PersonPerArea].empty())
+			factor = m_current->m_para[VICUS::InternalLoad::PCM_PersonPerArea].value;
+	}
+	else if (m_current->m_personCountMethod == VICUS::InternalLoad::PCM_AreaPerPerson) {
+			label = tr("Power per area [W/m²]");
+			if (!m_current->m_para[VICUS::InternalLoad::PCM_AreaPerPerson].empty())
+				factor = 1 / m_current->m_para[VICUS::InternalLoad::PCM_AreaPerPerson].value;
+	}
+
+	// check schedules, if invalid return
+	const VICUS::Schedule *sched1 = m_db->m_schedules[m_current->m_idActivitySchedule];
+	const VICUS::Schedule *sched2 = m_db->m_schedules[m_current->m_idOccupancySchedule];
+	if (sched1==nullptr || sched2==nullptr)
+		return;
+
+	std::vector<double> time1, time2, vals1, vals2;
+	createDataVectorFromSchedule(*sched1, time1, vals1);
+	createDataVectorFromSchedule(*sched2, time2, vals2);
+	if ( (time1.size() != time2.size()) || (vals1.size() != vals2.size()) )
+		 return;
+
+	m_xData.clear();
+	m_yData.clear();
+	for (unsigned int i=0; i<time1.size(); ++i){
+		// this must not happen, maybe throw an error message here?
+		if (time1[i] != time2[i])
+			return;
+		m_xData.push_back(time1[i]);
+		m_yData.push_back( vals1[i] * vals2[i] * factor );
+	}
+
+	// dont plot if there is no data
+	if (m_xData.size()==0)
+		return;
+
+	// now do all the plotting
+	m_ui->widgetPlot->setEnabled(true);
+
+	m_curve = addConfiguredCurve(m_ui->widgetPlot);
+	// adjust styling based on current theme's settings
+	configureCurveTheme(m_curve);
+
+	// heating curve
+	m_curve->setRawSamples(m_xData.data(), m_yData.data(), (int)m_xData.size());
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(tr("Time [d]"));
+	xl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(label);
+	yl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
+	m_ui->widgetPlot->replot();
+}
+
+
+void SVDBInternalLoadsPersonEditWidget::createDataVectorFromSchedule(const VICUS::Schedule & sched,
+																	 std::vector<double> & time, std::vector<double> & vals) {
+
+	// we dont consider annual schedule here
+	if (sched.m_periods.size()>0) {
+		if (sched.m_periods[0].isValid())
+			sched.m_periods[0].createWeekDataVector(time, vals);
+	}
+	else
+		return;
+
+	// convert time points to days
+	for (double & d : time)
+		d /= 24;
+
+	Q_ASSERT(time.size() == vals.size());
+	// if we are in "constant" mode, duplicate values to get steps
+	if (!sched.m_useLinearInterpolation) {
+		std::vector<double> timepointsCopy;
+		std::vector<double> dataCopy;
+		for (unsigned int i = 0; i<time.size(); ++i) {
+			timepointsCopy.push_back(time[i]);
+			// get next time point, unless it is the last, in this case we use "end of week = 7 d"
+			double nexttp = 7;
+			if (i+1<time.size())
+				nexttp = time[i+1]-2./(24*3600);
+			timepointsCopy.push_back(nexttp);
+			dataCopy.push_back(vals[i]);
+			dataCopy.push_back(vals[i]);
+		}
+		// copy data to schedule
+		time.swap(timepointsCopy);
+		vals.swap(dataCopy);
+	}
+	else {
+		// special handling for time series with just one point (constant schedule for all days)
+		if (time.size() == 1) {
+			time.push_back(7);
+			vals.push_back(vals.back());
+		}
+	}
 }
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveOccupancySchedule_clicked() {

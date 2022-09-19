@@ -71,9 +71,13 @@ private slots:
 
 	void on_toolButtonSelectPipes_clicked();
 
-	void on_tableWidget_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+	void on_tableWidgetCooling_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 
-	void on_tableWidget_itemChanged(QTableWidgetItem *item);
+	void on_tableWidgetCooling_itemChanged(QTableWidgetItem *item);
+
+	void on_tableWidgetHeating_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+
+	void on_tableWidgetHeating_itemChanged(QTableWidgetItem *item);
 
 private:
 
@@ -97,11 +101,14 @@ private:
 	VICUS::SurfaceHeating							*m_current;
 
 	/*! The curve used to plot */
-	QwtPlotCurve									*m_curve;
+	QwtPlotCurve									*m_curveHeating;
+	QwtPlotCurve									*m_curveCooling;
 
 	/*! The data vectors needed for plotting. */
-	std::vector<double>								m_xData;
-	std::vector<double>								m_yData;
+	std::vector<double>								m_xDataHeating;
+	std::vector<double>								m_yDataHeating;
+	std::vector<double>								m_xDataCooling;
+	std::vector<double>								m_yDataCooling;
 };
 
 #endif // SVDBSurfaceHeatingEditWidgetH

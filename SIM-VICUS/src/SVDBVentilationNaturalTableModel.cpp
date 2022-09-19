@@ -217,3 +217,5 @@ QModelIndex SVDBVentilationNaturalTableModel::indexById(unsigned int id) const {
 	}
 	return QModelIndex();
 }
+
+

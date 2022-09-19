@@ -38,6 +38,8 @@ namespace VICUS {
 
 class SVDBInfiltrationTableModel;
 class SVDatabase;
+class QwtPlotCurve;
+
 
 class SVDBInfiltrationEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -60,6 +62,7 @@ private slots:
 	void on_lineEditShieldCoefficient_editingFinishedSuccessfully();
 	void on_lineEditAirChangeRate_editingFinishedSuccessfully();
 
+	void updatePlot();
 
 private:
 
@@ -79,6 +82,13 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::Infiltration							*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curve;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xData;
+	std::vector<double>								m_yData;
 };
 
 #endif // SVDBInfiltrationEditWidgetH

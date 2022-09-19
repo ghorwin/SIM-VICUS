@@ -38,6 +38,7 @@ namespace VICUS {
 
 class SVDBInternalLoadsTableModel;
 class SVDatabase;
+class QwtPlotCurve;
 
 class SVDBInternalLoadsElectricEquipmentEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -71,6 +72,8 @@ private:
 	/*! Update the unit label of input method. */
 	void updateLabel();
 
+	void updatePlot();
+
 	Ui::SVDBInternalLoadsElectricEquipmentEditWidget	*m_ui;
 
 	/*! Cached pointer to database object. */
@@ -84,6 +87,13 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::InternalLoad									*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curve;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xData;
+	std::vector<double>								m_yData;
 };
 
 #endif // SVDBInternalLoadsElectricEquipmentEditWidgetH
