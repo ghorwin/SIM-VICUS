@@ -70,7 +70,7 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
-	m_ui->lineEditTolerance->setup(0.1, 50, tr("Thermostat tolerance for heating and/or cooling mode. Min 0.1 C, Max 50 C."), true, true);
+	m_ui->lineEditTolerance->setup(0.1, 50, tr("Thermostat tolerance for heating and/or cooling mode. Min 0.1 K, Max 50 K."), true, true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);

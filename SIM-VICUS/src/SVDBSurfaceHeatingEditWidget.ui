@@ -51,7 +51,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -60,7 +60,7 @@
          <item>
           <widget class="QLabel" name="labelAirChangeRate">
            <property name="text">
-            <string>Heating limit:</string>
+            <string>Max. heating limit:</string>
            </property>
           </widget>
          </item>
@@ -88,7 +88,7 @@
          <item>
           <widget class="QLabel" name="labelShieldCoefficient">
            <property name="text">
-            <string>Cooling limit:</string>
+            <string>Max. Cooling limit:</string>
            </property>
           </widget>
          </item>
@@ -156,7 +156,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>System Sizing</string>
+          <string>System parameter</string>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <item row="3" column="0">

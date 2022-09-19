@@ -137,7 +137,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	int frameIdx = 0;
 	switch(m_current->m_methodFrame) {
 		case VICUS::Window::M_Fraction:{
-			m_ui->labelFrameInput->setText(tr("Fraction of Farme:"));
+			m_ui->labelFrameInput->setText(tr("Fraction of Frame:"));
 			m_ui->labelFrameInputUnit->setText(tr("-"));
 			m_ui->lineEditFrameInput->setup(0,0.99,tr("Frame fraction of the window"), false, true);
 			double inputVal;
