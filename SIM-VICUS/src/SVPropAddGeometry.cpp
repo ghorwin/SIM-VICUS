@@ -191,7 +191,7 @@ void SVPropAddGeometry::updateUi() {
 	}
 
 	// handling if surfaces are selected
-	m_ui->pushButtonAddWindow->setEnabled(surfaceCount > 1);
+	m_ui->pushButtonAddWindow->setEnabled(surfaceCount > 0);
 }
 
 
