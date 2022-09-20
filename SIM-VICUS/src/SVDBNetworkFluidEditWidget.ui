@@ -13,43 +13,34 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Fluid description</string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelDisplayName">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
-       <widget class="QtExt::ColorButton" name="pushButtonColor">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelDisplayName">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-      </item>
-     </layout>
+     <property name="text">
+      <string>Name:</string>
+     </property>
     </widget>
    </item>
-   <item>
+   <item row="2" column="1">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBoxModelParameters">
      <property name="title">
       <string>Fluid properties</string>

@@ -46,7 +46,7 @@ SVDBNetworkFluidEditWidget::SVDBNetworkFluidEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBNetworkFluidEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->gridLayout->setMargin(0);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Fluid identification name"));
