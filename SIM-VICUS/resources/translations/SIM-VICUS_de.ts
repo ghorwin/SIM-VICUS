@@ -5037,12 +5037,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="63"/>
         <source>Max. heating limit:</source>
-        <translation>max. Heizgrenze:</translation>
+        <translation>Max. Heizleistung:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="91"/>
+        <source>Max. cooling limit:</source>
+        <translation>Max. Kühlleistung:</translation>
+    </message>
+    <message>
         <source>Max. Cooling limit:</source>
-        <translation>max. Kühlgrenze:</translation>
+        <translation type="vanished">max. Kühlgrenze:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="159"/>
@@ -5239,27 +5243,27 @@ p, li { white-space: pre-wrap; }
         <translation>Luftwechselrate.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="81"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="83"/>
         <source>Air change rate:</source>
         <translation>Luftwechselrate:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="82"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="84"/>
         <source>Schedule name:</source>
         <translation>Zeitplanname:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="110"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="112"/>
         <source>&lt;select schedule&gt;</source>
         <translation>&lt;Zeitplan auswählen&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="249"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="251"/>
         <source>Time [d]</source>
         <translation>Zeit [d]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="252"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="254"/>
         <source>Natural Ventilation [1/h]</source>
         <translation>Natürliche Belüftung [1/h]</translation>
     </message>
@@ -5713,12 +5717,12 @@ p, li { white-space: pre-wrap; }
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="146"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="20"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="74"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="27"/>
         <source>Method:</source>
         <translation>Methode:</translation>
     </message>
@@ -5728,30 +5732,33 @@ p, li { white-space: pre-wrap; }
         <translation>Controller-Typ:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="86"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="41"/>
         <source>Heating Setpoint Schedule:</source>
         <translation>Heizsollwertzeitplan:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="57"/>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="100"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="55"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="84"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="43"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="70"/>
         <source>Cooling Setpoint Schedule:</source>
         <translation>Kühlsollwertzeitplan:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="20"/>
-        <source>Tolerance:</source>
-        <translation>Toleranz:</translation>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="99"/>
+        <source>Tolerance [K]:</source>
+        <translation>Toleranz [K]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="27"/>
+        <source>Tolerance:</source>
+        <translation type="vanished">Toleranz:</translation>
+    </message>
+    <message>
         <source>K</source>
-        <translation>K</translation>
+        <translation type="vanished">K</translation>
     </message>
     <message>
         <source>Hier muss bitte ein SCI Chart wie im CCM für die Diagramme rein. Wichtig dabei man muss vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</source>

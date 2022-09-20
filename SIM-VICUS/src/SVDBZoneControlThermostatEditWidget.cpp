@@ -48,7 +48,7 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 	m_ui(new Ui::SVDBZoneControlThermostatEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridMasterLayout->setMargin(4);
+	m_ui->gridLayout->setMargin(4);
 
 	// *** populate combo boxes ***
 

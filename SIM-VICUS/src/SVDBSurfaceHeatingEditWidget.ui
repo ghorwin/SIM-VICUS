@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1061</width>
-    <height>582</height>
+    <width>846</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatingLimit">
            <property name="maximumSize">
             <size>
-             <width>100</width>
+             <width>16777215</width>
              <height>16777215</height>
             </size>
            </property>
@@ -88,7 +88,7 @@
          <item>
           <widget class="QLabel" name="labelShieldCoefficient">
            <property name="text">
-            <string>Max. Cooling limit:</string>
+            <string>Max. cooling limit:</string>
            </property>
           </widget>
          </item>
@@ -96,7 +96,7 @@
           <widget class="QtExt::ValidatingLineEdit" name="lineEditCoolingLimit">
            <property name="maximumSize">
             <size>
-             <width>100</width>
+             <width>16777215</width>
              <height>16777215</height>
             </size>
            </property>
@@ -319,15 +319,18 @@
    </slots>
   </customwidget>
   <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
   <customwidget>
    <class>QwtPlot</class>

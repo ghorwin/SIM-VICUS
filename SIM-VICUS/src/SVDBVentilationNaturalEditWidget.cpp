@@ -59,6 +59,8 @@ SVDBVentilationNaturalEditWidget::SVDBVentilationNaturalEditWidget(QWidget *pare
 
 	configureChart(m_ui->widgetPlot);
 
+	m_ui->label_2->setVisible(false);
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
