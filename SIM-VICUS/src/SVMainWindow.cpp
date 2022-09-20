@@ -166,6 +166,9 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	setAttribute(Qt::WA_NativeWindow);
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
+
+
+	m_ui->actionDBZoneControlShading->setEnabled(false);
 }
 
 
