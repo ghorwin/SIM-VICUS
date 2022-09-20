@@ -1,0 +1,17 @@
+Source: simvicus
+Section: science
+Priority: optional
+Maintainer: Andreas Nicolai <andreas.nicolai@gmx.net>
+Build-Depends: debhelper-compat (= 12), cmake, zlib1g-dev, qtbase5-dev, libqt5core5a, libqt5concurrent5, libqt5gui5, libqt5network5, libqt5svg5-dev, libqt5xml5, libqt5widgets5, p7zip-full
+Standards-Version: 4.5.0
+Homepage: https://sim-vicus.de
+Vcs-Git: https://github.com/ghorwin/SIM-VICUS.git
+Vcs-Browser: https://github.com/ghorwin/SIM-VICUS
+Rules-Requires-Root: binary-targets
+
+Package: simvicus
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Building and District Energy Simulation and more...
+ SIM-VICUS is a building simulation modeling tool, specialized for
+ building energy simulation, yet also for district network modeling.
