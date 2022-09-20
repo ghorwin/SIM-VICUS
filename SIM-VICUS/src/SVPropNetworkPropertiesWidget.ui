@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
+  <layout class="QGridLayout" name="mainGridLayout">
    <item row="0" column="0">
     <layout class="QFormLayout" name="formLayout_2">
      <item row="0" column="0">

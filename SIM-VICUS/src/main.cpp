@@ -251,8 +251,9 @@ int main(int argc, char *argv[]) {
 
 		// Add beta information
 		painter.setPen(QColor("#CE4A4A"));
-		if(VICUS::VERSION[0] == '0')
+		if (VICUS::VERSION[0] == '0')
 			painter.drawText(615.0/ratio, 572.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("BETA-VERSION"));
+		painter.end();
 
 		// show splash screen
 		splash.reset(new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint | Qt::SplashScreen));

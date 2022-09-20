@@ -41,9 +41,6 @@ SVPropAddGeometry::SVPropAddGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropAddGeometry)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayoutMaster->setMargin(0);
-	//	m_ui->verticalLayoutPage1->setMargin(0);
-	//	m_ui->verticalLayoutPage2->setMargin(0);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified, this, &SVPropAddGeometry::onModified);
 }

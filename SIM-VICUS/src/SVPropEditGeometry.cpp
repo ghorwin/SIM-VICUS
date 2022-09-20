@@ -95,9 +95,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayoutMaster->setMargin(0);
-	//	m_ui->verticalLayoutPage1->setMargin(0);
-	//	m_ui->verticalLayoutPage2->setMargin(0);
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
