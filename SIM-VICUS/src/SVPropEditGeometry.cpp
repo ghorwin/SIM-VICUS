@@ -95,6 +95,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
+	// remove layout margins for all pages
+	for (int i=0; i<NUM_MT; ++i)
+		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
@@ -166,8 +169,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
-	for (int i=0; i<4; ++i)
-		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 }
 
 

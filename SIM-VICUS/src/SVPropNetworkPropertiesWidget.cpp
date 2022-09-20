@@ -54,7 +54,6 @@ SVPropNetworkPropertiesWidget::SVPropNetworkPropertiesWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropNetworkEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->mainGridLayout->setMargin(0);
 
 	// connect with project handler
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified, this, &SVPropNetworkPropertiesWidget::onModified);
