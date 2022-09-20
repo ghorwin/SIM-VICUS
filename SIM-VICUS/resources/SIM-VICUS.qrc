@@ -112,5 +112,6 @@
         <file>gfx/actions/NetworkGeo.png</file>
         <file>gfx/actions/copy_building.png</file>
         <file>gfx/actions/misc_operations.png</file>
+        <file>gfx/actions/SmartSelect.png</file>
     </qresource>
 </RCC>

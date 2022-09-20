@@ -161,6 +161,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// manually specify keyboard shortcut again, since on Windows this is a "standard shortcut" and get's removed
 	// when setting up UI
 	m_ui->actionFileClose->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_W));
+	m_ui->actionViewFindSelectedGeometry->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_F));
 
 	// enforce using a native window; we need this so we can call window() and retrieve scaling information
 	setAttribute(Qt::WA_NativeWindow);

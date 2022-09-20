@@ -58,6 +58,10 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	m_ui->treeWidget->setItemDelegate(m_navigationTreeItemDelegate);
 	m_ui->treeWidget->setUniformRowHeights(true);
 
+	m_ui->actionSmartSelect->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Period));
+	m_ui->actionInvertSelection->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_I));
+
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
 
