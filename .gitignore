@@ -48,6 +48,7 @@ Makefile*
 *.~p2
 *.autosave
 object_script.*
+*.png~
 
 *.lyx~
 *.lyx\#
