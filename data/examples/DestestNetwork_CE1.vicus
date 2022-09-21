@@ -3,6 +3,7 @@
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
 		<LastEdited>Sa Sep 17 13:05:18 2022</LastEdited>
+		<Comment>This is the IBPSA Project1 DESTEST Common Excercise CE1 for networks. A constant supply temperature is applied at the source and at each sub station a given heat demand spline is used. </Comment>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>

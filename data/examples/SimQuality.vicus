@@ -3,6 +3,7 @@
 	<ProjectInfo>
 		<Created>Do. Sep. 30 10:58:06 2021</Created>
 		<LastEdited>So. Sept. 11 14:22:42 2022</LastEdited>
+		<Comment>A demo building, developed within the SimQuality project (simquality.de). It demonstrates several pitfalls for building energy simulation such as multi-level zones that are coupled to single-level zones.</Comment>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>

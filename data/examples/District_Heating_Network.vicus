@@ -3,6 +3,7 @@
 	<ProjectInfo>
 		<Created>Mi Sep 14 12:22:15 2022</Created>
 		<LastEdited>Fr Sep 16 15:32:46 2022</LastEdited>
+		<Comment> A small conventional district heating network with insulated pipeline. The supply temperature is a hourly spline that has been precalculated based on the ambient temperature. Sub station are controlled to a given temperature difference and their heating demand is described through according demand profiles.</Comment>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>

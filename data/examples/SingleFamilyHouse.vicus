@@ -3,6 +3,7 @@
 	<ProjectInfo>
 		<Created>Mi. Sept. 7 08:14:15 2022</Created>
 		<LastEdited>Di. Sept. 13 22:54:28 2022</LastEdited>
+		<Comment>A single family house that may be used as an demo example to get started with SIM-VICUS. It demonstrates the main features for building energy simulation available. Many typical properties are assigned here, including underfloor heating system. </Comment>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>

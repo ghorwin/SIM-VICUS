@@ -3,6 +3,7 @@
 	<ProjectInfo>
 		<Created>Fr Sep 16 15:42:40 2022</Created>
 		<LastEdited>Sa Sep 17 12:02:01 2022</LastEdited>
+		<Comment>A small low-temperature district heating network with uninsulated pipeline. The supply station includes a pump with constant pressure head and a pipe array that represents a geothermal collector. At each sub station, a heat pump is installed, including a control valve that controls the temperature difference of the heat pump.</Comment>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
