@@ -427,14 +427,24 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 	m_ui->widgetPlot1->setAxisTitle(QwtPlot::xBottom, "");
 	m_ui->widgetPlot1->setAxisTitle(QwtPlot::yLeft, "");
 	m_ui->widgetPlot1->replot();
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 	m_ui->tabWidgetPlots->setTabVisible(0, false);
+#else
+	m_ui->plotTab1->setEnabled(false);
+	m_ui->widgetPlot1->setVisible(false);
+#endif
 
 	m_ui->widgetPlot2->detachItems( QwtPlotItem::Rtti_PlotCurve );
 	m_ui->widgetPlot2->detachItems( QwtPlotItem::Rtti_PlotMarker );
 	m_ui->widgetPlot2->setAxisTitle(QwtPlot::xBottom, "");
 	m_ui->widgetPlot2->setAxisTitle(QwtPlot::yLeft, "");
 	m_ui->widgetPlot2->replot();
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 	m_ui->tabWidgetPlots->setTabVisible(1, false);
+#else
+	m_ui->plotTab2->setEnabled(false);
+	m_ui->widgetPlot2->setVisible(false);
+#endif
 
 	QString xLabel;
 	QString yLabel1, yLabel2;
@@ -556,8 +566,12 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 
 	std::vector<QColor> colors = {"#db2b39", "#29335c", "#f3a712"};
 	// now do all the plotting
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 	m_ui->tabWidgetPlots->setTabVisible(0, true);
+#else
+	m_ui->plotTab1->setEnabled(true);
 	m_ui->widgetPlot1->setVisible(true);
+#endif
 	m_curves1.clear();
 	Q_ASSERT(curveLabels1.size()==m_yData1.size());
 	for (unsigned int i=0; i<m_yData1.size(); ++i) {
@@ -585,8 +599,12 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 
 
 	if (!m_yData2.empty()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 		m_ui->tabWidgetPlots->setTabVisible(1, true);
+#else
+		m_ui->plotTab2->setEnabled(false);
 		m_ui->widgetPlot2->setVisible(true);
+#endif
 		m_curves2.clear();
 		Q_ASSERT(curveLabels2.size()==m_yData2.size());
 		for (unsigned int i=0; i<m_yData2.size(); ++i) {
