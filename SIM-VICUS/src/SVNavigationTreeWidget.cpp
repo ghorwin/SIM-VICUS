@@ -109,6 +109,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			Q_ASSERT(info != nullptr);
 
 			for (unsigned int ID : info->m_nodeIDs) {
+				// special handling for ID 0 as it is the plain geometry
+				if (ID == 0)
+					continue;
+
 				const VICUS::Object * o = project().objectById(ID);
 				auto itemId = m_treeItemMap.find(ID);
 				Q_ASSERT(itemId != m_treeItemMap.end());
