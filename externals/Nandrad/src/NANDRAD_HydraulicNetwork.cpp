@@ -131,6 +131,10 @@ void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned in
 		otherZoneIds.insert(*idIt);
 	}
 
+	// TODO Air network: check if zone ids exist in project
+	// TODO Air network: ensure, that node and zone ids are unique
+	// TODO Air network: remove extra zoneID vars
+	// TODO Air network: add type 'AirNetwork' in HydraulicNetwork
 
 	// check parameters of all components
 	for (HydraulicNetworkComponent &c : m_components) {

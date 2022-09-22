@@ -10,7 +10,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -60,12 +60,12 @@
 					</HydraulicNetworkComponent>
 					<!-- Channel == Pipe?-->
 					<HydraulicNetworkComponent id="2" displayName="Adiabatic channel" modelType="SimplePipe"/>
-<!-- 					<HydraulicNetworkComponent id="3" displayName="Element with flow resistance for opened and closed" modelType="SimpleOpening">
-						<!-- Which parameters have to be filled?
+					<HydraulicNetworkComponent id="3" displayName="Element with flow resistance for opened and closed" modelType="SimpleOpening">
+						<!-- Which parameters have to be filled?--->
 						<IBK:Parameter name="DischargeCoefficient" unit="---">10</IBK:Parameter>
 						<IBK:Parameter name="CrackMassFlowCoefficient" unit="kg/sm">10</IBK:Parameter>
 						<IBK:Parameter name="CrackMassFlowExponent" unit="---">0.7</IBK:Parameter>
-					</HydraulicNetworkComponent>--->
+					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
 					<!-- Ventilator: connects from outlet zone with id 0 to an internal network node-->
@@ -78,53 +78,42 @@
 					<HydraulicNetworkElement id="301" inletZoneId="1" outletZoneId="0" componentId="2" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<!-- Outside door: connects from inside zone (id = 1) to outside
-					<HydraulicNetworkElement id="401" inletZoneId="1" outletZoneId="0" componentId="3" displayName="Door-->
+					<!-- Outside door: connects from inside zone (id = 1) to outside-->
+					<HydraulicNetworkElement id="401" inletZoneId="1" outletZoneId="0" componentId="3" displayName="Door"/>
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
-		<Schedules />
+		
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Door">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<!-- We open the door from 9-16 per 60% -->
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0,9,16</TimePoints>
+								<Values>OpeningFactor [---]:0,0.6,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="WeekEnd">
+						<DailyCycles>
+							<!-- On weekend the door is closed -->
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>OpeningFactor [---]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 
-		<Outputs>
-			<Definitions>
-				<OutputDefinition>
-					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>Pump</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluidTemperature</Quantity>
-					<ObjectListName>Channels</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zone</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-			</Definitions>
-			<Grids>
-				<OutputGrid name="hourly">
-					<Intervals>
-						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
-						</Interval>
-					</Intervals>
-				</OutputGrid>
-			</Grids>
-		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Pump">
-				<FilterID>101</FilterID>
-				<ReferenceType>NetworkElement</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Channels">
-				<FilterID>201,301</FilterID>
-				<ReferenceType>NetworkElement</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Zone">
-				<FilterID>1</FilterID>
-				<ReferenceType>Zone</ReferenceType>
+			<ObjectList name="Door">
+				<FilterID>401</FilterID>
+				<ReferenceType>NetworkELement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 
