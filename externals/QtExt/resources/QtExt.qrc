@@ -1,11 +1,25 @@
 <RCC>
-	<qresource prefix="/">
-		<file>gfx/constructionEditor/Construction_assign_material_32x32.png</file>
-		<file>gfx/constructionEditor/Construction_insert_layer_left_32x32.png</file>
-		<file>gfx/constructionEditor/Construction_insert_layer_right_32x32.png</file>
-		<file>gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</file>
-		<file>gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</file>
-		<file>gfx/constructionEditor/Construction_remove_layer_32x32.png</file>
-		<file>text/countries.txt</file>
-	</qresource>
+    <qresource prefix="/">
+        <file>gfx/constructionEditor/Construction_assign_material_32x32.png</file>
+        <file>gfx/constructionEditor/Construction_insert_layer_left_32x32.png</file>
+        <file>gfx/constructionEditor/Construction_insert_layer_right_32x32.png</file>
+        <file>gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</file>
+        <file>gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</file>
+        <file>gfx/constructionEditor/Construction_remove_layer_32x32.png</file>
+        <file>text/countries.txt</file>
+        <file>gfx/master/editcopy.png</file>
+        <file>gfx/master/editcut.png</file>
+        <file>gfx/master/editpaste.png</file>
+        <file>gfx/master/editredo.png</file>
+        <file>gfx/master/editundo.png</file>
+        <file>gfx/master/textbold.png</file>
+        <file>gfx/master/textcenter.png</file>
+        <file>gfx/master/textitalic.png</file>
+        <file>gfx/master/textjustify.png</file>
+        <file>gfx/master/textleft.png</file>
+        <file>gfx/master/textright.png</file>
+        <file>gfx/master/textunder.png</file>
+        <file>gfx/master/zoomin.png</file>
+        <file>gfx/master/zoomout.png</file>
+    </qresource>
 </RCC>

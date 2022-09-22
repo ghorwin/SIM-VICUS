@@ -17,6 +17,7 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 	Type
 	Multiplier
 	*/
+
 	if (!str[8].empty() && IBK::tolower_string(str[8]) != "autocalculate") {
 		try {
 			m_ceilingHeight = IBK::string2val<double>(str[8]);
@@ -27,10 +28,16 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 	else
 		m_ceilingHeight = -1;
 
+	if(str.size()<10)
+		return;
+
 	if (!str[9].empty() && IBK::tolower_string(str[9]) != "autocalculate")
 		m_volume = IBK::string2val<double>(str[9]);
 	else
 		m_volume = -1;
+
+	if(str.size()<11)
+		return;
 
 	if (!str[10].empty() && IBK::tolower_string(str[10]) != "autocalculate")
 		m_floorArea = IBK::string2val<double>(str[10]);

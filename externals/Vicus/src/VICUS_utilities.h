@@ -63,11 +63,19 @@ unsigned int elementIndex(const std::vector<T> & vec, unsigned int id) {
 
 /*! Utility function to find a vector element's index by name. */
 template <typename T>
-unsigned int elementIndex(const std::vector<T> & vec, const std::string & name) {
+unsigned int elementIndex(const std::vector<T> & vec, const std::string & name, bool caseSensitiv = true) {
 	unsigned int i=0;
-	for (;i<vec.size(); ++i)
-		if (vec[i].m_name == name)
-			break;
+	for (;i<vec.size(); ++i){
+
+		if(caseSensitiv){
+			if (vec[i].m_name == name)
+				break;
+		}
+		else
+			if (IBK::string_nocase_compare(vec[i].m_name, name))
+				break;
+
+	}
 	return i;
 }
 

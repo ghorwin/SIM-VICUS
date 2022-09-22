@@ -959,9 +959,11 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	generateNetworkProjectData(p, errorStack, nandradProjectPath);
-	if (!errorStack.isEmpty())
-		throw IBK::Exception("Error during network data conversion.", FUNC_ID);
+	if (!m_geometricNetworks.empty()) {
+		generateNetworkProjectData(p, errorStack, nandradProjectPath);
+		if (!errorStack.isEmpty())
+			throw IBK::Exception("Error during network data conversion.", FUNC_ID);
+	}
 
 	// *** outputs ***
 
@@ -1134,8 +1136,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		p.m_objectLists.push_back(objList);
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
 											   "FlowElementHeatLoss", "PressureDifference",
-											   "TemperatureDifference", "ControllerResultValue",
-												"ElectricalPower", "OutletNodePressure", "COP"};
+											   "TemperatureDifference", "ElectricalPower", "OutletNodePressure", "COP"};
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
 			def.m_quantity = q;

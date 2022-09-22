@@ -192,6 +192,14 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 		// we assume that the local coordinate system is ok and we take the x-axis as baseline
 		const std::vector<IBKMK::Vector2D> & vertexes2D = surfacePoly.polygon2D().vertexes();
 
+		if(vertexes2D.size()<3 || vertexes2D[0] == vertexes2D[1]){
+			errorMsg = tr("Polygon object is not valid!");
+			return false;
+		}
+
+		IBKMK::Vector2D xAxis(vertexes2D[1]-vertexes2D[0]);
+		xAxis.normalize();
+
 		double xMin = std::numeric_limits<double>::max();
 		double yMin = xMin;
 		double xMax = -std::numeric_limits<double>::min();
@@ -408,12 +416,17 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			double dist = (widthSurface - count * width) / (count + 1);
 
 			// now create the windows
+			double factor = 1;
+			if(xAxis.m_x < 0)
+				factor = -1;
 			for (unsigned int i=0; i<count; ++i ){
 				std::vector<IBKMK::Vector2D> verts;
 				verts.push_back(IBKMK::Vector2D(dist + i * (dist + width), sillHeight));
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + width), sillHeight));
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + width), sillHeight + height));
 				verts.push_back(IBKMK::Vector2D(dist + i * (dist + width), sillHeight + height));
+				for(IBKMK::Vector2D &p0 : verts)
+					 p0 *= factor;
 				windows.push_back(VICUS::Polygon2D(verts));
 			}
 		}

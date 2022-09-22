@@ -59,6 +59,33 @@ public:
 		VI_All = 0x07
 	};
 
+	struct LineMarker {
+
+		LineMarker() = default;
+		LineMarker(double pos, const QPen& pen, const QString& name):
+			m_pos(pos),
+			m_pen(pen),
+			m_name(name)
+		{}
+
+
+
+		double	m_pos = 0;
+		QPen	m_pen;
+		QString	m_name;
+	};
+
+	struct AreaMarker {
+		double	m_xStart = 0;
+		double	m_xEnd = 0;
+		QPen	m_framePen;
+		QBrush	m_areaBrush;
+
+		bool valid() const { return m_xStart > 0 && m_xEnd > 0 && m_xStart < m_xEnd; }
+	};
+
+	using LineMarkerVect = QVector<LineMarker>;
+
 	/*! Default constructor.
 		\param fontFamily Font family used for all fonts.
 		\param onScreen Is true if painting is on screen.
@@ -83,6 +110,21 @@ public:
 			   const QVector<ConstructionLayer>& layers, const QString & leftLabel, const QString & rightLabel,
 			   int visibleItems = VI_All);
 
+	/*! Clear all line markers.*/
+	void clearLineMarkers();
+
+	/*! Add a line marker to the list.
+		\param pos Position in construction starting at left or bottom.
+		\param pen Pen used for drawing line
+	*/
+	void addLinemarker(double pos, const QPen& pen, const QString& name);
+
+	/*! Add a line marker to the list.
+		\param pos Position in construction starting at left or bottom.
+		\param pen Pen used for drawing line
+	*/
+	void addLinemarker(const LineMarker& lineMarker);
+
 	/*! Set the background color for calculating font and line colors.
 		The background color itself will not be changed.
 	*/
@@ -92,6 +134,11 @@ public:
 		\param LayerIndex Index of layer to be marked starting with 0. Set -1 to unmark the construction.*/
 	void markLayer(int layerIndex);
 
+	/*! Set a marked area.*/
+	void setAreaMarker(const AreaMarker& am);
+
+	/*! Remove a existing area marker.*/
+	void removeAreaMarker();
 
 signals:
 
@@ -119,14 +166,26 @@ private:
 	QtExt::GraphicsRectItemWithHatch* addHatchedRect ( qreal x, qreal y, qreal w, qreal h, QtExt::HatchingType hatchType, int hatchDistance,
 													   const QPen & hatchPen, const QPen & pen, const QBrush & brush);
 
-	/*! Helper function for adding text. Sets alos the paintDevice.*/
+	/*! Helper function for adding text. Sets also the paintDevice.*/
 	QGraphicsTextItem* addText(const QString& text, const QFont& font);
+
+	/*! Helper function for adding text in a surrounding rectangle. Sets also the paintDevice.*/
+	QGraphicsTextItem* addTextInRect(const QString& text, const QFont& font);
+
 	/*! Updates m_xpos, m_innerFrame, m_xiLeft, m_xiRight and m_fontScale based on the input data.*/
 	void calculatePositions();
+
 	/*! Calculates and draws the dimensions.*/
 	void drawDimensions();
+
 	/*! Draws the wall including hashing.*/
 	void drawWall();
+
+	/*! Draw marker lines then exist.*/
+	void drawMarkerLines();
+
+	/*! Draw a marker area rect.*/
+	void drawMarkerArea();
 
 	/*! Generates a number formatted for a dimension line.
 		\param d Width in [m].
@@ -138,6 +197,12 @@ private:
 		done individually from outer code.
 	*/
 	QVector<ConstructionLayer> m_inputData;
+
+	/*! Set extra line at position for showing outputs or contact conditions.*/
+	QVector<LineMarker>	m_lineMarker;
+
+	/*! Data for area marker.*/
+	AreaMarker			m_areaMarker;
 
 	/*! Font to be used for dimensions in the construction.*/
 	QFont				m_tickFont;
@@ -159,6 +224,9 @@ private:
 	int					m_xiLeft;
 	/*! X-coordinate (right) of inner frame.*/
 	int					m_xiRight;
+
+	/*! Thickness of air layer in pixel.*/
+	int					m_airLayer;
 
 	/*! Width of the wall in [m].*/
 	double				m_wallWidth;

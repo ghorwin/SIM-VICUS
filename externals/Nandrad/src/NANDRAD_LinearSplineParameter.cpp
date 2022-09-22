@@ -144,6 +144,9 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 
 	std::string suffix = (errmsg == nullptr) ? "" : "\n" + std::string(errmsg);
 
+	// Note: We first check for the expected name but then reset the name with that from the tsv file header.
+	// We could change the order: first read the tsv file and then check for the name?
+
 	// check 0: parameter name must not be empty
 	if (m_name.empty())
 		throw IBK::Exception(IBK::FormatString("Linear spline parameter '%1' is missing/undefined.").arg(expectedName), FUNC_ID);

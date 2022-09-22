@@ -73,17 +73,9 @@ public slots:
 private slots:
 	void on_comboBoxNodeType_activated(int index);
 
-	void on_lineEditNodeX_editingFinished();
-
-	void on_lineEditNodeY_editingFinished();
-
 	void on_checkBoxSupplyPipe_clicked();
 
 	void on_lineEditHeatFlux_editingFinished();
-
-	void on_lineEditNodeMaxHeatingDemand_editingFinished();
-
-	void on_lineEditNodeDisplayName_editingFinished();
 
 	void on_lineEditEdgeDisplayName_editingFinished();
 
@@ -118,6 +110,16 @@ private slots:
 	void on_tableWidgetSubNetworks_itemSelectionChanged();
 
 	void on_comboBoxNetworkProperties_currentIndexChanged(int index);
+
+	void on_toolButtonHeatExchangeSpline_clicked();
+
+	void on_lineEditNodeName_editingFinished();
+
+	void on_lineEditNodeMaximumHeatingDemand_editingFinishedSuccessfully();
+
+	void on_lineEditNodeXPosition_editingFinishedSuccessfully();
+
+	void on_lineEditNodeYPosition_editingFinishedSuccessfully();
 
 private:
 

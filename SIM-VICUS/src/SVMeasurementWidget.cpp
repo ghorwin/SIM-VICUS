@@ -29,9 +29,6 @@ SVMeasurementWidget::SVMeasurementWidget(QWidget *parent) :
 	setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint);
 
 	SVViewStateHandler::instance().m_measurementWidget = this;
-
-	// to set colors on start
-	onStyleChanged();
 }
 
 
@@ -123,20 +120,6 @@ void SVMeasurementWidget::on_pushButtonColor_colorChanged() {
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(m_color);
 }
-
-void SVMeasurementWidget::onStyleChanged() {
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistZ);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistance);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndZ);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartZ);
-}
-
 
 void SVMeasurementWidget::on_checkBoxLocalMeasurement_toggled(bool on) {
 	showMeasurement();

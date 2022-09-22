@@ -49,10 +49,6 @@ void NetworkElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'outletNodeId' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "componentId"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'componentId' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {

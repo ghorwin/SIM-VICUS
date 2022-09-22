@@ -63,10 +63,6 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 
 	// register to view state handler
 	SVViewStateHandler::instance().m_preferencesDialog = this;
-
-	// we also register style changes for the read only line edits
-	connect(this->pageStyle(), &SVPreferencesPageStyle::styleChanged, SVViewStateHandler::instance().m_measurementWidget, &SVMeasurementWidget::onStyleChanged);
-	connect(this->pageStyle(), &SVPreferencesPageStyle::styleChanged, SVViewStateHandler::instance().m_localCoordinateViewWidget, &SVLocalCoordinateView::onStyleChanged);
 }
 
 

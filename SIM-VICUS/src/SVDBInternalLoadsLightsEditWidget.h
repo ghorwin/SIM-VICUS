@@ -38,6 +38,7 @@ namespace VICUS {
 
 class SVDBInternalLoadsTableModel;
 class SVDatabase;
+class QwtPlotCurve;
 
 class SVDBInternalLoadsLightsEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -59,9 +60,6 @@ private slots:
 	void on_pushButtonColor_colorChanged();
 	void on_toolButtonSelectSchedule_clicked();
 	void on_lineEditConvectiveFactor_editingFinishedSuccessfully();
-	//void on_lineEditLatentFactor_editingFinished();
-	//void on_lineEditLossFactor_editingFinished();
-
 	void on_toolButtonRemovePowerManagementSchedule_clicked();
 
 private:
@@ -70,6 +68,8 @@ private:
 
 	/*! Update the unit label of input method. */
 	void updateLabel();
+
+	void updatePlot();
 
 	Ui::SVDBInternalLoadsLightsEditWidget	*m_ui;
 
@@ -84,6 +84,13 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::InternalLoad									*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curve;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xData;
+	std::vector<double>								m_yData;
 };
 
 #endif // SVDBInternalLoadsLightsEditWidgetH

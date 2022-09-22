@@ -161,11 +161,15 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// manually specify keyboard shortcut again, since on Windows this is a "standard shortcut" and get's removed
 	// when setting up UI
 	m_ui->actionFileClose->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_W));
+	m_ui->actionViewFindSelectedGeometry->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_F));
 
 	// enforce using a native window; we need this so we can call window() and retrieve scaling information
 	setAttribute(Qt::WA_NativeWindow);
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
+
+
+	m_ui->actionDBZoneControlShading->setEnabled(false);
 }
 
 
@@ -1178,17 +1182,6 @@ void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 }
 
 
-
-void SVMainWindow::on_actionNetworkImport_triggered() {
-	// opens import network dialog
-	if (m_networkImportDialog == nullptr)
-		m_networkImportDialog = new SVNetworkImportDialog(this);
-
-	m_networkImportDialog->edit();
-}
-
-
-
 void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	// we need a saved project, before we can start the simulation
 	// we require a saved project with at least one network definition
@@ -1456,6 +1449,15 @@ void SVMainWindow::onActionSwitchLanguage() {
 	QString langId = a->data().toString();
 	SVSettings::instance().m_langId = langId;
 	QMessageBox::information(this, tr("Languange changed"), tr("Please restart the software to activate the new language!"));
+}
+
+
+void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
+	// opens import network dialog
+	if (m_networkImportDialog == nullptr)
+		m_networkImportDialog = new SVNetworkImportDialog(this);
+
+	m_networkImportDialog->edit();
 }
 
 

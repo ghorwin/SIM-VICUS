@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>955</width>
-    <height>520</height>
+    <width>590</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -138,14 +138,14 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Heating limit:</string>
+        <string>Max. heating limit:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Cooling limit:</string>
+        <string>Max. cooling limit:</string>
        </property>
       </widget>
      </item>
@@ -171,11 +171,17 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>

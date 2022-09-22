@@ -678,7 +678,7 @@ private:
 	const double							*m_heatExchangeCondensorHeatLossRef = nullptr;
 
 	/*! Value reference to evaporator temperature. */
-	const double							*m_heatExchangeEvaporatorTemperatureRef = nullptr;
+	const double							*m_evaporatorMeanTemperatureRef = nullptr;
 
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserMeanTemperatureRef = nullptr;
@@ -785,9 +785,8 @@ private:
 
 
 
-
 // **** TNHeatPumpWithBuffer ***
-
+#if 0
 class TNHeatPumpWithBuffer : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
@@ -912,7 +911,7 @@ private:
 	const double							m_densityWater = 1000;
 
 };
-
+#endif
 
 
 

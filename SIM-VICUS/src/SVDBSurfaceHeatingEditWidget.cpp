@@ -29,22 +29,28 @@
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Schedule.h>
 
-#include <SV_Conversions.h>
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Locale.h>
 
+#include "SV_Conversions.h"
 #include "SVDBSurfaceHeatingTableModel.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVStyle.h"
+#include "SVChartUtils.h"
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_legend.h>
+
 
 SVDBSurfaceHeatingEditWidget::SVDBSurfaceHeatingEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBSurfaceHeatingEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayoutMaster->setMargin(4);
+	m_ui->masterLayout->setMargin(4);
 
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
@@ -67,16 +73,23 @@ SVDBSurfaceHeatingEditWidget::SVDBSurfaceHeatingEditWidget(QWidget *parent) :
 	m_ui->lineEditPipeSpacing->setup(0, 5, tr("Maximum fluid velocity in m/s."), false, true);
 	m_ui->lineEditTemperaturDifference->setup(0, 80, tr("Temperature difference of supply and return fluid."), false, true);
 
-	//add header to table
-	m_ui->tableWidget->setColumnCount(2);
-	m_ui->tableWidget->setHorizontalHeaderLabels(QStringList() << tr("Tsupply") << tr("Tenviroment"));
+	// format table widgets
+	m_ui->tableWidgetHeating->setColumnCount(2);
+	m_ui->tableWidgetHeating->setHorizontalHeaderLabels(QStringList() << tr("Ambient Temperature [C]")<< tr("Supply Temperature [C]") );
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetHeating);
+	m_ui->tableWidgetHeating->setSortingEnabled(false);
+	m_ui->tableWidgetHeating->setColumnWidth(0, 200);
+	m_ui->tableWidgetHeating->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
-	m_ui->tableWidget->setSortingEnabled(false);
-	m_ui->tableWidget->setColumnWidth(0, 200);
-	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableWidgetCooling->setColumnCount(2);
+	m_ui->tableWidgetCooling->setHorizontalHeaderLabels(QStringList() << tr("Ambient Temperature [C]")<< tr("Supply Temperature [C]") );
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetCooling);
+	m_ui->tableWidgetCooling->setSortingEnabled(false);
+	m_ui->tableWidgetCooling->setColumnWidth(0, 200);
+	m_ui->tableWidgetCooling->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-
+	// create chart
+	configureChart(m_ui->widgetPlotHeatingCurve);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -108,9 +121,12 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 		m_ui->comboBoxType->blockSignals(false);
 		m_ui->stackedWidget->setEnabled(false);
 
-		m_ui->tableWidget->blockSignals(true);
-		m_ui->tableWidget->setRowCount(0);
-		m_ui->tableWidget->blockSignals(false);
+		m_ui->tableWidgetHeating->blockSignals(true);
+		m_ui->tableWidgetHeating->setRowCount(0);
+		m_ui->tableWidgetHeating->blockSignals(false);
+		m_ui->tableWidgetCooling->blockSignals(true);
+		m_ui->tableWidgetCooling->setRowCount(0);
+		m_ui->tableWidgetCooling->blockSignals(false);
 
 		return;
 	}
@@ -195,13 +211,14 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 		values[tOut] = std::vector<double>{-14,20,23,30};
 		modelModify();
 	}
-	//fill data in table
-	QTableWidget *tab = m_ui->tableWidget;
+
+	//fill data in heating table
+	QTableWidget *tab = m_ui->tableWidgetHeating;
 	tab->blockSignals(true);
-	tab->setRowCount(4);
-	for(int row = 0; row<4; ++row){
-		tab->setItem(row,0, new QTableWidgetItem(QString("%1").arg(values[tSupply][(size_t)row])));
-		tab->setItem(row,1, new QTableWidgetItem(QString("%1").arg(values[tOut][(size_t)row])));
+	tab->setRowCount(2);
+	for(int row = 0; row<2; ++row){
+		tab->setItem(row,0, new QTableWidgetItem(QString("%1").arg(values[tOut][(size_t)row])));
+		tab->setItem(row,1, new QTableWidgetItem(QString("%1").arg(values[tSupply][(size_t)row])));
 		tab->item(row,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		tab->item(row,1)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		if(m_current->m_builtIn){
@@ -212,6 +229,33 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 	//select first row
 	tab->setCurrentCell(0,0);
 	tab->blockSignals(false);
+
+	//fill data in cooling table
+	QTableWidget *tab2 = m_ui->tableWidgetCooling;
+	tab2->blockSignals(true);
+	tab2->setRowCount(2);
+	for(int row = 0; row<2; ++row){
+		tab2->setItem(row,0, new QTableWidgetItem(QString("%1").arg(values[tOut][(size_t)row+2])));
+		tab2->setItem(row,1, new QTableWidgetItem(QString("%1").arg(values[tSupply][(size_t)row+2])));
+		tab2->item(row,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		tab2->item(row,1)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		if(m_current->m_builtIn){
+			tab2->item(row,0)->setFlags(tab2->item(row,0)->flags() ^ Qt::ItemIsEditable);
+			tab2->item(row,1)->setFlags(tab2->item(row,1)->flags() ^ Qt::ItemIsEditable);
+		}
+	}
+	//select first row
+	tab2->setCurrentCell(0,0);
+	tab2->blockSignals(false);
+
+
+	// stoe values and plot
+	Q_ASSERT(values[tOut].size()==4 && values[tSupply].size()==4);
+	m_xDataHeating = {values[tOut][0]-5, values[tOut][0], values[tOut][1], values[tOut][1]+5};
+	m_yDataHeating = {values[tSupply][0], values[tSupply][0], values[tSupply][1], values[tSupply][1]};
+	m_xDataCooling = {values[tOut][2]-5, values[tOut][2], values[tOut][3], values[tOut][3]+5};
+	m_yDataCooling = {values[tSupply][2], values[tSupply][2], values[tSupply][3], values[tSupply][3]};
+	updatePlot();
 
 	m_ui->lineEditPipeSpacing->setValue(m_current->m_para[VICUS::SurfaceHeating::P_PipeSpacing].value);
 
@@ -261,6 +305,47 @@ void SVDBSurfaceHeatingEditWidget::on_comboBoxType_currentIndexChanged(int index
 void SVDBSurfaceHeatingEditWidget::modelModify() {
 	m_db->m_surfaceHeatings.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+}
+
+
+void SVDBSurfaceHeatingEditWidget::updatePlot() {
+
+	m_ui->widgetPlotHeatingCurve->detachItems( QwtPlotItem::Rtti_PlotCurve );
+	m_ui->widgetPlotHeatingCurve->detachItems( QwtPlotItem::Rtti_PlotMarker );
+	m_ui->widgetPlotHeatingCurve->replot();
+	m_ui->widgetPlotHeatingCurve->setEnabled(false);
+	if (m_current == nullptr)
+		return;
+
+	// now do all the plotting
+	m_ui->widgetPlotHeatingCurve->setEnabled(true);
+
+	// heating curve
+	m_curveHeating = addConfiguredCurve(m_ui->widgetPlotHeatingCurve);
+	configureCurveTheme(m_curveHeating);
+	m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
+	m_curveHeating->setTitle("Heating Curve");
+	m_curveHeating->setPen("#9a031e", 2);
+
+	// cooling curve
+	m_curveCooling = addConfiguredCurve(m_ui->widgetPlotHeatingCurve);
+	configureCurveTheme(m_curveCooling);
+	m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
+	m_curveCooling->setTitle("Cooling Curve");
+	m_curveCooling->setPen("#3d5a80", 2);
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(tr("Ambient Temperature [C]"));
+	xl.setFont(ft);
+	m_ui->widgetPlotHeatingCurve->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(tr("Supply Temperature [C]"));
+	yl.setFont(ft);
+	m_ui->widgetPlotHeatingCurve->setAxisTitle(QwtPlot::yLeft, yl);
+	m_ui->widgetPlotHeatingCurve->replot();
+
+	QwtLegend* legend2 = new QwtLegend;
+	m_ui->widgetPlotHeatingCurve->insertLegend(legend2, QwtPlot::TopLegend);
 }
 
 
@@ -345,37 +430,98 @@ void SVDBSurfaceHeatingEditWidget::on_toolButtonSelectPipes_clicked() {
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBSurfaceHeatingEditWidget::on_tableWidget_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous) {
 
+void SVDBSurfaceHeatingEditWidget::on_tableWidgetCooling_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous) {
 	try {
-		QString testDirk01 = current->text();
-		QString testDirk02;
-		if(previous != nullptr)
-			testDirk02 = previous->text();
-
 		IBK::string2val<double>(current->text().toStdString().c_str());
 		modelModify();
 	}  catch (...) {
 		previous->setText(current->text());
 	}
-
 }
 
-void SVDBSurfaceHeatingEditWidget::on_tableWidget_itemChanged(QTableWidgetItem *item) {
+
+void SVDBSurfaceHeatingEditWidget::on_tableWidgetCooling_itemChanged(QTableWidgetItem *item) {
 	bool ok;
 	double val = QtExt::Locale().toDoubleWithFallback(item->text(), &ok);
 
 	if(ok){
-		std::string name;
-		if(item->column() == 0)
-			name = "Tsupply";
-		else
-			name = "Tout";
-		m_current->m_heatingCoolingCurvePoints.m_values[name][item->row()] = val;
-		modelModify();
+		if(item->column() == 1) {
+			// check if values differ
+			std::vector<double> &vals = m_current->m_heatingCoolingCurvePoints.m_values["Tsupply"];
+			double firstVal = item->row()==0 ? val : vals[2];
+			double secondVal = item->row()==1 ? val : vals[3];
+			if (IBK::near_equal(secondVal, firstVal, 0.01))
+				QMessageBox::critical(this,QString(), tr("Supply temperature values should differ.").arg(item->text()));
+			else {
+				vals[(unsigned int)item->row() + 2] = val;
+				modelModify();
+			}
+		}
+		else { // column 0
+			// we check if ambient temperature is increasing
+			std::vector<double> &vals = m_current->m_heatingCoolingCurvePoints.m_values["Tout"];
+			double firstVal = item->row()==0 ? val : vals[2];
+			double secondVal = item->row()==1 ? val : vals[3];
+			if (secondVal < firstVal)
+				QMessageBox::critical(this,QString(), tr("Ambient temperature should be monotonic increasing.").arg(item->text()));
+			else {
+				vals[(unsigned int)item->row() + 2] = val;
+				modelModify();
+			}
+		}
 	}
 	else{
-		QMessageBox::critical(this,QString(), tr("Input '%1' is not valid. Only numeric data is valid.").arg(item->text()));
+		QMessageBox::critical(this,QString(), tr("Input '%1' is not valid. Only numerical data is valid.").arg(item->text()));
 	}
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
+
+
+void SVDBSurfaceHeatingEditWidget::on_tableWidgetHeating_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous) {
+	try {
+		IBK::string2val<double>(current->text().toStdString().c_str());
+		modelModify();
+	}  catch (...) {
+		previous->setText(current->text());
+	}
+}
+
+
+void SVDBSurfaceHeatingEditWidget::on_tableWidgetHeating_itemChanged(QTableWidgetItem *item) {
+	bool ok;
+	double val = QtExt::Locale().toDoubleWithFallback(item->text(), &ok);
+
+	if(ok){
+		if(item->column() == 1) {
+			// check if values differ
+			std::vector<double> &vals = m_current->m_heatingCoolingCurvePoints.m_values["Tsupply"];
+			double firstVal = item->row()==0 ? val : vals[0];
+			double secondVal = item->row()==1 ? val : vals[1];
+			if (IBK::near_equal(secondVal, firstVal, 0.01))
+				QMessageBox::critical(this,QString(), tr("Supply temperature values should differ.").arg(item->text()));
+			else {
+				vals[(unsigned int)item->row()] = val;
+				modelModify();
+			}
+		}
+		else { // column 0
+			// we check if ambient temperature is increasing
+			std::vector<double> &vals = m_current->m_heatingCoolingCurvePoints.m_values["Tout"];
+			double firstVal = item->row()==0 ? val : vals[0];
+			double secondVal = item->row()==1 ? val : vals[1];
+			if (secondVal < firstVal)
+				QMessageBox::critical(this,QString(), tr("Ambient temperature should be monotonic increasing.").arg(item->text()));
+			else {
+				vals[(unsigned int)item->row()] = val;
+				modelModify();
+			}
+		}
+	}
+	else{
+		QMessageBox::critical(this,QString(), tr("Input '%1' is not valid. Only numerical data is valid.").arg(item->text()));
+	}
+	updateInput((int)m_current->m_id);
+
+}
+

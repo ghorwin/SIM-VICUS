@@ -58,6 +58,10 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	m_ui->treeWidget->setItemDelegate(m_navigationTreeItemDelegate);
 	m_ui->treeWidget->setUniformRowHeights(true);
 
+	m_ui->actionSmartSelect->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Period));
+	m_ui->actionInvertSelection->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_I));
+
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
 
@@ -105,6 +109,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			Q_ASSERT(info != nullptr);
 
 			for (unsigned int ID : info->m_nodeIDs) {
+				// special handling for ID 0 as it is the plain geometry
+				if (ID == 0)
+					continue;
+
 				const VICUS::Object * o = project().objectById(ID);
 				auto itemId = m_treeItemMap.find(ID);
 				Q_ASSERT(itemId != m_treeItemMap.end());
@@ -229,6 +237,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		networkItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, n.m_selected);
 		QTreeWidgetItem * enode = new QTreeWidgetItem(QStringList() << tr("Edges"), QTreeWidgetItem::Type);
 		enode->setFlags(Qt::ItemIsEnabled); // cannot select "Edges"
+		enode->setData(0, SVNavigationTreeItemDelegate::NodeID, 0);
 		networkItem->addChild(enode);
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
@@ -247,11 +256,12 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 		QTreeWidgetItem * nnode = new QTreeWidgetItem(QStringList() << tr("Nodes"), QTreeWidgetItem::Type);
 		nnode->setFlags(Qt::ItemIsEnabled); // cannot select "Nodes"
+		nnode->setData(0, SVNavigationTreeItemDelegate::NodeID, 0);
 		networkItem->addChild(nnode);
 		// add child nodes for each edge in the network
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			QString name = QString("[%1] %2").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type));
+			QString name = QString("[%1] %2 %3").arg(nod.m_id).arg(VICUS::KeywordList::Keyword("NetworkNode::NodeType", nod.m_type)).arg(nod.m_displayName);
 			QTreeWidgetItem * no = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			m_treeItemMap[nod.m_id] = no;
 			no->setData(0, SVNavigationTreeItemDelegate::NodeID, nod.m_id);

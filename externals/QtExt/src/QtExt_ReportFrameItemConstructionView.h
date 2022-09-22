@@ -42,13 +42,15 @@
 namespace QtExt {
 
 struct ConstructionViewSetup {
-	QVector<ConstructionLayer>	m_layers;
-	QString						m_leftLabel;
-	QString						m_rightLabel;
-	int							m_visibleItems = QtExt::ConstructionGraphicsScene::VI_All;
-	double						m_height = -1;
-	double						m_resolution = 1.0;
-	QColor						m_backgroundColor = Qt::white;
+	QVector<ConstructionLayer>								m_layers;
+	QString													m_leftLabel;
+	QString													m_rightLabel;
+	int														m_visibleItems = QtExt::ConstructionGraphicsScene::VI_All;
+	double													m_height = -1;
+	double													m_resolution = 1.0;
+	QColor													m_backgroundColor = Qt::white;
+	QVector<QtExt::ConstructionGraphicsScene::LineMarker>	m_lineMarker;
+	QtExt::ConstructionGraphicsScene::AreaMarker			m_areaMarker;
 };
 
 class ReportFrameItemConstructionView : public QtExt::ReportFrameItemBase
@@ -65,9 +67,6 @@ public:
 
 	/*! Draw the item with the given painter at the given position and set the position for the next item.*/
 	virtual void drawItem(QPainter* painter, QPointF& pos) override;
-
-//	/*! Clone the current frame item.*/
-//	virtual ReportFrameItemBase* clone() const override;
 
 private:
 	ConstructionGraphicsScene*	m_constructionScene;

@@ -89,8 +89,8 @@ void SupplySystem::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "SupplyFMUPath")
 				m_supplyFMUPath = QString::fromStdString(c->GetText());
-			else if (cName == "SupplyFMUId")
-				m_supplyFMUId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSupplyFMU")
+				m_idSupplyFMU = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSubNetwork")
 				m_idSubNetwork = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
@@ -128,8 +128,8 @@ TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 	}
 	if (!m_supplyFMUPath.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "SupplyFMUPath", nullptr, std::string(), m_supplyFMUPath.toStdString());
-	if (m_supplyFMUId != VICUS::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "SupplyFMUId", nullptr, std::string(), IBK::val2string<unsigned int>(m_supplyFMUId));
+	if (m_idSupplyFMU != VICUS::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "IdSupplyFMU", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSupplyFMU));
 	if (m_idSubNetwork != VICUS::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "IdSubNetwork", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSubNetwork));
 	return e;

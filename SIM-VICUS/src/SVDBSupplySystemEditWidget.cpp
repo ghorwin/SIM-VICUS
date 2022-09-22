@@ -50,7 +50,7 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 	// connect browse filename widget
 	connect(m_ui->widgetBrowseFileNameSupplyFMU, SIGNAL(editingFinished()), this, SLOT(on_supplyFMUFile_editingFinished()));
 	// and set up
-	m_ui->widgetBrowseFileNameSupplyFMU->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->widgetBrowseFileNameSupplyFMU->setup("", true, true, tr("FMU file (*.fmu)"), SVSettings::instance().m_dontUseNativeDialogs);
 
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
@@ -66,8 +66,8 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 															   VICUS::SupplySystem::ST_SubNetwork };
 	for (VICUS::SupplySystem::SupplyType entry: entries)
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
-										  .arg(VICUS::KeywordListQt::Description("SupplySystem::supplyType_t", entry))
-										  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::supplyType_t", entry)), entry);
+										  .arg(VICUS::KeywordListQt::Description("SupplySystem::SupplyType", entry))
+										  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::SupplyType", entry)), entry);
 
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
@@ -275,7 +275,7 @@ void SVDBSupplySystemEditWidget::on_lineEditHeatingPowerFMU_editingFinished() {
 }
 
 
-void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int index) {
+void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int /*index*/) {
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 

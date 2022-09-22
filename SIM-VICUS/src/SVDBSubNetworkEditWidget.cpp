@@ -53,7 +53,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id) {
 		m_ui->lineEditController->clear();
 		m_ui->lineEditController->setDisabled(true);
 		m_ui->tableWidgetElements->blockSignals(true);
-		m_ui->tableWidgetElements->clear();
+		m_ui->tableWidgetElements->setRowCount(0);
 		m_ui->tableWidgetElements->blockSignals(false);
 
 		// Note: color button is disabled, hence color is gray
@@ -71,6 +71,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id) {
 	m_ui->lineEditSubNetworkName->setString(m_currentSubNet->m_displayName);
 
 	updateTableWidget();
+	updateElementProperties();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_currentSubNet->m_builtIn;
@@ -142,8 +143,8 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 	m_ui->tableWidgetElements->blockSignals(false);
 }
 
-void SVDBSubNetworkEditWidget::updateElementProperties()
-{
+void SVDBSubNetworkEditWidget::updateElementProperties() {
+
 	Q_ASSERT(m_currentSubNet != nullptr);
 
 	// get index of current element (= minus 1 and div by 2, to account for arrows)
@@ -159,15 +160,15 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 
 		// line edits
 		m_ui->groupBoxEditElement->setEnabled(true);
-		if (m_db->m_networkComponents[elem.m_componentId] != nullptr)
-			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(
-												 m_db->m_networkComponents[elem.m_componentId]->m_displayName));
+		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[elem.m_componentId];
+		if (comp != nullptr)
+			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(comp->m_displayName));
 		else
 			m_ui->lineEditComponent->clear();
 
 		// enable controller line edit
 		std::vector<NANDRAD::HydraulicNetworkControlElement::ControlledProperty> availableCtrProps;
-		const VICUS::NetworkComponent *comp = m_db->m_networkComponents[elem.m_componentId];
+
 		if (comp != nullptr)
 			availableCtrProps = NANDRAD::HydraulicNetworkControlElement::availableControlledProperties(NANDRAD::HydraulicNetworkComponent::ModelType(comp->m_modelType));
 		m_ui->lineEditController->setEnabled(availableCtrProps.size() > 0);

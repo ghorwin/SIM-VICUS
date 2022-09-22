@@ -132,6 +132,7 @@
          <addaction name="actionBuildingParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
+         <addaction name="separator"/>
         </widget>
        </item>
       </layout>
@@ -263,7 +264,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/Coordinate-System.png</normaloff>:/gfx/actions/Coordinate-System.png</iconset>
+     <normaloff>:/gfx/actions/misc_operations.png</normaloff>:/gfx/actions/misc_operations.png</iconset>
    </property>
    <property name="text">
     <string>Align geometry</string>
@@ -278,7 +279,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+     <normaloff>:/gfx/actions/copy_building.png</normaloff>:/gfx/actions/copy_building.png</iconset>
    </property>
    <property name="text">
     <string>Copy geometry</string>
@@ -308,7 +309,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/network.png</normaloff>:/gfx/actions/network.png</iconset>
+     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
    </property>
    <property name="text">
     <string>Edit Network Parametrization</string>
@@ -338,7 +339,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
+     <normaloff>:/gfx/actions/NetworkGeo.png</normaloff>:/gfx/actions/NetworkGeo.png</iconset>
    </property>
    <property name="text">
     <string>Edit Network Geometry</string>

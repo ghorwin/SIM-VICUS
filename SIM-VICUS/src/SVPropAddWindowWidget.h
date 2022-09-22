@@ -61,6 +61,8 @@ private slots:
 
 	void on_pushButtonCreate_clicked();
 
+	void on_pushButtonChangeLocalOrigin_clicked();
+
 private:
 	/*! Updates widget to current project state. */
 	void updateUi();

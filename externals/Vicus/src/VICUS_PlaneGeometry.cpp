@@ -486,6 +486,19 @@ void PlaneGeometry::flip() {
 	}
 }
 
+void PlaneGeometry::changeOrigin(unsigned int idx) {
+	const std::vector<IBKMK::Vector3D> &verts = m_polygon.vertexes();
+
+	if(verts.size()<3 || idx > verts.size()-1)
+		return;
+
+	std::vector<IBKMK::Vector3D> newVerts;
+	newVerts.insert(newVerts.begin(), verts.begin() + idx, verts.end());
+	newVerts.insert(newVerts.end(), verts.begin(), verts.begin() + idx);
+
+	m_polygon.setVertexes(newVerts);
+}
+
 
 const PlaneTriangulationData & PlaneGeometry::triangulationData() const {
 	if (m_dirty)

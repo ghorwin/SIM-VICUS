@@ -55,7 +55,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	unsigned int uniqueObjectId = index.data(NodeID).toUInt();
 
 	// root items or items without object Id are never current or selected
-	if (index.parent() == QModelIndex() /*|| uniqueObjectId == 0*/) {
+	if (index.parent() == QModelIndex() || uniqueObjectId == 0) {
 		// check if item is selected/current
 		bool isSelected = option.state & QStyle::State_Selected;
 		QFont f = painter->font();
@@ -124,6 +124,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 
 
 bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) {
+
 	// top-level index does not have any attributes
 	if (index.parent() == QModelIndex()) {
 		return QStyledItemDelegate::editorEvent(event, model, option, index);

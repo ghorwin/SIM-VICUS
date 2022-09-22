@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>435</width>
-    <height>223</height>
+    <height>257</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
-    <widget class="QLineEdit" name="lineEditStartX">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartX">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QLineEdit" name="lineEditDistY">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistY">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -38,7 +38,7 @@
     </widget>
    </item>
    <item row="4" column="3">
-    <widget class="QLineEdit" name="lineEditDistZ">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistZ">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -48,7 +48,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="lineEditEndX">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndX">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -58,7 +58,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLineEdit" name="lineEditDistX">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistX">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -86,7 +86,7 @@
     </layout>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="lineEditEndY">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndY">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -96,7 +96,7 @@
     </widget>
    </item>
    <item row="1" column="3">
-    <widget class="QLineEdit" name="lineEditEndZ">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndZ">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -119,7 +119,7 @@
     </spacer>
    </item>
    <item row="0" column="3">
-    <widget class="QLineEdit" name="lineEditStartZ">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartZ">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -136,7 +136,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QLineEdit" name="lineEditDistance">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistance">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -167,7 +167,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QLineEdit" name="lineEditStartY">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartY">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -199,6 +199,14 @@
    <header location="global">QtExt_ColorButton.h</header>
    <slots>
     <signal>colorChanged()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
    </slots>
   </customwidget>
  </customwidgets>

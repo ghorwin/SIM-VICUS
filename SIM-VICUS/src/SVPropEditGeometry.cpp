@@ -95,9 +95,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayoutMaster->setMargin(0);
-	//	m_ui->verticalLayoutPage1->setMargin(0);
-	//	m_ui->verticalLayoutPage2->setMargin(0);
+	// remove layout margins for all pages
+	for (int i=0; i<NUM_MT; ++i)
+		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
@@ -169,8 +169,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
-	for (int i=0; i<4; ++i)
-		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 }
 
 
@@ -1051,8 +1049,8 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
 			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
 			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_x) > 1e-4);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_y) > 1e-4);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_x - lowerValuesOrig.m_x) > 1e-4);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_y - lowerValuesOrig.m_y) > 1e-4);
 			double scaleX = upperValuesNew.m_x/upperValuesOrig.m_x;
 			double scaleY = upperValuesNew.m_y/upperValuesOrig.m_y;
 

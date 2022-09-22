@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
-    <height>427</height>
+    <width>642</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,101 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTableWidget" name="tableWidgetParameters"/>
+       <widget class="QTableWidget" name="tableWidgetParameters">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>120</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxPolynom">
+     <property name="title">
+      <string>Polynom </string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QTableWidget" name="tableWidgetPolynomCoefficients">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>70</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="tabWidgetPlots">
+        <property name="tabPosition">
+         <enum>QTabWidget::West</enum>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="plotTab1">
+         <attribute name="title">
+          <string/>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QwtPlot" name="widgetPlot1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="plotTab2">
+         <attribute name="title">
+          <string/>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QwtPlot" name="widgetPlot2">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -155,6 +249,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>

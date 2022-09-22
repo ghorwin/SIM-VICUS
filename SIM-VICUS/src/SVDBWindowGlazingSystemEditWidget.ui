@@ -60,7 +60,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="labelFrameUValue">
      <property name="text">
-      <string>UValue:</string>
+      <string>U-Value:</string>
      </property>
     </widget>
    </item>
@@ -205,15 +205,15 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
   <customwidget>
    <class>QwtPlot</class>

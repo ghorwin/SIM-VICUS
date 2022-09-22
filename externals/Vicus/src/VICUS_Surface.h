@@ -77,6 +77,8 @@ public:
 	*/
 	void flip();
 
+	void changeOrigin(unsigned int idx);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required

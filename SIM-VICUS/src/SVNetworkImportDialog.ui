@@ -77,7 +77,7 @@
         <item row="0" column="0">
          <widget class="QRadioButton" name="radioButtonEdges">
           <property name="text">
-           <string>import edges/pipes</string>
+           <string>import pipeline</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -87,7 +87,7 @@
         <item row="1" column="0">
          <widget class="QRadioButton" name="radioButtonNodes">
           <property name="text">
-           <string>import nodes/buildings</string>
+           <string>import sub stations</string>
           </property>
          </widget>
         </item>

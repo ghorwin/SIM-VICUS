@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4">
+  <layout class="QGridLayout" name="mainGridLayout">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_7">
      <property name="title">

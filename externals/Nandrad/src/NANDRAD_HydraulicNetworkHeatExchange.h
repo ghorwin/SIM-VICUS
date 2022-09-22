@@ -72,10 +72,11 @@ public:
 
 	/*! Tests all parameter and initializes linear spline parameters for calculation,
 		including reading of potentially referenced TSV files.
+		When called from VICUS, keepTsvFileValues should be false, to avoid writing the values into the NANDRAD file.
 	*/
 	void checkParameters(const std::map<std::string, IBK::Path> &placeholders,
 						 const std::vector<Zone> &zones,
-						 const std::vector<ConstructionInstance> &conInstances);
+						 const std::vector<ConstructionInstance> &conInstances, bool keepTsvFileValues);
 
 	bool operator!=(const HydraulicNetworkHeatExchange & other) const;
 

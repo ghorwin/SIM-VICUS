@@ -13,31 +13,31 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
+  <layout class="QGridLayout" name="mainGridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Properties</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QComboBox" name="comboBoxNetworkProperties">
        <item>
         <property name="text">
-         <string>Node</string>
+         <string>Nodes</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Edge</string>
+         <string>Pipeline</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>SubNetwork</string>
+         <string>SubNetworks</string>
         </property>
        </item>
        <item>
@@ -49,92 +49,188 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageNode">
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QGroupBox" name="groupBoxNode">
+        <widget class="QGroupBox" name="groupBoxEditNode">
          <property name="title">
           <string>Edit Node</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
-           <widget class="QLabel" name="label_15">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxNodeType"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Node id</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QLabel" name="labelNodeId">
             <property name="text">
              <string/>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_19">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Name</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEditNodeName"/>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_13">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Maximum heating demand [W]</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_14">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Type</string>
+             <string>x-Position [m]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>y-Position [m]</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="comboBoxNodeType"/>
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaximumHeatingDemand"/>
           </item>
-          <item row="4" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_17">
-              <property name="text">
-               <string>x</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>y</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
-            </item>
-           </layout>
+          <item row="4" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeXPosition"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeYPosition"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_2">
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="1" column="0">
+          <widget class="QFrame" name="frameMixer">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QFrame" name="frameSubStation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Mixer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Sub Station</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QFrame" name="frameSource">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -153,9 +249,19 @@
        <item>
         <widget class="QGroupBox" name="groupBoxEdge">
          <property name="title">
-          <string>Edit Edge</string>
+          <string>Edit Pipeline</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="checkBoxSupplyPipe">
+            <property name="text">
+             <string>supply pipe</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEditEdgeDisplayName"/>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_22">
             <property name="text">
@@ -163,34 +269,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEditEdgeDisplayName"/>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
              <string>Length</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="pushButtonRecalculateLength">
-            <property name="text">
-             <string>recalculate length</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLabel" name="labelTempChangeIndicator">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QCheckBox" name="checkBoxSupplyPipe">
-            <property name="text">
-             <string>supply pipe</string>
             </property>
            </widget>
           </item>
@@ -201,10 +283,10 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_23">
+          <item row="3" column="0">
+           <widget class="QPushButton" name="pushButtonRecalculateLength">
             <property name="text">
-             <string>Temperature Change Indicator</string>
+             <string>recalculate length</string>
             </property>
            </widget>
           </item>
@@ -496,14 +578,7 @@
          <property name="title">
           <string>Heat Exchange</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="5" column="0">
-           <widget class="QLabel" name="labelZoneId">
-            <property name="text">
-             <string>Zone Id</string>
-            </property>
-           </widget>
-          </item>
+         <layout class="QGridLayout" name="gridLayout_10">
           <item row="1" column="0">
            <widget class="QLabel" name="labelHeatFlux">
             <property name="text">
@@ -511,34 +586,8 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="labelDataFile">
-            <property name="text">
-             <string>Data file</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelHXTransferCoefficient">
-            <property name="text">
-             <string>External heat transfer coefficient [W/m²K]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="comboBoxZoneId"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
-          </item>
-          <item row="4" column="1">
-           <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
-          </item>
-          <item row="3" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+          <item row="1" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="labelTemperature">
@@ -547,8 +596,63 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
+          <item row="2" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelHXTransferCoefficient">
+            <property name="text">
+             <string>External heat transfer coefficient [W/m²K]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelDataFile">
+            <property name="text">
+             <string>Data spline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="labelHeatExchangeSpline">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButtonHeatExchangeSpline">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelZoneId">
+            <property name="text">
+             <string>Zone Id</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="comboBoxZoneId"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelHeatFlux_2">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -592,12 +696,6 @@
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QWidget</extends>
-   <header>QtExt_BrowseFilenameWidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

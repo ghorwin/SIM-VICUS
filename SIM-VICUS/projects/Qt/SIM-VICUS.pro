@@ -123,6 +123,7 @@ SOURCES += \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
+    ../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
     ../../src/SVUndoNetworkAddNodes.cpp \
     ../../src/SVUndoNetworkAddPipeline.cpp \
@@ -308,6 +309,7 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
+    ../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
     ../../src/SVUndoNetworkAddNodes.h \
     ../../src/SVUndoNetworkAddPipeline.h \
@@ -545,6 +547,7 @@ FORMS    += \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
+	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVWelcomeScreen.ui \
 	../../src/SVZoneSelectionDialog.ui
 

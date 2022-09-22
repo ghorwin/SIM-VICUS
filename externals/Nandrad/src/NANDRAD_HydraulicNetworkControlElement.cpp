@@ -36,7 +36,7 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 
 				if (m_modelType == MT_Constant)
 					m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
-						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+						 std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
 			case CP_ThermostatValue: {
@@ -134,7 +134,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
-		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
+//		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
 		case HydraulicNetworkComponent::MT_PressureLossElement:

@@ -522,7 +522,7 @@ Schedule Schedule::createAnnualScheduleFromPeriodSchedule(std::string &name, con
 			unsigned int dayCounter = 0;
 			//create a week value vector with 7*24 values or short if period is less than 7 days
 			std::vector<double> weekVals;
-			for(unsigned int iDay = 0; iDay<7; ++i){
+			for(unsigned int iDay = 0; iDay<7; ++iDay){
 				if(iDay > days)
 					break;
 				// search for the days

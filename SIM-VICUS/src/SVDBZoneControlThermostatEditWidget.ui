@@ -13,24 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridMasterLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
      <property name="text">
       <string>Name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" colspan="3">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-   </item>
-   <item row="0" column="5">
-    <widget class="QtExt::ColorButton" name="pushButtonColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -41,83 +28,75 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="2" column="0">
     <widget class="QLabel" name="labelControllerType">
      <property name="text">
       <string>Controller Type:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="5">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelScheduleHeating">
-       <property name="text">
-        <string>Heating Setpoint Schedule:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditHeatingScheduleName">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QToolButton" name="toolButtonSelectHeatingSchedule">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QToolButton" name="toolButtonRemoveHeatingSetpointSchedule">
-       <property name="icon">
-        <iconset resource="../resources/SIM-VICUS.qrc">
-         <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="labelScheduleHeating">
+     <property name="text">
+      <string>Heating Setpoint Schedule:</string>
+     </property>
+    </widget>
    </item>
-   <item row="4" column="0" colspan="5">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelScheduleCooling">
-       <property name="text">
-        <string>Cooling Setpoint Schedule:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditCoolingScheduleName">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QToolButton" name="toolButtonSelectCoolingSchedule">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QToolButton" name="toolButtonRemoveCoolingSetpointSchedule">
-       <property name="icon">
-        <iconset resource="../resources/SIM-VICUS.qrc">
-         <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="lineEditHeatingScheduleName">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="3" column="3">
+    <widget class="QToolButton" name="toolButtonSelectHeatingSchedule">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QToolButton" name="toolButtonRemoveHeatingSetpointSchedule">
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="labelScheduleCooling">
+     <property name="text">
+      <string>Cooling Setpoint Schedule:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="lineEditCoolingScheduleName">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QToolButton" name="toolButtonSelectCoolingSchedule">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QToolButton" name="toolButtonRemoveCoolingSetpointSchedule">
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
     <widget class="QLabel" name="labelTolerance">
      <property name="text">
-      <string>Tolerance:</string>
+      <string>Tolerance [K]:</string>
      </property>
     </widget>
    </item>
@@ -125,68 +104,52 @@
     <widget class="QtExt::ValidatingLineEdit" name="lineEditTolerance">
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
     </widget>
    </item>
-   <item row="5" column="3">
-    <widget class="QLabel" name="labelConvectiveFactorUnit_2">
-     <property name="text">
-      <string>K</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="4">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="6" column="0" colspan="6">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Hier muss bitte ein SCI Chart wie im CCM für die Diagramme rein. Wichtig dabei man muss vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+    <widget class="QwtPlot" name="widgetPlot" native="true"/>
+   </item>
+   <item row="0" column="3" colspan="3">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>30</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="2" column="2">
+    <widget class="QComboBox" name="comboBoxControllerType"/>
    </item>
-   <item row="1" column="2" colspan="3">
+   <item row="1" column="2">
     <widget class="QComboBox" name="comboBoxMethod"/>
    </item>
-   <item row="2" column="2" colspan="3">
-    <widget class="QComboBox" name="comboBoxControllerType"/>
+   <item row="0" column="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
@@ -195,9 +158,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

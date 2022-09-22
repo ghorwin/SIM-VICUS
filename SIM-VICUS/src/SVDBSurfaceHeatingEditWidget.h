@@ -39,6 +39,7 @@ namespace VICUS {
 class SVDBSurfaceHeatingTableModel;
 class SVDatabase;
 class QTableWidgetItem;
+class QwtPlotCurve;
 
 class SVDBSurfaceHeatingEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -70,14 +71,20 @@ private slots:
 
 	void on_toolButtonSelectPipes_clicked();
 
-	void on_tableWidget_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+	void on_tableWidgetCooling_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 
-	void on_tableWidget_itemChanged(QTableWidgetItem *item);
+	void on_tableWidgetCooling_itemChanged(QTableWidgetItem *item);
+
+	void on_tableWidgetHeating_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+
+	void on_tableWidgetHeating_itemChanged(QTableWidgetItem *item);
 
 private:
 
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	void updatePlot();
 
 	Ui::SVDBSurfaceHeatingEditWidget				*m_ui;
 
@@ -92,6 +99,16 @@ private:
 		A nullptr pointer means that there is no model to edit.
 	*/
 	VICUS::SurfaceHeating							*m_current;
+
+	/*! The curve used to plot */
+	QwtPlotCurve									*m_curveHeating;
+	QwtPlotCurve									*m_curveCooling;
+
+	/*! The data vectors needed for plotting. */
+	std::vector<double>								m_xDataHeating;
+	std::vector<double>								m_yDataHeating;
+	std::vector<double>								m_xDataCooling;
+	std::vector<double>								m_yDataCooling;
 };
 
 #endif // SVDBSurfaceHeatingEditWidgetH

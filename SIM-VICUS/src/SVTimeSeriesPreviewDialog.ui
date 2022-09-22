@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVTimeSeriesPreviewDialog</class>
+ <widget class="QDialog" name="SVTimeSeriesPreviewDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>918</width>
+    <height>615</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="1" column="1">
+          <widget class="QLabel" name="labelFileNameReference">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Reference:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QRadioButton" name="radioButtonAbsoluteFilePath">
+           <property name="text">
+            <string>Reference with absolute file path</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup_2</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Data file:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QtExt::BrowseFilenameWidget" name="filepathDataFile" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="pushButtonEditAnnualDataInTexteditor">
+           <property name="text">
+            <string>Edit...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QRadioButton" name="radioButtonRelativeFilePath">
+           <property name="text">
+            <string>Reference with relative file path</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup_2</string>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Interpolation:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButtonInterpolationLinear">
+           <property name="text">
+            <string>linear</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButtonInterpolationConstant">
+           <property name="text">
+            <string>constant</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QWidget" name="widgetColumnSelection" native="true">
+         <layout class="QGridLayout" name="gridLayoutColumnSelection">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="labelColumnSelection">
+            <property name="text">
+             <string>Select column in data file:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="verticalSpacerColumnSelection">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>166</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QListWidget" name="listWidgetColumnSelection">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectItems</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="SVTimeSeriesPreviewWidget" name="widgetTimeSeriesPreview" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header>QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>editingFinished()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>SVTimeSeriesPreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>SVTimeSeriesPreviewWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SVTimeSeriesPreviewDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SVTimeSeriesPreviewDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
+</ui>

@@ -46,7 +46,6 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
-				case ColSource				: return it->second.sourceName();
 			}
 		} break;
 
@@ -111,7 +110,6 @@ QVariant SVDBSubNetworkTableModel::headerData(int section, Qt::Orientation orien
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				case ColSource				: return tr("Source");
 			}
 		} break;
 

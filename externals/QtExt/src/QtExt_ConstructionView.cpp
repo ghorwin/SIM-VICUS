@@ -99,6 +99,24 @@ void ConstructionView::setData(QPaintDevice* paintDevice, const QVector<Construc
 	updateView();
 }
 
+void ConstructionView::clearLineMarkers() {
+	m_diagramScene->clearLineMarkers();
+	updateView();
+}
+
+void ConstructionView::addLinemarker(double pos, const QPen& pen, const QString& name) {
+	m_diagramScene->addLinemarker(pos, pen, name);
+	updateView();
+}
+
+void ConstructionView::setAreaMarker(const ConstructionGraphicsScene::AreaMarker& am) {
+	m_diagramScene->setAreaMarker(am);
+}
+
+void ConstructionView::removeAreaMarker() {
+	m_diagramScene->removeAreaMarker();
+}
+
 void ConstructionView::updateView() {
 	int w = width();
 	int h = height();

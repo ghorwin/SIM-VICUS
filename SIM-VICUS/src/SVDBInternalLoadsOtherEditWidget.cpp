@@ -37,6 +37,11 @@
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVSettings.h"
+#include "SVChartUtils.h"
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+
 
 SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -65,6 +70,8 @@ SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *pare
 	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);
 	//m_ui->lineEditLatentFactor->setup(0, 1, tr("Latent heat factor"), true, true);
 	//m_ui->lineEditLossFactor->setup(0, 1, tr("Loss heat factor"), true, true);
+
+	configureChart(m_ui->widgetPlot);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -136,8 +143,8 @@ void SVDBInternalLoadsOtherEditWidget::updateInput(int id) {
 	m_ui->lineEditManagementScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->toolButtonRemovePowerManagementSchedule->setEnabled(!isbuiltIn);
-	//m_ui->lineEditLatentFactor->setEnabled(!isbuiltIn);
-	//m_ui->lineEditLossFactor->setEnabled(!isbuiltIn);
+
+	updatePlot();
 }
 
 
@@ -184,6 +191,7 @@ void SVDBInternalLoadsOtherEditWidget::on_lineEditPower_editingFinishedSuccessfu
 	{
 		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 		modelModify();
+		updatePlot();
 	}
 }
 
@@ -229,6 +237,109 @@ void SVDBInternalLoadsOtherEditWidget::updateLabel()
 			modelModify();
 		} break;
 	}
+}
+
+
+void SVDBInternalLoadsOtherEditWidget::updatePlot() {
+
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotCurve );
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotMarker );
+	m_ui->widgetPlot->replot();
+	m_ui->widgetPlot->setEnabled(false);
+
+	if (m_current == nullptr)
+		return;
+
+	const VICUS::Schedule *sched = m_db->m_schedules[m_current->m_idPowerManagementSchedule];
+	if (sched==nullptr)
+		return;
+
+	m_xData.clear();
+	m_yData.clear();
+
+	if (sched->m_haveAnnualSchedule) {
+			m_xData = sched->m_annualSchedule.m_values.x();
+			m_yData = sched->m_annualSchedule.m_values.y();
+	}
+	else if (sched->m_periods.size()>0) {
+		if (sched->m_periods[0].isValid())
+			sched->m_periods[0].createWeekDataVector(m_xData, m_yData);
+	}
+	else
+		return;
+
+	// multiply by scalar
+	double factor = 1;
+	QString label = " ";
+	if (m_current->m_powerMethod == VICUS::InternalLoad::PM_Power) {
+		label = tr("Power [W]");
+		if (!m_current->m_para[VICUS::InternalLoad::P_Power].empty())
+			factor = m_current->m_para[VICUS::InternalLoad::P_Power].value;
+	}
+	else if (m_current->m_powerMethod == VICUS::InternalLoad::PM_PowerPerArea) {
+		label = tr("Power per area [W/m²]");
+		if (!m_current->m_para[VICUS::InternalLoad::P_PowerPerArea].empty())
+			factor = m_current->m_para[VICUS::InternalLoad::P_PowerPerArea].value;
+	}
+	for (double &y: m_yData)
+		y *= factor;
+
+
+	// convert time points to days
+	for (double & d : m_xData)
+		d /= 24;
+
+	Q_ASSERT(m_xData.size() == m_yData.size());
+	// if we are in "constant" mode, duplicate values to get steps
+	if (!sched->m_useLinearInterpolation) {
+		std::vector<double> timepointsCopy;
+		std::vector<double> dataCopy;
+		for (unsigned int i = 0; i<m_xData.size(); ++i) {
+			timepointsCopy.push_back(m_xData[i]);
+			// get next time point, unless it is the last, in this case we use "end of week = 7 d"
+			double nexttp = 7;
+			if (i+1<m_xData.size())
+				nexttp = m_xData[i+1]-2./(24*3600);
+			timepointsCopy.push_back(nexttp);
+			dataCopy.push_back(m_yData[i]);
+			dataCopy.push_back(m_yData[i]);
+		}
+		// copy data to schedule
+		m_xData.swap(timepointsCopy);
+		m_yData.swap(dataCopy);
+	}
+	else {
+		// special handling for time series with just one point (constant schedule for all days)
+		if (m_xData.size() == 1) {
+			m_xData.push_back(7);
+			m_yData.push_back(m_yData.back());
+		}
+	}
+
+	// dont plot if there is no data
+	if (m_xData.size()==0)
+		return;
+
+	// now do all the plotting
+	m_ui->widgetPlot->setEnabled(true);
+
+	m_curve = addConfiguredCurve(m_ui->widgetPlot);
+	// adjust styling based on current theme's settings
+	configureCurveTheme(m_curve);
+
+	// heating curve
+	m_curve->setRawSamples(m_xData.data(), m_yData.data(), (int)m_xData.size());
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(tr("Time [d]"));
+	xl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(label);
+	yl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
+	m_ui->widgetPlot->replot();
+
 }
 
 

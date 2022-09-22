@@ -108,10 +108,9 @@ VICUS::AbstractDBElement::ComparisonResult NetworkPipe::equal(const VICUS::Abstr
 IBK::MultiLanguageString NetworkPipe::nameFromData() const {
 	// process all languages in category and generate matching names
 
-	// TODO Hauke, this needs re-thinking
-	IBK::FormatString str = IBK::FormatString("%1 %2 x %3").arg(m_categoryName.string(IBK::MultiLanguageString::m_language, "en"))
-			.arg(m_para[VICUS::NetworkPipe::P_DiameterOutside].value*1000, 0, 'f', 0)
-			.arg(m_para[VICUS::NetworkPipe::P_ThicknessWall].value*1000, 0, 'f', 0);
+	IBK::FormatString str = IBK::FormatString("%1 %2 x %3").arg(m_categoryName.string())
+			.arg(m_para[VICUS::NetworkPipe::P_DiameterOutside].value*1000)
+			.arg(m_para[VICUS::NetworkPipe::P_ThicknessWall].value*1000);
 	return IBK::MultiLanguageString(str.str());
 }
 

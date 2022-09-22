@@ -17,10 +17,15 @@ AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement 
 	// check parameters
 
 	if (m_supplyType != otherSupSys->m_supplyType ||
-			m_para != otherSupSys->m_para ||
-			m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
-			m_supplyFMUId != otherSupSys->m_supplyFMUId)
+		m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
+		m_idSupplyFMU != otherSupSys->m_idSupplyFMU ||
+		m_idSubNetwork != otherSupSys->m_idSubNetwork)
 		return Different;
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (m_para[i] != otherSupSys->m_para[i])
+			return Different;
+	}
 
 	// check meta data
 
@@ -52,7 +57,7 @@ bool SupplySystem::isValid(const Database<SubNetwork> &subNetworkDB,
 
 		// check parameters for database mode
 		if(m_supplyType == ST_DatabaseFMU) {
-			if(m_supplyFMUId == VICUS::INVALID_ID) {
+			if(m_idSupplyFMU == VICUS::INVALID_ID) {
 				throw IBK::Exception("Database FMU is not set!", FUNC_ID);
 			}
 

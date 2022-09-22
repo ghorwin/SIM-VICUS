@@ -57,7 +57,6 @@ public:
 	static void formatDatabaseTableView(QTableView * v);
 	static void formatDatabaseTreeView(QTreeView * v);
 	static void formatListView(QListView * v);
-	static void formatLineEditReadOnly(QLineEdit * v);
 
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
 	static void formatWelcomePage(QString & htmlCode);

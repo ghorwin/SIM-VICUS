@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="pageTranslation">
       <layout class="QVBoxLayout" name="verticalLayoutTrans">
@@ -573,8 +573,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+     <widget class="QWidget" name="pageCopy">
+      <layout class="QVBoxLayout" name="verticalLayoutCopy">
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">

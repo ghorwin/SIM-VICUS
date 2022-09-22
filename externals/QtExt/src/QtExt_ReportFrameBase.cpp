@@ -120,6 +120,8 @@ std::vector<ReportFrameBase*> ReportFrameBase::subFrames(QPaintDevice* paintDevi
 }
 
 std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
+	// create list of heights of sections between possible page breaks
+	// such a section can be called subframe
 	double currentHeight = 0;
 	double totalHeight = 0;
 	std::vector<std::pair<double,unsigned int>> heightList;
@@ -131,38 +133,58 @@ std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevic
 			currentHeight = 0;
 		}
 	}
-	if(heightList.back().second < m_items.size() - 1) {
-		double lastHeight = 0;
-		for(size_t i=heightList.back().second+1; i<m_items.size(); ++i)
-			lastHeight += m_items[i]->rect().height();
-		heightList.push_back({lastHeight,m_items.size()-1});
+
+	// height list can be empty if no page break exist
+	// in this case we have only one frame block
+	if(heightList.empty()) {
+		heightList.push_back({totalHeight, m_items.size() - 1});
+	}
+	else {
+		// Check if all frames are added to height list
+		// if not, add all missing frame heights
+		if(heightList.back().second < m_items.size() - 1) {
+			double lastHeight = 0;
+			for(size_t i=heightList.back().second+1; i<m_items.size(); ++i)
+				lastHeight += m_items[i]->rect().height();
+			heightList.push_back({lastHeight,m_items.size()-1});
+		}
 	}
 
-	if(heightList.empty())
-		heightList.push_back({totalHeight, m_items.size() - 1});
-
+	// if we have only one height or the total subframe block fits in the currently available height.
+	// return the number of the last subframe
 	if(heightList.size() == 1 || totalHeight <= heightFirst)
 		return std::vector<size_t>(1, m_items.size() - 1);
 
+	// find out how many subframes fits on the available size of the current page
+	// the first page have a different free area
 	std::vector<size_t> lastItemOnPage;
 	bool firstPage = true;
-	currentHeight = 0;
+	currentHeight = 0;   // contains height of the current set of subframes
 	for(size_t i=0; i<heightList.size(); ++i) {
 		std::pair<double,unsigned int>& hi = heightList[i];
-		currentHeight += hi.first;
+		currentHeight += hi.first; // add height of the current subframe to current height
+		if(i==0 && hi.first >= heightFirst)
+			firstPage = false;
+		// check for first page - avalable height is
 		if(firstPage ) {
+			// height of the current set of subframes is bigger than available height
 			if(currentHeight >= heightFirst) {
+				// its the first subframe - add only this
 				if(i==0) {
 					lastItemOnPage.push_back(hi.second);
 					currentHeight = 0;
 				}
+				// we have a set of subframes - add all except the last one
+				// and set the current height to the last one
 				else {
 					lastItemOnPage.push_back(heightList[i-1].second);
 					currentHeight = hi.first;
 				}
+				// the first page is filled - go further to other pages
 				firstPage = false;
 			}
 		}
+		// first page is filled check for other pages
 		else {
 			if(currentHeight >= heightRest) {
 				if(i==0) {
@@ -176,7 +198,7 @@ std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevic
 			}
 		}
 	}
-	if(lastItemOnPage.back() < heightList.back().second)
+	if(lastItemOnPage.empty() || lastItemOnPage.back() < heightList.back().second)
 		lastItemOnPage.push_back(heightList.back().second);
 
 	return lastItemOnPage;

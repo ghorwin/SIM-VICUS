@@ -38,6 +38,7 @@
 #include <NANDRAD_SimulationParameter.h>
 #include <NANDRAD_Interface.h>
 #include <NANDRAD_FMIDescription.h>
+#include <NANDRAD_Schedules.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_SupplySystem.h"
@@ -330,7 +331,7 @@ private:
 
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
-									 NANDRAD::Project &p, const std::string &objListName)const;
+									 NANDRAD::Schedules & schedules, const std::string &objListName)const;
 
 	/*! If available, reads a shading factor file and write the corresponding NANDRAD shading factors file using NANDRAD id's.
 		\param surfaceIdsVicusToNandrad Maps vicus IDs to NANDRAD ids, like nandradID = surfaceIdsVicusToNandrad[vicusID];

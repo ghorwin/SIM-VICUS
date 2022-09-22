@@ -66,6 +66,21 @@ public:
 	/*! Updates the locally cached data.*/
 	void setData(QPaintDevice* paintDevice, const QVector<ConstructionLayer>& layers, double resolution, int visibleItems);
 
+	/*! Clear all line markers.*/
+	void clearLineMarkers();
+
+	/*! Add a line marker to the list.
+		\param pos Position in construction starting at left or bottom.
+		\param pen Pen used for drawing line
+	*/
+	void addLinemarker(double pos, const QPen& pen, const QString& name);
+
+	/*! Set a marked area.*/
+	void setAreaMarker(const ConstructionGraphicsScene::AreaMarker& am);
+
+	/*! Remove a existing area marker.*/
+	void removeAreaMarker();
+
 	/*! Update the view with the current settings.
 		Must be called after changing background color or layer mark.
 	*/

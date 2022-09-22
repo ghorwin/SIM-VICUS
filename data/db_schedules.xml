@@ -74,4 +74,19 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
+	<Schedule id="6006" displayName="DE: Condenser Mean Temperature |EN: &lt;new schedule&gt;">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+			<ScheduleInterval intervalStartDay="0">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,4,5,6,7,8,9</DayTypes>
+						<TimePoints>0</TimePoints>
+						<Values>35</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+		</Periods>
+	</Schedule>
 </Schedules>

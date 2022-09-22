@@ -37,6 +37,11 @@
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVSettings.h"
+#include "SVChartUtils.h"
+
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+
 
 SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -63,6 +68,8 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 
 	m_ui->lineEditAirChangeRate->setup(0, 100, tr("Houly air change rate of entire zone air volume."), true, true);
 	m_ui->lineEditShieldCoefficient->setup(0, 1, tr("Shield coefficient DIN EN 13789."), true, true); //Vorinit auf 0.07?
+
+	configureChart(m_ui->widgetPlot);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -131,6 +138,8 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 		m_ui->lineEditShieldCoefficient->setEnabled(false);
 		m_ui->lineEditShieldCoefficient->setText("");
 	}
+
+	updatePlot();
 }
 
 
@@ -192,8 +201,55 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinishedSuccess
 	{
 		VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
 		modelModify();
-
+		updatePlot();
 	}
+}
+
+
+void SVDBInfiltrationEditWidget::updatePlot() {
+
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotCurve );
+	m_ui->widgetPlot->detachItems( QwtPlotItem::Rtti_PlotMarker );
+	m_ui->widgetPlot->replot();
+	m_ui->widgetPlot->setEnabled(false);
+
+	if (m_current == nullptr)
+		return;
+
+	double factor = 1;
+	if (m_current->m_airChangeType == VICUS::Infiltration::AC_normal) {
+		if (!m_current->m_para[VICUS::Infiltration::P_AirChangeRate].empty())
+				factor = m_current->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+	}
+	else if (m_current->m_airChangeType == VICUS::Infiltration::AC_n50) {
+		if (!m_current->m_para[VICUS::Infiltration::P_AirChangeRate].empty())
+				factor = m_current->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+	}
+	else
+		return;
+
+	m_xData = {0, 7};
+	m_yData = {factor, factor};
+
+	// now do all the plotting
+	m_ui->widgetPlot->setEnabled(true);
+
+	m_curve = addConfiguredCurve(m_ui->widgetPlot);
+	// adjust styling based on current theme's settings
+	configureCurveTheme(m_curve);
+
+	// heating curve
+	m_curve->setRawSamples(m_xData.data(), m_yData.data(), (int)m_xData.size());
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(tr("Time [d]"));
+	xl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(tr("Air Change Rate [1/h]"));
+	yl.setFont(ft);
+	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
+	m_ui->widgetPlot->replot();
 }
 
 

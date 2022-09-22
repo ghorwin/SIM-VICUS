@@ -50,15 +50,15 @@ private slots:
 
 	void on_comboBoxCurrentNetwork_currentIndexChanged(int);
 
-	void on_doubleSpinBoxMaximumPressureLoss_valueChanged(double);
-
-	void on_doubleSpinBoxTemperatureSetpoint_valueChanged(double);
-
-	void on_doubleSpinBoxTemperatureDifference_valueChanged(double);
-
 	void on_horizontalSliderScaleNodes_valueChanged(int value);
 
 	void on_horizontalSliderScaleEdges_valueChanged(int value);
+
+	void on_lineEditMaxPressureDrop_editingFinishedSuccessfully();
+
+	void on_lineEditTemperatureSetpoint_editingFinishedSuccessfully();
+
+	void on_lineEditTemperatureDifference_editingFinishedSuccessfully();
 
 private:
 	Ui::SVPropEditNetwork		* m_ui;

@@ -54,7 +54,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	enum NodeType {
-		NT_Building,		// Keyword: Building
+		NT_SubStation,		// Keyword: SubStation
 		NT_Mixer,			// Keyword: Mixer
 		NT_Source,			// Keyword: Source
 		NUM_NT

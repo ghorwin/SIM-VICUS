@@ -34,15 +34,18 @@ ReportSettingsBase::ReportSettingsBase() :
 void ReportSettingsBase::readSettings(QSettings & settings) {
 	settings.beginGroup("ReportSettings");
 	QString activatedFrames = settings.value("ActivatedFrames").toString();
+	m_frames.clear();
 	if(!activatedFrames.isEmpty()) {
-		QStringList lst = activatedFrames.split(" ");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+		QStringList lst = activatedFrames.split(" ", Qt::SkipEmptyParts);
+#else
+		QStringList lst = activatedFrames.split(" ", QString::SkipEmptyParts);
+#endif
 		for (int i=0; i<lst.count(); ++i) {
 			bool ok;
-			bool activated = lst[i].toInt(&ok);
-			if (ok && activated)
-				m_frames.insert(i);
-			else
-				m_frames.erase(i);
+			int activated = lst[i].toInt(&ok);
+			if (ok)
+				m_frames.insert(activated);
 		}
 	}
 

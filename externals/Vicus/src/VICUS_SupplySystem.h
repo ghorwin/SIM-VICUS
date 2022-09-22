@@ -56,7 +56,7 @@ class SupplySystem : public AbstractDBElement {
 	Q_DECLARE_TR_FUNCTIONS(SupplySystem)
 public:
 
-	/*! Supplier supported by the generic network model. We don't have a NUM_ST as this would not make any sence. */
+	/*! Supplier supported by the generic network model. */
 	enum SupplyType {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
 		ST_SubNetwork,			// Keyword: SubNetwork					'User defined sub network'
@@ -74,11 +74,7 @@ public:
 		P_HeatingPowerFMU,			// Keyword: HeatingPowerFMU			[W]		'Procuder heating power'
 		NUM_P
 	};
-	/*! FMU parameters.
-	*/
-	enum supplyPara_t {
-		NUM_SP
-	};
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -106,7 +102,7 @@ public:
 	/*! FMU path for Database FMU mode. */
 	QString					m_supplyFMUPath;					// XML:E
 	/*! Id for database FMU. */
-	IDType					m_supplyFMUId = VICUS::INVALID_ID;	// XML:E
+	IDType					m_idSupplyFMU = VICUS::INVALID_ID;	// XML:E
 	/*! Id of vicus sub network */
 	IDType					m_idSubNetwork = VICUS::INVALID_ID;	// XML:E
 

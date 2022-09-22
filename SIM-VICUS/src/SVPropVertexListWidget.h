@@ -179,6 +179,10 @@ private slots:
 
 	void on_pushButtonCreateSubStation_clicked();
 
+	void on_lineEditRoofInclination_editingFinishedSuccessfully();
+
+	void on_lineEditFlapTileHeight_editingFinishedSuccessfully();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;

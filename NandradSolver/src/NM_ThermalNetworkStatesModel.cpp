@@ -286,13 +286,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break;
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer : {
-					// create general model with given heat flux
-					TNHeatPumpWithBuffer * element = new TNHeatPumpWithBuffer(m_network->m_fluid, e);
-					m_p->m_flowElements.push_back(element); // transfer ownership
-					m_p->m_heatLossElements.push_back(element); // copy of pointer
+//				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer : {
+//					// create general model with given heat flux
+//					TNHeatPumpWithBuffer * element = new TNHeatPumpWithBuffer(m_network->m_fluid, e);
+//					m_p->m_flowElements.push_back(element); // transfer ownership
+//					m_p->m_heatLossElements.push_back(element); // copy of pointer
 
-				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpWithBuffer
+//				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpWithBuffer
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
@@ -567,10 +567,10 @@ void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> 
 		// for heat pump with buffer storages, it might make sense to increase the weight for higher accuracy of the buffer temperatures
 		// as they are commonly a lot larger than other component volumes
 		// for better performance, we may keep them at 1.
-		if (type == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer){
-			weights[i+1] = 1.;
-			weights[i+2] = 1.;
-		}
+//		if (type == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer){
+//			weights[i+1] = 1.;
+//			weights[i+2] = 1.;
+//		}
 		// increment counter for number of unknowns
 		i += flowElem->nInternalStates();
 	}
