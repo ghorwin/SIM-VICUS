@@ -158,7 +158,9 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 	for (unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
 		// result quantities
 		const double* tempPtr = &m_nodalTemperatures[i];
-		// we either have a given reference or calculate nodal temperature directly
+		// we either have a given reference in case of zone nodes, in which case our node temperature only depends
+		// on the zone temperature (Note: m_nodalTemperatureRefs[i] holds pointers to zone temperatures)
+		// Otherwise, wie calculate nodal temperature directly and hence node temperature depends on (all) mass fluxes
 		if(m_nodalTemperatureRefs[i] != nullptr)
 			resultInputValueReferences.push_back(std::make_pair(tempPtr, m_nodalTemperatureRefs[i]) );
 		else

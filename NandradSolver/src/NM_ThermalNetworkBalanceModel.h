@@ -223,6 +223,9 @@ private:
 	/*!	Detailed description of node behaviour: calculated values, value
 		references and zone references.
 
+		Note: this struct is created for all nodes, even for plain network nodes without
+			  state. In this case, m_nodeId == INVALID_ID.
+
 		This struct groups all data assembled for a network node.
 	*/
 	struct NodeProperties {
@@ -237,7 +240,7 @@ private:
 		/*! Zone id. */
 		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 
-		/*! Zone properties for heat exchange to zone (nullptr if no heat exchange with a zone is defined). */
+		/*! Zone properties for heat exchange to zone (nullptr if nodeID == INVALID_ID). */
 		ZoneProperties						*m_zoneProperties = nullptr;
 	};
 
@@ -264,7 +267,7 @@ private:
 	/*! Physical properties of all network elements (size = ThermalNetworkModelImpl::m_flowElements.size()).*/
 	std::vector<FlowElementProperties>				m_flowElementProperties;
 
-	/*! Physical properties of all network nodes (size = ...).*/
+	/*! Connectivity properties of all network nodes (size = ...), reference from zone node to ZoneProperties. */
 	std::vector<NodeProperties>						m_nodeProperties;
 
 	/*! Vector of all additional model quantities for outputs. */

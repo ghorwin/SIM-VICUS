@@ -70,12 +70,26 @@ public:
 
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
+
 	/*! Container with external references to temperatures for each node (may be null if
-	 * no reference is given). */
+		no reference is given).
+
+		For normal hydraulic networks, nodes do not have a capacity or own state. Hence,
+		the nodal temperatures are computed in update() based on the mixer rule of all inflowing fluids
+		whereby the temperature is taken from the elements upstream.
+
+		However, for zones, the temperature at the zone node corresponds to the well-mixed zone temperature.
+		Since now the outflow temperature from the zone node is given, it may differ from inflowing enthalpy and
+		hence we have an excees heat load which is recorded in m_heatLoads.
+
+		Vector size matches number of nodes. Plain nodes (no zones) have a nullptr.
+	*/
 	std::vector<const double*>						m_nodalTemperatureRefs;
-	/*! Container with temperatures for each node. */
+	/*! Container with temperatures for each node (size = number of nodes). */
 	std::vector<double>								m_nodalTemperatures;
-	/*! Container with heat load for each node. */
+	/*! Container with heat load for each node (size = number of nodes).
+		Value is zero for plain nodes (i.e. where m_nodalTemperatureRefs[i] == nullptr).
+	*/
 	std::vector<double>								m_heatLoads;
 	/*! Container with global pointer to calculated mass fluxes.
 		Pointer maps to calculated fluid mass fluxes from HydraulicNetworkModel.

@@ -334,15 +334,16 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// register reference
 	inputRefs.push_back(inputRef);
 
-	// copy node temperatures for substantial elements as zones and
+	// request node temperatures for zone nodes;
 	// accept invalid references
+	// TODO AirNetwork: possible improvement, filter out plain nodes, and also filter out plain nodes  in setInputReference()
 	for(const NodeProperties &nodeProp : m_nodeProperties) {
 		InputReference inputRef;
 		inputRef.m_id = nodeProp.m_zoneId;
 		inputRef.m_required = false;
 
 		// special case: outside zone
-		if(nodeProp.m_zoneId == 0) {
+		if (nodeProp.m_zoneId == 0) {
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 			inputRef.m_name = std::string("Temperature");
 			inputRef.m_required = true;
@@ -398,7 +399,6 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 
 	// add to global list
 	inputRefs.insert(inputRefs.end(), modelInputRefs.begin(), modelInputRefs.end());
-
 }
 
 
@@ -407,25 +407,19 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	// layout of resultValueRefs vector:
 	// 0                                 - FluidMassFluxes
-	// ...elements                       - ..
+	// ...zone node temperatures..       - size = number of nodes (including plain nodes)
+	// ...elements                       - all values requested by all flow elements
 
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 
-	unsigned int resultValIdx = 1;
+	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + 1; // Mind use of index 1 here
 
-	// resultValIdx now points to the first input reference towards temperature nodes
-
-	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + resultValIdx; // Mind the index increase here
-
-	// copy node temperatures for substantial elements as zones
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_nodalTemperatureRefs.size(); ++i, ++valRefIt) {
-		if(*valRefIt != nullptr) {
+	// stores pointers to zone temperatures if nodes are zone nodes
+	for (unsigned int i = 0; i < m_statesModel->m_p->m_nodalTemperatureRefs.size(); ++i, ++valRefIt) {
+		if (*valRefIt != nullptr)
 			m_statesModel->m_p->m_nodalTemperatureRefs[i] = *valRefIt;
-		}
 	}
-
-	// resultValIdx now points to the first input reference past the active layer/zone temperatures
 
 	// now provide elements with their specific input quantities
 	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
@@ -581,12 +575,12 @@ int ThermalNetworkBalanceModel::update() {
 		for (ZoneProperties &zoneProp : m_zoneProperties)
 			zoneProp.m_zoneHeatLoad = 0.0;
 
-		// first treat all zones that act as nodes
-		for(unsigned int i = 0; i < m_nodeProperties.size(); ++i) {
+		// first treat all zone nodes
+		for (unsigned int i = 0; i < m_nodeProperties.size(); ++i) {
 
 			ZoneProperties *zoneProp = m_nodeProperties[i].m_zoneProperties;
-			if(zoneProp == nullptr)
-				continue;
+			if (zoneProp == nullptr)
+				continue; // not a zone node, skip
 
 			// a zone node may only occur once
 			zoneProp->m_zoneHeatLoad = m_statesModel->m_p->m_heatLoads[i];

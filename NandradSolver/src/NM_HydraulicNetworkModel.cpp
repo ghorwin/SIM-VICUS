@@ -43,6 +43,9 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 											 unsigned int id, const std::string &displayName) :
 	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(thermostats)
 {
+
+	// TODO AirNetwork: zoneIDs + nodeIDs unique -> nur ein nodeIDs Vektor
+
 	// first register all nodes and zones
 	std::set<unsigned int> nodeIds;
 	std::set<unsigned int> zoneIds;
