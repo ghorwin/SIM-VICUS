@@ -30,11 +30,13 @@
 namespace NANDRAD {
 
 
-void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned int> &otherZoneIds)  {
+void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned int> &otherNodeIds)  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
 	// register all zone nodes
 	std::set<unsigned int> zoneNodeIds;
+	// register all nodes
+	std::set<unsigned int> nodeIds;
 
 	// check our own properties, first
 	switch (m_modelType) {
@@ -45,6 +47,7 @@ void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned in
 		break;
 
 		case NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork:
+		case NANDRAD::HydraulicNetwork::MT_AirNetwork:
 			m_para[P_InitialFluidTemperature].checkedValue("InitialFluidTemperature", "K",
 														   "C", -50, true, 500, true,
 														   "Fluid temperature should be in the range of -50..500 C.");
@@ -80,11 +83,15 @@ void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned in
 	// check all elements and fill references to components and pipe properties
 	for (HydraulicNetworkElement &e : m_elements) {
 		try {
-			// select all zone node ids
-			if(e.m_inletZoneId != NANDRAD::INVALID_ID && e.m_inletNodeId != 0)
+			// select all node and zone node ids
+			if(e.m_inletZoneId != NANDRAD::INVALID_ID && e.m_inletZoneId != 0)
 				zoneNodeIds.insert(e.m_inletZoneId);
-			if(e.m_outletNodeId != NANDRAD::INVALID_ID && e.m_outletNodeId != 0)
-				zoneNodeIds.insert(e.m_outletNodeId);
+			else if(e.m_inletNodeId != NANDRAD::INVALID_ID)
+				nodeIds.insert(e.m_inletNodeId);
+			if(e.m_outletZoneId != NANDRAD::INVALID_ID && e.m_outletZoneId != 0)
+				zoneNodeIds.insert(e.m_outletZoneId);
+			else if(e.m_outletNodeId != NANDRAD::INVALID_ID)
+				nodeIds.insert(e.m_outletNodeId);
 			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
 			e.checkParameters(*this, prj);
 			// select construction ids
@@ -112,29 +119,42 @@ void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned in
 		}
 	}
 
-	// TODO: only allow zone nodes in an air network
-//	if(!zoneNodeIds.empty() && m_fluid.m_displayName != "Air") {
-//		throw IBK::Exception(IBK::FormatString("Use of 'inletZoneId' and 'outletZoneId' is only allowed for fluid 'Air'!")
-//							 , FUNC_ID);
-//	}
-
-	// ensure that zone nodes are only used in current network
-	for(std::set<unsigned int>::const_iterator
-		idIt = zoneNodeIds.begin(); idIt != zoneNodeIds.end(); ++idIt) {
-		// check against other node ids
-		if(otherZoneIds.find(*idIt) != otherZoneIds.end()) {
-			throw IBK::Exception(IBK::FormatString("Invalid use of 'inletZoneId' and 'outletZoneId' #%1! "
-								 "This zone is part of another network.").arg(*idIt)
-								 , FUNC_ID);
-		}
-		// add to container
-		otherZoneIds.insert(*idIt);
+	// only allow zone nodes in an air network
+	if(!zoneNodeIds.empty() && m_modelType != MT_AirNetwork) {
+		throw IBK::Exception(IBK::FormatString("Use of 'inletZoneId' and 'outletZoneId' is only allowed for type "
+							 "'AirNetwork'!")
+							 , FUNC_ID);
 	}
 
-	// TODO Air network: check if zone ids exist in project
-	// TODO Air network: ensure, that node and zone ids are unique
-	// TODO Air network: remove extra zoneID vars
-	// TODO Air network: add type 'AirNetwork' in HydraulicNetwork
+	if(m_modelType == MT_AirNetwork) {
+		// ensure that zone nodes are only used in current network
+		// and zone ids exist in project
+		for(std::set<unsigned int>::const_iterator
+			idIt = zoneNodeIds.begin(); idIt != zoneNodeIds.end(); ++idIt) {
+			// check if zone exists in project
+			const std::vector<NANDRAD::Zone>::const_iterator it = std::find(prj.m_zones.begin(), prj.m_zones.end(), *idIt);
+			if (it == prj.m_zones.end())
+				throw IBK::Exception(IBK::FormatString("Zone with id '%1' requested from inletZoneId' or 'outletZoneId' attribute "
+													   "does not exist!")
+									 .arg(*idIt), FUNC_ID);
+
+			// ensure, that node and zoneids are unique
+			if(nodeIds.find(*idIt) != nodeIds.end())
+				throw IBK::Exception(IBK::FormatString("Node with id '%1' requested from inletNoneId' or 'outletNoneId' attribute "
+													   "is not unique! The id also exists as 'inletZoneId' and 'outletZoneId'! "
+													   "Mind, that we use the same id space for nodes and zones.")
+									 .arg(*idIt), FUNC_ID);
+
+			// check against other node ids
+			if(otherNodeIds.find(*idIt) != otherNodeIds.end()) {
+				throw IBK::Exception(IBK::FormatString("Invalid use of 'inletZoneId' and 'outletZoneId' #%1! "
+									 "This zone is part of another network.").arg(*idIt)
+									 , FUNC_ID);
+			}
+			// add to container
+			otherNodeIds.insert(*idIt);
+		}
+	}
 
 	// check parameters of all components
 	for (HydraulicNetworkComponent &c : m_components) {

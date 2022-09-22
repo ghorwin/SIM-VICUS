@@ -181,6 +181,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
+				case 2 : return "AirNetwork";
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -827,6 +828,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
+				case 2 : return "AirNetwork";
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -1474,6 +1476,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Only Hydraulic calculation with constant temperature";
 				case 1 : return "Thermo-hydraulic calculation";
+				case 2 : return "Air network that may be connected with zones.";
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -2120,6 +2123,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
+				case 2 : return "";
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -2766,6 +2770,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -3412,6 +3417,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetwork::para_t
 			case 8 :
@@ -4027,7 +4033,7 @@ namespace NANDRAD {
 			// HydraulicFluid::para_t
 			case 6 : return 3;
 			// HydraulicNetwork::ModelType
-			case 7 : return 2;
+			case 7 : return 3;
 			// HydraulicNetwork::para_t
 			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
@@ -4203,7 +4209,7 @@ namespace NANDRAD {
 			// HydraulicFluid::para_t
 			case 6 : return 2;
 			// HydraulicNetwork::ModelType
-			case 7 : return 1;
+			case 7 : return 2;
 			// HydraulicNetwork::para_t
 			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType

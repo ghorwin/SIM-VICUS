@@ -40,6 +40,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Thermal conductivity of the dry material.");
 	tr("Only Hydraulic calculation with constant temperature");
 	tr("Thermo-hydraulic calculation");
+	tr("Air network that may be connected with zones.");
 	tr("Default temperature for HydraulicNetwork models");
 	tr("Initial temperature of the fluid");
 	tr("Reference pressure of network");

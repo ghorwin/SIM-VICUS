@@ -64,28 +64,27 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// Note: the vector m_flowElementProperties will not be changed in size lateron, so we can store persistent
 	//       pointers to vector elements and their data members.
 
-	IBK_ASSERT(m_statesModel->m_zoneNodeIds.size() == m_statesModel->m_nodeIds.size());
 	// register zone properties for all requested nodes
 	for (unsigned int i = 0; i < m_statesModel->m_nodeIds.size(); ++i) {
 
 		// rterieve node and zone id (one of both ids must exist)
 		unsigned int nodeId = m_statesModel->m_nodeIds[i];
-		unsigned int zoneId = m_statesModel->m_zoneNodeIds[i];
 
-		// create node property
-		NodeProperties nodeProp(nodeId, zoneId);
-
-		// no zone connected
-		if(zoneId == NANDRAD::INVALID_ID) {
-			m_nodeProperties.push_back(nodeProp);
+		// check whether node is a zone or not
+		if(m_statesModel->m_zoneNodeIds.find(nodeId) == m_statesModel->m_zoneNodeIds.end()) {
+			// no zone connected
+			m_nodeProperties.push_back(NodeProperties());
 			continue;
 		}
 
+		// create node property
+		NodeProperties nodeProp(nodeId);
+
 		// a nodal zone may only be registered once
-		IBK_ASSERT(std::find(m_zoneProperties.begin(), m_zoneProperties.end(), zoneId) == m_zoneProperties.end());
+		IBK_ASSERT(std::find(m_zoneProperties.begin(), m_zoneProperties.end(), nodeId) == m_zoneProperties.end());
 
 		// add a new entry for each zone
-		m_zoneProperties.push_back(ZoneProperties(zoneId)); // Note: does not invalidate pointers already in list!
+		m_zoneProperties.push_back(ZoneProperties(nodeId)); // Note: does not invalidate pointers already in list!
 		// store pointer to newly added object (last object = first from end)
 		nodeProp.m_zoneProperties = &(*m_zoneProperties.rbegin());
 
@@ -338,20 +337,22 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// accept invalid references
 	// TODO AirNetwork: possible improvement, filter out plain nodes, and also filter out plain nodes  in setInputReference()
 	for(const NodeProperties &nodeProp : m_nodeProperties) {
+		// only register node properties with valid id
+		if(nodeProp.m_nodeId == NANDRAD::INVALID_ID)
+			continue;
+
 		InputReference inputRef;
-		inputRef.m_id = nodeProp.m_zoneId;
-		inputRef.m_required = false;
+		inputRef.m_id = nodeProp.m_nodeId;
+		inputRef.m_required = true;
 
 		// special case: outside zone
-		if (nodeProp.m_zoneId == 0) {
+		if (nodeProp.m_nodeId == 0) {
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
 			inputRef.m_name = std::string("Temperature");
-			inputRef.m_required = true;
 		}
-		else if(nodeProp.m_zoneId != NANDRAD::INVALID_ID){
+		else {
 			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			inputRef.m_name = std::string("AirTemperature");
-			inputRef.m_required = true;
 		}
 
 		// register reference
@@ -416,9 +417,12 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + 1; // Mind use of index 1 here
 
 	// stores pointers to zone temperatures if nodes are zone nodes
-	for (unsigned int i = 0; i < m_statesModel->m_p->m_nodalTemperatureRefs.size(); ++i, ++valRefIt) {
-		if (*valRefIt != nullptr)
-			m_statesModel->m_p->m_nodalTemperatureRefs[i] = *valRefIt;
+	for(unsigned int i = 0; i < m_nodeProperties.size(); ++i) {
+		// only register node properties with valid id
+		if(m_nodeProperties[i].m_nodeId == NANDRAD::INVALID_ID)
+			continue;
+		IBK_ASSERT(*valRefIt != nullptr);
+		m_statesModel->m_p->m_nodalTemperatureRefs[i] = *(valRefIt++);
 	}
 
 	// now provide elements with their specific input quantities

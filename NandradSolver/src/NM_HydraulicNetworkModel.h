@@ -65,7 +65,7 @@ public:
 	const Network *network() const;
 
 	/*! Constant access to all zone node ids*/
-	const std::vector<unsigned int> &zoneNodeIds() const;
+	const std::set<unsigned int> &zoneNodeIds() const;
 
 	/*! Initializes model.
 		\param nw The hydraulic network model definition/parametrization.
@@ -158,8 +158,8 @@ private:
 	std::vector<unsigned int>						m_elementIds;
 	/*! Storage of all node ids. */
 	std::vector<unsigned int>						m_nodeIds;
-	/*! Storage of all zone node ids. */
-	std::vector<unsigned int>						m_zoneNodeIds;
+	/*! Storage of all supported zone node ids for creation of references. */
+	std::set<unsigned int>							m_zoneNodeIds;
 	/*! Stores the displaynames of all elements referenced in m_elementIds (vectors have same size and same ordering). */
 	std::vector<std::string>						m_elementDisplayNames;
 	/*! Constant reference to NANDRAD network data structure */

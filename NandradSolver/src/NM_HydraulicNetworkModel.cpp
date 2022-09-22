@@ -48,18 +48,21 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 
 	// first register all nodes and zones
 	std::set<unsigned int> nodeIds;
-	std::set<unsigned int> zoneIds;
 	// for this purpose process all hydraulic network elements
 	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
 		if(e.m_inletNodeId != NANDRAD::INVALID_ID)
 			nodeIds.insert(e.m_inletNodeId);
-		else
-			zoneIds.insert(e.m_inletZoneId);
+		else {
+			nodeIds.insert(e.m_inletZoneId);
+			m_zoneNodeIds.insert(e.m_inletZoneId);
+		}
 
 		if(e.m_outletNodeId != NANDRAD::INVALID_ID)
 			nodeIds.insert(e.m_outletNodeId);
-		else
-			zoneIds.insert(e.m_outletZoneId);
+		else {
+			nodeIds.insert(e.m_outletZoneId);
+			m_zoneNodeIds.insert(e.m_outletZoneId);
+		}
 	}
 
 	// now populate the m_flowElements vector of the network solver
@@ -70,31 +73,24 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 		if(e.m_inletNodeId != NANDRAD::INVALID_ID)
 			idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
 		else
-			idxInlet = (unsigned int) nodeIds.size() + std::distance(zoneIds.begin(), zoneIds.find(e.m_inletZoneId));
+			idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletZoneId));
 		unsigned int idxOutlet = 0;
 		if(e.m_outletNodeId != NANDRAD::INVALID_ID)
 			idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
 		else
-			idxOutlet = (unsigned int) nodeIds.size() + std::distance(zoneIds.begin(), zoneIds.find(e.m_outletZoneId));
+			idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletZoneId));
 
 		elems.push_back(Element(idxInlet, idxOutlet) );
 	}
 
 	// store nodes
-	m_nodeIds.resize(nodeIds.size() + zoneIds.size(), NANDRAD::INVALID_ID);
-	// store zone nodes
-	m_zoneNodeIds.resize(nodeIds.size() + zoneIds.size(), NANDRAD::INVALID_ID);
+	m_nodeIds.resize(nodeIds.size() , NANDRAD::INVALID_ID);
 
-	// add all missing zone ids
+	// add all missing node ids
 	unsigned int i = 0;
 	for(std::set<unsigned int>::const_iterator
 		it = nodeIds.begin(); it != nodeIds.end(); ++it, ++i)
 		m_nodeIds[i] = *it;
-
-	// add all missing zone ids
-	for(std::set<unsigned int>::const_iterator
-		it = zoneIds.begin(); it != zoneIds.end(); ++it, ++i)
-		m_zoneNodeIds[i] = *it;
 
 	// set reference pressure node
 	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(
@@ -114,7 +110,7 @@ const Network * HydraulicNetworkModel::network() const {
 	return &m_p->m_network;
 }
 
-const std::vector<unsigned int> & HydraulicNetworkModel::zoneNodeIds() const
+const std::set<unsigned int> & HydraulicNetworkModel::zoneNodeIds() const
 {
 	return m_zoneNodeIds;
 }
@@ -456,8 +452,10 @@ void HydraulicNetworkModel::initInputReferences(const std::vector<AbstractModel 
 
 
 void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// only require input references (to temperatures) if we compute ThermalHydraulicNetworks
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+	// only require input references (to temperatures) if we compute ThermalHydraulicNetworks or
+	// AirNetworks
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork
+		|| m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_AirNetwork) {
 		// use hydraulic network model to generate temperature references
 		InputReference inputRef;
 		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -479,7 +477,8 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 											  const std::vector<const double *> & resultValueRefs)
 {
 	unsigned int currentIndex = 0;
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork
+		|| m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_AirNetwork) {
 		// set all fluid temperature references
 		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];

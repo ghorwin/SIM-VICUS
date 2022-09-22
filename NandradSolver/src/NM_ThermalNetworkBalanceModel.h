@@ -230,15 +230,16 @@ private:
 	*/
 	struct NodeProperties {
 		/*! Standard constructor. */
-		NodeProperties(unsigned int nodeId, unsigned int zoneId): m_nodeId(nodeId), m_zoneId(zoneId) { }
+		NodeProperties() { }
+
+		/*! Constructor with given node id. */
+		NodeProperties(unsigned int nodeId): m_nodeId(nodeId) { }
 
 		/*! Comparison operator via id. */
-		bool operator==(unsigned int x) const { return m_nodeId == x || m_zoneId == x; }
+		bool operator==(unsigned int x) const { return m_nodeId == x ; }
 
 		/*! Node id. */
 		unsigned int						m_nodeId = NANDRAD::INVALID_ID;
-		/*! Zone id. */
-		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 
 		/*! Zone properties for heat exchange to zone (nullptr if nodeID == INVALID_ID). */
 		ZoneProperties						*m_zoneProperties = nullptr;
