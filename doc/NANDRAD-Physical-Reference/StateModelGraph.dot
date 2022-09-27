@@ -3,6 +3,9 @@ digraph Beziehungen {
    RoomStatesModel -> y 
    ConstructionStatesModel -> y 
    ThermalNetworkStatesModel -> y 
+   ConstructionBalanceModel -> Loads
+   NaturalVentilationModel -> Loads
+   WindowModel -> Loads
    NaturalVentilationModel -> RoomStatesModel 
    ThermalComfortModel -> RoomStatesModel 
    ThermostatModel -> RoomStatesModel 
@@ -36,7 +39,6 @@ digraph Beziehungen {
    HeatLoadSummationModel -> IdealHeatingCoolingModel
    HeatLoadSummationModel -> IdealPipeRegisterModel
    HeatLoadSummationModel -> IdealSurfaceHeatingCoolingModel
-   HeatLoadSummationModel -> ThermalNetworkBalanceModel
    HeatLoadSummationModel -> ThermalNetworkBalanceModel
    NetworkInterfaceAdapterModel -> HeatLoadSummationModel
    ydot -> RoomBalanceModel 
