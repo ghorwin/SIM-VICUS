@@ -52,7 +52,7 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	// resize temperature references
 	m_nodalTemperatureRefs.resize(nw.m_nodes.size(), nullptr);
 	// resize heat loads
-	m_heatLoads.resize(nw.m_nodes.size(), 0.0);
+	m_nodelHeatLoads.resize(nw.m_nodes.size(), 0.0);
 	// get fluid heat capacity
 	m_fluid = &fluid;
 }
@@ -118,7 +118,7 @@ int ThermalNetworkModelImpl::update() {
 					* temperatureOutlet;
 			// copy values
 			m_nodalTemperatures[i] = temperatureOutlet;
-			m_heatLoads[i] = enthalpyFluxInlet - enthalpyFluxOutlet;
+			m_nodelHeatLoads[i] = enthalpyFluxInlet - enthalpyFluxOutlet;
 		}
 		// calulate node temperature
 		else {

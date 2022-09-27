@@ -90,7 +90,7 @@ public:
 	/*! Container with heat load for each node (size = number of nodes).
 		Value is zero for plain nodes (i.e. where m_nodalTemperatureRefs[i] == nullptr).
 	*/
-	std::vector<double>								m_heatLoads;
+	std::vector<double>								m_nodelHeatLoads;
 	/*! Container with global pointer to calculated mass fluxes.
 		Pointer maps to calculated fluid mass fluxes from HydraulicNetworkModel.
 	*/

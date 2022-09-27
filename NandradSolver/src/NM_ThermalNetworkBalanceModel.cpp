@@ -587,7 +587,7 @@ int ThermalNetworkBalanceModel::update() {
 				continue; // not a zone node, skip
 
 			// a zone node may only occur once
-			zoneProp->m_zoneHeatLoad = m_statesModel->m_p->m_heatLoads[i];
+			zoneProp->m_zoneHeatLoad = m_statesModel->m_p->m_nodelHeatLoads[i];
 		}
 
 		for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
