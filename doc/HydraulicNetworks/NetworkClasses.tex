@@ -19,8 +19,8 @@
   \end{itemize}};
   \node (TS)   [below = of TB]          {\textbf{ThermalNetworkStatesModel}\\AbstractModel\\AbstractTimeDependency \begin{itemize} \item heatExchangeSplineValues \item y \end{itemize}};
   \node (TNImpl) [below = of TS]  {\textbf{ThermalNetworkModelImpl}\\ Network calculation\begin{itemize} \item nodalTemperatures \item nodalHeatLoads \end{itemize}};
-  \node (TNElem) [below = of TNImpl]  {\textbf{ThermalNetworkAbstractFlowElement}\\ \begin{itemize} \item meanTemperature \end{itemize}
-  \textbf{ThermalNetworkAbstractFlowElement}\\ \textbf{WithHeatLoss}\\
+  \node (TNElem) [below = of TNImpl]  {\textbf{ThermalNetworkAbstractFlowElement}\\ Network edge temperature calculation\begin{itemize} \item meanTemperature \end{itemize}
+  \textbf{ThermalNetworkAbstractFlowElement}\\ \textbf{WithHeatLoss}\\Network edge heat loss calculation
   \begin{itemize}\item heatLoss \end{itemize}};
 
   \coordinate [right = 7.8cm of TNImpl] (Mitte);
@@ -31,7 +31,7 @@
   \node (HNImpl)   [left  = 2mm of Mitte]          {\textbf{HydraulicNetworkModelImpl}\\
   Network calculation
   \begin{itemize}  \item fluidMassFluxes \item inlet/outletNodePressures\end{itemize}}; 
-  \node (HNElem)   [left = 2mm of Unten]          {\textbf{HydraulicNetworkAbstractElement} }; 
+  \node (HNElem)   [left = 2mm of Unten]          {\textbf{HydraulicNetworkAbstractElement}\\Network edge pressure loss calculation}; 
 
  \draw [black,thick]
     (TB)    --  (TS)  --  (TNImpl)  -- (TNElem)
