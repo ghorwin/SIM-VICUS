@@ -3,9 +3,6 @@ digraph Beziehungen {
    RoomStatesModel -> y 
    ConstructionStatesModel -> y 
    ThermalNetworkStatesModel -> y 
-   ConstructionBalanceModel -> Loads
-   NaturalVentilationModel -> Loads
-   WindowModel -> Loads
    NaturalVentilationModel -> RoomStatesModel 
    ThermalComfortModel -> RoomStatesModel 
    ThermostatModel -> RoomStatesModel 
