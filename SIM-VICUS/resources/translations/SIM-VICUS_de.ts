@@ -10608,7 +10608,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="187"/>
         <source>Mixer</source>
-        <translation>Rührgerät</translation>
+        <translation>Mixer</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkPropertiesWidget.ui" line="194"/>

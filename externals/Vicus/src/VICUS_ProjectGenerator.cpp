@@ -3429,7 +3429,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 				NANDRAD::FMIVariableDefinition inputSupplyTemp;
 				inputSupplyTemp.m_varName = "NetworkElement.SupplyTemperatureSchedule";
 				inputSupplyTemp.m_objectId = idealHeaterElem.m_id;
-				inputSupplyTemp.m_fmiVarName = "FlowTemperature";
+				inputSupplyTemp.m_fmiVarName = "SupplyTemperature";
 				inputSupplyTemp.m_unit = "K";
 				inputSupplyTemp.m_fmiVarDescription = "Demand network flow temperature.";
 				inputSupplyTemp.m_fmiTypeName = "input";
@@ -3441,7 +3441,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 				// add an fmu description for supply temperature: adapter model
 				inputSupplyTemp.m_varName = "Model.SupplyTemperatureSchedule";
 				inputSupplyTemp.m_objectId = adapterModel.m_id;
-				inputSupplyTemp.m_fmiVarName = "FlowTemperature";
+				inputSupplyTemp.m_fmiVarName = "SupplyTemperature";
 				inputSupplyTemp.m_unit = "K";
 				inputSupplyTemp.m_fmiVarDescription = "Demand network flow temperature.";
 				inputSupplyTemp.m_fmiTypeName = "input";

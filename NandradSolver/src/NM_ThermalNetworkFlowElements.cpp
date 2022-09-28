@@ -1110,8 +1110,9 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 			m_COP = 0.0;
 			m_heatLoss = 0.0;
 			m_electricalPower  = 0.0;
-			m_evaporatorMeanTemperature = m_meanTemperature;
 			m_temperatureDifference = 0;
+			// the COP-polynom expects mean temperature, which we assume to be the average of current fluid temperature and inflowing temperature
+			m_evaporatorMeanTemperature = (m_meanTemperature + m_inflowTemperature) / 2.;
 
 			// get scheduled temperature
 			IBK_ASSERT(m_condenserMeanTemperatureRef != nullptr);
@@ -1156,7 +1157,8 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 			m_heatLoss = 0.0;
 			m_electricalPower  = 0.0;
 			m_temperatureDifference = 0;
-			m_condenserMeanTemperature = m_meanTemperature;
+			// the COP-polynom expects mean temperature, which we assume to be the average of current fluid temperature and inflowing temperature
+			m_condenserMeanTemperature = (m_meanTemperature + m_inflowTemperature) / 2.;
 
 			// get scheduled temperatures
 			IBK_ASSERT(m_evaporatorMeanTemperatureRef != nullptr);
