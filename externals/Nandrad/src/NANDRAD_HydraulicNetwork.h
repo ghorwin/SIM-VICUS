@@ -48,6 +48,7 @@ public:
 	enum ModelType {
 		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Only Hydraulic calculation with constant temperature'
 		MT_ThermalHydraulicNetwork,			// Keyword: ThermalHydraulicNetwork			'Thermo-hydraulic calculation'
+		MT_AirNetwork,						// Keyword: AirNetwork						'Air network that may be connected with zones.'
 		NUM_MT
 	};
 
@@ -65,7 +66,7 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(const Project & prj) ;
+	void checkParameters(const Project & prj, std::set<unsigned int> &otherNodeIds) ;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -33,10 +33,13 @@
 namespace NANDRAD {
 
 HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+						unsigned int inletZoneId, unsigned int outletZoneId,
 						unsigned int componentId, unsigned int pipeID, double length) :
 	m_id(id),
 	m_inletNodeId(inletNodeId),
 	m_outletNodeId(outletNodeId),
+	m_inletZoneId(inletZoneId),
+	m_outletZoneId(outletZoneId),
 	m_componentId(componentId),
 	m_pipePropertiesId(pipeID)
 {
@@ -47,10 +50,13 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 
 
 HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+						unsigned int inletZoneId, unsigned int outletZoneId,
 						unsigned int componentId, unsigned int controlElementId):
 	m_id(id),
 	m_inletNodeId(inletNodeId),
 	m_outletNodeId(outletNodeId),
+	m_inletZoneId(inletZoneId),
+	m_outletZoneId(outletZoneId),
 	m_componentId(componentId),
 	m_pipePropertiesId(INVALID_ID),
 	m_controlElementId(controlElementId)
@@ -64,7 +70,9 @@ bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) c
 	// check ids
 	if (m_id != other.m_id ||
 		m_inletNodeId != other.m_inletNodeId ||
+		m_inletZoneId != other.m_inletZoneId ||
 		m_outletNodeId != other.m_outletNodeId ||
+		m_outletZoneId != other.m_outletZoneId ||
 		m_componentId != other.m_componentId ||
 		m_controlElementId != other.m_controlElementId ||
 		m_pipePropertiesId != other.m_pipePropertiesId)
@@ -91,6 +99,17 @@ bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) c
 
 void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const Project & prj) {
 	FUNCID(HydraulicNetworkElement::checkParameters);
+
+	// check whether inlet and oulet node/inlet and oulet zone are defined
+	if(m_inletNodeId == NANDRAD::INVALID_ID && m_inletZoneId == NANDRAD::INVALID_ID)
+		throw IBK::Exception(IBK::FormatString("Missing inletNodeId or inletZoneId."), FUNC_ID);
+	if(m_outletNodeId == NANDRAD::INVALID_ID && m_outletZoneId == NANDRAD::INVALID_ID)
+		throw IBK::Exception(IBK::FormatString("Missing outletNodeId or outletZoneId."), FUNC_ID);
+	// censure that only one inlet and one outlet are defined
+	if(m_inletNodeId != NANDRAD::INVALID_ID && m_inletZoneId != NANDRAD::INVALID_ID)
+		throw IBK::Exception(IBK::FormatString("Only inletNodeId or inletZoneId is allowed!"), FUNC_ID);
+	if(m_outletNodeId != NANDRAD::INVALID_ID && m_outletZoneId != NANDRAD::INVALID_ID)
+		throw IBK::Exception(IBK::FormatString("Only outletNodeId or outletZoneId is allowed!"), FUNC_ID);
 
 	// retrieve network component
 	std::vector<HydraulicNetworkComponent>::const_iterator coit =

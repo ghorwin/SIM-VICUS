@@ -42,6 +42,22 @@ void HydraulicFluid::defaultFluidWater() {
 }
 
 
+void HydraulicFluid::defaultFluidAir()
+{
+	m_displayName = "Air";
+	m_para[P_Density] = IBK::Parameter("Density", 1.205, "kg/m3");
+	m_para[P_Conductivity] = IBK::Parameter("Conductivity", 0.0262, "W/mK");
+	m_para[P_HeatCapacity] = IBK::Parameter("HeatCapacity", 1006, "J/kgK");
+
+	m_kinematicViscosity.m_name = "KinematicViscosity";
+	m_kinematicViscosity.m_interpolationMethod = LinearSplineParameter::I_LINEAR;
+	m_kinematicViscosity.m_xUnit = IBK::Unit("C");
+	m_kinematicViscosity.m_yUnit = IBK::Unit("m2/s");
+	m_kinematicViscosity.m_values.setValues(std::vector<double>{0,90},
+											std::vector<double>{17.2e-6,17.2e-6});
+}
+
+
 void HydraulicFluid::checkParameters(int networkModelType) {
 
 	// check for required parameters and meaningful value ranges
@@ -63,6 +79,7 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 	}
 
 }
+
 
 bool HydraulicFluid::equal(const HydraulicFluid &other) const {
 

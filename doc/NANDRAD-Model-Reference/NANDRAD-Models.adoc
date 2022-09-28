@@ -48,6 +48,11 @@ __(*) noch nicht implementiert__
 
 Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen (Fugenlüftung/Infiltration). Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen ausgewählt.
 
+[WARNING]
+====
+Dieses Modell sollte nicht zusammen mit dem Luftströmungsmodell (Luftströmungs-Netzwerk) verwendet werden.
+====
+
 .Drei veschiedene Modellvarianten und deren Parameter beim Modell für natürliche Lüftung/Infiltration
 ====
 [source,xml]

@@ -49,6 +49,10 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	m_network = &nw;
 	// resize temperatures
 	m_nodalTemperatures.resize(nw.m_nodes.size());
+	// resize temperature references
+	m_nodalTemperatureRefs.resize(nw.m_nodes.size(), nullptr);
+	// resize heat loads
+	m_nodelHeatLoads.resize(nw.m_nodes.size(), 0.0);
 	// get fluid heat capacity
 	m_fluid = &fluid;
 }
@@ -67,6 +71,7 @@ int ThermalNetworkModelImpl::update() {
 
 	// calculate enthalpy fluxes for all nodes
 	for(unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
+
 		// set enthalpy flux to 0
 		double enthalpyFluxInlet = 0;
 
@@ -106,9 +111,21 @@ int ThermalNetworkModelImpl::update() {
 			}
 		}
 
-		// if we encounter a trivial flow solution (massFluxes all zero), then we just keep the temperatures the same
-		if (massFluxInlet != 0.0) {
-			m_nodalTemperatures[i] = enthalpyFluxInlet/(massFluxInlet * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value);
+		// special case: temperature is given by a transient balance equation
+		if(m_nodalTemperatureRefs[i] != nullptr) {
+			double temperatureOutlet = *m_nodalTemperatureRefs[i];
+			double enthalpyFluxOutlet = massFluxInlet * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value
+					* temperatureOutlet;
+			// copy values
+			m_nodalTemperatures[i] = temperatureOutlet;
+			m_nodelHeatLoads[i] = enthalpyFluxInlet - enthalpyFluxOutlet;
+		}
+		// calulate node temperature
+		else {
+			// if we encounter a trivial flow solution (massFluxes all zero), then we just keep the temperatures the same
+			if (massFluxInlet != 0.0) {
+				m_nodalTemperatures[i] = enthalpyFluxInlet/(massFluxInlet * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value);
+			}
 		}
 	}
 
@@ -141,7 +158,13 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 	for (unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
 		// result quantities
 		const double* tempPtr = &m_nodalTemperatures[i];
-		resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
+		// we either have a given reference in case of zone nodes, in which case our node temperature only depends
+		// on the zone temperature (Note: m_nodalTemperatureRefs[i] holds pointers to zone temperatures)
+		// Otherwise, wie calculate nodal temperature directly and hence node temperature depends on (all) mass fluxes
+		if(m_nodalTemperatureRefs[i] != nullptr)
+			resultInputValueReferences.push_back(std::make_pair(tempPtr, m_nodalTemperatureRefs[i]) );
+		else
+			resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
 	}
 }
 

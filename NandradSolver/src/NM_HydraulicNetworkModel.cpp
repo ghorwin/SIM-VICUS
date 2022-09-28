@@ -43,22 +43,54 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 											 unsigned int id, const std::string &displayName) :
 	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(thermostats)
 {
-	// first register all nodes
+
+	// TODO AirNetwork: zoneIDs + nodeIDs unique -> nur ein nodeIDs Vektor
+
+	// first register all nodes and zones
 	std::set<unsigned int> nodeIds;
 	// for this purpose process all hydraulic network elements
 	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
-		nodeIds.insert(e.m_inletNodeId);
-		nodeIds.insert(e.m_outletNodeId);
+		if(e.m_inletNodeId != NANDRAD::INVALID_ID)
+			nodeIds.insert(e.m_inletNodeId);
+		else {
+			nodeIds.insert(e.m_inletZoneId);
+			m_zoneNodeIds.insert(e.m_inletZoneId);
+		}
+
+		if(e.m_outletNodeId != NANDRAD::INVALID_ID)
+			nodeIds.insert(e.m_outletNodeId);
+		else {
+			nodeIds.insert(e.m_outletZoneId);
+			m_zoneNodeIds.insert(e.m_outletZoneId);
+		}
 	}
 
 	// now populate the m_flowElements vector of the network solver
 	std::vector<Element> elems;
 	// process all hydraulic network elements and copy index
 	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
-		unsigned int idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
-		unsigned int idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
+		unsigned int idxInlet = 0;
+		if(e.m_inletNodeId != NANDRAD::INVALID_ID)
+			idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+		else
+			idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletZoneId));
+		unsigned int idxOutlet = 0;
+		if(e.m_outletNodeId != NANDRAD::INVALID_ID)
+			idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
+		else
+			idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletZoneId));
+
 		elems.push_back(Element(idxInlet, idxOutlet) );
 	}
+
+	// store nodes
+	m_nodeIds.resize(nodeIds.size() , NANDRAD::INVALID_ID);
+
+	// add all missing node ids
+	unsigned int i = 0;
+	for(std::set<unsigned int>::const_iterator
+		it = nodeIds.begin(); it != nodeIds.end(); ++it, ++i)
+		m_nodeIds[i] = *it;
 
 	// set reference pressure node
 	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(
@@ -76,6 +108,11 @@ HydraulicNetworkModel::~HydraulicNetworkModel() {
 
 const Network * HydraulicNetworkModel::network() const {
 	return &m_p->m_network;
+}
+
+const std::set<unsigned int> & HydraulicNetworkModel::zoneNodeIds() const
+{
+	return m_zoneNodeIds;
 }
 
 
@@ -415,8 +452,10 @@ void HydraulicNetworkModel::initInputReferences(const std::vector<AbstractModel 
 
 
 void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// only require input references (to temperatures) if we compute ThermalHydraulicNetworks
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+	// only require input references (to temperatures) if we compute ThermalHydraulicNetworks or
+	// AirNetworks
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork
+		|| m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_AirNetwork) {
 		// use hydraulic network model to generate temperature references
 		InputReference inputRef;
 		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -438,7 +477,8 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 											  const std::vector<const double *> & resultValueRefs)
 {
 	unsigned int currentIndex = 0;
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork
+		|| m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_AirNetwork) {
 		// set all fluid temperature references
 		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
@@ -545,7 +585,7 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 	// and (on the flight) make sure there is only one following element (no splitter!)
 	unsigned int followingElementId = 0;
 	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
-		if (e.m_outletNodeId == otherElems.m_inletNodeId) {
+		if(e.m_outletNodeId == otherElems.m_inletNodeId && e.m_outletZoneId == otherElems.m_inletZoneId) {
 			if (followingElementId != 0)
 				// there cannot be two following flow elements in parallel (with same inletNodeId)
 				throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."

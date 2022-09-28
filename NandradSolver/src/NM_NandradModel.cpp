@@ -1570,6 +1570,8 @@ void NandradModel::initNetworks() {
 		FUNCID(NandradModel::initNetworks);
 		IBK::IBK_Message(IBK::FormatString("Initializing Networks\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
+		// store all used zone ids that are used as node
+		std::set<unsigned int> zoneNodeIds;
 		// process all networks and create NM::HydraulicNetworkModel instances
 		for (NANDRAD::HydraulicNetwork & nw : m_project->m_hydraulicNetworks) {
 			IBK::IBK_Message(IBK::FormatString("Initializing network '%1' (#%2)\n").arg(nw.m_displayName).arg(nw.m_id),
@@ -1577,7 +1579,7 @@ void NandradModel::initNetworks() {
 			IBK_MSG_INDENT;
 			// check network parameters
 			try {
-				nw.checkParameters(*m_project);
+				nw.checkParameters(*m_project, zoneNodeIds);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing hydraulic network with id #%1.")
@@ -1593,7 +1595,8 @@ void NandradModel::initNetworks() {
 			// register model as time dependent (to backup Newton solution as starting value for next call)
 			m_timeModelContainer.push_back(nwmodel);
 			// add thermal network states model
-			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork
+				|| nw.m_modelType == NANDRAD::HydraulicNetwork::MT_AirNetwork) {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
 				// initialize

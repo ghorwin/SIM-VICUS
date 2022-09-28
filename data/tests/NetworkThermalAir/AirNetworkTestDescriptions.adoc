@@ -1,0 +1,28 @@
+# Air Network Test Cases
+
+
+
+## AirNetworkConstantVentilatedZone.nandrad
+
+Zwei identische Räume
+```
+  Volumen              : 90 m3
+  Grundfläche          : 30 m2
+  Thermische Raummasse : 150 J/K
+```
+
+
+- Raum 1 mit Zuluft und Abluftrohr, Ventilator
+- konstante Druckdifferenz, so dass sich ein Massestrom von 0.015 m3/s einstellt (entspricht 0.5 1/h bei einem Raumvolumen von 90 m3)
+- Raum 2 Luftwaustausch mit konstanter Luftwechselrate 0.5 1/h
+- Temperaturwerte
+
+```
+  T0 (Fluid)         : 5 C
+  T0 (Zone)          : 5 C
+  T  (Ambient) 		 : 20 C
+```
+- Erwartung: identische Raumlufttemperatur zwischen Raum 1 und Raum 2 
+
+
+

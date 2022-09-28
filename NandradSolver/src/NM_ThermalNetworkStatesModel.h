@@ -25,6 +25,7 @@
 #include "NM_AbstractModel.h"
 #include "NM_AbstractTimeDependency.h"
 
+#include <set>
 
 namespace NANDRAD {
 	class HydraulicNetwork;
@@ -147,6 +148,12 @@ private:
 
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
+
+	/*! Storage of all node ids. */
+	std::vector<unsigned int>						m_nodeIds;
+
+	/*! Storage of all zone ids that are supported as network nodes. */
+	std::set<unsigned int>							m_zoneNodeIds;
 
 	/*! Vector with references to mean fluid temperatures (size = m_elementIds.size()).
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */

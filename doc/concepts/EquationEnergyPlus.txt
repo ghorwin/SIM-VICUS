@@ -1,0 +1,77 @@
+Equations EnergyPlus:
+
+Forced flow through an opening:
+
+ ̇m_L = ρ_L*A*C_d/( 2*∆P*ρ_{ave})^0.5
+
+where:
+̇mL = Air mass flow rate from the upper zone to the lower zone driven by
+ρ_L = Air density in the lower zone [kg/m3]
+A = Opening area [m2]
+C_d = Discharge coeﬀicient [Dimensionless]
+ρ_{ave} = Average air density between the lower and up
+
+
+
+Linkage models (simple vertical opening with forced and buoyant flow):
+
+The equations used below are available from Walton (1989).
+The air density for each node is assumed to be constant. The hydrostatic equation is used to
+relate pressures at various heights for each node:
+
+P_n(y) = P_{0,n} − ρ_n*g*y
+P_m(y) = P_{0,m} − ρ_m*g*y
+
+where:
+P_{0,n}, P_{0,m} = Pressure at nodes (zones) n and m at y = 0, the reference elevation
+of the opening [Pa]
+ρ_n, ρ_m = Air densities of zones n and m [kg/m3]
+P_n, P_m = Reference pressures of zones n and m [Pa]
+
+Orifice equation (Brown and Solvason 1962):
+v(y) = C_d * (2*(P_n(y) − P_m(y))/ρ)^0.5
+
+where:
+C_d = Discharge coeﬀicient [dimensionless]
+ρ = Density of the air going through the opening [kg/m3]
+
+with
+Y = (P_{o,n} − P_{0,m})/(g(ρ_n − ρ_m)) or (P_{o,m} − P_{0,n})/(g(ρ_m − ρ_n))
+
+where:
+Y = neutral height
+
+When the neutral plane is within the opening, two-way (bi-
+directional) flows occur. The total flow through a large opening is the sum of both flows.
+
+ ̇m_{0,Y} = C_d * θ * int_{y=Y}^{y=0} ρ * ν(y) * W dy
+ ̇m_{Y,H} = C_d * θ * int_{y=H}^{y=Y} ρ * ν(y) * W dy 
+ 
+When the neutral plane is below or above the large opening, one-way flow occurs.
+ ̇m = C_d * θ * int_{y=H}^{y=0} ρ * ν(y) * W dy
+ 
+where:
+C_d = Discharge coeﬀicient [dimensionless]
+θ = Area reduction factor [dimensionless]
+W = Opening width [m]
+
+
+Forced flow through a crack:
+
+̇m = C_T * C_Q * ∆P^n
+
+where
+m = air mass flow (kg/s)
+C_Q = air mass flow coefficient (kg/s-Pa^n @ 1 Pa)
+C_T = reference condition temperature correction factor (dimensionless)
+∆P = pressure difference across crack (Pa)
+n = air flow exponent (dimensionless)
+
+C_T =(ρ_o/ρ)^{n-1}*(ν_o/ν)^{2n-1}
+
+where:
+ρ = Air density at the specific air temperature and humidity ratio conditions [kg/m3]
+ν = Air kinetic viscosity at the specific air temperature condition [m2/s]
+ρ_o = Air density at the reference air conditions provided by the object AirflowNetwork:MultiZone:ReferenceCrackConditions specified in the field Reference Crack Conditions [kg/m3]
+ν_o = Air kinetic viscosity at the reference air temperature provided by the object AirflowNetwork:MultiZone:ReferenceCrackConditions specified in the field Reference Crack Conditions [m2/s]
+

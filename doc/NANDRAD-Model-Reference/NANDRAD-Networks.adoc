@@ -5,6 +5,8 @@
 
 Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.
 
+NANDRAD unterstützt geschlossene hydraulische Netzwerke, d.h. typische Rohrnetzwerke, Fußbodenheizungen, Wärmetauscher etc. und offene Luftströmungsnetzwerke. In letzteren wird ein Luftaustausch mit Raumluftzonen möglich.
+
 In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag `HydraulicNetworks` abgelegt.
 
 .Hydraulische Netzwerke
