@@ -2,9 +2,16 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Air Network with a single zone that is ventilated by a ventilator (pump) and two air channels.
+			<Comment>Project with two zones.
+
+				First zone is connected to an air Network that is ventilated by a ventilator (pump) and two air channels.
 				The zone effectively exchanges air with the ambient air -> the model's response should match
-				a model with a constant infiltration rate (to check: convert air flow rate through zone into air change and compare)
+				a model with a constant infiltration rate.
+
+				Second zone has a constant infiltration model that uses the same air change rate as obtained from
+				Zone 1 (ventilation volume flow rate divided by zone volume).
+
+				Both zone temperatures must equally increase from initially 5C to 20C (constant ambient temperature).
 			</Comment>
 		</ProjectInfo>
 		<Location>
@@ -35,13 +42,13 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<!-- We start with thermahydraulic modelling and extend to hygrothermal case later-->
+			<!-- Air networks are modelled just like water networks, but with type 'AirNetwork' -->
 			<HydraulicNetwork id="1" displayName="Air network with ventilator, inlet and outlet channel, door."
 						modelType="AirNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">5</IBK:Parameter>
-				<!-- Fluid is air-->
-				<HydraulicFluid id="1" displayName="Air">
+				<!-- Fluid in the network is air -->
+				<HydraulicFluid displayName="Air">
 					<IBK:Parameter name="Density" unit="kg/m3">1.205</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1006</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.0262</IBK:Parameter>
@@ -51,20 +58,30 @@
 					</LinearSplineParameter>
 				</HydraulicFluid>
 				<PipeProperties>
-					<!-- Should channels be modelled as pipes? Or do we need another data structure?-->
+					<!-- For now we use pipes, however, for proper air networks we need pressure drop models
+						 for rectangular channel cross sections -->
 					<HydraulicNetworkPipeProperties id="1">
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
 						<IBK:Parameter name="UValueWall" unit="W/mK">5</IBK:Parameter>
 						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
-						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>						
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
 					<!-- Ventilator == Pump?-->
-					<HydraulicNetworkComponent id="1" displayName="Ventilator (constant pressure)" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">642</IBK:Parameter>
+					<HydraulicNetworkComponent id="1" displayName="Ventilator (constant pressure)"
+						modelType="ConstantPressurePump">
+						<!--
+							We select the pressure head such, that the resulting flow rate gives the same air
+							change rate (0.5 1/h) as used for zone 2:
+
+							DeltaP = 645 Pa  ->  mass flow rate = 0.01505 kg/s
+
+							with rho_air = 1.205 kg/s and V = 90 m3   -> 0.01505 / 1.205 / 90 = 0.00013889 1/s = 0.5 1/h
+						-->
+						<IBK:Parameter name="PressureHead" unit="Pa">645</IBK:Parameter>
 						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -85,7 +102,9 @@
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
+
 		<Models>
+			<!-- We define a constant ventilation/infiltration model -->
 			<NaturalVentilationModels>
 				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
 					<ZoneObjectList>Zone 2</ZoneObjectList>
@@ -93,7 +112,6 @@
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
 		</Models>
-		<Schedules />
 
 		<Outputs>
 			<Definitions>
