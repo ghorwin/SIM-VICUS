@@ -213,12 +213,14 @@ int main(int argc, char *argv[]) {
 	if (!settings.m_flags[SVSettings::NoSplashScreen]) {
 		QPixmap pixmap;
 
+	int imageCount = 6;
+
 #if QT_VERSION >= 0x050A00
-		int pixmapIdx = QRandomGenerator::global()->bounded(0,6);
+		int pixmapIdx = QRandomGenerator::global()->bounded(0,imageCount);
 #else
 
 		std::srand(std::time(nullptr));
-		int pixmapIdx = std::rand()*3/RAND_MAX;
+		int pixmapIdx = std::rand()*imageCount/RAND_MAX;
 #endif
 
 		pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
