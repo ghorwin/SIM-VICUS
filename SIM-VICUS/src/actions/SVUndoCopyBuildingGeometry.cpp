@@ -68,7 +68,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 		VICUS::SubSurface newSub(*sub);
 		// remember original ID
 		unsigned int originalID = sub->m_id;
-		newSub.m_id = newID++;
+		newSub.m_id = ++newID;
 		// apply transformation
 		std::vector<IBKMK::Vector2D> polyVerts = newSub.m_polygon2D.vertexes();
 
@@ -161,7 +161,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 		VICUS::Surface newSurf(*s);
 		// now modify *all* ID s
 		unsigned int originalID = s->m_id;
-		newSurf.m_id = newID++;
+		newSurf.m_id = ++newID;
 		// apply transformation
 		IBKMK::Polygon3D poly = newSurf.polygon3D();
 		poly.translate(translation);
@@ -294,7 +294,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(con
 		// we copy *everything* in the entire room
 		VICUS::Room newRoom(*r);
 		// now modify *all* ID s
-		newRoom.m_id = newID++;
+		newRoom.m_id = ++newID;
 		for (unsigned int j=0; j<newRoom.m_surfaces.size(); ++j) {
 			VICUS::Surface & s = newRoom.m_surfaces[j];
 			unsigned int originalID = s.m_id;
@@ -412,7 +412,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingL
 		newBl.m_elevation += translation.m_z;
 		// now modify *all* ID s
 
-		newBl.m_id = newID++;
+		newBl.m_id = ++newID;
 		for (unsigned int i=0; i<newBl.m_rooms.size(); ++i) {
 			VICUS::Room & r = newBl.m_rooms[i];
 			r.m_id = ++newID;
