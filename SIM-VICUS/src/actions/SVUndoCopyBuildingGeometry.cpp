@@ -526,7 +526,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings
 
 	for(const VICUS::Building *b : selectedBuildings) {
 		VICUS::Building newB(*b);
-		newB.m_id = newID++;
+		newB.m_id = ++newID;
 
 		for (VICUS::BuildingLevel &bl : newB.m_buildingLevels) {
 
@@ -534,7 +534,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings
 			bl.m_elevation += translation.m_z;
 			// now modify *all* ID s
 
-			bl.m_id = newID++;
+			bl.m_id = ++newID;
 			for (unsigned int i=0; i<bl.m_rooms.size(); ++i) {
 				VICUS::Room & r = bl.m_rooms[i];
 				r.m_id = ++newID;
