@@ -88,8 +88,9 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	}
 
 	// we have a special handling for the parent node
-	if (exclusive || nodeIDs.find(0) != nodeIDs.end())
-		storeState(p.m_plainGeometry, m_nodeStates[0]);
+	if(!p.m_plainGeometry.m_surfaces.empty())
+		if (exclusive || nodeIDs.find(0) != nodeIDs.end())
+			storeState(p.m_plainGeometry, m_nodeStates[0]);
 
 	// search in networks
 	for (const VICUS::Network & n : p.m_geometricNetworks) {
