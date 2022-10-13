@@ -106,6 +106,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 			for (unsigned int ID : info->m_nodeIDs) {
 				const VICUS::Object * o = project().objectById(ID);
+				if(ID == 0)
+					continue;
 				auto itemId = m_treeItemMap.find(ID);
 				Q_ASSERT(itemId != m_treeItemMap.end());
 				QTreeWidgetItem * item = itemId->second;
