@@ -242,6 +242,11 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	std::vector< double >			   timePoints;
 	std::vector< std::vector<double> > data;
 
+	if(m_shadingFactors.empty()) {
+		IBK::IBK_Message("No surfaces have been selected for shading calculation.");
+		return;
+	}
+
 	std::vector<std::vector<double>> shadingFactors(m_shadingFactors[0].size());
 	for (std::vector<double> &shadFactor : shadingFactors)
 		shadFactor.resize(m_shadingFactors.size());
