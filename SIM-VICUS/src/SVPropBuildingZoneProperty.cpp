@@ -409,10 +409,16 @@ void SVPropBuildingZoneProperty::on_lineEditNameFilter_textChanged(const QString
 
 void SVPropBuildingZoneProperty::on_pushButtonClipping_clicked() {
 	VICUS::Project newProject (project());
-	RC::Project clippingPrj(newProject, 2, 0.5);
+	RC::Project clippingPrj(newProject, 2, 0.5, project().nextUnusedID());
+
+	// ToDo Dirk: hier muss eine funktion rein damit die Test geprüft werden können
+//	clippingPrj.testProjectClipping();
+//	return;
+
 	clippingPrj.findParallelSurfaces();
 	clippingPrj.findSurfacesInRange();
 	clippingPrj.clipSurfaces();
+
 
 	SVUndoModifyProject *undo = new SVUndoModifyProject("Update vicus project", clippingPrj.newPrjVicus());
 	undo->push();
