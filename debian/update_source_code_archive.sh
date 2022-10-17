@@ -6,7 +6,7 @@
 
 rm -rf simvicus-*/ > /dev/null
 
-echo "Removed all previous files in directory."
+echo "Removed all previous files in directories 'simvicus-*'."
 echo "Press any key to continue or CTRL+C to abort!"
 read -t 10 -n 1
 
