@@ -336,7 +336,64 @@ void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValue
 
 // *** PRIVATE MEMBER FUNCTIONS ***
 
+bool Polygon3D::smallerVectZero(const IBKMK::Vector3D& vect) {
+	if (vect.m_x < 0)
+		return true;
+	if (vect.m_x > 0)
+		return false;
+	if (vect.m_y < 0)
+		return true;
+	if (vect.m_y > 0)
+		return false;
+	if (vect.m_z < 0)
+		return true;
+	if (vect.m_z > 0)
+		return false;
+	return false;
+}
 
+IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon) {
+
+	if (polygon.size() < 3)
+		return IBKMK::Vector3D(1,0,0);
+
+	// center point calculation
+	IBKMK::Vector3D centerPoint;
+	for(const IBKMK::Vector3D& vert : polygon)
+		centerPoint += vert;
+	centerPoint = centerPoint * (1.0/polygon.size());
+
+
+	IBKMK::Vector3D n;
+	if (polygon.size() == 3)
+		n = (polygon[1] - polygon[0]).crossProduct(polygon[2] - polygon[0]);
+	else {
+		size_t count = polygon.size();
+
+		n = (polygon[count - 1] - centerPoint).crossProduct(polygon[0] - centerPoint);
+
+		if (smallerVectZero(n))
+			n = n * -1;
+
+		for (size_t i = 1; i < polygon.size(); ++i) {
+			IBKMK::Vector3D v = (polygon[i] - centerPoint).crossProduct(polygon[i - 1] - centerPoint);
+			if (smallerVectZero(v))
+				v = v * -1.0;
+
+			n += v;
+		}
+	}
+
+	double l = n.magnitude();
+
+	// if we have a zero vector for normal we set up a x-Normal
+	if (l == 0.0)
+		n = IBKMK::Vector3D(1,0,0);
+	else
+		n.normalize();
+
+	return n;
+}
 
 void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts) {
 	// NOTE: DO NOT ACCESS m_vertexes IN THIS FUNCTION!
@@ -379,6 +436,8 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 		if (vn.magnitude() < 1e-9)
 			return; // invalid vertex input
 		vn.normalize();
+
+
 		// adding reference normal to current vertexes normal and checking magnitude works
 		if ((vn + n).magnitude() > 1) // can be 0 or 2, so comparing against 1 is good even for rounding errors
 			++sameDirectionCount;
@@ -390,6 +449,8 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 		// invert our normal vector
 		n *= -1;
 	}
+
+	IBKMK::Vector3D normalHeiko = getNormal(verts);
 
 	// save-guard against degenerate polygons (i.e. all points close to each other or whatever error may cause
 	// the normal vector to have near zero magnitude... this may happen for extremely small polygons, when
@@ -434,6 +495,23 @@ void Polygon3D::update2DPolyline(const std::vector<Vector3D> & verts) {
 	// Mind: this may lead to removal of points if two are close together
 	//       and thus also cause the polygon to be invalid
 	m_polyline.setVertexes(poly);
+	bool valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
+
+
+	// check if normal is right areaSigned >= 0 than ok
+	// if not calculate a new one ... also calculate new localY
+	if(valid){
+		double areaS2 = m_polyline.areaSigned(2);
+
+		if(areaS2 <0){
+			m_normal *= -1;
+			m_localX.crossProduct(m_normal, m_localY);
+		}
+	}
+	else{
+		int x=0;
+	}
+
 }
 
 

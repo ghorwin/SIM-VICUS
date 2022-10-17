@@ -168,6 +168,12 @@ private:
 	*/
 	void update2DPolyline(const std::vector<IBKMK::Vector3D> & verts);
 
+	/*! Checks if the vector is smaller zero. */
+	bool smallerVectZero(const IBKMK::Vector3D &vect);
+
+	/*! Calculates a normal of a polyline. If an error occurs the vector (1,0,0) is output.  */
+	IBKMK::Vector3D getNormal(const std::vector<IBKMK::Vector3D>& polygon);
+
 	// *** PRIVATE MEMBER VARIABLES ***
 
 	/*! Stores the valid state of the polygon, update in checkPolygon() */
@@ -188,6 +194,8 @@ private:
 	mutable	bool							m_dirty;
 	/*! Cached 3D vertexes, updated upon access when dirty is true. */
 	mutable	std::vector<IBKMK::Vector3D>	m_vertexes;
+
+
 };
 
 } // namespace IBKMK
