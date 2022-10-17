@@ -122,6 +122,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_ventilationNatural.readXML(		dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
 		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
+		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 
 	}
 
@@ -158,7 +159,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	if (t == NUM_DT || t == DT_SubNetworks)
 		m_subNetworks.readXML(				userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
 	if (t == NUM_DT || t == DT_SupplySystems)
-		m_supplySystems.readXML(				userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystems", false);
+		m_supplySystems.readXML(				userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -210,6 +211,7 @@ void SVDatabase::writeDatabases() {
 	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
 	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
+	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
 }
 
 
@@ -330,6 +332,8 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 		it->second.m_isReferenced = false;
 	for (auto it=m_zoneTemplates.begin(); it!=m_zoneTemplates.end(); ++it)
 		it->second.m_isReferenced = false;
+	for (auto it=m_supplySystems.begin(); it!=m_supplySystems.end(); ++it)
+		it->second.m_isReferenced = false;
 
 
 	// Now collect all directly referenced elements from project
@@ -341,6 +345,7 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
 		referencedElements.insert(m_components[ci.m_idComponent]);
 		referencedElements.insert(m_surfaceHeatings[ci.m_idSurfaceHeating]);
+		referencedElements.insert(m_supplySystems[ci.m_idSupplySystem]);
 	}
 
 	// SubSurfaceComponent
@@ -413,6 +418,7 @@ void SVDatabase::updateElementChildren() {
 	m_ventilationNatural.clearChildren();
 	m_infiltration.clearChildren();
 	m_zoneTemplates.clearChildren();
+	m_supplySystems.clearChildren();
 
 
 	// Now set all children relations
@@ -527,6 +533,12 @@ void SVDatabase::updateElementChildren() {
 			else if(idealHeatCool != nullptr)
 				zt.m_childrenRefs.insert(idealHeatCool);
 		}
+	}
+
+	// referenced from supply systems
+	for (auto it=m_supplySystems.begin(); it!=m_supplySystems.end(); ++it) {
+		VICUS::SupplySystem &sup = it->second;
+		sup.m_childrenRefs.insert(m_subNetworks[it->second.m_idSubNetwork]);
 	}
 
 
