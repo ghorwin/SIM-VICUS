@@ -1,0 +1,25 @@
+.TH "NANDRADFMUGENERATOR" 1 "17 October 2022" "0.9.0" "SIM-VICUS Manual"
+.SH NAME
+.B NandradFMUGenerator\fR \- Tool for generating a NANDRAD building simulation FMU
+.SH SYNOPSIS
+.B NandradSolverFMUGenerator\fR [flags] [options]
+.SH DESCRIPTION
+.B NandradSolverFMUGenerator
+is a graphical tool to configure FMU properties such as input and outputs for a
+specific NANDRAD project and generate the FMU. The generated FMU contains
+all resources and the project file and is thus specific for the selected
+simulation project.
+
+.SH FLAGS
+.IP "\fB\-\-help\fR" 4
+Prints the help page.
+.IP "\fB\-\-man-page\fR" 4
+Prints the man page (source version) to std output.
+.IP "\fB\-\-cmd-line\fR" 4
+Prints the command line as it was understood by the command line parser.
+.IP "\fB\-\-options-left\fR" 4
+Prints all options that are unknown to the command line parser.
+
+.SH OPTIONS
+.IP "\fB\-\-generate=<FMU-model-name>\fR" 4
+Generates this FMU from the provided project file (requires project file argument).
