@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=NANDRAD FMU Generator
+GenericName=NANDRAD FMU Generator
+Comment=FMU Generator for Functional Mock-Up Units for NANDRAD Simulation Models
+Keywords=Building Simulation;Simulation
+Exec=NANDRADFMUGenerator
+Icon=nandrad
+Terminal=false
+Type=Application
+Categories=Science
+StartupNotify=true
+MimeType=application/simvicus

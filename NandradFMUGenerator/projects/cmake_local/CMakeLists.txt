@@ -110,6 +110,28 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 
+if (UNIX AND NOT APPLE)
 
+	# installation targets for Unix systems
+	include(GNUInstallDirs)
+	
+	# executable -> /usr/bin
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )
+	
+	# Man-page
+	install(FILES ${PROJECT_SOURCE_DIR}/../../doc/${PROJECT_NAME}.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 )
 
+	# Desktop file
+	install(FILES ${PROJECT_SOURCE_DIR}/../../resources/nandradfmugenerator.desktop 
+			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications )
 
+	# Icons
+	set(ICON_ROOT_DIR ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor)
+
+	foreach(ICON_SIZE 256 128 64 32)
+		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/icons/NandradIcon_${ICON_SIZE}.png 
+				DESTINATION ${ICON_ROOT_DIR}/${ICON_SIZE}x${ICON_SIZE}/apps 
+				RENAME nandrad.png)
+	endforeach()
+
+endif (UNIX AND NOT APPLE)
