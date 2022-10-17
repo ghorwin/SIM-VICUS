@@ -497,7 +497,6 @@ void Polygon3D::update2DPolyline(const std::vector<Vector3D> & verts) {
 	m_polyline.setVertexes(poly);
 	bool valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
 
-
 	// check if normal is right areaSigned >= 0 than ok
 	// if not calculate a new one ... also calculate new localY
 	if(valid){
@@ -507,9 +506,6 @@ void Polygon3D::update2DPolyline(const std::vector<Vector3D> & verts) {
 			m_normal *= -1;
 			m_localX.crossProduct(m_normal, m_localY);
 		}
-	}
-	else{
-		int x=0;
 	}
 
 }
