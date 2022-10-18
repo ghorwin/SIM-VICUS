@@ -80,8 +80,10 @@ bool Window::isValid() const {
 			try {
 				fractionFrame = m_para[P_FrameFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_FrameFraction),
 													 "---", "---", 0, false, 1, false, nullptr);
-				if(!m_frame.isValid())
+				if(!m_frame.isValid()) {
+					m_errorMsg = "Window frame fraction is not valid.";
 					return false;
+				}
 			}  catch (IBK::Exception &ex) {
 				m_errorMsg = ex.what();
 				return false;
@@ -94,7 +96,7 @@ bool Window::isValid() const {
 				m_para[P_FrameWidth].checkedValue(KeywordList::Keyword("Window::para_t", P_FrameWidth),
 												  "m", "m", 0, false, 2, true, nullptr);
 				if(!m_frame.isValid()) {
-					m_errorMsg = "Window frame is not valid.";
+					m_errorMsg = "Window frame width is not valid.";
 					return false;
 				}
 			}  catch (IBK::Exception &ex) {
@@ -122,7 +124,7 @@ bool Window::isValid() const {
 				m_para[P_DividerFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_DividerFraction),
 													 "---", "---", 0, false, maxVal, false, nullptr);
 				if(!m_divider.isValid()) {
-					m_errorMsg = "Window divider is not valid.";
+					m_errorMsg = "Window divider fraction is not valid.";
 					return false;
 				}
 
@@ -137,7 +139,7 @@ bool Window::isValid() const {
 				m_para[P_DividerWidth].checkedValue(KeywordList::Keyword("Window::para_t", P_DividerWidth),
 												  "m", "m", 0, false, 2, true, nullptr);
 				if(!m_divider.isValid()) {
-					m_errorMsg = "Window divider is not valid.";
+					m_errorMsg = "Window divider width is not valid.";
 					return false;
 				}
 			}  catch (IBK::Exception &ex) {
