@@ -84,7 +84,7 @@
    <item>
     <widget class="QGroupBox" name="groupBoxHeatExchangeWithGround">
      <property name="title">
-      <string>Heat exchange with ground </string>
+      <string>Heat exchange with ground</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -167,6 +167,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>

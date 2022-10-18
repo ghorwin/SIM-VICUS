@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1941</width>
-    <height>1207</height>
+    <width>1230</width>
+    <height>759</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -140,7 +140,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Entire project (all buildings and geometry)</string>
+         <string>Entire project (all buildings and entire geometry)</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -201,7 +201,7 @@
         <item>
          <widget class="QRadioButton" name="radioButtonManual">
           <property name="text">
-           <string>Custom</string>
+           <string>User-defined</string>
           </property>
          </widget>
         </item>

@@ -231,7 +231,7 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	if (fmiExport) {
 		SVSettings::instance().showDoNotShowAgainMessage(this, "FMUExportInfoMessage", tr("FMU Export"),
 			tr("Adjust the simulation parameters in this dialog as needed, test-initialize the simulation and "
-			   "then start the FMU generation process by pressing 'Export FMU...'")
+			   "then start the FMU generation process by pressing 'Export FMU...'!")
 			);
 	}
 

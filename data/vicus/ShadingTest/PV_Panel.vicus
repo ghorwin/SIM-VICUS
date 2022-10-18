@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Di. Okt. 18 10:31:28 2022</Created>
-		<LastEdited>Di. Okt. 18 14:05:01 2022</LastEdited>
+		<LastEdited>Di. Okt. 18 14:37:02 2022</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -49,12 +49,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>7.47826 -37.8003 23.9096</CameraTranslation>
+			<CameraTranslation>-2.70473 -32.8282 25.3907</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.846739</Wp>
-				<X>0.527383</X>
-				<Y>-0.0369795</Y>
-				<Z>-0.0593697</Z>
+				<Wp>0.834655</Wp>
+				<X>0.487696</X>
+				<Y>-0.128974</Y>
+				<Z>-0.221036</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -174,20 +174,28 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" idComponent="0" idSideASurface="4" />
-			<ComponentInstance id="3" idComponent="0" idSideASurface="5" />
-			<ComponentInstance id="4" idComponent="0" idSideASurface="6" />
-			<ComponentInstance id="5" idComponent="0" idSideASurface="7" />
-			<ComponentInstance id="6" idComponent="0" idSideASurface="8" />
-			<ComponentInstance id="7" idComponent="0" idSideASurface="9" />
-			<ComponentInstance id="9" idSideASurface="11" />
-			<ComponentInstance id="24" idComponent="0" idSideASurface="23" />
-			<ComponentInstance id="26" idComponent="0" idSideASurface="25" />
-			<ComponentInstance id="28" idComponent="0" idSideASurface="27" />
-			<ComponentInstance id="30" idComponent="0" idSideASurface="29" />
-			<ComponentInstance id="32" idComponent="0" idSideASurface="31" />
-			<ComponentInstance id="34" idComponent="0" idSideASurface="33" />
-			<ComponentInstance id="37" idSideASurface="36" />
+			<ComponentInstance id="2" idComponent="1013" idSideASurface="4" />
+			<ComponentInstance id="3" idComponent="1013" idSideASurface="5" />
+			<ComponentInstance id="4" idComponent="1013" idSideASurface="6" />
+			<ComponentInstance id="5" idComponent="1013" idSideASurface="7" />
+			<ComponentInstance id="6" idComponent="1013" idSideASurface="8" />
+			<ComponentInstance id="7" idComponent="1013" idSideASurface="9" />
+			<ComponentInstance id="9" idComponent="1013" idSideASurface="11" />
+			<ComponentInstance id="24" idComponent="1013" idSideASurface="23" />
+			<ComponentInstance id="26" idComponent="1013" idSideASurface="25" />
+			<ComponentInstance id="28" idComponent="1013" idSideASurface="27" />
+			<ComponentInstance id="30" idComponent="1013" idSideASurface="29" />
+			<ComponentInstance id="32" idComponent="1013" idSideASurface="31" />
+			<ComponentInstance id="34" idComponent="1013" idSideASurface="33" />
+			<ComponentInstance id="37" idComponent="1013" idSideASurface="36" />
+			<ComponentInstance id="38" idComponent="1000002" idSideASurface="12" />
+			<ComponentInstance id="39" idComponent="1000002" idSideASurface="13" />
+			<ComponentInstance id="40" idComponent="1000002" idSideASurface="14" />
+			<ComponentInstance id="41" idComponent="1000002" idSideASurface="15" />
+			<ComponentInstance id="42" idComponent="1000002" idSideASurface="38" />
+			<ComponentInstance id="43" idComponent="1000002" idSideASurface="39" />
+			<ComponentInstance id="44" idComponent="1000002" idSideASurface="40" />
+			<ComponentInstance id="45" idComponent="1000002" idSideASurface="41" />
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surfaces>
@@ -196,7 +204,87 @@
 				</Surface>
 			</Surfaces>
 		</PlainGeometry>
-		<EmbeddedDatabase />
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+				<Material id="10013" displayName="de:[TEASER] Fachwerk mit Strohlehmausfachung|en:[TEASER] half-timber with straw-loam-infill" color="#bf6e40">
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>TEASER</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.56</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020001" displayName="DE: Dach |EN: &lt;new construction type&gt;">
+					<UsageType>SlopedRoof</UsageType>
+					<InsulationKind>CoreInsulation</InsulationKind>
+					<MaterialKind>Wood</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10013">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1004" displayName="EN: [SimQuality] TF06 Outside conditions (heat conduction and short wave radiation) |DE: [SimQuality] TF03 Außenbedingungen (Wärmeleitung und kurzwellige Strahlung)" color="#3ddfff">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+				</BoundaryCondition>
+				<BoundaryCondition id="1014" displayName="DE: Außenoberfläche (Wärmeleitung und Solarstrahlung) |EN: Outside surface (heat conduction and solar radiation)" color="#3ddfff">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1013" displayName="DE: [SimQuality] Komponente für TF06 |EN: [SimQuality] Component for TF06" color="#f57900">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1001</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1004</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000002" displayName="DE: Schrägdachkonstruktion |EN: &lt;new component type&gt;" color="#b5ff09">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>1020001</IdConstruction>
+					<IdSideABoundaryCondition>1014</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+		</EmbeddedDatabase>
 		<FMIDescription />
 	</Project>
 </VicusProject>

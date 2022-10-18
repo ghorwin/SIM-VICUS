@@ -3339,7 +3339,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui" line="45"/>
         <location filename="../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp" line="93"/>
         <source>Power:</source>
-        <translation>Leistung</translation>
+        <translation>Leistung:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui" line="130"/>
@@ -3371,7 +3371,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui" line="157"/>
         <source>Latent Factor:</source>
-        <translation>Latenter Faktor</translation>
+        <translation>Latenter Faktor:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui" line="137"/>
@@ -5755,7 +5755,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="99"/>
         <source>Tolerance [K]:</source>
-        <translation>Toleranz [K]</translation>
+        <translation>Toleranz [K]:</translation>
     </message>
     <message>
         <source>Tolerance:</source>
@@ -6602,7 +6602,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVGeometryView.ui" line="213"/>
         <source>Switches to &quot;Add geometry&quot; property view</source>
-        <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie hinzufügen&quot;.</translation>
+        <translation>Wechselt in die Eigenschaftsansicht &quot;Geometrie hinzufügen&quot;</translation>
     </message>
     <message>
         <location filename="../../src/SVGeometryView.ui" line="225"/>
@@ -8861,12 +8861,12 @@ p, li { white-space: pre-wrap; }
         <translation>Ungültige/fehlende Randbedingung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="161"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="159"/>
         <source>Select objects with boundary condition &apos;%1&apos;</source>
         <translation>Objekte mit Randbedingung &apos;%1&apos; auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="163"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="161"/>
         <source>Select objects with invalid boundary condition</source>
         <translation>Objekte mit ungültiger Randbedingung auswählen</translation>
     </message>
@@ -11696,8 +11696,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="87"/>
+        <source>Heat exchange with ground</source>
+        <translation>Wärmeaustausch mit dem Erdboden</translation>
+    </message>
+    <message>
         <source>Heat exchange with ground </source>
-        <translation>Wärmeaustausch mit Erde</translation>
+        <translation type="vanished">Wärmeaustausch mit dem Erdboden</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="96"/>
@@ -11804,7 +11808,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="329"/>
         <source>NANDRAD-generated outputs from outputs_reference_list.txt</source>
-        <translation>Von NANDRAD generierte Ausgaben aus der Datei „outputs_reference_list.txt“.</translation>
+        <translation>Von NANDRAD generierte Ausgaben aus der Datei outputs_reference_list.txt</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationOutputOptions.ui" line="353"/>
@@ -12046,7 +12050,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="14"/>
         <source>Sunlight Factor Calculation</source>
-        <translation>Berechnung des Sonnenlichtfaktors</translation>
+        <translation>Berechnung der Sonnenlichtfaktoren</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="20"/>
@@ -12083,112 +12087,168 @@ p, li { white-space: pre-wrap; }
         <translation>Startzeit:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="121"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="134"/>
+        <source>Geometry selection</source>
+        <translation>Geometrieauswahl</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="143"/>
+        <source>Entire project (all buildings and entire geometry)</source>
+        <translation>Komplettes Projekt (alle Gebäude und gesamte Geometrie)</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="204"/>
+        <source>User-defined</source>
+        <translation>Nutzerdefiniert</translation>
+    </message>
+    <message>
+        <source>Entire project (all buildings and geometry)</source>
+        <translation type="obsolete">Gesamtes Projekt (alle </translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="153"/>
+        <source>Selected geometry only</source>
+        <translation>Nur ausgewählte Geometrie</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="182"/>
         <source>Shading calculation parameters</source>
         <translation>Parameter für die Schattierungsberechnung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="129"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="190"/>
         <source>Fast</source>
         <translation>Schnell</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="136"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="197"/>
         <source>Detailed</source>
         <translation>Ausführlich</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="143"/>
         <source>Custom</source>
-        <translation>Benutzerdefiniert</translation>
+        <translation type="vanished">Benutzerdefiniert</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="179"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="240"/>
         <source>Detail presets:</source>
         <translation>Detailvoreinstellungen:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="186"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="247"/>
         <source>Similarity angle threshold (sun cone) [Deg]:</source>
         <translation>Ähnlichkeitswinkelschwelle (Sonnenkegel) [Grad]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="193"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="254"/>
         <source>Output Type:</source>
         <translation>Ausgabetyp:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="203"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="264"/>
         <source>Shading factor file name:</source>
         <translation>Dateiname des Schattierungsfaktors:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="213"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="274"/>
         <source>Grid size [m]:</source>
         <translation>Rasterweite [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="230"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="291"/>
         <source>Steps per hour [-]:</source>
         <translation>Schritte pro Stunde [-]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.ui" line="268"/>
+        <location filename="../../src/SVSimulationShadingOptions.ui" line="316"/>
         <source>Calculate</source>
         <translation>Berechnung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="90"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="91"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="239"/>
         <source>Half-angle of sun cone must be &gt; 0 Deg!</source>
         <translation>Halbwinkel des Sonnenkegels muss &gt; 0 Grad sein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="91"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="92"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="234"/>
         <source>Grid size must be &gt; 0 m!</source>
         <translation>Rasterweite muss &gt; 0 m sein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="92"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="93"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="244"/>
         <source>Steps per hour must be between 1 and 60!</source>
         <translation>Schritte pro Stunde müssen zwischen 1 und 60 liegen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="137"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="138"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Simulation time interval is not properly configured. Please set a valid simulation time interval and compute shading afterwards!&lt;/span&gt;</source>
         <translation>&lt;span style=&quot;color:%1&quot;&gt;Simulationszeitintervall ist nicht richtig konfiguriert. Bitte geben Sie ein gültiges Simulationszeitintervall ein und berechnen Sie anschließend die Schattierung!&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="160"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="161"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Location data is not correctly defined. Please open the location data dialog and specify a valid climate data file and/or building location.&lt;/span&gt;</source>
         <translation>&lt;span style=&quot;color:%1&quot;&gt;Standortdaten sind nicht korrekt definiert. Bitte öffnen Sie den Standortdatendialog und geben Sie eine gültige Klimadatendatei und/oder einen Gebäudestandort an.&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="217"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="218"/>
         <source>The calculation was aborted or an error has occurred during the calculation of shading factors.</source>
         <translation>Die Berechnung wurde abgebrochen oder bei der Berechnung der Verschattungsfaktoren ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="285"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="256"/>
+        <source>No (sub-)surfaces have been selected.Note that shading factors won&apos;t be generated for obstacles/annonymous geometry!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="286"/>
+        <source>The current project does not contain any surfaces to compute shading factors for. Note that shading factors won&apos;t be generated for obstacles/annonymous geometry!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="291"/>
+        <source>Shading calculation will be done using all surfaces of the project, regardless of whether they are currently visible or not. Currently %1 surfaces, %2 sub-surfaces and %3 obstacles have been selected. For large projects this may lead to large simulation time. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="319"/>
         <source>Error reading climate data file &apos;%1&apos;.</source>
         <translation>Fehler beim Lesen der Klimadatendatei „%1“.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="446"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="433"/>
+        <source>%1 surfaces were skipped, because their surface area was below %2 m2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="440"/>
+        <source>All surfaces have been filtered out because of invalid/missing components or boundary conditions, or because they are not facing the sky. Please check your model!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="448"/>
+        <source>%1 surfaces were skipped, because they have no component assignment or have invalid boundary conditions assigned.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="499"/>
         <source>Calculate shading factors</source>
         <translation>Schattierungsfaktoren berechnen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="446"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="499"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="459"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="512"/>
         <source>Calculation of shading factors was aborted.</source>
         <translation>Die Berechnung der Schattierungsfaktoren wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="493"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="546"/>
         <source>Calculated shading factors have been saved to &apos;%1&apos;.</source>
         <translation>Berechnete Schattierungsfaktoren wurden in „%1“ gespeichert.</translation>
     </message>
@@ -12307,52 +12367,52 @@ p, li { white-space: pre-wrap; }
         <translation>Testinitialisierung des Simulationsmodells</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="333"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="334"/>
         <source>Start simulation</source>
         <translation>Simulation starten</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="359"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="361"/>
         <source>Export FMU...</source>
         <translation>FMU exportieren...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="385"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="387"/>
         <source>Location and climate</source>
         <translation>Lage und Klima</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="390"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="392"/>
         <source>Outputs</source>
         <translation>Ausgaben</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="395"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="397"/>
         <source>Simulation/Model settings</source>
         <translation>Simulations-/Modelleinstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="400"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="402"/>
         <source>Performance options</source>
         <translation>Performance-Optionen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="405"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="407"/>
         <source>Shading calculation</source>
-        <translation>Schattierungsberechnung</translation>
+        <translation>Verschattungsberechnung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="410"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="412"/>
         <source>Network Settings</source>
         <translation>Netzwerkeinstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="420"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="422"/>
         <source>Show log file...</source>
         <translation>Protokolldatei anzeigen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="440"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="442"/>
         <source>Store input data and close dialog</source>
         <translation>Eingabedaten speichern und Dialog schließen</translation>
     </message>
@@ -12404,8 +12464,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.cpp" line="233"/>
+        <source>Adjust the simulation parameters in this dialog as needed, test-initialize the simulation and then start the FMU generation process by pressing &apos;Export FMU...&apos;!</source>
+        <translation>Passen Sie die Simulationsparameter in diesem Dialog nach Bedarf an, initialisieren Sie die Simulation testweise und starten Sie dann den FMU-Generierungsprozess indem Sie auf &quot;FMU exportieren ...&quot; klicken!</translation>
+    </message>
+    <message>
         <source>Adjust the simulation parameters in this dialog as needed, test-initialize the simulation and then start the FMU generation process by pressing &apos;Export FMU...&apos;</source>
-        <translation>Passen Sie die Simulationsparameter in diesem Dialog nach Bedarf an, initialisieren Sie die Simulation testweise und starten Sie dann den FMU-Generierungsprozess, indem Sie auf &quot;FMU exportieren ...&quot; klicken.</translation>
+        <translation type="obsolete">Passen Sie die Simulationsparameter in diesem Dialog nach Bedarf an, initialisieren Sie die Simulation testweise und starten Sie dann den FMU-Generierungsprozess indem Sie auf &quot;FMU exportieren ...&quot; klicken!</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartNandrad.cpp" line="406"/>
