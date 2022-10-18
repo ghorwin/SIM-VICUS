@@ -98,6 +98,7 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 
 	// update push button for selected zone assignement
 	m_ui->pushButtonAssignSelectedZoneTemplate->setEnabled(!rooms.empty());
+	m_ui->pushButtonAssignSelectedZoneTemplate->setEnabled(m_ui->tableWidgetZoneTemplates->rowCount() == 1);
 
 	const SVDatabase & db = SVSettings::instance().m_db;
 
@@ -334,5 +335,34 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateVisibilityChanged() {
 		vs.m_colorModePropertyID = VICUS::INVALID_ID;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropBuildingZoneTemplatesWidget::on_pushButtonAssignSelectedZoneTemplate_clicked() {
+
+	// find out which component is selected in table
+	// get currently selected zone template
+	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
+
+	// if not a valid template, do nothing here
+	if (zt == nullptr)
+		return;
+
+	// get all visible _and_ selected "building" type objects in the scene
+	std::set<const VICUS::Object * > objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
+
+	std::vector<unsigned int> modifiedRoomIDs; // unique IDs!!!
+	// loop over all rooms and store zone template associations
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		modifiedRoomIDs.push_back(room->m_id);
+	}
+	// now create an undo action for modifying zone template assignments
+	SVUndoModifyRoomZoneTemplateAssociation * undo = new SVUndoModifyRoomZoneTemplateAssociation(
+				tr("Assigned zone template"),
+				modifiedRoomIDs, zt->m_id);
+	undo->push();
 }
 

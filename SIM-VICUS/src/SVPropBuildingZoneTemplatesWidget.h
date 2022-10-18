@@ -39,6 +39,8 @@ private slots:
 	void on_pushButtonSelectObjectsWithZoneTemplate_clicked();
 
 
+	void on_pushButtonAssignSelectedZoneTemplate_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
 	const VICUS::ZoneTemplate * currentlySelectedZoneTemplate() const;
