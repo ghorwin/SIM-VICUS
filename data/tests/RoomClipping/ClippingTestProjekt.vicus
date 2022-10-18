@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Fr Sep 2 12:27:31 2022</Created>
-		<LastEdited>Di Okt 18 15:49:27 2022</LastEdited>
+		<LastEdited>Di. Okt. 18 16:11:35 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -11,12 +11,12 @@
 			<TimeZone>13</TimeZone>
 		</Location>
 		<ViewSettings>
-			<CameraTranslation>-0.213422 -11.3036 19.7038</CameraTranslation>
+			<CameraTranslation>-1.30905 -7.99152 8.14465</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.917898</Wp>
-				<X>0.396662</X>
-				<Y>-0.00662791</Y>
-				<Z>-0.00747967</Z>
+				<Wp>0.896797</Wp>
+				<X>0.442413</X>
+				<Y>0.000471026</Y>
+				<Z>0.00060761</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -48,16 +48,12 @@
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
 									<Surface id="12" displayName="Boden2" displayColor="#566094">
-										<Polygon3D offset="10 10 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+										<Polygon3D offset="10.3 10 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 									<Surface id="14" displayName="Boden2" displayColor="#566094">
-										<Polygon3D offset="-1 11 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+										<Polygon3D offset="-1.1 10.8 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 								</Surfaces>
-							</Room>
-							<Room id="13" displayName="RaumWest">
-								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
-								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 							</Room>
 						</Rooms>
 					</BuildingLevel>
