@@ -60,7 +60,7 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="38"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="181"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="182"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="60"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="98"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="199"/>
@@ -69,7 +69,7 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="39"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="182"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="183"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="99"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="200"/>
         <source>Specific heat capacity of the material.</source>
@@ -77,7 +77,7 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="40"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="183"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="184"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="100"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="201"/>
         <source>Thermal conductivity of the dry material.</source>
@@ -96,17 +96,17 @@
         <translation>Thermohydraulische Berechnung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="43"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="44"/>
         <source>Default temperature for HydraulicNetwork models</source>
         <translation>Standardtemperatur für hydraulische Netzwerkmodelle</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="44"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="45"/>
         <source>Initial temperature of the fluid</source>
         <translation>Anfangstemperatur des Fluids</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="45"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="46"/>
         <source>Reference pressure of network</source>
         <translation>Referenzdruck des Netzwerks</translation>
     </message>
@@ -157,1434 +157,1439 @@
         <translation type="vanished">On-off-Wärmepumpe auf Basis von Polynomen für Heizleistung und elektrische Leistung, installiert an der Quelle</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="58"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="59"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="147"/>
         <source>Valve with constant pressure loss</source>
         <translation>Ventil mit konstantem Druckverlust</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="60"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="61"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="149"/>
         <source>Adiabatic element with pressure loss defined by zeta-value</source>
         <translation>Adiabates Element mit definiertem Zeta-Wert</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="61"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="62"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="150"/>
         <source>Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)</source>
         <translation>Wird nur für die Druckverlustberechnung mit PressureLossCoefficient verwendet (NICHT für Rohre)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="62"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="63"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="151"/>
         <source>Pressure loss coefficient for the component (zeta-value)</source>
         <translation>Druckverlustbeiwert des Bauteils (Zeta-Wert)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="63"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="64"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="152"/>
         <source>Pump predefined pressure head</source>
         <translation>Pumpe mit definierter Förderhöhe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="64"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="65"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="153"/>
         <source>Pump predefined mass flux</source>
         <translation>Vordefinierten Massenstrom pumpen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="65"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="66"/>
         <source>Pump maximum efficiency</source>
         <translation>Maximale Effizienz der Pumpe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="66"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="67"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="155"/>
         <source>Fraction of pump heat loss due to inefficiency that heats up the fluid</source>
         <translation>Anteil des Wärmeverlusts der Pumpe aufgrund von Ineffizienz, der das Fluid erwärmt</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="67"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="68"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="156"/>
         <source>Pump maximum pressure head at point of minimal mass flow of pump</source>
         <translation>Maximale Druckhöhe der Pumpe am Punkt des minimalen Massenstroms der Pumpe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="68"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="69"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="157"/>
         <source>Pump maximum electrical power at point of optimal operation</source>
         <translation>Maximale elektrische Leistung der Pumpe im optimalen Betriebspunkt</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="69"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="70"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="158"/>
         <source>Design pressure head of VariablePressureHeadPump</source>
         <translation>Auslegungsdruckhöhe der VariablePressureHeadPump</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="70"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="71"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="159"/>
         <source>Design mass flux of VariablePressureHeadPump</source>
         <translation>Auslegung des Massenflusses der VariablePressureHeadPump</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="71"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="72"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="160"/>
         <source>Factor to reduce pressure head of VariablePressureHeadPump</source>
         <translation>Faktor zur Reduzierung der Druckhöhe der VariablePressureHeadPump</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="72"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="73"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="161"/>
         <source>Water or air volume of the component</source>
         <translation>Wasser- oder Luftvolumen des Bauteils</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="73"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="74"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="162"/>
         <source>Maximum width/length of discretized volumes in pipe</source>
         <translation>Maximale Breite/Länge diskretisierter Volumina im Rohr</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="74"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="75"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="163"/>
         <source>Carnot efficiency eta</source>
         <translation>Carnot-Wirkungsgrad eta</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="75"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="76"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="164"/>
         <source>Maximum heating power</source>
         <translation>Maximale Heizleistung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="76"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="77"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="165"/>
         <source>Pressure loss for valve</source>
         <translation>Druckverlust für Ventil</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="77"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="78"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="166"/>
         <source>Minimum outlet temperature of heat exchanger, used for clipping of heat extraction</source>
         <translation>Minimale Austrittstemperatur des Wärmetauschers, die zur Begrenzung der Wärmeentnahme verwendet wird</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="78"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="79"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="167"/>
         <source>HeatingPowerB0W35</source>
         <translation>HeizleistungB0W35</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="79"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="80"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="168"/>
         <source>Heat pump supply temperature for heating buffer storage</source>
         <translation>Wärmepumpenvorlauftemperatur für Heizungspufferspeicher</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="80"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="81"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="169"/>
         <source>Heat pump return temperature for heating buffer storage</source>
         <translation>Wärmepumpen-Rücklauftemperatur für Heizungspufferspeicher</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="81"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="82"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="170"/>
         <source>Heat pump supply temperature for DHW buffer storage</source>
         <translation>Wärmepumpen-Vorlauftemperatur für Warmwasser-Pufferspeicher</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="82"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="83"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="171"/>
         <source>Heat pump return temperature for DHW buffer storage</source>
         <translation>Rücklauftemperatur der Wärmepumpe für den Warmwasser-Pufferspeicher</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="83"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="84"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="172"/>
         <source>Heat pump heating buffer storage volume</source>
         <translation>Pufferspeichervolumen Wärmepumpe Heizung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="84"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="85"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="173"/>
         <source>DHWBufferVolume</source>
         <translation>WWPuffervolumen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="85"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="86"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="177"/>
         <source>Set points are given as constant parameters</source>
         <translation>Sollwerte werden als konstante Parameter angegeben</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="86"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="87"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="178"/>
         <source>Scheduled set point values</source>
         <translation>Geplante Sollwerte</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="87"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="88"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="179"/>
         <source>Control temperature difference of this element</source>
         <translation>Kontrollieren Sie die Temperaturdifferenz dieses Elements</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="88"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="89"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="180"/>
         <source>Control temperature difference of the following element</source>
         <translation>Kontrollieren Sie die Temperaturdifferenz des folgenden Elements</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="89"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="90"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="181"/>
         <source>Control zone thermostat values</source>
         <translation>Zonenthermostatwerte steuern</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="90"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="91"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="182"/>
         <source>Control mass flux</source>
         <translation>Massenstrom kontrollieren</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="91"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="92"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="183"/>
         <source>Control pump operation depending on following element</source>
         <translation>Steuern Sie den Pumpenbetrieb in Abhängigkeit vom folgenden Element</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="92"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="93"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="184"/>
         <source>Control pressure difference at worst point in the network</source>
         <translation>Kontrollieren Sie die Druckdifferenz am schlechtesten Punkt im Netz</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="93"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="94"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="185"/>
         <source>PController</source>
         <translation>PController</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="94"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="95"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="186"/>
         <source>PIController</source>
         <translation>PIController</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="95"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="96"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="187"/>
         <source>PIDController</source>
         <translation>PIDController</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="96"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="97"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="188"/>
         <source>OnOffController</source>
         <translation>OnOffController</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="97"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="133"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="98"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="134"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="189"/>
         <source>Kp-parameter</source>
         <translation>Kp-Parameter</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="98"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="134"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="99"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="135"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="190"/>
         <source>Ki-parameter</source>
         <translation>Ki-Parameter</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="99"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="100"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="191"/>
         <source>Kd-parameter</source>
         <translation>Kd-Parameter</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="100"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="101"/>
         <source>Target temperature difference</source>
         <translation>Zieltemperaturdifferenz</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="101"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="102"/>
         <source>Target mass flux</source>
         <translation>Zielmassenstrom</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="46"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="47"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="135"/>
         <source>Pipe with a single fluid volume</source>
         <translation>Rohr mit einem Fluidvolumen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="47"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="43"/>
+        <source>Air network that may be connected with zones.</source>
+        <translation>Luftnetzwerk, das mit Zonen kombiniert werden kann.</translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="48"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="136"/>
         <source>Pipe with discretized fluid volume</source>
         <translation>Rohr mit diskretisiertem Fluidvolumen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="48"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="49"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="137"/>
         <source>Pump with defined pressure head</source>
         <translation>Pumpe mit definierter Förderhöhe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="49"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="50"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="138"/>
         <source>Pump with defined mass flux</source>
         <translation>Pumpe mit definiertem Massenstrom</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="50"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="51"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="139"/>
         <source>Pump with controlled pressure head</source>
         <translation>Pumpe mit geregelter Förderhöhe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="51"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="52"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="140"/>
         <source>Pump with linear pressure head curve</source>
         <translation>Pumpe mit linearer Förderhöhenkennlinie</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="52"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="53"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="141"/>
         <source>Simple heat exchanger</source>
         <translation>Einfacher Wärmetauscher</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="53"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="54"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="142"/>
         <source>Heat pump installed at source side, based on carnot efficiency</source>
         <translation>Wärmepumpe quellenseitig installiert, basierend auf Carnot-Effizienz</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="54"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="55"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="143"/>
         <source>Heat pump installed at supply side, based on carnot efficiency</source>
         <translation>Wärmepumpe versorgungsseitig installiert, basierend auf Carnot-Effizienz</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="55"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="56"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="144"/>
         <source>Heat pump installed at source side, based on polynom for COP</source>
         <translation>Wärmepumpe quellenseitig installiert, basierend auf Polynom für COP</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="56"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="57"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="145"/>
         <source>Heat pump (on-off) at source side, based on polynoms for heating power and el. power</source>
         <translation>Wärmepumpe (on-off) quellenseitig installiert, basierend auf Polynomen für Heizleistung und el. Energie</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="57"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="58"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="146"/>
         <source>Controlled valve</source>
         <translation>Geregeltes Ventil</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="59"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="60"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="148"/>
         <source>Ideal heater with predefined supply temperature</source>
         <translation>Ideale Heizer mit vordefinierter Vorlauftemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="102"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="103"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="194"/>
         <source>Threshold value for pump operation</source>
         <translation>Schwellwert für Pumpenbetrieb</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="103"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="104"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="195"/>
         <source>Reset value for controller integral part</source>
         <translation>Rücksetzwert für Reglerintegralanteil</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="104"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="105"/>
         <source>Target pressure difference</source>
         <translation>Zieldruckdifferenz</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="105"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="106"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="197"/>
         <source>ID of zone containing thermostat</source>
         <translation>ID der Zone mit Thermostat</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="106"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="139"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="107"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="140"/>
         <source>Pipe length</source>
         <translation>Rohrlänge</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="107"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="142"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="108"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="143"/>
         <source>Number of parallel pipes</source>
         <translation>Anzahl paralleler Rohre</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="108"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="109"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="176"/>
         <source>Number of parallel elements</source>
         <translation>Anzahl paralleler Elemente</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="109"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="110"/>
         <source>Constant temperature</source>
         <translation>Konstante Temperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="110"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="111"/>
         <source>Time-dependent temperature from spline</source>
         <translation>Zeitabhängige Temperatur aus Spline</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="111"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="112"/>
         <source>Evaporator medium temperature for heat pump</source>
         <translation>Verdampfermediumtemperatur für Wärmepumpe</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="112"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="113"/>
         <source>Zone air temperature</source>
         <translation>Zonenlufttemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="113"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="114"/>
         <source>Active construction layer (floor heating)</source>
         <translation>Aktive Bauschicht (Fußbodenheizung)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="114"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="115"/>
         <source>Constant heat loss</source>
         <translation>Konstanter Wärmeverlust</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="115"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="116"/>
         <source>Heat loss from spline</source>
         <translation>Wärmeverlust durch Spline</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="116"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="117"/>
         <source>Heat loss of condenser in heat pump model</source>
         <translation>Wärmeverlust des Kondensators im Wärmepumpenmodell</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="117"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="118"/>
         <source>Heating demand for space heating</source>
         <translation>Wärmebedarf für die Raumheizung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="118"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="121"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="119"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="122"/>
         <source>Temperature for heat exchange</source>
         <translation>Temperatur für den Wärmeaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="119"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="122"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="120"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="123"/>
         <source>Constant heat flux out of the element (heat loss)</source>
         <translation>Konstanter Wärmefluss aus dem Element heraus (Wärmeverlust)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="120"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="121"/>
         <source>External heat transfer coeffient for the outside boundary</source>
         <translation>Äußerer Wärmeübergangskoeffizient für die Außengrenze</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="123"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="124"/>
         <source>ID of coupled zone for thermal exchange</source>
         <translation>ID der gekoppelten Zone für den Wärmeaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="124"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="125"/>
         <source>ID of coupled construction instance for thermal exchange</source>
         <translation>ID der gekoppelten Konstruktionsinstanz für den Wärmeaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="125"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="126"/>
         <source>Roughness of pipe material</source>
         <translation>Rauheit des Rohrmaterials</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="126"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="140"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="127"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="141"/>
         <source>Inner diameter of pipe</source>
         <translation>Innendurchmesser des Rohres</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="127"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="128"/>
         <source>Outer diameter of pipe</source>
         <translation>Außendurchmesser des Rohres</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="128"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="141"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="129"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="142"/>
         <source>Length-specific U-Value of pipe wall incl. insulation</source>
         <translation>Längenspezifischer U-Wert der Rohrwand inkl. Isolierung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="129"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="130"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="209"/>
         <source>Specific heat capaciy of pipe wall</source>
         <translation>Spezifische Wärmekapazität der Rohrwand</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="130"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="131"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="210"/>
         <source>Density of pipe wall</source>
         <translation>Dichte der Rohrwand</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="131"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="132"/>
         <source>Maximum heating power per floor area</source>
         <translation>Maximale Heizleistung pro Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="132"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="133"/>
         <source>Maximum cooling power per floor area</source>
         <translation>Maximale Kühlleistung pro Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="135"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="136"/>
         <source>Constant supply temperature</source>
         <translation>Konstante Vorlauftemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="136"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="137"/>
         <source>Scheduled supply temperature</source>
         <translation>Geplante Vorlauftemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="137"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="138"/>
         <source>Medium supply temperature</source>
         <translation>Mittlere Vorlauftemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="138"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="139"/>
         <source>Maximum mass flux through the pipe</source>
         <translation>Maximaler Massenstrom durch das Rohr</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="143"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="144"/>
         <source>Maximum heating power per surface area</source>
         <translation>Maximale Heizleistung pro Fläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="144"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="145"/>
         <source>Maximum cooling power per surface area</source>
         <translation>Maximale Kühlleistung pro Fläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="145"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="146"/>
         <source>Pressure coeffient.</source>
         <translation>Druckkoeffizient.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="146"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="147"/>
         <source>Use results from external wind flow calculation.</source>
         <translation>Verwenden Sie Ergebnisse aus der externen Windströmungsberechnung.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="147"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="148"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="72"/>
         <source>Constant heat exchange coefficient</source>
         <translation>Konstanter Wärmeaustauschkoeffizient</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="148"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="149"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="73"/>
         <source>No convective heat exchange</source>
         <translation>Kein konvektiver Wärmeaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="149"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="150"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="77"/>
         <source>Convective heat transfer coefficient</source>
         <translation>Konvektiver Wärmeübergangskoeffizient</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="150"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="153"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="151"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="154"/>
         <source>Constant model</source>
         <translation>Konstantes Modell</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="151"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="152"/>
         <source>No long wave radiation exchange</source>
         <translation>Kein langwelliger Strahlungsaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="152"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="153"/>
         <source>Long wave emissivity</source>
         <translation>Langwelliger Emissionsgrad</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="154"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="155"/>
         <source>No short wave radiation exchange</source>
         <translation>Kein kurzwelliger Strahlungsaustausch</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="155"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="156"/>
         <source>Solar absorption coefficient</source>
         <translation>Solarer Absorptionskoeffizient</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="156"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="157"/>
         <source>Vapor Transfer Coefficient.</source>
         <translation>Dampfübertragungskoeffizient.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="157"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="158"/>
         <source>Constant model.</source>
         <translation>Konstantes Modell.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="158"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="159"/>
         <source>Constant internal loads</source>
         <translation>Ständige innere Lasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="159"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="160"/>
         <source>Scheduled internal loads</source>
         <translation>Geplante interne Lasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="160"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="161"/>
         <source>Percentage of equipment load that is radiant emitted.</source>
         <translation>Prozentsatz der Gerätelast, die durch Strahlung emittiert wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="161"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="162"/>
         <source>Percentage of person load that is radiant emitted.</source>
         <translation>Prozentsatz der Personenlast, die strahlend emittiert wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="162"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="163"/>
         <source>Percentage of lighting load that is radiant emitted.</source>
         <translation>Prozentsatz der Lichtlast, die strahlend emittiert wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="163"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="164"/>
         <source>Complete equipment load per zone floor area.</source>
         <translation>Komplette Ausrüstungslast pro Zonengrundfläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="164"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="165"/>
         <source>Complete person load per zone floor area.</source>
         <translation>Vollständige Personenbelastung pro Bodenfläche der Zone.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="165"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="166"/>
         <source>Complete lighting load per zone floor area.</source>
         <translation>Vollständige Beleuchtungslast pro Bodenfläche der Zone.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="166"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="167"/>
         <source>Start time point.</source>
         <translation>Startzeitpunkt.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="167"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="168"/>
         <source>End time point.</source>
         <translation>Endzeitpunkt.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="168"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="169"/>
         <source>StepSize.</source>
         <translation>Schrittlänge.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="169"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="170"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="96"/>
         <source>Some temperatures</source>
         <translation>Einige Temperaturen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="170"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="171"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="97"/>
         <source>Some mass</source>
         <translation>Etwas Masse</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="171"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="172"/>
         <source>constant</source>
         <translation>Konstante</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="172"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="173"/>
         <source>linear</source>
         <translation>linear</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="173"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="174"/>
         <source>Continuous data</source>
         <translation>Kontinuierliche Daten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="174"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="175"/>
         <source>Annual cycle</source>
         <translation>Jährlicher Zyklus</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="175"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="176"/>
         <source>Latitude.</source>
         <translation>Breite.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="176"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="177"/>
         <source>Longitude.</source>
         <translation>Längengrad.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="177"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="178"/>
         <source>Albedo value [0..100 %].</source>
         <translation>Albedowert [0..100 %].</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="178"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="179"/>
         <source>Altitude of building as height above NN [m].</source>
         <translation>Gebäudehöhe als Höhe über NN [m].</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="179"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="180"/>
         <source>Use diffuse radiation model for anisotropic radiation (Perez)</source>
         <translation>Diffusstrahlungsmodell für anisotrope Strahlung verwenden (Perez)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="180"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="181"/>
         <source>If true, shading factors for exterior shading are stored for continuous time points (no cyclic use)</source>
         <translation>Wenn wahr, werden Verschattungsfaktoren für Außenbeschattung für fortlaufende Zeitpunkte gespeichert (keine zyklische Verwendung)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="184"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="185"/>
         <source>Model references of climate/location models.</source>
         <translation>Modellreferenzen von Klima-/Standortmodellen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="185"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="186"/>
         <source>Model references inside a room.</source>
         <translation>Modellreferenzen in einem Raum.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="186"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="187"/>
         <source>Model references a wall.</source>
         <translation>Modell bezieht sich auf eine Wand.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="187"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="188"/>
         <source>Model references an embedded object.</source>
         <translation>Model verweist auf ein eingebettetes Objekt.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="188"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="189"/>
         <source>Model references generic scheduled data that is not associated with a specific object type.</source>
         <translation>Das Modell verweist auf generische geplante Daten, die keinem bestimmten Objekttyp zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="189"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="190"/>
         <source>Model references of a model object.</source>
         <translation>Modellreferenzen eines Modellobjekts.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="190"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="191"/>
         <source>Model references of a hydraulic network.</source>
         <translation>Modellreferenzen eines hydraulischen Netzes.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="191"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="192"/>
         <source>Model references of flow elements of a hydraulic network.</source>
         <translation>Modellreferenzen von Strömungselementen eines hydraulischen Netzes.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="192"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="193"/>
         <source>Constant ventilation rate (also can used as infiltration)</source>
         <translation>Konstante Belüftungsrate (kann auch als Infiltration verwendet werden)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="193"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="194"/>
         <source>Scheduled ventilation rate</source>
         <translation>Geplante Beatmungsrate</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="194"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="195"/>
         <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the (constant) control conditions are met.</source>
         <translation>Geplanter Grundluftwechsel (Infiltration) mit zusätzlichem erhöhten Luftwechsel (Lüftung), wenn die (konstanten) Regelbedingungen erfüllt sind.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="195"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="196"/>
         <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits.</source>
         <translation>Geplanter Grundluftwechsel (Infiltration) mit zusätzlich erhöhtem Luftwechsel und geplanten minimalen/maximalen Temperaturbegrenzungen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="196"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="197"/>
         <source>Ventilation rate for Constant model</source>
         <translation>Beatmungsfrequenz für Constant-Modell</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="197"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="198"/>
         <source>Upper limit of comfort range</source>
         <translation>Obergrenze des Komfortbereichs</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="198"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="199"/>
         <source>Lower limit of comfort range</source>
         <translation>Untere Grenze des Komfortbereichs</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="199"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="200"/>
         <source>Maximum wind speed to allow ventilation increase</source>
         <translation>Maximale Windgeschwindigkeit, um die Belüftung zu erhöhen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="200"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="201"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="213"/>
         <source>Write values as calculated at output times.</source>
         <translation>Werte wie zu Ausgabezeiten berechnet schreiben.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="201"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="202"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="214"/>
         <source>Average values in time (mean value in output step).</source>
         <translation>Zeitliche Mittelwerte (Mittelwert im Ausgabeschritt).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="202"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="203"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="215"/>
         <source>Integrate values in time.</source>
         <translation>Werte rechtzeitig integrieren.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="203"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="204"/>
         <source>All days (Weekend days and Weekdays).</source>
         <translation>Alle Tage (Wochenend- und Wochentage).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="204"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="205"/>
         <source>Weekday schedule.</source>
         <translation>Wochentagsplan.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="205"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="206"/>
         <source>Weekend schedule.</source>
         <translation>Wochenendplan.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="206"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="207"/>
         <source>Special Weekday schedule: Monday.</source>
         <translation>Spezieller Wochentagsplan: Montag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="207"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="208"/>
         <source>Special Weekday schedule: Tuesday.</source>
         <translation>Spezieller Wochentagsplan: Dienstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="208"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="209"/>
         <source>Special Weekday schedule: Wednesday.</source>
         <translation>Spezieller Wochentagsplan: Mittwoch.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="209"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="210"/>
         <source>Special Weekday schedule: Thursday.</source>
         <translation>Spezieller Wochentagsplan: Donnerstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="210"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="211"/>
         <source>Special Weekday schedule: Friday.</source>
         <translation>Spezieller Wochentagsplan: Freitag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="211"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="212"/>
         <source>Special Weekday schedule: Saturday.</source>
         <translation>Spezieller Wochentagsplan: Samstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="212"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="213"/>
         <source>Special Weekday schedule: Sunday.</source>
         <translation>Spezieller Wochentagsplan: Sonntag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="213"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="214"/>
         <source>Holiday schedule.</source>
         <translation>Urlaubsplan.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="214"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="215"/>
         <source>Monday.</source>
         <translation>Montag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="215"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="216"/>
         <source>Tuesday.</source>
         <translation>Dienstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="216"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="217"/>
         <source>Wednesday.</source>
         <translation>Mittwoch.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="217"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="218"/>
         <source>Thursday.</source>
         <translation>Donnerstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="218"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="219"/>
         <source>Friday.</source>
         <translation>Freitag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="219"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="220"/>
         <source>Saturday.</source>
         <translation>Samstag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="220"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="221"/>
         <source>Sunday.</source>
         <translation>Sonntag.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="221"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="222"/>
         <source>If enabled, schedules are treated as annually repeating schedules.</source>
         <translation>Wenn aktiviert, werden Zeitpläne als sich jährlich wiederholende Zeitpläne behandelt.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="222"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="223"/>
         <source>X1</source>
         <translation>X1</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="223"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="224"/>
         <source>X2</source>
         <translation>X2</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="224"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="225"/>
         <source>I1</source>
         <translation>I1</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="225"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="226"/>
         <source>I2</source>
         <translation>I2</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="226"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="227"/>
         <source>ParameterSet1</source>
         <translation>Parametersatz1</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="227"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="228"/>
         <source>ParameterSet2</source>
         <translation>Parametersatz2</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="228"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="229"/>
         <source>SomeStove</source>
         <translation>Irgendein Herd</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="229"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="230"/>
         <source>SomeOven</source>
         <translation>Irgendein Ofen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="230"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="231"/>
         <source>SomeHeater</source>
         <translation>Irgendeine Heizung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="231"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="232"/>
         <source>SomeFurnace</source>
         <translation>Irgendein Ofen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="232"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="233"/>
         <source>Maximum intensity allowed before shading is closed.</source>
         <translation>Maximal zulässige Intensität, bevor die Beschattung geschlossen wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="233"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="234"/>
         <source>Intensity level below which shading is opened.</source>
         <translation>Intensitätsstufe, unterhalb der die Beschattung geöffnet wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="234"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="235"/>
         <source>Global initial temperature [C].</source>
         <translation>Globale Anfangstemperatur [C].</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="235"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="236"/>
         <source>Global initial relative humidity [%].</source>
         <translation>Globale anfängliche relative Feuchtigkeit [%].</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="236"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="237"/>
         <source>Percentage of sensitive heat from domestic water istributed towrads the room.</source>
         <translation>Prozentsatz sensibler Wärme aus Brauchwasser, die an den Raum verteilt wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="237"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="238"/>
         <source>Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.</source>
         <translation>Luftwechselrate, die sich aus einer Druckdifferenz von 50 Pa zwischen innen und außen ergibt.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="238"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="239"/>
         <source>Shielding coefficient for a given location and envelope type.</source>
         <translation>Abschirmungskoeffizient für einen bestimmten Standort und Hüllentyp.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="239"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="240"/>
         <source>Ambient temperature for a design day. Parameter that is needed for FMU export.</source>
         <translation>Umgebungstemperatur für einen Designtag. Parameter, der für den FMU-Export benötigt wird.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="240"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="241"/>
         <source>Start year of the simulation.</source>
         <translation>Startjahr der Simulation.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="241"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="242"/>
         <source>Flag activating moisture balance calculation if enabled.</source>
         <translation>Flag zur Aktivierung der Feuchtigkeitsbilanzberechnung, falls aktiviert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="242"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="243"/>
         <source>Flag activating CO2 balance calculation if enabled.</source>
         <translation>Markierung zur Aktivierung der CO2-Bilanzberechnung, falls aktiviert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="243"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="244"/>
         <source>Flag activating ventilation through joints and openings.</source>
         <translation>Flaggenaktivierung durch Fugen und Öffnungen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="244"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="245"/>
         <source>Flag activating FMU export of climate data.</source>
         <translation>Flag aktiviert den FMU-Export von Klimadaten.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="245"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="246"/>
         <source>Distribution based on surface area</source>
         <translation>Verteilung nach Fläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="246"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="247"/>
         <source>Distribution based on surface type</source>
         <translation>Verteilung nach Oberflächentyp</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="247"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="248"/>
         <source>Distribution based on zone-specific view factors</source>
         <translation>Verteilung basierend auf zonenspezifischen Ansichtsfaktoren</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="248"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="249"/>
         <source>Percentage of solar radiation gains attributed direcly to room [%]</source>
         <translation>Prozentsatz der Solarstrahlungsgewinne, die direkt dem Raum zugeschrieben werden [%]</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="249"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="250"/>
         <source>Percentage of surface solar radiation attributed to floor [%]</source>
         <translation>Prozentsatz der dem Boden zugeschriebenen Oberflächensonnenstrahlung [%]</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="250"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="251"/>
         <source>Percentage of surface solar radiation attributed to roof/ceiling[%]</source>
         <translation>Prozentsatz der dem Dach/der Decke zugeordneten Oberflächensonnenstrahlung[%]</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="251"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="252"/>
         <source>Percentage of surface solar radiation attributed to walls [%]</source>
         <translation>Anteil der auf Wände entfallenden Oberflächensonnenstrahlung [%]</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="252"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="253"/>
         <source>Relative tolerance for solver error check.</source>
         <translation>Relative Toleranz für Solver-Fehlerprüfung.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="253"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="254"/>
         <source>Absolute tolerance for solver error check.</source>
         <translation>Absolute Toleranz für Solver-Fehlerprüfung.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="254"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="255"/>
         <source>Maximum permitted time step for integration.</source>
         <translation>Maximal zulässiger Zeitschritt für die Integration.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="255"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="256"/>
         <source>Minimum accepted time step, before solver aborts with error.</source>
         <translation>Akzeptierter Mindestzeitschritt, bevor der Solver mit einem Fehler abbricht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="256"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="257"/>
         <source>Initial time step size (or constant step size for ExplicitEuler integrator).</source>
         <translation>Anfängliche Zeitschrittgröße (oder konstante Schrittgröße für ExplicitEuler-Integrator).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="257"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="258"/>
         <source>Coefficient reducing nonlinear equation solver convergence limit.</source>
         <translation>Koeffizient zur Reduzierung der Konvergenzgrenze des nichtlinearen Gleichungslösers.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="258"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="259"/>
         <source>Coefficient reducing iterative equation solver convergence limit.</source>
         <translation>Koeffizient zur Reduzierung der Konvergenzgrenze des iterativen Gleichungslösers.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="259"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="260"/>
         <source>Minimum element width for wall discretization.</source>
         <translation>Minimale Elementbreite für Wanddiskretisierung.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="260"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="261"/>
         <source>Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).</source>
         <translation>Dehnungsfaktor für variable Wanddiskretisierungen (0-keine Scheibe, 1-Äquidistanz, größer als 1 - variabel).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="261"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="262"/>
         <source>Maximum dimension of a tile for calculation of view factors.</source>
         <translation>Maximale Abmessung einer Kachel zur Berechnung der Ansichtsfaktoren.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="262"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="263"/>
         <source>Number of surface discretization elements of a wall in each direction.</source>
         <translation>Anzahl der Oberflächendiskretisierungselemente einer Wand in jeder Richtung.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="263"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="264"/>
         <source>Temperature tolerance for ideal heating or cooling.</source>
         <translation>Temperaturtoleranz für ideales Heizen oder Kühlen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="264"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="265"/>
         <source>Relative tolerance for Kinsol solver.</source>
         <translation>Relative Toleranz für Kinsol-Solver.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="265"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="266"/>
         <source>Absolute tolerance for Kinsol solver.</source>
         <translation>Absolute Toleranz für Kinsol-Solver.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="266"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="267"/>
         <source>Maximum level of fill-in to be used for ILU preconditioner.</source>
         <translation>Maximale Füllmenge, die für ILU-Vorkonditionierer verwendet werden soll.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="267"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="268"/>
         <source>Maximum dimension of Krylov subspace.</source>
         <translation>Maximale Dimension des Krylov-Unterraums.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="268"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="269"/>
         <source>Maximum number of nonlinear iterations.</source>
         <translation>Maximale Anzahl nichtlinearer Iterationen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="269"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="270"/>
         <source>Maximum order allowed for multi-step solver.</source>
         <translation>Maximal zulässige Ordnung für Mehrschritt-Solver.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="270"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="271"/>
         <source>Maximum nonlinear iterations for Kinsol solver.</source>
         <translation>Maximale nichtlineare Iterationen für den Kinsol-Solver.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="271"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="272"/>
         <source>Maximum number of elements per layer.</source>
         <translation>Maximale Anzahl von Elementen pro Schicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="272"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="273"/>
         <source>Check schedules to determine minimum distances between steps and adjust MaxTimeStep.</source>
         <translation>Überprüfen Sie Zeitpläne, um Mindestabstände zwischen Schritten zu bestimmen, und passen Sie MaxTimeStep an.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="273"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="274"/>
         <source>Disable line search for steady state cycles.</source>
         <translation>Leitungssuche für stationäre Zyklen deaktivieren.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="274"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="275"/>
         <source>Enable strict Newton for steady state cycles.</source>
         <translation>Aktivieren Sie strenges Newton für stationäre Zyklen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="275"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="276"/>
         <source>CVODE based solver</source>
         <translation>CVODE-basierter Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="276"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="277"/>
         <source>Explicit Euler solver</source>
         <translation>Explizite Euler-Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="277"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="278"/>
         <source>Implicit Euler solver</source>
         <translation>Impliziter Euler-Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="278"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="279"/>
         <source>Automatic selection of integrator</source>
         <translation>Automatische Auswahl des Integrators</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="279"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="280"/>
         <source>Dense solver</source>
         <translation>Dichter Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="280"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="281"/>
         <source>KLU sparse solver</source>
         <translation>KLU Sparse-Solver</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="281"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="282"/>
         <source>GMRES iterative solver</source>
         <translation>Iterativer GMRES-Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="282"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="283"/>
         <source>BICGSTAB iterative solver</source>
         <translation>Iterativer BICGSTAB-Löser</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="283"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="284"/>
         <source>Automatic selection of linear equation system solver</source>
         <translation>Automatische Auswahl des Lösers für lineare Gleichungssysteme</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="284"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="285"/>
         <source>Incomplete LU preconditioner</source>
         <translation>Unvollständiger LU-Vorkonditionierer</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="285"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="286"/>
         <source>Automatic selection of preconditioner</source>
         <translation>Automatische Auswahl des Vorkonditionierers</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="286"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="287"/>
         <source>Constant set points</source>
         <translation>Konstante Sollwerte</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="287"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="288"/>
         <source>Scheduled set points</source>
         <translation>Geplante Sollwerte</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="288"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="289"/>
         <source>Heating set point</source>
         <translation>Heizsollwert</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="289"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="290"/>
         <source>Cooling set point</source>
         <translation>Kühlsollwert</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="290"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="291"/>
         <source>Control tolerance for temperatures</source>
         <translation>Kontrolltoleranz für Temperaturen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="291"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="292"/>
         <source>Offset of lower and upper hysteresis band from set points</source>
         <translation>Offset des unteren und oberen Hysteresebands von den Sollwerten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="292"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="293"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="267"/>
         <source>Air temperature</source>
         <translation>Lufttemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="293"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="294"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="268"/>
         <source>Operative temperature</source>
         <translation>Betriebstemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="294"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="295"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="269"/>
         <source>Analog</source>
         <translation>Analog</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="295"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="296"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="270"/>
         <source>Digital</source>
         <translation>Digital</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="296"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="297"/>
         <source>Gas layer</source>
         <translation>Gasschicht</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="297"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="298"/>
         <source>Glass layer</source>
         <translation>Glasschicht</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="298"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="299"/>
         <source>Thickness of the window layer.</source>
         <translation>Dicke der Fensterschicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="299"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="300"/>
         <source>Thermal conductivity of the window layer.</source>
         <translation>Wärmeleitfähigkeit der Fensterschicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="300"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="301"/>
         <source>Mass density of the fill-in gas.</source>
         <translation>Massendichte des Füllgases.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="301"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="302"/>
         <source>Height of the detailed window.</source>
         <translation>Höhe des Detailfensters.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="302"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="303"/>
         <source>Width of the detailed window.</source>
         <translation>Breite des Detailfensters.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="303"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="304"/>
         <source>Emissivity of surface facing outside.</source>
         <translation>Emissionsgrad der nach außen gerichteten Oberfläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="304"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="305"/>
         <source>Emissivity of surface facing inside.</source>
         <translation>Emissionsgrad der nach innen gerichteten Oberfläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="305"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="314"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="306"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="315"/>
         <source>Short wave transmittance at outside directed surface.</source>
         <translation>Kurzwellendurchlässigkeit an nach außen gerichteter Fläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="306"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="307"/>
         <source>Short wave reflectance of surface facing outside.</source>
         <translation>Kurzwelliger Reflexionsgrad der nach außen gerichteten Oberfläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="307"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="308"/>
         <source>Short wave reflectance of surface facing inside.</source>
         <translation>Kurzwelliger Reflexionsgrad der nach innen gerichteten Oberfläche.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="308"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="309"/>
         <source>Thermal conductivity of the gas layer.</source>
         <translation>Wärmeleitfähigkeit der Gasschicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="309"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="310"/>
         <source>Dynamic viscosity of the gas layer.</source>
         <translation>Dynamische Viskosität der Gasschicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="310"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="311"/>
         <source>Specific heat capacity of the gas layer.</source>
         <translation>Spezifische Wärmekapazität der Gasschicht.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="311"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="312"/>
         <source>Standard globbed-layers model.</source>
         <translation>Standard-Globbed-Layer-Modell.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="312"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="313"/>
         <source>Detailed window model with layers.</source>
         <translation>Detailliertes Fenstermodell mit Ebenen.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="313"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="314"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="251"/>
         <source>Thermal transmittance</source>
         <translation>Wärmedurchgang</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="315"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="316"/>
         <source>Constant reduction factor.</source>
         <translation>Konstanter Reduktionsfaktor.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="316"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="317"/>
         <source>Precomputed reduction factor.</source>
         <translation>Vorberechneter Reduktionsfaktor.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="317"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="318"/>
         <source>Reduction factor is computed based on control model</source>
         <translation>Der Reduktionsfaktor wird basierend auf dem Kontrollmodell berechnet</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="318"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="319"/>
         <source>Reduction factor (remaining percentage of solar gains if shading is closed).</source>
         <translation>Reduktionsfaktor (verbleibender Prozentsatz der Sonnengewinne bei geschlossener Beschattung).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="319"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="320"/>
         <source>Zone with constant temperature</source>
         <translation>Zone mit konstanter Temperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="320"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="321"/>
         <source>Zone with schedule defined temperature</source>
         <translation>Zone mit zeitplandefinierter Temperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="321"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="322"/>
         <source>Zone with energy balance equation</source>
         <translation>Zone mit Energiebilanzgleichung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="322"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="323"/>
         <source>Ground zone (calculates temperature based on heat loss to ground model)</source>
         <translation>Bodenzone (berechnet die Temperatur basierend auf dem Wärmeverlust an das Bodenmodell)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="323"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="324"/>
         <source>Temperature of the zone if set constant</source>
         <translation>Temperatur der Zone, wenn konstant eingestellt</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="324"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="325"/>
         <source>Relative humidity of the zone if set constant</source>
         <translation>Relative Feuchtigkeit der Zone, wenn konstant eingestellt</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="325"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="326"/>
         <source>CO2 concentration of the zone if set constant</source>
         <translation>CO2-Konzentration der Zone, wenn konstant eingestellt</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="326"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="327"/>
         <source>Net usage area of the ground floor (for area-related outputs and loads)</source>
         <translation>Nettonutzungsfläche Erdgeschoss (für flächenbezogene Leistungen und Lasten)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="327"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="328"/>
         <source>Zone air volume</source>
         <translation>Zonenluftvolumen</translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="328"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="329"/>
         <source>Extra heat capacity</source>
         <translation>Zusätzliche Wärmekapazität</translation>
     </message>
@@ -4133,38 +4138,37 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="20"/>
         <source>Fluid description</source>
-        <translation>Fluidbeschreibung</translation>
+        <translation type="vanished">Fluidbeschreibung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="42"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="26"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="55"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="46"/>
         <source>Fluid properties</source>
         <translation>Fluideigenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="61"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="52"/>
         <source>Density [kg/m3]</source>
         <translation>Dichte [kg/m3]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="71"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="62"/>
         <source>Spec. heat capacity [J/kg K]</source>
         <translation>Spez. Wärmekapazität [J/kg·K]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="81"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="72"/>
         <source>Thermal conductivity [W/mK]</source>
         <translation>Wärmeleitfähigkeit [W/mK]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="96"/>
-        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="107"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="87"/>
+        <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="98"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -5042,8 +5046,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="91"/>
-        <source>Max. Cooling limit:</source>
+        <source>Max. cooling limit:</source>
         <translation>max. Kühlgrenze:</translation>
+    </message>
+    <message>
+        <source>Max. Cooling limit:</source>
+        <translation type="vanished">max. Kühlgrenze:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="159"/>
@@ -5240,27 +5248,27 @@ p, li { white-space: pre-wrap; }
         <translation>Luftwechselrate.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="81"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="83"/>
         <source>Air change rate:</source>
         <translation>Luftwechselrate:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="82"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="84"/>
         <source>Schedule name:</source>
         <translation>Zeitplanname:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="110"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="112"/>
         <source>&lt;select schedule&gt;</source>
         <translation>&lt;Zeitplan auswählen&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="249"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="251"/>
         <source>Time [d]</source>
         <translation>Zeit [d]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="252"/>
+        <location filename="../../src/SVDBVentilationNaturalEditWidget.cpp" line="254"/>
         <source>Natural Ventilation [1/h]</source>
         <translation>Natürliche Belüftung [1/h]</translation>
     </message>
@@ -5573,12 +5581,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVDBWindowTableModel</name>
     <message>
-        <location filename="../../src/SVDBWindowTableModel.cpp" line="131"/>
+        <location filename="../../src/SVDBWindowTableModel.cpp" line="134"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBWindowTableModel.cpp" line="132"/>
+        <location filename="../../src/SVDBWindowTableModel.cpp" line="135"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -5592,13 +5600,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="22"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="97"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="98"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="46"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="95"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="96"/>
         <source>Method:</source>
         <translation>Methode:</translation>
     </message>
@@ -5614,7 +5622,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="88"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="93"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="94"/>
         <source>North:</source>
         <translation>Norden:</translation>
     </message>
@@ -5630,25 +5638,25 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="112"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="91"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="92"/>
         <source>East:</source>
         <translation>Ost:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="136"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="94"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="95"/>
         <source>South:</source>
         <translation>Süden:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="160"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="92"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="93"/>
         <source>West:</source>
         <translation>Westen:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.ui" line="184"/>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="96"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="97"/>
         <source>Dead Band:</source>
         <translation>Totband:</translation>
     </message>
@@ -5719,63 +5727,75 @@ p, li { white-space: pre-wrap; }
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="40"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="27"/>
         <source>Method:</source>
         <translation>Methode:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="47"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="34"/>
         <source>Controller Type:</source>
         <translation>Controller-Typ:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="56"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="41"/>
         <source>Heating Setpoint Schedule:</source>
         <translation>Heizsollwertplan:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="70"/>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="103"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="55"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="84"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="89"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="70"/>
         <source>Cooling Setpoint Schedule:</source>
         <translation>Kühlsollwertplan:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="120"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="99"/>
+        <source>Tolerance [K]:</source>
+        <translation>Toleranz [K]</translation>
+    </message>
+    <message>
         <source>Tolerance:</source>
-        <translation>Toleranz:</translation>
+        <translation type="vanished">Toleranz:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="137"/>
         <source>K</source>
-        <translation>K</translation>
+        <translation type="vanished">K</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="157"/>
         <source>Hier muss bitte ein SCI Chart wie im CCM für die Diagramme rein. Wichtig dabei man muss vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</source>
-        <translation>Hier muss bitte ein SCI-Diagramm wie im CCM für die Diagramme rein. Wichtig dabei muss man vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</translation>
+        <translation type="vanished">Hier muss bitte ein SCI-Diagramm wie im CCM für die Diagramme rein. Wichtig dabei muss man vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="69"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="74"/>
         <source>Zone control thermostat model name</source>
         <translation>Modellname des Zonenregelungsthermostats</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="73"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="78"/>
         <source>Thermostat tolerance for heating and/or cooling mode. Min 0.1 K, Max 50 K.</source>
         <translation>Thermostattoleranz für Heiz- und/oder Kühlbetrieb. Min. 0,1 K, Max. 50 K.</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="268"/>
+        <source>Ambient Temperature [C]</source>
+        <translation>Umgebungstemperatur [C]</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="271"/>
+        <source>Supply Temperature [C]</source>
+        <translation>Vorlauftemperatur [C]</translation>
     </message>
     <message>
         <source>Thermostat tolerance for heating and/or cooling mode. Min 0.1 C, Max 50 C.</source>
         <translation type="vanished">Thermostattoleranz für Heiz- und/oder Kühlbetrieb. Min. 0,1 C, Max. 50 C.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="129"/>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="135"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="137"/>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="143"/>
         <source>&lt;select schedule&gt;</source>
         <translation>&lt;Zeitplan auswählen&gt;</translation>
     </message>
@@ -7518,13 +7538,13 @@ p, li { white-space: pre-wrap; }
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1359"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1363"/>
         <source>About Qt...</source>
         <translation>Über Qt...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="984"/>
-        <location filename="../../src/SVMainWindow.cpp" line="989"/>
+        <location filename="../../src/SVMainWindow.cpp" line="988"/>
+        <location filename="../../src/SVMainWindow.cpp" line="993"/>
         <source>Reload project</source>
         <translation>Projekt neu laden</translation>
     </message>
@@ -7534,263 +7554,263 @@ p, li { white-space: pre-wrap; }
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="712"/>
+        <location filename="../../src/SVMainWindow.cpp" line="716"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="715"/>
+        <location filename="../../src/SVMainWindow.cpp" line="719"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="199"/>
+        <location filename="../../src/SVMainWindow.cpp" line="203"/>
         <source>Export directory &apos;%1&apos; exists already. Overwrite?</source>
         <translation>Exportverzeichnis &apos;%1&apos; existiert bereits. Überschreiben?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="935"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1019"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1617"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1636"/>
+        <location filename="../../src/SVMainWindow.cpp" line="939"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1023"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1621"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1640"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="936"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1020"/>
+        <location filename="../../src/SVMainWindow.cpp" line="940"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1024"/>
         <source>The file &apos;%1&apos; does not exist or cannot be accessed.</source>
         <translation>Die Datei &apos;%1&apos; existiert nicht oder es kann nicht darauf zugegriffen werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1058"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1062"/>
         <source>Please save the project file first!</source>
         <translation>Bitte speichern Sie zuerst das Projekt!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="844"/>
+        <location filename="../../src/SVMainWindow.cpp" line="848"/>
         <source>Replace or merge projects</source>
         <translation>Projekt ersetzen oder zusammenführen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="844"/>
+        <location filename="../../src/SVMainWindow.cpp" line="848"/>
         <source>Would you like to replace the current project with the imported project, or would you like to combine both projects into one?</source>
         <translation>Möchten Sie gerne das aktuelle Projekt durch das importierte ersetzen, oder sollen beide Projekte zusammengeführt werden?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="846"/>
+        <location filename="../../src/SVMainWindow.cpp" line="850"/>
         <source>Replace</source>
         <translation>Ersetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="846"/>
+        <location filename="../../src/SVMainWindow.cpp" line="850"/>
         <source>Combine</source>
         <translation>Zusammenführen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="922"/>
+        <location filename="../../src/SVMainWindow.cpp" line="926"/>
         <source>Select SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="924"/>
+        <location filename="../../src/SVMainWindow.cpp" line="928"/>
         <source>SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte und Projektpakete (*%1 *%2);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1007"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1011"/>
         <source>Select IDF file</source>
         <translation>IDF-Datei auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1009"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1013"/>
         <source>EnergyPlus IDF files (*.idf);;All files (*.*)</source>
         <translation>EnergyPlus IDF Dateien (*.idf);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1085"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1089"/>
         <source>Specify SIM-VICUS project package</source>
         <translation>SIM-VICUS Projektpaket auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1087"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1091"/>
         <source>SIM-VICUS project packages (*.vicpac);;All files (*.*)</source>
         <translation>SIM-VICUS Projektpakete (*.vicpac);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1185"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1206"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1189"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1210"/>
         <source>The project must be saved, first!</source>
         <translation>Das Projekt muss zuerst gespeichert werden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1197"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1201"/>
         <source>Updated simulation parameters</source>
         <translation>Simulationsparameter aktualisiert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1234"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1238"/>
         <source>Main grid visibility changed</source>
         <translation>Sichtbarkeit des Hauptgitters geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1302"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1306"/>
         <source>Postproc session files</source>
         <translation>PostProc Sitzungsdateien</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1314"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1321"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1331"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1318"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1325"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1335"/>
         <source>Error running PostProc</source>
         <translation>Fehler bei Starten von PostProc</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1315"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1332"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1319"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1336"/>
         <source>Could not start executable &apos;%1&apos;.</source>
         <translation>Kann ausführbare Datei &apos;%1&apos; nicht starten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1322"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1326"/>
         <source>Process already running.</source>
         <translation>Prozess läuft bereits.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1344"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1348"/>
         <source>Please select first the path to the external climate editor in the preferences dialog!</source>
         <translation>Bitte setzen sie zuerst den Pfad zum externen Klimaeditor im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1352"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1356"/>
         <source>Climate editor &apos;%1&apos; could not be started.</source>
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1761"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1765"/>
         <source>Remove/merge duplicates in database</source>
         <translation>Entferne/Verknüpfe Duplikate in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1762"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1766"/>
         <source>The database contains now some duplicate definitions. Do you want to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?</source>
         <translation>Die Datenbank enthält nun doppelte Definitionen. Möchten Sie diese nun durchsehen und unnötige Duplikate entfernen (dies kann man später auch in Datenbanken|Duplikate entfernen... machen)?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1851"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1884"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1855"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1888"/>
         <source>Configure %1</source>
         <translation>Konfiguriere %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1900"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1904"/>
         <source>unnamed%1</source>
         <translation>unbenannt %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2019"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2023"/>
         <source>Specify SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2021"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2025"/>
         <source>SIM-VICUS project files (%1);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2033"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2037"/>
         <source>Select target directory to extract project package into</source>
         <translation>Wähle das Zielverzeichnis, in das das Projektpaket entpackt werden soll</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2045"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2049"/>
         <source>Project package does not contain a SIM-VICUS project file (%1-file).</source>
         <translation>Projektpaket enthält kein valides SIM-VICUS Projekt (%1-Datei).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2053"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2057"/>
         <source>Cannot remove existing project file (maybe missing permissions?).</source>
         <translation>Kann die existierende Projektdatei nicht löschen (fehlen möglicherweise Zugriffsrechte, oder wird die Datei wird noch benutzt?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2060"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2064"/>
         <source>Cannot rename project file to target file (invalid file name?).</source>
         <translation>Kann die Projektdatei nicht in den Zieldateinamen umbenennen (ungültiger Dateiname?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1918"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2044"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1922"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2048"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="984"/>
+        <location filename="../../src/SVMainWindow.cpp" line="988"/>
         <source>The project has not yet been saved.</source>
         <translation>Das Projekt wurde noch nicht gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="989"/>
+        <location filename="../../src/SVMainWindow.cpp" line="993"/>
         <source>The project has been modified. Discard those changes?</source>
         <translation>Das Projekt wurde geändert. Diese Änderungen verwerfen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1106"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1110"/>
         <source>Export project package</source>
         <translation>Exportiere Projektpaket</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="207"/>
+        <location filename="../../src/SVMainWindow.cpp" line="211"/>
         <source>Export directory cannot be removed (are files within directory still being used?). Please remove directory manually and try again!</source>
         <translation>Das Exportverzeichnis kann nicht entfernt werden (werden Dateien im Verzeichnis noch verwendet?). Bitte entfernen Sie das Verzeichnis manuell und versuchen Sie den Export erneut!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="530"/>
+        <location filename="../../src/SVMainWindow.cpp" line="534"/>
         <source>Removing database duplicates</source>
         <translation>Entferne Datenbankduplikate</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="531"/>
+        <location filename="../../src/SVMainWindow.cpp" line="535"/>
         <source>When removing duplicate database elements that are used in the currently open project, the resulting change to the project data cannot be undone (and none of the earlier changes, either).</source>
         <translation>Wenn Duplikate entfernt werden, welche im aktuellen Projekt benutzt werden, dann kann man diese Änderung nicht rückgängig machen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="568"/>
+        <location filename="../../src/SVMainWindow.cpp" line="572"/>
         <source>The project file has been modified by an external application. When reloading this project file all unsaved changes will be lost. Reload modified project file?</source>
         <translation>Die Projektdatei wurde von einem externen Programm verändert. Beim erneuten Öffnen dieser Projektdatei gehen alle ungespeicherten Änderungen verloren. Projektdatei neu öffnen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1101"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1105"/>
         <source>Invalid file name</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1101"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1105"/>
         <source>Please enter a valid file name!</source>
         <translation>Bitte geben Sie einen gültigen Dateinamen an!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1142"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1146"/>
         <source>Removed unused definitions</source>
         <translation>Nicht zugewiesene Definitionen entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1447"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1451"/>
         <source>Languange changed</source>
         <translation>Sprache geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1447"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1451"/>
         <source>Please restart the software to activate the new language!</source>
         <translation>Bitte starten Sie die Software neu, um die neue Sprache zu aktivieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1784"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1788"/>
         <source>Application Log</source>
         <translation>Anwendungsmeldungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1617"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1636"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1621"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1640"/>
         <source>The file &apos;%1&apos; cannot be found or does not exist.</source>
         <translation>Die Datei &apos;%1&apos; kann nicht gefunden werden oder existiert nicht.</translation>
     </message>
@@ -7800,62 +7820,62 @@ p, li { white-space: pre-wrap; }
         <translation>Zeitpläne</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="198"/>
-        <location filename="../../src/SVMainWindow.cpp" line="206"/>
-        <location filename="../../src/SVMainWindow.cpp" line="234"/>
+        <location filename="../../src/SVMainWindow.cpp" line="202"/>
+        <location filename="../../src/SVMainWindow.cpp" line="210"/>
+        <location filename="../../src/SVMainWindow.cpp" line="238"/>
         <source>Export error</source>
         <translation>Exportfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="235"/>
+        <location filename="../../src/SVMainWindow.cpp" line="239"/>
         <source>Cannot create project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket nicht erstellen &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="567"/>
+        <location filename="../../src/SVMainWindow.cpp" line="571"/>
         <source>Reload project file</source>
         <translation>Projektdatei neu laden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1106"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1110"/>
         <source>Export of project package &apos;%1&apos; complete.</source>
         <translation>Export des Projektpakets &apos;%1&apos; fertig.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1283"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1344"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1287"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1348"/>
         <source>Setup external tool</source>
         <translation>Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1283"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1287"/>
         <source>Please select first the path to the external post processing in the preferences dialog!</source>
         <translation>Bitte wählen Sie zunächst den Pfad zum externen Postprozessing im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1352"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1356"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1644"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1648"/>
         <source>Select directory to copy example project into</source>
         <translation>Wähle Zielverzeichnis für das Beispielprojekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1656"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2053"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2060"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1660"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2057"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2064"/>
         <source>Write error</source>
         <translation>Schreibfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1656"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1660"/>
         <source>Cannot copy example, maybe missing permissions?</source>
         <translation>Kann das Beispiel nicht kopieren, eventuell fehlen Zugriffsrechte?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1919"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1923"/>
         <source>Cannot extract project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket &apos;%1&apos; nicht extrahieren.</translation>
     </message>
@@ -8024,52 +8044,52 @@ p, li { white-space: pre-wrap; }
         <translation>Strg+I</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="177"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="185"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="189"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="197"/>
         <source>Invalid polygon/hole geometry</source>
         <translation>Ungültige Polygon-/Lochgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="202"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="210"/>
         <source>Invalid polygon data</source>
         <translation>Ungültige Polygondaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="211"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="219"/>
         <source>Invalid sub-surface polygon</source>
         <translation>Ungültiges Teilflächen-Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="230"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="238"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="249"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="257"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="268"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="276"/>
         <source>Obstacles/Shading Geometry</source>
         <translation>Hindernisse/Schattierungsgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="384"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="392"/>
         <source>Renamed object to &apos;%1&apos;</source>
         <translation>Objekt in „%1“ umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="404"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="412"/>
         <source>Selecting objects</source>
         <translation>Auswählen von Objekten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="406"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="414"/>
         <source>De-selecting objects</source>
         <translation>Objekte abwählen</translation>
     </message>
@@ -8703,27 +8723,27 @@ p, li { white-space: pre-wrap; }
         <translation>max. Anzahl:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="220"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="223"/>
         <source>Use next point as origin</source>
         <translation>Nächsten Punkt als Ursprung verwenden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="251"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="254"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="258"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="261"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="268"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="274"/>
         <source>Door/opaque sub-surface</source>
         <translation>Tür/opake Teilfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="275"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="281"/>
         <source>Component:</source>
         <translation>Komponente:</translation>
     </message>
@@ -8743,17 +8763,17 @@ p, li { white-space: pre-wrap; }
         <translation>Höhe [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="170"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="173"/>
         <source>Window-sill height [m]:</source>
         <translation>Brüstungshöhe [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="190"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="193"/>
         <source>Distance in-between [m]:</source>
         <translation>Fensterabstand [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.ui" line="242"/>
+        <location filename="../../src/SVPropAddWindowWidget.ui" line="245"/>
         <source>Create</source>
         <translation>Erstellen</translation>
     </message>
@@ -8974,8 +8994,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="68"/>
+        <source>Select surfaces with selected component</source>
+        <translation>Wähle Räume mit selektierter Komponente aus</translation>
+    </message>
+    <message>
         <source>Select</source>
-        <translation>Auswählen</translation>
+        <translation type="vanished">Auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="78"/>
@@ -8993,19 +9017,23 @@ p, li { white-space: pre-wrap; }
         <translation>Komponente zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="106"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="126"/>
         <source>Assign the component selected in the table above to all currently selected surfaces.</source>
         <translation>Weisen Sie allen aktuell ausgewählten Flächen die in der obigen Tabelle ausgewählte Komponente zu.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="109"/>
         <source>Assign selected component</source>
-        <translation>Ausgewählte Komponente zuweisen</translation>
+        <translation type="vanished">Ausgewählte Komponente zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="116"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="106"/>
         <source>Connect surfaces with component...</source>
         <translation>Flächen mit Bauteil verbinden...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="129"/>
+        <source>Assign in table selected component</source>
+        <translation>Weise Komponente aus Tabelle zu</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="144"/>
@@ -9619,52 +9647,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="108"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="107"/>
         <source>All buildings</source>
         <translation>Alle Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="125"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="124"/>
         <source>All building levels</source>
         <translation>Alle Gebäudeebenen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="220"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="219"/>
         <source>Calculate floor area of selected rooms.</source>
         <translation>Berechnen Sie die Grundfläche der ausgewählten Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="220"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="254"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="288"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="322"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="219"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="253"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="287"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="321"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="233"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="301"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="232"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="300"/>
         <source>Calculation of floor areas was aborted.</source>
         <translation>Die Berechnung der Geschossflächen wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="254"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="253"/>
         <source>Calculate volumes of selected rooms.</source>
         <translation>Berechnen Sie die Volumina ausgewählter Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="267"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="335"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="266"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="334"/>
         <source>Calculation of volumes was aborted.</source>
         <translation>Die Volumenberechnung wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="288"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="287"/>
         <source>Calculate floor area of all rooms.</source>
         <translation>Berechnen Sie die Grundfläche aller Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="322"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="321"/>
         <source>Calculate volumes of all rooms.</source>
         <translation>Volumen aller Räume berechnen.</translation>
     </message>
@@ -9715,39 +9743,51 @@ p, li { white-space: pre-wrap; }
         <translation>Zonenvorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="66"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="62"/>
+        <source>Color only rooms with selected zone template</source>
+        <translation>Färbe nur Räume mit selektiertem Zonentemplate</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="69"/>
         <source>Replaces the component association of all objects with the currently selected component.</source>
         <translation>Ersetzt die Komponentenzuordnung aller Objekte durch die aktuell ausgewählte Komponente.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="69"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="72"/>
         <source>Exchange...</source>
         <translation>Austausch...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="76"/>
-        <source>Show only selected</source>
-        <translation>Nur ausgewählte anzeigen</translation>
-    </message>
-    <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="128"/>
-        <source>Assign selected zone template</source>
-        <translation>Ausgewählte Zonenvorlage zuweisen</translation>
+        <source>Assign in table selected zone template</source>
+        <translation>Weise in Tabelle selektiertes Zonentemplate zu</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="26"/>
+        <source>Show only selected</source>
+        <translation type="vanished">Nur ausgewählte anzeigen</translation>
+    </message>
+    <message>
+        <source>Assign selected zone template</source>
+        <translation type="vanished">Ausgewählte Zonenvorlage zuweisen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="49"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="46"/>
         <source>Color only selected</source>
-        <translation>Farbe nur ausgewählt</translation>
+        <translation type="vanished">Farbe nur ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="39"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="26"/>
         <source>Select</source>
         <translation>Auswählen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="79"/>
+        <source>Show only rooms with selected zone template</source>
+        <translation>Zeige nur Räume mit selektiertem Zonentemplate.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="89"/>
@@ -9755,17 +9795,17 @@ p, li { white-space: pre-wrap; }
         <translation>Ausgewählte Zimmer</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="95"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="108"/>
         <source>Selected zone template:</source>
         <translation>Ausgewählte Zonenvorlage:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="102"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="115"/>
         <source>Assign zone template...</source>
         <translation>Zonenvorlage zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="121"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="101"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
@@ -9780,73 +9820,74 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;ungültige Zonenvorlagen-ID&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="114"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="115"/>
         <source>None</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="120"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="121"/>
         <source>Zone template with invalid/unknown ID</source>
         <translation>Zonenvorlage mit ungültiger/unbekannter ID</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="122"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="123"/>
         <source>%1 [%2]</source>
         <translation>%1 [%2]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="126"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="127"/>
         <source>%1 different templates</source>
         <translation>%1 verschiedene Vorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="167"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="168"/>
         <source>Exclusive selection by zone template</source>
         <translation>Exklusive Auswahl nach Zonenvorlage</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="177"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="178"/>
         <source>Assign zone template</source>
         <translation>Zonenvorlage zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="177"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="178"/>
         <source>You may now select a zone template from the database, which will then be assigned to the selected rooms.</source>
         <translation>Sie können nun eine Zonenvorlage aus der Datenbank auswählen, die dann den ausgewählten Räumen zugewiesen wird.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="196"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="197"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="364"/>
         <source>Assigned zone template</source>
         <translation>Zugewiesene Zonenvorlage</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="226"/>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="240"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="227"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="241"/>
         <source>Replace template</source>
         <translation>Vorlage ersetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="226"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="227"/>
         <source>This will replace all associations with zone template &apos;%1 [%2]&apos; with another template.</source>
         <translation>Dadurch werden alle Zuordnungen mit der Zonenvorlage „%1 [%2]“ durch eine andere Vorlage ersetzt.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="240"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="241"/>
         <source>Zone template with id %1 no longer found in DB.</source>
         <translation>Zonenvorlage mit ID %1 nicht mehr in DB gefunden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="261"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="262"/>
         <source>Exchange zone template</source>
         <translation>Zonenvorlage austauschen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="303"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="304"/>
         <source>Select objects with zone template &apos;%1&apos;</source>
         <translation>Objekte mit Zonenvorlage „%1“ auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="305"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="306"/>
         <source>Select objects with invalid/missing zone template.</source>
         <translation>Wählen Sie Objekte mit ungültiger/fehlender Zonenvorlage aus.</translation>
     </message>
@@ -10046,18 +10087,18 @@ p, li { white-space: pre-wrap; }
         <translation>Hier ist ein positiver Wert erforderlich.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="419"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="424"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="417"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="422"/>
         <source>Not implemented, yet.</source>
         <translation>Noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="442"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="440"/>
         <source>Surface normal flipped</source>
         <translation>Oberflächennormale umgedreht</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1192"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1190"/>
         <source>Geometry modified</source>
         <translation>Geometrie geändert</translation>
     </message>
@@ -10750,9 +10791,9 @@ p, li { white-space: pre-wrap; }
         <translation>Sichttiefe [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSiteWidget.cpp" line="78"/>
-        <location filename="../../src/SVPropSiteWidget.cpp" line="93"/>
-        <location filename="../../src/SVPropSiteWidget.cpp" line="106"/>
+        <location filename="../../src/SVPropSiteWidget.cpp" line="77"/>
+        <location filename="../../src/SVPropSiteWidget.cpp" line="92"/>
+        <location filename="../../src/SVPropSiteWidget.cpp" line="105"/>
         <source>Grid property changed</source>
         <translation>Gittereigenschaft geändert</translation>
     </message>
@@ -12059,7 +12100,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="143"/>
         <source>Custom</source>
-        <translation>Brauch</translation>
+        <translation>Benutzerdefiniert</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="179"/>
