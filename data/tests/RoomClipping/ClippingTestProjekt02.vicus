@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.8">
+	<ProjectInfo>
+		<Created>Mo Aug 22 13:38:51 2022</Created>
+		<LastEdited>Do. Okt. 6 10:16:05 2022</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter />
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<CameraTranslation>9.94029 -10.4133 11.4322</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.744731</Wp>
+				<X>0.486681</X>
+				<Y>0.249768</Y>
+				<Z>0.382222</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="1000" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
+		</ViewSettings>
+		<Buildings>
+			<Building id="2" displayName="Einfamilienhaus">
+				<BuildingLevels>
+					<BuildingLevel id="224" displayName="EG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="35" displayName="2_Küche/Essen">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">20.19</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">49.22</IBK:Parameter>
+								<Surfaces>
+									<Surface id="95" displayName="EG_2_GD" displayColor="#963214">
+										<Polygon3D offset="-4.635 1.065 2.4384" normal="0 0 1" localX="1 8.74228e-08 -0">0 0, 2.15 0, 2.15 -1.6, 4.57 -1.6, 4.57 3.57, 0 3.57</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="37" displayName="4_Flur EG">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">14.12</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">34.43</IBK:Parameter>
+								<Surfaces>
+									<Surface id="109" displayName="EG_4_GD" displayColor="#963214">
+										<Polygon3D offset="1.485 -4.635 2.4384" normal="0 0 1" localX="-8.74228e-08 1 0">0 0, 3.95 0, 3.95 3.97, 2.52963 3.97, 1.80963 3.25, 0 3.25</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="38" displayName="5_HWR/technik">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">6.52</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">15.89</IBK:Parameter>
+								<Surfaces>
+									<Surface id="116" displayName="EG_5_GD_Schlafen" displayColor="#963214">
+										<Polygon3D offset="-1.915 -4.635 2.4384" normal="0 0 1" localX="-8.74228e-08 1 0">0 0, 1.7475 0, 2.5 0.7525, 2.5 2.72, 0 2.72</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="39" displayName="6_WC">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">5.8</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">14.14</IBK:Parameter>
+								<Surfaces>
+									<Surface id="122" displayName="EG_6_GD" displayColor="#963214">
+										<Polygon3D offset="-4.635 -1.985 2.4384" normal="0 0 1" localX="1 8.74228e-08 -0">0 0, 2 0, 2 2.9, 0 2.9</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+					<BuildingLevel id="225" displayName="DG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="32" displayName="10_Schlafen">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">20.09</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">50.46</IBK:Parameter>
+								<Surfaces>
+									<Surface id="66" displayName="DG_10_GD" displayColor="#566094">
+										<Polygon3D offset="0.31407 -4.635 2.8" normal="0 0 -1" localX="-1 -8.74228e-08 0">0 0, 4.94907 0, 4.94907 4.58195, 1.96863 4.58195, 1.96863 3.26764, 0 3.26764</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="90" idComponent="1000004" idSideBSurface="109">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>29</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="102" idComponent="1000004" idSideBSurface="95">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>33</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="121" idComponent="1000004" idSideASurface="66">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>32</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="122" idComponent="1000004" idSideBSurface="116">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>32</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="85" idComponent="1000004" idSideBSurface="122">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>39</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+		</ComponentInstances>
+		<PlainGeometry />
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10021" displayName="Zementestrich_300mm_1" color="#f000f9">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.399999976</IBK:Parameter>
+				</Material>
+				<Material id="1010001" displayName="DE: EPS |EN: &lt;new material&gt;" color="#00cbcd">
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1450</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.036</IBK:Parameter>
+				</Material>
+				<Material id="1010002" displayName="DE: Gipsputz  |EN: &lt;new material&gt;" color="#002be2">
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
+				</Material>
+				<Material id="1010003" displayName="DE: Kalksandstein MW |EN: &lt;new material&gt;" color="#5000b6">
+					<Category>Bricks</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.99</IBK:Parameter>
+				</Material>
+				<Material id="1010004" displayName="DE: Kalkzementputz |EN: &lt;new material&gt;" color="#ff01ce">
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1</IBK:Parameter>
+				</Material>
+				<Material id="1010005" displayName="DE: Stahlbeton 2% Armierung |EN: &lt;new material&gt;" color="#00abd2">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
+				</Material>
+				<Material id="1010006" displayName="DE: Perimeterdämmung XPS |EN: &lt;new material&gt;" color="#2307ff">
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">40</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1450</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.036</IBK:Parameter>
+				</Material>
+				<Material id="1010007" displayName="DE: Zementestrich |EN: &lt;new material&gt;" color="#00e633">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
+				</Material>
+				<Material id="1010008" displayName="DE: Normalbeton |EN: &lt;new material&gt;" color="#0073d8">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.65</IBK:Parameter>
+				</Material>
+				<Material id="1010009" displayName="DE: Bitumenbahnen |EN: &lt;new material&gt;" color="#903dff">
+					<Category>Coating</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1100</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.23</IBK:Parameter>
+				</Material>
+				<Material id="1010010" displayName="DE: Fliesen |EN: &lt;new material&gt;" color="#e40088">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2300</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.3</IBK:Parameter>
+				</Material>
+				<Material id="1010011" displayName="DE: Teppich |EN: &lt;new material&gt;" color="#ff973d">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+				</Material>
+				<Material id="1010012" displayName="DE: Linoleum |EN: &lt;new material&gt;" color="#00d10b">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1400</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.17</IBK:Parameter>
+				</Material>
+				<Material id="1010013" displayName="DE: Dachzeigel Ton |EN: &lt;new material&gt;" color="#ff0000">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">800</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1</IBK:Parameter>
+				</Material>
+				<Material id="1010014" displayName="DE: Mineralwollplatten |EN: &lt;new material&gt;" color="#5d3bff">
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">105</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1030</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.036</IBK:Parameter>
+				</Material>
+				<Material id="1010015" displayName="DE: Kiesschüttung |EN: &lt;new material&gt;" color="#f3008f">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+				</Material>
+				<Material id="1010016" displayName="DE: Vollziegel |EN: &lt;new material&gt;" color="#5d3fff">
+					<Category>Bricks</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.81</IBK:Parameter>
+				</Material>
+				<Material id="1010017" displayName="DE: Konstruktionsholz Fichte  |EN: &lt;new material&gt;" color="#55557f">
+					<Category>Woodbased</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">450</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1600</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.12</IBK:Parameter>
+				</Material>
+				<Material id="1010018" displayName="DE: Sparren + Dämmung (Fi + MW) |EN: &lt;new material&gt;" color="#7ede00">
+					<Notes>DE: Fi 0,24 + MW 0,76</Notes>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">188</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1167</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.3</IBK:Parameter>
+				</Material>
+				<Material id="1010019" displayName="DE: GK-Platte |EN: &lt;new material&gt;" color="#ffff7f">
+					<Category>BuildingBoards</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">900</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.25</IBK:Parameter>
+				</Material>
+				<Material id="1010020" displayName="DE: Polyvinylchlorid PVC |EN: &lt;new material&gt;" color="#73b600">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1390</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">900</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.17</IBK:Parameter>
+				</Material>
+				<Material id="5500000" displayName="de:Dummy-Material|en:Dummy material">
+					<DataSource>de:Dummy Database Plugin|en:Dummy Database Plugin</DataSource>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+					<IBK:Parameter name="Mu" unit="-">81</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="20035" displayName="DE: Außenwand KS MW WDVS">
+					<UsageType>OutsideWall</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>BrickMasonry</MaterialKind>
+					<DataSource>IDF Import</DataSource>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010003">
+							<IBK:Parameter name="Thickness" unit="m">0.24</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010001">
+							<IBK:Parameter name="Thickness" unit="m">0.16</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010004">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020001" displayName="DE: Bodenplatte zu Aufenthaltsraum  |EN: &lt;new construction type&gt;">
+					<UsageType>FloorToGround</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>Concrete</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010007">
+							<IBK:Parameter name="Thickness" unit="m">0.065</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010014">
+							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010009">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010005">
+							<IBK:Parameter name="Thickness" unit="m">0.4</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010008">
+							<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010006">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010015">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020002" displayName="DE: Geschossdecke |EN: &lt;new construction type&gt;">
+					<UsageType>Ceiling</UsageType>
+					<InsulationKind>NotInsulated</InsulationKind>
+					<MaterialKind>Concrete</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010007">
+							<IBK:Parameter name="Thickness" unit="m">0.065</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010014">
+							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010005">
+							<IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020003" displayName="DE: Außenwand Zigelmauerwerk WDVS |EN: &lt;new construction type&gt;">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010016">
+							<IBK:Parameter name="Thickness" unit="m">0.24</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010001">
+							<IBK:Parameter name="Thickness" unit="m">0.16</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010004">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020004" displayName="DE: Innenwand tragend MW  |EN: &lt;new construction type&gt;">
+					<UsageType>InsideWall</UsageType>
+					<InsulationKind>NotInsulated</InsulationKind>
+					<MaterialKind>BrickMasonry</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010016">
+							<IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020005" displayName="DE: Innenwand nichttragend MW |EN: &lt;new construction type&gt;">
+					<UsageType>InsideWall</UsageType>
+					<InsulationKind>NotInsulated</InsulationKind>
+					<MaterialKind>BrickMasonry</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010016">
+							<IBK:Parameter name="Thickness" unit="m">0.115</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020006" displayName="DE: Sparrendach |EN: &lt;new construction type&gt;">
+					<UsageType>SlopedRoof</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>Wood</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010019">
+							<IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010018">
+							<IBK:Parameter name="Thickness" unit="m">0.22</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010001">
+							<IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<Windows>
+				<Window id="1035001" displayName="DE: KS 2fach ISO Fenster AW |EN: &lt;new Window type&gt;" color="#ff192b" idGlazingSystem="1031001" methodFrame="None" methodDivider="None">
+					<IBK:Parameter name="FrameWidth" unit="m">0.06</IBK:Parameter>
+				</Window>
+			</Windows>
+			<WindowGlazingSystems>
+				<WindowGlazingSystem id="1031001" displayName="DE: 2-Scheiben ISO |EN: &lt;new Window Glazing System&gt;" color="#ffd911" modelType="Simple">
+					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.6</IBK:Parameter>
+					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+						<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
+					</LinearSplineParameter>
+				</WindowGlazingSystem>
+			</WindowGlazingSystems>
+			<BoundaryConditions>
+				<BoundaryCondition id="1010" displayName="DE: Innenoberfläche (nur Wärmeleitung, mit effektivem langwelligem Strahlungsaustausch) |EN: Inside surface (only heat conduction, with effective long wave radiation exchange)" color="#ff4000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6.8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="50182" displayName="Standard_Ext_Roof-component" color="#ff02e2">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20035</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000002" displayName="DE: Außenwand KS MW WDVS |EN: &lt;new component type&gt;" color="#55aa7f">
+					<Type>OutsideWall</Type>
+					<IdConstruction>20035</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000003" displayName="DE: Bodenplatte zu Aufenthaltsräumen |EN: &lt;new component type&gt;" color="#aa5500">
+					<Type>FloorToGround</Type>
+					<IdConstruction>1020001</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+					<ActiveLayerIndex>0</ActiveLayerIndex>
+				</Component>
+				<Component id="1000004" displayName="DE: Geschossdecke |EN: &lt;new component type&gt;" color="#ff557f">
+					<Type>Ceiling</Type>
+					<IdConstruction>1020002</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1010</IdSideBBoundaryCondition>
+					<ActiveLayerIndex>0</ActiveLayerIndex>
+				</Component>
+				<Component id="1000005" displayName="DE: Außenwand Ziegelmauerwerk |EN: &lt;new component type&gt;" color="#aaaa7f">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1020003</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000006" displayName="DE: Tragende Innenwand MW  |EN: &lt;new component type&gt;" color="#55ffff">
+					<Type>InsideWall</Type>
+					<IdConstruction>1020004</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1010</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000007" displayName="DE: Nichttragende Innenwand MW |EN: &lt;new component type&gt;" color="#55aaff">
+					<Type>InsideWall</Type>
+					<IdConstruction>1020005</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1010</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000008" displayName="DE: Sparrendach  |EN: &lt;new component type&gt;" color="#8b484b">
+					<Type>SlopedRoof</Type>
+					<IdConstruction>1020006</IdConstruction>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+			<SubSurfaceComponents>
+				<SubSurfaceComponent id="1040001" displayName="DE: Fenster AW |EN: &lt;new sub-surface&gt;" color="#6e2cff">
+					<Type>Window</Type>
+					<IdWindow>1035001</IdWindow>
+					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1013</IdSideBBoundaryCondition>
+				</SubSurfaceComponent>
+			</SubSurfaceComponents>
+			<SurfaceHeatings>
+				<SurfaceHeating id="1050001" displayName="DE: Fußbodenheizung |EN: &lt;new surface heating model&gt;" color="#6fff29" type="Ideal">
+					<HeatingCoolingCurvePoints>Tout:-14,20,23,30;Tsupply:35,20,23,18;</HeatingCoolingCurvePoints>
+					<IdPipe>3761147930</IdPipe>
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+					<IBK:Parameter name="PipeSpacing" unit="m">0.1</IBK:Parameter>
+					<IBK:Parameter name="MaxFluidVelocity" unit="m/s">1</IBK:Parameter>
+					<IBK:Parameter name="TemperatureDifferenceSupplyReturn" unit="K">7</IBK:Parameter>
+				</SurfaceHeating>
+			</SurfaceHeatings>
+			<Schedules>
+				<Schedule id="1060001" displayName="DE: Plan Wohnnutzung I 20°C |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7,10</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>20</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
+			<ZoneControlThermostats>
+				<ZoneControlThermostat id="1067501" displayName="DE: Wohnnutzung I  |EN: &lt;new zone control thermostat model&gt;" color="#66cf00">
+					<ControlValue>AirTemperature</ControlValue>
+					<ControllerType>Analog</ControllerType>
+					<IdHeatingSetpointSchedule>1060001</IdHeatingSetpointSchedule>
+					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+				</ZoneControlThermostat>
+			</ZoneControlThermostats>
+			<ZoneIdealHeatingCooling>
+				<ZoneIdealHeatingCooling id="1075001" displayName="DE: H/C Wohnungssnutzung I |EN: &lt;new zone ideal heating cooling model&gt;" color="#0be7ff">
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+				</ZoneIdealHeatingCooling>
+			</ZoneIdealHeatingCooling>
+			<ZoneTemplates>
+				<ZoneTemplate id="1082501" displayName="DE: Wohnnutzung |EN: &lt;new zone template&gt;" color="#ffaa7f">
+					<ControlThermostat>1067501</ControlThermostat>
+					<IdealHeatingCooling>1075001</IdealHeatingCooling>
+				</ZoneTemplate>
+			</ZoneTemplates>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
