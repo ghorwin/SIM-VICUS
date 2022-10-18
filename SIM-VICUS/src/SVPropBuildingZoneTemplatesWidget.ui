@@ -59,7 +59,7 @@
       <item row="1" column="0" colspan="4">
        <widget class="QCheckBox" name="checkBoxZoneTemplateColorOnlyActive">
         <property name="text">
-         <string>Color only selected</string>
+         <string>Color only rooms with selected zone template</string>
         </property>
        </widget>
       </item>
@@ -76,7 +76,7 @@
       <item row="2" column="0" colspan="4">
        <widget class="QCheckBox" name="checkBoxZoneTemplateShowOnlyActive">
         <property name="text">
-         <string>Show only selected</string>
+         <string>Show only rooms with selected zone template</string>
         </property>
        </widget>
       </item>
@@ -125,7 +125,7 @@
       <item row="3" column="5">
        <widget class="QPushButton" name="pushButtonAssignSelectedZoneTemplate">
         <property name="text">
-         <string>Assign selected zone template</string>
+         <string>Assign in table selected zone template</string>
         </property>
         <property name="iconSize">
          <size>

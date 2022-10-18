@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
+    <width>834</width>
     <height>758</height>
    </rect>
   </property>
@@ -65,7 +65,7 @@
          <string>Selects all objects/surfaces which are associated with the selected component.</string>
         </property>
         <property name="text">
-         <string>Select</string>
+         <string>Select surfaces with selected component</string>
         </property>
        </widget>
       </item>
@@ -101,16 +101,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonAssignComponentFromTable">
-          <property name="toolTip">
-           <string>Assign the component selected in the table above to all currently selected surfaces.</string>
-          </property>
-          <property name="text">
-           <string>Assign selected component</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushButtonAssignInsideComponent">
           <property name="text">
            <string>Connect surfaces with component...</string>
@@ -129,6 +119,16 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonAssignComponentFromTable">
+          <property name="toolTip">
+           <string>Assign the component selected in the table above to all currently selected surfaces.</string>
+          </property>
+          <property name="text">
+           <string>Assign in table selected component</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
