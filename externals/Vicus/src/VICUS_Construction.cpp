@@ -30,8 +30,12 @@ namespace VICUS {
 bool Construction::isValid(const VICUS::Database<Material> & materials) const {
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
 		if (!m_materialLayers[i].isValid(materials)) {
+			// NOTE: isValid() returns false also if material does not exist, which can happen for newly constructed constructions
 			const Material * mat = materials[m_materialLayers[i].m_idMaterial];
-			m_errorMsg = "Material '" + mat->m_displayName.string("de", true) + "' is not valid.";
+			if (mat == nullptr)
+				m_errorMsg = "No material referenced in this layer, yet";
+			else
+				m_errorMsg = "Material '" + mat->m_displayName.string("de", true) + "' is not valid.";
 			return false; // error, invalid layer thickness
 		}
 	}
