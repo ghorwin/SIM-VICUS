@@ -12,7 +12,7 @@
 
 #include <IBKMK_3DCalculations.h>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <QClipboard>
 #include <QTextStream>

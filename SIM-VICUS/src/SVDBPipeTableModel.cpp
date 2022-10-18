@@ -35,7 +35,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <NANDRAD_KeywordList.h>
 

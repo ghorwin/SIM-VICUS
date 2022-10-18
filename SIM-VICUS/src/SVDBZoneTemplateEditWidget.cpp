@@ -32,7 +32,7 @@
 #include <VICUS_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVDBZoneTemplateTreeModel.h"
 #include "SVConstants.h"

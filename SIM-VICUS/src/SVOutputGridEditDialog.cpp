@@ -6,7 +6,7 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <VICUS_Outputs.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 SVOutputGridEditDialog::SVOutputGridEditDialog(QWidget *parent) :
 	QDialog(parent),

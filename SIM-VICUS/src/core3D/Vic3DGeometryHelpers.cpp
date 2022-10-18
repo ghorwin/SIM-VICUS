@@ -26,7 +26,7 @@
 #include "Vic3DGeometryHelpers.h"
 
 #include <IBKMK_Triangulation.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 #include <VICUS_NetworkLine.h>
 
 #include <QQuaternion>

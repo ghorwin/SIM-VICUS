@@ -33,7 +33,7 @@
 
 #include <QTableWidgetItem>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),

@@ -32,7 +32,7 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Locale.h>
 
-#include "SV_Conversions.h"
+#include "SVConversions.h"
 #include "SVDBSurfaceHeatingTableModel.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"

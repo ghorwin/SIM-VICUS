@@ -43,7 +43,7 @@
 #include <QMessageBox>
 #include <QQuaternion>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"

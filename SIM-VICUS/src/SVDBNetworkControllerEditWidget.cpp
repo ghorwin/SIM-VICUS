@@ -4,7 +4,7 @@
 #include "SVDBNetworkControllerTableModel.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_Schedule.h>
 #include <VICUS_KeywordListQt.h>

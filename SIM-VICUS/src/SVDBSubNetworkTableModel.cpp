@@ -8,7 +8,7 @@
 #include <QTableView>
 #include <QHeaderView>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_SubNetwork.h>
 

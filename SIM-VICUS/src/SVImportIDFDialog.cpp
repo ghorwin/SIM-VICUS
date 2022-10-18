@@ -34,7 +34,7 @@
 #include <QTextCodec>
 #include <QScrollBar>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"

@@ -1,7 +1,7 @@
 #include "SVPropBuildingSurfaceConnectionWidget.h"
 #include "ui_SVPropBuildingSurfaceConnectionWidget.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_utilities.h>
 

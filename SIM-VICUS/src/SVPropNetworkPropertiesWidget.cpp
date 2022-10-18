@@ -34,7 +34,7 @@
 #include <VICUS_KeywordList.h>
 #include <VICUS_utilities.h>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVNavigationTreeWidget.h"

@@ -1,7 +1,7 @@
 ﻿#include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "ui_SVPropBuildingSurfaceHeatingWidget.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>

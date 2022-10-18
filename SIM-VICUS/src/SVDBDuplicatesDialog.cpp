@@ -1,7 +1,7 @@
 #include "SVDBDuplicatesDialog.h"
 #include "ui_SVDBDuplicatesDialog.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 #include <QHeaderView>
 
 #include <IBK_StringUtils.h>

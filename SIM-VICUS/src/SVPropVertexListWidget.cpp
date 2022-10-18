@@ -37,7 +37,7 @@
 #include <IBKMK_2DCalculations.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>

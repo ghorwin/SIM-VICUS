@@ -30,7 +30,7 @@
 #include <QElapsedTimer>
 
 #include <VICUS_Project.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"

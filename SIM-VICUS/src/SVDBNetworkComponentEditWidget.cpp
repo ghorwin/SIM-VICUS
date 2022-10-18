@@ -32,7 +32,7 @@
 #include "SVMainWindow.h"
 #include "SVStyle.h"
 #include "SVConstants.h"
-#include "SV_Conversions.h"
+#include "SVConversions.h"
 #include "SVChartUtils.h"
 
 #include <qwt_plot.h>

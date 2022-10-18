@@ -30,7 +30,7 @@
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"

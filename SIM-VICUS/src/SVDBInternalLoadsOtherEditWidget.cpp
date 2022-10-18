@@ -29,7 +29,7 @@
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Schedule.h>
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 #include <QtExt_LanguageHandler.h>
 
 #include "SVDBInternalLoadsTableModel.h"

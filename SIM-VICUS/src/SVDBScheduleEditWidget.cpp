@@ -39,7 +39,7 @@
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <qwt_plot_curve.h>
 

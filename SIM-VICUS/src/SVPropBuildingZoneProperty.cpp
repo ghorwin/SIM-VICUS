@@ -1,7 +1,7 @@
 #include "SVPropBuildingZoneProperty.h"
 #include "ui_SVPropBuildingZoneProperty.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include "SVStyle.h"
 #include "SVPropZonePropertyDelegate.h"

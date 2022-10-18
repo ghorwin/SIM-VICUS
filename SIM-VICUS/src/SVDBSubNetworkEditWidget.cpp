@@ -6,7 +6,7 @@
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <VICUS_KeywordList.h>
 #include <VICUS_utilities.h>

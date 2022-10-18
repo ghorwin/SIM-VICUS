@@ -42,7 +42,7 @@
 #include "SVGeometryView.h"
 #include "Vic3DConstants.h"
 #include "SVViewStateHandler.h"
-#include "SV_Conversions.h"
+#include "SVConversions.h"
 
 namespace Vic3D {
 

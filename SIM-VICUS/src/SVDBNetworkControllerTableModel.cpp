@@ -1,7 +1,7 @@
 #include "SVDBNetworkControllerTableModel.h"
 #include "SVConstants.h"
 
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <QIcon>
 #include <QHeaderView>

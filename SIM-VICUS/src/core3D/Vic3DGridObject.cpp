@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <VICUS_GridPlane.h>
-#include "SV_Conversions.h"
+#include "SVConversions.h"
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DTransform3D.h"

@@ -277,6 +277,7 @@ SOURCES += \
 
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
+	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
@@ -315,7 +316,6 @@ HEADERS  += \
     ../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
-	../../src/SV_Conversions.h \
 	../../src/actions/SVUndoAddBuilding.h \
 	../../src/actions/SVUndoAddBuildingLevel.h \
 	../../src/actions/SVUndoAddNetwork.h \

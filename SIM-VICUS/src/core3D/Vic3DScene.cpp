@@ -32,10 +32,10 @@
 #include <QApplication>
 
 #include <VICUS_Project.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
-#include <SV_Conversions.h>
+#include <SVConversions.h>
 
 #include <IBKMK_3DCalculations.h>
 
