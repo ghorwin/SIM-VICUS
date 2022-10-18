@@ -37,6 +37,7 @@
 #include "SVNavigationTreeItemDelegate.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyObjectName.h"
+#include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 #include "SVSmartSelectDialog.h"
 #include "SVPropEditGeometry.h"
@@ -81,9 +82,22 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::NetworkGeometryChanged :
 		case SVProjectHandler::BuildingGeometryChanged :
-		case SVProjectHandler::BuildingTopologyChanged :
-			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
+
 		break;
+		case SVProjectHandler::BuildingTopologyChanged : {
+			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
+			SVUndoModifyRoomZoneTemplateAssociation::Data * d = dynamic_cast<SVUndoModifyRoomZoneTemplateAssociation::Data *>(data);
+			if(d == nullptr)
+				break;	// leave switch case and update entire tree
+			for(const VICUS::Object *obj : d->m_objects) {
+				QTreeWidgetItem * item = m_treeItemMap[obj->m_id];
+				Q_ASSERT(item != nullptr);
+				m_ui->treeWidget->blockSignals(true);
+				// item->setExpanded(true);
+				m_ui->treeWidget->blockSignals(false);
+			}
+			return;
+		}
 
 		case SVProjectHandler::ObjectRenamed : {
 			SVUndoModifyObjectName::Data * d = dynamic_cast<SVUndoModifyObjectName::Data *>(data);

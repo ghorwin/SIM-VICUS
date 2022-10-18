@@ -30,6 +30,8 @@
 
 #include "SVUndoCommandBase.h"
 
+#include <VICUS_Room.h>
+
 /*! Modification of the zone template IDs in rooms.
 */
 class SVUndoModifyRoomZoneTemplateAssociation : public SVUndoCommandBase {
@@ -39,6 +41,12 @@ public:
 	SVUndoModifyRoomZoneTemplateAssociation(const QString & label,
 											const std::vector<unsigned int> & roomIDs,
 											unsigned int zoneTemplateID);
+
+	/*! The modification data object passed along with the undo action. */
+	class Data : public ModificationInfo {
+	public:
+		std::vector<const VICUS::Object*> m_objects;
+	};
 
 	virtual void undo();
 	virtual void redo();

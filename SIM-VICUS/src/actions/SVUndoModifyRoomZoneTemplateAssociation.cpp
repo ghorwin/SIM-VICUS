@@ -43,6 +43,8 @@ void SVUndoModifyRoomZoneTemplateAssociation::undo() {
 	// exchange zone template IDs
 	VICUS::Project & p = theProject();
 
+	Data d;
+
 	for (VICUS::Building & b : p.m_buildings) {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room & r : bl.m_rooms) {
@@ -59,12 +61,16 @@ void SVUndoModifyRoomZoneTemplateAssociation::undo() {
 
 				// swap current template ID and template ID in vector
 				std::swap(m_zoneTemplateIDs[idx], r.m_idZoneTemplate);
+
+				// now store also the information, that the room has been updated
+				const VICUS::Object *obj = dynamic_cast<VICUS::Object*>(&r);
+				Q_ASSERT(obj != nullptr);
+				d.m_objects.push_back(obj);
 			}
 		}
 	}
 	theProject().updatePointers();
-
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged, &d);
 }
 
 
