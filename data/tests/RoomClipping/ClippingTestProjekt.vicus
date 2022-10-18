@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.8">
 	<ProjectInfo>
 		<Created>Fr Sep 2 12:27:31 2022</Created>
-		<LastEdited>Do. Sept. 8 10:21:06 2022</LastEdited>
+		<LastEdited>Di Okt 18 15:49:27 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -11,12 +11,12 @@
 			<TimeZone>13</TimeZone>
 		</Location>
 		<ViewSettings>
-			<CameraTranslation>-5.50146 -45.5973 5.15914</CameraTranslation>
+			<CameraTranslation>-0.213422 -11.3036 19.7038</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.74908</Wp>
-				<X>0.656273</X>
-				<Y>0.0595619</Y>
-				<Z>0.0679895</Z>
+				<Wp>0.917898</Wp>
+				<X>0.396662</X>
+				<Y>-0.00662791</Y>
+				<Z>-0.00747967</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -39,7 +39,7 @@
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
 									<Surface id="5" displayName="Decke" displayColor="#963214">
-										<Polygon3D offset="-10 -30 2.7" normal="-0 0 1" localX="0 -1 0">0 0, 10 0, 10 10, 0 10</Polygon3D>
+										<Polygon3D offset="-5 10 -0.06" normal="-0 0 1" localX="0 -1 0">0 0, 10 0, 10 10, 0 10</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -48,21 +48,16 @@
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
 								<Surfaces>
 									<Surface id="12" displayName="Boden2" displayColor="#566094">
-										<Polygon3D offset="4.71592 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+										<Polygon3D offset="10 10 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
+									</Surface>
+									<Surface id="14" displayName="Boden2" displayColor="#566094">
+										<Polygon3D offset="-1 11 9.53674e-09" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="13" displayName="RaumWest">
 								<IBK:Parameter name="Area" unit="m2">100</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">270</IBK:Parameter>
-								<Surfaces>
-									<Surface id="15" displayName="Boden" displayColor="#566094">
-										<Polygon3D offset="-6.682 -30 2.76" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
-									</Surface>
-									<Surface id="16" displayName="Boden3" displayColor="#566094">
-										<Polygon3D offset="-6.082 -30 2.86" normal="0 -0 -1" localX="1 0 0">0 0, 0 10, -10 10, -10 0</Polygon3D>
-									</Surface>
-								</Surfaces>
 							</Room>
 						</Rooms>
 					</BuildingLevel>
@@ -72,8 +67,7 @@
 		<ComponentInstances>
 			<ComponentInstance id="3" idComponent="1011" idSideASurface="5" />
 			<ComponentInstance id="13" idComponent="50014" idSideASurface="12" />
-			<ComponentInstance id="16" idComponent="50014" idSideASurface="15" />
-			<ComponentInstance id="18" idComponent="50014" idSideASurface="16" />
+			<ComponentInstance id="16" idComponent="50014" idSideASurface="14" />
 		</ComponentInstances>
 		<PlainGeometry />
 		<EmbeddedDatabase>
