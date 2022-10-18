@@ -424,8 +424,10 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 		return; // invalid vertex input
 	n.normalize();
 
-	int sameDirectionCount = 0;
+	/* das ist alt und kann weg da die richtung der normalen nicht immer richtig ist.
+	 * das wird an anderer stelle entschieden
 
+	int sameDirectionCount = 0;
 	// now process all other points and generate their normal vectors as well
 	for (unsigned int i=1; i<verts.size(); ++i) {
 		IBKMK::Vector3D vx = verts[(i+1) % verts.size()] - verts[i];
@@ -449,8 +451,7 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 		// invert our normal vector
 		n *= -1;
 	}
-
-	IBKMK::Vector3D normalHeiko = getNormal(verts);
+	*/
 
 	// save-guard against degenerate polygons (i.e. all points close to each other or whatever error may cause
 	// the normal vector to have near zero magnitude... this may happen for extremely small polygons, when
