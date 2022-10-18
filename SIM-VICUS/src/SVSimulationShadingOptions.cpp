@@ -353,6 +353,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	// double minArea = 0.1; //1e-4;
 
+	unsigned int skippedSmallSurfaces = 0;
+	unsigned int skippedSurfaceWithoutBCtoSky = 0;
+
+
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
 		if( !s->geometry().isValid() )
@@ -361,8 +365,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		if ( s->m_componentInstance == nullptr )
 			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
 
-		if(const_cast<VICUS::Surface *>(s)->geometry().area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
+		if (const_cast<VICUS::Surface *>(s)->geometry().area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES) {
+			++skippedSmallSurfaces;
 			continue; // we skip small surfaces, since they are not exported to NANDRAD anyway
+		}
 
 		// we want to take only surface connected to ambient, that means, the associated component instance
 		// must have one zone with ID 0 assigned
@@ -373,33 +379,41 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		// check if this is an surface to outside air and not to ground
 		const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 
+		// NOTE: we only include a surface in the calculation check, if it is not a ground surfaces.
+		//       Hence, if the surface has no component, or not a BC assigned, we skip the surface.
+
 		// find component and boundary condition to check if this is a surface with ground contact
-		if(comp != nullptr){
-			unsigned int bbId = VICUS::INVALID_ID;
-			if(hasSideAValidId)
+		if (comp != nullptr) {
+			unsigned int bbId;
+			if (hasSideAValidId)
 				bbId = comp->m_idSideBBoundaryCondition;
 			else
 				bbId = comp->m_idSideABoundaryCondition;
 
-			if(bbId != VICUS::INVALID_ID){
-				const VICUS::BoundaryCondition *bb = VICUS::element(project().m_embeddedDB.m_boundaryConditions, bbId);
-				if(bb == nullptr)
-					continue;
-				if(bb->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard){
-					// now we found a surface contact to ground or other zone type
-					// so we assume this can not be a surface to outside
-					// therefor no sun
+			if (bbId == VICUS::INVALID_ID)
+				continue; // adiabatic surface, skipping this is intentional and does not need to pop-up a warning message
+
+			const VICUS::BoundaryCondition *bb = VICUS::element(project().m_embeddedDB.m_boundaryConditions, bbId);
+			if (bb == nullptr) {
+				// no BB assigned (adiabatic surface?) or BBID invalid
+				++skippedSurfaceWithoutBCtoSky;
+				continue;
+			}
+			else {
+				// does the surface face the outside?
+				if (bb->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard)
+				{
+					// no, inside or connected to constant zone... skip
+					++skippedSurfaceWithoutBCtoSky;
 					continue;
 				}
 			}
-			else
-				// this is a adiabatic surface -> skip
-				continue;
 		}
-		else
+		else {
+			// no component assigned, skip
+			++skippedSurfaceWithoutBCtoSky;
 			continue;
-
-		// qDebug() << "Added surface " << s->m_displayName << " to shading calculation";
+		}
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
@@ -412,6 +426,28 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
 																s->m_parent == nullptr) );
+	}
+
+	if (skippedSmallSurfaces != 0) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "shading-calculation-skipped-small-surfaces", QString(),
+														 tr("%1 surfaces were skipped, because their surface area was below %2 m2.")
+														 .arg(skippedSmallSurfaces).arg(VICUS::MIN_AREA_FOR_EXPORTED_SURFACES));
+		return;
+	}
+
+	// not a single surface left?
+	if (selSurf.empty()) {
+		QMessageBox::critical(this, QString(), tr("All surfaces have been filtered out because of invalid/missing components or boundary conditions, "
+												  "or because they are not facing the sky. Please check your model!"));
+		return;
+	}
+
+	// some surfaces skipped because of missing/invalid BC?
+	if (skippedSurfaceWithoutBCtoSky != 0) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "shading-calculation-skipped-inside-surfaces", QString(),
+														 tr("%1 surfaces were skipped, because they have no component assignment or have invalid boundary conditions assigned.")
+														 .arg(skippedSmallSurfaces).arg(VICUS::MIN_AREA_FOR_EXPORTED_SURFACES));
+		return;
 	}
 
 	// *** compose vector with selected sub-surfaces
