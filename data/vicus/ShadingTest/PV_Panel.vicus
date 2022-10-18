@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.9">
+	<ProjectInfo>
+		<Created>Di. Okt. 18 10:31:28 2022</Created>
+		<LastEdited>Di. Okt. 18 10:32:25 2022</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter />
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<CameraTranslation>15.2815 -41.5743 22.9825</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.812108</Wp>
+				<X>0.583221</X>
+				<Y>0.0105257</Y>
+				<Z>0.0146593</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="500" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Gebäude">
+				<BuildingLevels>
+					<BuildingLevel id="2" displayName="Erdgeschoss">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="3" displayName="Zimmer">
+								<IBK:Parameter name="Area" unit="m2">104</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">280.8</IBK:Parameter>
+								<Surfaces>
+									<Surface id="4" displayName="Boden" displayColor="#566094">
+										<Polygon3D offset="0 8 0" normal="-0 -0 -1" localX="0 1 0">0 0, 0 13, -8 13, -8 0</Polygon3D>
+									</Surface>
+									<Surface id="5" displayName="Decke" displayColor="#963214">
+										<Polygon3D offset="0 0 2.7" normal="0 0 1" localX="1 0 0">0 0, 13 0, 13 8, 0 8</Polygon3D>
+									</Surface>
+									<Surface id="6" displayName="Wand 1" displayColor="#c8c88c">
+										<Polygon3D offset="13 8 0" normal="0 1 -0" localX="-1 0 0">0 0, 13 0, 13 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="7" displayName="Wand 2" displayColor="#c8c88c">
+										<Polygon3D offset="13 0 0" normal="1 0 0" localX="0 1 0">0 0, 8 0, 8 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="8" displayName="Wand 3" displayColor="#c8c88c">
+										<Polygon3D offset="0 0 0" normal="0 -1 0" localX="1 0 0">0 0, 13 0, 13 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="9" displayName="Wand 4" displayColor="#c8c88c">
+										<Polygon3D offset="0 8 0" normal="-1 0 0" localX="0 -1 0">0 0, 8 0, 8 2.7, 0 2.7</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10" displayName="Dach">
+								<IBK:Parameter name="Area" unit="m2">104</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">97.06666667</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Boden" displayColor="#566094">
+										<Polygon3D offset="0 0 2.7" normal="-0 0 -1" localX="-1 0 0">0 0, 0 8, -13 8, -13 0</Polygon3D>
+									</Surface>
+									<Surface id="12" displayName="Dachfläche 1" displayColor="#566094">
+										<Polygon3D offset="0 0 2.7" normal="0 -0.447214 0.894427" localX="1 0 0">0 0, 13 0, 11.7 4.47214, 1.3 4.47214</Polygon3D>
+									</Surface>
+									<Surface id="13" displayName="Dachfläche 2" displayColor="#566094">
+										<Polygon3D offset="13 8 2.7" normal="0 0.447214 0.894427" localX="-1 0 0">0 0, 13 0, 11.7 4.47214, 1.3 4.47214</Polygon3D>
+									</Surface>
+									<Surface id="14" displayName="Dachfläche 3" displayColor="#566094">
+										<Polygon3D offset="13 0 2.7" normal="0.838444 -0 0.544988" localX="0 1 0">0 0, 8 0, 4 2.38537</Polygon3D>
+									</Surface>
+									<Surface id="15" displayName="Dachfläche 4" displayColor="#566094">
+										<Polygon3D offset="0 8 2.7" normal="-0.838444 0 0.544988" localX="0 -1 0">0 0, 8 0, 4 2.38537</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+					<BuildingLevel id="21" displayName="Erdgeschoss">
+						<Elevation>-0.0351929</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="22" displayName="Zimmer">
+								<IBK:Parameter name="Area" unit="m2">104</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">280.8</IBK:Parameter>
+								<Surfaces>
+									<Surface id="23" displayName="Boden" displayColor="#566094">
+										<Polygon3D offset="15.9998 7.92961 -0.0351929" normal="-0 -0 -1" localX="0 1 0">0 0, 0 13, -8 13, -8 0</Polygon3D>
+									</Surface>
+									<Surface id="25" displayName="Decke" displayColor="#963214">
+										<Polygon3D offset="15.9998 -0.0703859 2.66481" normal="0 0 1" localX="1 0 0">0 0, 13 0, 13 8, 0 8</Polygon3D>
+									</Surface>
+									<Surface id="27" displayName="Wand 1" displayColor="#c8c88c">
+										<Polygon3D offset="28.9998 7.92961 -0.0351929" normal="0 1 -0" localX="-1 0 0">0 0, 13 0, 13 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="29" displayName="Wand 2" displayColor="#c8c88c">
+										<Polygon3D offset="28.9998 -0.0703859 -0.0351929" normal="1 0 0" localX="0 1 0">0 0, 8 0, 8 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="31" displayName="Wand 3" displayColor="#c8c88c">
+										<Polygon3D offset="15.9998 -0.0703859 -0.0351929" normal="0 -1 0" localX="1 0 0">0 0, 13 0, 13 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="33" displayName="Wand 4" displayColor="#c8c88c">
+										<Polygon3D offset="15.9998 7.92961 -0.0351929" normal="-1 0 0" localX="0 -1 0">0 0, 8 0, 8 2.7, 0 2.7</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="35" displayName="Dach">
+								<IBK:Parameter name="Area" unit="m2">104</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">97.06666667</IBK:Parameter>
+								<Surfaces>
+									<Surface id="36" displayName="Boden" displayColor="#566094">
+										<Polygon3D offset="15.9998 -0.0703859 2.66481" normal="-0 0 -1" localX="-1 0 0">0 0, 0 8, -13 8, -13 0</Polygon3D>
+									</Surface>
+									<Surface id="38" displayName="Dachfläche 1" displayColor="#566094">
+										<Polygon3D offset="15.9998 -0.0703859 2.66481" normal="0 -0.447214 0.894427" localX="1 0 0">0 0, 13 0, 11.7 4.47214, 1.3 4.47214</Polygon3D>
+									</Surface>
+									<Surface id="39" displayName="Dachfläche 2" displayColor="#566094">
+										<Polygon3D offset="28.9998 7.92961 2.66481" normal="0 0.447214 0.894427" localX="-1 0 0">0 0, 13 0, 11.7 4.47214, 1.3 4.47214</Polygon3D>
+									</Surface>
+									<Surface id="40" displayName="Dachfläche 3" displayColor="#566094">
+										<Polygon3D offset="28.9998 -0.0703859 2.66481" normal="0.838444 -0 0.544988" localX="0 1 0">0 0, 8 0, 4 2.38537</Polygon3D>
+									</Surface>
+									<Surface id="41" displayName="Dachfläche 4" displayColor="#566094">
+										<Polygon3D offset="15.9998 7.92961 2.66481" normal="-0.838444 0 0.544988" localX="0 -1 0">0 0, 8 0, 4 2.38537</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" idComponent="0" idSideASurface="4" />
+			<ComponentInstance id="3" idComponent="0" idSideASurface="5" />
+			<ComponentInstance id="4" idComponent="0" idSideASurface="6" />
+			<ComponentInstance id="5" idComponent="0" idSideASurface="7" />
+			<ComponentInstance id="6" idComponent="0" idSideASurface="8" />
+			<ComponentInstance id="7" idComponent="0" idSideASurface="9" />
+			<ComponentInstance id="9" idSideASurface="11" />
+			<ComponentInstance id="24" idComponent="0" idSideASurface="23" />
+			<ComponentInstance id="26" idComponent="0" idSideASurface="25" />
+			<ComponentInstance id="28" idComponent="0" idSideASurface="27" />
+			<ComponentInstance id="30" idComponent="0" idSideASurface="29" />
+			<ComponentInstance id="32" idComponent="0" idSideASurface="31" />
+			<ComponentInstance id="34" idComponent="0" idSideASurface="33" />
+			<ComponentInstance id="37" idSideASurface="36" />
+		</ComponentInstances>
+		<PlainGeometry>
+			<Surfaces>
+				<Surface id="19" displayName="PV Panel" displayColor="#206000">
+					<Polygon3D offset="2.54852 0.189242 3.13003" normal="0 -0.447214 0.894427" localX="1 0 0">0 0, 8 0, 8 3.59487, 2.38419e-07 3.59487</Polygon3D>
+				</Surface>
+			</Surfaces>
+		</PlainGeometry>
+		<EmbeddedDatabase />
+		<FMIDescription />
+	</Project>
+</VicusProject>
