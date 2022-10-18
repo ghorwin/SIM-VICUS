@@ -80,7 +80,7 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 	m_shading(new SH::StructuralShading)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->gridLayoutWidget->setMargin(0);
 
 	QPalette p;
 
@@ -230,16 +230,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	std::vector<SH::StructuralShading::ShadingObject> selSurf;
 
 	// We take all our selected surfaces
-////	if (m_useOnlySelectedSurfaces) {
-//	if (/* DISABLES CODE */ (true)) {
-//		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
-//		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
-//		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
-//	}
-//	else {
+	if (m_ui->radioButtonSelectedGeometry->isChecked()) {
+		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
+		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
+		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
+	}
+	else {
 		std::set<const VICUS::Object*> sel;
 		// take all, regardless of visibility or selection state
-		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), true, true);
+		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), false, false);
 		// filter out surfaces
 		m_selSurfaces.clear();
 		m_selSubSurfaces.clear();
@@ -260,7 +259,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					m_selObstacles.push_back(surf);
 			}
 		}
-//	}
+	}
 
 	const NANDRAD::Location &loc = *m_location;
 	// all checks have been made already in updateUi()
@@ -289,7 +288,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	}
 
 	// we need to handle the case that we have a climate data file path, but no longitude/latitude given
-
+	if ( m_selSurfaces.empty() && m_selSubSurfaces.empty() ) {
+		QMessageBox::critical(this, QString(), "No (sub-)surfaces have been selected!");
+		return;
+	}
 
 	if ( !m_ui->lineEditGridSize->isValid() ) {
 		QMessageBox::critical(this, QString(), "Grid size must be > 0 m!");
@@ -382,7 +384,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		else
 			continue;
 
-		qDebug() << "Added surface " << s->m_displayName << " to shading calculation";
+		// qDebug() << "Added surface " << s->m_displayName << " to shading calculation";
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
@@ -438,7 +440,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
 
-		qDebug() << "Adding sub-surface '" << ss->m_displayName << "'";
+		// qDebug() << "Adding sub-surface '" << ss->m_displayName << "'";
 	}
 
 	m_shading->setGeometry(selSurf, selObst);
