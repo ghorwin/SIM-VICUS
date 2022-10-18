@@ -436,7 +436,7 @@ ClipperLib::Path Project::convertVec2DToClipperPath(const std::vector<IBKMK::Vec
 	ClipperLib::Path path;
 	for(const IBKMK::Vector2D &p : vertexes){
 		qDebug() << "Point x: " << p.m_x << " | y: " << p.m_y;
-		path << ClipperLib::IntPoint(static_cast<long long>((double)p.m_x * SCALE_FACTOR),
+		path << ClipperLib::IntPoint(static_cast<long long>(p.m_x * SCALE_FACTOR),
 										static_cast<long long>(p.m_y * SCALE_FACTOR));
 	}
 
@@ -446,7 +446,7 @@ ClipperLib::Path Project::convertVec2DToClipperPath(const std::vector<IBKMK::Vec
 std::vector<IBKMK::Vector2D> Project::convertClipperPathToVec2D(const ClipperLib::Path &path){
 	std::vector<IBKMK::Vector2D>  poly;
 	for(const ClipperLib::IntPoint &p : path)
-		poly.push_back(IBKMK::Vector2D(p.X / SCALE_FACTOR, p.Y / SCALE_FACTOR));
+		poly.push_back(IBKMK::Vector2D((double)p.X / SCALE_FACTOR, (double)p.Y / SCALE_FACTOR));
 
 	return poly;
 }
