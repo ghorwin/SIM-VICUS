@@ -53,6 +53,7 @@
 #include "SVMainWindow.h"
 #include "SVStyle.h"
 #include "SVClimateDataTableModel.h"
+#include "SVSettings.h"
 
 
 class ShadingCalculationProgress : public SH::Notification {
@@ -229,11 +230,33 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	std::vector<SH::StructuralShading::ShadingObject> selObst;
 	std::vector<SH::StructuralShading::ShadingObject> selSurf;
 
+	if ( !m_ui->lineEditGridSize->isValid() ) {
+		QMessageBox::critical(this, QString(), tr("Grid size must be > 0 m!"));
+		return;
+	}
+
+	if ( !m_ui->lineEditSunCone->isValid() ) {
+		QMessageBox::critical(this, QString(), tr("Half-angle of sun cone must be > 0 Deg!"));
+		return;
+	}
+
+	if ( !m_ui->lineEditSteps->isValid() ) {
+		QMessageBox::critical(this, QString(), tr("Steps per hour must be between 1 and 60!"));
+		return;
+	}
+
 	// We take all our selected surfaces
 	if (m_ui->radioButtonSelectedGeometry->isChecked()) {
 		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
 		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
+
+		// we need to handle the case that we have a climate data file path, but no longitude/latitude given
+		if ( m_selSurfaces.empty() && m_selSubSurfaces.empty() ) {
+			QMessageBox::critical(this, QString(), tr("No (sub-)surfaces have been selected."
+								  "Note that shading factors won't be generated for obstacles/annonymous geometry!"));
+			return;
+		}
 	}
 	else {
 		std::set<const VICUS::Object*> sel;
@@ -259,6 +282,18 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					m_selObstacles.push_back(surf);
 			}
 		}
+		if (m_selSurfaces.empty() && m_selSubSurfaces.empty()) {
+			QMessageBox::critical(this, QString(), tr("The current project does not contain any surfaces to compute shading factors for. "
+													  "Note that shading factors won't be generated for obstacles/annonymous geometry!"));
+			return;
+		}
+		if (SVSettings::instance().showDoNotShowAgainQuestion(this, "shading-calculation-with-entire-geometry", QString(),
+				tr("Shading calculation will be done using all surfaces of the project, regardless of whether "
+				   "they are currently visible or not. Currently %1 surfaces, %2 sub-surfaces and %3 obstacles have been selected. "
+				   "For large projects this may lead to large simulation time. Continue?")
+															  .arg(m_selSurfaces.size()).arg(m_selSubSurfaces.size()).arg(m_selObstacles.size()),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			return;
 	}
 
 	const NANDRAD::Location &loc = *m_location;
@@ -287,26 +322,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		}
 	}
 
-	// we need to handle the case that we have a climate data file path, but no longitude/latitude given
-	if ( m_selSurfaces.empty() && m_selSubSurfaces.empty() ) {
-		QMessageBox::critical(this, QString(), "No (sub-)surfaces have been selected!");
-		return;
-	}
-
-	if ( !m_ui->lineEditGridSize->isValid() ) {
-		QMessageBox::critical(this, QString(), "Grid size must be > 0 m!");
-		return;
-	}
-
-	if ( !m_ui->lineEditSunCone->isValid() ) {
-		QMessageBox::critical(this, QString(), "Half-angle of sun cone must be > 0 Deg!");
-		return;
-	}
-
-	if ( !m_ui->lineEditSteps->isValid() ) {
-		QMessageBox::critical(this, QString(), "Steps per hour must be between 1 and 60!");
-		return;
-	}
 
 	double sunConeDeg = m_ui->lineEditSunCone->value();
 	double stepDuration = 3600/m_ui->lineEditSteps->value();

@@ -2,21 +2,59 @@
 <VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Di. Okt. 18 10:31:28 2022</Created>
-		<LastEdited>Di. Okt. 18 10:32:25 2022</LastEdited>
+		<LastEdited>Di. Okt. 18 14:05:01 2022</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/_IBK-Apps/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
-		<SolverParameter />
-		<SimulationParameter />
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<Location>
-			<TimeZone>13</TimeZone>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Stundenwerte">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>15.2815 -41.5743 22.9825</CameraTranslation>
+			<CameraTranslation>7.47826 -37.8003 23.9096</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.812108</Wp>
-				<X>0.583221</X>
-				<Y>0.0105257</Y>
-				<Z>0.0146593</Z>
+				<Wp>0.846739</Wp>
+				<X>0.527383</X>
+				<Y>-0.0369795</Y>
+				<Z>-0.0593697</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
