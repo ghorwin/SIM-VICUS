@@ -109,10 +109,8 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 	m_ui->tableWidgetBoundaryConditions->blockSignals(false);
 	m_ui->tableWidgetBoundaryConditions->selectRow(std::min(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 
+	// enable/disable edit/select button based on current scene selection and selection in table view
 	on_tableWidgetBoundaryConditions_itemSelectionChanged();
-
-	m_ui->pushButtonEditBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
-	m_ui->pushButtonSelectBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
 }
 
 
