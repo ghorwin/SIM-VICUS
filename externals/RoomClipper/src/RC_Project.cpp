@@ -163,11 +163,6 @@ void Project::clipSurfaces() {
 				}
 			}
 
-			if(vertexes.size()>1000 || vertexes.empty()){
-				int x=0;
-			}
-
-
 			for(const extPolygon &clippingPoly : clippingPolygons)
 				qDebug() << "Anzahl der Punkte: " << clippingPoly.m_polygon.vertexes().size();
 
@@ -180,14 +175,19 @@ void Project::clipSurfaces() {
 				doClipperClipping(clippingPolygons.back(), extPolygon(vertexes), mainDiffsTemp, mainIntersectionsTemp);
 				clippingPolygons.pop_back();
 				mainDiffs.insert(mainDiffs.end(), mainDiffsTemp.begin(), mainDiffsTemp.end());
+
 				qDebug() << "MainDiffs";
+
 				for(const extPolygon &polyPrint : mainDiffs){
 					qDebug() << "MainDiff";
 					for(const IBKMK::Vector2D pPrint : polyPrint.m_polygon.vertexes())
 						qDebug() << pPrint.m_x << " " << pPrint.m_y;
 				}
+
 				mainIntersections.insert(mainIntersections.end(), mainIntersectionsTemp.begin(), mainIntersectionsTemp.end());
+
 				qDebug() << "Intersections";
+
 				for(const extPolygon &polyPrint : mainIntersections){
 					qDebug() << "Intersection";
 					for(const IBKMK::Vector2D pPrint : polyPrint.m_polygon.vertexes())
@@ -235,9 +235,6 @@ void Project::clipSurfaces() {
 				if(diffPoly.m_polygon.vertexes().empty()){
 					erasePos.insert(erasePos.begin(), idx);
 					continue;
-				}
-				if(diffPoly.m_polygon.vertexes().size()>1000){
-					int iiioi = 0;
 				}
 				clippingPolygons.push_back(diffPoly);
 			}
@@ -781,7 +778,6 @@ void Project::doClipperClipping(const extPolygon &surf,
 	// set up second polygon for clipper
 	qDebug() << "Other polygon line for clipping. ";
 	otherPolyClp = convertVec2DToClipperPath(otherSurf.m_polygon.vertexes());
-	bool orientationOtherPoly = ClipperLib::Orientation(otherPolyClp);
 
 	// Init PolyNode
 	ClipperLib::PolyNode pnOtherMain;
@@ -794,7 +790,6 @@ void Project::doClipperClipping(const extPolygon &surf,
 			qDebug() << "Adding hole with Index " << idxHole << " to Clipper data structure";
 
 			otherHoleClp = convertVec2DToClipperPath(holePoly.vertexes());
-			bool orientationHolePoly = ClipperLib::Orientation(holeClp);
 
 			// Init PolyNode
 			ClipperLib::PolyNode pnHole;
