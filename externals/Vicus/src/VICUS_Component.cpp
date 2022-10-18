@@ -47,8 +47,6 @@ bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS
 		const BoundaryCondition *bcA = bcs[m_idSideABoundaryCondition];
 		const BoundaryCondition *bcB = bcs[m_idSideBBoundaryCondition];
 
-		bool hasSetpointTemperature4OtherZone = false;
-
 		if (bcA == nullptr && bcB == nullptr) {
 			m_errorMsg = "Boundary Condition A and B is not set.";
 			return false;
