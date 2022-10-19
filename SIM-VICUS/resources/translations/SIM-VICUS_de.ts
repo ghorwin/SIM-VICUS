@@ -6909,7 +6909,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="130"/>
         <source>Zone controls</source>
-        <translation>Zonenspezifische Definitionen</translation>
+        <translation>Zonenspezifische Regelungen</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="162"/>
