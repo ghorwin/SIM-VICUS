@@ -194,7 +194,7 @@ private:
 		This function switches also between AddGeometry and EditGeometry mode, when first selection is made or
 		everything is deselected.
 	*/
-	void updateUi();
+	void updateUi(bool resetLCS = true);
 
 	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly.
 		This function is called whenever the user switches between transformation operations and options, and hereby

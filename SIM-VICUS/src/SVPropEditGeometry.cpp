@@ -239,7 +239,15 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
 		case SVProjectHandler::AllModified:
+			// When the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection.
+			updateUi();
+			break;
 		case SVProjectHandler::BuildingGeometryChanged:
+			// When the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection.
+			updateUi(false);
+			break;
 		case SVProjectHandler::NodeStateModified:
 			// When the building geometry has changed, we need to update the geometrical info
 			// in the widget based on the current selection.
@@ -465,7 +473,7 @@ void SVPropEditGeometry::on_lineEditCopyZ_editingFinishedSuccessfully() {
 
 // *** PRIVATE FUNCTIONS ***
 
-void SVPropEditGeometry::updateUi() {
+void SVPropEditGeometry::updateUi(bool resetLCS) {
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	Q_ASSERT(cso != nullptr);
 
@@ -533,7 +541,8 @@ void SVPropEditGeometry::updateUi() {
 	// NOTE: this function is being called even if edit geometry property widget is not
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[OM_Global]);
 	// position local coordinate system
-	cso->setTranslation(IBKVector2QVector(m_bbCenter[OM_Global]) );
+	if(resetLCS)
+		cso->setTranslation(IBKVector2QVector(m_bbCenter[OM_Global]) );
 
 	// only adjust local coordinate system, if this widget is visible
 	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {
@@ -1049,10 +1058,15 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
 			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
 			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_x - lowerValuesOrig.m_x) > 1e-4);
-			IBK_ASSERT(std::fabs(upperValuesOrig.m_y - lowerValuesOrig.m_y) > 1e-4);
-			double scaleX = upperValuesNew.m_x/upperValuesOrig.m_x;
-			double scaleY = upperValuesNew.m_y/upperValuesOrig.m_y;
+
+			IBKMK::Vector2D diffOrig, diffNew;
+			diffOrig = upperValuesOrig - lowerValuesOrig;
+			diffNew =  upperValuesNew  - lowerValuesNew;
+
+			IBK_ASSERT(std::fabs(diffOrig.m_x) > 1e-4);
+			IBK_ASSERT(std::fabs(diffOrig.m_y) > 1e-4);
+			double scaleX = diffNew.m_x/diffOrig.m_x;
+			double scaleY = diffNew.m_y/diffOrig.m_y;
 
 			std::vector<VICUS::SubSurface> modSubs = modS.subSurfaces();
 			for (VICUS::SubSurface & sub : modSubs) {
@@ -1195,7 +1209,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	m_ui->pushButtonCancel->setEnabled(false);
 	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	// and update our inputs again
-	updateUi();
+	updateUi(false);
 }
 
 
