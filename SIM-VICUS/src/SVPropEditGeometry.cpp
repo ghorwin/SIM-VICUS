@@ -239,18 +239,14 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
 		case SVProjectHandler::AllModified:
-			// When the building geometry has changed, we need to update the geometrical info
-			// in the widget based on the current selection.
 			updateUi();
 			break;
 		case SVProjectHandler::BuildingGeometryChanged:
 			// When the building geometry has changed, we need to update the geometrical info
-			// in the widget based on the current selection.
+			// in the widget based on the current selection. LCS is not moved.
 			updateUi(false);
 			break;
 		case SVProjectHandler::NodeStateModified:
-			// When the building geometry has changed, we need to update the geometrical info
-			// in the widget based on the current selection.
 			updateUi();
 			break;
 
