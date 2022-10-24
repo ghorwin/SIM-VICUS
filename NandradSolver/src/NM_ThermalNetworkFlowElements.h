@@ -664,6 +664,11 @@ public:
 					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
 
+
+	int setTime(double time) override;
+
+	void stepCompleted(double time);
+
 private:
 
 	/*! Calculates COP depending on model (using CarnotEfficiency or polynom) and check if temperatures and COP are in a valid range.
@@ -713,6 +718,10 @@ private:
 
 	/*! Temperature difference across flow element [K]. */
 	double									m_temperatureDifference = 999;
+
+	double									m_lastTimePoint = 0;
+	double									m_timeStep = 0;
+
 };
 
 

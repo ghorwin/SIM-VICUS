@@ -1166,8 +1166,13 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 			m_evaporatorMeanTemperature = *m_evaporatorMeanTemperatureRef;
 			double outletSetpointTemperature = *m_condenserOutletSetpointRef;
 
+			// heat flux required to heat up the internal fluid volume (required in starting phase in case there is a low mass flux)
+			double initialHeatFlux = m_fluidDensity * m_fluidHeatCapacity * m_fluidVolume * (outletSetpointTemperature - m_meanTemperature) / m_timeStep;
+
 			// condenser heat flux (heating power required by building/added to fluid)
-			m_condenserHeatFlux = m_massFlux * m_fluidHeatCapacity * (outletSetpointTemperature - m_inflowTemperature);
+			m_condenserHeatFlux = m_massFlux * m_fluidHeatCapacity * (outletSetpointTemperature - m_inflowTemperature)
+							+ initialHeatFlux;
+
 			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
 				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
@@ -1263,6 +1268,16 @@ void TNHeatPumpVariable::dependencies(const double * ydot, const double * y, con
 	// add evaporator temperature
 	if (m_evaporatorMeanTemperatureRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_evaporatorMeanTemperatureRef));
+}
+
+
+int TNHeatPumpVariable::setTime(double time) {
+	m_timeStep = time - m_lastTimePoint;
+	return 0;
+}
+
+void TNHeatPumpVariable::stepCompleted(double time) {
+	m_lastTimePoint = time;
 }
 
 

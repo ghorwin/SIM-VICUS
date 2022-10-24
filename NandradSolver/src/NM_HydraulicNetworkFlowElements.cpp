@@ -1146,9 +1146,17 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			double temperatureDifference;
 			// compute temperature difference of the following element. We already know that the node between this
 			// and the following element is not connected to any other flow element
+
+			// Note: temperatureDifference can be > 0 or < 0, depending wether the following element extracts or adds heat
 			temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
-			// compute control error
-			e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
+
+			// for positive dT-setpoints, the controller error should be positive when the current dT is too high, so mass flux will be increased
+			if (*m_temperatureDifferenceSetpointRef > 0)
+				e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
+			// for negative dT-setpoints, the controller error should also be positive when the current dT is too high, so mass flux will be increased
+			else
+				e = *m_temperatureDifferenceSetpointRef - temperatureDifference;
+
 			// anti-windup of PI-controller: if we get very small mass fluxes, this means the heat loss of the
 			// following element is very small. We dont want to sum up that error, so we set the integral to 0.
 			if (mdot < 1e-5)

@@ -28,7 +28,7 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 	m_ui->lineEditKi->setup(0, std::numeric_limits<double>::max(), "Integration Constant", false, true);
 	m_ui->lineEditKp->setup(0, std::numeric_limits<double>::max(), "Controller Gain", false, true);
 	m_ui->lineEditKp->setFormat('e', 0);
-	m_ui->lineEditSetpoint->setup(0, std::numeric_limits<double>::max(), "Set Point", false, true);
+	m_ui->lineEditSetpoint->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), "Set Point", false, true);
 	m_ui->lineEditMaxControllerResultValue->setup(0, std::numeric_limits<double>::max(), "Max Y", true, true);
 	m_ui->lineEditMaxControllerResultValue->setFormat('e', 0);
 
