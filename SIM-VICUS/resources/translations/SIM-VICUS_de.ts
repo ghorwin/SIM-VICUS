@@ -9131,7 +9131,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.ui" line="19"/>
         <source>Property</source>
-        <translation>Eigentum</translation>
+        <translation>Auswahl</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="53"/>
