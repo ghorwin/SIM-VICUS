@@ -2960,19 +2960,34 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 
 				// create object list
 				NANDRAD::ObjectList objList;
-				objList.m_name = comp->m_displayName.string() + " - " + sched->m_displayName.string();
-				objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-				for (unsigned int elemId: it->second)
-					objList.m_filterID.m_ids.insert(elemId);
-				m_objLists.push_back(objList);
+				std::string objListName = comp->m_displayName.string() + " - " + sched->m_displayName.string();
+				bool createNewObjList = true;
+				// Note: we cannot have 2 object lists with same name
+				// if we have a object list with identical name already, just add the ids to that
+				for (NANDRAD::ObjectList &objList: m_objLists) {
+					if (objList.m_name == objListName) {
+						for (unsigned int elemId: it->second)
+							objList.m_filterID.m_ids.insert(elemId);
+						createNewObjList = false;
+					}
+
+				}
+				if (createNewObjList) {
+					// if not: create new object list
+					objList.m_name = objListName;
+					objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+					for (unsigned int elemId: it->second)
+						objList.m_filterID.m_ids.insert(elemId);
+					m_objLists.push_back(objList);
+				}
 
 				// transfer schedule
-				m_scheduleGroups[objList.m_name] = std::vector<NANDRAD::Schedule>();
+				m_scheduleGroups[objListName] = std::vector<NANDRAD::Schedule>();
 				std::vector<NANDRAD::LinearSplineParameter> splines;
-				sched->insertIntoNandradSchedulegroup(schedNames[i], m_scheduleGroups[objList.m_name], splines, m_placeholders);
+				sched->insertIntoNandradSchedulegroup(schedNames[i], m_scheduleGroups[objListName], splines, m_placeholders);
 				// annual schedules handled separately
 				if (!splines.empty())
-					m_annualSchedules[objList.m_name].push_back(splines[0]);
+					m_annualSchedules[objListName].push_back(splines[0]);
 			}
 		}
 
@@ -3172,34 +3187,37 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	// generate parallel pipe network
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
 
+		if (dataSurfaceHeating[i].m_area < 0.5)
+			continue;
+
 		// calculate lenght of supply pipe for pressure equailzation
 		double lengthSupply = (maxPressureLoss - pressureLosses[i]) / pressureLosses[i] * pipeLengths[i];
 
 		// set initial inlet node id for the underfloor pipe
 		unsigned int underfloorPipeInletNodeId = systemSplitterNodeId;
 
-		if(!IBK::nearly_equal<4>(lengthSupply, 0.0 ) ) {
-			// craetea supply pipe and connect to pump
-			NANDRAD::HydraulicNetworkElement supplyPipeElem;
-			supplyPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
-			// meaningful display name
-			supplyPipeElem.m_displayName = IBK::FormatString("supply pipe zone id %1 ").arg(dataSurfaceHeating[i].m_controlledZoneId).str();
-			// connect to pipe properties
-			supplyPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
-			// connect to component 'Supply pipe'
-			supplyPipeElem.m_componentId = nandradSupplyPipe.m_id;
-			supplyPipeElem.m_inletNodeId = systemSplitterNodeId;
-			supplyPipeElem.m_outletNodeId = uniqueIdAdd(allNetworkNodeIds);
-			underfloorPipeInletNodeId = supplyPipeElem.m_outletNodeId;
+//		if(!IBK::nearly_equal<4>(lengthSupply, 0.0 ) ) {
+//			// craetea supply pipe and connect to pump
+//			NANDRAD::HydraulicNetworkElement supplyPipeElem;
+//			supplyPipeElem.m_id = VICUS::uniqueIdAdd(usedNetworkElementIds);
+//			// meaningful display name
+//			supplyPipeElem.m_displayName = IBK::FormatString("supply pipe zone id %1 ").arg(dataSurfaceHeating[i].m_controlledZoneId).str();
+//			// connect to pipe properties
+//			supplyPipeElem.m_pipePropertiesId = surfHeatingPipeIds[i];
+//			// connect to component 'Supply pipe'
+//			supplyPipeElem.m_componentId = nandradSupplyPipe.m_id;
+//			supplyPipeElem.m_inletNodeId = systemSplitterNodeId;
+//			supplyPipeElem.m_outletNodeId = uniqueIdAdd(allNetworkNodeIds);
+//			underfloorPipeInletNodeId = supplyPipeElem.m_outletNodeId;
 
-			NANDRAD::KeywordList::setParameter(supplyPipeElem.m_para, "HydraulicNetworkElement::para_t",
-											   NANDRAD::HydraulicNetworkElement::P_Length, lengthSupply);
-			NANDRAD::KeywordList::setIntPara(supplyPipeElem.m_intPara, "HydraulicNetworkElement::intPara_t",
-											   NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes, numbersOfPipes[i]);
+//			NANDRAD::KeywordList::setParameter(supplyPipeElem.m_para, "HydraulicNetworkElement::para_t",
+//											   NANDRAD::HydraulicNetworkElement::P_Length, lengthSupply);
+//			NANDRAD::KeywordList::setIntPara(supplyPipeElem.m_intPara, "HydraulicNetworkElement::intPara_t",
+//											   NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes, numbersOfPipes[i]);
 
-			// add element to hydraulic network
-			network.m_elements.push_back(supplyPipeElem);
-		}
+//			// add element to hydraulic network
+//			network.m_elements.push_back(supplyPipeElem);
+//		}
 
 		//get lenght and number of pipes for surface heating parametrization
 		double length = pipeLengths[i];
@@ -3246,8 +3264,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 				dataSurfaceHeating[i].m_controlledZoneId;
 		thermostatControl.m_controllerType = NANDRAD::HydraulicNetworkControlElement::CT_PController;
 		NANDRAD::KeywordList::setParameter(thermostatControl.m_para, "HydraulicNetworkControlElement::para_t",
-										   NANDRAD::HydraulicNetworkControlElement::P_Kp, 100000000.);
-		thermostatControl.m_maximumControllerResultValue = 1e+08;
+										   NANDRAD::HydraulicNetworkControlElement::P_Kp, 1e6);
+		thermostatControl.m_maximumControllerResultValue = 0;
 
 		// add to control elements
 		network.m_controlElements.push_back(thermostatControl);
