@@ -518,7 +518,7 @@ void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
 		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
 
 	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
+															  tr("Enter start date (dd.MM.):"), "dd.MM.", &initialDate);
 
 	if (!startDate.isValid())
 		return;		//The period is not valid. Action canceled.
