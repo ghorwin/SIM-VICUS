@@ -4651,9 +4651,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.cpp" line="297"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="473"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="521"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="689"/>
         <source>dd.MM.</source>
         <translation>tt.MM.</translation>
     </message>
@@ -8044,52 +8041,52 @@ p, li { white-space: pre-wrap; }
         <translation>Strg+I</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="185"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="199"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="197"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="211"/>
         <source>Invalid polygon/hole geometry</source>
         <translation>Ungültige Polygon-/Lochgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="210"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="224"/>
         <source>Invalid polygon data</source>
         <translation>Ungültige Polygondaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="219"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="233"/>
         <source>Invalid sub-surface polygon</source>
         <translation>Ungültiges Teilflächen-Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="238"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="252"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="257"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="271"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="276"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="290"/>
         <source>Obstacles/Shading Geometry</source>
         <translation>Hindernisse/Schattierungsgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="392"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="406"/>
         <source>Renamed object to &apos;%1&apos;</source>
         <translation>Objekt in „%1“ umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="412"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="426"/>
         <source>Selecting objects</source>
         <translation>Auswählen von Objekten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="414"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="428"/>
         <source>De-selecting objects</source>
         <translation>Objekte abwählen</translation>
     </message>
@@ -10087,18 +10084,18 @@ p, li { white-space: pre-wrap; }
         <translation>Hier ist ein positiver Wert erforderlich.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="417"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="422"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="421"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="426"/>
         <source>Not implemented, yet.</source>
         <translation>Noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="440"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="444"/>
         <source>Surface normal flipped</source>
         <translation>Oberflächennormale umgedreht</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1190"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1200"/>
         <source>Geometry modified</source>
         <translation>Geometrie geändert</translation>
     </message>

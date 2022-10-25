@@ -294,7 +294,7 @@ void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 	for (int i=0; i<(int)m_current->m_periods.size(); ++i) {
 		const VICUS::ScheduleInterval & intervalData = m_current->m_periods[(unsigned int)i];
 		unsigned int startDay = intervalData.m_intervalStartDay;
-		QTableWidgetItem * item = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM.") ) );
+		QTableWidgetItem * item = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString("dd.MM.") );
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		m_ui->tableWidgetPeriods->setItem(i,0, item);
@@ -470,7 +470,7 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
 
 	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
+															  tr("Enter start date (dd.MM.):"), "dd.MM.", &initialDate);
 
 	if (!startDate.isValid())
 		return;		//The period is not valid. Action canceled.
@@ -686,7 +686,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, in
 	unsigned int shift = periode.m_intervalStartDay;
 	periodStartDate = periodStartDate.addDays(shift);
 	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
+															  tr("Enter start date (dd.MM.):"), "dd.MM.",
 															  &periodStartDate);
 
 	if (!periodStartDate.isValid() ) {
