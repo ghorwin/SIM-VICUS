@@ -43,6 +43,7 @@ SVSimulationRunRequestDialog::SVSimulationRunRequestDialog(QWidget *parent) :
 		m_ui->checkBoxClearResultDir->setChecked(false);
 	}
 
+	m_ui->pushButtonStart->setDefault(true);
 }
 
 
