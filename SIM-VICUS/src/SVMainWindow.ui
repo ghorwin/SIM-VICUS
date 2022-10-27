@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -58,6 +58,7 @@
     </widget>
     <addaction name="actionEditTextEditProject"/>
     <addaction name="actionEditCleanProject"/>
+    <addaction name="actionEdit_Projectcomment"/>
     <addaction name="actionEditApplicationLog"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
@@ -794,6 +795,11 @@
   <action name="actionFileImportNetworkGISData">
    <property name="text">
     <string>Network GIS data ..</string>
+   </property>
+  </action>
+  <action name="actionEdit_Projectcomment">
+   <property name="text">
+    <string>Edit project notes</string>
    </property>
   </action>
  </widget>

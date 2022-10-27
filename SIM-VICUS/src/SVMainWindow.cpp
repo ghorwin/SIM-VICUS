@@ -90,6 +90,7 @@
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
 #include "SVView3DDialog.h"
+#include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 
 #include "SVDatabaseEditDialog.h"
@@ -663,6 +664,10 @@ void SVMainWindow::setup() {
 	lay->setSpacing(0);
 	m_ui->centralWidget->setLayout(lay);
 	m_welcomeScreen->updateWelcomePage();
+
+	// *** Ptoject Notes Dialog ***
+	m_notesDialog = new SVNotesDialog(this);
+	connect(&m_projectHandler, SIGNAL(updateActions()), m_notesDialog, SLOT(onUpdateActions()));
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
@@ -2145,5 +2150,7 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-
+void SVMainWindow::on_actionEdit_Projectcomment_triggered() {
+	m_notesDialog->exec();
+}
 

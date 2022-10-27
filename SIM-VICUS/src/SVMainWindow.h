@@ -43,6 +43,7 @@ class QSplitter;
 
 class SVThreadBase;
 class SVWelcomeScreen;
+class SVNotesDialog;
 class SVButtonBar;
 class SVPreferencesDialog;
 class SVPostProcHandler;
@@ -339,6 +340,8 @@ private slots:
 
 	void on_actionFileImportNetworkGISData_triggered();
 
+	void on_actionEdit_Projectcomment_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -436,6 +439,9 @@ private:
 
 	/*! The navigation bar. */
 	SVButtonBar					*m_buttonBar											= nullptr;
+
+	/*! The Notes Dialog. */
+	SVNotesDialog				*m_notesDialog											= nullptr;
 
 	/*! Splitter that contains navigation tree widget and geometry view. */
 	QSplitter					*m_geometryViewSplitter									= nullptr;
