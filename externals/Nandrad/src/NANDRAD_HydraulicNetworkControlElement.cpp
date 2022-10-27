@@ -155,8 +155,10 @@ std::vector<HydraulicNetworkControlElement::ControllerType> HydraulicNetworkCont
 		case CP_ThermostatValue:
 			return {CT_PController, CT_PIController};
 		case NUM_CP:
-			return {};
+		break;
+
 	}
+	return {};
 }
 
 
