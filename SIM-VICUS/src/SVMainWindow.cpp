@@ -1478,6 +1478,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileSave->setEnabled(have_project);
 	m_ui->actionFileSaveAs->setEnabled(have_project);
 	m_ui->actionFileReload->setEnabled(have_project);
+	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
@@ -2150,7 +2151,7 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-void SVMainWindow::on_actionEdit_Projectcomment_triggered() {
+void SVMainWindow::on_actionEditProjectNotes_triggered() {
 	m_notesDialog->exec();
 }
 
