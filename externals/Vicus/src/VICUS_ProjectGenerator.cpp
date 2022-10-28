@@ -2994,6 +2994,10 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 	} // end if model type SubNetwork
 
 
+	// for now set all hydraulic node ids to a height of 0, this can be considered in the future for high buildings
+	for (unsigned int id: allNetworkNodeIds)
+		network.m_nodes.push_back(NANDRAD::HydraulicNetworkNode(id, 0));
+
 	// create a supply/return pipe for each network
 	NANDRAD::HydraulicNetworkComponent nandradSupplyPipe;
 	nandradSupplyPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_SimplePipe;
