@@ -157,12 +157,12 @@ int main(int argc, char * argv[]) {
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
 		IBK::IBK_Message("Critical error, simulation aborted.", IBK::MSG_ERROR, FUNC_ID);
-		return EXIT_FAILURE;
+		return 2; // we return 2 so we can recognize this was a simulation error and not e.g. a canceled process
 	}
 	catch (std::exception& ex) {
 		IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
 		IBK::IBK_Message("Critical error, simulation aborted.", IBK::MSG_ERROR, FUNC_ID);
-		return EXIT_FAILURE;
+		return 2; // we return 2 so we can recognize this was a simulation error and not e.g. a canceled process
 	}
 
 	return EXIT_SUCCESS;

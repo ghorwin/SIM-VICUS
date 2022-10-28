@@ -84,6 +84,13 @@ public:
 		TE_GnomeTerminal
 	};
 
+	/*! Simulation process return value */
+	enum SimulationResult {
+		SR_Success,
+		SR_Other,			// e.g. process canceled
+		SR_SimulationError	// Nandrad simulation error
+	};
+
 	/*! Keywords used for serialization of the properties. */
 	static const char * const			PROPERTY_KEYWORDS[NUM_PT];
 
@@ -166,7 +173,7 @@ public:
 
 
 	/*! Launches an external process (solver) in a console window. */
-	static bool startProcess(const QString & executable, QStringList commandLineArgs,
+	static unsigned int startProcess(const QString & executable, QStringList commandLineArgs,
 							 const QString & projectFile, TerminalEmulators terminalEmulator = TE_None);
 
 	/*! Returns path to NANDRAD solver executable. */

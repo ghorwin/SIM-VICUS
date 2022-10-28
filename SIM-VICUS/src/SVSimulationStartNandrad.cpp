@@ -448,23 +448,25 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegrou
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
 #endif
 	// if foreground process is forced, ignore terminal settings and launch test-init directly
-	bool success;
+	unsigned int res;
 	if (forceForegroundProcess) {
 		QProgressDialog dlg(tr("Running test-init on NANDRAD project"), tr("Cancel"), 0, 0, this);
 		dlg.show();
 
 		commandLineArgs << m_nandradProjectFilePath;
-		success = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
+		res = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
 	}
 	else
-		success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
-	if (!success) {
-		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
-		return false;
+		res = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
+
+	if (res==0)
+		return true;
+	else if (res==2) { // simulation error
+		QMessageBox::critical(this, QString(), tr("Error ocurred during simulation."));
+		on_pushButtonShowScreenLog_clicked();
 	}
 
-	// all ok, solver is running
-	return true;
+	return false; // keep dialog open
 }
 
 

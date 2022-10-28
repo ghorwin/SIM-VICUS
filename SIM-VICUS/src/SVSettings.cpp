@@ -303,7 +303,7 @@ void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStrin
 }
 
 
-bool SVSettings::startProcess(const QString & executable,
+unsigned int SVSettings::startProcess(const QString & executable,
 									QStringList commandLineArgs,
 									const QString & projectFile,
 									TerminalEmulators terminalEmulator)
@@ -332,21 +332,30 @@ bool SVSettings::startProcess(const QString & executable,
 
 	std::string cmd = cmdLine.toLatin1().data();
 	// Start the child process.
-	if( !CreateProcess( NULL,   // No module name (use command line).
+	if( !CreateProcess( nullptr,   // No module name (use command line).
 		&cmd[0], 				// Command line.
-		NULL,             		// Process handle not inheritable.
-		NULL,             		// Thread handle not inheritable.
+		nullptr,             		// Process handle not inheritable.
+		nullptr,             		// Thread handle not inheritable.
 		FALSE,            		// Set handle inheritance to FALSE.
 		lower_priority,   		// Create with priority lower then normal.
-		NULL,             		// Use parent's environment block.
-		NULL,             		// Use parent's starting directory.
+		nullptr,             		// Use parent's environment block.
+		nullptr,             		// Use parent's starting directory.
 		&si,              		// Pointer to STARTUPINFO structure.
 		&pi )             		// Pointer to PROCESS_INFORMATION structure.
 	)
 	{
 		return false;
 	}
-	return true;
+
+	// Wait for 3 sec and get exit code (enough time to catch initialization errors)
+	WaitForSingleObject( pi.hProcess, 3000 );
+	DWORD exit_code;
+	GetExitCodeProcess(pi.hProcess, &exit_code);
+	// Close process and thread handles.
+	CloseHandle( pi.hProcess );
+	CloseHandle( pi.hThread );
+
+	return exit_code;
 
 #else // Q_OS_WIN
 
