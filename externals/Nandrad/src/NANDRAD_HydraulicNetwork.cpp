@@ -187,14 +187,16 @@ void HydraulicNetwork::checkParameters(const Project & prj, std::set<unsigned in
 		}
 	}
 
-	// check nodes
-	for (const HydraulicNetworkElement &e: m_elements) {
-		if (std::find(m_nodes.begin(), m_nodes.end(), e.m_inletNodeId) == m_nodes.end())
-			throw IBK::Exception(IBK::FormatString("Inlet node id #%1 used in element with id #%2 is not listed in hydraulic nodes.")
-								 .arg(e.m_inletNodeId).arg(e.m_id), FUNC_ID);
-		if (std::find(m_nodes.begin(), m_nodes.end(), e.m_outletNodeId) == m_nodes.end())
-			throw IBK::Exception(IBK::FormatString("Outlet node id #%1 used in element with id #%2 is not listed in hydraulic nodes.")
-								 .arg(e.m_outletNodeId).arg(e.m_id), FUNC_ID);
+	// if nodes are given: check if all used nodes are given
+	if (!m_nodes.empty()) {
+		for (const HydraulicNetworkElement &e: m_elements) {
+			if (std::find(m_nodes.begin(), m_nodes.end(), e.m_inletNodeId) == m_nodes.end())
+				throw IBK::Exception(IBK::FormatString("Inlet node id #%1 used in element with id #%2 is not listed in hydraulic nodes.")
+									 .arg(e.m_inletNodeId).arg(e.m_id), FUNC_ID);
+			if (std::find(m_nodes.begin(), m_nodes.end(), e.m_outletNodeId) == m_nodes.end())
+				throw IBK::Exception(IBK::FormatString("Outlet node id #%1 used in element with id #%2 is not listed in hydraulic nodes.")
+									 .arg(e.m_outletNodeId).arg(e.m_id), FUNC_ID);
+		}
 	}
 
 }
