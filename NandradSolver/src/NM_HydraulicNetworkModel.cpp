@@ -96,6 +96,7 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(
 				nw.m_elements.begin(), nw.m_elements.end(), nw.m_referenceElementId);
 	unsigned int refElemeIdx = std::distance(nw.m_elements.begin(), refFeIt);
+
 	// create implementation instance
 	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx); // we take ownership
 }
@@ -245,6 +246,20 @@ void HydraulicNetworkModel::setup() {
 		m_elementIds.push_back(e.m_id);
 		m_elementDisplayNames.push_back(e.m_displayName);
 
+		// calculate the geodetic static pressures for each inlet and outlet node (it is negative for a positive height)
+		// Note: this is somewhat a redundant calculation as the inlet node of one element is the outlet node of another element
+		// However, it accounts for the datastructure used and allows fast output calculation
+		auto fIt = std::find(m_hydraulicNetwork->m_nodes.begin(), m_hydraulicNetwork->m_nodes.end(), e.m_inletNodeId);
+		if (fIt==m_hydraulicNetwork->m_nodes.end())
+			m_geodeticInletNodePressures.push_back(0);
+		else
+			m_geodeticInletNodePressures.push_back( - 9.81 * fIt->m_height * m_hydraulicNetwork->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value );
+		fIt = std::find(m_hydraulicNetwork->m_nodes.begin(), m_hydraulicNetwork->m_nodes.end(), e.m_outletNodeId);
+		if (fIt==m_hydraulicNetwork->m_nodes.end())
+			m_geodeticInletNodePressures.push_back(0);
+		else
+			m_geodeticOutletNodePressures.push_back( - 9.81 * fIt->m_height * m_hydraulicNetwork->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value );
+
 		// retrieve model quantities
 		m_modelQuantityOffset.push_back(m_modelQuantities.size());
 		// retrieve current flow element (m_flowElements vector has same size as
@@ -259,6 +274,7 @@ void HydraulicNetworkModel::setup() {
 		// implementation check
 		IBK_ASSERT(m_modelQuantities.size() == m_modelQuantityRefs.size());
 	} // for m_hydraulicNetwork->m_elements
+
 	// mark end of vector
 	m_modelQuantityOffset.push_back(m_modelQuantities.size());
 
@@ -330,6 +346,27 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 		resDesc.push_back(desc);
 	}
 
+
+	// outlet node absolute pressure incl. height
+	desc = QuantityDescription("OutletNodeAbsolutePressure", "Pa", "Fluid pressure at outlet node including geodetic pressure", false);
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
+
+	// inlet node absolute pressure incl. height
+	desc = QuantityDescription("InletNodeAbsolutePressure", "Pa", "Fluid pressure at inlet node including geodetic pressure", false);
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		resDesc.push_back(desc);
+	}
+
 	// add individual model results
 	if (!m_modelQuantities.empty())
 		resDesc.insert(resDesc.end(), m_modelQuantities.begin(), m_modelQuantities.end());
@@ -382,6 +419,10 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 		return &m_p->m_outletNodePressures[pos];
 	else if (quantityName == std::string("PressureDifference"))
 		return &m_p->m_pressureDifferences[pos];
+	else if (quantityName == std::string("InletNodeAbsolutePressure"))
+		return &m_p->m_inletNodeAbsolutePressures[pos];
+	else if (quantityName == std::string("OutletNodeAbsolutePressure"))
+		return &m_p->m_outletNodeAbsolutePressures[pos];
 
 	// search for quantity inside individual element results
 	IBK_ASSERT(pos < m_modelQuantityOffset.size() - 1);
@@ -557,6 +598,13 @@ void HydraulicNetworkModel::stepCompleted(double t) {
 
 	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
 		fe->stepCompleted(t);
+
+	// update absolute pressures by adding the geodetic height of the node
+	for (unsigned int i=0; i<m_p->m_flowElements.size(); ++i) {
+		m_p->m_inletNodeAbsolutePressures[i] = m_p->m_inletNodePressures[i] + m_geodeticInletNodePressures[i];
+		m_p->m_outletNodeAbsolutePressures[i] = m_p->m_outletNodePressures[i] + m_geodeticOutletNodePressures[i];
+	}
+
 	m_p->storeSolution();
 }
 
@@ -814,6 +862,8 @@ void HydraulicNetworkModelImpl::setup() {
 	m_outletNodePressures.resize(m_elementCount);
 	m_nodalPressures.resize(m_nodeCount);
 	m_pressureDifferences.resize(m_elementCount);
+	m_inletNodeAbsolutePressures.resize(m_elementCount);
+	m_outletNodeAbsolutePressures.resize(m_elementCount);
 
 	// create jacobian
 	jacobianInit();

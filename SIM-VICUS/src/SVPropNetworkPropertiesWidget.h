@@ -121,6 +121,8 @@ private slots:
 
 	void on_lineEditNodeYPosition_editingFinishedSuccessfully();
 
+	void on_lineEditNodeZPosition_editingFinished();
+
 private:
 
 	/*! Update information related to one or multiple nodes

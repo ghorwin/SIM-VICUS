@@ -45,6 +45,7 @@ HEADERS += \
 	../../src/NANDRAD_HydraulicNetworkElement.h \
 	../../src/NANDRAD_HydraulicNetwork.h \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.h \
+	../../src/NANDRAD_HydraulicNetworkNode.h \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.h \
 	../../src/NANDRAD_IDVectorMap.h \
 	../../src/NANDRAD_IdealHeatingCoolingModel.h \
@@ -110,6 +111,7 @@ SOURCES += \
 	../../src/NANDRAD_HydraulicNetwork.cpp \
 	../../src/NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
+	../../src/NANDRAD_HydraulicNetworkNode.cpp \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/NANDRAD_IDVectorMap.cpp \
 	../../src/NANDRAD_IdealHeatingCoolingModel.cpp \
@@ -162,6 +164,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetworkNode.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/ncg/ncg_NANDRAD_IdealHeatingCoolingModel.cpp \
 	../../src/ncg/ncg_NANDRAD_IdealPipeRegisterModel.cpp \

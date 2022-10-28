@@ -3844,13 +3844,21 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	std::map<unsigned int, unsigned int> supplyNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD inlet node
 	std::map<unsigned int, unsigned int> returnNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD outlet node
 	std::map<unsigned int, std::vector<unsigned int> > nodeElementsMap; // a map that stores for each VICUS geometric node the NANDRAD element ids (which are part of the according subnetwork)
+	double referenceElementHeight = 0;
+	std::map<unsigned int, double> heightOfHydraulicNode; // stores for each hydraulic nandrad node the height of the geometric VICUS node
 
 	// iterate over all geometric network nodes
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
 
 		// for each vicus geometric node: store two new node ids (supply and return) for the nandrad network
-		supplyNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
-		returnNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
+		unsigned int inletNode = uniqueIdAdd(allNodeIds);
+		supplyNodeIdMap[node.m_id] = inletNode;
+		unsigned int outletNode = uniqueIdAdd(allNodeIds);
+		returnNodeIdMap[node.m_id] = outletNode;
+
+		// store the geodetic height of each hydraulic node
+		heightOfHydraulicNode[inletNode] = node.m_position.m_z;
+		heightOfHydraulicNode[outletNode] = node.m_position.m_z;
 
 		// if this is a mixer continue
 		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
@@ -3908,31 +3916,37 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 			// 1. copy the element and create a unique element id for it
 			unsigned int id = uniqueIdAdd(allElementIds);
-			NANDRAD::HydraulicNetworkElement newElement(id, elem.m_inletNodeId, elem.m_outletNodeId,
+			NANDRAD::HydraulicNetworkElement nandradElement(id, elem.m_inletNodeId, elem.m_outletNodeId,
 														NANDRAD::INVALID_ID, NANDRAD::INVALID_ID,
 														elem.m_componentId, elem.m_controlElementId);
 
-			// 2. set the new elements inlet and outlet id using the map that we created
-			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
-			newElement.m_outletNodeId = subNetNodeIdMap[elem.m_outletNodeId];
+			// 2. set the new elements inlet and outlet node id using the map that we created
+			nandradElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
+			nandradElement.m_outletNodeId = subNetNodeIdMap[elem.m_outletNodeId];
+
+			// 2a. store the geodetic height of each hydraulic node that has not yet been stored
+			heightOfHydraulicNode[nandradElement.m_inletNodeId] = node.m_position.m_z;
+			heightOfHydraulicNode[nandradElement.m_outletNodeId] = node.m_position.m_z;
 
 			// 3. create display name
-			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
+			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, nandradElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
 			QString name = QString("%1#%2_(%3)").arg(node.m_displayName).arg(node.m_id).arg(elem.m_displayName);
 			std::string newName = IBK::replace_string(name.toStdString(), " ", "-");
-			newElement.m_displayName = IBK::replace_string(newName, ".", "-");
+			nandradElement.m_displayName = IBK::replace_string(newName, ".", "-");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
-			if (node.m_type == VICUS::NetworkNode::NT_Source)
-				nandradNetwork.m_referenceElementId = newElement.m_id;
+			if (node.m_type == VICUS::NetworkNode::NT_Source) {
+				nandradNetwork.m_referenceElementId = nandradElement.m_id;
+				referenceElementHeight = node.m_position.m_z;
+			}
 
 			// 5. if this element is the one which shall exchange heat: we copy the respective heat exchange properties from the node
 			// we recognize this using the original element id (origElem.m_id)
 			if (elem.m_id == sub->m_idHeatExchangeElement) {
-				newElement.m_heatExchange = node.m_heatExchange;
+				nandradElement.m_heatExchange = node.m_heatExchange;
 				try {
-					newElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
+					nandradElement.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
 				}  catch (std::exception &ex) {
 					errorStack.append(tr("Problem in heat exchange definition of node #%1\n%2").arg(node.m_id).arg(ex.what()));
 				}
@@ -3944,16 +3958,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				comp->m_modelType == VICUS::NetworkComponent::MT_DynamicPipe ){
 
 				// --> retrieve parameters from the component
-				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
+				NANDRAD::KeywordList::setParameter(nandradElement.m_para, "HydraulicNetworkElement::para_t",
 												   NANDRAD::HydraulicNetworkElement::P_Length,
 												   comp->m_para[VICUS::NetworkComponent::P_PipeLength].value);
-				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelPipes];
+				nandradElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelPipes];
 
 				if (vicusNetwork.m_hasHeatExchangeWithGround) {
 					// --> set FMI input
 					NANDRAD::FMIVariableDefinition inputDefGHX;
-					inputDefGHX.m_objectId = newElement.m_id;
-					inputDefGHX.m_fmiVarName = newElement.m_displayName + ".Temperature";
+					inputDefGHX.m_objectId = nandradElement.m_id;
+					inputDefGHX.m_fmiVarName = nandradElement.m_displayName + ".Temperature";
 					inputDefGHX.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																		NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 					inputDefGHX.m_varName += ".HeatExchangeTemperature";
@@ -3965,8 +3979,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 					// --> set FMI output
 					NANDRAD::FMIVariableDefinition outputDefGHX;
-					outputDefGHX.m_objectId = newElement.m_id;
-					outputDefGHX.m_fmiVarName = newElement.m_displayName + ".HeatLoss";
+					outputDefGHX.m_objectId = nandradElement.m_id;
+					outputDefGHX.m_fmiVarName = nandradElement.m_displayName + ".HeatLoss";
 					outputDefGHX.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																		NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 					outputDefGHX.m_varName += ".FlowElementHeatLoss";
@@ -3980,27 +3994,34 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 			// PressureLossElement
 			if (comp->m_modelType == VICUS::NetworkComponent::MT_PressureLossElement){
-				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
+				nandradElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
 						comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements];
 			}
 
 			// 7. some components store a pipe properties id, so we transfer them to the element
 			if (VICUS::NetworkComponent::hasPipeProperties(comp->m_modelType))
-				newElement.m_pipePropertiesId = comp->m_pipePropertiesId;
+				nandradElement.m_pipePropertiesId = comp->m_pipePropertiesId;
 
 			// 8. add element to the nandrad network
-			nandradNetwork.m_elements.push_back(newElement);
+			nandradNetwork.m_elements.push_back(nandradElement);
 
 			// 9. we store the element ids for each component, with this info we can create the schedules and object lists
-			componentElementMap[elem.m_componentId].push_back(newElement.m_id);
+			componentElementMap[elem.m_componentId].push_back(nandradElement.m_id);
 
 			// 10. we store the element id for each geometric node
-			nodeElementsMap[node.m_id].push_back(newElement.m_id);
+			nodeElementsMap[node.m_id].push_back(nandradElement.m_id);
 		}
 
 	}  // end of iteration over network nodes
 	if(!errorStack.empty())
 		return;
+
+
+	// create the nandrad nodes and set their heights relative to the reference element height
+	for (auto it=heightOfHydraulicNode.begin(); it!=heightOfHydraulicNode.end(); ++it)
+		nandradNetwork.m_nodes.push_back(NANDRAD::HydraulicNetworkNode(it->first, it->second));
+	for (NANDRAD::HydraulicNetworkNode &no: nandradNetwork.m_nodes)
+		no.m_height -= referenceElementHeight;
 
 
 	// Only for WorstpointControlledPump: store all element ids for each node of type Building

@@ -107,6 +107,12 @@ public:
 	/*! Container with pressure differences for each flow element.
 	*/
 	std::vector<double>									m_pressureDifferences;
+	/*! Container with absolute pressures for inlet node of each flow element.
+	*/
+	std::vector<double>									m_inletNodeAbsolutePressures;
+	/*! Container with absolute pressures for each outlet node of each flow element.
+	*/
+	std::vector<double>									m_outletNodeAbsolutePressures;
 
 private:
 

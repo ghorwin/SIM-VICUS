@@ -190,6 +190,11 @@ private:
 	/*! Offset of quantities for all models inside modelQuantities and modelQuantityRefs vector. */
 	std::vector<unsigned int>						m_modelQuantityOffset;
 
+	/*! The static pressure resulting from the geodetic height of the inlet nodes, will be pre-calculated in setup() */
+	std::vector<double>								m_geodeticInletNodePressures;
+	/*! The static pressure resulting from the geodetic height of the outlet nodes, will be pre-calculated in setup() */
+	std::vector<double>								m_geodeticOutletNodePressures;
+
 
 	friend class ThermalNetworkStatesModel;
 

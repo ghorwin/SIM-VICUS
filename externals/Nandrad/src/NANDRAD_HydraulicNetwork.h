@@ -33,6 +33,7 @@
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_HydraulicNetworkControlElement.h"
+#include "NANDRAD_HydraulicNetworkNode.h"
 
 
 namespace NANDRAD {
@@ -90,8 +91,12 @@ public:
 
 	/*! Pipes used in this network. */
 	std::vector<HydraulicNetworkPipeProperties>		m_pipeProperties;								// XML:E
+
 	/*! Hydraulic components used in this network. */
 	std::vector<HydraulicNetworkComponent>			m_components;									// XML:E
+
+	/*! List of nodes that are used to connect flow elements. */
+	std::vector<HydraulicNetworkNode>				m_nodes;										// XML:E
 
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
