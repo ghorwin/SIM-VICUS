@@ -84,13 +84,6 @@ public:
 		TE_GnomeTerminal
 	};
 
-	/*! Simulation process return value */
-	enum SimulationResult {
-		SR_Success,
-		SR_Other,			// e.g. process canceled
-		SR_SimulationError	// Nandrad simulation error
-	};
-
 	/*! Keywords used for serialization of the properties. */
 	static const char * const			PROPERTY_KEYWORDS[NUM_PT];
 

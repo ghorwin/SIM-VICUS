@@ -575,6 +575,13 @@ int HydraulicNetworkModel::update() {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 			fe->updateResults(m_p->m_fluidMassFluxes[i], m_p->m_inletNodePressures[i], m_p->m_outletNodePressures[i]);
 		}
+
+		// update absolute pressures by adding the geodetic height of the node
+		for (unsigned int i=0; i<m_p->m_flowElements.size(); ++i) {
+			m_p->m_inletNodeAbsolutePressures[i] = m_p->m_inletNodePressures[i] + m_geodeticInletNodePressures[i];
+			m_p->m_outletNodeAbsolutePressures[i] = m_p->m_outletNodePressures[i] + m_geodeticOutletNodePressures[i];
+		}
+
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex,
@@ -590,6 +597,7 @@ int HydraulicNetworkModel::setTime(double t) {
 
 	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
 		fe->setTime(t);
+
 	return 0;
 }
 
@@ -598,12 +606,6 @@ void HydraulicNetworkModel::stepCompleted(double t) {
 
 	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
 		fe->stepCompleted(t);
-
-	// update absolute pressures by adding the geodetic height of the node
-	for (unsigned int i=0; i<m_p->m_flowElements.size(); ++i) {
-		m_p->m_inletNodeAbsolutePressures[i] = m_p->m_inletNodePressures[i] + m_geodeticInletNodePressures[i];
-		m_p->m_outletNodeAbsolutePressures[i] = m_p->m_outletNodePressures[i] + m_geodeticOutletNodePressures[i];
-	}
 
 	m_p->storeSolution();
 }
