@@ -319,6 +319,10 @@ void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
 
 	// m_currentSubTemplate is now parent or an child element
 	emit selectSubTemplate(m_current->m_id, m_currentSubTemplateType);
+
+	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
+	modelModify();
+	refreshUi();
 }
 
 
