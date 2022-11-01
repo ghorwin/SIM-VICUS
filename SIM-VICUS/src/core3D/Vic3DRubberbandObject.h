@@ -30,6 +30,8 @@
 #include <QOpenGLVertexArrayObject>
 
 #include <QVector3D>
+#include <QCoreApplication>
+
 
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
@@ -39,9 +41,11 @@ QT_END_NAMESPACE
 #include "Vic3DVertex.h"
 #include "Vic3DCamera.h"
 
+
 namespace Vic3D {
 
 class ShaderProgram;
+class Scene;
 
 /*! Draws the mini version of the local coordinate system.
 	The coordinate system object is composed of several objects, and only some of them are shown
@@ -59,12 +63,13 @@ class ShaderProgram;
 	The plane is being drawn with drawArrays().
 */
 class RubberbandObject {
+	Q_DECLARE_TR_FUNCTIONS(Scene)
 public:
 
 	RubberbandObject();
 
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
-	void create(ShaderProgram * opaquePhongShaderProgram);
+	void create(Scene *scene, ShaderProgram * opaquePhongShaderProgram);
 	void destroy();
 
 	/*! Resets the rubberband object. */
@@ -79,8 +84,26 @@ public:
 	/*! Set bottom right end point of rubberband. */
 	void setRubberband(const QVector3D &bottomRight);
 
+	/*! . */
+	QVector3D convertViewportToWorldCoordinates(int x, int y);
+
 	/*! Updates the viewport rect of scene. */
 	void setViewport(const QRect &viewport);
+
+	/*! Select Objects based on rubberband.
+		And also push the undo-action.
+
+		1) Construct a polygon in scene based on rubberband.
+		2) Take the sight vector from camera and construct viewing sight pane.
+		3) Take all surface edge points.
+		4) Project surface point onto camera sight pane.
+		5) if projected point lies within polygon --> store point selection
+		6) Based on touching mode	1) Full Mode: if all points of surface lie within polygon --> polygon selected
+									2) Touching Mode: if at least 1 projected point lies within polygon --> polygon selected
+		7) Construct undo-action with selection changed polygons
+		8) push undo action.
+	*/
+	void selectObjectsBasedOnRubberband();
 
 private:
 
@@ -92,12 +115,14 @@ private:
 	/*! Viewport. */
 	QRect						m_viewport;
 
-	/*! The transformation object, transforms the coordinate system to its position and orientation in
-		the scene.
-	*/
-	Transform3D					m_transform;
+	QMatrix4x4					m_matrix;
 
+	/*! QVector3D of top-left position of rubberband. */
 	QVector3D					m_topLeft;
+
+	/*! Coordinates of rubberband view specific. */
+	QVector3D					m_topLeftView;
+	QVector3D					m_bottomRightView;
 
 	/*! Shader program. */
 	ShaderProgram				*m_rubberbandShaderProgram = nullptr;
@@ -107,7 +132,10 @@ private:
 	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer				m_vbo;
 
+	/*! Select Geometry. */
 	bool						m_selectGeometry = true;
+
+	/*! Select touched objects. */
 	bool						m_touchGeometry = true;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
@@ -119,6 +147,9 @@ private:
 
 	unsigned int				m_planeStartIndex;
 	unsigned int				m_planeStartVertex;
+
+	/*! Pointer to scene. Needed for accessing camera. */
+	Scene						*m_scene = nullptr;
 };
 
 } // namespace Vic3D
