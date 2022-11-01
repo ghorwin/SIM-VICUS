@@ -78,6 +78,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
+	m_rubberbandShader = &shaderPrograms[SHADER_LINES];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_fixedColorTransformShader);
@@ -87,6 +88,9 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	// and for the small coordinate system object
 	m_smallCoordinateSystemObject.create(m_coordinateSystemShader, m_transparencyShader);
+
+	// Rubberband object
+	m_rubberbandObject.create(m_rubberbandShader);
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
@@ -402,6 +406,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		m_camera.rotate(transSpeed, rotationAxis);
 	}
 
+
+
 	// To avoid duplicate picking operation, we create the pick object here.
 	// Then, when we actually need picking, we check if the pick was already executed, and then only
 	// retrieve the pick result values
@@ -419,6 +425,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	//	qDebug() << mouseDelta << m_navigationMode;
 	int mouse_dx = mouseDelta.x();
 	int mouse_dy = mouseDelta.y();
+
+	if(keyboardHandler.keyReleased(Qt::Key_Alt) &&
+			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+		// end Rubbeband selection
+		setDefaultViewState();
+	}
 
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
 	if (keyboardHandler.buttonDown(Qt::RightButton)) {
@@ -467,6 +479,24 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 	// left mouse button starts orbit controller (or interactive transformation), or performs a left-click
 	if (keyboardHandler.buttonDown(Qt::LeftButton)) {
+
+		if(keyboardHandler.keyDown(Qt::Key_Alt)) {
+			if(SVViewStateHandler::instance().viewState().m_sceneOperationMode != SVViewState::OM_RubberbandSelection) {
+				// begin rubberband
+				SVViewState vs = SVViewStateHandler::instance().viewState();
+				vs.m_sceneOperationMode = SVViewState::OM_RubberbandSelection;
+				SVViewStateHandler::instance().setViewState(vs);
+
+				m_rubberbandObject.setStartPoint(QVector3D(localMousePos.x(), localMousePos.y(), 0));
+			}
+			else {
+				// end
+				m_rubberbandObject.m_viewportRect = m_viewPort;
+				m_rubberbandObject.setRubberband(QVector3D(localMousePos.x(), localMousePos.y(), 0));
+
+				return true;
+			}
+		}
 
 		// only do orbit controller/interactive transformation mode, if not in any other mode
 		if (m_navigationMode == NUM_NM) {
@@ -882,7 +912,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			m_measurementWidget->showEndPoint(m_coordinateSystemObject.translation() );
 		}
 	}
-
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 		// follow line of sign and determine possible objects to hit
@@ -1157,11 +1186,11 @@ void Scene::render() {
 	// *** movable coordinate system  ***
 
 	bool drawLocalCoordinateSystem = vs.m_propertyWidgetMode != SVViewState::PM_BuildingProperties &&
-									(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-									  vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-									  vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-									  vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
-									  vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
+			(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+			 vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+			 vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+			 vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
+			 vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
 
 	// do not draw LCS if we are in sub-surface mode
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
@@ -1213,6 +1242,28 @@ void Scene::render() {
 
 		// blending is still enabled, so that should work
 		m_smallCoordinateSystemObject.render();
+	}
+
+	if(vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+		glViewport(m_viewPort.x(), m_viewPort.y(), m_viewPort.width(), m_viewPort.height());
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_DEPTH_TEST);
+
+		// float scalefac = SVSettings::instance().m_ratio;
+		QMatrix4x4 mat;
+		mat.setToIdentity();
+		mat.ortho(  -m_viewPort.width()/2,  m_viewPort.width()/2, -m_viewPort.height()/2, m_viewPort.height()/2, -1.0f, 1.0f );
+
+		m_rubberbandShader->bind();
+		m_rubberbandShader->shaderProgram()->setUniformValue(m_rubberbandShader->m_uniformIDs[0], mat);
+		m_rubberbandObject.m_viewportRect = m_viewPort;
+		//m_rubberbandObject.setRubberband(QVector3D(0, 0, 0), QVector3D(m_viewPort.width()/2, m_viewPort.height()/2,0));
+		m_rubberbandObject.render();
+		m_rubberbandShader->release();
+
+		glEnable(GL_DEPTH_TEST);
+
 	}
 }
 
@@ -3048,34 +3099,34 @@ void Scene::setDefaultViewState() {
 	vs.m_locks = SVViewState::NUM_L; // no axis is locked
 
 	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_AddGeometry:
-		case SVViewState::PM_EditGeometry:
-		case SVViewState::PM_SiteProperties:
-		case SVViewState::PM_BuildingProperties:
-		case SVViewState::PM_NetworkProperties: {
-			// do we have any selected geometries
-			std::set<const VICUS::Object *> sel;
-			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-			if (sel.empty()) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-			else
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+	case SVViewState::PM_AddGeometry:
+	case SVViewState::PM_EditGeometry:
+	case SVViewState::PM_SiteProperties:
+	case SVViewState::PM_BuildingProperties:
+	case SVViewState::PM_NetworkProperties: {
+		// do we have any selected geometries
+		std::set<const VICUS::Object *> sel;
+		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+		if (sel.empty()) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		}
-
-		case SVViewState::PM_VertexList:
-			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
-
-		case SVViewState::PM_AddSubSurfaceGeometry:
+		else
 			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+	}
+
+	case SVViewState::PM_VertexList:
+		vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+
+	case SVViewState::PM_AddSubSurfaceGeometry:
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
 	}
 }
 

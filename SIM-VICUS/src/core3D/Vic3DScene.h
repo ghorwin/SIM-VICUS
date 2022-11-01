@@ -47,6 +47,7 @@
 #include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
 #include "Vic3DMeasurementObject.h"
+#include "Vic3DRubberbandObject.h"
 
 #include "SVViewState.h"
 #include "SVMeasurementWidget.h"
@@ -216,6 +217,8 @@ private:
 	ShaderProgram			*m_coordinateSystemShader	= nullptr;
 	/*! Shader program 'Transparent surfaces' (managed by SceneView). */
 	ShaderProgram			*m_transparencyShader		= nullptr;
+	/*! Shader program 'Rubberband' (managed by SceneView). */
+	ShaderProgram			*m_rubberbandShader			= nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -264,6 +267,9 @@ private:
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
+
+	/*! The rubberband object. */
+	RubberbandObject		m_rubberbandObject;
 
 	/*! The surface normals (lines) shown for visible surfaces when enabled. */
 	SurfaceNormalsObject	m_surfaceNormalsObject;
