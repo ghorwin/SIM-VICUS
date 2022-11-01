@@ -102,6 +102,8 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 	m_ui->comboBoxFileType->setCurrentIndex( 0 );
 
 
+
+
 }
 
 
@@ -172,6 +174,9 @@ void SVSimulationShadingOptions::updateUi() {
 	// all checks ok, hide the error text and enable the button
 	m_ui->labelInputError->setVisible(false);
 	m_ui->pushButtonCalculate->setEnabled(true);
+
+	// update the shading file infos
+	setPreviousSimulationFileValues();
 }
 
 
@@ -207,6 +212,34 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 	m_ui->lineEditSteps->setValue( stepCount );
 
 	updateFileName();
+}
+
+
+void SVSimulationShadingOptions::setPreviousSimulationFileValues() {
+
+	SVProjectHandler &prj = SVProjectHandler::instance();
+	QDir projectDir = QFileInfo(prj.projectFile()).dir();
+	std::string exportFileBaseName = projectDir.absoluteFilePath(m_shadingFactorBaseName).toStdString();
+
+	const char* fileEndings[3] = { ".tsv", ".d6o", ".d6b"};
+
+	for(int i = 0; i < 3; i++){
+		// check if a previous file with one of the endings in fileEndings exists
+		IBK::Path currentPath = IBK::Path(exportFileBaseName + fileEndings[i]);
+		if (currentPath.exists()){
+			// the file exists, read the meta data and display in the corresponding labels
+			m_ui->labelPreviousShadingFile->setText(m_shadingFactorBaseName + fileEndings[i]);
+			std::time_t creationTime = currentPath.fileTime();
+			m_ui->labelPreviousShadingFileCreationDate->setText(QString(std::ctime(&creationTime)));
+			m_ui->pushButtonDeletePreviousShadingFile->setEnabled(true);
+			return;
+		}
+	}
+
+	// no previous file exists
+	m_ui->labelPreviousShadingFile->setText(tr("No shading file!"));
+	m_ui->labelPreviousShadingFileCreationDate->setText("---");
+	m_ui->pushButtonDeletePreviousShadingFile->setEnabled(false);
 }
 
 
@@ -564,6 +597,16 @@ void SVSimulationShadingOptions::on_radioButtonDetailed_toggled(bool checked) {
 		setSimulationParameters(DetailType::Detailed);
 }
 
+QString SVSimulationShadingOptions::getFileName() const {
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+	QString shadingFilePath = m_shadingFactorBaseName;
+	switch ( outputType ) {
+		case TsvFile : shadingFilePath += ".tsv"; break;
+		case D6oFile : shadingFilePath += ".d6o"; break;
+		case D6bFile : shadingFilePath += ".d6b"; break;
+	}
+	return shadingFilePath;
+}
 
 void SVSimulationShadingOptions::updateFileName() {
 	SVProjectHandler &prj = SVProjectHandler::instance();
@@ -572,13 +615,7 @@ void SVSimulationShadingOptions::updateFileName() {
 
 	m_shadingFactorBaseName = projectName + "_shadingFactors";
 
-	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
-	QString shadingFilePath = m_shadingFactorBaseName;
-	switch ( outputType ) {
-		case TsvFile : shadingFilePath += ".tsv"; break;
-		case D6oFile : shadingFilePath += ".d6o"; break;
-		case D6bFile : shadingFilePath += ".d6b"; break;
-	}
+	QString shadingFilePath = getFileName();
 
 	m_ui->lineEditShadingFactorFilename->setText(shadingFilePath);
 }
@@ -586,5 +623,23 @@ void SVSimulationShadingOptions::updateFileName() {
 
 void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int /*index*/) {
 	updateFileName();
+}
+
+
+void SVSimulationShadingOptions::on_pushButtonDeletePreviousShadingFile_clicked() {
+	SVProjectHandler &prj = SVProjectHandler::instance();
+	QDir projectDir = QFileInfo(prj.projectFile()).dir();
+
+	//remove all the previous shading file
+	std::string exportFileBaseName = projectDir.absoluteFilePath(m_shadingFactorBaseName).toStdString();
+	if (IBK::Path(exportFileBaseName + ".tsv").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".tsv"));
+	if (IBK::Path(exportFileBaseName + ".d6o").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".d6o"));
+	if (IBK::Path(exportFileBaseName + ".d6b").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".d6b"));
+
+	// to display the changes in the ui
+	setPreviousSimulationFileValues();
 }
 

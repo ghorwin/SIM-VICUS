@@ -98,8 +98,11 @@ private slots:
 
 	void on_comboBoxFileType_currentIndexChanged(int index);
 
+	void on_pushButtonDeletePreviousShadingFile_clicked();
 
 private:
+	/*! Get the output file name depending on the file sufix. */
+	QString getFileName() const;
 	/*! Updates m_shadingFactorBaseName and the line edit in the user interface. */
 	void updateFileName();
 
@@ -110,6 +113,8 @@ private:
 
 	/*! Sets the simulation parameters grid size and cone deg */
 	void setSimulationParameters(const DetailType &dt);
+
+	void setPreviousSimulationFileValues();
 
 
 	Ui::SVSimulationShadingOptions			*m_ui;								///< pointer to UI
@@ -139,3 +144,4 @@ private:
 };
 
 #endif // SVShadingCalculationDialogH
+
