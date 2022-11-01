@@ -165,6 +165,7 @@ SOURCES += \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
 	../../src/core3D/Vic3DOrbitControllerObject.cpp \
 	../../src/core3D/Vic3DPickObject.cpp \
+  ../../src/core3D/Vic3DRubberbandObject.cpp \
 	../../src/core3D/Vic3DScene.cpp \
 	../../src/core3D/Vic3DSceneView.cpp \
 	../../src/core3D/Vic3DShaderProgram.cpp \
@@ -356,6 +357,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DOpenGLWindow.h \
 	../../src/core3D/Vic3DOrbitControllerObject.h \
 	../../src/core3D/Vic3DPickObject.h \
+  ../../src/core3D/Vic3DRubberbandObject.h \
 	../../src/core3D/Vic3DScene.h \
 	../../src/core3D/Vic3DSceneView.h \
 	../../src/core3D/Vic3DShaderProgram.h \
