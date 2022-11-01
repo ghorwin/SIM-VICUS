@@ -85,8 +85,12 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>	rubberbandVertexBufferData;
 
-	QVector3D topLeftMoved =  QVector3D(SVSettings::instance().m_ratio * m_topLeft.x() + -m_viewport.width()/2, -m_topLeft.y() + m_viewport.height()/2, 0);
-	QVector3D bottomRightMoved =  SVSettings::instance().m_ratio * QVector3D(SVSettings::instance().m_ratio *bottomRight.x() - m_viewport.width()/2, -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
+	qDebug() << "x: " << bottomRight.x() << " |  y: " << bottomRight.y();
+
+	QVector3D topLeftMoved = QVector3D(SVSettings::instance().m_ratio * m_topLeft.x() + -m_viewport.width()/2,
+									   -m_topLeft.y() + m_viewport.height()/2, 0);
+	QVector3D bottomRightMoved = QVector3D(SVSettings::instance().m_ratio *bottomRight.x() - m_viewport.width()/2,
+										   -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
 
 	// if(m_topLeft.x() > bottomRight.x())
 
@@ -94,17 +98,32 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved)));
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x(), bottomRightMoved.y(), 0)));
 
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x()+1, topLeftMoved.y(), 0)));
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x()+1, bottomRightMoved.y(), 0)));
+
 	// Line 2
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x(), bottomRightMoved.y(), 0)));
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved)));
+
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x(), bottomRightMoved.y()-1, 0)));
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x(), bottomRightMoved.y()-1, 0)));
 
 	// Line 3
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved)));
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x(), topLeftMoved.y(), 0)));
 
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x()-1, bottomRightMoved.y(), 0)));
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x()-1, topLeftMoved.y(), 0)));
+
+
 	// Line 4
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x(), topLeftMoved.y(), 0)));
 	rubberbandVertexBufferData.push_back(VertexC(topLeftMoved));
+
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(bottomRightMoved.x(), topLeftMoved.y()+1, 0)));
+	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved.x(), topLeftMoved.y()+1, 0)));
+
+
 
 	m_vertexCount = rubberbandVertexBufferData.size();
 
