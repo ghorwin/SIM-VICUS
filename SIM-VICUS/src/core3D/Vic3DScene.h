@@ -146,6 +146,11 @@ public:
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
 	bool m_surfaceNormalsVisible = false;
 
+	/*! Getter for Camera. */
+	const Camera & camera() const;
+	/*! Getter for worldToView Matrix. */
+	const QMatrix4x4 & worldToView() const;
+
 private:
 	void generateBuildingGeometry();
 	void generateTransparentBuildingGeometry();

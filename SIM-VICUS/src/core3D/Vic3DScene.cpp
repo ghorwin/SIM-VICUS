@@ -90,7 +90,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_smallCoordinateSystemObject.create(m_coordinateSystemShader, m_transparencyShader);
 
 	// Rubberband object
-	m_rubberbandObject.create(m_rubberbandShader);
+	m_rubberbandObject.create(this, m_rubberbandShader);
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
@@ -429,8 +429,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	if(keyboardHandler.keyReleased(Qt::Key_Alt) &&
 			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
 		// end Rubbeband selection
-		setDefaultViewState();
-		m_rubberbandObject.reset();
+		//setDefaultViewState();
+		//m_rubberbandObject.reset();
 	}
 
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
@@ -809,6 +809,13 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		}
 		// clear orbit controller flag
 		m_navigationMode = NUM_NM;
+
+		if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+			qDebug() << "Finishing rubberband selection.";
+			m_rubberbandObject.selectObjectsBasedOnRubberband();
+			m_rubberbandObject.reset();
+			setDefaultViewState();
+		}
 
 	} // left button released
 
@@ -3129,6 +3136,14 @@ void Scene::setDefaultViewState() {
 		SVViewStateHandler::instance().setViewState(vs);
 		return;
 	}
+}
+
+const QMatrix4x4 & Scene::worldToView() const {
+	return m_worldToView;
+}
+
+const Camera & Scene::camera() const{
+	return m_camera;
 }
 
 } // namespace Vic3D
