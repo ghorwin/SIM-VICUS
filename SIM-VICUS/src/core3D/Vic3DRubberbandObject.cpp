@@ -35,6 +35,7 @@
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
+#include "SVSettings.h"
 
 namespace Vic3D {
 
@@ -53,42 +54,25 @@ void RubberbandObject::destroy() {
 	m_vbo.destroy();
 }
 
+void RubberbandObject::reset() {
+	m_topLeft = QVector3D();
+
+	destroy();
+}
+
 
 void RubberbandObject::render() {
 	// grid disabled?
 	if (m_vertexCount == 0)
 		return;
 
+	// bind vertex array
 	m_vao.bind();
-
-//	glMatrixMode(GL_MODELVIEW);
-//	//glPushMatrix();        ----Not sure if I need this
-//	glLoadIdentity();
-//	glDisable(GL_CULL_FACE);
-
-//	glMatrixMode(GL_PROJECTION);
-//	glPushMatrix();
-//	glLoadIdentity();
-//	glOrtho(0.0, 500, 500, 0.0, -1.0, 10.0);
-//	glMatrixMode(GL_MODELVIEW);
-//	//glPushMatrix();        ----Not sure if I need this
-//	glLoadIdentity();
-//	glDisable(GL_CULL_FACE);
-
-//	// clear only depth buffer, so that we can paint on top of everything else
-//	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// draw lines
 	QVector4D col(1.0, 0.0, 0.0, 1.0);
 	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[1], col);
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
-
-//	glEnable(GL_DEPTH_TEST);
-
-//	// Making sure we can render 3d again
-//	glMatrixMode(GL_PROJECTION);
-//	glPopMatrix();
-//	glMatrixMode(GL_MODELVIEW);
 
 	m_vao.release();
 }
@@ -101,8 +85,10 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>	rubberbandVertexBufferData;
 
-	QVector3D topLeftMoved = QVector3D(m_topLeft.x() + -m_viewportRect.width()/2, -m_topLeft.y() + m_viewportRect.height()/2, 0);
-	QVector3D bottomRightMoved =  QVector3D(bottomRight.x() - m_viewportRect.width()/2, -bottomRight.y() + m_viewportRect.height()/2, 0);
+	QVector3D topLeftMoved =  QVector3D(SVSettings::instance().m_ratio * m_topLeft.x() + -m_viewport.width()/2, -m_topLeft.y() + m_viewport.height()/2, 0);
+	QVector3D bottomRightMoved =  SVSettings::instance().m_ratio * QVector3D(SVSettings::instance().m_ratio *bottomRight.x() - m_viewport.width()/2, -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
+
+	// if(m_topLeft.x() > bottomRight.x())
 
 	// line 1
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(topLeftMoved)));
@@ -142,6 +128,10 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 
 	m_vao.release(); // Mind: always release VAO before index buffer
 	m_vbo.release();
+}
+
+void RubberbandObject::setViewport(const QRect & viewport) {
+	m_viewport = viewport;
 }
 
 

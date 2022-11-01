@@ -430,6 +430,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
 		// end Rubbeband selection
 		setDefaultViewState();
+		m_rubberbandObject.reset();
 	}
 
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
@@ -491,7 +492,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			}
 			else {
 				// end
-				m_rubberbandObject.m_viewportRect = m_viewPort;
+				m_rubberbandObject.setViewport(m_viewPort);
 				m_rubberbandObject.setRubberband(QVector3D(localMousePos.x(), localMousePos.y(), 0));
 
 				return true;
@@ -1257,7 +1258,7 @@ void Scene::render() {
 
 		m_rubberbandShader->bind();
 		m_rubberbandShader->shaderProgram()->setUniformValue(m_rubberbandShader->m_uniformIDs[0], mat);
-		m_rubberbandObject.m_viewportRect = m_viewPort;
+		m_rubberbandObject.setViewport(m_viewPort);
 		//m_rubberbandObject.setRubberband(QVector3D(0, 0, 0), QVector3D(m_viewPort.width()/2, m_viewPort.height()/2,0));
 		m_rubberbandObject.render();
 		m_rubberbandShader->release();

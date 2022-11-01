@@ -67,13 +67,20 @@ public:
 	void create(ShaderProgram * opaquePhongShaderProgram);
 	void destroy();
 
+	/*! Resets the rubberband object. */
+	void reset();
+
 	/*! Binds the buffer and paints. */
 	void render();
 
+	/*! Set top-left point of rubberband. */
 	void setStartPoint(const QVector3D &topLeft);
+
+	/*! Set bottom right end point of rubberband. */
 	void setRubberband(const QVector3D &bottomRight);
 
-	QRect						m_viewportRect;
+	/*! Updates the viewport rect of scene. */
+	void setViewport(const QRect &viewport);
 
 private:
 
@@ -81,6 +88,9 @@ private:
 		If zero, grid is disabled.
 	*/
 	GLsizei						m_vertexCount;
+
+	/*! Viewport. */
+	QRect						m_viewport;
 
 	/*! The transformation object, transforms the coordinate system to its position and orientation in
 		the scene.
@@ -97,7 +107,8 @@ private:
 	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer				m_vbo;
 
-
+	bool						m_selectGeometry = true;
+	bool						m_touchGeometry = true;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<Vertex>			m_vertexBufferData;
