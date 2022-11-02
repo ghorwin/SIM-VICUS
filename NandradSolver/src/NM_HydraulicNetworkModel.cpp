@@ -256,7 +256,7 @@ void HydraulicNetworkModel::setup() {
 			m_geodeticInletNodePressures.push_back( - 9.81 * fIt->m_height * m_hydraulicNetwork->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value );
 		fIt = std::find(m_hydraulicNetwork->m_nodes.begin(), m_hydraulicNetwork->m_nodes.end(), e.m_outletNodeId);
 		if (fIt==m_hydraulicNetwork->m_nodes.end())
-			m_geodeticInletNodePressures.push_back(0);
+			m_geodeticOutletNodePressures.push_back(0);
 		else
 			m_geodeticOutletNodePressures.push_back( - 9.81 * fIt->m_height * m_hydraulicNetwork->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value );
 
