@@ -183,11 +183,11 @@ void SVDBInternalLoadsLightsEditWidget::on_lineEditPower_editingFinishedSuccessf
 		case VICUS::InternalLoad::PowerMethod::PM_PowerPerArea:		paraName = VICUS::InternalLoad::P_PowerPerArea;	break;
 		case VICUS::InternalLoad::PowerMethod::PM_Power:			paraName = VICUS::InternalLoad::P_Power;		break;
 			//this should not happen
-		case VICUS::InternalLoad::NUM_PM:	break;
+		case VICUS::InternalLoad::NUM_PM:	paraName = VICUS::InternalLoad::NUM_P; break;
 	}
 
 	if (m_current->m_para[paraName].empty() ||
-			val != m_current->m_para[paraName].value)
+			!IBK::near_equal(val, m_current->m_para[paraName].value))
 	{
 		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 		modelModify();

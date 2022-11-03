@@ -92,7 +92,7 @@ void Room::calculateVolume() {
 				IBKMK::Vector3D nTri = (p1-p0).crossProduct(p2-p0);
 				nTri.normalize();
 				IBKMK::Vector3D nDiff = nTri - s.geometry().normal();
-				double x = nDiff.magnitude();
+				// double x = nDiff.magnitude();
 				if(nDiff.magnitude() > 1.5 ){
 					// jetzt stehen die Normalen in unterschiedliche Richtungen
 					// erwartet wird, dass die Normalen in die gleiche Richtung zeigen
@@ -104,14 +104,6 @@ void Room::calculateVolume() {
 				}
 
 				vol +=	p0.m_x * p1.m_y * p2.m_z +
-						p2.m_x * p0.m_y * p1.m_z +
-						p1.m_x * p2.m_y * p0.m_z
-
-						- p2.m_x * p1.m_y * p0.m_z
-						- p0.m_x * p2.m_y * p1.m_z
-						- p1.m_x * p0.m_y * p2.m_z;
-
-				double volDebug = p0.m_x * p1.m_y * p2.m_z +
 						p2.m_x * p0.m_y * p1.m_z +
 						p1.m_x * p2.m_y * p0.m_z
 
@@ -141,7 +133,7 @@ void Room::calculateVolume() {
 			IBKMK::Vector3D nTri = (p1-p0).crossProduct(p2-p0);
 			nTri.normalize();
 			IBKMK::Vector3D nDiff = nTri - s.geometry().normal();
-			double x = nDiff.magnitude();
+			//double x = nDiff.magnitude();
 			if(nDiff.magnitude() > 1.5 ){
 				// jetzt stehen die Normalen in unterschiedliche Richtungen
 				// erwartet wird, dass die Normalen in die gleiche Richtung zeigen
@@ -152,14 +144,6 @@ void Room::calculateVolume() {
 			}
 
 			vol +=	p0.m_x * p1.m_y * p2.m_z +
-					p2.m_x * p0.m_y * p1.m_z +
-					p1.m_x * p2.m_y * p0.m_z
-
-					- p2.m_x * p1.m_y * p0.m_z
-					- p0.m_x * p2.m_y * p1.m_z
-					- p1.m_x * p0.m_y * p2.m_z;
-
-			double volDebug = p0.m_x * p1.m_y * p2.m_z +
 					p2.m_x * p0.m_y * p1.m_z +
 					p1.m_x * p2.m_y * p0.m_z
 

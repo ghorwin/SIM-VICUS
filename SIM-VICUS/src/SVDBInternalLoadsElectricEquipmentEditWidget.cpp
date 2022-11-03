@@ -186,11 +186,11 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditPower_editingFinis
 			case VICUS::InternalLoad::PowerMethod::PM_PowerPerArea:		paraName = VICUS::InternalLoad::P_PowerPerArea;	break;
 			case VICUS::InternalLoad::PowerMethod::PM_Power:			paraName = VICUS::InternalLoad::P_Power;		break;
 			//this should not happen
-			case VICUS::InternalLoad::NUM_PM:	break;
+			case VICUS::InternalLoad::NUM_PM:	paraName = VICUS::InternalLoad::NUM_P; break;
 		}
 
 		if (m_current->m_para[paraName].empty() ||
-			val != m_current->m_para[paraName].value)
+			!IBK::near_equal(val,m_current->m_para[paraName].value))
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 			modelModify();
@@ -208,7 +208,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditConvectiveFactor_e
 		// update database but only if different from original
 		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_ConvectiveHeatFactor;
 		if (m_current->m_para[paraName].empty() ||
-			val != m_current->m_para[paraName].value)
+			!IBK::near_equal(val,m_current->m_para[paraName].value))
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 			modelModify();
@@ -224,7 +224,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLatentFactor_editi
 		// update database but only if different from original
 		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_LatentHeatFactor;
 		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
+				!IBK::near_equal(val,m_current->m_para[paraName].value))
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 			modelModify();
@@ -239,7 +239,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLossFactor_editing
 	// update database but only if different from original
 	VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_LossHeatFactor;
 	if (m_current->m_para[paraName].empty() ||
-			val != m_current->m_para[paraName].value)
+			!IBK::near_equal(val,m_current->m_para[paraName].value))
 	{
 		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 		modelModify();
