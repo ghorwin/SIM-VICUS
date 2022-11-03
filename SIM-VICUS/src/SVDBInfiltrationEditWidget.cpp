@@ -132,10 +132,11 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
 	m_ui->comboBoxMethod->setEnabled(!isbuiltIn);
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);
-	m_ui->lineEditShieldCoefficient->setEnabled(!isbuiltIn);
+	m_ui->lineEditShieldCoefficient->setReadOnly(isbuiltIn);
+
 
 	if(m_current->m_airChangeType == VICUS::Infiltration::AC_normal){
-		m_ui->lineEditShieldCoefficient->setEnabled(false);
+		m_ui->lineEditShieldCoefficient->setReadOnly(true);
 		m_ui->lineEditShieldCoefficient->setText("");
 	}
 
@@ -163,11 +164,11 @@ void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index
 	switch(m_current->m_airChangeType){
 		case VICUS::Infiltration::AC_normal:
 		case VICUS::Infiltration::NUM_AC:{
-			m_ui->lineEditShieldCoefficient->setEnabled(false);
+			m_ui->lineEditShieldCoefficient->setReadOnly(true);
 			m_ui->lineEditShieldCoefficient->setText("");
 		} break;
 		case VICUS::Infiltration::AC_n50:{
-			m_ui->lineEditShieldCoefficient->setEnabled(true);
+			m_ui->lineEditShieldCoefficient->setReadOnly(false);
 			m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
 		}break;
 	}
