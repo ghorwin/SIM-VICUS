@@ -71,6 +71,8 @@ public:
 	*/
 	unsigned int select(unsigned int initialId);
 
+	/*! Event filter for resizing events in order to resize row to its contents. */
+	bool eventFilter(QObject * obj, QEvent * event) override;
 
 private slots:
 	void on_pushButtonSelect_clicked();
