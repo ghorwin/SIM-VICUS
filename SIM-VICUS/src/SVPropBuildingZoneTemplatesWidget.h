@@ -28,6 +28,7 @@ public:
 private slots:
 	void on_pushButtonAssignZoneTemplate_clicked();
 	void on_tableWidgetZoneTemplates_itemSelectionChanged();
+	/* Triggers the openEditZoneTemplatesDialog*/
 	void on_pushButtonEditZoneTemplates_clicked();
 	void on_pushButtonExchangeZoneTemplates_clicked();
 	void on_checkBoxZoneTemplateColorOnlyActive_toggled(bool checked);
@@ -40,6 +41,9 @@ private slots:
 
 
 	void on_pushButtonAssignSelectedZoneTemplate_clicked();
+
+	/* Triggers the openEditZoneTemplatesDialog*/
+	void on_tableWidgetZoneTemplates_cellDoubleClicked(int row, int column);
 
 private:
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
@@ -54,6 +58,9 @@ private:
 		modifies visibility state of respective room nodes (and their surfaces).
 	*/
 	void zoneTemplateSelectionChanged();
+
+	/*! Launches ZoneTemplates db edit dialog. */
+	void openEditZoneTemplatesDialog();
 
 	Ui::SVPropBuildingZoneTemplatesWidget *m_ui;
 

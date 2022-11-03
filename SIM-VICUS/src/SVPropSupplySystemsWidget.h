@@ -36,7 +36,7 @@ public:
 
 private slots:
 	void on_tableWidgetSupplySystems_itemSelectionChanged();
-
+	/* Triggers the openSupplySystemsDialog*/
 	void on_pushButtonEditSupplySystem_clicked();
 	void on_pushButtonExchangeSupplySystem_clicked();
 	void on_pushButtonSelectSupplySystem_clicked();
@@ -44,8 +44,13 @@ private slots:
 	void on_pushButtonAssignSupplySystem_clicked();
 
 	void on_pushButtonRemoveSupplySystem_clicked();
+	/* Triggers the openEditSupplySystemsDialog*/
+	void on_tableWidgetSupplySystems_cellDoubleClicked(int row, int column);
 
 private:
+	/*! Launches SupplySystems db edit dialog. */
+	void openEditSupplySystemsDialog();
+
 	Ui::SVPropSupplySystemsWidget *m_ui;
 
 	/*! Set of selected component instances in geometry view. */

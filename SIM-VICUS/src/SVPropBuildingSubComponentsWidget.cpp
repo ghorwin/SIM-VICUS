@@ -258,6 +258,16 @@ void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_itemS
 
 
 void SVPropBuildingSubComponentsWidget::on_pushButtonEditSubSurfaceComponents_clicked() {
+	openEditSubSurfaceComponentsDialog();
+}
+
+void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int row, int column) {
+	Q_UNUSED(row);
+	Q_UNUSED(column);
+	openEditSubSurfaceComponentsDialog();
+}
+
+void SVPropBuildingSubComponentsWidget::openEditSubSurfaceComponentsDialog() {
 	const VICUS::SubSurfaceComponent * comp = currentlySelectedSubSurfaceComponent();
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
 	int currentRow = m_ui->tableWidgetSubSurfaceComponents->currentRow();
@@ -518,4 +528,7 @@ const VICUS::SubSurfaceComponent * SVPropBuildingSubComponentsWidget::currentlyS
 		return nullptr; // not a valid component assigned
 	return e.m_component;
 }
+
+
+
 

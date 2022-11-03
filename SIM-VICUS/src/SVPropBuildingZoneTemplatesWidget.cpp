@@ -213,6 +213,17 @@ void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_itemSelectio
 
 
 void SVPropBuildingZoneTemplatesWidget::on_pushButtonEditZoneTemplates_clicked() {
+	openEditZoneTemplatesDialog();
+}
+
+void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_cellDoubleClicked(int row, int column) {
+	Q_UNUSED(row);
+	Q_UNUSED(column)
+	openEditZoneTemplatesDialog();
+
+}
+
+void SVPropBuildingZoneTemplatesWidget::openEditZoneTemplatesDialog() {
 	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
 	Q_ASSERT(zt != nullptr); // if nullptr, the button should be disabled!
 	SVMainWindow::instance().dbZoneTemplateEditDialog()->edit(zt->m_id);
@@ -365,4 +376,7 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonAssignSelectedZoneTemplate_
 				modifiedRoomIDs, zt->m_id);
 	undo->push();
 }
+
+
+
 
