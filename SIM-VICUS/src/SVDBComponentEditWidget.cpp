@@ -263,6 +263,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_current != nullptr);
 
+	qDebug() << "Editing finished.";
+
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
