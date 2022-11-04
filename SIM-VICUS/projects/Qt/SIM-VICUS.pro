@@ -33,6 +33,7 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lShading \
 	-lDataIO \
 	-lCCM \
+	-lclipper \
 	-lIBK \
 	-lIBKMK \
 	-lsundials \
@@ -64,6 +65,7 @@ INCLUDEPATH = \
 	../../../externals/Vicus/srcTranslations \
 	../../../externals/TiCPP/src \
 	../../../externals/qwt/src \
+	../../../externals/clipper/src \
 	../../../externals/QuaZIP/src \
 	../../../externals/QuaZIP/src/zlib \
 	../../../externals/IDFReader/src \
@@ -78,6 +80,7 @@ PRE_TARGETDEPS += \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Shading.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
+	$$PWD/../../../externals/lib$${DIR_PREFIX}/clipper.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
@@ -115,18 +118,18 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
-    ../../src/SVPropEditNetwork.cpp \
-    ../../src/SVPropNetworkPropertiesWidget.cpp \
+	../../src/SVPropEditNetwork.cpp \
+	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
-    ../../src/SVTimeSeriesPreviewDialog.cpp \
+	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
-    ../../src/SVUndoNetworkAddNodes.cpp \
-    ../../src/SVUndoNetworkAddPipeline.cpp \
+	../../src/SVUndoNetworkAddNodes.cpp \
+	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -303,18 +306,18 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
-    ../../src/SVPropEditNetwork.h \
-    ../../src/SVPropNetworkPropertiesWidget.h \
+	../../src/SVPropEditNetwork.h \
+	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
-    ../../src/SVTimeSeriesPreviewDialog.h \
+	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
-    ../../src/SVUndoNetworkAddNodes.h \
-    ../../src/SVUndoNetworkAddPipeline.h \
+	../../src/SVUndoNetworkAddNodes.h \
+	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \

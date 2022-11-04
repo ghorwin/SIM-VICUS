@@ -7,6 +7,7 @@ SUBDIRS = \
 		SIM-VICUS \
 		QuaZIP \
 		qwt \
+		clipper \
 		QtExt \
 		Vicus \
 		CCM \
@@ -37,6 +38,7 @@ NandradFMUGenerator.file = ../../NandradFMUGenerator/projects/Qt/NandradFMUGener
 CCM.file = ../../externals/CCM/projects/Qt/CCM.pro
 Shading.file = ../../externals/Shading/projects/Qt/Shading.pro
 DataIO.file = ../../externals/DataIO/projects/Qt/DataIO.pro
+clipper.file = ../../externals/clipper/projects/Qt/clipper.pro
 IBK.file = ../../externals/IBK/projects/Qt/IBK.pro
 IBKMK.file = ../../externals/IBKMK/projects/Qt/IBKMK.pro
 IntegratorFramework.file = ../../externals/IntegratorFramework/projects/Qt/IntegratorFramework.pro
