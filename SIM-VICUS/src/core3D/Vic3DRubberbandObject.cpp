@@ -118,9 +118,9 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	// qDebug() << "x: " << bottomRight.x() << " |  y: " << bottomRight.y();
 
 	m_topLeftView = QVector3D(SVSettings::instance().m_ratio * m_topLeft.x() + -m_viewport.width()/2,
-									   -SVSettings::instance().m_ratio *m_topLeft.y() + m_viewport.height()/2, 0);
+							  -SVSettings::instance().m_ratio *m_topLeft.y() + m_viewport.height()/2, 0);
 	m_bottomRightView = QVector3D(SVSettings::instance().m_ratio *bottomRight.x() - m_viewport.width()/2,
-										   -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
+								  -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
 
 	if(m_topLeft.x() < bottomRight.x()) // we select
 		m_touchGeometry = true;
@@ -229,17 +229,20 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 					// Add main polygon to clipper
 					clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
 
-
 					ClipperLib::Path pathSurface;
-					for(const IBKMK::Vector3D &v3D : s.polygon3D().vertexes()) {
-						// Bring our point to NDC
-						QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
-						projectedP /= projectedP.w();
+					try {
+						for(const IBKMK::Vector3D &v3D : s.polygon3D().vertexes()) {
+							// Bring our point to NDC
+							QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
+							projectedP /= projectedP.w();
 
-						// qDebug() << s.m_displayName << " Surface point -> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
+							// qDebug() << s.m_displayName << " Surface point -> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
 
-						// Convert to ClipperLib
-						pathSurface << toClipperIntPoint(projectedP.toVector3D() );
+							// Convert to ClipperLib
+							pathSurface << toClipperIntPoint(projectedP.toVector3D() );
+						}
+					} catch(...) {
+						continue; // Skip broken polygons
 					}
 
 					clp.AddPath(pathSurface, ClipperLib::ptClip, true);
