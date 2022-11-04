@@ -81,10 +81,6 @@ void RubberbandObject::render() {
 	// bind vertex array
 	m_vao.bind();
 
-	// define line stipple
-	GLint factor = 1;
-	GLushort pattern = 0xAAAA;
-
 	// draw lines
 	QVector4D col;
 
@@ -166,7 +162,7 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(m_bottomRightView.x(), m_topLeftView.y()+1, 0)));
 	rubberbandVertexBufferData.push_back(VertexC(QVector3D(m_topLeftView.x(), m_topLeftView.y()+1, 0)));
 
-	m_vertexCount = rubberbandVertexBufferData.size();
+	m_vertexCount = int(rubberbandVertexBufferData.size());
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {
@@ -184,7 +180,7 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	}
 
 	m_vbo.bind();
-	m_vbo.allocate(rubberbandVertexBufferData.data(), rubberbandVertexBufferData.size()*sizeof(VertexC));
+	m_vbo.allocate(rubberbandVertexBufferData.data(), int(rubberbandVertexBufferData.size())*sizeof(VertexC));
 
 	m_vao.release(); // Mind: always release VAO before index buffer
 	m_vbo.release();
