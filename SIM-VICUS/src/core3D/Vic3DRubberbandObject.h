@@ -54,7 +54,19 @@ class Scene;
 extern float SCALE_FACTOR;
 
 /*!
+	Rubberband Object is created to select Objects inside the Vic3DScene via a rubberband rectancle.
+	It draws an OpenGl Rectancle and handles correct coloring based on Selection (Green) / Deselection (Red).
+	When Touch Mode ist used the Rectancle is also rendered with Alpha 0.5 to give a user Feedback and to distinguish
+	all 4 different modes more easily.
+	It also creates and pushes an undo-action with all changed selection states of VICUS::Objects.
 
+	TODO: Select/Deselect also Network elements.
+
+	4 different Selection/Deselection modes exist:
+	1) Top -> Down | Left  -> Right : SELECTION MODE & TOUCH MODE -> Select all Objects touched by Rubberband.
+	2) Top -> Down | Right -> Left  : SELECTION MODE & INCLUDE MOODE -> Select all Objects fully included by Rubberband
+	3) Down -> Top | Right -> Left  : DESELECTION MODE & TOUCH MOODE -> Deselect all Objects touched by Rubberband.
+	4) Down -> Top | Right -> Left  : DESELECTION MODE & INCLUDE MOODE -> Deselect all Objects fully included by Rubberband
 */
 class RubberbandObject {
 	Q_DECLARE_TR_FUNCTIONS(Scene)
@@ -84,17 +96,26 @@ public:
 	/*! Updates the viewport rect of scene. */
 	void setViewport(const QRect &viewport);
 
-	/*! Select Objects based on rubberband.
-		And also push the undo-action.
+	/*! Selects Objects based on rubberband.
+		And also pushws the undo-action.
 
-		1) Construct a polygon in scene based on rubberband.
-		2) Take the sight vector from camera and construct viewing sight pane.
-		3) Take all surface edge points.
-		4) Project surface point onto camera sight pane.
-		5) if projected point lies within polygon --> store point selection
-		6) Based on touching mode	1) Full Mode: if all points of surface lie within polygon --> polygon selected
-									2) Touching Mode: if at least 1 projected point lies within polygon --> polygon selected
-		7) Construct undo-action with selection changed polygons
+		1) Construct a polygon in NDC based on rubberband.
+		2) Take Surface and Project all points in NDC via inverted WorldToView-Matrix
+		3) Take ClipperLib construct a Path with all projected Points in NDC.
+			(Only IntPoints exists in Clipper, so we scale by SCALE_FACTOR)
+		4) CLip Rubberband Polygon with Projected Surface Polygon
+		5) INCLUDE MODE:	De-/Select Object if absolute Clipping Area of Projected Surface with
+						Rubberband Surface is the same as the Area of the projected Surface.
+		   TOUCH MODE:		De-/Select Object if absolute Clipping Area of Projected Surface with
+						Rubberband Surface is > 0;
+		   -----------------------------------------------------------------------------------------------
+		   MIND:	We compare always the scaled clipping areas, so that hopefully also nearly orthogonal
+				surfaces to near plane contain a small projected area.
+		   TODO:	If this is not always working we have to check before if we sometimes get
+				a line and then we check 1) Both points inside Clipping Poly and 2) Line cuts one Line Of
+				Clipping Polygon.
+		   -----------------------------------------------------------------------------------------------
+		7) Construct undo-action with selection changed Objects
 		8) push undo action.
 	*/
 	void selectObjectsBasedOnRubberband();
@@ -104,7 +125,7 @@ private:
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.
 	*/
-	GLsizei						m_vertexCount;
+	GLsizei					m_vertexCount;
 
 	/*! Viewport. */
 	QRect						m_viewport;
