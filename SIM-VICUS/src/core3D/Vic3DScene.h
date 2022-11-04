@@ -47,6 +47,7 @@
 #include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
 #include "Vic3DMeasurementObject.h"
+#include "Vic3DRubberbandObject.h"
 
 #include "SVViewState.h"
 #include "SVMeasurementWidget.h"
@@ -136,6 +137,11 @@ public:
 	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemTranslationMode(bool abort);
 
+	/*! Enter Rubberband Mode. */
+	void enterRubberbandMode();
+	/*! Leaves Rubberband Mode. .*/
+	void leaveRubberbandMode();
+
 	/*! Toggles "measurement" mode on. */
 	void enterMeasurementMode();
 	/*! Leaves the "measurement" mode and returns to previous mode. */
@@ -144,6 +150,11 @@ public:
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
 	bool m_surfaceNormalsVisible = false;
+
+	/*! Getter for Camera. */
+	const Camera & camera() const;
+	/*! Getter for worldToView Matrix. */
+	const QMatrix4x4 & worldToView() const;
 
 private:
 	void generateBuildingGeometry();
@@ -216,6 +227,8 @@ private:
 	ShaderProgram			*m_coordinateSystemShader	= nullptr;
 	/*! Shader program 'Transparent surfaces' (managed by SceneView). */
 	ShaderProgram			*m_transparencyShader		= nullptr;
+	/*! Shader program 'Rubberband' (managed by SceneView). */
+	ShaderProgram			*m_rubberbandShader			= nullptr;
 
 	/*! The projection matrix, updated whenever the viewport geometry changes (in resizeGL() ). */
 	QMatrix4x4				m_projection;
@@ -264,6 +277,9 @@ private:
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
+
+	/*! The rubberband object. */
+	RubberbandObject		m_rubberbandObject;
 
 	/*! The surface normals (lines) shown for visible surfaces when enabled. */
 	SurfaceNormalsObject	m_surfaceNormalsObject;

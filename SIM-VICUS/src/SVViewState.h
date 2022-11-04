@@ -90,6 +90,9 @@ public:
 			a line between starting point and current coordinate system's location is drawn and the distance is displayed.
 		*/
 		OM_MeasureDistance,
+		/*! In this mode, surfaces can be selected via an interactive rubberband inside the scene.
+		*/
+		OM_RubberbandSelection,
 		/*! In this mode, the user can place three points after another (by snapping the local coordinate system
 			to the points). When the third point was placed, all selected objects are rotated accordingly.
 		*/

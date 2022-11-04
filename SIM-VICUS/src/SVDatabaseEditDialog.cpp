@@ -169,6 +169,8 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->tableView->setItemDelegate(dg);
+
+	m_ui->tableView->installEventFilter(this);
 }
 
 
@@ -235,6 +237,13 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 	// nothing selected/dialog aborted
 	return initialId;
+}
+
+bool SVDatabaseEditDialog::eventFilter(QObject * obj, QEvent * event) {
+	if(obj == m_ui->tableView && event->type() == QEvent::Resize) {
+		m_ui->tableView->resizeRowsToContents();
+	}
+	return QObject::eventFilter(obj, event);
 }
 
 
