@@ -426,13 +426,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	int mouse_dx = mouseDelta.x();
 	int mouse_dy = mouseDelta.y();
 
-	if(keyboardHandler.keyReleased(Qt::Key_Alt) &&
-			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-		// end Rubbeband selection
-		//setDefaultViewState();
-		//m_rubberbandObject.reset();
-	}
-
 	// if right mouse button is pressed, mouse delta is translated into first camera perspective rotations
 	if (keyboardHandler.buttonDown(Qt::RightButton)) {
 		// only do first-person mode, if not in any other mode
@@ -489,13 +482,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				SVViewStateHandler::instance().setViewState(vs);
 
 				m_rubberbandObject.setStartPoint(QVector3D(localMousePos.x(), localMousePos.y(), 0));
-			}
-			else {
-				// end
-				m_rubberbandObject.setViewport(m_viewPort);
-				m_rubberbandObject.setRubberband(QVector3D(localMousePos.x(), localMousePos.y(), 0));
 
-				return true;
+				qDebug() << "Start rubberband selection.";
 			}
 		}
 
@@ -596,6 +584,16 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			// ** left mouse button held and mouse dragged **
 			if (mouseDelta != QPoint(0,0)) {
+
+
+				if( SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+					// updated rubberband
+					m_rubberbandObject.setViewport(m_viewPort);
+					m_rubberbandObject.setRubberband(QVector3D(localMousePos.x(), localMousePos.y(), 0));
+
+					return true;
+				}
+
 				// record the distance that the mouse was moved
 				m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
 
