@@ -55,3 +55,5 @@ object_script.*
 *.odg\#
 *.ilk
 /release/
+/build/cmake/bb_VC_x64_Debug/
+/build/cmake/out/
