@@ -119,7 +119,7 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>	rubberbandVertexBufferData;
 
-	qDebug() << "x: " << bottomRight.x() << " |  y: " << bottomRight.y();
+	// qDebug() << "x: " << bottomRight.x() << " |  y: " << bottomRight.y();
 
 	m_topLeftView = QVector3D(SVSettings::instance().m_ratio * m_topLeft.x() + -m_viewport.width()/2,
 									   -SVSettings::instance().m_ratio *m_topLeft.y() + m_viewport.height()/2, 0);
@@ -127,14 +127,14 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 										   -SVSettings::instance().m_ratio *bottomRight.y() + m_viewport.height()/2, 0);
 
 	if(m_topLeft.x() < bottomRight.x()) // we select
-		m_selectGeometry = true;
+		m_touchGeometry = true;
 	else
-		m_selectGeometry = false;
+		m_touchGeometry = false;
 
 	if(m_topLeft.y() > bottomRight.y()) // select everything
-		m_touchGeometry = false;
+		m_selectGeometry = false;
 	else
-		m_touchGeometry = true;
+		m_selectGeometry = true;
 
 	// NOTE: We draw 2 lines to make them thicker.
 
@@ -199,18 +199,10 @@ void RubberbandObject::setViewport(const QRect & viewport) {
 }
 
 void RubberbandObject::selectObjectsBasedOnRubberband() {
-	const Camera &c = m_scene->camera();
-
-	const QVector3D &forward = c.forward();
-	const QVector3D &right = c.right(); //
-	const QVector3D &up = c.up(); //
 
 	VICUS::Project prj = SVProjectHandler::instance().project();
 
 	// Camera pane
-
-	// 1) Construct polygon in scene. ================
-
 	// Construct a polygon in NDC
 	int w = m_viewport.width();
 	int h = m_viewport.height();
@@ -220,17 +212,6 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_topLeftView.x()/w, 2*m_bottomRightView.y()/h, 0));
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_bottomRightView.y()/h, 0));
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_topLeftView.y()/h, 0));
-
-	ClipperLib::Clipper clp;
-	// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
-
-	// Add main polygon to clipper
-	clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
-
-	// ============================
-//	for (IBKMK::Vector2D v2D : vertexes)
-// 		qDebug() << "x: " << v2D.m_x << " | y: " << v2D.m_y;
-
 
 	// get a list of IDs of nodes to be selected (only those who are not yet selected)
 	std::set<unsigned int> nodeIDs;
@@ -242,17 +223,24 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
 
-					qDebug() << "------------------";
-					qDebug() << s.m_displayName;
+					// qDebug() << "------------------";
+					// qDebug() << s.m_displayName;
 
-					bool foundAnyPoint = false;
-					bool foundAllPoints = false;
-					int selectionCount = 0;
+
+					ClipperLib::Clipper clp;
+					// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
+
+					// Add main polygon to clipper
+					clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
+
+
 					ClipperLib::Path pathSurface;
 					for(const IBKMK::Vector3D &v3D : s.polygon3D().vertexes()) {
 						// Bring our point to NDC
 						QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
 						projectedP /= projectedP.w();
+
+						// qDebug() << s.m_displayName << " Surface point -> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
 
 						// Convert to ClipperLib
 						pathSurface << toClipperIntPoint(projectedP.toVector3D() );
@@ -262,30 +250,36 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 					ClipperLib::Paths intersectionPaths;
 					clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
 
-					if(intersectionPaths.empty())
+					if(intersectionPaths.empty()) {
+						// qDebug() << "Skipped";
 						continue;
+					}
 
-					double intersectionArea = ClipperLib::Area(intersectionPaths[0]);
-					double surfaceArea = ClipperLib::Area(pathSurface);
+					double intersectionArea = std::abs(ClipperLib::Area(intersectionPaths[0]));
+					double surfaceArea = std::abs(ClipperLib::Area(pathSurface));
+
+					// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
 
 
 					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
 						nodeIDs.insert(s.m_id);
 
-
-
 					const IBKMK::Vector3D &offset = s.geometry().offset();
 					const IBKMK::Vector3D &localX = s.geometry().localX();
-					const IBKMK::Vector3D &localY = s.geometry().localX();
+					const IBKMK::Vector3D &localY = s.geometry().localY();
 
 					// Also check windows
 					for(const VICUS::SubSurface &ss : s.subSurfaces()) {
 
-						qDebug() << "------------------";
-						qDebug() << ss.m_displayName;
-						foundAnyPoint = false;
-						foundAllPoints = false;
-						selectionCount = 0;
+						// qDebug() << "------------------";
+						// qDebug() << ss.m_displayName;
+
+						ClipperLib::Clipper clp;
+						// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
+
+						// Add main polygon to clipper
+						clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
+
 
 						ClipperLib::Path pathSubSurface;
 
@@ -294,7 +288,7 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 							QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
 							projectedP /= projectedP.w();
 
-							qDebug() << s.m_displayName <<"-> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
+							// qDebug() << ss.m_displayName << " Sub surface point -> x: " << v3D.m_x << " | " << projectedP.x() << " | y: " << v3D.m_y << " | " << projectedP.y() << " | z: " << v3D.m_z << " | " << projectedP.z();
 
 							// Convert to ClipperLib
 							pathSubSurface << toClipperIntPoint(projectedP.toVector3D() );
@@ -304,13 +298,17 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 						ClipperLib::Paths intersectionPaths;
 						clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
 
-						if(intersectionPaths.empty())
+						if(intersectionPaths.empty()) {
+							// qDebug() << "Skipped";
 							continue;
+						}
 
 						ClipperLib::Path &path = intersectionPaths[0];
 
-						double intersectionArea = ClipperLib::Area(path);
-						double surfaceArea = ClipperLib::Area(pathSubSurface);
+						double intersectionArea = std::abs(ClipperLib::Area(path));
+						double surfaceArea = std::abs(ClipperLib::Area(pathSubSurface));
+
+						// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
 
 						if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
 							nodeIDs.insert(ss.m_id);
