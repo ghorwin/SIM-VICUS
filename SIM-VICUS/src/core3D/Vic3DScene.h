@@ -137,6 +137,11 @@ public:
 	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemTranslationMode(bool abort);
 
+	/*! Enter Rubberband Mode. */
+	void enterRubberbandMode();
+	/*! Leaves Rubberband Mode. .*/
+	void leaveRubberbandMode();
+
 	/*! Toggles "measurement" mode on. */
 	void enterMeasurementMode();
 	/*! Leaves the "measurement" mode and returns to previous mode. */

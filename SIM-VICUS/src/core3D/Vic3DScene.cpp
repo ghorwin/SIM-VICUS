@@ -476,14 +476,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 		if(keyboardHandler.keyDown(Qt::Key_Alt)) {
 			if(SVViewStateHandler::instance().viewState().m_sceneOperationMode != SVViewState::OM_RubberbandSelection) {
-				// begin rubberband
-				SVViewState vs = SVViewStateHandler::instance().viewState();
-				vs.m_sceneOperationMode = SVViewState::OM_RubberbandSelection;
-				SVViewStateHandler::instance().setViewState(vs);
-
+				enterRubberbandMode();
 				m_rubberbandObject.setStartPoint(QVector3D(localMousePos.x(), localMousePos.y(), 0));
-
-				qDebug() << "Start rubberband selection.";
 			}
 		}
 
@@ -584,7 +578,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			// ** left mouse button held and mouse dragged **
 			if (mouseDelta != QPoint(0,0)) {
-
 
 				if( SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
 					// updated rubberband
@@ -809,10 +802,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		m_navigationMode = NUM_NM;
 
 		if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-			qDebug() << "Finishing rubberband selection.";
-			m_rubberbandObject.selectObjectsBasedOnRubberband();
-			m_rubberbandObject.reset();
-			setDefaultViewState();
+			leaveRubberbandMode();
 		}
 
 	} // left button released
@@ -2218,6 +2208,9 @@ void Scene::leaveAnySpecialMode() {
 	case SVViewState::OM_MeasureDistance:
 		leaveMeasurementMode();
 		break;
+	case SVViewState::OM_RubberbandSelection:
+		leaveRubberbandMode();
+		break;
 	}
 }
 
@@ -2273,6 +2266,22 @@ void Scene::leaveCoordinateSystemTranslationMode(bool abort) {
 	}
 	// switch back to defined view state
 	// do we have any selected geometries
+	setDefaultViewState();
+}
+
+void Scene::enterRubberbandMode() {
+	// begin rubberband
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_RubberbandSelection;
+	SVViewStateHandler::instance().setViewState(vs);
+
+	qDebug() << "Start rubberband selection.";
+}
+
+void Scene::leaveRubberbandMode() {
+	qDebug() << "Finishing rubberband selection.";
+	m_rubberbandObject.selectObjectsBasedOnRubberband();
+	m_rubberbandObject.reset();
 	setDefaultViewState();
 }
 
