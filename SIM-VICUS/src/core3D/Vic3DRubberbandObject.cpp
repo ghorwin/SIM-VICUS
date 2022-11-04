@@ -44,7 +44,11 @@
 #include <IBKMK_3DCalculations.h>
 #include <IBKMK_2DCalculations.h>
 
+#include <clipper.hpp>
+
 namespace Vic3D {
+
+float SCALE_FACTOR = 1e4;
 
 RubberbandObject::RubberbandObject() {
 
@@ -186,32 +190,8 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	m_vbo.release();
 }
 
-QVector3D RubberbandObject::convertViewportToWorldCoordinates(int x, int y) {
-
-	// viewport dimensions
-	double Dx = m_viewport.width();
-	double Dy = m_viewport.height();
-
-	double nx = (2*x)/Dx;
-	double ny = -(2*y)/Dy;
-
-	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
-	bool invertible;
-	QMatrix4x4 projectionMatrixInverted = m_scene->worldToView().inverted(&invertible);
-	if (!invertible) {
-		qWarning()<< "Cannot invert projection matrix.";
-		return QVector3D();
-	}
-
-	// mouse position in NDC space, one point on near plane and one point on far plane
-	QVector4D nearPos(float(nx), float(ny), -1, 1.0);
-
-	// transform from NDC to model coordinates
-	QVector4D nearResult = projectionMatrixInverted*nearPos;
-	// don't forget normalization!
-	nearResult /= nearResult.w();
-
-	return nearResult.toVector3D();
+ClipperLib::IntPoint RubberbandObject::toClipperIntPoint(const QVector3D & p) {
+	return ClipperLib::IntPoint(int(Vic3D::SCALE_FACTOR*p.x() ), int(SCALE_FACTOR*p.y() ) );
 }
 
 void RubberbandObject::setViewport(const QRect & viewport) {
@@ -231,72 +211,120 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 	// 1) Construct polygon in scene. ================
 
-	std::vector<IBKMK::Vector2D> vertexes;
+	// Construct a polygon in NDC
+	int w = m_viewport.width();
+	int h = m_viewport.height();
 
-	QVector3D topLeft = convertViewportToWorldCoordinates(m_topLeftView.x(), m_topLeftView.y());
-	QVector3D topRight = convertViewportToWorldCoordinates(m_bottomRightView.x(), m_topLeftView.y());
-	QVector3D bottomRight = convertViewportToWorldCoordinates(m_bottomRightView.x(), m_bottomRightView.y());
-	QVector3D bottomLeft = convertViewportToWorldCoordinates(m_topLeftView.x(), m_bottomRightView.y());
+	ClipperLib::Path pathRubberband;
+	pathRubberband << toClipperIntPoint(QVector3D(2*m_topLeftView.x()/w, 2*m_topLeftView.y()/h, 0));
+	pathRubberband << toClipperIntPoint(QVector3D(2*m_topLeftView.x()/w, 2*m_bottomRightView.y()/h, 0));
+	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_bottomRightView.y()/h, 0));
+	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_topLeftView.y()/h, 0));
 
-	IBKMK::Vector2D p1,p2,p3,p4;
-	IBKMK::planeCoordinates(QVector2IBKVector(c.translation()), QVector2IBKVector(right),
-							QVector2IBKVector(up), QVector2IBKVector(topLeft), p1.m_x, p1.m_y);
-	vertexes.push_back(p1);
-	IBKMK::planeCoordinates(QVector2IBKVector(c.translation()), QVector2IBKVector(right),
-							QVector2IBKVector(up), QVector2IBKVector(topRight), p2.m_x, p2.m_y);
-	vertexes.push_back(p2);
-	IBKMK::planeCoordinates(QVector2IBKVector(c.translation()), QVector2IBKVector(right),
-							QVector2IBKVector(up), QVector2IBKVector(bottomRight), p3.m_x, p3.m_y);
-	vertexes.push_back(p3);
-	IBKMK::planeCoordinates(QVector2IBKVector(c.translation()), QVector2IBKVector(right),
-							QVector2IBKVector(up), QVector2IBKVector(bottomLeft), p4.m_x, p4.m_y);
-	vertexes.push_back(p4);
+	ClipperLib::Clipper clp;
+	// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
+
+	// Add main polygon to clipper
+	clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
 
 	// ============================
+//	for (IBKMK::Vector2D v2D : vertexes)
+// 		qDebug() << "x: " << v2D.m_x << " | y: " << v2D.m_y;
+
 
 	// get a list of IDs of nodes to be selected (only those who are not yet selected)
 	std::set<unsigned int> nodeIDs;
+	const QMatrix4x4 &mat = m_scene->worldToView();
 
 	// 2) ========================
-	for(const VICUS::Building &b : prj.m_buildings)
-		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels)
-			for(const VICUS::Room &r : bl.m_rooms)
+	for(const VICUS::Building &b : prj.m_buildings) {
+		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
+			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
+
+					qDebug() << "------------------";
+					qDebug() << s.m_displayName;
+
 					bool foundAnyPoint = false;
 					bool foundAllPoints = false;
 					int selectionCount = 0;
+					ClipperLib::Path pathSurface;
 					for(const IBKMK::Vector3D &v3D : s.polygon3D().vertexes()) {
-						IBKMK::Vector3D projectedP;
+						// Bring our point to NDC
+						QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
+						projectedP /= projectedP.w();
 
-						// Project point in camera pane
-						IBKMK::pointProjectedOnPlane(QVector2IBKVector(c.translation()), QVector2IBKVector(forward), v3D, projectedP);
-
-						// Check if point lies inside polygon
-						IBKMK::Vector2D p;
-						IBKMK::planeCoordinates(QVector2IBKVector(c.translation()), QVector2IBKVector(right),
-												QVector2IBKVector(up), projectedP, p.m_x, p.m_y);
-
-						int res =  IBKMK::pointInPolygon(vertexes, p);
-
-						if(res == -1)
-							continue;
-
-						foundAnyPoint = true;
-						++selectionCount;
+						// Convert to ClipperLib
+						pathSurface << toClipperIntPoint(projectedP.toVector3D() );
 					}
-					foundAllPoints = selectionCount == s.polygon3D().vertexes().size();
 
-					if(!foundAnyPoint)
+					clp.AddPath(pathSurface, ClipperLib::ptClip, true);
+					ClipperLib::Paths intersectionPaths;
+					clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+
+					if(intersectionPaths.empty())
 						continue;
 
-					if(m_touchGeometry || foundAllPoints)
+					double intersectionArea = ClipperLib::Area(intersectionPaths[0]);
+					double surfaceArea = ClipperLib::Area(pathSurface);
+
+
+					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
 						nodeIDs.insert(s.m_id);
+
+
+
+					const IBKMK::Vector3D &offset = s.geometry().offset();
+					const IBKMK::Vector3D &localX = s.geometry().localX();
+					const IBKMK::Vector3D &localY = s.geometry().localX();
+
+					// Also check windows
+					for(const VICUS::SubSurface &ss : s.subSurfaces()) {
+
+						qDebug() << "------------------";
+						qDebug() << ss.m_displayName;
+						foundAnyPoint = false;
+						foundAllPoints = false;
+						selectionCount = 0;
+
+						ClipperLib::Path pathSubSurface;
+
+						for(const IBKMK::Vector2D v2D : ss.m_polygon2D.vertexes()) {
+							IBKMK::Vector3D v3D = offset + localX * v2D.m_x + localY * v2D.m_y;
+							QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
+							projectedP /= projectedP.w();
+
+							qDebug() << s.m_displayName <<"-> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
+
+							// Convert to ClipperLib
+							pathSubSurface << toClipperIntPoint(projectedP.toVector3D() );
+						}
+
+						clp.AddPath(pathSubSurface, ClipperLib::ptClip, true);
+						ClipperLib::Paths intersectionPaths;
+						clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+
+						if(intersectionPaths.empty())
+							continue;
+
+						ClipperLib::Path &path = intersectionPaths[0];
+
+						double intersectionArea = ClipperLib::Area(path);
+						double surfaceArea = ClipperLib::Area(pathSubSurface);
+
+						if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
+							nodeIDs.insert(ss.m_id);
+
+					}
 				}
+			}
+		}
+	}
 
 	// UNDO ACTION ============================
 
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select objects"),
-														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+														 SVUndoTreeNodeState::SelectedState, nodeIDs, m_selectGeometry);
 	// select all
 	undo->push();
 

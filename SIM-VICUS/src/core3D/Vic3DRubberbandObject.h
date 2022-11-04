@@ -41,26 +41,20 @@ QT_END_NAMESPACE
 #include "Vic3DVertex.h"
 #include "Vic3DCamera.h"
 
+namespace ClipperLib {
+class IntPoint;
+}
+
 
 namespace Vic3D {
 
 class ShaderProgram;
 class Scene;
 
-/*! Draws the mini version of the local coordinate system.
-	The coordinate system object is composed of several objects, and only some of them are shown
-	together.
+extern float SCALE_FACTOR;
 
-	Regular coordinate system object (drawn with SHADER_COORDINATE_SYSTEM):
-	- one big sphere in the middle          indexBufferObject 0
-	- one opaque cylinder per axis          indexBufferObject 1-3
-	- one small sphere at each axis end     indexBufferObject 4-6
+/*!
 
-	After that (drawn with SHADER_TRANSPARENT_GEOMETRY):
-	- a plane in the background
-
-	The geometry up to the plane is drawn using triangle strips with index-based drawing.
-	The plane is being drawn with drawArrays().
 */
 class RubberbandObject {
 	Q_DECLARE_TR_FUNCTIONS(Scene)
@@ -84,8 +78,8 @@ public:
 	/*! Set bottom right end point of rubberband. */
 	void setRubberband(const QVector3D &bottomRight);
 
-	/*! . */
-	QVector3D convertViewportToWorldCoordinates(int x, int y);
+	/*! Converts a QVector3D to an ClipperLib Int-Point. */
+	ClipperLib::IntPoint toClipperIntPoint(const QVector3D &p);
 
 	/*! Updates the viewport rect of scene. */
 	void setViewport(const QRect &viewport);
