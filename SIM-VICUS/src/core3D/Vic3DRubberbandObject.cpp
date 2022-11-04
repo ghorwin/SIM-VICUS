@@ -48,7 +48,7 @@
 
 namespace Vic3D {
 
-float SCALE_FACTOR = 1e4;
+float SCALE_FACTOR = 1e8;
 
 RubberbandObject::RubberbandObject() {
 
