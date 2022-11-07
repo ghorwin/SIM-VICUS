@@ -27,6 +27,8 @@
 #include <IBKMK_Vector3D.h>
 #include <IBKMK_Polygon3D.h>
 
+#include "SH_Constants.h"
+
 namespace SH {
 
 class Notification : public IBK::NotificationHandler {
@@ -67,16 +69,28 @@ public:
 
 		ShadingObject() {}
 
-		ShadingObject(unsigned int id, const IBKMK::Polygon3D &poly3D, bool isObstacle = false) :
+		ShadingObject(unsigned int id, const IBKMK::Polygon3D &poly3D,
+					  const std::vector<IBKMK::Polygon2D> &holes, bool isObstacle = false) :
 			m_id(id),
+			m_holes(holes),
 			m_polygon(poly3D),
 			m_isObstacle(isObstacle)
 		{}
 
-		std::set<unsigned int>	m_visibleSurfaces;				///< Set with ids of visible objects for this object
-		unsigned int			m_id;							///< Unique id of shading object
-		IBKMK::Polygon3D		m_polygon;						///< polygon of shading object
-		bool					m_isObstacle;					///< indicates whether it is an obstacle
+		ShadingObject(unsigned int id, unsigned int parentId, const IBKMK::Polygon3D &poly3D,
+					  bool isObstacle = false) :
+			m_id(id),
+			m_parentId(parentId),
+			m_polygon(poly3D),
+			m_isObstacle(isObstacle)
+		{}
+
+		std::set<unsigned int>			m_visibleSurfaces;				///< Set with ids of visible objects for this object
+		unsigned int					m_id;							///< Unique id of shading object
+		unsigned int					m_parentId = INVALID_ID;		///< Unique id of parent surface, if INVALID no parent exists
+		std::vector<IBKMK::Polygon2D>	m_holes;
+		IBKMK::Polygon3D				m_polygon;						///< polygon of shading object
+		bool							m_isObstacle;					///< indicates whether it is a pure obstacle
 	};
 
 	StructuralShading() : m_startTime(2007,0) {}

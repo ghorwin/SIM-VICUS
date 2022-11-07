@@ -30,11 +30,13 @@ INCLUDEPATH +=	\
 		../../../DataIO/src
 
 SOURCES += \
+		../../src/SH_Constants.cpp \
 		../../src/SH_ShadedSurfaceObject.cpp \
 		../../src/SH_StructuralShading.cpp
 
 
 HEADERS += \
+		../../src/SH_Constants.h \
 		../../src/SH_ShadedSurfaceObject.h \
 		../../src/SH_StructuralShading.h
 

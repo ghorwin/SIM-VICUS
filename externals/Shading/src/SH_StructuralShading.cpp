@@ -48,7 +48,7 @@ namespace SH {
 static double angleVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
 
 	double dot = v1.scalarProduct(v2);    // between [x1, y1, z1] and [x2, y2, z2]
-	double angle2 = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+//	double angle2 = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 	IBKMK::Vector3D cross = v1.crossProduct(v2); // Normal on both vectors
 	double det =  v1.m_x*v2.m_y*cross.m_z + v1.m_z*v2.m_x*cross.m_y + v1.m_y*v2.m_z*cross.m_x
 				- v1.m_z*v2.m_y*cross.m_x - v1.m_y*v2.m_x*cross.m_z - v1.m_x*v2.m_z*cross.m_y;
@@ -174,7 +174,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
 
 			ShadedSurfaceObject surfaceObject;
-			surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
+			surfaceObject.setPolygon(so.m_id, so.m_polygon, so.m_holes, m_gridWidth);
 
 			std::vector<ShadingObject> shadingObstacles;
 
@@ -470,7 +470,7 @@ void StructuralShading::createSunNormals() {
 			m_sunConeNormals.push_back(n);
 			m_indexesOfSimilarNormals.push_back( std::vector<unsigned int>(1, i) );
 		}
-		else if (id > 0) {
+		else if (id >= 0) {
 			// similar normal exists, append current sun positions index to vector
 			m_indexesOfSimilarNormals[(unsigned int)id].push_back(i);
 		}
@@ -502,6 +502,11 @@ void StructuralShading::findVisibleSurfaces() {
 		for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
 			// iterate through all possible shading objects
 			for(const ShadingObject &obst : m_obstacles) {
+
+				// skip parent objects (wall surface) of sub-surfaces such as windows
+				if(surf.m_parentId == obst.m_id)
+					continue;
+
 				// iterate through all vertexes of shading objects
 				for(const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
 					double linefactor = 0;

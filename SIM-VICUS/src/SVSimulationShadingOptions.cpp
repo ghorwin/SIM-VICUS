@@ -55,6 +55,21 @@
 #include "SVClimateDataTableModel.h"
 #include "SVSettings.h"
 
+std::vector<IBKMK::Polygon2D> convertVicus2IBKMKPolyVector(const std::vector<VICUS::Polygon2D> holePolys) {
+	std::vector<IBKMK::Polygon2D> ibkmkHolePolys;
+	for(const VICUS::Polygon2D &poly2D : holePolys) {
+		poly2D.vertexes();
+		ibkmkHolePolys.push_back(poly2D);
+	}
+	return ibkmkHolePolys;
+}
+
+void debugPolygonPoints(QString preText, const IBKMK::Polygon3D &poly) {
+	for(const IBKMK::Vector3D &v3D : poly.vertexes())
+		qDebug() << preText << "\tx: " << (double)((int)(1000.0*v3D.m_x))/1000.0
+							<< "\ty: " << (double)((int)(1000.0*v3D.m_y))/1000.0
+							<< "\tz: " << (double)((int)(1000.0*v3D.m_z))/1000.0;
+}
 
 class ShadingCalculationProgress : public SH::Notification {
 public:
@@ -138,7 +153,7 @@ void SVSimulationShadingOptions::updateUi() {
 		simuPara.m_interval.checkParameters();
 	} catch (...) {
 		m_ui->labelInputError->setText( tr("<span style=\"color:%1\">Simulation time interval is not properly configured. Please set a valid simulation time interval and "
-												  "compute shading afterwards!</span>").arg(errorColor) );
+										   "compute shading afterwards!</span>").arg(errorColor) );
 		return;
 	}
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
@@ -190,20 +205,20 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 	unsigned int stepCount = 1;
 
 	switch (dt) {
-		case Fast: {
-			gridSize = 0.1;
-			sunCone = 2;
-		}
+	case Fast: {
+		gridSize = 0.1;
+		sunCone = 2;
+	}
 		break;
-		case Detailed: {
-			gridSize = 0.05;
-			sunCone = 0.5;
-		}
+	case Detailed: {
+		gridSize = 0.05;
+		sunCone = 0.5;
+	}
 		break;
-		case Manual: {
-			m_ui->lineEditSunCone->setReadOnly(false);
-			m_ui->lineEditGridSize->setReadOnly(false);
-		}
+	case Manual: {
+		m_ui->lineEditSunCone->setReadOnly(false);
+		m_ui->lineEditGridSize->setReadOnly(false);
+	}
 		break;
 	}
 
@@ -258,7 +273,7 @@ void SVSimulationShadingOptions::on_pushButtonCalculate_clicked(){
 
 
 void SVSimulationShadingOptions::calculateShadingFactors() {
-//	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
+	//	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
 
 	std::vector<SH::StructuralShading::ShadingObject> selObst;
 	std::vector<SH::StructuralShading::ShadingObject> selSurf;
@@ -287,7 +302,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		// we need to handle the case that we have a climate data file path, but no longitude/latitude given
 		if ( m_selSurfaces.empty() && m_selSubSurfaces.empty() ) {
 			QMessageBox::critical(this, QString(), tr("No (sub-)surfaces have been selected."
-								  "Note that shading factors won't be generated for obstacles/annonymous geometry!"));
+													  "Note that shading factors won't be generated for obstacles/annonymous geometry!"));
 			return;
 		}
 	}
@@ -321,11 +336,11 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			return;
 		}
 		if (SVSettings::instance().showDoNotShowAgainQuestion(this, "shading-calculation-with-entire-geometry", QString(),
-				tr("Shading calculation will be done using all surfaces of the project, regardless of whether "
-				   "they are currently visible or not. Currently %1 surfaces, %2 sub-surfaces and %3 obstacles have been selected. "
-				   "For large projects this may lead to large simulation time. Continue?")
+															  tr("Shading calculation will be done using all surfaces of the project, regardless of whether "
+																 "they are currently visible or not. Currently %1 surfaces, %2 sub-surfaces and %3 obstacles have been selected. "
+																 "For large projects this may lead to large simulation time. Continue?")
 															  .arg(m_selSurfaces.size()).arg(m_selSubSurfaces.size()).arg(m_selObstacles.size()),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+															  QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 	}
 
@@ -361,18 +376,21 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
 											loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
-											loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
-											m_startTime,
-											m_durationInSec,
-											stepDuration,
-											sunConeDeg );
+			loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
+			m_startTime,
+			m_durationInSec,
+			stepDuration,
+			sunConeDeg );
 
 
 	// *** compose vectors with obstacles
 
+
+
 	for (const VICUS::Surface *s: m_selObstacles)
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
+																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																true) );
 
 	// *** compose vector with selected surfaces
@@ -448,16 +466,64 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			continue;
 		}
 
+
+		IBKMK::Polygon3D poly = s->geometry().polygon3D().vertexes();
+		std::vector<IBKMK::Vector3D> avectors = s->geometry().polygon3D().vertexes();
+		const IBKMK::Polygon3D obstaclePoly = IBKMK::Polygon3D(avectors);
+		if(m_ui->checkBoxExtrudeSurfaces->isChecked()){
+
+			double totalThickness = 0;
+			// calculatwe the total thickness of the corresponding construction of the component
+			const VICUS::Construction * construction = VICUS::element(project().m_embeddedDB.m_constructions, comp->m_idConstruction);
+			for (const VICUS::MaterialLayer & layer : construction->m_materialLayers) {
+				// add all the thicknesses of the different MaterialLayers in meters
+				totalThickness += layer.m_thickness.get_value("m");
+			}
+
+			// modify the surface by extruding all surface vertexes
+			for(const IBKMK::Vector3D &v3D : poly.vertexes() ) {
+				const_cast<IBKMK::Vector3D &>(v3D) += s->geometry().normal()*totalThickness;
+			}
+
+
+			// add additional orthogonal surfaces for all edges
+			for(unsigned i = 0; i < obstaclePoly.vertexes().size(); i++){
+				std::vector<IBKMK::Vector3D> additionalSurface (4);
+
+				// index 0 & 1 are the original points
+				// index 2 & 3 are the shifted points
+				additionalSurface.at(0) = obstaclePoly.vertexes().at(i);
+				additionalSurface.at(1) = obstaclePoly.vertexes().at((i+1) % obstaclePoly.vertexes().size());
+				additionalSurface.at(2) = additionalSurface.at(1) + s->geometry().normal()*totalThickness;
+				additionalSurface.at(3) = additionalSurface.at(0) + s->geometry().normal()*totalThickness;
+
+				debugPolygonPoints(QString("SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
+
+				//add this surface to the obstacles
+				selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
+																		IBKMK::Polygon3D(additionalSurface),
+																		std::vector<IBKMK::Polygon2D>(),
+																		s->m_parent == nullptr) );
+			}
+
+		}
+
+		debugPolygonPoints(QString("SURFACE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
+
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
+																poly,
+																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																s->m_parent == nullptr) );
 		surfaceIDs.push_back(s->m_id);
 		surfaceDisplayNames.push_back(s->m_displayName.toStdString());
 
+		debugPolygonPoints(QString("OBSTACLE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
+
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
+																obstaclePoly,
+																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																s->m_parent == nullptr) );
 	}
 
@@ -492,21 +558,42 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		if ( ss->m_parent == nullptr ) // no parent; should not be possible but checked anyway
 			continue;
 
-		const IBKMK::Vector3D &offset3D = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().offset();
+		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(ss->m_parent);
+		Q_ASSERT(s != nullptr);
 
-		const IBKMK::Vector3D &localX = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().localX();
-		const IBKMK::Vector3D &localY = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().localY();
+		const IBKMK::Vector3D &offset3D = s->geometry().offset();
+
+		const IBKMK::Vector3D &localX = s->geometry().localX();
+		const IBKMK::Vector3D &localY = s->geometry().localY();
 
 
-//		qDebug() << "======================================================";
-//		qDebug() << QString::fromStdString(ss->m_displayName.toStdString());
+		//		qDebug() << "======================================================";
+		//		qDebug() << QString::fromStdString(ss->m_displayName.toStdString());
 
 		// we need to calculate the 3D Points of the Sub Surface
 		std::vector<IBKMK::Vector3D> subSurf3D;
 		for (unsigned int i=0; i<ss->m_polygon2D.vertexes().size(); ++i) {
 			const IBKMK::Vector2D &vertex = ss->m_polygon2D.vertexes()[i];
 			subSurf3D.push_back(offset3D + localX*vertex.m_x + localY*vertex.m_y);
-//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+			//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+		}
+
+		if(m_ui->checkBoxExtrudeSurfaces->isChecked()){
+
+			const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
+			if(comp != nullptr){
+				double totalThickness = 0;
+				// calculatwe the total thickness of the corresponding construction of the component
+				const VICUS::Construction * construction = VICUS::element(project().m_embeddedDB.m_constructions, comp->m_idConstruction);
+				for (const VICUS::MaterialLayer & layer : construction->m_materialLayers) {
+					// add all the thicknesses of the different MaterialLayers in meters
+					totalThickness += layer.m_thickness.get_value("m");
+				}
+				for( IBKMK::Vector3D &v3D : subSurf3D){
+					// mind for now we take only half of the component thickness
+					v3D += s->geometry().normal()*0.5*totalThickness;
+				}
+			}
 		}
 
 		// we compute shading factors for this surface
@@ -520,7 +607,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		displayName += ss->m_displayName.toStdString();
 		surfaceDisplayNames.push_back(displayName);
 
-		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id,
+		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id, s->m_id,
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
 
@@ -563,18 +650,18 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		IBK::Path::remove(IBK::Path(exportFileBaseName + ".d6b"));
 
 	switch ( outputType ) {
-		case TsvFile : {
-			exportFile = IBK::Path( exportFileBaseName + ".tsv");
-			m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs, surfaceDisplayNames);
-		} break;
-		case D6oFile : {
-			exportFile = IBK::Path( exportFileBaseName + ".d6o" );
-			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, false);
-		} break;
-		case D6bFile : {
-			exportFile = IBK::Path( exportFileBaseName + ".d6b" );
-			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, true);
-		} break;
+	case TsvFile : {
+		exportFile = IBK::Path( exportFileBaseName + ".tsv");
+		m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs, surfaceDisplayNames);
+	} break;
+	case D6oFile : {
+		exportFile = IBK::Path( exportFileBaseName + ".d6o" );
+		m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, false);
+	} break;
+	case D6bFile : {
+		exportFile = IBK::Path( exportFileBaseName + ".d6b" );
+		m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, true);
+	} break;
 	}
 	QMessageBox::information(this, QString(), tr("Calculated shading factors have been saved to '%1'.").arg(QString::fromStdString(exportFile.str())));
 }
@@ -601,9 +688,9 @@ QString SVSimulationShadingOptions::getFileName() const {
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	QString shadingFilePath = m_shadingFactorBaseName;
 	switch ( outputType ) {
-		case TsvFile : shadingFilePath += ".tsv"; break;
-		case D6oFile : shadingFilePath += ".d6o"; break;
-		case D6bFile : shadingFilePath += ".d6b"; break;
+	case TsvFile : shadingFilePath += ".tsv"; break;
+	case D6oFile : shadingFilePath += ".d6o"; break;
+	case D6bFile : shadingFilePath += ".d6b"; break;
 	}
 	return shadingFilePath;
 }
