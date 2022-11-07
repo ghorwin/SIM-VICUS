@@ -13,7 +13,7 @@ namespace SH {
 class ShadedSurfaceObject {
 public:
 	/*! Computes discretization for this surface and populates m_gridPoints vector. */
-	void setPolygon(unsigned int id, const IBKMK::Polygon3D & surface, double gridWidth);
+	void setPolygon(unsigned int id, const IBKMK::Polygon3D & surface, const std::vector<IBKMK::Polygon2D> &holes, double gridWidth);
 
 	/*! Computes and returns shading factor for the given sun normal vector. */
 	double calcShadingFactor(const IBKMK::Vector3D &sunNormal, const std::vector<StructuralShading::ShadingObject> & obstacles) const;

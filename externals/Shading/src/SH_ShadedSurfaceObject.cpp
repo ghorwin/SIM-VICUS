@@ -8,7 +8,8 @@
 
 namespace SH {
 
-void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & surface, double gridWidth) {
+void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & surface,
+									 const std::vector<IBKMK::Polygon2D> &holes, double gridWidth) {
 	IBK_ASSERT(gridWidth > 0);
 
 	m_id = id;
@@ -33,8 +34,19 @@ void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & s
 
 	for (size_t xSteps=0, xM=(size_t)std::ceil(distanceX/gridWidth); xSteps<xM; ++xSteps) {
 		for (size_t ySteps=0; ySteps<std::ceil(distanceY/gridWidth); ++ySteps) {
+			bool isHolePoint = false;
 			// determine grid point in grid
 			IBKMK::Vector2D newMiddlePoint(m_minX + (xSteps + 0.5)*gridWidth, m_minY + (ySteps + 0.5)*gridWidth);
+			// check if grid point is inside a hole
+			for(const IBKMK::Polygon2D &holePoly : holes) {
+				if(IBKMK::pointInPolygon(holePoly.vertexes(), newMiddlePoint) >= 0) {
+					isHolePoint = true;
+					break;
+				}
+			}
+			if(isHolePoint)
+				continue;
+
 			// only store grid point if it is inside the polygon
 			if (IBKMK::pointInPolygon(polyline, newMiddlePoint) >= 0) {
 				// store original point
