@@ -40,6 +40,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 	// Note: We ONLY check the required PARAMETERS here! We do not check for implemented combinations of model type
 	//       and heat exchange type - this is handled when the models are instantiated.
 
+	char * const errmsg = nullptr;
 	try {
 		// decide which heat exchange is chosen
 		switch (m_modelType) {
@@ -51,7 +52,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
 																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
-																	   true, nullptr);
+																	   true, errmsg);
 			} break;
 
 
@@ -75,7 +76,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
 																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
-																	   true, nullptr);
+																	   true, errmsg);
 			} break;
 
 			case T_TemperatureSplineEvaporator : {
@@ -140,7 +141,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 					m_splPara[SPL_HeatLoss].checkAndInitialize("HeatLoss", IBK::Unit("s"), IBK::Unit("J/s"),
 															   IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 															   std::numeric_limits<double>::max(), false,
-															   nullptr);
+															   errmsg);
 					if (!keepTsvFileValues) {
 						m_splPara[SPL_HeatLoss].m_name = "HeatLoss";
 						m_splPara[SPL_HeatLoss].m_values.clear();
@@ -158,9 +159,17 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 		} // switch
 
 	} catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)),
-			 FUNC_ID);
+		std::string errMsgStr;
+		if (errmsg!=nullptr) {
+			errMsgStr = *errmsg;
+			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1':\n%2.")
+				 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)).arg(errMsgStr),
+				 FUNC_ID);
+		}
+		else
+			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
+				 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)),
+				 FUNC_ID);
 	}
 }
 
