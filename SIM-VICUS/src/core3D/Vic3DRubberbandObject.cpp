@@ -198,22 +198,29 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 	VICUS::Project prj = SVProjectHandler::instance().project();
 
-	// Camera pane
 	// Construct a polygon in NDC
 	int w = m_viewport.width();
 	int h = m_viewport.height();
 
+	// Path of Rubberband in NDC as CLipper Path
 	ClipperLib::Path pathRubberband;
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_topLeftView.x()/w, 2*m_topLeftView.y()/h, 0));
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_topLeftView.x()/w, 2*m_bottomRightView.y()/h, 0));
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_bottomRightView.y()/h, 0));
 	pathRubberband << toClipperIntPoint(QVector3D(2*m_bottomRightView.x()/w, 2*m_topLeftView.y()/h, 0));
 
+	std::vector<IBKMK::Vector2D> verts2D;
+	for(const ClipperLib::IntPoint &ip : pathRubberband)
+		verts2D.push_back(IBKMK::Vector2D(ip.X/SCALE_FACTOR, ip.Y/SCALE_FACTOR)); // TODO Improve
+	IBKMK::Polygon2D poly(verts2D);
+
 	// get a list of IDs of nodes to be selected (only those who are not yet selected)
 	std::set<unsigned int> nodeIDs;
+
+	// Store world to view matrix.
 	const QMatrix4x4 &mat = m_scene->worldToView();
 
-	// 2) ========================
+	// Find all de-/selected Geometry of Buildings
 	for(const VICUS::Building &b : prj.m_buildings) {
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for(const VICUS::Room &r : bl.m_rooms) {
@@ -318,7 +325,120 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 		}
 	}
 
-	// UNDO ACTION ============================
+	const Vic3D::Camera &c = m_scene->camera();
+
+	// TODO: Select Network Geometry.
+	for(const VICUS::Network &n : prj.m_geometricNetworks) {
+		for(const VICUS::NetworkEdge &ne : n.m_edges) {
+			const IBKMK::Vector3D &p1 = ne.m_node1->m_position;
+			const IBKMK::Vector3D &p2 = ne.m_node2->m_position;
+
+			// project onto NDC
+			QVector4D projectedP1 = mat * QVector4D(p1.m_x, p1.m_y, p1.m_z, 1.0);
+			projectedP1 /= projectedP1.w();
+
+			// project onto NDC
+			QVector4D projectedP2 = mat * QVector4D(p2.m_x, p2.m_y, p2.m_z, 1.0);
+			projectedP2 /= projectedP2.w();
+
+			bool isP1Inside = false;
+			bool isP2Inside = false;
+			IBKMK::Vector2D intersectionP;
+			// Check if already in Rubberband
+			if(IBKMK::pointInPolygon(verts2D, IBKMK::Vector2D(projectedP1.x(), projectedP1.y() ) ) > 0) {
+				isP1Inside = true;
+			}
+			// Check if already in Rubberband
+			if(IBKMK::pointInPolygon(verts2D, IBKMK::Vector2D(projectedP2.x(), projectedP2.y() ) ) > 0) {
+				isP2Inside = true;
+			}
+
+			if(m_touchGeometry && (isP1Inside || isP2Inside)) {
+				nodeIDs.insert(ne.m_id);
+				continue;
+			}
+			else if(isP1Inside && isP2Inside) {
+				nodeIDs.insert(ne.m_id);
+				continue;
+			}
+			else if(m_touchGeometry &&
+					IBKMK::intersectsLine2D(verts2D, IBKMK::Vector2D(projectedP1.x(), projectedP1.y()),
+													 IBKMK::Vector2D(projectedP2.x(), projectedP2.y()), intersectionP) ) {
+				nodeIDs.insert(ne.m_id);
+				break;
+			}
+
+		}
+		for(const VICUS::NetworkNode &nn : n.m_nodes) {
+			// projected radius on NDC
+			const double &r = nn.m_visualizationRadius;
+			const IBKMK::Vector3D &v3D = nn.m_position;
+
+			// project onto NDC
+			QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
+			projectedP /= projectedP.w();
+
+			bool isInside = false;
+			// Check if already in Rubberband
+			if(IBKMK::pointInPolygon(verts2D, IBKMK::Vector2D(projectedP.x(), projectedP.y() ) ) > 0) {
+				isInside = true;
+			}
+
+			if(m_touchGeometry && isInside) {
+				nodeIDs.insert(nn.m_id);
+				continue;
+			}
+
+			// Calculate radius
+			IBKMK::Vector3D orthoVec = v3D + QVector2IBKVector(c.right())*nn.m_visualizationRadius;
+			// project onto NDC
+			QVector4D projectedRadPoint = mat * QVector4D(orthoVec.m_x, orthoVec.m_y, orthoVec.m_z, 1.0);
+			projectedRadPoint /= projectedRadPoint.w();
+
+			QVector3D radVec = projectedRadPoint.toVector3D() - projectedP.toVector3D();
+
+			// Distance
+			double projectedRadius = radVec.length();
+
+			/*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.
+				\return Returns the shortest distance between line and point. Factor lineFactor contains the scale factor for
+						the line equation and p2 contains the closest point on the line (p2 = a + lineFactor*d).
+			*/
+			double minDist = std::numeric_limits<double>::max();
+			for(unsigned int i1=0; i1<verts2D.size(); ++i1) {
+				unsigned int i2 = (i1+1) % verts2D.size();
+				IBKMK::Vector2D p1 = verts2D[i1];
+				IBKMK::Vector2D p2 = verts2D[i2];
+				double lineFactor;
+				IBKMK::Vector3D closestPoint;
+				IBKMK::Vector2D diff = p2-p1;
+				double dist = IBKMK::lineToPointDistance(IBKMK::Vector3D(p1.m_x, p1.m_y, 0),
+														 IBKMK::Vector3D(diff.m_x, diff.m_y, 0),
+														 IBKMK::Vector3D(projectedP.x(), projectedP.y(), 0),
+														 lineFactor, closestPoint);
+				if(lineFactor > 1) {
+					dist = p2.distanceTo(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+				}
+				else if(lineFactor < 0) {
+					dist = p1.distanceTo(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+				}
+
+				if(m_touchGeometry && (dist < projectedRadius)) {
+					nodeIDs.insert(nn.m_id);
+					break;
+				}
+				else
+					minDist = std::min(dist, minDist);
+			}
+
+			if(!m_touchGeometry && isInside && (minDist > projectedRadius) )
+				nodeIDs.insert(nn.m_id);
+
+		}
+
+	}
+
+	// Create UNDO Action
 
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select objects"),
 														 SVUndoTreeNodeState::SelectedState, nodeIDs, m_selectGeometry);

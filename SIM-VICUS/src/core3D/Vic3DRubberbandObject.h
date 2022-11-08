@@ -125,7 +125,7 @@ private:
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.
 	*/
-	GLsizei					m_vertexCount;
+	GLsizei						m_vertexCount;
 
 	/*! Viewport. */
 	QRect						m_viewport;
