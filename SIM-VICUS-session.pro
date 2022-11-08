@@ -25,6 +25,7 @@ SUBDIRS = \
 		TiCPP \
 		Zeppelin \
 		IDFReader \
+		clipper \
 		NandradCodeGenerator \
 		NandradFMUGenerator \
 		NandradSolverFMI
@@ -53,6 +54,7 @@ Vicus.file = externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = externals/QtExt/projects/Qt/QtExt.pro
 IDFReader.file = externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = NandradSolver/projects/Qt/NandradModel.pro
+clipper.file = externals/clipper/projects/Qt/clipper.pro
 
 DummyDatabasePlugin.file = plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
 DummyImportPlugin.file = plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
@@ -63,7 +65,7 @@ CO2ComfortVentilation.file = FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVe
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
-SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO
+SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO clipper
 NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP
