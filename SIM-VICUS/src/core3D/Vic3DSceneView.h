@@ -67,6 +67,8 @@ public:
 	void toggleTranslateCoordinateSystem();
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
 	void toggleMeasurementMode();
+	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
+	void toggleRubberbandMode();
 
 	/*! Resets the camera position to be looking nicely onto the scene.
 		See SVGeometryView::resetCamera().
@@ -114,6 +116,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void wheelEvent(QWheelEvent *event) override;
+	void focusOutEvent(QFocusEvent* event) override;
 
 private:
 	/*! Tests, if any relevant input was received and registers a state change. */

@@ -218,6 +218,17 @@ void SceneView::toggleMeasurementMode() {
 	}
 }
 
+void SceneView::toggleRubberbandMode() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if (vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection)
+		m_mainScene.leaveRubberbandMode(); // leave measurement mode
+	else {
+		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
+		m_mainScene.enterRubberbandMode();
+	}
+}
+
 
 void SceneView::resetCamera(int position) {
 	// reset camera position
@@ -600,6 +611,14 @@ void SceneView::mouseMoveEvent(QMouseEvent * /*event*/) {
 void SceneView::wheelEvent(QWheelEvent *event) {
 	m_keyboardMouseHandler.wheelEvent(event);
 	checkInput();
+}
+
+void SceneView::focusOutEvent(QFocusEvent * event) {
+	// leave Rubberband mode when during selection window loses focus
+	if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+		m_mainScene.leaveRubberbandMode();
+		m_keyboardMouseHandler.releaseKey(Qt::Key_Alt);
+	}
 }
 
 
