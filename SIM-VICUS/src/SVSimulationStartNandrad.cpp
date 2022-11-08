@@ -448,21 +448,31 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegrou
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
 #endif
 	// if foreground process is forced, ignore terminal settings and launch test-init directly
-	unsigned int res;
+	unsigned int exitCode = 0;
+	bool success;
 	if (forceForegroundProcess) {
 		QProgressDialog dlg(tr("Running test-init on NANDRAD project"), tr("Cancel"), 0, 0, this);
 		dlg.show();
 
 		commandLineArgs << m_nandradProjectFilePath;
-		res = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
+		success = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
 	}
 	else
-		res = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
+		success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption, &exitCode);
 
-	if (res==0)
-		return true;
-	else if (res==2) { // simulation error
-		QMessageBox::critical(this, QString(), tr("Error ocurred during simulation."));
+	if (!success) {
+		QMessageBox::critical(this, QString(), tr("Error running NANDRAD solver executable or the selected terminal emulator."));
+		return false;
+	}
+	else {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "simulation-has-started-in-background", QString(),
+														 tr("The simulation has been started as background process in a terminal window. "
+															"You can close the window once the simulation has finished. Longer simulations will continue to run "
+															"even if the SIM-VICUS application is closed."));
+	}
+
+	if (exitCode != 0) { // simulation/init error
+		QMessageBox::critical(this, QString(), tr("An error ocurred during simulation or initialization."));
 		on_pushButtonShowScreenLog_clicked();
 	}
 

@@ -41,6 +41,7 @@ private:
 	/*! Pointer to local project's network data. */
 	std::vector<VICUS::Network>		*m_networks;
 
+
 	VICUS::Network					*m_current = nullptr;
 };
 

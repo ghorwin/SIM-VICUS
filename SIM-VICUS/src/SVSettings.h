@@ -165,9 +165,14 @@ public:
 	}
 
 
-	/*! Launches an external process (solver) in a console window. */
-	static unsigned int startProcess(const QString & executable, QStringList commandLineArgs,
-							 const QString & projectFile, TerminalEmulators terminalEmulator = TE_None);
+	/*! Launches an external process (solver) in a console window.
+		\return Returns false, if process couldn't be started. If process was started and was finished after
+			a few seconds (maybe due to errors),
+			the function returns true and the exit code in argument exitCode.
+	*/
+	static bool startProcess(const QString & executable, QStringList commandLineArgs,
+							 const QString & projectFile, TerminalEmulators terminalEmulator = TE_None,
+							 unsigned int * exitCode = nullptr);
 
 	/*! Returns path to NANDRAD solver executable. */
 	static QString nandradSolverExecutable();

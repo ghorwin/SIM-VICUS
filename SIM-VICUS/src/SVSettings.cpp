@@ -34,10 +34,13 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDir>
+#include <QThread>
 
 #ifdef Q_OS_WIN
 #undef UNICODE
 #include <Windows.h>
+#else
+#include <sys/wait.h>
 #endif
 
 #include <QtExt_Directories.h>
@@ -303,12 +306,12 @@ void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStrin
 }
 
 
-unsigned int SVSettings::startProcess(const QString & executable,
+bool SVSettings::startProcess(const QString & executable,
 									QStringList commandLineArgs,
 									const QString & projectFile,
-									TerminalEmulators terminalEmulator)
+									TerminalEmulators terminalEmulator,
+									unsigned int * exitCode)
 {
-	bool success;
 	// spawn process
 #ifdef Q_OS_WIN
 
@@ -355,7 +358,12 @@ unsigned int SVSettings::startProcess(const QString & executable,
 	CloseHandle( pi.hProcess );
 	CloseHandle( pi.hThread );
 
-	return exit_code;
+	if (exitCode != nullptr) {
+		*exitCode = exit_code;
+		if (exit_code == STILL_ACTIVE)
+			*exitCode = 0; // all ok, if process is still running
+	}
+	return true; // we started the process alright, but whether the program executed successfully, only the exit code can tell
 
 #else // Q_OS_WIN
 
@@ -370,7 +378,9 @@ unsigned int SVSettings::startProcess(const QString & executable,
 											<< commandLineArgs
 											<< projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
 			QString terminalProgram = "xterm";
-			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+			bool success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+			if (!success)
+				return false;
 		} break;
 
 		case TE_GnomeTerminal : {
@@ -391,17 +401,43 @@ unsigned int SVSettings::startProcess(const QString & executable,
 			// Command line: "gnome-terminal -- /path/to/project/run/script.sh"
 			commandLineArgs = QStringList() << "--tab"  << "--" << tmpPath;
 			QString terminalProgram = "gnome-terminal";
-			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+			bool success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+			if (!success)
+				return false;
 		} break;
 
-		default:
+		default: {
 			commandLineArgs << projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
-			success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
+			bool success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
+			if (!success)
+				return false;
+			// TODO : research on how to detect exit code of detached process
+
+//			QObject().thread()->sleep(3);
+//			int status;
+//			int rtn = waitpid(pid, &status, WNOHANG);
+//			if (rtn > 0) { // still live
+//				if (exitCode != nullptr) {
+//					*exitCode = 0; // all ok, if process is still running
+//				}
+//			}
+//			else {
+//				if (exitCode != nullptr) {
+//					*exitCode = (unsigned int)status;
+//				}
+//			}
+//			return true;
+		}
 	}
 
-
-	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
-	return success;
+	// TODO :
+	// since we spawn terminal emulators on linux/mac, these will continue to run, even though our solver process has finished
+	// we need a completely different approach to running command line tools in guis... by piping the output of the process into
+	// our GUI and detecting error outputs in the output stream
+	if (exitCode != nullptr) {
+		*exitCode = 0; // all ok, if process is still running
+	}
+	return true;
 
 #endif // Q_OS_WIN
 }
