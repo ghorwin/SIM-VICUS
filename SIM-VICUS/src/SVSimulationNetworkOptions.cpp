@@ -45,6 +45,10 @@ void SVSimulationNetworkOptions::updateUi() {
 		m_ui->comboBoxNetwork->addItem(n.m_displayName, n.m_id);
 	m_current = nullptr;
 
+	// FIXME: Hauke, falls es kein Netzwerk gibt, sollte die Oberfläche die Registerkarte "Netzwerk" entweder gar
+	//		  nicht anzeigen, oder die Eingabefelder deaktivieren.
+
+
 	// find currently selected network (for now we select the first one with this flag)
 	unsigned int currentId = VICUS::INVALID_ID;
 	for (const VICUS::Network &net: *m_networks) {
