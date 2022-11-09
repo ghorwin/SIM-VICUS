@@ -208,6 +208,8 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
 	m_simulationShadingOptions->updateUi();
+	// network tab is only enabled when there is a network
+	m_ui->tabNetworkSettings->setEnabled(!m_localProject.m_geometricNetworks.empty());
 	m_simulationNetworkOptions->updateUi();
 
 	updateTimeFrameEdits();
