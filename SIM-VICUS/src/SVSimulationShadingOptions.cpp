@@ -293,6 +293,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 	}
 
+	// Save extrution state
+	bool extrudeSurfaces = m_ui->checkBoxExtrudeSurfaces->isChecked();
+
 	// We take all our selected surfaces
 	if (m_ui->radioButtonSelectedGeometry->isChecked()) {
 		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
@@ -469,7 +472,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		IBKMK::Polygon3D poly = s->geometry().polygon3D().vertexes();
 		const IBKMK::Polygon3D obstaclePoly = s->geometry().polygon3D().vertexes();
-		if(m_ui->checkBoxExtrudeSurfaces->isChecked()){
+		if(extrudeSurfaces){
 
 			double totalThickness = 0;
 			// calculatwe the total thickness of the corresponding construction of the component
@@ -502,7 +505,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 				selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
 																		IBKMK::Polygon3D(additionalSurface),
 																		std::vector<IBKMK::Polygon2D>(),
-																		s->m_parent == nullptr) );
+																		true) );
 			}
 
 		}
@@ -577,7 +580,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
 		}
 
-		if(m_ui->checkBoxExtrudeSurfaces->isChecked()){
+		if(extrudeSurfaces){
 
 			const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 			if(comp != nullptr){
@@ -594,6 +597,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					// mind for now we take only half of the component thickness
 					v3D += s->geometry().normal()*0.5*totalThickness;
 				}
+
+				debugPolygonPoints(QString("Sub-Surf %1: ").arg(ss->m_displayName), subSurf3D);
 
 				// add additional orthogonal surfaces for all edges of the window
 				for(unsigned i = 0; i < subSurf3D.size(); i++){
@@ -612,7 +617,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
 																			IBKMK::Polygon3D(additionalSurface),
 																			std::vector<IBKMK::Polygon2D>(),
-																			s->m_parent == nullptr) );
+																			true) );
 				}
 
 
