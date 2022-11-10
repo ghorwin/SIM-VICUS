@@ -468,8 +468,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 
 		IBKMK::Polygon3D poly = s->geometry().polygon3D().vertexes();
-		std::vector<IBKMK::Vector3D> avectors = s->geometry().polygon3D().vertexes();
-		const IBKMK::Polygon3D obstaclePoly = IBKMK::Polygon3D(avectors);
+		const IBKMK::Polygon3D obstaclePoly = s->geometry().polygon3D().vertexes();
 		if(m_ui->checkBoxExtrudeSurfaces->isChecked()){
 
 			double totalThickness = 0;
@@ -492,10 +491,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 				// index 0 & 1 are the original points
 				// index 2 & 3 are the shifted points
-				additionalSurface.at(0) = obstaclePoly.vertexes().at(i);
-				additionalSurface.at(1) = obstaclePoly.vertexes().at((i+1) % obstaclePoly.vertexes().size());
-				additionalSurface.at(2) = additionalSurface.at(1) + s->geometry().normal()*totalThickness;
-				additionalSurface.at(3) = additionalSurface.at(0) + s->geometry().normal()*totalThickness;
+				additionalSurface.at(0) = obstaclePoly.vertexes()[i];
+				additionalSurface[1]= obstaclePoly.vertexes()[(i+1) % obstaclePoly.vertexes().size()];
+				additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness;
+				additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness;
 
 				debugPolygonPoints(QString("SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
 
@@ -583,16 +582,40 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 			if(comp != nullptr){
 				double totalThickness = 0;
-				// calculatwe the total thickness of the corresponding construction of the component
+				// calculate the total thickness of the corresponding construction of the component
 				const VICUS::Construction * construction = VICUS::element(project().m_embeddedDB.m_constructions, comp->m_idConstruction);
 				for (const VICUS::MaterialLayer & layer : construction->m_materialLayers) {
 					// add all the thicknesses of the different MaterialLayers in meters
 					totalThickness += layer.m_thickness.get_value("m");
 				}
+
+				// extrude the window vertexes by half of the total thickness
 				for( IBKMK::Vector3D &v3D : subSurf3D){
 					// mind for now we take only half of the component thickness
 					v3D += s->geometry().normal()*0.5*totalThickness;
 				}
+
+				// add additional orthogonal surfaces for all edges of the window
+				for(unsigned i = 0; i < subSurf3D.size(); i++){
+					std::vector<IBKMK::Vector3D> additionalSurface (4);
+
+					// index 0 & 1 are the original points
+					// index 2 & 3 are the shifted points
+					additionalSurface[0] = subSurf3D[i];
+					additionalSurface[1] = subSurf3D[(i+1) % subSurf3D.size()];
+					additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness*0.5;
+					additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness*0.5;
+
+					debugPolygonPoints(QString("WINDOW SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
+
+					//add this surface to the obstacles
+					selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
+																			IBKMK::Polygon3D(additionalSurface),
+																			std::vector<IBKMK::Polygon2D>(),
+																			s->m_parent == nullptr) );
+				}
+
+
 			}
 		}
 
