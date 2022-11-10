@@ -192,6 +192,9 @@ void SVSimulationShadingOptions::updateUi() {
 
 	// update the shading file infos
 	setPreviousSimulationFileValues();
+
+	// Set Geometry Mode
+	on_radioButtonFlatGeometry_toggled(true);
 }
 
 
@@ -293,9 +296,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 	}
 
-	// Save extrution state
-	bool extrudeSurfaces = m_ui->checkBoxExtrudeSurfaces->isChecked();
-
 	// We take all our selected surfaces
 	if (m_ui->radioButtonSelectedGeometry->isChecked()) {
 		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
@@ -379,17 +379,14 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
 											loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
-			loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
-			m_startTime,
-			m_durationInSec,
-			stepDuration,
-			sunConeDeg );
+											loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
+											m_startTime,
+											(unsigned int)m_durationInSec,
+											(unsigned int)stepDuration,
+											sunConeDeg );
 
 
 	// *** compose vectors with obstacles
-
-
-
 	for (const VICUS::Surface *s: m_selObstacles)
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
@@ -409,7 +406,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	unsigned int skippedSmallSurfaces = 0;
 	unsigned int skippedSurfaceWithoutBCtoSky = 0;
-
 
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
@@ -472,7 +468,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		IBKMK::Polygon3D poly = s->geometry().polygon3D().vertexes();
 		const IBKMK::Polygon3D obstaclePoly = s->geometry().polygon3D().vertexes();
-		if(extrudeSurfaces){
+		if(m_geometryType == Extruded){
 
 			double totalThickness = 0;
 			// calculatwe the total thickness of the corresponding construction of the component
@@ -494,12 +490,12 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 				// index 0 & 1 are the original points
 				// index 2 & 3 are the shifted points
-				additionalSurface.at(0) = obstaclePoly.vertexes()[i];
-				additionalSurface[1]= obstaclePoly.vertexes()[(i+1) % obstaclePoly.vertexes().size()];
+				additionalSurface[0] = obstaclePoly.vertexes()[i];
+				additionalSurface[1] = obstaclePoly.vertexes()[(i+1) % obstaclePoly.vertexes().size()];
 				additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness;
 				additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness;
 
-				debugPolygonPoints(QString("SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
+				// debugPolygonPoints(QString("SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
 
 				//add this surface to the obstacles
 				selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
@@ -510,7 +506,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		}
 
-		debugPolygonPoints(QString("SURFACE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
+		// debugPolygonPoints(QString("SURFACE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
@@ -520,7 +516,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		surfaceIDs.push_back(s->m_id);
 		surfaceDisplayNames.push_back(s->m_displayName.toStdString());
 
-		debugPolygonPoints(QString("OBSTACLE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
+		// debugPolygonPoints(QString("OBSTACLE '%1'").arg(s->m_displayName), IBKMK::Polygon3D(poly));
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
@@ -548,7 +544,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		SVSettings::instance().showDoNotShowAgainMessage(this, "shading-calculation-skipped-inside-surfaces", QString(),
 														 tr("%1 surfaces were skipped, because they have no component assignment or have invalid boundary conditions assigned.")
 														 .arg(skippedSmallSurfaces).arg(VICUS::MIN_AREA_FOR_EXPORTED_SURFACES));
-		return;
 	}
 
 	// *** compose vector with selected sub-surfaces
@@ -580,7 +575,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
 		}
 
-		if(extrudeSurfaces){
+		if(m_geometryType == Extruded){
 
 			const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 			if(comp != nullptr){
@@ -598,7 +593,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					v3D += s->geometry().normal()*0.5*totalThickness;
 				}
 
-				debugPolygonPoints(QString("Sub-Surf %1: ").arg(ss->m_displayName), subSurf3D);
+				// debugPolygonPoints(QString("Sub-Surf %1: ").arg(ss->m_displayName), subSurf3D);
 
 				// add additional orthogonal surfaces for all edges of the window
 				for(unsigned i = 0; i < subSurf3D.size(); i++){
@@ -611,7 +606,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness*0.5;
 					additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness*0.5;
 
-					debugPolygonPoints(QString("WINDOW SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
+					// debugPolygonPoints(QString("WINDOW SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
 
 					//add this surface to the obstacles
 					selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
@@ -756,5 +751,13 @@ void SVSimulationShadingOptions::on_pushButtonDeletePreviousShadingFile_clicked(
 
 	// to display the changes in the ui
 	setPreviousSimulationFileValues();
+}
+
+
+void SVSimulationShadingOptions::on_radioButtonFlatGeometry_toggled(bool isFlatType) {
+	if(isFlatType)
+		m_geometryType = Flat;
+	else
+		m_geometryType = Extruded;
 }
 

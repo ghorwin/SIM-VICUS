@@ -73,6 +73,12 @@ public:
 		Manual			///< manually defined parameters
 	};
 
+	/*! Defines the Extrusion type for the Geometry. */
+	enum GeometryType {
+		Flat,
+		Extruded
+	};
+
 	/*! Here, we update our file name based on current selection. */
 	void updateUi();
 
@@ -99,6 +105,8 @@ private slots:
 	void on_comboBoxFileType_currentIndexChanged(int index);
 
 	void on_pushButtonDeletePreviousShadingFile_clicked();
+
+	void on_radioButtonFlatGeometry_toggled(bool checked);
 
 private:
 	/*! Get the output file name depending on the file sufix. */
@@ -133,6 +141,9 @@ private:
 	double									m_longitudeInDeg;
 	/*! Latitude in Deg, updated in updateUi(). */
 	double									m_latitudeInDeg;
+
+	/*! Defines the choosen Geometry Type. */
+	GeometryType							m_geometryType;
 
 	std::vector<const VICUS::Surface*>		m_selSurfaces;						///< vector with selected surfaces
 	std::vector<const VICUS::SubSurface*>	m_selSubSurfaces;						///< vector with selected surfaces
