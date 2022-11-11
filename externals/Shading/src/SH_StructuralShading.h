@@ -85,12 +85,15 @@ public:
 			m_isObstacle(isObstacle)
 		{}
 
-		std::set<unsigned int>			m_visibleSurfaces;				///< Set with ids of visible objects for this object
-		unsigned int					m_id;							///< Unique id of shading object
-		unsigned int					m_parentId = INVALID_ID;		///< Unique id of parent surface, if INVALID no parent exists
-		std::vector<IBKMK::Polygon2D>	m_holes;
-		IBKMK::Polygon3D				m_polygon;						///< polygon of shading object
-		bool							m_isObstacle;					///< indicates whether it is a pure obstacle
+		std::set<unsigned int>												m_visibleSurfaces;				///< Set with ids of visible objects for this object
+		unsigned int														m_id;							///< Unique id of shading object
+		unsigned int														m_parentId = INVALID_ID;		///< Unique id of parent surface, if INVALID no parent exists
+		std::vector<IBKMK::Polygon2D>										m_holes;						///< Vector with all holes of surface
+		IBKMK::Polygon3D													m_polygon;						///< polygon of shading object
+		mutable std::map<unsigned int, std::vector<IBKMK::Vector2D>>		m_projectedPolys;				///< id of map is sun cone index in sun cone normals. projected points of polygon in sun pane
+		mutable std::map<unsigned int,
+						std::vector<std::vector<IBKMK::Vector2D>>>			m_projectedHoles;				///< id of map is sun cone index in sun cone normals. projected points of polygon in sun pane
+		bool																m_isObstacle;					///< indicates whether it is a pure obstacle
 	};
 
 	StructuralShading() : m_startTime(2007,0) {}
@@ -115,9 +118,7 @@ public:
 
 		start time and duration = whole number multiple of samplingPeriod; if not -> warning issued
 	*/
-	void calculateShadingFactors(Notification * notify, double gridWidth = 0.1);
-
-
+	void calculateShadingFactors(Notification * notify, double gridWidth = 0.1, bool useClippingMethod = false);
 
 	// *** functions to retrieve calculation results
 
@@ -148,6 +149,9 @@ private:
 		Fills in all ids of visible surfaces in ShadingObject membervariable m_visibleObjects
 	*/
 	void findVisibleSurfaces();
+
+	/*! Creates all Projected polygons in all sun panes. */
+	void createProjectedPolygonsInSunPane();
 
 	// ** input variables **
 
