@@ -108,6 +108,8 @@ private slots:
 
 	void on_radioButtonFlatGeometry_toggled(bool checked);
 
+	void on_radioButtonRayTracing_toggled(bool checked);
+
 private:
 	/*! Get the output file name depending on the file sufix. */
 	QString getFileName() const;

@@ -29,6 +29,7 @@
 #include <QDate>
 #include <QElapsedTimer>
 #include <QTimer>
+#include <QButtonGroup>
 
 #include <QtExt_DateTimeInputDialog.h>
 
@@ -72,6 +73,7 @@ void debugPolygonPoints(QString preText, const IBKMK::Polygon3D &poly) {
 }
 
 class ShadingCalculationProgress : public SH::Notification {
+	Q_DECLARE_TR_FUNCTIONS(ShadingCalculationProgress)
 public:
 	void notify() override {}
 	void notify(double percentage) override;
@@ -116,9 +118,16 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 	// TODO : restore previously used setting
 	m_ui->comboBoxFileType->setCurrentIndex( 0 );
 
+	QButtonGroup *bg = new QButtonGroup;
+	bg->addButton(m_ui->radioButtonFlatGeometry);
+	bg->addButton(m_ui->radioButtonExtrudedGeometry);
 
+	QButtonGroup *bgMethod = new QButtonGroup;
+	bgMethod->addButton(m_ui->radioButtonRayTracing);
+	bgMethod->addButton(m_ui->radioButtonSurfaceClipping);
 
-
+	m_ui->radioButtonFlatGeometry->toggle();
+	m_ui->radioButtonRayTracing->toggle();
 }
 
 
@@ -192,9 +201,6 @@ void SVSimulationShadingOptions::updateUi() {
 
 	// update the shading file infos
 	setPreviousSimulationFileValues();
-
-	// Set Geometry Mode
-	on_radioButtonFlatGeometry_toggled(true);
 }
 
 
@@ -280,6 +286,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	std::vector<SH::StructuralShading::ShadingObject> selObst;
 	std::vector<SH::StructuralShading::ShadingObject> selSurf;
+
+	bool useClipping = m_ui->radioButtonSurfaceClipping->isChecked();
 
 	if ( !m_ui->lineEditGridSize->isValid() ) {
 		QMessageBox::critical(this, QString(), tr("Grid size must be > 0 m!"));
@@ -483,7 +491,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 				const_cast<IBKMK::Vector3D &>(v3D) += s->geometry().normal()*totalThickness;
 			}
 
-
 			// add additional orthogonal surfaces for all edges
 			for(unsigned i = 0; i < obstaclePoly.vertexes().size(); i++){
 				std::vector<IBKMK::Vector3D> additionalSurface (4);
@@ -529,7 +536,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		SVSettings::instance().showDoNotShowAgainMessage(this, "shading-calculation-skipped-small-surfaces", QString(),
 														 tr("%1 surfaces were skipped, because their surface area was below %2 m2.")
 														 .arg(skippedSmallSurfaces).arg(VICUS::MIN_AREA_FOR_EXPORTED_SURFACES));
-		return;
 	}
 
 	// not a single surface left?
@@ -577,6 +583,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		if(m_geometryType == Extruded){
 
+			SVSettings::instance().showDoNotShowAgainMessage(this, "shading-calculation-extrusion-hint", QString(),
+															 tr("Sub-surfaces are currently moved to the middle of the parent surface component. "
+																"Later there will be a setting in sub-surface database.") );
+
 			const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 			if(comp != nullptr){
 				double totalThickness = 0;
@@ -614,8 +624,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 																			std::vector<IBKMK::Polygon2D>(),
 																			true) );
 				}
-
-
 			}
 		}
 
@@ -649,7 +657,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// *** compute shading ***
 
 	double gridSize = m_ui->lineEditGridSize->value();
-	m_shading->calculateShadingFactors(&progressNotifyer, gridSize);
+	m_shading->calculateShadingFactors(&progressNotifyer, gridSize, useClipping);
 
 	if (progressNotifyer.m_aborted) {
 		QMessageBox::information(this, QString(), tr("Calculation of shading factors was aborted."));
@@ -759,5 +767,13 @@ void SVSimulationShadingOptions::on_radioButtonFlatGeometry_toggled(bool isFlatT
 		m_geometryType = Flat;
 	else
 		m_geometryType = Extruded;
+}
+
+
+void SVSimulationShadingOptions::on_radioButtonRayTracing_toggled(bool isRayTracing) {
+	m_ui->lineEditGridSize->setEnabled(isRayTracing);
+	m_ui->radioButtonFast->setEnabled(isRayTracing);
+	m_ui->radioButtonDetailed->setEnabled(isRayTracing);
+	m_ui->radioButtonManual->setEnabled(isRayTracing);
 }
 
