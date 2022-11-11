@@ -6,14 +6,25 @@
 #include <IBKMK_2DCalculations.h>
 #include <IBKMK_3DCalculations.h>
 
+#include <clipper.hpp>
+
+#include <QDebug>
+
 namespace SH {
 
 void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & surface,
-									 const std::vector<IBKMK::Polygon2D> &holes, double gridWidth) {
+									 const std::vector<IBKMK::Polygon2D> &holes, double gridWidth, bool useClipping) {
 	IBK_ASSERT(gridWidth > 0);
 
 	m_id = id;
 	m_normal = surface.normal();
+	m_polygon = surface;
+	m_holes = holes;
+
+	if(useClipping)
+		return;
+
+	//  ONLY FOR RAY-TRACING NEEDED ====================================
 
 	//find min and max in x and y direction
 	m_minX = std::numeric_limits<double>::max();
@@ -61,7 +72,7 @@ void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & s
 }
 
 
-double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, const std::vector<StructuralShading::ShadingObject> & obstacles) const {
+double ShadedSurfaceObject::calcShadingFactorWithRayTracing(const IBKMK::Vector3D &sunNormal, const std::vector<StructuralShading::ShadingObject> & obstacles) const {
 	unsigned int counterShadedPoints=0;
 
 	unsigned int sizeMiddlePoints = m_gridPoints.size();
@@ -98,6 +109,107 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 
 	double sf = 1 - double(counterShadedPoints)/sizeMiddlePoints;
 	return sf;
+}
+
+double ShadedSurfaceObject::calcShadingFactorWithClipping(unsigned int idxSun, const IBKMK::Vector3D &sunNormal, const std::vector<StructuralShading::ShadingObject> & obstacles) const {
+
+	if(IBKMK::angleBetweenVectorsDeg(sunNormal, m_polygon.normal()) > 90)
+		return 0;
+
+	// process all obstacles
+	ClipperLib::Clipper clp;
+
+	ClipperLib::PolyTree polyTree;
+	ClipperLib::Paths clpPolygon;
+	ClipperLib::Path pathPolygon;
+
+	for(const IBKMK::Vector2D v2D : m_projectedPoly) {
+		pathPolygon << ClipperLib::IntPoint(SCALE_FACTOR*v2D.m_x, SCALE_FACTOR*v2D.m_y);
+	}
+	clpPolygon << pathPolygon;
+
+	bool polyOrientation = ClipperLib::Orientation(pathPolygon);
+
+	for(const std::vector<IBKMK::Vector2D> &hole : m_projectedHoles) {
+		ClipperLib::Path pathHole;
+		for(const IBKMK::Vector2D v2D : hole) {
+			pathHole << ClipperLib::IntPoint(SCALE_FACTOR*v2D.m_x, SCALE_FACTOR*v2D.m_y);
+		}
+
+		// MIND: Hole needs different orientation then subject poly path
+		if (polyOrientation == ClipperLib::Orientation(pathHole) )
+			ClipperLib::ReversePath(pathHole);
+
+		clpPolygon << pathHole;
+	}
+
+	clp.AddPaths(clpPolygon, ClipperLib::ptSubject, true);
+
+	qDebug() << "Add Obstacles";
+
+	ClipperLib::Clipper clpUnion;
+	// project in poly pane
+	for (size_t j=0; j<obstacles.size(); ++j) {
+
+
+		if (m_id == obstacles[j].m_id)
+			continue;
+
+		ClipperLib::Path pathObstacle;
+		for(const IBKMK::Vector2D &v2D : obstacles[j].m_projectedPolys[idxSun]) {
+			pathObstacle << ClipperLib::IntPoint(SCALE_FACTOR*v2D.m_x, SCALE_FACTOR*v2D.m_y);
+		}
+
+		clpUnion.AddPath(pathObstacle, ClipperLib::ptSubject, true);
+	}
+
+	ClipperLib::Paths obstaclePaths;
+	clpUnion.Execute(ClipperLib::ctUnion, obstaclePaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+	clp.AddPaths(obstaclePaths, ClipperLib::ptClip, true);
+
+	qDebug() << "///////////////////";
+	for(const ClipperLib::Path &pathObstacle : obstaclePaths) {
+		qDebug() << "xxxxxxxxxxxxxxxxxxxxx";
+		for(const ClipperLib::IntPoint &ip : pathObstacle)
+			qDebug() << "Obstacle Point: " << ip.X << " " << ip.Y;
+	}
+	qDebug() << "///////////////////";
+
+
+	ClipperLib::Paths intersectionPaths;
+	clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+
+	if(intersectionPaths.empty())
+		return 1;
+
+	double surfaceArea = ClipperLib::Area(pathPolygon);
+
+	double clippingArea = 0;
+	if(intersectionPaths.size() > 1) {
+
+		for(const ClipperLib::IntPoint &ip : pathPolygon)
+			qDebug() << "Path Point: " << ip.X << " " << ip.Y;
+
+
+		qDebug() << "============================";
+		for(const ClipperLib::Path &path : intersectionPaths) {
+			for(const ClipperLib::IntPoint &ip : path)
+				qDebug() << "Intersect Point: " << ip.X << " " << ip.Y;
+			qDebug() << "------------------------------";
+			clippingArea += std::abs(ClipperLib::Area(path));
+		}
+	}
+	else
+		clippingArea = std::abs(ClipperLib::Area(intersectionPaths[0]));
+
+
+	return (1.0 - clippingArea / surfaceArea);
+}
+
+void ShadedSurfaceObject::setProjectedPolygonAndHoles(const std::vector<IBKMK::Vector2D> & poly,
+													  const std::vector<std::vector<IBKMK::Vector2D>> & holes) {
+	m_projectedPoly = poly;
+	m_projectedHoles = holes;
 }
 
 
