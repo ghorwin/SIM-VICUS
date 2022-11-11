@@ -8,6 +8,8 @@ namespace SH {
 extern unsigned int INVALID_ID;
 extern unsigned int SIDE_SURFACE_ID;
 
+extern unsigned int SCALE_FACTOR;
+
 }
 
 #endif // SH_ConstantsH
