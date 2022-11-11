@@ -164,7 +164,7 @@ double ShadedSurfaceObject::calcShadingFactorWithClipping(unsigned int idxSun, c
 	}
 
 	ClipperLib::Paths obstaclePaths;
-	clpUnion.Execute(ClipperLib::ctUnion, obstaclePaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+	clpUnion.Execute(ClipperLib::ctUnion, obstaclePaths, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
 	clp.AddPaths(obstaclePaths, ClipperLib::ptClip, true);
 
 	qDebug() << "///////////////////";
