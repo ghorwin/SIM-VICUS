@@ -10,6 +10,8 @@ TEMPLATE = lib
 # it contains all functions defined for casual libraries
 include( ../../../IBK/projects/Qt/IBK.pri )
 
+QT += gui
+
 # finally we setup our custom library specfic things
 # like version number etc., we also may reset all
 #
@@ -20,13 +22,14 @@ unix|mac {
 		VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lDataIO -lCCM -lCCM -lTiCPP -lIBK -lIBKMK
+LIBS += -lDataIO -lCCM -lCCM -lTiCPP -lIBK -lIBKMK -lclipper
 
 INCLUDEPATH +=	\
 		../../../IBK/src \
 		../../../IBKMK/src \
 		../../../CCM/src \
 		../../../TiCPP/src \
+		../../../clipper/src \
 		../../../DataIO/src
 
 SOURCES += \
