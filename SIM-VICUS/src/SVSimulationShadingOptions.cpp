@@ -706,6 +706,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	} break;
 	}
 	QMessageBox::information(this, QString(), tr("Calculated shading factors have been saved to '%1'.").arg(QString::fromStdString(exportFile.str())));
+
+	// Updates latest shading file meta info
+	updateFileName();
 }
 
 
