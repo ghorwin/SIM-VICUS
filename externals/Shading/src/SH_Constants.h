@@ -10,6 +10,8 @@ extern unsigned int SIDE_SURFACE_ID;
 
 extern unsigned int SCALE_FACTOR;
 
+// #define WRITE_OUTPUT
+
 }
 
 #endif // SH_ConstantsH
