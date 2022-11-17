@@ -14,6 +14,97 @@
    <string>Sunlight Factor Calculation</string>
   </property>
   <layout class="QGridLayout" name="gridLayoutWidget" rowstretch="0,0,0,0,0">
+   <item row="4" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonCalculate">
+       <property name="text">
+        <string>Calculate</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Previous Shading Factor File</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>File Name:</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelPreviousShadingFile">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Created:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="labelPreviousShadingFileCreationDate">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButtonDeletePreviousShadingFile">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Delete Shading file</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -176,112 +267,46 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonCalculate">
-       <property name="text">
-        <string>Calculate</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox_4">
-     <property name="title">
-      <string>Previous Shading Factor File</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>File Name:</string>
-        </property>
-        <property name="scaledContents">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelPreviousShadingFile">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Created:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="labelPreviousShadingFileCreationDate">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="pushButtonDeletePreviousShadingFile">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Delete Shading file</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Shading calculation parameters</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="8" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Geometry Mode:</string>
+      <item row="13" column="0" colspan="3">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="13" column="2">
-       <widget class="QComboBox" name="comboBoxFileType"/>
+      <item row="14" column="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSteps">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Detail presets:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="labelSteps">
+        <property name="text">
+         <string>Steps per hour [-]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Shading factor file name:</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_13">
@@ -290,20 +315,10 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone"/>
-      </item>
-      <item row="11" column="0" colspan="3">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_3">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Grid size [m]:</string>
+         <string>Similarity angle threshold (sun cone) [Deg]:</string>
         </property>
        </widget>
       </item>
@@ -338,49 +353,37 @@
         </item>
        </layout>
       </item>
-      <item row="14" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="15" column="2">
+       <widget class="QComboBox" name="comboBoxFileType"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditGridSize"/>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>Shading factor file name:</string>
+         <string>Geometry Mode:</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="2">
-       <widget class="QLineEdit" name="lineEditShadingFactorFilename">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
+      <item row="6" column="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone"/>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Similarity angle threshold (sun cone) [Deg]:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="13" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Output Type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Detail presets:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
+      <item row="4" column="1">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="8" column="2">
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelGridSize">
+        <property name="text">
+         <string>Grid size [m]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QRadioButton" name="radioButtonFlatGeometry">
@@ -410,13 +413,6 @@
          </spacer>
         </item>
        </layout>
-      </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="labelSteps">
-        <property name="text">
-         <string>Steps per hour [-]:</string>
-        </property>
-       </widget>
       </item>
       <item row="3" column="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -456,17 +452,21 @@
         </item>
        </layout>
       </item>
-      <item row="12" column="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditSteps">
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string/>
+         <string>Output Type:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditGridSize"/>
+      <item row="16" column="2">
+       <widget class="QLineEdit" name="lineEditShadingFactorFilename">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
-      <item row="5" column="2">
+      <item row="7" column="2">
        <widget class="Line" name="line_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>

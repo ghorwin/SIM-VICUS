@@ -30,6 +30,7 @@
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QButtonGroup>
+#include <QFile>
 
 #include <QtExt_DateTimeInputDialog.h>
 
@@ -245,16 +246,16 @@ void SVSimulationShadingOptions::setPreviousSimulationFileValues() {
 	QDir projectDir = QFileInfo(prj.projectFile()).dir();
 	std::string exportFileBaseName = projectDir.absoluteFilePath(m_shadingFactorBaseName).toStdString();
 
-	const char* fileEndings[3] = { ".tsv", ".d6o", ".d6b"};
+	const std::vector<std::string> fileEndings = { ".tsv", ".d6o", ".d6b"};
 
-	for(int i = 0; i < 3; i++){
+	for(int i = 0; i < fileEndings.size(); i++){
 		// check if a previous file with one of the endings in fileEndings exists
-		IBK::Path currentPath = IBK::Path(exportFileBaseName + fileEndings[i]);
-		if (currentPath.exists()){
+		QFileInfo currentFile ( QString::fromStdString(exportFileBaseName + fileEndings[i]) );
+		if (currentFile.exists()){
 			// the file exists, read the meta data and display in the corresponding labels
-			m_ui->labelPreviousShadingFile->setText(m_shadingFactorBaseName + fileEndings[i]);
-			std::time_t creationTime = currentPath.fileTime();
-			m_ui->labelPreviousShadingFileCreationDate->setText(QString(std::ctime(&creationTime)));
+			m_ui->labelPreviousShadingFile->setText(m_shadingFactorBaseName + fileEndings[i].c_str());
+			QDateTime creationTime = currentFile.lastModified();
+			m_ui->labelPreviousShadingFileCreationDate->setText(creationTime.toString("dd.MM.yyyy hh:mm"));
 			m_ui->pushButtonDeletePreviousShadingFile->setEnabled(true);
 			return;
 		}
@@ -397,6 +398,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// *** compose vectors with obstacles
 	for (const VICUS::Surface *s: m_selObstacles)
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
+																s->m_displayName.toStdString(),
+																VICUS::INVALID_ID,
 																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
 																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																true) );
@@ -487,9 +490,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			}
 
 			// modify the surface by extruding all surface vertexes
-			for(const IBKMK::Vector3D &v3D : poly.vertexes() ) {
-				const_cast<IBKMK::Vector3D &>(v3D) += s->geometry().normal()*totalThickness;
-			}
+			poly.translate(s->geometry().normal()*totalThickness);
 
 			// add additional orthogonal surfaces for all edges
 			for(unsigned i = 0; i < obstaclePoly.vertexes().size(); i++){
@@ -506,6 +507,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 				//add this surface to the obstacles
 				selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
+																		QString("%1 - side-surface").arg(s->m_displayName).toStdString(),
+																		s->m_id,
 																		IBKMK::Polygon3D(additionalSurface),
 																		std::vector<IBKMK::Polygon2D>(),
 																		true) );
@@ -517,6 +520,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
+																s->m_displayName.toStdString(),
+																VICUS::INVALID_ID,
 																poly,
 																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																s->m_parent == nullptr) );
@@ -527,7 +532,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																obstaclePoly,
+																s->m_displayName.toStdString(),
+																VICUS::INVALID_ID,
+																poly,
 																convertVicus2IBKMKPolyVector(s->geometry().holes()),
 																s->m_parent == nullptr) );
 	}
@@ -620,6 +627,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 					//add this surface to the obstacles
 					selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
+																			s->m_displayName.toStdString(),
+																			s->m_id,
 																			IBKMK::Polygon3D(additionalSurface),
 																			std::vector<IBKMK::Polygon2D>(),
 																			true) );
@@ -638,7 +647,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		displayName += ss->m_displayName.toStdString();
 		surfaceDisplayNames.push_back(displayName);
 
-		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id, s->m_id,
+		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id,
+															   ss->m_displayName.toStdString(),
+															   s->m_id,
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
 
@@ -730,9 +741,7 @@ void SVSimulationShadingOptions::updateFileName() {
 	SVProjectHandler &prj = SVProjectHandler::instance();
 
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
-
 	m_shadingFactorBaseName = projectName + "_shadingFactors";
-
 	QString shadingFilePath = getFileName();
 
 	m_ui->lineEditShadingFactorFilename->setText(shadingFilePath);
@@ -771,9 +780,7 @@ void SVSimulationShadingOptions::on_radioButtonFlatGeometry_toggled(bool isFlatT
 
 
 void SVSimulationShadingOptions::on_radioButtonRayTracing_toggled(bool isRayTracing) {
-	m_ui->lineEditGridSize->setEnabled(isRayTracing);
-	m_ui->radioButtonFast->setEnabled(isRayTracing);
-	m_ui->radioButtonDetailed->setEnabled(isRayTracing);
-	m_ui->radioButtonManual->setEnabled(isRayTracing);
+	m_ui->lineEditGridSize->setVisible(isRayTracing);
+	m_ui->labelGridSize->setVisible(isRayTracing);
 }
 
