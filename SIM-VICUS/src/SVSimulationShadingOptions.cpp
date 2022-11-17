@@ -709,6 +709,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	// Updates latest shading file meta info
 	updateFileName();
+
+	// update the shading file infos
+	setPreviousSimulationFileValues();
 }
 
 
