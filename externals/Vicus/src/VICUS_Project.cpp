@@ -902,7 +902,9 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	FUNCID(Project::generateNandradProject);
 
 	// project information
-	p.m_projectInfo.m_comment.append(IBK::FormatString("Project file: %1").arg(IBK::Path(nandradProjectPath).withoutExtension() + ".vicus").str());
+	p.m_projectInfo.m_comment.append(IBK::FormatString("Project file: %1\n%2")
+									 .arg(IBK::Path(nandradProjectPath).withoutExtension() + ".vicus")
+									 .arg(m_projectInfo.m_comment).str());
 	p.m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::DateFormat::TextDate).toStdString();
 
 	// simulation settings
