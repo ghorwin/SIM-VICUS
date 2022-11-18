@@ -250,7 +250,7 @@ void SVDBZoneControlThermostatEditWidget::updatePlot(){
 		m_curveHeating = addConfiguredCurve(m_ui->widgetPlot);
 		configureCurveTheme(m_curveHeating);
 		m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
-		m_curveHeating->setTitle("Heating Curve");
+		m_curveHeating->setTitle(tr("Heating Curve"));
 		m_curveHeating->setPen("#9a031e", 2);
 	}
 
@@ -259,16 +259,16 @@ void SVDBZoneControlThermostatEditWidget::updatePlot(){
 		m_curveCooling = addConfiguredCurve(m_ui->widgetPlot);
 		configureCurveTheme(m_curveCooling);
 		m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
-		m_curveCooling->setTitle("Cooling Curve");
+		m_curveCooling->setTitle(tr("Cooling Curve"));
 		m_curveCooling->setPen("#3d5a80", 2);
 	}
 
 	QFont ft;
 	ft.setPointSize(10);
-	QwtText xl(tr("Ambient Temperature [C]"));
+	QwtText xl(tr("Time [d]"));
 	xl.setFont(ft);
 	m_ui->widgetPlot->setAxisTitle(QwtPlot::xBottom, xl);
-	QwtText yl(tr("Supply Temperature [C]"));
+	QwtText yl(tr("Room setpoint temperature [C]"));
 	yl.setFont(ft);
 	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
 	m_ui->widgetPlot->replot();
