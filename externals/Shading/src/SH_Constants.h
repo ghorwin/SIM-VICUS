@@ -10,6 +10,7 @@ extern unsigned int SIDE_SURFACE_ID;
 
 extern unsigned int SCALE_FACTOR;
 
+// Enables output files for clipping debugging
 // #define WRITE_OUTPUT
 
 }

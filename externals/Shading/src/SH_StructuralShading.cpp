@@ -122,8 +122,6 @@ void StructuralShading::setGeometry(const std::vector<ShadingObject> & surfaces,
 void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth, bool useClippingMethod) {
 	FUNCID(StructuralShading::calculateShadingFactors);
 
-#define WRITE_OUTPUT
-
 	// TODO Stephan, input data check
 	m_gridWidth = gridWidth;
 	if (gridWidth <= 0)
@@ -175,6 +173,14 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	v.start();
 	notify->notify(0);
 	int surfacesCompleted = 0;
+
+#ifdef WRITE_OUTPUT
+	// Create Shading debugging path
+	IBK::Path path ("C:/shading/");
+	if(path.exists())
+		IBK::Path::remove(path);
+	IBK::Path::makePath(path);
+#endif
 
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(dynamic, 1)
@@ -246,8 +252,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				//				// 5. store in result vector
 				shadingFactors[i] = sf;
 
+#ifdef WRITE_OUTPUT
 				out << "Calculated shading factor for sun cone index " << i  << ": " << sf << std::endl;
 				out.flush();
+#endif
 
 				// master thread 0 updates the progress dialog; this should be good enough for longer runs
 #if defined(_OPENMP)
@@ -549,12 +557,18 @@ void StructuralShading::findVisibleSurfaces(bool useClipping) {
 	// Finding shading partners for all surfaces
 	for(ShadingObject &surf : m_surfaces) {
 		// iterate through all vertex points of surface
-		for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+		for(const ShadingObject &obst : m_obstacles) {
+
+			for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
 			// iterate through all possible shading objects
-			for(const ShadingObject &obst : m_obstacles) {
+				bool obstAdded = false;
 
 				// skip parent objects (wall surface) of sub-surfaces such as windows
 				if(!useClipping && (surf.m_idParent == obst.m_idVicus))
+					continue;
+
+				// skip parent objects (wall surface) of sub-surfaces such as windows
+				if((obst.m_idParent != INVALID_ID) && (surf.m_idVicus != obst.m_idParent))
 					continue;
 
 				// iterate through all vertexes of shading objects
@@ -569,9 +583,12 @@ void StructuralShading::findVisibleSurfaces(bool useClipping) {
 					if (linefactor>1e-4) {
 						// store the surface that lies in front
 						surf.m_visibleSurfaces.insert(obst.m_id);
+						obstAdded = true; // we store that we already added the
 						break;
 					}
 				}
+				if(obstAdded)
+					break; // Do not handle all the other surface vertexes
 			}
 		}
 	}
