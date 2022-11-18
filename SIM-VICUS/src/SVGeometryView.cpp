@@ -723,11 +723,14 @@ bool SVGeometryView::eventFilter(QObject * obj, QEvent * event) {
 			return QObject::eventFilter(obj, event);
 
 		switch (key->key()) {
-			case Qt::Key_X : m_lineEditCoordinateInput->setText(""); m_ui->actionXLock->trigger(); break;
-			case Qt::Key_Y : m_lineEditCoordinateInput->setText(""); m_ui->actionYLock->trigger(); break;
-			case Qt::Key_Z : m_lineEditCoordinateInput->setText(""); m_ui->actionZLock->trigger(); break;
+			case Qt::Key_X : m_lineEditCoordinateInput->setText(""); m_ui->actionXLock->trigger(); return true; // stop any further inputs in line edit
+			case Qt::Key_Y : m_lineEditCoordinateInput->setText(""); m_ui->actionYLock->trigger(); return true; // stop any further inputs in line edit
+			case Qt::Key_Z : m_lineEditCoordinateInput->setText(""); m_ui->actionZLock->trigger(); return true; // stop any further inputs in line edit
 		}
+		qDebug() << "Key Pressed";
 	}
+
+
 	return QObject::eventFilter(obj, event);
 }
 
