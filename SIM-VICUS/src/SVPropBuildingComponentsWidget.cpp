@@ -307,6 +307,15 @@ void SVPropBuildingComponentsWidget::on_pushButtonExchangeComponents_clicked() {
 		if (e.m_type == 2) {
 			// for valid component instances, we use the old Id as identifier
 			if (ci.m_idComponent == oldId) {
+
+				bool surfA = ci.m_sideASurface != nullptr;
+				bool isSurfAVisible = ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible;
+				bool surfB = ci.m_sideBSurface != nullptr;
+				bool isSurfBVisible = ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible;
+
+				if( (surfA && !isSurfAVisible) || (surfB && !isSurfBVisible) )
+					continue;
+
 				ci.m_idComponent = (unsigned int)newId;
 				// if new component instance does not have an active layer, also remove the surface heating and control zone
 				// properties
