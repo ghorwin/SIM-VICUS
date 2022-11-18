@@ -76,15 +76,32 @@ void debugPolygonPoints(QString preText, const IBKMK::Polygon3D &poly) {
 class ShadingCalculationProgress : public SH::Notification {
 	Q_DECLARE_TR_FUNCTIONS(ShadingCalculationProgress)
 public:
+
 	void notify() override {}
 	void notify(double percentage) override;
 
 	char				pad[7]; // fix padding, silences compiler warning
 	QProgressDialog		*m_dlg = nullptr;
+	QTime				m_startTime;
+	QString				m_labelText;
 };
 
 void ShadingCalculationProgress::notify(double percentage) {
 	m_dlg->setValue((int)(m_dlg->maximum() * percentage));
+	QTime currTime = QTime::currentTime();
+	int usedSecs = m_startTime.secsTo(currTime);
+	int remainingSecs;
+	if (percentage == 0.0)
+		remainingSecs = 999;
+	else
+		remainingSecs = (int)((double)usedSecs * (1 - percentage) / percentage);
+
+	QTime remainingTime (0,0,0);
+	remainingTime = remainingTime.addSecs(remainingSecs);
+	QString labelText = tr("Calculating Shading factors\nRemaining time: %1 h %2 min")
+							.arg(remainingTime.toString("hh"))
+							.arg(remainingTime.toString("mm"));
+	m_dlg->setLabelText(labelText);
 	qApp->processEvents();
 	if (m_dlg->wasCanceled())
 		m_aborted = true;
@@ -508,7 +525,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 				//add this surface to the obstacles
 				selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
 																		QString("%1 - side-surface").arg(s->m_displayName).toStdString(),
-																		s->m_id,
+																		VICUS::INVALID_ID,
 																		IBKMK::Polygon3D(additionalSurface),
 																		std::vector<IBKMK::Polygon2D>(),
 																		true) );
@@ -612,26 +629,28 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 				// debugPolygonPoints(QString("Sub-Surf %1: ").arg(ss->m_displayName), subSurf3D);
 
-				// add additional orthogonal surfaces for all edges of the window
-				for(unsigned i = 0; i < subSurf3D.size(); i++){
-					std::vector<IBKMK::Vector3D> additionalSurface (4);
+				if(!useClipping) {
+					// add additional orthogonal surfaces for all edges of the window
+					for(unsigned i = 0; i < subSurf3D.size(); i++){
+						std::vector<IBKMK::Vector3D> additionalSurface (4);
 
-					// index 0 & 1 are the original points
-					// index 2 & 3 are the shifted points
-					additionalSurface[0] = subSurf3D[i];
-					additionalSurface[1] = subSurf3D[(i+1) % subSurf3D.size()];
-					additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness*0.5;
-					additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness*0.5;
+						// index 0 & 1 are the original points
+						// index 2 & 3 are the shifted points
+						additionalSurface[0] = subSurf3D[i];
+						additionalSurface[1] = subSurf3D[(i+1) % subSurf3D.size()];
+						additionalSurface[2] = additionalSurface[1] + s->geometry().normal()*totalThickness*0.5;
+						additionalSurface[3] = additionalSurface[0] + s->geometry().normal()*totalThickness*0.5;
 
-					// debugPolygonPoints(QString("WINDOW SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
+						// debugPolygonPoints(QString("WINDOW SIDE OBSTACLE %1: ").arg(i), IBKMK::Polygon3D(additionalSurface));
 
-					//add this surface to the obstacles
-					selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
-																			s->m_displayName.toStdString(),
-																			s->m_id,
-																			IBKMK::Polygon3D(additionalSurface),
-																			std::vector<IBKMK::Polygon2D>(),
-																			true) );
+						//add this surface to the obstacles
+						selObst.push_back( SH::StructuralShading::ShadingObject(SH::SIDE_SURFACE_ID,
+																				QString("%1 - side-surface").arg(ss->m_displayName).toStdString(),
+																				ss->m_id,
+																				IBKMK::Polygon3D(additionalSurface),
+																				std::vector<IBKMK::Polygon2D>(),
+																				true) );
+					}
 				}
 			}
 		}
@@ -664,6 +683,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	ShadingCalculationProgress progressNotifyer;
 	progressNotifyer.m_dlg = &progressDialog;
+	progressNotifyer.m_startTime = QTime::currentTime();
 
 	// *** compute shading ***
 
