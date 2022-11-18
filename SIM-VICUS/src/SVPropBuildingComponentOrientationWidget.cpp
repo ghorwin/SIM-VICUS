@@ -50,7 +50,7 @@ void SVPropBuildingComponentOrientationWidget::updateUi() {
 		// lookup component in DB
 		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
 
-		bool selected = false;
+		bool selectedAndVisible = false;
 
 		// side A
 		if (ci.m_sideASurface != nullptr) {
@@ -58,8 +58,7 @@ void SVPropBuildingComponentOrientationWidget::updateUi() {
 			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
 			if (it_A != objs.end()) {
 				componentSurfaceMap[comp].insert(ci.m_sideASurface);
-				if (ci.m_sideASurface->m_selected)
-					selected = true;
+				selectedAndVisible = ci.m_sideASurface->m_visible && ci.m_sideASurface->m_selected;
 			}
 		}
 		// side B
@@ -68,10 +67,10 @@ void SVPropBuildingComponentOrientationWidget::updateUi() {
 			if (it_B != objs.end()) {
 				componentSurfaceMap[comp].insert(ci.m_sideBSurface);
 				if (ci.m_sideBSurface->m_selected)
-					selected = true;
+					selectedAndVisible = ci.m_sideBSurface->m_visible && ci.m_sideBSurface->m_selected;
 			}
 		}
-		if (selected)
+		if (selectedAndVisible)
 			m_selectedComponentInstances.push_back(&ci);
 	}
 
