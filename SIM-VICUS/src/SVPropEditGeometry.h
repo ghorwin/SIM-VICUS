@@ -115,6 +115,10 @@ public:
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);
 
+	/*! Applies the Transformation, done by Interactive mode (Translation, Scaling, Rotation).
+	*/
+	void finishTransformation();
+
 
 public slots:
 

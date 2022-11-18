@@ -673,6 +673,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					QVector3D translationVector = newPoint - m_coordinateSystemObject.m_originalTranslation;
 					// now set this in the wireframe object as translation
 					m_selectedGeometryObject.translate(translationVector);
+
+
 				} break;// interactive translation active
 
 
@@ -783,19 +785,19 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (m_navigationMode == NM_InteractiveTranslation) {
 			qDebug() << "Leaving interactive translation mode";
 			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
-				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
+				SVViewStateHandler::instance().m_propEditGeometryWidget->finishTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveRotation) {
 			qDebug() << "Leaving interactive rotation mode";
 			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
-				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
+				SVViewStateHandler::instance().m_propEditGeometryWidget->finishTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveScaling) {
 			qDebug() << "Leaving interactive scaling mode";
 			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
-				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
+				SVViewStateHandler::instance().m_propEditGeometryWidget->finishTransformation();
 			needRepaint = true;
 		}
 		// clear orbit controller flag

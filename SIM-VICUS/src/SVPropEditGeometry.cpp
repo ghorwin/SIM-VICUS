@@ -231,7 +231,9 @@ bool SVPropEditGeometry::handleGlobalKeyPress(Qt::Key k) {
 	return true;
 }
 
-
+void SVPropEditGeometry::finishTransformation() {
+	on_pushButtonApply_clicked();
+}
 
 // *** PUBLIC SLOTS ***
 
