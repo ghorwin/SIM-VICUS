@@ -340,7 +340,7 @@ private slots:
 
 	void on_actionFileImportNetworkGISData_triggered();
 
-	void on_actionEdit_Projectcomment_triggered();
+	void on_actionEditProjectNotes_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

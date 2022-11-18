@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1112</width>
-    <height>707</height>
+    <width>1658</width>
+    <height>1265</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget"/>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1112</width>
+     <width>1658</width>
      <height>30</height>
     </rect>
    </property>
@@ -58,7 +58,7 @@
     </widget>
     <addaction name="actionEditTextEditProject"/>
     <addaction name="actionEditCleanProject"/>
-    <addaction name="actionEdit_Projectcomment"/>
+    <addaction name="actionEditProjectNotes"/>
     <addaction name="actionEditApplicationLog"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
@@ -797,7 +797,7 @@
     <string>Network GIS data ..</string>
    </property>
   </action>
-  <action name="actionEdit_Projectcomment">
+  <action name="actionEditProjectNotes">
    <property name="text">
     <string>Edit project notes</string>
    </property>

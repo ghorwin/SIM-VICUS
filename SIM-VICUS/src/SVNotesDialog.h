@@ -22,12 +22,9 @@ public:
 	explicit SVNotesDialog(QWidget *parent = nullptr);
 	~SVNotesDialog();
 
-	/*! Updates note in UI from VICUS prj. */
-	void updateNotesFromPrj();
-
 public slots:
 	/*! Connected to SVProjectHandler::modified().
-		Updated Project Notes.
+		Updates Project Notes.
 	*/
 	void onModified(int modificationType, ModificationInfo * );
 
@@ -37,6 +34,10 @@ private slots:
 
 
 private:
+	/*! Updates note in UI from VICUS prj. */
+	void updateNotesFromPrj();
+
+
 	Ui::SVNotesDialog			*m_ui;
 };
 

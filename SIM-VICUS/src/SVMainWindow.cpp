@@ -123,8 +123,8 @@ SVMainWindow * SVMainWindow::m_self = nullptr;
 
 SVMainWindow & SVMainWindow::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVMainWindow::instance]",
-		"You must not access SVMainWindow::instance() when the is no SVMainWindow "
-		"instance (anylonger).");
+			   "You must not access SVMainWindow::instance() when the is no SVMainWindow "
+			   "instance (anylonger).");
 	return *m_self;
 }
 
@@ -201,8 +201,8 @@ bool SVMainWindow::exportProjectPackage(const QString & exportFilePath, bool wit
 	// make sure that the directory does not yet exist
 	if (QDir(targetDirPath).exists()) {
 		int res = QMessageBox::question(this, tr("Export error"),
-							  tr("Export directory '%1' exists already. Overwrite?")
-							  .arg(targetDirPath));
+										tr("Export directory '%1' exists already. Overwrite?")
+										.arg(targetDirPath));
 		if (res == QDialog::Rejected)
 			return false;
 		// try to remove directory
@@ -210,7 +210,7 @@ bool SVMainWindow::exportProjectPackage(const QString & exportFilePath, bool wit
 		if (QDir(targetDirPath).exists()) {
 			QMessageBox::critical(this, tr("Export error"),
 								  tr("Export directory cannot be removed (are files within directory still being used?). "
-						 "Please remove directory manually and try again!"));
+									 "Please remove directory manually and try again!"));
 			return false;
 		}
 	}
@@ -532,9 +532,9 @@ void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
 		m_dbDuplicatesDialog = new SVDBDuplicatesDialog(this);
 	if (SVProjectHandler::instance().isValid()) {
 		SVSettings::instance().showDoNotShowAgainMessage(this, "DuplicateRemovalInProjectWarning",
-			tr("Removing database duplicates"),
-			tr("When removing duplicate database elements that are used in the currently open project, "
-			   "the resulting change to the project data cannot be undone (and none of the earlier changes, either)."));
+														 tr("Removing database duplicates"),
+														 tr("When removing duplicate database elements that are used in the currently open project, "
+															"the resulting change to the project data cannot be undone (and none of the earlier changes, either)."));
 	}
 	bool dbModified = m_dbDuplicatesDialog->removeDuplicates();
 	if (dbModified) {
@@ -564,20 +564,20 @@ void SVMainWindow::changeEvent(QEvent *event) {
 			QDateTime lastReadTime = SVProjectHandler::instance().lastReadTime();
 			if (lastModified > lastReadTime) {
 				IBK::IBK_Message(IBK::FormatString("Last read time '%1', last modified '%2', asking for update.\n")
-					.arg(lastReadTime.toString().toStdString())
-					.arg(lastModified.toString().toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DEVELOPER);
+								 .arg(lastReadTime.toString().toStdString())
+								 .arg(lastModified.toString().toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DEVELOPER);
 				// update last read time to avoid duplicate call
 				SVProjectHandler::instance().updateLastReadTime();
 
 				int res = QMessageBox::question(this, tr("Reload project file"),
-									  tr("The project file has been modified by an external application. "
-										 "When reloading this project file all unsaved changes will be lost. "
-										 "Reload modified project file?"), QMessageBox::Yes | QMessageBox::No);
+												tr("The project file has been modified by an external application. "
+												   "When reloading this project file all unsaved changes will be lost. "
+												   "Reload modified project file?"), QMessageBox::Yes | QMessageBox::No);
 				if (res == QMessageBox::Yes) {
 					// reload project
 					m_projectHandler.reloadProject(this);
 					IBK::IBK_Message(IBK::FormatString("New last read time '%1'.\n")
-						.arg(lastReadTime.toString().toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DEVELOPER);
+									 .arg(lastReadTime.toString().toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DEVELOPER);
 
 					if (m_projectHandler.isValid())
 						saveThumbNail();
@@ -667,7 +667,6 @@ void SVMainWindow::setup() {
 
 	// *** Ptoject Notes Dialog ***
 	m_notesDialog = new SVNotesDialog(this);
-	connect(&m_projectHandler, SIGNAL(updateActions()), m_notesDialog, SLOT(onUpdateActions()));
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
@@ -763,10 +762,10 @@ void SVMainWindow::setup() {
 	// *** Populate language menu ***
 	addLanguageAction("en", "English");
 	addLanguageAction("de", "Deutsch");
-//	addLanguageAction("fr", QString::fromUtf8("Français"));
-//	addLanguageAction("cz", QString::fromUtf8("Czech"));
-//	addLanguageAction("es", QString::fromUtf8("Español"));
-//	addLanguageAction("it", QString::fromUtf8("Italiano"));
+	//	addLanguageAction("fr", QString::fromUtf8("Français"));
+	//	addLanguageAction("cz", QString::fromUtf8("Czech"));
+	//	addLanguageAction("es", QString::fromUtf8("Español"));
+	//	addLanguageAction("it", QString::fromUtf8("Italiano"));
 
 	// *** read last loaded project/project specified on command line ***
 
@@ -851,7 +850,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		else {
 			// ask user about preference
 			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
-				"the current project with the imported project, or would you like to combine both projects into one?"),
+																					  "the current project with the imported project, or would you like to combine both projects into one?"),
 											tr("Replace"), tr("Combine"));
 			if (res == 0) {
 				setFocus();
@@ -927,13 +926,13 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 
 	// request file name
 	QString filename = QFileDialog::getOpenFileName(
-							this,
-							tr("Select SIM-VICUS project"),
-							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-							tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
-							.arg(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_projectPackageSuffix), nullptr,
-							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-						);
+				this,
+				tr("Select SIM-VICUS project"),
+				SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
+			tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
+			.arg(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_projectPackageSuffix), nullptr,
+			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+															);
 
 	if (filename.isEmpty()) return;
 
@@ -943,7 +942,7 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 					this,
 					tr("File not found"),
 					tr("The file '%1' does not exist or cannot be accessed.").arg(filename)
-			);
+					);
 		return;
 	}
 
@@ -1012,12 +1011,12 @@ void SVMainWindow::on_actionFileReload_triggered() {
 void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 	// request IDF file and afterwards open import dialog
 	QString filename = QFileDialog::getOpenFileName(
-							this,
-							tr("Select IDF file"),
-							SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory].toString(),
-							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr,
-							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-						);
+				this,
+				tr("Select IDF file"),
+				SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory].toString(),
+			tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr,
+			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+															);
 
 	if (filename.isEmpty()) return;
 
@@ -1027,7 +1026,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 					this,
 					tr("File not found"),
 					tr("The file '%1' does not exist or cannot be accessed.").arg(filename)
-			);
+					);
 		return;
 	}
 
@@ -1090,12 +1089,12 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 	QFileInfo finfo(m_projectHandler.projectFile());
 	QString fnameSuggestion = finfo.absoluteDir().absolutePath() + "/" + finfo.baseName() + ".vicpac";
 	QString filename = QFileDialog::getSaveFileName(
-							this,
-							tr("Specify SIM-VICUS project package"),
-							fnameSuggestion,
-							tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr,
-							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-				);
+				this,
+				tr("Specify SIM-VICUS project package"),
+				fnameSuggestion,
+				tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr,
+				SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+																);
 
 	if (filename.isEmpty())
 		return;
@@ -1290,7 +1289,7 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 			!QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
 	{
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
-																  "post processing in the preferences dialog!"));
+																	 "post processing in the preferences dialog!"));
 		// spawn preferences dialog
 		preferencesDialog()->edit(0);
 		return;
@@ -1309,9 +1308,9 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 			// some session files exist in project directory - look for the right one
 			else {
 				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
-															QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-															QString("*.p2"), nullptr,
-															SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
+														   QFileInfo(m_projectHandler.projectFile()).absolutePath(),
+														   QString("*.p2"), nullptr,
+														   SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
 			}
 		}
 
@@ -1328,7 +1327,7 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 #if !defined(Q_OS_WIN)
 		else {
 			QMessageBox::information(this, tr("Error running PostProc"),
-								  tr("Process already running."));
+									 tr("Process already running."));
 		}
 #endif
 	}
@@ -1351,7 +1350,7 @@ void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 	QString ccmPath = SVSettings::instance().m_CCMEditorExecutable;
 	if (ccmPath.isEmpty() || !QFileInfo::exists(ccmPath)) {
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
-																  "climate editor in the preferences dialog!"));
+																	 "climate editor in the preferences dialog!"));
 		// spawn preferences dialog
 		preferencesDialog()->edit(0);
 		return;
@@ -1478,7 +1477,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileSave->setEnabled(have_project);
 	m_ui->actionFileSaveAs->setEnabled(have_project);
 	m_ui->actionFileReload->setEnabled(have_project);
-	m_ui->actionEdit_Projectcomment->setEnabled(have_project);
+	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
@@ -1653,7 +1652,7 @@ void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 	QString lastExampleTargetDir = settings.value("LastExampleSaveDirectory", QDir::homePath()).toString();
 	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir,
 														  SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-							);
+																										  );
 	if (targetDir.isEmpty())
 		return;
 	settings.setValue("LastExampleSaveDirectory", targetDir);
@@ -1768,9 +1767,9 @@ void SVMainWindow::onFixProjectAfterRead() {
 		}
 	if (haveDups) {
 		int res = SVSettings::instance().showDoNotShowAgainQuestion(this, "RemoveDuplicatesAfterProjectRead",
-			tr("Remove/merge duplicates in database"),
-			tr("The database contains now some duplicate definitions. Do you want "
-			   "to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?"), QMessageBox::Yes | QMessageBox::No);
+																	tr("Remove/merge duplicates in database"),
+																	tr("The database contains now some duplicate definitions. Do you want "
+																	   "to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?"), QMessageBox::Yes | QMessageBox::No);
 		if (res == QMessageBox::Yes)
 			on_actionDBRemoveDuplicates_triggered();
 	}
@@ -1800,7 +1799,7 @@ void SVMainWindow::setupDockWidgets() {
 	m_logDockWidget->setWidget(m_logWidget);
 	addDockWidget(Qt::BottomDockWidgetArea,m_logDockWidget);
 
-//	tabifyDockWidget(m_outputListDockWidget, m_outputGridListDockWidget);
+	//	tabifyDockWidget(m_outputListDockWidget, m_outputGridListDockWidget);
 }
 
 
@@ -1921,7 +1920,7 @@ void SVMainWindow::updateWindowTitle() {
 
 
 bool SVMainWindow::importProjectPackage(const QString & packageFilePath, const QString & targetDirectory,
-										 QString & projectFilePath, bool isPackage)
+										QString & projectFilePath, bool isPackage)
 {
 	QStringList extractedFiles = JlCompress::extractDir(packageFilePath, targetDirectory);
 	if (extractedFiles.isEmpty()) {
@@ -2025,12 +2024,12 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 		if (renameProjectFileAfterwards) {
 			recentPath += "/" + QFileInfo(filename).baseName();
 			targetFilePath = QFileDialog::getSaveFileName(
-					this,
-					tr("Specify SIM-VICUS project"),
-					recentPath,
-					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr,
+						this,
+						tr("Specify SIM-VICUS project"),
+						recentPath,
+						tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr,
 						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-						);
+																		);
 			if (targetFilePath.isEmpty())
 				return false;
 			if (!targetFilePath.endsWith(SVSettings::instance().m_projectFileSuffix))
@@ -2039,11 +2038,11 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 		}
 		else {
 			targetDir = QFileDialog::getExistingDirectory(
-								this,
-								tr("Select target directory to extract project package into"),
-								recentPath,
-								SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-							);
+						this,
+						tr("Select target directory to extract project package into"),
+						recentPath,
+						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+																		);
 			if (targetDir.isEmpty())
 				return false;
 		}
@@ -2151,7 +2150,7 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-void SVMainWindow::on_actionEdit_Projectcomment_triggered() {
-   m_notesDialog->exec();
+void SVMainWindow::on_actionEditProjectNotes_triggered() {
+	m_notesDialog->exec();
 }
 
