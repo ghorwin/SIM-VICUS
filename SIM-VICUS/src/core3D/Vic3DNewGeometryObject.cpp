@@ -187,19 +187,21 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
-		case NGM_Polygon :
+		case NGM_Polygon : {
 			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
+			IBKMK::Vector3D projected;
 			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
-				IBKMK::Vector3D projected;
 				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p, projected);
 				m_vertexList.push_back(projected);
 			}
-			else
+			else {
 				m_vertexList.push_back(p);
+				projected = p;
+			}
 			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			// also tell the vertex list widget about our new point
-			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
-		break;
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(projected);
+		} break;
 
 		case NGM_Pipeline : {
 			// we dont accept z-postions other than 0.0
