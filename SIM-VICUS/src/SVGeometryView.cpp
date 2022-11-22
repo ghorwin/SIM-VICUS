@@ -263,7 +263,9 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 
 	// toggle network buttons based on wether we have networks in the project
-	if (modType == SVProjectHandler::AllModified || modType == SVProjectHandler::NetworkDataChanged) {
+	if (modType == SVProjectHandler::AllModified ||
+		modType == SVProjectHandler::NetworkDataChanged ||
+		modType == SVProjectHandler::NetworkGeometryChanged) {
 		const VICUS::Project &p = project();
 		m_ui->actionNetworkParametrization->setEnabled(!p.m_geometricNetworks.empty());
 		m_ui->actionEditNetworkGeometry->setEnabled(!p.m_geometricNetworks.empty());
@@ -313,7 +315,7 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 			m_ui->actionCopyGeometry->setEnabled(haveSurface || haveSubSurface || haveRoom || haveBuildingLevel || haveBuilding);
 		} break;
 
-		default: ; // just to make compiler happy
+		default:;
 	} // switch
 }
 
