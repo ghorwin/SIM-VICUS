@@ -60,7 +60,29 @@ private slots:
 
 	void on_radioButtonNodes_clicked(bool checked);
 
+	void on_pushButtonSelectPipelineFile_clicked();
+
+	void on_pushButtonImportPipeline_clicked();
+
+	void on_pushButtonSelectSubStationFile_clicked();
+
+	void on_pushButtonImportSubStation_clicked();
+
+	void on_pushButtonSelectAvailablePipes_clicked();
+
+	void on_pushButtonSelectDefaultPipe_clicked();
+
 private:
+
+	//stores the selected default pipe for pipe network import
+	const VICUS::NetworkPipe * m_defaultPipe = nullptr;
+
+	std::vector<unsigned int> m_availablePipes;
+
+	enum ImportType {
+		Pipeline,
+		SubStation,
+	};
 
 	void toggleReadEdges(bool readEdges);
 
@@ -72,7 +94,7 @@ private:
 
 	QMap<QString, unsigned> m_existingNetworksMap;
 
-	void readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId) const;
+	void readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId, ImportType importType) const;
 
 	QString uniqueName(const QString & name);
 };
