@@ -256,6 +256,13 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 	return m_dbMaterialEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbEpdEditDialog() {
+	if (m_dbEpdEditDialog == nullptr) {
+		m_dbEpdEditDialog = SVDatabaseEditDialog::createEpdEditDialog(this);
+	}
+	return m_dbEpdEditDialog;
+}
+
 SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	if (m_dbConstructionEditDialog == nullptr) {
 		m_dbConstructionEditDialog = SVDatabaseEditDialog::createConstructionEditDialog(this);
@@ -2152,5 +2159,10 @@ static bool copyRecursively(const QString &srcFilePath,
 
 void SVMainWindow::on_actionEditProjectNotes_triggered() {
 	m_notesDialog->exec();
+}
+
+
+void SVMainWindow::on_actionDBEpdElements_triggered() {
+	dbEpdEditDialog()->edit();
 }
 

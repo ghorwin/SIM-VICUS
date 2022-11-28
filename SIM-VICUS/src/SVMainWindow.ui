@@ -137,6 +137,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
+    <addaction name="actionDBEpdElements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
@@ -800,6 +801,11 @@
   <action name="actionEditProjectNotes">
    <property name="text">
     <string>Edit project notes</string>
+   </property>
+  </action>
+  <action name="actionDBEpdElements">
+   <property name="text">
+    <string>EPD-Datasets...</string>
    </property>
   </action>
  </widget>

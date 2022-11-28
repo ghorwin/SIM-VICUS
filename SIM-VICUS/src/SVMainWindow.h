@@ -121,6 +121,8 @@ public:
 
 	/*! Returns the material edit dialog. */
 	SVDatabaseEditDialog * dbMaterialEditDialog();
+	/*! Returns the EPD edit dialog. */
+	SVDatabaseEditDialog * dbEpdEditDialog();
 	/*! Returns the construction edit dialog. */
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
@@ -275,6 +277,7 @@ private slots:
 	void on_actionEditCleanProject_triggered();
 	void on_actionEditApplicationLog_triggered();
 
+	void on_actionDBEpdElements_triggered();
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
 	void on_actionDBWindowGlazingSystems_triggered();
@@ -341,6 +344,7 @@ private slots:
 	void on_actionFileImportNetworkGISData_triggered();
 
 	void on_actionEditProjectNotes_triggered();
+
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -479,9 +483,10 @@ private:
 	SVPostProcHandler			*m_postProcHandler										= nullptr;
 
 	/*! Central handler for the user interface state. */
-	SVViewStateHandler			*m_viewStateHandler										= nullptr;
+	SVViewStateHandler					*m_viewStateHandler								= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbEpdEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
