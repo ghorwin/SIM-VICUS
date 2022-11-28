@@ -28,12 +28,16 @@
 
 #include "SVConstants.h"
 #include "SVSettings.h"
+#include <SVConstants.h>
+#include <SVMainWindow.h>
+#include <SVDBEPDEditWidget.h>
+#include <SVDatabaseEditDialog.h>
 
 #include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <SVConstants.h>
+#include <QtExt_Conversions.h>
 
 #include "SVDBMaterialTableModel.h"
 
@@ -122,6 +126,37 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 	m_ui->lineEditNotes->setString(mat->m_notes);
 	m_ui->comboBoxCategory->setCurrentIndex(mat->m_category);
 	m_ui->pushButtonColor->setColor(mat->m_color);
+
+	unsigned int idEpdCatA = mat->m_epdCategorySet.m_idCategoryA;
+	unsigned int idEpdCatB = mat->m_epdCategorySet.m_idCategoryB;
+	unsigned int idEpdCatC = mat->m_epdCategorySet.m_idCategoryC;
+	unsigned int idEpdCatD = mat->m_epdCategorySet.m_idCategoryD;
+
+	m_ui->lineEditCatA->setText("");
+	m_ui->lineEditCatB->setText("");
+	m_ui->lineEditCatC->setText("");
+	m_ui->lineEditCatD->setText("");
+
+	if(mat->m_epdCategorySet.m_idCategoryA != VICUS::INVALID_ID) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idEpdCatA]);
+		if(epd != nullptr)
+			m_ui->lineEditCatA->setText(QtExt::MultiLangString2QString(epd->m_displayName));
+	}
+	if(mat->m_epdCategorySet.m_idCategoryB != VICUS::INVALID_ID) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idEpdCatB]);
+		if(epd != nullptr)
+			m_ui->lineEditCatB->setText(QtExt::MultiLangString2QString(epd->m_displayName));
+	}
+	if(mat->m_epdCategorySet.m_idCategoryC != VICUS::INVALID_ID) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idEpdCatC]);
+		if(epd != nullptr)
+			m_ui->lineEditCatC->setText(QtExt::MultiLangString2QString(epd->m_displayName));
+	}
+	if(mat->m_epdCategorySet.m_idCategoryD != VICUS::INVALID_ID) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idEpdCatD]);
+		if(epd != nullptr)
+			m_ui->lineEditCatD->setText(QtExt::MultiLangString2QString(epd->m_displayName));
+	}
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
@@ -260,4 +295,121 @@ void SVDBMaterialEditWidget::modelModify() {
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
+
+
+void SVDBMaterialEditWidget::on_toolButtonSelectCatA_clicked() {
+	// get EPD edit dialog from mainwindow
+	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
+	unsigned int idCatA = editDialog->select(m_current->m_epdCategorySet.m_idCategoryA);
+	if (idCatA != VICUS::INVALID_ID && idCatA != m_current->m_epdCategorySet.m_idCategoryA) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idCatA]);
+
+		if(epd->m_module != VICUS::EPDDataset::M_A1 &&
+				epd->m_module != VICUS::EPDDataset::M_A1_A2  &&
+				epd->m_module != VICUS::EPDDataset::M_A1_A3  &&
+				epd->m_module != VICUS::EPDDataset::M_A2  &&
+				epd->m_module != VICUS::EPDDataset::M_A3  &&
+				epd->m_module != VICUS::EPDDataset::M_A4  &&
+				epd->m_module != VICUS::EPDDataset::M_A5 )
+		{
+			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+										   tr("You want to assign an EPD with Module '%1' to Category A.\n"
+											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+				return;
+		}
+
+		m_current->m_epdCategorySet.m_idCategoryA = idCatA;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBMaterialEditWidget::on_toolButtonSelectCatB_clicked() {
+	// get EPD edit dialog from mainwindow
+	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
+	unsigned int idCatB = editDialog->select(m_current->m_epdCategorySet.m_idCategoryB);
+	if (idCatB != VICUS::INVALID_ID && idCatB != m_current->m_epdCategorySet.m_idCategoryB) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idCatB]);
+
+		if(epd->m_module != VICUS::EPDDataset::M_B1 &&
+				epd->m_module != VICUS::EPDDataset::M_B2  &&
+				epd->m_module != VICUS::EPDDataset::M_B3  &&
+				epd->m_module != VICUS::EPDDataset::M_B4  &&
+				epd->m_module != VICUS::EPDDataset::M_B5  &&
+				epd->m_module != VICUS::EPDDataset::M_B6  &&
+				epd->m_module != VICUS::EPDDataset::M_B7 )
+		{
+			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+										   tr("You want to assign an EPD with Module '%1' to Category B.\n"
+											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+				return;
+		}
+
+		m_current->m_epdCategorySet.m_idCategoryB = idCatB;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBMaterialEditWidget::on_toolButtonSelectCatC_clicked() {
+	// get EPD edit dialog from mainwindow
+	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
+	unsigned int idCatC = editDialog->select(m_current->m_epdCategorySet.m_idCategoryB, false); // we do not want to reset the model all the time
+
+	if (idCatC != VICUS::INVALID_ID && idCatC != m_current->m_epdCategorySet.m_idCategoryB) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idCatC]);
+
+		if(epd->m_module != VICUS::EPDDataset::M_C1 &&
+				epd->m_module != VICUS::EPDDataset::M_C2 &&
+				epd->m_module != VICUS::EPDDataset::M_C2_C4 &&
+				epd->m_module != VICUS::EPDDataset::M_C2_C3 &&
+				epd->m_module != VICUS::EPDDataset::M_C3 &&
+				epd->m_module != VICUS::EPDDataset::M_C3_C4 &&
+				epd->m_module != VICUS::EPDDataset::M_C4 )
+		{
+			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+										   tr("You want to assign an EPD with Module '%1' to Category C.\n"
+											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+				return;
+		}
+
+
+		m_current->m_epdCategorySet.m_idCategoryC = idCatC;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBMaterialEditWidget::on_toolButtonSelectCatD_clicked() {
+	// get EPD edit dialog from mainwindow
+	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
+	unsigned int idCatD = editDialog->select(m_current->m_epdCategorySet.m_idCategoryB);
+	if (idCatD != VICUS::INVALID_ID && idCatD != m_current->m_epdCategorySet.m_idCategoryB) {
+		VICUS::EPDDataset * epd = const_cast<VICUS::EPDDataset *>(m_db->m_EPDDatasets[idCatD]);
+
+		if(epd->m_module != VICUS::EPDDataset::M_D )
+		{
+			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+										   tr("You want to assign an EPD with Module '%1' to Category D.\n"
+											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+				return;
+		}
+
+
+		m_current->m_epdCategorySet.m_idCategoryD = idCatD;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
 

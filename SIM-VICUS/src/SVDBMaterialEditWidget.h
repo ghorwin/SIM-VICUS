@@ -74,6 +74,14 @@ private slots:
 	void on_comboBoxCategory_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
+	void on_toolButtonSelectCatA_clicked();
+
+	void on_toolButtonSelectCatB_clicked();
+
+	void on_toolButtonSelectCatC_clicked();
+
+	void on_toolButtonSelectCatD_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
