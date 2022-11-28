@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -34,12 +34,51 @@
 #include <IBK_Parameter.h>
 namespace VICUS {
 
-
+/*!
+	An EPD Category Set defines a material EPD, that needs to be combined by severel different
+	sub-EPDs for each Category (A,B,C,D).
+*/
 class EPDCategroySet
 {
+
 public:
+	VICUS_READWRITE
+	VICUS_COMP(EPDCategroySet)
+
+	EPDCategroySet() {}
+
+	EPDCategroySet(unsigned int idCatA, unsigned int idCatB, unsigned int idCatC, unsigned int idCatD):
+		m_idCategoryA(idCatA),
+		m_idCategoryB(idCatB),
+		m_idCategoryC(idCatC),
+		m_idCategoryD(idCatD)
+	{}
+
+	inline bool isEmpty() const {
+		return m_idCategoryA == INVALID_ID && m_idCategoryB == INVALID_ID &&
+				m_idCategoryC == INVALID_ID && m_idCategoryD == INVALID_ID;
+	}
+
+
+	/* Id of Category A .*/
+	unsigned int				m_idCategoryA = INVALID_ID;					// XML:A
+	/* Id of Category B .*/
+	unsigned int				m_idCategoryB = INVALID_ID;					// XML:A
+	/* Id of Category C .*/
+	unsigned int				m_idCategoryC = INVALID_ID;					// XML:A
+	/* Id of Category D .*/
+	unsigned int				m_idCategoryD = INVALID_ID;					// XML:A
+
 
 };
+
+inline bool EPDCategroySet::operator!=(const EPDCategroySet & other) const {
+	if (m_idCategoryA != other.m_idCategoryA) return true;
+	if (m_idCategoryB != other.m_idCategoryB) return true;
+	if (m_idCategoryC != other.m_idCategoryC) return true;
+	if (m_idCategoryD != other.m_idCategoryD) return true;
+	return false;
+}
 
 }
 #endif // VICUS_EPDCategroySetH
