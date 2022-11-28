@@ -46,6 +46,8 @@
 
 #include "SVDBMaterialTableModel.h"
 #include "SVDBMaterialEditWidget.h"
+#include "SVDBEpdTableModel.h"
+#include "SVDBEpdEditWidget.h"
 #include "SVDBConstructionTableModel.h"
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
@@ -204,14 +206,15 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 }
 
 
-unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
+unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetModel) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
-	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	if(resetModel)
+		m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
@@ -241,7 +244,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 bool SVDatabaseEditDialog::eventFilter(QObject * obj, QEvent * event) {
 	if(obj == m_ui->tableView && event->type() == QEvent::Resize) {
-		m_ui->tableView->resizeRowsToContents();
+		// m_ui->tableView->resizeRowsToContents();
 	}
 	return QObject::eventFilter(obj, event);
 }
@@ -476,6 +479,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 		new SVDBMaterialTableModel(parent, SVSettings::instance().m_db),
 		new SVDBMaterialEditWidget(parent),
 		tr("Material Database"), tr("Material properties"), true
+	);
+	dlg->resize(1400,600);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createEpdEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBEpdTableModel(parent, SVSettings::instance().m_db),
+		new SVDBEPDEditWidget(parent),
+		tr("EPD Database"), tr("EPD properties"), true
 	);
 	dlg->resize(1400,600);
 	return dlg;
@@ -727,3 +740,8 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+
+SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
+	return m_dbModel;
+}
+

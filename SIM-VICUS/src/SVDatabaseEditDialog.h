@@ -69,10 +69,12 @@ public:
 				pressed, the function returns the ID of the selected item. Otherwise, if the
 				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
-	unsigned int select(unsigned int initialId);
+	unsigned int select(unsigned int initialId, bool resetModel = true);
 
 	/*! Event filter for resizing events in order to resize row to its contents. */
 	bool eventFilter(QObject * obj, QEvent * event) override;
+
+	SVAbstractDatabaseTableModel * dbModel() const;
 
 private slots:
 	void on_pushButtonSelect_clicked();
@@ -107,6 +109,7 @@ private:
 
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createEpdEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSubSurfaceComponentEditDialog(QWidget * parent);
