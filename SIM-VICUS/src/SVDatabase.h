@@ -53,6 +53,7 @@ public:
 		DT_NetworkControllers,
 		DT_SubNetworks,
 		DT_SupplySystems,
+		DT_EPDDatasets,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneControlThermostat,
@@ -176,7 +177,7 @@ public:
 	VICUS::Database<VICUS::SupplySystem>				m_supplySystems;
 
 	/*! Map of all database EPD elements */
-//	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
+	VICUS::Database<VICUS::EPDDataset>					m_EPDDatasets;
 
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;
