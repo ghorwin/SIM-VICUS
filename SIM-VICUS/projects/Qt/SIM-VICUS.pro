@@ -96,6 +96,8 @@ SOURCES += \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
+	../../src/SVDBEPDEditWidget.cpp \
+	../../src/SVDBEpdTableModel.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
@@ -122,6 +124,7 @@ SOURCES += \
 	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
+	../../src/SVSimulationLCAOptions.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
@@ -284,6 +287,8 @@ HEADERS  += \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
+	../../src/SVDBEPDEditWidget.h \
+	../../src/SVDBEpdTableModel.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
@@ -310,6 +315,7 @@ HEADERS  += \
 	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
+	../../src/SVSimulationLCAOptions.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
@@ -479,6 +485,7 @@ FORMS    += \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
+	../../src/SVDBEPDEditWidget.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
 	../../src/SVDBSubNetworkEditWidget.ui \
 	../../src/SVDBSupplySystemEditWidget.ui \
@@ -543,6 +550,7 @@ FORMS    += \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
 	../../src/SVScheduleHolidayWidget.ui \
+	../../src/SVSimulationLCAOptions.ui \
 	../../src/SVSimulationLocationOptions.ui \
 	../../src/SVSimulationModelOptions.ui \
 	../../src/SVSimulationNetworkOptions.ui \
@@ -550,6 +558,7 @@ FORMS    += \
 	../../src/SVSimulationPerformanceOptions.ui \
 	../../src/SVSimulationRunRequestDialog.ui \
 	../../src/SVSimulationShadingOptions.ui \
+	../../src/SVSimulationShadingOptions_kopie.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
