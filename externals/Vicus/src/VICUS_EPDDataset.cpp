@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -64,9 +64,9 @@ AbstractDBElement::ComparisonResult EPDDataset::equal(const AbstractDBElement *o
 	if(m_uuid != otherEPD->m_uuid ||
 			m_referenceUnit != otherEPD->m_referenceUnit||
 			m_referenceQuantity != otherEPD->m_referenceQuantity ||
-			m_subtype != otherEPD->m_subtype ||
+			m_type != otherEPD->m_type ||
 			m_category != otherEPD->m_category ||
-			m_expireDate != otherEPD->m_expireDate)
+			m_expireYear != otherEPD->m_expireYear)
 		return Different;
 
 	//check meta data

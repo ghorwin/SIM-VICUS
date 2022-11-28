@@ -44,9 +44,9 @@ public:
 	enum para_t {
 		//thermal paramters
 		/*! Mass of material in dependence to the area. */
-		P_BasisWeight,				//Keyword: BasisWeight				[kg/m2]	'mass of material in dependence of the area.'
+		P_AreaDensity,				// Keyword: AreaDensity				[kg/m2]	'mass of material in dependence of the area.'
 		/*! Dry density of the material. */
-		P_Density,					// Keyword: Density					[kg/m3]	'Dry density of the material.'
+		P_DryDensity,				// Keyword: Density					[kg/m3]	'Dry density of the material.'
 		/*! Global Warming Potential. */
 		P_GWP,						// Keyword: GWP						[kg]	'Global Warming Potential.'
 		/*! Depletion potential of the stratospheric ozone layer . */
@@ -65,37 +65,46 @@ public:
 		NUM_P
 	};
 
-		//the most frequently used categories
-	enum Category{
-		C_A1,
-		C_A2,
-		C_A1_A2,
-		C_A3,
-		C_A1_A3,
-		C_B6,
-		C_C2,
-		C_C2_3,
-		C_C2_C4,
-		C_C3,
-		C_C3_C4,
-		C_C4,
-		C_D,
-		NUM_C
+	//the most frequently used categories
+	enum Module {
+		M_A1,								// Keyword: A1
+		M_A2,								// Keyword: A2
+		M_A1_A2,							// Keyword: A1-A2
+		M_A3,								// Keyword: A3
+		M_A1_A3,							// Keyword: A1-A3
+		M_A4,								// Keyword: A4
+		M_A5,								// Keyword: A5
+		M_B1,								// Keyword: B1
+		M_B2,								// Keyword: B2
+		M_B3,								// Keyword: B3
+		M_B4,								// Keyword: B4
+		M_B5,								// Keyword: B5
+		M_B6,								// Keyword: B6
+		M_B7,								// Keyword: B7
+		M_C1,								// Keyword: C1
+		M_C2,								// Keyword: C2
+		M_C2_C3,							// Keyword: C2-C3
+		M_C2_C4,							// Keyword: C2-C4
+		M_C3,								// Keyword: C3
+		M_C3_C4,							// Keyword: C3-C4
+		M_C4,								// Keyword: C4
+		M_D,								// Keyword: D
+		NUM_M
 	};
 
-	enum Mode {
-		M_Generic,
-		M_Specific,
-		M_Average,
-		M_Representative,
-		M_Template,
-		NUM_M
+	enum Type {
+		T_Generic,							// Keyword: Generic
+		T_Specific,							// Keyword: Specific
+		T_Average,							// Keyword: Average
+		T_Representative,					// Keyword: Representative
+		T_Template,							// Keyword: Template
+		NUM_T
 	};
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
-
 	VICUS_READWRITE_OVERRIDE
+	VICUS_COMPARE_WITH_ID
 
 	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
 		to see if the EPDDatest exists already and has the latest version.
@@ -114,6 +123,9 @@ public:
 	/*! UUID of material. */
 	QString							m_uuid;									// XML:A
 
+	/*! Category. */
+	IBK::MultiLanguageString		m_category;								// XML:A
+
 	/*! Notes. */
 	QString							m_notes;								// XML:E
 
@@ -124,7 +136,7 @@ public:
 	QString							m_dataSource;							// XML:E
 
 	/*! Expire date for valid epd dataset. */
-	QString							m_expireDate;							// XML:E
+	QString							m_expireYear;							// XML:E
 
 	/*! Reference unit. */
 	QString							m_referenceUnit;						// XML:E
@@ -133,10 +145,10 @@ public:
 	double							m_referenceQuantity;					// XML:E
 
 	/*! Sub type element. */
-	Mode							m_subtype = NUM_M;						// XML:E
+	Type							m_type = NUM_T;							// XML:E:required
 
 	/*! Category type A1, A2, ... */
-	Category						m_category = NUM_C;						// XML:E
+	Module							m_module = NUM_M;						// XML:E:required
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
