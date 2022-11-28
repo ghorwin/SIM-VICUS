@@ -37,6 +37,7 @@
 
 #include <IBK_Flag.h>
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 namespace VICUS {
 
@@ -83,8 +84,15 @@ public:
 	/*! Thickness of the material layer. */
 	IBK::Parameter					m_thickness;				// XML:E:required
 
+	/*! Lifetime of the material layer. */
+	IBK::Parameter					m_lifetime;					// XML:E
+
+	/*! Cost of the material layer in Euro Cent. */
+	IBK::IntPara					m_cost;						// XML:E
+
 	/*! Holds error string in order to give users a tooltip in db dialog. */
 	mutable std::string				m_errorMsg;
+
 };
 
 } // namespace VICUS
