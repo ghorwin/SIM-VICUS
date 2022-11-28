@@ -64,7 +64,20 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 				if (p.name == "Thickness") {
 					m_thickness = p; success = true;
 				}
+				else if (p.name == "Lifetime") {
+					m_lifetime = p; success = true;
+				}
 				if (!success) {
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				NANDRAD::readIntParaElement(c, p);
+				bool success = false;
+				if (p.name == "Cost") {
+					m_cost = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -92,6 +105,14 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value(m_thickness.IO_unit));
+	}
+	if (!m_lifetime.name.empty()) {
+		IBK_ASSERT("Lifetime" == m_lifetime.name);
+		TiXmlElement::appendIBKParameterElement(e, "Lifetime", m_lifetime.IO_unit.name(), m_lifetime.get_value(m_lifetime.IO_unit));
+	}
+	if (!m_cost.name.empty()) {
+		IBK_ASSERT("Cost" == m_cost.name);
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", "Cost", IBK::val2string(m_cost.value));
 	}
 	return e;
 }

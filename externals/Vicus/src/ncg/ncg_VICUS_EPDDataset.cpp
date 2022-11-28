@@ -54,12 +54,22 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "uuid")
 				m_uuid = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "category")
+				m_category.setEncodedString(attrib->ValueStr());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("Type"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Type' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("Module"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Module' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -70,8 +80,8 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 				m_manufacturer = QString::fromStdString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
-			else if (cName == "ExpireDate")
-				m_expireDate = QString::fromStdString(c->GetText());
+			else if (cName == "ExpireYear")
+				m_expireYear = QString::fromStdString(c->GetText());
 			else if (cName == "ReferenceUnit")
 				m_referenceUnit = QString::fromStdString(c->GetText());
 			else if (cName == "ReferenceQuantity")
@@ -89,18 +99,18 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "Subtype") {
+			else if (cName == "Type") {
 				try {
-					m_subtype = (Mode)KeywordList::Enumeration("EPDDataset::Mode", c->GetText());
+					m_type = (Type)KeywordList::Enumeration("EPDDataset::Type", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
-			else if (cName == "Category") {
+			else if (cName == "Module") {
 				try {
-					m_category = (Category)KeywordList::Enumeration("EPDDataset::Category", c->GetText());
+					m_module = (Module)KeywordList::Enumeration("EPDDataset::Module", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -134,23 +144,25 @@ TiXmlElement * EPDDataset::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_uuid.isEmpty())
 		e->SetAttribute("uuid", m_uuid.toStdString());
+	if (!m_category.empty())
+		e->SetAttribute("category", m_category.encodedString());
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_manufacturer.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
-	if (!m_expireDate.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "ExpireDate", nullptr, std::string(), m_expireDate.toStdString());
+	if (!m_expireYear.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "ExpireYear", nullptr, std::string(), m_expireYear.toStdString());
 	if (!m_referenceUnit.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "ReferenceUnit", nullptr, std::string(), m_referenceUnit.toStdString());
 	TiXmlElement::appendSingleAttributeElement(e, "ReferenceQuantity", nullptr, std::string(), IBK::val2string<double>(m_referenceQuantity));
 
-	if (m_subtype != NUM_M)
-		TiXmlElement::appendSingleAttributeElement(e, "Subtype", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Mode",  m_subtype));
+	if (m_type != NUM_T)
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Type",  m_type));
 
-	if (m_category != NUM_C)
-		TiXmlElement::appendSingleAttributeElement(e, "Category", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Category",  m_category));
+	if (m_module != NUM_M)
+		TiXmlElement::appendSingleAttributeElement(e, "Module", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Module",  m_module));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
