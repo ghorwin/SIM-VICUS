@@ -71,13 +71,13 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 		}
 		else if (QString::compare("m3", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m3]
-			if(epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3") > 0)
-				val /= epd.m_para[VICUS::EPDDataset::P_Density].get_value("kg/m3");
+			if(epd.m_para[VICUS::EPDDataset::P_DryDensity].get_value("kg/m3") > 0)
+				val /= epd.m_para[VICUS::EPDDataset::P_DryDensity].get_value("kg/m3");
 		}
 		else if (QString::compare("m2", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m2]
-			if(epd.m_para[VICUS::EPDDataset::P_BasisWeight].get_value("kg/m2") > 0)
-			val /= epd.m_para[VICUS::EPDDataset::P_BasisWeight].get_value("kg/m2");
+			if(epd.m_para[VICUS::EPDDataset::P_AreaDensity].get_value("kg/m2") > 0)
+			val /= epd.m_para[VICUS::EPDDataset::P_AreaDensity].get_value("kg/m2");
 		}
 		else
 			throw IBK::Exception(IBK::FormatString("No valid specific Unit of epd material '%1' available.").
@@ -103,6 +103,7 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 
 void LCA::calculateLCA()
 {
+#if 0
 	FUNCID(LCA::calculateLCA);
 
 	/*! Summarize all components with all constructions and material layers.
@@ -189,11 +190,11 @@ void LCA::calculateLCA()
 																   "material");
 
 					//if we found the right dataset add values A1- A2
-					if(epd.m_category == VICUS::EPDDataset::C_A1 ||
-					   epd.m_category == VICUS::EPDDataset::C_A2 ||
-					   epd.m_category == VICUS::EPDDataset::C_A1_A2||
-					   epd.m_category == VICUS::EPDDataset::C_A3 ||
-					   epd.m_category == VICUS::EPDDataset::C_A1_A3){
+					if(epd.m_module == VICUS::EPDDataset::M_A1 ||
+					   epd.m_module == VICUS::EPDDataset::M_A2 ||
+					   epd.m_module == VICUS::EPDDataset::M_A1_A2||
+					   epd.m_module == VICUS::EPDDataset::M_A3 ||
+					   epd.m_module == VICUS::EPDDataset::M_A1_A3){
 						//add all values in a category A
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
@@ -206,7 +207,7 @@ void LCA::calculateLCA()
 							}
 						}
 					}
-					else if (epd.m_category == VICUS::EPDDataset::C_B6) {
+					else if (epd.m_module == VICUS::EPDDataset::M_B6) {
 						//add all values in a category B
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
@@ -219,12 +220,12 @@ void LCA::calculateLCA()
 							}
 						}
 					}
-					else if (epd.m_category == VICUS::EPDDataset::C_C2 ||
-							 epd.m_category == VICUS::EPDDataset::C_C2_C4 ||
-							 epd.m_category == VICUS::EPDDataset::C_C3 ||
-							 epd.m_category == VICUS::EPDDataset::C_C2_3 ||
-							 epd.m_category == VICUS::EPDDataset::C_C3_C4 ||
-							 epd.m_category == VICUS::EPDDataset::C_C4) {
+					else if (epd.m_module == VICUS::EPDDataset::M_C2 ||
+							 epd.m_module == VICUS::EPDDataset::M_C2_C4 ||
+							 epd.m_module == VICUS::EPDDataset::M_C3 ||
+							 epd.m_module == VICUS::EPDDataset::M_C2_C3 ||
+							 epd.m_module == VICUS::EPDDataset::M_C3_C4 ||
+							 epd.m_module == VICUS::EPDDataset::M_C4) {
 						//add all values in a category C
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
@@ -237,7 +238,7 @@ void LCA::calculateLCA()
 							}
 						}
 					}
-					else if (epd.m_category == VICUS::EPDDataset::C_D) {
+					else if (epd.m_module == VICUS::EPDDataset::M_D) {
 						//add all values in a category D
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
@@ -292,6 +293,7 @@ void LCA::calculateLCA()
 		}
 
 	}
+#endif
 }
 
 bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS::EPDDataset> &db){
