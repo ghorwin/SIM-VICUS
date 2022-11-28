@@ -44,6 +44,7 @@
 #include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVSimulationNetworkOptions.h"
+#include "SVSimulationLCAOptions.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVUndoModifyProject.h"
@@ -129,6 +130,13 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationNetworkOptions);
 		m_ui->tabNetworkSettings->setLayout(h);
 	}
+	{
+		m_simulationLcaOptions = new SVSimulationLCAOptions(this, m_localProject.m_lcaSettings);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationLcaOptions);
+		m_ui->tabLCASettings->setLayout(h);
+	}
+
 
 	// start with initial page, always
 	m_ui->tabWidget->blockSignals(true);
