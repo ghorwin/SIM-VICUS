@@ -48,6 +48,7 @@
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
+#include "VICUS_LCASettings.h"
 #include "VICUS_ComponentInstance.h"
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
@@ -263,6 +264,8 @@ public:
 	VICUS::Outputs										m_outputs;					// XML:E
 
 	ViewSettings										m_viewSettings;				// XML:E
+
+	LCASettings											m_lcaSettings;				// XML:E
 
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
