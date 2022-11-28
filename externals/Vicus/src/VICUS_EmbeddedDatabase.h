@@ -105,7 +105,7 @@ public:
 	std::vector<VICUS::SubNetwork>						m_subNetworks;						// XML:E
 
 	/*! Map of all database EPD elements */
-	std::vector<VICUS::EPDDataset>						m_EPDElements;						// XML:E
+	std::vector<VICUS::EPDDataset>						m_EPDDatasets;						// XML:E
 
 	/*! Map of all database schedules */
 	std::vector<VICUS::Schedule>						m_schedules;						// XML:E
