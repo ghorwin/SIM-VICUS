@@ -7,19 +7,46 @@
     <x>0</x>
     <y>0</y>
     <width>571</width>
-    <height>715</height>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Pipe Network</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBoxSelectNetwork">
      <property name="title">
       <string>Select network</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioButtonNewNetwork">
+        <property name="text">
+         <string>New network</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditNetworkName">
+        <property name="text">
+         <string>unnamed</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="comboBoxNetworkSelectionBox"/>
       </item>
@@ -30,13 +57,6 @@
         </property>
         <property name="text">
          <string>Add to existing network</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEditNetworkName">
-        <property name="text">
-         <string>unnamed</string>
         </property>
        </widget>
       </item>
@@ -52,170 +72,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="radioButtonNewNetwork">
-        <property name="text">
-         <string>New network</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Import data</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButtonEdges">
-          <property name="text">
-           <string>import pipeline</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="radioButtonNodes">
-          <property name="text">
-           <string>import sub stations</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayoutHeatingDemand">
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>heating demand</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEditHeatingDemand"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>W</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="pushButtonGISNetwork">
-          <property name="text">
-           <string>&amp;Import GIS data...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonImportClipboard">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>From Clipboard</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Local origin at:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QLineEdit" name="lineEditYOrigin"/>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QLabel" name="labelCoordinateRange">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="lineEditXOrigin"/>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Number of edges:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Coordinate range:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QLabel" name="labelEdgeCount">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Number of nodes:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QLabel" name="labelNodeCount">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>
@@ -255,29 +111,23 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1,1">
+       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,2">
         <item>
-         <widget class="QLineEdit" name="lineEditMaxHeatingDemand"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_13">
+         <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
           <property name="text">
-           <string>W</string>
+           <string>5000</string>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="label_13">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+          <property name="text">
+           <string>W</string>
           </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </item>
@@ -313,7 +163,7 @@
      <property name="title">
       <string>Pipeline import</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0" columnstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0" columnstretch="0,0">
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
         <item>
@@ -403,6 +253,16 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -412,8 +272,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>474</y>
+     <x>266</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -428,8 +288,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>474</y>
+     <x>334</x>
+     <y>462</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

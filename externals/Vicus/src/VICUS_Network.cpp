@@ -45,7 +45,7 @@
 #include <IBK_FluidPhysics.h>
 
 #include <IBKMK_3DCalculations.h>
-//#include <IBKMK_UTM.h>
+#include <IBKMK_UTM.h>
 
 
 
@@ -360,9 +360,6 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 
 	QJsonArray features = jsonObj["features"].toArray();
 
-
-	double referenceLon = features[0].toObject()["geometry"].toObject()["coordinates"].toArray()[0].toArray()[0].toDouble();
-	double referenceLat = features[0].toObject()["geometry"].toObject()["coordinates"].toArray()[0].toArray()[1].toDouble();
 	for(const QJsonValue & feature :  features){
 		std::vector<std::vector<double> > polyLine;
 		unsigned int pipeId = defaultPipeId;
@@ -394,11 +391,11 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 		if(geometry["type"].toString()  !=  "LineString")
 			continue;
 		for(const QJsonValue & coordinates : geometry["coordinates"].toArray()){
+			float x,y;
 			double lon = coordinates.toArray()[0].toDouble();
 			double lat = coordinates.toArray()[1].toDouble();
-			double latMean = (referenceLat + lat) / 2 * 0.01745;
-			double x = 111.3 * cos(latMean) * (referenceLon - lon) * 1000;
-			double y = 111.3 * (referenceLat - lat) * 1000;
+			//covert the LatLon Coordiantes to metric ones
+			IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
 			polyLine.push_back({x, y});
 		}
 
@@ -445,9 +442,11 @@ void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &
 		if(geometry["type"].toString()  !=  "Point")
 			continue;
 		QJsonValue coordinates = geometry["coordinates"];
-
-		double x = coordinates.toArray()[0].toDouble() * 10000; // scaling factor (maybe compute dynamically or asḱ user)
-		double y = coordinates.toArray()[1].toDouble() * 10000;
+		float x,y;
+		double lon = coordinates.toArray()[0].toDouble();
+		double lat = coordinates.toArray()[1].toDouble();
+		//covert the LatLon Coordiantes to metric ones
+		IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
 
 		// add node
 		unsigned id = addNode(++nextId, IBKMK::Vector3D(x, y, 0) - m_origin,

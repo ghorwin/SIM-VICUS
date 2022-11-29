@@ -54,7 +54,7 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui(new Ui::SVNetworkImportDialog)
 {
 	m_ui->setupUi(this);
-	m_ui->lineEditHeatingDemand->setText(QString("%L1").arg(0.5*(0)));
+	m_ui->lineEditMaxHeatingDemand->setup(0, 100000, tr("HeatingDemand must be > 0 m!"), false, true);
 }
 
 
@@ -69,9 +69,9 @@ bool SVNetworkImportDialog::edit() {
 	const VICUS::Project &p = project();
 
 	m_ui->groupBoxSelectNetwork->setEnabled(true);
-	toggleReadEdges(m_ui->radioButtonEdges->isChecked());
 	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
 	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
+	m_ui->radioButtonNewNetwork->setChecked(p.m_geometricNetworks.empty());
 	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 
 
@@ -90,8 +90,8 @@ bool SVNetworkImportDialog::edit() {
 void SVNetworkImportDialog::on_pushButtonSelectPipelineFile_clicked() {
 	// ask user to select geo json file
 	// TODO Hauke, store last selected directory and restore instead of hardcoding relative path
-	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson)"), nullptr,
+	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file or CSV-file with GIS data"),
+												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
 												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 												 );
 	if (fname.isEmpty())
@@ -124,12 +124,9 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 
 			double xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
 			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
-			m_ui->lineEditXOrigin->setText( QString("%L1").arg(xOrigin));
-			m_ui->lineEditYOrigin->setText( QString("%L1").arg(yOrigin));
+			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(xOrigin).arg(yOrigin);
 			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
-
 			m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
-
 			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
 			undo->push(); // modifies project and updates views
 		}
@@ -144,9 +141,7 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 				m_network.m_availablePipes = m_availablePipes;
 			}
 
-
-			m_ui->lineEditXOrigin->setText( QString("%L1").arg(m_network.m_origin.m_x));
-			m_ui->lineEditYOrigin->setText( QString("%L1").arg(m_network.m_origin.m_y));
+			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(m_network.m_origin.m_x).arg(m_network.m_origin.m_y);
 
 			m_network.updateExtends();
 			SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), m_network);
@@ -165,8 +160,8 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 void SVNetworkImportDialog::on_pushButtonSelectSubStationFile_clicked() {
 	// ask user to select geo json file
 	// TODO Hauke, store last selected directory and restore instead of hardcoding relative path
-	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson)"), nullptr,
+	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file or CSV-file with GIS data"),
+												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
 												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 												 );
 	if (fname.isEmpty())
@@ -199,8 +194,7 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 
 			double xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
 			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
-			m_ui->lineEditXOrigin->setText( QString("%L1").arg(xOrigin));
-			m_ui->lineEditYOrigin->setText( QString("%L1").arg(yOrigin));
+			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(xOrigin).arg(yOrigin);
 			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
 
 			m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
@@ -219,8 +213,7 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 				m_network.m_availablePipes = m_availablePipes;
 			}
 
-			m_ui->lineEditXOrigin->setText( QString("%L1").arg(m_network.m_origin.m_x));
-			m_ui->lineEditYOrigin->setText( QString("%L1").arg(m_network.m_origin.m_y));
+			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(m_network.m_origin.m_x).arg(m_network.m_origin.m_y);
 
 			m_network.updateExtends();
 			SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), m_network);
@@ -239,16 +232,9 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	// not needed anymore with new UI
 }
 
-void SVNetworkImportDialog::toggleReadEdges(bool readEdges)
-{
-	m_ui->lineEditHeatingDemand->setEnabled(!readEdges);
-}
-
 void SVNetworkImportDialog::toggleReadExistingNetwork(bool readExisting)
 {
 	m_ui->comboBoxNetworkSelectionBox->setEnabled(readExisting);
-	m_ui->lineEditXOrigin->setEnabled(!readExisting);
-	m_ui->lineEditYOrigin->setEnabled(!readExisting);
 	m_ui->lineEditNetworkName->setEnabled(!readExisting);
 }
 
@@ -257,22 +243,32 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 	// can either be a network or a substation
 	switch (importType) {
 		case Pipeline:{
-			//TODO: check file ending and decidde which function to use for import (either geojson or csv)
+		if(fname.extension() == "geojson"){
 			int defaultPipeId = (m_defaultPipe == nullptr)? VICUS::INVALID_ID : m_defaultPipe->m_id;
 			network.readGridFromGeoJson(fname, nextId, defaultPipeId, SVSettings::instance().m_db.m_pipes);
+		} else {
+			// if not geoJson then its a CSV File
+			network.readGridFromCSV(fname, nextId);
+		}
 			break;
 		}
 		case SubStation:
-			network.readBuildingsFromGeoJson(fname, QLocale().toDouble(m_ui->lineEditHeatingDemand->text()), nextId);
+		double heatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
+		if(fname.extension() == "geojson"){
+			network.readBuildingsFromGeoJson(fname,heatingDemand, nextId);
+			} else {
+			// if not geoJson then its a CSV File
+				network.readBuildingsFromCSV(fname, heatingDemand, nextId);
+			}
 			break;
 	}
 
 	network.updateExtends();
 
-	m_ui->labelEdgeCount->setText(QString("%1").arg(m_network.m_edges.size()));
-	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
-	m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(m_network.m_extends.left)
-										 .arg(m_network.m_extends.top).arg(m_network.m_extends.right).arg(m_network.m_extends.bottom));
+	qInfo() << QString(tr("Number of edges: ")+"%1").arg(m_network.m_edges.size());
+	qInfo() << QString(tr("Number of nodes: ")+"%1").arg(m_network.m_nodes.size());
+	qInfo() << QString(tr("Coordinate range: ")+"[%L1,%L2]...[%L3,%L4]").arg(m_network.m_extends.left)
+										 .arg(m_network.m_extends.top).arg(m_network.m_extends.right).arg(m_network.m_extends.bottom);
 }
 
 
@@ -295,18 +291,6 @@ void SVNetworkImportDialog::on_radioButtonAddToExistingNetwork_clicked(bool chec
 {
 	toggleReadExistingNetwork(checked);
 }
-
-void SVNetworkImportDialog::on_radioButtonEdges_clicked(bool checked)
-{
-	toggleReadEdges(checked);
-}
-
-void SVNetworkImportDialog::on_radioButtonNodes_clicked(bool checked)
-{
-	toggleReadEdges(!checked);
-}
-
-
 
 void SVNetworkImportDialog::on_pushButtonSelectAvailablePipes_clicked()
 {

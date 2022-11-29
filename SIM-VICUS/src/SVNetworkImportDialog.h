@@ -56,10 +56,6 @@ private slots:
 
 	void on_radioButtonAddToExistingNetwork_clicked(bool checked);
 
-	void on_radioButtonEdges_clicked(bool checked);
-
-	void on_radioButtonNodes_clicked(bool checked);
-
 	void on_pushButtonSelectPipelineFile_clicked();
 
 	void on_pushButtonImportPipeline_clicked();
@@ -84,7 +80,6 @@ private:
 		SubStation,
 	};
 
-	void toggleReadEdges(bool readEdges);
 
 	void toggleReadExistingNetwork(bool readExisting);
 
