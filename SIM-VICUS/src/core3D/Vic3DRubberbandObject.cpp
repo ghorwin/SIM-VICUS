@@ -261,12 +261,12 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 						continue;
 					}
 
-					double intersectionArea = std::abs(ClipperLib::Area(intersectionPaths[0]));
+					double intersectionArea = 0.0;
+					for(ClipperLib::Path &path : intersectionPaths)
+						intersectionArea += std::abs(ClipperLib::Area(path));
 					double surfaceArea = std::abs(ClipperLib::Area(pathSurface));
 
 					// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
-
-
 					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
 						nodeIDs.insert(s.m_id);
 
@@ -309,9 +309,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 							continue;
 						}
 
-						ClipperLib::Path &path = intersectionPaths[0];
+						double intersectionArea = 0.0;
+						for(ClipperLib::Path &path : intersectionPaths)
+							intersectionArea += std::abs(ClipperLib::Area(path));
 
-						double intersectionArea = std::abs(ClipperLib::Area(path));
 						double surfaceArea = std::abs(ClipperLib::Area(pathSubSurface));
 
 						// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
