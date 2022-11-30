@@ -26,6 +26,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
+	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Shading/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IDFReader/src
 	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
@@ -145,6 +146,7 @@ target_link_libraries( ${PROJECT_NAME}
 	QtExt
 	QuaZIP
 	Nandrad
+	clipper
 	Shading
 	DataIO
 	CCM

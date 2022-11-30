@@ -252,6 +252,16 @@ void SVPropBuildingComponentsWidget::on_tableWidgetComponents_itemSelectionChang
 
 
 void SVPropBuildingComponentsWidget::on_pushButtonEditComponents_clicked() {
+	openEditComponentDialog();
+}
+
+void SVPropBuildingComponentsWidget::on_tableWidgetComponents_cellDoubleClicked(int row, int column) {
+	Q_UNUSED(row);
+	Q_UNUSED(column);
+	openEditComponentDialog();
+}
+
+void SVPropBuildingComponentsWidget::openEditComponentDialog() {
 	const VICUS::Component * comp = currentlySelectedComponent();
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
 	int currentRow = m_ui->tableWidgetComponents->currentRow();
@@ -557,3 +567,6 @@ void SVPropBuildingComponentsWidget::on_pushButtonAssignComponentFromTable_click
 	unsigned int componentID = e.m_component->m_id;
 	assignComponent(false, true, componentID);
 }
+
+
+

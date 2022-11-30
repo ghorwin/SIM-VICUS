@@ -27,6 +27,8 @@
 #include <IBKMK_Vector3D.h>
 #include <IBKMK_Polygon3D.h>
 
+#include "SH_Constants.h"
+
 namespace SH {
 
 class Notification : public IBK::NotificationHandler {
@@ -67,17 +69,45 @@ public:
 
 		ShadingObject() {}
 
-		ShadingObject(unsigned int id, const IBKMK::Polygon3D &poly3D, bool isObstacle = false) :
-			m_id(id),
+		ShadingObject(unsigned int id, const std::string &name, unsigned int parentId, const IBKMK::Polygon3D &poly3D,
+					  const std::vector<IBKMK::Polygon2D> &holes, bool isObstacle = false) :
+			m_id(latestId++),
+			m_name(name),
+			m_idVicus(id),
+			m_idParent(parentId),
+			m_holes(holes),
 			m_polygon(poly3D),
 			m_isObstacle(isObstacle)
 		{}
 
-		std::set<unsigned int>	m_visibleSurfaces;				///< Set with ids of visible objects for this object
-		unsigned int			m_id;							///< Unique id of shading object
-		IBKMK::Polygon3D		m_polygon;						///< polygon of shading object
-		bool					m_isObstacle;					///< indicates whether it is an obstacle
+		ShadingObject(unsigned int id, const std::string &name, unsigned int parentId, const IBKMK::Polygon3D &poly3D,
+					  bool isObstacle = false) :
+			m_id(latestId++),
+			m_name(name),
+			m_idVicus(id),
+			m_idParent(parentId),
+			m_polygon(poly3D),
+			m_isObstacle(isObstacle)
+		{}
+
+
+		static unsigned int													latestId;
+
+		unsigned int														m_id;
+		std::string															m_name;
+		std::set<unsigned int>												m_visibleSurfaces;				///< Set with ids of visible objects for this object
+		unsigned int														m_idVicus;						///< Unique id of shading object
+		unsigned int														m_idParent = INVALID_ID;		///< Unique id of parent surface, if INVALID no parent exists
+		std::vector<IBKMK::Polygon2D>										m_holes;						///< Vector with all holes of surface
+		IBKMK::Polygon3D													m_polygon;						///< polygon of shading object
+		mutable std::map<unsigned int, std::vector<IBKMK::Vector2D>>		m_projectedPolys;				///< id of map is sun cone index in sun cone normals. projected points of polygon in sun pane
+		mutable std::map<unsigned int,
+						std::vector<std::vector<IBKMK::Vector2D>>>			m_projectedHoles;				///< id of map is sun cone index in sun cone normals. projected points of polygon in sun pane
+		bool																m_isObstacle;					///< indicates whether it is a pure obstacle
+
+
 	};
+
 
 	StructuralShading() : m_startTime(2007,0) {}
 
@@ -101,9 +131,7 @@ public:
 
 		start time and duration = whole number multiple of samplingPeriod; if not -> warning issued
 	*/
-	void calculateShadingFactors(Notification * notify, double gridWidth = 0.1);
-
-
+	void calculateShadingFactors(Notification * notify, double gridWidth = 0.1, bool useClippingMethod = false);
 
 	// *** functions to retrieve calculation results
 
@@ -133,7 +161,10 @@ private:
 		This is only the case if at least one point lies in front of our surface.
 		Fills in all ids of visible surfaces in ShadingObject membervariable m_visibleObjects
 	*/
-	void findVisibleSurfaces();
+	void findVisibleSurfaces(bool useClipping = false);
+
+	/*! Creates all Projected polygons in all sun panes. */
+	void createProjectedPolygonsInSunPane();
 
 	// ** input variables **
 

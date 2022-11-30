@@ -65,7 +65,7 @@ SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFRea
 NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP
-Shading.depends = IBK TiCPP CCM IBKMK DataIO
+Shading.depends = IBK TiCPP CCM IBKMK DataIO clipper
 DataIO.depends = IBK
 IBKMK.depends = IBK sundials
 TiCPP.depends = IBK

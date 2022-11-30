@@ -32,6 +32,7 @@ public:
 
 private slots:
 	void on_tableWidgetSubSurfaceComponents_itemSelectionChanged();
+	/*! Triggers the openEditSubSurfaceComponentsDialog function */
 	void on_pushButtonEditSubSurfaceComponents_clicked();
 	void on_pushButtonExchangeSubSurfaceComponents_clicked();
 	void on_pushButtonSelectObjectsWithSubSurfaceComponent_clicked();
@@ -41,6 +42,8 @@ private slots:
 	/*! Assigns component from table to selected sub surfaces. */
 	void on_pushButtonAssignComponentFromTable_clicked();
 
+	/*! Triggers the openEditSubSurfaceComponentsDialog function */
+	void on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int row, int column);
 
 private:
 	/*! This function opens the sub-surface component DB dialog and lets the user select a sub-surface component.
@@ -53,6 +56,10 @@ private:
 			the function works silently and assigns the given component.
 	*/
 	void assignSubSurfaceComponent(bool insideWall, bool fromSurfaceSelection, unsigned int componentID = VICUS::INVALID_ID);
+
+
+	/*! Launches SubSurfaceComponents db edit dialog. */
+	void openEditSubSurfaceComponentsDialog();
 
 	/*! Based on the current selection in the table widget, the corresponding component is looked up and returned.
 		Only for valid component assignments.

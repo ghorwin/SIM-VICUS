@@ -52,7 +52,7 @@ private slots:
 	/*! Triggered when user switches component in table. */
 	void on_tableWidgetComponents_itemSelectionChanged();
 
-	/*! Launches component db edit dialog. */
+	/*! Triggers the openEditComponentDialog function */
 	void on_pushButtonEditComponents_clicked();
 
 	/*! Action to swap all occurances of currently selected component with newly selected component. */
@@ -74,6 +74,9 @@ private slots:
 	/*! Assigns component from table to selected surfaces. */
 	void on_pushButtonAssignComponentFromTable_clicked();
 
+	/*! Triggers the openEditComponentDialog function */
+	void on_tableWidgetComponents_cellDoubleClicked(int row, int column);
+
 private:
 	/*! This function opens the component DB dialog and lets the user select a component.
 		Then, it creates new component instances for all selected surfaces.
@@ -90,6 +93,9 @@ private:
 		Only for valid component assignments.
 	*/
 	const VICUS::Component * currentlySelectedComponent() const;
+
+	/*! Launches component db edit dialog. */
+	void openEditComponentDialog();
 
 	/*! Data structure that holds the information displayed in the table. */
 	struct ComponentLegendEntry {

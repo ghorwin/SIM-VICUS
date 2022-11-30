@@ -9,8 +9,10 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../DataIO/src
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
 	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
+	${PROJECT_SOURCE_DIR}/../../../clipper/src
 	${PROJECT_SOURCE_DIR}/../../../CCM/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/srck
+	${Qt5Gui_INCLUDE_DIRS}
 )
 
 # build the library

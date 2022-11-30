@@ -31,15 +31,28 @@
 #include "VICUS_KeywordList.h"
 #include "VICUS_utilities.h"
 
+#include <QFile>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QJsonValue>
+
 #include <IBK_assert.h>
 #include <IBK_Path.h>
 #include <IBK_FileReader.h>
 #include <IBK_FluidPhysics.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_UTM.h>
+
+
+
 
 #include <fstream>
 #include <algorithm>
+
 
 
 #define PI				3.141592653589793238
@@ -318,6 +331,82 @@ void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
 	}
 }
 
+QJsonObject convert2QJsonObject(const IBK::Path &filePath) {
+	QFile file;
+	file.setFileName(filePath.absolutePath().c_str());
+	if(!file.open(QIODevice::ReadOnly)){
+		throw IBK::Exception("Json file couldn't be opened/found", "scr/VICUS_Network.cpp::convert2QJsonObject");
+	}
+
+	QByteArray byteArray;
+	byteArray = file.readAll();
+	file.close();
+
+
+	QJsonParseError parseError;
+	QJsonDocument jsonDoc;
+	jsonDoc = QJsonDocument::fromJson(byteArray, &parseError);
+	if(parseError.error != QJsonParseError::NoError){
+		throw IBK::Exception(QString("Parse error at %1:%1").arg(parseError.offset).arg(parseError.errorString()).toStdString(), "scr/VICUS_Network.cpp::convert2QJsonObject");
+	}
+
+	return jsonDoc.object();
+}
+
+
+void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId, unsigned int defaultPipeId, const Database<NetworkPipe> &pipeDB) {
+
+	QJsonObject jsonObj = convert2QJsonObject(filePath);
+
+	QJsonArray features = jsonObj["features"].toArray();
+
+	for(const QJsonValue & feature :  features){
+		std::vector<std::vector<double> > polyLine;
+		unsigned int pipeId = defaultPipeId;
+		double bestDiff = 10000;
+
+		QJsonObject properties = feature.toObject()["properties"].toObject();
+		int thickness = properties["DN"].toDouble();
+
+		//find the a fitting pipe from the available ones or keep default pipe
+		for(unsigned int id : m_availablePipes){
+			double pipeThickness = pipeDB[id]->m_para[NetworkPipe::P_DiameterOutside].get_value("mm");
+			double diff = thickness - pipeThickness;
+			if((diff) == 0){
+				// if the pipe has exacly the same diameter take it
+				pipeId = id;
+				break;
+			}
+			if(diff * diff <= 1){
+				//if the difference is less or equal than one cm, take it, but keep on looking for better ones
+				if(bestDiff > (diff * diff)){
+					bestDiff = (diff * diff);
+					pipeId = id;
+				}
+			}
+		}
+
+
+		QJsonObject geometry = feature.toObject()["geometry"].toObject();
+		if(geometry["type"].toString()  !=  "LineString")
+			continue;
+		for(const QJsonValue & coordinates : geometry["coordinates"].toArray()){
+			float x,y;
+			double lon = coordinates.toArray()[0].toDouble();
+			double lat = coordinates.toArray()[1].toDouble();
+			//covert the LatLon Coordiantes to metric ones
+			IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
+			polyLine.push_back({x, y});
+		}
+
+
+		for (unsigned i=0; i<polyLine.size()-1; ++i){
+			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
+			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
+			addEdge(++nextId, n1, n2, true, pipeId);		}
+	}
+}
+
 
 void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
 	std::vector<std::string> cont;
@@ -338,6 +427,29 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 			continue;
 		// add node
 		unsigned id = addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - m_origin,
+				NetworkNode::NT_SubStation);
+		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
+	}
+}
+
+void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
+	QJsonObject jsonObj = convert2QJsonObject(filePath);
+
+	QJsonArray features = jsonObj["features"].toArray();
+
+	for(const QJsonValue & feature :  features){
+		QJsonObject geometry = feature.toObject()["geometry"].toObject();
+		if(geometry["type"].toString()  !=  "Point")
+			continue;
+		QJsonValue coordinates = geometry["coordinates"];
+		float x,y;
+		double lon = coordinates.toArray()[0].toDouble();
+		double lat = coordinates.toArray()[1].toDouble();
+		//covert the LatLon Coordiantes to metric ones
+		IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
+
+		// add node
+		unsigned id = addNode(++nextId, IBKMK::Vector3D(x, y, 0) - m_origin,
 				NetworkNode::NT_SubStation);
 		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}

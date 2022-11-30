@@ -115,6 +115,16 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 
 
 void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions_clicked() {
+	openEditBoundaryConditionsDialog();
+}
+
+void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_cellDoubleClicked(int row, int column) {
+	Q_UNUSED(row);
+	Q_UNUSED(column);
+	openEditBoundaryConditionsDialog();
+}
+
+void SVPropBuildingBoundaryConditionsWidget::openEditBoundaryConditionsDialog() {
 	int currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
 	std::map<const VICUS::BoundaryCondition*, std::set<const VICUS::Surface *> >::const_iterator it = m_bcSurfacesMap.begin();
 	std::advance(it, currentRow);
@@ -126,6 +136,7 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions
 	if (m_ui->tableWidgetBoundaryConditions->rowCount() > currentRow)
 		m_ui->tableWidgetBoundaryConditions->selectRow(currentRow);
 }
+
 
 
 void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_itemSelectionChanged() {
@@ -163,3 +174,5 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonSelectBoundaryConditio
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
 	undo->push();
 }
+
+
