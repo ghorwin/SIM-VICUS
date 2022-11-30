@@ -123,7 +123,7 @@ SVMainWindow * SVMainWindow::m_self = nullptr;
 
 SVMainWindow & SVMainWindow::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVMainWindow::instance]",
-			   "You must not access SVMainWindow::instance() when the is no SVMainWindow "
+			   "You must not access SVMainWindow::instance() when there is no SVMainWindow "
 			   "instance (anylonger).");
 	return *m_self;
 }
