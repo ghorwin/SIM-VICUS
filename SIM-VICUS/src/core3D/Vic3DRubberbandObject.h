@@ -32,6 +32,7 @@
 #include <QVector3D>
 #include <QCoreApplication>
 
+#include <clipper.hpp>
 
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
@@ -41,8 +42,8 @@ QT_END_NAMESPACE
 #include "Vic3DVertex.h"
 #include "Vic3DCamera.h"
 
-namespace ClipperLib {
-class IntPoint;
+namespace VICUS {
+class Surface;
 }
 
 
@@ -121,6 +122,10 @@ public:
 	void selectObjectsBasedOnRubberband();
 
 private:
+
+	bool surfaceIntersectionClippingAreaWithRubberband(const QMatrix4x4 &mat, const VICUS::Surface &surf,
+													   const ClipperLib::Path &pathRubberband,
+													   double &intersectionArea, double & surfaceArea);
 
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.
