@@ -10,5 +10,7 @@
         <file>VertexNormalColorWithTransform.vert</file>
         <file>fixed_color.frag</file>
         <file>Vertex.vert</file>
+		<file>dashedLine.frag</file>
+        <file>dashedLine.vert</file>
     </qresource>
 </RCC>
