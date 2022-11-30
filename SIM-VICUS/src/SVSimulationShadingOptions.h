@@ -111,10 +111,10 @@ private slots:
 	void on_radioButtonRayTracing_toggled(bool checked);
 
 private:
-	/*! Get the output file name depending on the file sufix. */
-	QString getFileName() const;
-	/*! Updates m_shadingFactorBaseName and the line edit in the user interface. */
-	void updateFileName();
+	/*! Updates m_shadingFactorBaseName and the line edit in the user interface base on the current
+		combo box selection.
+	*/
+	void updateShadingFileName();
 
 	/*! Function that calculates the shading factors for selected outside surfaces
 		Returns false if some error occurred during creation of the NANDRAD project.

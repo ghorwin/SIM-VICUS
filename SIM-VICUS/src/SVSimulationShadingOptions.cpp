@@ -156,7 +156,7 @@ SVSimulationShadingOptions::~SVSimulationShadingOptions() {
 
 
 void SVSimulationShadingOptions::updateUi() {
-	updateFileName();
+	updateShadingFileName();
 
 	// Here we check all parameters that are *not* edited in this dialog, and show
 	// a summary of these input parameters.
@@ -253,7 +253,7 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 	m_ui->lineEditSunCone->setValue( sunCone );
 	m_ui->lineEditSteps->setValue( stepCount );
 
-	updateFileName();
+	updateShadingFileName();
 }
 
 
@@ -265,7 +265,7 @@ void SVSimulationShadingOptions::setPreviousSimulationFileValues() {
 
 	const std::vector<std::string> fileEndings = { ".tsv", ".d6o", ".d6b"};
 
-	for(int i = 0; i < fileEndings.size(); i++){
+	for (unsigned int i = 0; i < fileEndings.size(); ++i) {
 		// check if a previous file with one of the endings in fileEndings exists
 		QFileInfo currentFile ( QString::fromStdString(exportFileBaseName + fileEndings[i]) );
 		if (currentFile.exists()){
@@ -279,7 +279,7 @@ void SVSimulationShadingOptions::setPreviousSimulationFileValues() {
 	}
 
 	// no previous file exists
-	m_ui->labelPreviousShadingFile->setText(tr("No shading file!"));
+	m_ui->labelPreviousShadingFile->setText(tr("No shading file, yet!"));
 	m_ui->labelPreviousShadingFileCreationDate->setText("---");
 	m_ui->pushButtonDeletePreviousShadingFile->setEnabled(false);
 }
@@ -728,7 +728,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	QMessageBox::information(this, QString(), tr("Calculated shading factors have been saved to '%1'.").arg(QString::fromStdString(exportFile.str())));
 
 	// Updates latest shading file meta info
-	updateFileName();
+	updateShadingFileName();
 
 	// update the shading file infos
 	setPreviousSimulationFileValues();
@@ -752,30 +752,27 @@ void SVSimulationShadingOptions::on_radioButtonDetailed_toggled(bool checked) {
 		setSimulationParameters(DetailType::Detailed);
 }
 
-QString SVSimulationShadingOptions::getFileName() const {
-	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
-	QString shadingFilePath = m_shadingFactorBaseName;
-	switch ( outputType ) {
-	case TsvFile : shadingFilePath += ".tsv"; break;
-	case D6oFile : shadingFilePath += ".d6o"; break;
-	case D6bFile : shadingFilePath += ".d6b"; break;
-	}
-	return shadingFilePath;
-}
 
-void SVSimulationShadingOptions::updateFileName() {
+void SVSimulationShadingOptions::updateShadingFileName() {
 	SVProjectHandler &prj = SVProjectHandler::instance();
 
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
 	m_shadingFactorBaseName = projectName + "_shadingFactors";
-	QString shadingFilePath = getFileName();
 
-	m_ui->lineEditShadingFactorFilename->setText(shadingFilePath);
+	QString shadingFileName = m_shadingFactorBaseName;
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+	switch ( outputType ) {
+		case TsvFile : shadingFileName += ".tsv"; break;
+		case D6oFile : shadingFileName += ".d6o"; break;
+		case D6bFile : shadingFileName += ".d6b"; break;
+	}
+
+	m_ui->lineEditShadingFactorFilename->setText(shadingFileName);
 }
 
 
 void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int /*index*/) {
-	updateFileName();
+	updateShadingFileName();
 }
 
 
