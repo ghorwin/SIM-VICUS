@@ -44,7 +44,6 @@
 #include <IBKMK_3DCalculations.h>
 #include <IBKMK_2DCalculations.h>
 
-#include <clipper.hpp>
 
 namespace Vic3D {
 
@@ -86,17 +85,32 @@ void RubberbandObject::render() {
 
 	// Do the coloring
 	if(m_selectGeometry)
-		col = QVector4D(0.0, 1.0, 0.0, 1.0);
+		col = QVector4D(0.219607843, 0.839215686, 0.219607843, 1.0);
 	else
-		col = QVector4D(1.0, 0.0, 0.0, 1.0);
+		col = QVector4D(0.960784314, 0.258823529, 0.258823529, 1.0);
 
+	float dash = 0.0;
+	float gap = 0.0;
 	// if geometry is touched set alpha to 0.5
 	if(m_touchGeometry) {
 		glEnable(GL_BLEND);
-		col.setW(0.5);
+		//col.setW(0.5);
+		dash = 20.0;
+		gap = 15.0;
 	}
 
-	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[1], col);
+	/*
+	dashedLines.m_uniformNames.append("worldToView");
+	dashedLines.m_uniformNames.append("resolution");
+	dashedLines.m_uniformNames.append("dashSize");
+	dashedLines.m_uniformNames.append("gapSize");
+	dashedLines.m_uniformNames.append("fixedColor");
+	 */
+
+	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[1], QVector2D((float)m_viewport.width(), (float)m_viewport.height()));
+	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[2], dash);
+	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[3], gap);
+	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[4], col);
 	//glLineStipple(factor, pattern);
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
 
@@ -194,6 +208,48 @@ void RubberbandObject::setViewport(const QRect & viewport) {
 	m_viewport = viewport;
 }
 
+bool RubberbandObject::surfaceIntersectionClippingAreaWithRubberband(const QMatrix4x4 &mat, const VICUS::Surface &surf,
+																	 const ClipperLib::Path &pathRubberband,
+																	 double &intersectionArea, double &surfaceArea) {
+	ClipperLib::Clipper clp;
+	// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
+
+	// Add main polygon to clipper
+	clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
+
+	ClipperLib::Path pathSurface;
+	try {
+		for(const IBKMK::Vector3D &v3D : surf.polygon3D().vertexes()) {
+			// Bring our point to NDC
+			QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
+			projectedP /= projectedP.w();
+
+			// qDebug() << s.m_displayName << " Surface point -> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
+
+			// Convert to ClipperLib
+			pathSurface << toClipperIntPoint(projectedP.toVector3D() );
+		}
+	} catch(...) {
+		return false; // Skip broken polygons
+	}
+
+	clp.AddPath(pathSurface, ClipperLib::ptClip, true);
+	ClipperLib::Paths intersectionPaths;
+	clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
+
+	if(intersectionPaths.empty()) {
+		// qDebug() << "Skipped";
+		return false;
+	}
+
+	for(ClipperLib::Path &path : intersectionPaths)
+		intersectionArea += std::abs(ClipperLib::Area(path));
+
+	surfaceArea = std::abs(ClipperLib::Area(pathSurface));
+
+	return true;
+}
+
 void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 	VICUS::Project prj = SVProjectHandler::instance().project();
@@ -232,47 +288,12 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 					// qDebug() << "------------------";
 					// qDebug() << s.m_displayName;
-
-
-					ClipperLib::Clipper clp;
-					// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
-
-					// Add main polygon to clipper
-					clp.AddPath(pathRubberband, ClipperLib::ptSubject, true);
-
-					ClipperLib::Path pathSurface;
-					try {
-						for(const IBKMK::Vector3D &v3D : s.polygon3D().vertexes()) {
-							// Bring our point to NDC
-							QVector4D projectedP = mat * QVector4D(v3D.m_x, v3D.m_y, v3D.m_z, 1.0);
-							projectedP /= projectedP.w();
-
-							// qDebug() << s.m_displayName << " Surface point -> x: " << projectedP.x() << " | y: " << projectedP.y() << " | z: " << projectedP.z();
-
-							// Convert to ClipperLib
-							pathSurface << toClipperIntPoint(projectedP.toVector3D() );
-						}
-					} catch(...) {
-						continue; // Skip broken polygons
-					}
-
-					clp.AddPath(pathSurface, ClipperLib::ptClip, true);
-					ClipperLib::Paths intersectionPaths;
-					clp.Execute(ClipperLib::ctIntersection, intersectionPaths, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
-
-					if(intersectionPaths.empty()) {
-						// qDebug() << "Skipped";
-						continue;
-					}
-
 					double intersectionArea = 0.0;
-					for(ClipperLib::Path &path : intersectionPaths)
-						intersectionArea += std::abs(ClipperLib::Area(path));
-					double surfaceArea = std::abs(ClipperLib::Area(pathSurface));
+					double surfaceArea = 0.0;
+					if(!surfaceIntersectionClippingAreaWithRubberband(mat, s, pathRubberband, intersectionArea, surfaceArea))
+						continue;
 
 					// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
-
-
 					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) ) {
 						++surfaceSelectionCount;
 						nodeIDs.insert(s.m_id);
@@ -375,7 +396,7 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 			}
 			else if(m_touchGeometry &&
 					IBKMK::intersectsLine2D(verts2D, IBKMK::Vector2D(projectedP1.x(), projectedP1.y()),
-													 IBKMK::Vector2D(projectedP2.x(), projectedP2.y()), intersectionP) ) {
+											IBKMK::Vector2D(projectedP2.x(), projectedP2.y()), intersectionP) ) {
 				nodeIDs.insert(ne.m_id);
 				break;
 			}
@@ -448,6 +469,22 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 		}
 
+	}
+
+	// Also select all plain geomerties
+	for(const VICUS::Surface &surf : prj.m_plainGeometry.m_surfaces) {
+
+		// qDebug() << "------------------";
+		// qDebug() << s.m_displayName;
+		double intersectionArea = 0.0;
+		double surfaceArea = 0.0;
+		if(!surfaceIntersectionClippingAreaWithRubberband(mat, surf, pathRubberband, intersectionArea, surfaceArea))
+			continue;
+
+		// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
+		if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) ) {
+			nodeIDs.insert(surf.m_id);
+		}
 	}
 
 	// Create UNDO Action
