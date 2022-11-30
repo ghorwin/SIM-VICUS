@@ -331,23 +331,26 @@ void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
 	}
 }
 
+
+// TODO Anton: hier vlt besser eine const reference zurückgeben, könnte groß werden ?
+// und die Funktion in den ImportDialog verschieben, da sie mit dem Netzwerk eigentlich nichts zu tun hat
 QJsonObject convert2QJsonObject(const IBK::Path &filePath) {
+	FUNCID(Network::calcTemperatureChangeIndicator);
 	QFile file;
 	file.setFileName(filePath.absolutePath().c_str());
 	if(!file.open(QIODevice::ReadOnly)){
-		throw IBK::Exception("Json file couldn't be opened/found", "scr/VICUS_Network.cpp::convert2QJsonObject");
+		throw IBK::Exception("Json file couldn't be opened/found!", FUNC_ID);
 	}
 
 	QByteArray byteArray;
 	byteArray = file.readAll();
 	file.close();
 
-
 	QJsonParseError parseError;
 	QJsonDocument jsonDoc;
 	jsonDoc = QJsonDocument::fromJson(byteArray, &parseError);
 	if(parseError.error != QJsonParseError::NoError){
-		throw IBK::Exception(QString("Parse error at %1:%1").arg(parseError.offset).arg(parseError.errorString()).toStdString(), "scr/VICUS_Network.cpp::convert2QJsonObject");
+		throw IBK::Exception(QString("Parse error at %1:%1").arg(parseError.offset).arg(parseError.errorString()).toStdString(), FUNC_ID);
 	}
 
 	return jsonDoc.object();
@@ -358,38 +361,51 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 
 	QJsonObject jsonObj = convert2QJsonObject(filePath);
 
-	QJsonArray features = jsonObj["features"].toArray();
+	const QJsonArray features = jsonObj["features"].toArray();
 
 	for(const QJsonValue & feature :  features){
-		std::vector<std::vector<double> > polyLine;
-		unsigned int pipeId = defaultPipeId;
-		double bestDiff = 10000;
-
-		QJsonObject properties = feature.toObject()["properties"].toObject();
-		int thickness = properties["DN"].toDouble();
-
-		//find the a fitting pipe from the available ones or keep default pipe
-		for(unsigned int id : m_availablePipes){
-			double pipeThickness = pipeDB[id]->m_para[NetworkPipe::P_DiameterOutside].get_value("mm");
-			double diff = thickness - pipeThickness;
-			if((diff) == 0){
-				// if the pipe has exacly the same diameter take it
-				pipeId = id;
-				break;
-			}
-			if(diff * diff <= 1){
-				//if the difference is less or equal than one cm, take it, but keep on looking for better ones
-				if(bestDiff > (diff * diff)){
-					bestDiff = (diff * diff);
-					pipeId = id;
-				}
-			}
-		}
-
 
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
 		if(geometry["type"].toString()  !=  "LineString")
 			continue;
+
+		std::vector<std::vector<double> > polyLine;
+		unsigned int pipeId = defaultPipeId;
+
+		QJsonObject properties = feature.toObject()["properties"].toObject();
+		double givenThickness = properties["da"].toDouble(); // should be in mm
+
+//		double bestDiff = 10000;
+
+		//find a fitting pipe from the available ones or keep default pipe
+		double minDiff = std::numeric_limits<double>::max();
+		for(unsigned int id : m_availablePipes){
+			double pipeThickness = pipeDB[id]->m_para[NetworkPipe::P_DiameterOutside].get_value("mm");
+			double diff = givenThickness - pipeThickness;
+
+			// TODO Anton: so vielleicht einfacher? Oder habe ich was übersehen? Warum quadrieren?
+			if ( (diff<1) && (diff < minDiff) ) {
+				minDiff = diff;
+				pipeId = id;
+			}
+
+//			if(diff == 0){
+//				// if the pipe has exacly the same diameter take it
+//				pipeId = id;
+//				break;
+//			}
+//			if(diff * diff <= 1){
+//				//if the difference is less or equal than one cm, take it, but keep on looking for better ones
+//				if(bestDiff > (diff * diff)){
+//					bestDiff = (diff * diff);
+//					pipeId = id;
+//				}
+//			}
+		}
+
+		// TODO Anton: Warnungen möglichst direkt verhindern, so dass man die relevanten Warnungen am Ende noch beachtet.
+		// hier z.B.  float - double conversion
+
 		for(const QJsonValue & coordinates : geometry["coordinates"].toArray()){
 			double x,y;
 			double lon = coordinates.toArray()[0].toDouble();
@@ -398,7 +414,6 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 			IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
 			polyLine.push_back({x, y});
 		}
-
 
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
 			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
@@ -432,12 +447,14 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 	}
 }
 
+
 void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
 	QJsonObject jsonObj = convert2QJsonObject(filePath);
 
-	QJsonArray features = jsonObj["features"].toArray();
+	const QJsonArray features = jsonObj["features"].toArray();
 
-	for(const QJsonValue & feature :  qAsConst(features)){
+	// TODO Anton: hier wieder Warnungen verhindern durch float-double conversion
+	for(const QJsonValue & feature :  features){
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
 		if(geometry["type"].toString()  !=  "Point")
 			continue;
@@ -919,7 +936,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid & fluid, const D
 }
 
 
-void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
+void Network::findSourceNodes(std::vector<NetworkNode> &sources) const {
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Source)
 			sources.push_back(n);
@@ -928,7 +945,7 @@ void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
 
 
 void Network::dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
-										   std::vector<NetworkEdge*> &pathEndToStart) const{
+										   std::vector<NetworkEdge*> &pathEndToStart) const {
 
 	// init: all nodes have infinte distance to start node and no predecessor
 	for (const NetworkNode &n: m_nodes){
@@ -979,20 +996,18 @@ void Network::updateExtends() {
 }
 
 
-IBKMK::Vector3D Network::origin() const
-{
+IBKMK::Vector3D Network::origin() const {
 	return m_origin;
 }
 
-void Network::setOrigin(const IBKMK::Vector3D &origin)
-{
+void Network::setOrigin(const IBKMK::Vector3D &origin) {
 	m_origin = origin;
 	for (NetworkNode &n: m_nodes)
 		n.m_position -= m_origin;
 }
 
 
-double Network::totalLength() const{
+double Network::totalLength() const {
 	double length = 0;
 	for(const NetworkEdge &e: m_edges){
 		length += e.length();
@@ -1001,7 +1016,7 @@ double Network::totalLength() const{
 }
 
 
-NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
+NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2) {
 	for (NetworkEdge &e: m_edges){
 		if (e.nodeId1() == nodeId1 && e.nodeId2() == nodeId2)
 			return &e;
@@ -1020,7 +1035,7 @@ NetworkEdge * Network::edgeById(unsigned id) {
 }
 
 
-unsigned int VICUS::Network::indexOfEdge(unsigned nodeId1, unsigned nodeId2){
+unsigned int VICUS::Network::indexOfEdge(unsigned nodeId1, unsigned nodeId2) {
 	for (unsigned int i=0; i<m_edges.size(); ++i){
 		if (m_edges[i].nodeId1() == nodeId1 && m_edges[i].nodeId2() == nodeId2)
 			return i;
@@ -1038,7 +1053,7 @@ unsigned int Network::indexOfEdge(unsigned edgeId) {
 	return 9999;
 }
 
-size_t Network::numberOfBuildings() const{
+size_t Network::numberOfBuildings() const {
 	size_t count = 0;
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type == NetworkNode::NT_SubStation)
@@ -1047,7 +1062,7 @@ size_t Network::numberOfBuildings() const{
 	return count;
 }
 
-void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
+void Network::writeNetworkNodesCSV(const IBK::Path &file) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	for (const NetworkNode &n: m_nodes){
@@ -1059,7 +1074,7 @@ void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
 	f.close();
 }
 
-void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
+void Network::writeNetworkEdgesCSV(const IBK::Path &file) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(0);

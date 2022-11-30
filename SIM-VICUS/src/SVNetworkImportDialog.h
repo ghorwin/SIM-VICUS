@@ -50,7 +50,6 @@ public:
 	bool edit();
 
 private slots:
-	void on_pushButtonGISNetwork_clicked();
 
 	void on_radioButtonNewNetwork_clicked(bool checked);
 
@@ -73,25 +72,31 @@ private:
 	//stores the selected default pipe for pipe network import
 	const VICUS::NetworkPipe * m_defaultPipe = nullptr;
 
+	/*! hier die dokumentation */
 	std::vector<unsigned int> m_availablePipes;
 
+	// TODO Anton: enums haben bei uns immer das Bennungsschema "Akronym_Name" wobei Akronym den enum Namen abkürzt. In dem Fall: IT_Pipeline und IT_Substation (IT für ImportType)
 	enum ImportType {
 		Pipeline,
 		SubStation,
 	};
 
+	/*! Toggles enable state of line edit, combobox */
+	void toggleExistingOrNewNetwork(bool readExisting);
 
-	void toggleReadExistingNetwork(bool readExisting);
-
-	Ui::SVNetworkImportDialog *m_ui;
-
-	VICUS::Network m_network;
-
-	QMap<QString, unsigned> m_existingNetworksMap;
-
+	/*! Reads either a geoJSON or csv file of either pipeline data or sub stations (based on given importType) and adds that to given network */
 	void readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId, ImportType importType) const;
 
 	QString uniqueName(const QString & name);
+
+	Ui::SVNetworkImportDialog		*m_ui;
+
+	VICUS::Network					m_network;
+
+	QMap<QString, unsigned>			m_existingNetworksMap;
+
+	QString							m_lastPipelineFilePath;
+	QString							m_lastSubstationFilePath;
 };
 
 #endif // SVNetworkImportDialogH

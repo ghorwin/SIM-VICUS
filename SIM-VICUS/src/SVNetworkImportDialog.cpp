@@ -54,7 +54,7 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui(new Ui::SVNetworkImportDialog)
 {
 	m_ui->setupUi(this);
-	m_ui->lineEditMaxHeatingDemand->setup(0, 100000, tr("HeatingDemand must be > 0 m!"), false, true);
+	m_ui->lineEditMaxHeatingDemand->setup(0, 1e9, tr("HeatingDemand must be > 0 m!"), false, true);
 }
 
 
@@ -68,12 +68,10 @@ bool SVNetworkImportDialog::edit() {
 	// store pointer to network for dialog functions to access
 	const VICUS::Project &p = project();
 
-	m_ui->groupBoxSelectNetwork->setEnabled(true);
 	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
 	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
 	m_ui->radioButtonNewNetwork->setChecked(p.m_geometricNetworks.empty());
-	toggleReadExistingNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
-
+	toggleExistingOrNewNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 
 	// update existing networks combobox
 	if (!p.m_geometricNetworks.empty()){
@@ -84,19 +82,26 @@ bool SVNetworkImportDialog::edit() {
 		m_ui->comboBoxNetworkSelectionBox->addItems(QStringList(m_existingNetworksMap.keys()));
 	}
 
+	// TODO Anton:
+	// - QtExt_fileSelectionWidget verwenden für die Auswahl der Dateien
+	// - pipeline import button nur enablen wenn eine entsprechende Datei ausgewählt wurde und min. default pipe diameter gesetzt ist
+	// - substation import button nur enablen wenn max. heating demand valid ist
+	// - Buttons die einen Dialog aufrufen immer mit "..." am Ende beschriften
+	// - Doku aller Funktionen und Membervariablen in Headerdatei (vergesse ich selbst oft :) mit Dokustring: /*! hier die doku */
+
 	return exec();
 }
 
 void SVNetworkImportDialog::on_pushButtonSelectPipelineFile_clicked() {
-	// ask user to select geo json file
-	// TODO Hauke, store last selected directory and restore instead of hardcoding relative path
+	// ask user to select geojson or csv file
 	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file or CSV-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
-												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-												 );
+												 m_lastPipelineFilePath, tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
+												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
 	if (fname.isEmpty())
 		return;
+	m_lastPipelineFilePath = fname;
 
+	// TODO Anton: das entfällt dann ...
 	m_ui->lineEditPipelineFileName->setText(fname);
 
 }
@@ -117,8 +122,6 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 			// create new network
 			m_network = VICUS::Network ();
 			m_network.m_id = p.nextUnusedID();
-			//transfer the availabe pipes to the new network
-			m_network.m_availablePipes = m_availablePipes;
 
 			readNetworkData(networkFile, m_network, ++m_network.m_id, Pipeline);
 
@@ -126,7 +129,12 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
 			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(xOrigin).arg(yOrigin);
 			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
+
+
+			// TODO Anton: use VICUS::uniqueName(), remove this function
 			m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
+
+
 			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
 			undo->push(); // modifies project and updates views
 		}
@@ -159,13 +167,12 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 
 void SVNetworkImportDialog::on_pushButtonSelectSubStationFile_clicked() {
 	// ask user to select geo json file
-	// TODO Hauke, store last selected directory and restore instead of hardcoding relative path
 	QString fname = QFileDialog::getOpenFileName(this, tr("Select geoJson-file or CSV-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
-												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-												 );
+												 m_lastSubstationFilePath, tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"), nullptr,
+												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
 	if (fname.isEmpty())
 		return;
+	m_lastSubstationFilePath = fname;
 
 	m_ui->lineEditSubStationFileName->setText(fname);
 }
@@ -197,6 +204,7 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(xOrigin).arg(yOrigin);
 			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
 
+			// TODO Anton: use VICUS::uniqueName(), remove this function
 			m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
 
 			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
@@ -228,39 +236,38 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 }
 
 
-void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
-	// not needed anymore with new UI
-}
-
-void SVNetworkImportDialog::toggleReadExistingNetwork(bool readExisting)
-{
+void SVNetworkImportDialog::toggleExistingOrNewNetwork(bool readExisting) {
 	m_ui->comboBoxNetworkSelectionBox->setEnabled(readExisting);
 	m_ui->lineEditNetworkName->setEnabled(!readExisting);
 }
+
 
 void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId, ImportType importType) const {
 
 	// can either be a network or a substation
 	switch (importType) {
-		case Pipeline:{
+
+		case Pipeline:
 		if(fname.extension() == "geojson"){
 			int defaultPipeId = (m_defaultPipe == nullptr)? VICUS::INVALID_ID : m_defaultPipe->m_id;
 			network.readGridFromGeoJson(fname, nextId, defaultPipeId, SVSettings::instance().m_db.m_pipes);
-		} else {
+		}
+		else {
 			// if not geoJson then its a CSV File
 			network.readGridFromCSV(fname, nextId);
 		}
-			break;
-		}
+		break;
+
 		case SubStation:
 		double heatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
 		if(fname.extension() == "geojson"){
-			network.readBuildingsFromGeoJson(fname,heatingDemand, nextId);
-			} else {
-			// if not geoJson then its a CSV File
-				network.readBuildingsFromCSV(fname, heatingDemand, nextId);
+			network.readBuildingsFromGeoJson(fname, heatingDemand, nextId);
 			}
-			break;
+		else {
+			// if not geoJson then its a CSV File
+			network.readBuildingsFromCSV(fname, heatingDemand, nextId);
+		}
+		break;
 	}
 
 	network.updateExtends();
@@ -272,6 +279,8 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 }
 
 
+
+// TODO Anton: use VICUS::uniqueName(), remove this function
 QString SVNetworkImportDialog::uniqueName(const QString &name) {
 	QString uniqueName = name;
 	for (auto it = project().m_geometricNetworks.begin(); it!=project().m_geometricNetworks.end(); ++it){
@@ -282,23 +291,26 @@ QString SVNetworkImportDialog::uniqueName(const QString &name) {
 }
 
 
-void SVNetworkImportDialog::on_radioButtonNewNetwork_clicked(bool checked)
-{
-	toggleReadExistingNetwork(!checked);
+void SVNetworkImportDialog::on_radioButtonNewNetwork_clicked(bool checked) {
+	toggleExistingOrNewNetwork(!checked);
 }
 
-void SVNetworkImportDialog::on_radioButtonAddToExistingNetwork_clicked(bool checked)
-{
-	toggleReadExistingNetwork(checked);
+
+void SVNetworkImportDialog::on_radioButtonAddToExistingNetwork_clicked(bool checked) {
+	toggleExistingOrNewNetwork(checked);
 }
 
-void SVNetworkImportDialog::on_pushButtonSelectAvailablePipes_clicked()
-{
+
+void SVNetworkImportDialog::on_pushButtonSelectAvailablePipes_clicked() {
+
+	// TODO Anton: ?
 	if (m_ui->radioButtonNewNetwork->isChecked()){
 
 	}
+
 	// create temporary network to store the pipes
 	VICUS::Network temp = VICUS::Network ();
+	temp.m_displayName = "Imported Network";
 	// fill with already selected pipes
 	temp.m_availablePipes = m_availablePipes;
 	SVNetworkDialogSelectPipes *dialog = new SVNetworkDialogSelectPipes(this);
@@ -308,8 +320,10 @@ void SVNetworkImportDialog::on_pushButtonSelectAvailablePipes_clicked()
 }
 
 
-void SVNetworkImportDialog::on_pushButtonSelectDefaultPipe_clicked()
-{
+void SVNetworkImportDialog::on_pushButtonSelectDefaultPipe_clicked() {
+
+	// TODO Anton: pass current default pipeId to dialog select function
+	// vielleicht besser die pipeId speichern (und mit INVALID_ID initialisieren) als den pointer ...
 	// get the id of the selected default pipe
 	unsigned int defaultPipeId = SVMainWindow::instance().dbPipeEditDialog()->select(-1);
 
