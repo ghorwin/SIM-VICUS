@@ -49,6 +49,22 @@ enum Shaders {
 	*/
 	SHADER_LINES,
 
+	/*! dashedLines.vert:
+		layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 floats (x, y, z coords) per vertex
+
+		flat out vec3 startPos;                // output: start position of line with no (flat) interpolation -> start positon on the line in NDC-Coordinates
+		out vec3 vertPos;                      // output: start position of line with default interpolation   -> actual positon on the line in NDC-Coordinates
+											   // --> startPos, vertPos
+		uniform mat4 worldToView;              // parameter: world to view transformation matrix
+
+		dashedLines.frag:
+		uniform vec4 fixedColor;               // parameter: grid color as rgba-value
+		uniform vec2  resolution;              // parameter: resolution of viewport (width, height)
+		uniform float dashSize;                // parameter: dash line size
+		uniform float gapSize;                 // parameter: gap size
+	*/
+	SHADER_DASHED_LINES,
+
 	/*! VertexNormalColor.vert:
 		layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex (coordinates)
 		layout(location = 1) in vec3 normal;   // input:  attribute with index '1' with 3 elements per vertex (normal)
