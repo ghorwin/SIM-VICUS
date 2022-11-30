@@ -156,6 +156,11 @@ SVSimulationShadingOptions::~SVSimulationShadingOptions() {
 
 
 void SVSimulationShadingOptions::updateUi() {
+
+
+	// TODO Stephan: Zustand des Dialogs Optionen für Verschattungsberechnung im VICUS Projekt speichern
+	// Comboboxes statt RadioButtons, kurze Beschreibung der Optionen "Ray-Tracing (macht xy)" und "SurfaceClipping (macht das so besser)"
+
 	updateShadingFileName();
 
 	// Here we check all parameters that are *not* edited in this dialog, and show

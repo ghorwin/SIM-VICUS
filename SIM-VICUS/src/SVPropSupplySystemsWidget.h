@@ -45,7 +45,7 @@ private slots:
 
 	void on_pushButtonRemoveSupplySystem_clicked();
 	/* Triggers the openEditSupplySystemsDialog*/
-	void on_tableWidgetSupplySystems_cellDoubleClicked(int row, int column);
+	void on_tableWidgetSupplySystems_cellDoubleClicked(int, int );
 
 private:
 	/*! Launches SupplySystems db edit dialog. */

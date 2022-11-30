@@ -35,6 +35,7 @@ public:
 #endif
 private:
 
+	// TODO Stephan: documentation
 	void addAreaOfPolyNode(const ClipperLib::PolyNode *polyNode, double &area) const;
 #ifdef WRITE_OUTPUT
 	void writePathToOutputFile(const std::string preText, const ClipperLib::Path &path) const;

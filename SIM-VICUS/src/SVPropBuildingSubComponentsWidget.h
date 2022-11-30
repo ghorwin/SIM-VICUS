@@ -43,7 +43,7 @@ private slots:
 	void on_pushButtonAssignComponentFromTable_clicked();
 
 	/*! Triggers the openEditSubSurfaceComponentsDialog function */
-	void on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int row, int column);
+	void on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int, int);
 
 private:
 	/*! This function opens the sub-surface component DB dialog and lets the user select a sub-surface component.

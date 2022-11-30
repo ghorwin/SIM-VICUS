@@ -75,7 +75,7 @@ private slots:
 	void on_pushButtonAssignComponentFromTable_clicked();
 
 	/*! Triggers the openEditComponentDialog function */
-	void on_tableWidgetComponents_cellDoubleClicked(int row, int column);
+	void on_tableWidgetComponents_cellDoubleClicked(int, int);
 
 private:
 	/*! This function opens the component DB dialog and lets the user select a component.

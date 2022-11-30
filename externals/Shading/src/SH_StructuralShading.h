@@ -44,6 +44,7 @@ public:
 class StructuralShading  {
 public:
 
+	// TODO Stephan: add some documentation
 	struct SunPosition {
 
 		SunPosition(unsigned int secOfYear, double azi, double alti):
@@ -64,6 +65,7 @@ public:
 		double				m_azimuth;							///< in rad
 		double				m_altitude;							///< in rad
 	};
+
 
 	struct ShadingObject {
 
@@ -90,7 +92,6 @@ public:
 			m_isObstacle(isObstacle)
 		{}
 
-
 		static unsigned int													latestId;
 
 		unsigned int														m_id;
@@ -104,8 +105,6 @@ public:
 		mutable std::map<unsigned int,
 						std::vector<std::vector<IBKMK::Vector2D>>>			m_projectedHoles;				///< id of map is sun cone index in sun cone normals. projected points of polygon in sun pane
 		bool																m_isObstacle;					///< indicates whether it is a pure obstacle
-
-
 	};
 
 

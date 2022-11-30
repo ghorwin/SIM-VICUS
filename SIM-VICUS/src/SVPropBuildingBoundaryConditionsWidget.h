@@ -40,7 +40,7 @@ private slots:
 	void on_pushButtonSelectBoundaryConditions_clicked();
 
 	/*! Triggers the openEditBoundaryConditionsDialog function */
-	void on_tableWidgetBoundaryConditions_cellDoubleClicked(int row, int column);
+	void on_tableWidgetBoundaryConditions_cellDoubleClicked(int, int);
 
 private:
 

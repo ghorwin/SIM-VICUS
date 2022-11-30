@@ -35,7 +35,6 @@ private slots:
 	void on_checkBoxZoneTemplateShowOnlyActive_toggled(bool checked);
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
-
 	/*! All rooms (including surfaces) that reference the currently selected zone template (in the table) will be selected. */
 	void on_pushButtonSelectObjectsWithZoneTemplate_clicked();
 
@@ -43,7 +42,7 @@ private slots:
 	void on_pushButtonAssignSelectedZoneTemplate_clicked();
 
 	/* Triggers the openEditZoneTemplatesDialog*/
-	void on_tableWidgetZoneTemplates_cellDoubleClicked(int row, int column);
+	void on_tableWidgetZoneTemplates_cellDoubleClicked(int, int);
 
 private:
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
