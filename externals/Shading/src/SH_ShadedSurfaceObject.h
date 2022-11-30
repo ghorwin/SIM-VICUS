@@ -30,13 +30,15 @@ public:
 	/*! Updates the projected polygon 2D. */
 	void setProjectedPolygonAndHoles(const std::vector<IBKMK::Vector2D> & poly, const std::vector<std::vector<IBKMK::Vector2D> > & holes);
 
+#ifdef WRITE_OUTPUT
 	void setOutputFile(std::ofstream * newOutputFile);
-
+#endif
 private:
 
 	void addAreaOfPolyNode(const ClipperLib::PolyNode *polyNode, double &area) const;
+#ifdef WRITE_OUTPUT
 	void writePathToOutputFile(const std::string preText, const ClipperLib::Path &path) const;
-
+#endif
 	std::vector<IBKMK::Vector3D>				m_gridPoints;
 	std::vector<double>							m_gridAreas; // Later
 
@@ -55,7 +57,9 @@ private:
 	std::string									m_name;
 	IBKMK::Vector3D								m_normal;
 
+#ifdef WRITE_OUTPUT
 	std::ofstream								*m_outputFile = nullptr;
+#endif
 };
 
 } // namespace SH

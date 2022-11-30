@@ -261,6 +261,7 @@ void ShadedSurfaceObject::addAreaOfPolyNode(const ClipperLib::PolyNode * polyNod
 	addAreaOfPolyNode(polyNode->GetNext(), area);
 }
 
+#ifdef WRITE_OUTPUT
 void ShadedSurfaceObject::writePathToOutputFile(const std::string preText, const ClipperLib::Path & path) const {
 	for(const ClipperLib::IntPoint &ip : path)
 		*m_outputFile << preText << ip.X << " " << ip.Y << std::endl;
@@ -269,6 +270,7 @@ void ShadedSurfaceObject::writePathToOutputFile(const std::string preText, const
 void ShadedSurfaceObject::setOutputFile(std::ofstream * newOutputFile) {
 	m_outputFile = newOutputFile;
 }
+#endif
 
 
 } // namespace SH
