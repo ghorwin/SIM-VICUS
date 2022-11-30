@@ -2,8 +2,6 @@
 
 #include <QMessageBox>
 
-#include <VICUS_Project.h>
-
 int DummyImportPlugin::showSettingsDialog(QWidget * parent) {
 	// spawn settings dialog
 	QMessageBox::information(parent, QString(), tr("Here is the settings dialog for the plugin."));
@@ -16,14 +14,11 @@ QString DummyImportPlugin::importMenuCaption() const {
 }
 
 
-bool DummyImportPlugin::import(QWidget * parent, VICUS::Project & p) {
+bool DummyImportPlugin::import(QWidget * parent, QString & p) {
 	// spawn import dialog and populate project
 	QMessageBox::information(parent, QString(), tr("Here is the import dialog for the plugin."));
 
-	VICUS::Building b;
-	b.m_id = 192991;
-	b.m_displayName = tr("Some building");
-	p.m_buildings.push_back(b);
+	p = "I should contain the text of a VICUS project file";
 
 	return true;
 }

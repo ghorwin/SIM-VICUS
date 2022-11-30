@@ -839,7 +839,16 @@ void SVMainWindow::onImportPluginTriggered() {
 	Q_ASSERT(importPlugin != nullptr);
 
 	VICUS::Project p;
-	bool success = importPlugin->import(this, p);
+	QString projectText;
+	bool success = importPlugin->import(this, projectText);
+	try {
+		p.readXML(projectText);
+	}
+	catch(IBK::Exception& e) {
+		success = false;
+		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
+						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
+	}
 
 	if (success) {
 		// if we have no project, yet, create a new project based on our imported data

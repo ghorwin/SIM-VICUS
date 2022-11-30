@@ -23,7 +23,7 @@ public:
 	// SVImportPluginInterface interface
 
 	QString importMenuCaption() const override;
-	bool import(QWidget * parent, VICUS::Project & p) override;
+	bool import(QWidget * parent, QString & p) override;
 };
 
 
