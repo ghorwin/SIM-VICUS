@@ -119,8 +119,6 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions
 }
 
 void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_cellDoubleClicked(int /*row*/, int /*column*/) {
-	Q_UNUSED(row);
-	Q_UNUSED(column);
 	openEditBoundaryConditionsDialog();
 }
 
