@@ -48,12 +48,12 @@ T elementExists(std::map<unsigned int, T> database, unsigned int id, std::string
 
 
 /*! gets all needed parameter values for the epd calculation and adds them to the related component. */
-void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &comp, LCA::LCAComponentResult &comp2,
+void addEpdMaterialToComponent(VICUS::EpdDataset epd, LCA::LCAComponentResult &comp, LCA::LCAComponentResult &comp2,
 					double lifeCycle, double thickness, double rho, int idx = 0, double adjustment = 1.2){
 
 	FUNCID(LCA::addEpdMaterialToComponent);
 
-	for(unsigned int i=0; i<VICUS::EPDDataset::NUM_P; ++i){
+	for(unsigned int i=0; i<VICUS::EpdDataset::NUM_P; ++i){
 		//skip empty values
 		if(epd.m_para[i].value == 0)
 			continue;
@@ -71,13 +71,13 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 		}
 		else if (QString::compare("m3", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m3]
-			if(epd.m_para[VICUS::EPDDataset::P_DryDensity].get_value("kg/m3") > 0)
-				val /= epd.m_para[VICUS::EPDDataset::P_DryDensity].get_value("kg/m3");
+			if(epd.m_para[VICUS::EpdDataset::P_DryDensity].get_value("kg/m3") > 0)
+				val /= epd.m_para[VICUS::EpdDataset::P_DryDensity].get_value("kg/m3");
 		}
 		else if (QString::compare("m2", refUnit, Qt::CaseInsensitive) == 0) {
 			//referencequantity in [m2]
-			if(epd.m_para[VICUS::EPDDataset::P_AreaDensity].get_value("kg/m2") > 0)
-			val /= epd.m_para[VICUS::EPDDataset::P_AreaDensity].get_value("kg/m2");
+			if(epd.m_para[VICUS::EpdDataset::P_AreaDensity].get_value("kg/m2") > 0)
+			val /= epd.m_para[VICUS::EpdDataset::P_AreaDensity].get_value("kg/m2");
 		}
 		else
 			throw IBK::Exception(IBK::FormatString("No valid specific Unit of epd material '%1' available.").
@@ -91,10 +91,10 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 		//val /= netFloorArea;
 		//val /= 50;					//reporting period [a]
 
-		comp.addValue(idx, static_cast<VICUS::EPDDataset::para_t>(i),
+		comp.addValue(idx, static_cast<VICUS::EpdDataset::para_t>(i),
 					  IBK::Parameter(epd.m_para[i].name, val, unit));
 		if(lifeCycle >= 0)
-			comp2.addValue(idx, static_cast<VICUS::EPDDataset::para_t>(i),
+			comp2.addValue(idx, static_cast<VICUS::EpdDataset::para_t>(i),
 						   IBK::Parameter(epd.m_para[i].name, val*lifeCycle, unit));
 	}
 }
@@ -296,7 +296,7 @@ void LCA::calculateLCA()
 #endif
 }
 
-bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS::EPDDataset> &db){
+bool findUUID(QString uuid, unsigned int &id, const std::map<unsigned int, VICUS::EpdDataset> &db){
 	for (auto o : db) {
 		if(QString::compare(o.second.m_uuid, uuid,Qt::CaseInsensitive)){
 			id = o.first;
