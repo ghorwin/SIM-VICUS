@@ -33,6 +33,7 @@
 #include <SVConversions.h>
 
 #include "SVSettings.h"
+#include "SVStyle.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
@@ -57,8 +58,13 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for(int i=0; i<VICUS::Component::NUM_CT; ++i)
-		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
+		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
+
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLca);
+	m_ui->tableWidgetLca->setColumnCount(5);
+	m_ui->tableWidgetLca->setHorizontalHeaderLabels(QStringList() << "Material" << "Cat. A" << "Cat. B" << "Cat. C" << "Cat. D");
+	m_ui->tableWidgetLca->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
 	updateInput(-1);
 }
@@ -257,6 +263,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditDaylightName->setText("");
 	m_ui->lineEditRoughness->setText("---");
 	m_ui->lineEditSpecularity->setText("---");
+
+	updateLcaTable();
 }
 
 
@@ -334,6 +342,33 @@ void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	SVProjectHandler::instance().setModified(SVProjectHandler::ComponentInstancesModified);
+}
+
+void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd, int col, int row) {
+	QString string = "-";
+	if(idEpd != VICUS::INVALID_ID) {
+		const VICUS::EpdDataset &epd = *db.m_EPDDatasets[idEpd];
+		string = QtExt::MultiLangString2QString(epd.m_displayName);
+	}
+	table->setItem(row, col, new QTableWidgetItem(string));
+}
+
+void SVDBComponentEditWidget::updateLcaTable() {
+
+	// Get COnstruction
+	const VICUS::Construction &con = *m_db->m_constructions[m_current->m_idConstruction];
+	m_ui->tableWidgetLca->setRowCount((int)con.m_materialLayers.size());
+	for(unsigned int i=0; i<con.m_materialLayers.size(); ++i) {
+		const VICUS::MaterialLayer &ml = con.m_materialLayers[i];
+		const VICUS::Material &mat = *m_db->m_materials[ml.m_idMaterial];
+
+		m_ui->tableWidgetLca->setItem((int)i, 0, new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
+
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryA, 1, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryB, 2, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryC, 3, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryD, 4, i);
+	}
 }
 
 
