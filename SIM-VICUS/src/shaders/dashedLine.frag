@@ -3,12 +3,12 @@
 flat in vec3 startPos;
 in vec3 vertPos;
 uniform vec4 fixedColor;         // parameter: grid color as rgba-value
+uniform vec2  resolution;        // parameter: resolution of viewport (width, height)
+uniform float dashSize;          // parameter: dash line size
+uniform float gapSize;           // parameter: gap size
 
 out vec4 finalColor;
 
-uniform vec2  resolution;
-uniform float dashSize;
-uniform float gapSize;
 
 void main()
 {
