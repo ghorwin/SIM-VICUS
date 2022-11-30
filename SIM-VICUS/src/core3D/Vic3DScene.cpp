@@ -78,7 +78,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
-	m_rubberbandShader = &shaderPrograms[SHADER_LINES];
+	m_rubberbandShader = &shaderPrograms[SHADER_DASHED_LINES];
 
 	// the orbit controller object is static in geometry, so it can be created already here
 	m_orbitControllerObject.create(m_fixedColorTransformShader);

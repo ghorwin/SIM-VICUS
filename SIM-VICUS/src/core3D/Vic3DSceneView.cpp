@@ -89,6 +89,15 @@ SceneView::SceneView() :
 	lines.m_uniformNames.append("fixedColor");
 	m_shaderPrograms[SHADER_LINES] = lines;
 
+	// Shaderprogram : simple lines with uniform/fixed color
+	ShaderProgram dashedLines(":/shaders/dashedLine.vert",":/shaders/dashedLine.frag");
+	dashedLines.m_uniformNames.append("worldToView");
+	dashedLines.m_uniformNames.append("resolution");
+	dashedLines.m_uniformNames.append("dashSize");
+	dashedLines.m_uniformNames.append("gapSize");
+	dashedLines.m_uniformNames.append("fixedColor");
+	m_shaderPrograms[SHADER_DASHED_LINES] = dashedLines;
+
 	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
 	ShaderProgram wireframe(":/shaders/VertexWithTransform.vert",":/shaders/fixed_color.frag");
 	wireframe.m_uniformNames.append("worldToView");
