@@ -5,14 +5,14 @@
 //
 // *** THIS CODE USES 32-BIT FLOATS BY DEFAULT ***
 // *** For 64-bit double-precision edit this file: undefine FLOAT_32 and define FLOAT_64 (see below)
-// 
+//
 // This is a simple port of the code on the Geographic/UTM Coordinate Converter (1) page from Javascript to C++.
 // Using this you can easily convert between UTM and WGS84 (latitude and longitude).
 // Accuracy seems to be around 50cm (I suspect rounding errors are limiting precision).
 // This code is provided as-is and has been minimally tested; enjoy but use at your own risk!
-// The license for UTM.cpp and UTM.h is the same as the original Javascript: 
+// The license for UTM.cpp and UTM.h is the same as the original Javascript:
 // "The C++ source code in UTM.cpp and UTM.h may be copied and reused without restriction."
-// 
+//
 // 1) http://home.hiwaay.net/~taylorc/toolbox/geography/geoutm.html
 
 #ifndef UTM_H
@@ -21,10 +21,10 @@
 // Choose floating point precision:
 
 // 32-bit (for Teensy 3.5/3.6 ARM boards, etc.)
-#define FLOAT_32
+//#define FLOAT_32
 
 // 64-bit (for desktop/server use)
-//#define FLOAT_64
+#define FLOAT_64
 
 #ifdef FLOAT_64
 #define FLOAT double
@@ -73,17 +73,17 @@ FLOAT RadToDeg(FLOAT rad);
 // ArcLengthOfMeridian
 // Computes the ellipsoidal distance from the equator to a point at a
 // given latitude.
-// 
+//
 // Reference: Hoffmann-Wellenhof, B., Lichtenegger, H., and Collins, J.,
 // GPS: Theory and Practice, 3rd ed.  New York: Springer-Verlag Wien, 1994.
-// 
+//
 // Inputs:
 //     phi - Latitude of the point, in radians.
-// 
+//
 // Globals:
 //     sm_a - Ellipsoid model major axis.
 //     sm_b - Ellipsoid model minor axis.
-// 
+//
 // Returns:
 //     The ellipsoidal distance of the point from the equator, in meters.
 FLOAT ArcLengthOfMeridian (FLOAT phi);
@@ -199,7 +199,7 @@ int LatLonToUTMXY (FLOAT lat, FLOAT lon, int zone, FLOAT& x, FLOAT& y);
 // Outputs:
 // lat - The latitude of the point, in radians.
 // lon - The longitude of the point, in radians.
-// 
+//
 // Returns:
 // The function does not return a value.
 void UTMXYToLatLon (FLOAT x, FLOAT y, int zone, bool southhemi, FLOAT& lat, FLOAT& lon);

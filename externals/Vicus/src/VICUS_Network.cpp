@@ -391,7 +391,7 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 		if(geometry["type"].toString()  !=  "LineString")
 			continue;
 		for(const QJsonValue & coordinates : geometry["coordinates"].toArray()){
-			float x,y;
+			double x,y;
 			double lon = coordinates.toArray()[0].toDouble();
 			double lat = coordinates.toArray()[1].toDouble();
 			//covert the LatLon Coordiantes to metric ones
@@ -437,12 +437,12 @@ void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &
 
 	QJsonArray features = jsonObj["features"].toArray();
 
-	for(const QJsonValue & feature :  features){
+	for(const QJsonValue & feature :  qAsConst(features)){
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
 		if(geometry["type"].toString()  !=  "Point")
 			continue;
 		QJsonValue coordinates = geometry["coordinates"];
-		float x,y;
+		double x,y;
 		double lon = coordinates.toArray()[0].toDouble();
 		double lat = coordinates.toArray()[1].toDouble();
 		//covert the LatLon Coordiantes to metric ones
