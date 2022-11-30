@@ -224,6 +224,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 	for(const VICUS::Building &b : prj.m_buildings) {
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for(const VICUS::Room &r : bl.m_rooms) {
+
+				// We want to also select the room, when all surfaces are selected
+				unsigned int surfaceSelectionCount = 0;
+
 				for(const VICUS::Surface &s : r.m_surfaces) {
 
 					// qDebug() << "------------------";
@@ -267,8 +271,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 					// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
 
 
-					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) )
+					if( (m_touchGeometry && intersectionArea>0.0) || IBK::near_equal(surfaceArea, intersectionArea) ) {
+						++surfaceSelectionCount;
 						nodeIDs.insert(s.m_id);
+					}
 
 					const IBKMK::Vector3D &offset = s.geometry().offset();
 					const IBKMK::Vector3D &localX = s.geometry().localX();
@@ -321,6 +327,9 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 					}
 				}
+
+				if(surfaceSelectionCount == r.m_surfaces.size())
+					nodeIDs.insert(r.m_id);
 			}
 		}
 	}
