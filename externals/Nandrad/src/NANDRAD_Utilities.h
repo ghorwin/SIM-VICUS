@@ -55,6 +55,12 @@ namespace NANDRAD {
 TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path>  &pathPlaceHolders, const IBK::Path & filename,
 	const std::string & parentXmlTag, TiXmlDocument & doc);
 
+/*! Attempts to read an XML text, hereby and checking if
+	the top-level XML tag matches the requested tag name.
+*/
+TiXmlElement * openXMLText(const std::string & xmltext,
+						   const std::string & parentXmlTag, TiXmlDocument & doc);
+
 /*! Reads a linear spline from XML element (with proper error handling). */
 void readLinearSplineElement(const TiXmlElement * element,
 							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit);
