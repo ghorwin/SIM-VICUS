@@ -176,7 +176,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 #ifdef WRITE_OUTPUT
 	// Create Shading debugging path
-	IBK::Path path ("C:/shading/");
+	IBK::Path path ("shading_debugging/");
 	if(path.exists())
 		IBK::Path::remove(path);
 	IBK::Path::makePath(path);
