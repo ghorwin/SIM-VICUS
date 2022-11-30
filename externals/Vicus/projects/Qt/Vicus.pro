@@ -45,15 +45,15 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
-	../../src/VICUS_EPDCategroySet.h \
-	../../src/VICUS_EPDDataset.h \
+	../../src/VICUS_EpdCategroySet.h \
+	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
 	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InterfaceHeatConduction.h \
 	../../src/VICUS_InternalLoad.h \
 	../../src/VICUS_KeywordList.h \
-	../../src/VICUS_LCASettings.h \
+	../../src/VICUS_LcaSettings.h \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
 	../../src/VICUS_Network.h \
@@ -115,7 +115,7 @@ SOURCES += \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
-	../../src/VICUS_LCASettings.cpp \
+	../../src/VICUS_LcaSettings.cpp \
 	../../src/VICUS_Material.cpp \
 	../../src/VICUS_MaterialLayer.cpp \
 	../../src/VICUS_Network.cpp \
@@ -162,14 +162,14 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
-	../../src/ncg/ncg_VICUS_EPDCategroySet.cpp \
-	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
+	../../src/ncg/ncg_VICUS_EpdCategroySet.cpp \
+	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
-	../../src/ncg/ncg_VICUS_LCASettings.cpp \
+	../../src/ncg/ncg_VICUS_LcaSettings.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
@@ -183,7 +183,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Outputs.cpp \
 	../../src/ncg/ncg_VICUS_OutputDefinition.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
-		../../src/ncg/ncg_VICUS_PlainGeometry.cpp \
+	../../src/ncg/ncg_VICUS_PlainGeometry.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \

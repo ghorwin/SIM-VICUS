@@ -268,7 +268,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 	QProgressDialog *dlg = new QProgressDialog(tr("Importing EPD-Database"), tr("Stop"), 0, (int)dataLines.size(), this);
 
-	std::vector<VICUS::EPDDataset> dataSets;
+	std::vector<VICUS::EpdDataset> dataSets;
 
 	IBK::StopWatch timer;
 	timer.start();
@@ -280,8 +280,8 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 //		IBK::trim(line, "MULTILINESTRING ((");
 //		IBK::trim(line, "))");
 		IBK::explode(line, tokens, ";", IBK::EF_KeepEmptyTokens);
-		dataSets.push_back(VICUS::EPDDataset());
-		VICUS::EPDDataset &epd = dataSets.back();
+		dataSets.push_back(VICUS::EpdDataset());
+		VICUS::EpdDataset &epd = dataSets.back();
 
 		// convert this vector to double and add it as a graph
 		std::vector<std::vector<double> > polyLine;
@@ -321,18 +321,18 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				case ColCategoryDe:			epd.m_category.setString(t, "De");				break;
 				case ColCategoryEn:			epd.m_category.setString(t, "En");				break;
 				case ColType: {
-					VICUS::EPDDataset::Type type = VICUS::EPDDataset::NUM_T;
+					VICUS::EpdDataset::Type type = VICUS::EpdDataset::NUM_T;
 
 					if (t == "average dataset")
-						type = VICUS::EPDDataset::T_Average;
+						type = VICUS::EpdDataset::T_Average;
 					else if (t == "specific dataset")
-						type = VICUS::EPDDataset::T_Specific;
+						type = VICUS::EpdDataset::T_Specific;
 					else if (t == "representative dataset")
-						type = VICUS::EPDDataset::T_Representative;
+						type = VICUS::EpdDataset::T_Representative;
 					else if (t == "generic dataset")
-						type = VICUS::EPDDataset::T_Generic;
+						type = VICUS::EpdDataset::T_Generic;
 					else if (t == "template dataset")
-						type = VICUS::EPDDataset::T_Template;
+						type = VICUS::EpdDataset::T_Template;
 
 
 					epd.m_type = type;
@@ -355,106 +355,106 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 					if(!convertString2Val(val, t, row, col))
 						continue;
 
-					epd.m_para[VICUS::EPDDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
+					epd.m_para[VICUS::EpdDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
 				} break;
 				case ColBulkDensity: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
+					epd.m_para[VICUS::EpdDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
 				} break;
 				case ColGWP: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
 
-					epd.m_para[VICUS::EPDDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
+					epd.m_para[VICUS::EpdDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
 				} break;
 				case ColODP: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
+					epd.m_para[VICUS::EpdDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
 				} break;
 				case ColPOCP: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
+					epd.m_para[VICUS::EpdDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
 
 				} break;
 				case ColAP: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_AP].set("AP", val, IBK::Unit("kg"));
+					epd.m_para[VICUS::EpdDataset::P_AP].set("AP", val, IBK::Unit("kg"));
 				} break;
 				case ColEP: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_EP].set("EP", val, IBK::Unit("kg"));
+					epd.m_para[VICUS::EpdDataset::P_EP].set("EP", val, IBK::Unit("kg"));
 				} break;
 				case ColPENRT: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
+					epd.m_para[VICUS::EpdDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
 				} break;
 				case ColPERT: {
 					double val;
 					if(!convertString2Val(val, t, row, col))
 						continue;
-					epd.m_para[VICUS::EPDDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
+					epd.m_para[VICUS::EpdDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
 				} break;
 
 				case ColModule: {
-					VICUS::EPDDataset::Module module = VICUS::EPDDataset::NUM_M;
+					VICUS::EpdDataset::Module module = VICUS::EpdDataset::NUM_M;
 
 					if (t == "A1")
-						module = VICUS::EPDDataset::M_A1;
+						module = VICUS::EpdDataset::M_A1;
 					else if (t == "A2")
-						module = VICUS::EPDDataset::M_A2;
+						module = VICUS::EpdDataset::M_A2;
 					else if (t == "A3")
-						module = VICUS::EPDDataset::M_A3;
+						module = VICUS::EpdDataset::M_A3;
 					else if (t == "A1-A2")
-						module = VICUS::EPDDataset::M_A1_A2;
+						module = VICUS::EpdDataset::M_A1_A2;
 					else if (t == "A1-A3")
-						module = VICUS::EPDDataset::M_A1_A3;
+						module = VICUS::EpdDataset::M_A1_A3;
 					else if (t == "A4")
-						module = VICUS::EPDDataset::M_A4;
+						module = VICUS::EpdDataset::M_A4;
 					else if (t == "A5")
-						module = VICUS::EPDDataset::M_A5;
+						module = VICUS::EpdDataset::M_A5;
 					else if (t == "B1")
-						module = VICUS::EPDDataset::M_B1;
+						module = VICUS::EpdDataset::M_B1;
 					else if (t == "B2")
-						module = VICUS::EPDDataset::M_B2;
+						module = VICUS::EpdDataset::M_B2;
 					else if (t == "B3")
-						module = VICUS::EPDDataset::M_B3;
+						module = VICUS::EpdDataset::M_B3;
 					else if (t == "B4")
-						module = VICUS::EPDDataset::M_B4;
+						module = VICUS::EpdDataset::M_B4;
 					else if (t == "B5")
-						module = VICUS::EPDDataset::M_B5;
+						module = VICUS::EpdDataset::M_B5;
 					else if (t == "B6")
-						module = VICUS::EPDDataset::M_B6;
+						module = VICUS::EpdDataset::M_B6;
 					else if (t == "B7")
-						module = VICUS::EPDDataset::M_B7;
+						module = VICUS::EpdDataset::M_B7;
 					else if (t == "C1")
-						module = VICUS::EPDDataset::M_C1;
+						module = VICUS::EpdDataset::M_C1;
 					else if (t == "C2")
-						module = VICUS::EPDDataset::M_C2;
+						module = VICUS::EpdDataset::M_C2;
 					else if (t == "C2-C3")
-						module = VICUS::EPDDataset::M_C2_C3;
+						module = VICUS::EpdDataset::M_C2_C3;
 					else if (t == "C2-C4")
-						module = VICUS::EPDDataset::M_C2_C4;
+						module = VICUS::EpdDataset::M_C2_C4;
 					else if (t == "C3")
-						module = VICUS::EPDDataset::M_C3;
+						module = VICUS::EpdDataset::M_C3;
 					else if (t == "C3-C4")
-						module = VICUS::EPDDataset::M_C3_C4;
+						module = VICUS::EpdDataset::M_C3_C4;
 					else if (t == "C4")
-						module = VICUS::EPDDataset::M_C4;
+						module = VICUS::EpdDataset::M_C4;
 					else if (t == "D")
-						module = VICUS::EPDDataset::M_D;
+						module = VICUS::EpdDataset::M_D;
 
 
 					epd.m_module = module;
@@ -511,7 +511,7 @@ void SVSimulationLCAOptions::analyseProjectComponents() {
 	}
 
 	QString messageText(tr("Lifetime:\t%1\nCost:\t%2\nEPD:\t%3\n\nProceed and skip all components without needed Data?")
-						 .arg(lifetime.join(", ")).arg(cost.join(", ")).arg(epd.join(", ")));
+						 .arg(lifetime.join("\n\t\t")).arg(cost.join("\n\t\t")).arg(epd.join("\n\t\t")));
 	if(QMessageBox::warning(this, "LCA/LCC Information is missing", messageText) == QMessageBox::Cancel)
 		return;
 }
@@ -529,7 +529,8 @@ void SVSimulationLCAOptions::on_pushButtonImportOkoebaudat_clicked() {
 
 	try {
 		importOkoebauDat(path);
-	}  catch (IBK::Exception &ex) {
+	}
+	catch (IBK::Exception &ex) {
 		throw IBK::Exception(IBK::FormatString("%1\nCould not import EPD-Database.").arg(ex.what()), FUNC_ID);
 	}
 }
