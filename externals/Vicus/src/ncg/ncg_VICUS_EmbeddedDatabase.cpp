@@ -212,9 +212,9 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "EPDDataset")
+					if (c2Name != "EpdDataset")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					VICUS::EPDDataset obj;
+					VICUS::EpdDataset obj;
 					obj.readXML(c2);
 					m_EPDDatasets.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -519,7 +519,7 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("EPDDatasets");
 		e->LinkEndChild(child);
 
-		for (std::vector<VICUS::EPDDataset>::const_iterator it = m_EPDDatasets.begin();
+		for (std::vector<VICUS::EpdDataset>::const_iterator it = m_EPDDatasets.begin();
 			it != m_EPDDatasets.end(); ++it)
 		{
 			it->writeXML(child);

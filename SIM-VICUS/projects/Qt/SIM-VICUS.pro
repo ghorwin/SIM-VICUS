@@ -96,7 +96,7 @@ SOURCES += \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
-	../../src/SVDBEPDEditWidget.cpp \
+	../../src/SVDBEpdEditWidget.cpp \
 	../../src/SVDBEpdTableModel.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
 	../../src/SVDBNetworkControllerTableModel.cpp \
@@ -485,7 +485,7 @@ FORMS    += \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
-	../../src/SVDBEPDEditWidget.ui \
+	../../src/SVDBEpdEditWidget.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
 	../../src/SVDBSubNetworkEditWidget.ui \
 	../../src/SVDBSupplySystemEditWidget.ui \

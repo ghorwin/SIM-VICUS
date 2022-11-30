@@ -79,7 +79,7 @@ SVDatabase::SVDatabase() :
 	m_networkControllers(1107500),
 	m_subNetworks(1110000),
 	m_supplySystems(1085000),
-	m_EPDDatasets(1090000),
+	m_epdDatasets(1090000),
 	m_schedules(1060000),
 	m_internalLoads(1065000),
 	m_zoneControlThermostat(1067500),
@@ -124,7 +124,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
-		m_EPDDatasets.readXML(				dbDir / "db_EPDDatasets.xml", "EPDDataset", "EPDDataset", true);
+		m_epdDatasets.readXML(				dbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", true);
 
 	}
 
@@ -163,7 +163,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	if (t == NUM_DT || t == DT_SupplySystems)
 		m_supplySystems.readXML(			userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", false);
 	if (t == NUM_DT || t == DT_EPDDatasets)
-		m_EPDDatasets.readXML(				userDbDir / "db_EPDDatasets.xml", "EPDDatasets", "EPDDataset", false);
+		m_epdDatasets.readXML(				userDbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -216,7 +216,7 @@ void SVDatabase::writeDatabases() {
 	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
-	m_EPDDatasets.writeXML(			userDbDir / "db_EPDDatasets.xml", "EPDDatasets");
+	m_epdDatasets.writeXML(			userDbDir / "db_epdDatasets.xml", "EpdDatasets");
 }
 
 
@@ -278,7 +278,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_networkControllers, m_networkControllers);
 	storeVector(p.m_embeddedDB.m_subNetworks, m_subNetworks);
 	storeVector(p.m_embeddedDB.m_supplySystems, m_supplySystems);
-	storeVector(p.m_embeddedDB.m_EPDDatasets, m_EPDDatasets);
+	storeVector(p.m_embeddedDB.m_EPDDatasets, m_epdDatasets);
 	storeVector(p.m_embeddedDB.m_schedules, m_schedules);
 	storeVector(p.m_embeddedDB.m_internalLoads, m_internalLoads);
 	storeVector(p.m_embeddedDB.m_zoneControlThermostats, m_zoneControlThermostat);
@@ -340,7 +340,7 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 		it->second.m_isReferenced = false;
 	for (auto it=m_supplySystems.begin(); it!=m_supplySystems.end(); ++it)
 		it->second.m_isReferenced = false;
-	for (auto it=m_EPDDatasets.begin(); it!=m_EPDDatasets.end(); ++it)
+	for (auto it=m_epdDatasets.begin(); it!=m_epdDatasets.end(); ++it)
 		it->second.m_isReferenced = false;
 
 
@@ -427,7 +427,7 @@ void SVDatabase::updateElementChildren() {
 	m_infiltration.clearChildren();
 	m_zoneTemplates.clearChildren();
 	m_supplySystems.clearChildren();
-	m_EPDDatasets.clearChildren();
+	m_epdDatasets.clearChildren();
 
 
 	// Now set all children relations
@@ -639,7 +639,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_networkControllers, duplicatePairs[DT_NetworkControllers]);
 	findDublicates(m_subNetworks, duplicatePairs[DT_SubNetworks]);
 	findDublicates(m_supplySystems, duplicatePairs[DT_SupplySystems]);
-	findDublicates(m_EPDDatasets, duplicatePairs[DT_EPDDatasets]);
+	findDublicates(m_epdDatasets, duplicatePairs[DT_EPDDatasets]);
 	findDublicates(m_schedules, duplicatePairs[DT_Schedules]);
 	findDublicates(m_internalLoads, duplicatePairs[DT_InternalLoads]);
 	findDublicates(m_zoneControlThermostat, duplicatePairs[DT_ZoneControlThermostat]);
@@ -861,12 +861,12 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 
 		case SVDatabase::DT_EPDDatasets: {
-			for (const auto & p : m_EPDDatasets) {
-				VICUS::EPDDataset & c = const_cast<VICUS::EPDDataset &>(p.second); // const-cast is ok here
-				replaceID(elementID, replacementElementID, c.m_id, m_EPDDatasets);
+			for (const auto & p : m_epdDatasets) {
+				VICUS::EpdDataset & c = const_cast<VICUS::EpdDataset &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_id, m_epdDatasets);
 			}
-			m_EPDDatasets.remove(elementID);
-			m_EPDDatasets.m_modified = true;
+			m_epdDatasets.remove(elementID);
+			m_epdDatasets.m_modified = true;
 		} break;
 
 
@@ -1046,7 +1046,7 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 		case DT_SupplySystems:
 			m_supplySystems.removeNotReferencedLocalElements(); break;
 		case DT_EPDDatasets:
-			m_EPDDatasets.removeNotReferencedLocalElements(); break;
+			m_epdDatasets.removeNotReferencedLocalElements(); break;
 		case DT_NetworkControllers:
 			m_networkControllers.removeNotReferencedLocalElements();  break;
 		case DT_NetworkComponents:
@@ -1143,8 +1143,8 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 			Q_ASSERT(m_supplySystems[id] != nullptr);
 			m_supplySystems[id]->collectLocalChildren(localChildren); break;
 		case DT_EPDDatasets:
-			Q_ASSERT(m_EPDDatasets[id] != nullptr);
-			m_EPDDatasets[id]->collectLocalChildren(localChildren); break;
+			Q_ASSERT(m_epdDatasets[id] != nullptr);
+			m_epdDatasets[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:
 			Q_ASSERT(m_networkControllers[id] != nullptr);
 			m_networkControllers[id]->collectLocalChildren(localChildren);  break;

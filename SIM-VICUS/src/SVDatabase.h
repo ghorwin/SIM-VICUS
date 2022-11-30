@@ -177,7 +177,7 @@ public:
 	VICUS::Database<VICUS::SupplySystem>				m_supplySystems;
 
 	/*! Map of all database EPD elements */
-	VICUS::Database<VICUS::EPDDataset>					m_EPDDatasets;
+	VICUS::Database<VICUS::EpdDataset>					m_epdDatasets;
 
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;

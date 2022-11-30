@@ -347,7 +347,7 @@ void SVDBComponentEditWidget::modelModify(){
 void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd, int col, int row) {
 	QString string = "-";
 	if(idEpd != VICUS::INVALID_ID) {
-		const VICUS::EpdDataset &epd = *db.m_EPDDatasets[idEpd];
+		const VICUS::EpdDataset &epd = *db.m_epdDatasets[idEpd];
 		string = QtExt::MultiLangString2QString(epd.m_displayName);
 	}
 	table->setItem(row, col, new QTableWidgetItem(string));
@@ -362,7 +362,7 @@ void SVDBComponentEditWidget::updateLcaTable() {
 		const VICUS::MaterialLayer &ml = con.m_materialLayers[i];
 		const VICUS::Material &mat = *m_db->m_materials[ml.m_idMaterial];
 
-		m_ui->tableWidgetLca->setItem((int)i, 0, new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
+		m_ui->tableWidgetLca->setItem((int)i, 0,	new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
 
 		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryA, 1, i);
 		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryB, 2, i);
