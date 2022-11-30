@@ -261,9 +261,7 @@ void SVPropBuildingSubComponentsWidget::on_pushButtonEditSubSurfaceComponents_cl
 	openEditSubSurfaceComponentsDialog();
 }
 
-void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int row, int column) {
-	Q_UNUSED(row);
-	Q_UNUSED(column);
+void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_cellDoubleClicked(int /*row*/, int /*column*/) {
 	openEditSubSurfaceComponentsDialog();
 }
 

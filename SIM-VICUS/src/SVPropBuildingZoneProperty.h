@@ -51,10 +51,6 @@ private slots:
 
 	void on_pushButtonVolumeAllRooms_clicked();
 
-	//void on_tableViewZones_itemSelectionChanged();
-
-	//void on_tableViewZones_cellPressed(int row, int column);
-
 	void on_pushButtonAssignSurface_clicked();
 
 	void on_lineEditNameFilter_textChanged(const QString &arg1);

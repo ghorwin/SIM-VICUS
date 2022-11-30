@@ -255,9 +255,7 @@ void SVPropBuildingComponentsWidget::on_pushButtonEditComponents_clicked() {
 	openEditComponentDialog();
 }
 
-void SVPropBuildingComponentsWidget::on_tableWidgetComponents_cellDoubleClicked(int row, int column) {
-	Q_UNUSED(row);
-	Q_UNUSED(column);
+void SVPropBuildingComponentsWidget::on_tableWidgetComponents_cellDoubleClicked(int /*row*/, int /*column*/) {
 	openEditComponentDialog();
 }
 

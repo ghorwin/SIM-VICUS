@@ -216,9 +216,7 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonEditZoneTemplates_clicked()
 	openEditZoneTemplatesDialog();
 }
 
-void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_cellDoubleClicked(int row, int column) {
-	Q_UNUSED(row);
-	Q_UNUSED(column)
+void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_cellDoubleClicked(int /*row*/, int /*column*/) {
 	openEditZoneTemplatesDialog();
 
 }

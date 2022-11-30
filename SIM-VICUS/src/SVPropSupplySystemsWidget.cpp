@@ -187,9 +187,7 @@ void SVPropSupplySystemsWidget::on_pushButtonEditSupplySystem_clicked() {
 	openEditSupplySystemsDialog();
 }
 
-void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_cellDoubleClicked(int row, int column) {
-	Q_UNUSED(row);
-	Q_UNUSED(column);
+void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_cellDoubleClicked(int /*row*/, int /*column*/) {
 	openEditSupplySystemsDialog();
 
 }
