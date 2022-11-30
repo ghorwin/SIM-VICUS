@@ -94,6 +94,11 @@ public:
 	*/
 	void readXML(const IBK::Path & filename);
 
+	/*! Reads the project data from an text which contains XML.
+		\param projectText  Text with VICUS project.
+	*/
+	void readXML(const QString & projectText);
+
 	/*! Writes the project file to an XML file.
 		\param filename  The full path to the project file.
 	*/

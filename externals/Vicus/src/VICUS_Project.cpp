@@ -312,6 +312,58 @@ void Project::readXML(const IBK::Path & filename) {
 	}
 }
 
+void Project::readXML(const QString & projectText) {
+	FUNCID(Project::readXML);
+
+	TiXmlDocument doc;
+	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
+	if (!xmlElem)
+		return; // empty project, this means we are using only defaults
+
+	// we read our subsections from this handle
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+
+	// clear existing grid planes
+	m_viewSettings.m_gridPlanes.clear();
+
+	try {
+		xmlElem = xmlRoot.FirstChild("ProjectInfo").Element();
+		if (xmlElem) {
+			m_projectInfo.readXML(xmlElem);
+		}
+
+		// Directory Placeholders
+		xmlElem = xmlRoot.FirstChild( "DirectoryPlaceholders" ).Element();
+		if (xmlElem) {
+			readDirectoryPlaceholdersXML(xmlElem);
+		}
+
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+		if (xmlElem) {
+			readXML(xmlElem);
+		}
+
+		// if we do not have a default grid, create it
+		if (m_viewSettings.m_gridPlanes.empty()) {
+			m_viewSettings.m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+																	IBKMK::Vector3D(1,0,0), QColor("white"), 200, 10 ) );
+		}
+
+		// update internal pointer-based links
+		updatePointers();
+
+		// set default colors for network objects
+		for (VICUS::Network & net : m_geometricNetworks) {
+			// updateColor is a const-function, this is possible since
+			// the m_color property of edges and nodes is mutable
+			net.setDefaultColors();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading project from text."), FUNC_ID);
+	}
+}
+
 
 void Project::writeXML(const IBK::Path & filename) const {
 	TiXmlDocument doc;
