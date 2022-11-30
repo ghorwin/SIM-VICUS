@@ -27,7 +27,7 @@
 
 namespace VICUS {
 
-bool EPDDataset::behavesLike(const EPDDataset & other) const
+bool EpdDataset::behavesLike(const EpdDataset & other) const
 {
 
 	if(m_referenceUnit != other.m_referenceUnit ||
@@ -49,8 +49,8 @@ bool EPDDataset::behavesLike(const EPDDataset & other) const
 
 }
 
-AbstractDBElement::ComparisonResult EPDDataset::equal(const AbstractDBElement *other) const {
-	const EPDDataset * otherEPD = dynamic_cast<const EPDDataset*>(other);
+AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *other) const {
+	const EpdDataset * otherEPD = dynamic_cast<const EpdDataset*>(other);
 	if (otherEPD == nullptr)
 		return Different;
 

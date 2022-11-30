@@ -38,7 +38,7 @@
 namespace VICUS {
 
 /*! TODO wait for implementation */
-class EPDDataset : public AbstractDBElement {
+class EpdDataset : public AbstractDBElement {
 public:
 	/*! Basic parameters. */
 	enum para_t {
@@ -109,7 +109,7 @@ public:
 	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
 		to see if the EPDDatest exists already and has the latest version.
 	*/
-	bool behavesLike(const EPDDataset &other) const;
+	bool behavesLike(const EpdDataset &other) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
