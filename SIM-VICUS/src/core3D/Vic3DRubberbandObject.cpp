@@ -89,13 +89,13 @@ void RubberbandObject::render() {
 	else
 		col = QVector4D(0.960784314, 0.258823529, 0.258823529, 1.0);
 
-	float dash = 0.0;
+	float dash = 20.0;
 	float gap = 0.0;
 	// if geometry is touched set alpha to 0.5
 	if(m_touchGeometry) {
 		glEnable(GL_BLEND);
 		//col.setW(0.5);
-		dash = 20.0;
+		//dash = 20.0;
 		gap = 15.0;
 	}
 
