@@ -145,6 +145,7 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 		case Qt::Key_5 :
 		case Qt::Key_6 :
 		case Qt::Key_7 :
+		case Qt::Key_8 :
 		case Qt::Key_9 :
 		case Qt::Key_Comma :
 		case Qt::Key_Period :
