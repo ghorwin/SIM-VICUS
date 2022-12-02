@@ -326,13 +326,17 @@ void SVNetworkImportDialog::on_pushButtonSelectDefaultPipe_clicked() {
 	// vielleicht besser die pipeId speichern (und mit INVALID_ID initialisieren) als den pointer ...
 	// get the id of the selected default pipe
 	unsigned int defaultPipeId = SVMainWindow::instance().dbPipeEditDialog()->select(-1);
-
+	if(defaultPipeId == 4294967295){
+		//invalid ID
+		return;
+	}
 	// safe the reference from the db
 	const VICUS::Database<VICUS::NetworkPipe> &pipesDB = SVSettings::instance().m_db.m_pipes;
 	m_defaultPipe = pipesDB[defaultPipeId];
 
 	// set name in the ui
 	m_ui->labelDefaulPipeName->setText(QtExt::MultiLangString2QString(m_defaultPipe->m_displayName));
-
+	// enable import button
+	m_ui->pushButtonImportPipeline->setEnabled(true);
 }
 
