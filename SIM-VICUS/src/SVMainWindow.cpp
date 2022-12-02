@@ -80,6 +80,7 @@
 #include "SVPostProcHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVNetworkImportDialog.h"
+#include "SVNetworkExportDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
@@ -2161,5 +2162,15 @@ static bool copyRecursively(const QString &srcFilePath,
 
 void SVMainWindow::on_actionEditProjectNotes_triggered() {
 	m_notesDialog->exec();
+}
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered()
+{
+	// opens import network dialog
+	if (m_networkExportDialog == nullptr)
+		m_networkExportDialog = new SVNetworkExportDialog(this);
+
+	m_networkExportDialog->edit();
 }
 

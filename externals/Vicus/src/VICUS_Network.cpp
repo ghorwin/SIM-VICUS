@@ -1,4 +1,4 @@
-/*	The SIM-VICUS data model library.
+﻿/*	The SIM-VICUS data model library.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -35,7 +35,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QJsonObject>
+
 #include <QJsonParseError>
 #include <QJsonValue>
 
@@ -411,15 +411,82 @@ void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId
 			double lon = coordinates.toArray()[0].toDouble();
 			double lat = coordinates.toArray()[1].toDouble();
 			//covert the LatLon Coordiantes to metric ones
-			IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
+			IBKMK::LatLonToUTMXY(lat, lon, 32, x, y);
+
+
+			float testlat, testlon;
+			IBKMK::UTMXYToLatLon(x, y, 32, false, testlat, testlon);
 			polyLine.push_back({x, y});
 		}
 
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
 			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
 			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			addEdge(++nextId, n1, n2, true, pipeId);		}
+			addEdge(++nextId, n1, n2, false, pipeId);		}
 	}
+}
+
+QJsonObject Network::exportGridToGeoJson(const Database<NetworkPipe> &pipeDB){
+	QJsonObject jsonFile;
+	jsonFile["type"] = "FeatureCollection";
+	jsonFile["name"] = m_displayName;
+	QJsonObject crs;
+	crs["type"] = "name";
+	QJsonObject namedCrs;
+	namedCrs["name"] = "urn:ogc:def:crs:OGC:1.3:CRS84"; //standard crs
+	crs["properties"] = namedCrs;
+	QJsonArray features;
+	int featureId = 0;
+	// each feature is only dependent on one edge
+	for(const NetworkEdge & edge : m_edges){
+		QJsonObject feature;
+		feature["feature"] = "Feature";
+		QJsonObject properties;
+		properties["id"] = featureId;
+		properties["part"] = featureId++; // what is the difference to the id?
+
+		double pipeThickness = pipeDB[edge.m_idPipe]->m_para[NetworkPipe::P_DiameterOutside].get_value("mm");
+		properties["DN"] = pipeThickness;
+
+		feature["properties"] = properties;
+		QJsonObject geometry;
+		geometry["type"] = "LineString";
+
+		QJsonArray coordinates;
+		// each feature contains coordinates of the node of one edge
+		QJsonArray coordinate1;
+		QJsonArray coordinate2;
+
+		const NetworkNode * node1 = edge.m_node1;
+		const NetworkNode * node2 = edge.m_node2;
+
+		float lat1, lon1;
+		float x1 = node1->m_position.m_x + m_origin.m_x;
+		float y1 = node1->m_position.m_y + m_origin.m_y;
+		//todo decide if it is in southhemispere
+		IBKMK::UTMXYToLatLon (x1, y1, 0, false, lat1, lon1);
+		coordinate1.push_back(lon1);
+		coordinate1.push_back(lat1);
+
+		float lat2, lon2;
+		float x2 = node2->m_position.m_x + m_origin.m_x;
+		float y2 = node2->m_position.m_y + m_origin.m_y;
+		//todo decide if it is in southhemispere
+		IBKMK::UTMXYToLatLon (x2, y2, 0, false, lat2, lon2);
+		coordinate2.push_back(lon2);
+		coordinate2.push_back(lat2);
+
+		coordinates.push_back(coordinate1);
+		coordinates.push_back(coordinate2);
+
+		geometry["coordinates"] = coordinates;
+		feature["geometry"] = geometry;
+		features.push_back(feature);
+	}
+
+	jsonFile["features"] = features;
+	return jsonFile;
+
 }
 
 
@@ -465,11 +532,54 @@ void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &
 		//covert the LatLon Coordiantes to metric ones
 		IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
 
+
 		// add node
 		unsigned id = addNode(++nextId, IBKMK::Vector3D(x, y, 0) - m_origin,
 				NetworkNode::NT_SubStation);
 		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
+}
+
+QJsonObject Network::exportBuildingToGeoJson(){
+	QJsonObject jsonFile;
+	jsonFile["type"] = "FeatureCollection";
+	jsonFile["name"] = m_displayName;
+	QJsonObject crs;
+	crs["type"] = "name";
+	QJsonObject namedCrs;
+	namedCrs["name"] = "urn:ogc:def:crs:OGC:1.3:CRS84"; //standard crs
+	crs["properties"] = namedCrs;
+	QJsonArray features;
+	int featureId = 0;
+	// add all nodes as a feature
+	for(const NetworkNode & n : m_nodes){
+		QJsonObject feature;
+		feature["type"] = "Feature";
+
+		QJsonObject properties;
+		properties["id"] = featureId++;
+		properties["Name"] = n.m_displayName; //takes the displayname right now, maybe change?
+
+		feature["properties"] = properties;
+
+		QJsonObject geometry;
+		geometry["type"] = "Point";
+
+		QJsonArray coordinates;
+		//convert coordinates to lat-lon format
+		float lat, lon;
+		float x = n.m_position.m_x + m_origin.m_x;
+		float y = n.m_position.m_y + m_origin.m_y;
+		//todo decide if it is in southhemispere
+		IBKMK::UTMXYToLatLon (x, y, 0, false, lat, lon);
+		coordinates.push_back(lon);
+		coordinates.push_back(lat);
+
+		geometry["coordinates"] = coordinates;
+		feature["geometry"] = geometry;
+		features.push_back(feature);
+	}
+	return jsonFile;
 }
 
 

@@ -35,6 +35,7 @@
 #include <IBK_rectangle.h>
 
 #include <NANDRAD_HydraulicNetwork.h>
+#include <QJsonObject>
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"
@@ -132,6 +133,11 @@ public:
 	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.
 	*/
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand, unsigned int nextId);
+
+	QJsonObject exportGridToGeoJson(const Database<NetworkPipe> &pipeDB);
+
+	QJsonObject exportBuildingToGeoJson();
+
 
 	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
 	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & addedNodes, std::vector<unsigned int> & addedEdges);
