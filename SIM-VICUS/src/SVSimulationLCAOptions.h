@@ -204,9 +204,13 @@ private:
 	/*! Reset all LCA Data. */
 	void resetLcaData();
 
-
+	/*! Write data to output file stream. */
 	void writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
 						   const AggregatedComponentData::Category & category);
+
+	/*! set value. */
+	template<typename T>
+	void setValue(T & member, const T & value, bool foundExistingEpd);
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationLCAOptions							*m_ui;
@@ -236,6 +240,7 @@ private:
 
 	/*! Reference to VICUS Project. */
 	const VICUS::Project								&m_prj;
+
 };
 
 #endif // SVSIMULATIONLCAOPTIONS_H

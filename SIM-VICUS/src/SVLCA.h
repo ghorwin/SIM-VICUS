@@ -45,28 +45,28 @@ public:
 			adds all calculated parametervalus to the component (if called in combination with comp)
 			depending on the category of the lifecycle.
 		*/
-		void addValue(unsigned int catIdx, VICUS::EpdDataset::para_t paraIdx, const IBK::Parameter &para){
-			switch (catIdx) {
-				case 0:
-					m_epdA.m_para[paraIdx].set(para.name, m_epdA.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 1:
-					m_epdB.m_para[paraIdx].set(para.name, m_epdB.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 2:
-					m_epdC.m_para[paraIdx].set(para.name, m_epdC.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 3:
-					m_epdD.m_para[paraIdx].set(para.name, m_epdD.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				default:
-					break;
-			}
-		}
+//		void addValue(unsigned int catIdx, VICUS::EpdDataset::para_t paraIdx, const IBK::Parameter &para){
+//			switch (catIdx) {
+//				case 0:
+//					m_epdA.m_para[paraIdx].set(para.name, m_epdA.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 1:
+//					m_epdB.m_para[paraIdx].set(para.name, m_epdB.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 2:
+//					m_epdC.m_para[paraIdx].set(para.name, m_epdC.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 3:
+//					m_epdD.m_para[paraIdx].set(para.name, m_epdD.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				default:
+//					break;
+//			}
+//		}
 
 
 		VICUS::EpdDataset m_epdA;
