@@ -21,5 +21,7 @@
         <file>gfx/master/textunder.png</file>
         <file>gfx/master/zoomin.png</file>
         <file>gfx/master/zoomout.png</file>
+        <file>gfx/master/arrow_down.png</file>
+        <file>gfx/master/arrow_right.png</file>
     </qresource>
 </RCC>
