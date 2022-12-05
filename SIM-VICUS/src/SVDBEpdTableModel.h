@@ -30,7 +30,9 @@
 
 #include "SVDatabase.h"
 
-#include "VICUS_EPDDataset.h"
+#include <VICUS_EpdDataset.h>
+
+#include <QSortFilterProxyModel>
 
 /*! Model for accessing the constructions in the construction database. */
 class SVDBEpdTableModel : public SVAbstractDatabaseTableModel {
@@ -80,8 +82,11 @@ private:
 	/*! Returns an index for a given Id. */
 	QModelIndex indexById(unsigned int id) const;
 
+	/*! The sort filter model (owned). */
+	QSortFilterProxyModel			*m_proxyModel	= nullptr;
+
 	/*! Pointer to the entire database (not owned). */
-	SVDatabase	* m_db;
+	SVDatabase						*m_db;
 };
 
 #endif // SVDBEpdTableModelH

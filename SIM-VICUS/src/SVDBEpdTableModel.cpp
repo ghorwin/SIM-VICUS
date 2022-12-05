@@ -71,12 +71,12 @@ QVariant SVDBEpdTableModel::data ( const QModelIndex & index, int role) const {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 				case ColModule				: {
-					std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", it->second.m_module);
+					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Module", it->second.m_module);
 					return QString::fromStdString(keyword);
 				}
 
 				case ColType				: {
-					std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Type", it->second.m_type);
+					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Type", it->second.m_type);
 					return QString::fromStdString(keyword);
 				}
 			}

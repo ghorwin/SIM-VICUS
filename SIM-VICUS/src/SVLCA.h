@@ -27,7 +27,7 @@
 #define SVLCAH
 
 #include <VICUS_Building.h>
-#include <VICUS_EPDDataset.h>
+#include <VICUS_EpdDataset.h>
 
 
 namespace SV {

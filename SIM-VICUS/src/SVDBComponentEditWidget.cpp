@@ -347,8 +347,9 @@ void SVDBComponentEditWidget::modelModify(){
 void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd, int col, int row) {
 	QString string = "-";
 	if(idEpd != VICUS::INVALID_ID) {
-		const VICUS::EpdDataset &epd = *db.m_epdDatasets[idEpd];
-		string = QtExt::MultiLangString2QString(epd.m_displayName);
+		const VICUS::EpdDataset *epd = db.m_epdDatasets[idEpd];
+		if(epd != nullptr)
+			string = QtExt::MultiLangString2QString(epd->m_displayName);
 	}
 	table->setItem(row, col, new QTableWidgetItem(string));
 }

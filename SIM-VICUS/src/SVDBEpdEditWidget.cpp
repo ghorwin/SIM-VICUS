@@ -109,7 +109,7 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	m_ui->lineEditManufacturer->setText(m_current->m_manufacturer);
 
 	m_ui->lineEditRefQuantity->setText(QString("%1").arg(m_current->m_referenceQuantity));
-	m_ui->lineEditRefUnit->setText(m_current->m_referenceUnit);
+	m_ui->lineEditRefUnit->setText(QString::fromStdString(m_current->m_referenceUnit.name()));
 
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
 

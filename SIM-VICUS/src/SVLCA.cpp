@@ -50,7 +50,7 @@ T elementExists(std::map<unsigned int, T> database, unsigned int id, std::string
 /*! gets all needed parameter values for the epd calculation and adds them to the related component. */
 void addEpdMaterialToComponent(VICUS::EpdDataset epd, LCA::LCAComponentResult &comp, LCA::LCAComponentResult &comp2,
 					double lifeCycle, double thickness, double rho, int idx = 0, double adjustment = 1.2){
-
+#if 0
 	FUNCID(LCA::addEpdMaterialToComponent);
 
 	for(unsigned int i=0; i<VICUS::EpdDataset::NUM_P; ++i){
@@ -97,6 +97,7 @@ void addEpdMaterialToComponent(VICUS::EpdDataset epd, LCA::LCAComponentResult &c
 			comp2.addValue(idx, static_cast<VICUS::EpdDataset::para_t>(i),
 						   IBK::Parameter(epd.m_para[i].name, val*lifeCycle, unit));
 	}
+#endif
 }
 
 
