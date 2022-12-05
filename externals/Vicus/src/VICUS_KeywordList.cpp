@@ -39,9 +39,9 @@ namespace VICUS {
 		"Construction::UsageType",
 		"Construction::InsulationKind",
 		"Construction::MaterialKind",
-		"EPDDataset::para_t",
-		"EPDDataset::Module",
-		"EPDDataset::Type",
+		"EpdDataset::para_t",
+		"EpdDataset::Module",
+		"EpdDataset::Type",
 		"Infiltration::para_t",
 		"Infiltration::AirChangeType",
 		"InterfaceHeatConduction::modelType_t",
@@ -160,7 +160,7 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "---";
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return "AreaDensity";
@@ -173,7 +173,7 @@ namespace VICUS {
 				case 7 : return "PENRT";
 				case 8 : return "PERT";
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : return "A1";
@@ -199,7 +199,7 @@ namespace VICUS {
 				case 20 : return "C4";
 				case 21 : return "D";
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : return "Generic";
@@ -696,7 +696,7 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "---";
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return "AreaDensity";
@@ -709,7 +709,7 @@ namespace VICUS {
 				case 7 : return "PENRT";
 				case 8 : return "PERT";
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : return "A1";
@@ -735,7 +735,7 @@ namespace VICUS {
 				case 20 : return "C4";
 				case 21 : return "D";
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : return "Generic";
@@ -1233,7 +1233,7 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "Not selected";
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return "mass of material in dependence of the area.";
@@ -1246,7 +1246,7 @@ namespace VICUS {
 				case 7 : return "Total use of non-renewable primary energy resources.";
 				case 8 : return "Total use of renewable primary energy resources .";
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "A1";
@@ -1272,7 +1272,7 @@ namespace VICUS {
 				case 20 : if (no_description != nullptr) *no_description = true; return "C4";
 				case 21 : if (no_description != nullptr) *no_description = true; return "D";
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Generic";
@@ -1769,7 +1769,7 @@ namespace VICUS {
 				case 5 : return "";
 				case 6 : return "";
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return "kg/m2";
@@ -1782,7 +1782,7 @@ namespace VICUS {
 				case 7 : return "W/mK";
 				case 8 : return "W/mK";
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : return "";
@@ -1808,7 +1808,7 @@ namespace VICUS {
 				case 20 : return "";
 				case 21 : return "";
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : return "";
@@ -2305,7 +2305,7 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2318,7 +2318,7 @@ namespace VICUS {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2344,7 +2344,7 @@ namespace VICUS {
 				case 20 : return "#FFFFFF";
 				case 21 : return "#FFFFFF";
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2841,7 +2841,7 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2854,7 +2854,7 @@ namespace VICUS {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2880,7 +2880,7 @@ namespace VICUS {
 				case 20 : return std::numeric_limits<double>::quiet_NaN();
 				case 21 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3337,11 +3337,11 @@ namespace VICUS {
 			case 2 : return 5;
 			// Construction::MaterialKind
 			case 3 : return 7;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 : return 9;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 : return 22;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 : return 5;
 			// Infiltration::para_t
 			case 7 : return 2;
@@ -3467,11 +3467,11 @@ namespace VICUS {
 			case 2 : return 4;
 			// Construction::MaterialKind
 			case 3 : return 6;
-			// EPDDataset::para_t
+			// EpdDataset::para_t
 			case 4 : return 8;
-			// EPDDataset::Module
+			// EpdDataset::Module
 			case 5 : return 21;
-			// EPDDataset::Type
+			// EpdDataset::Type
 			case 6 : return 4;
 			// Infiltration::para_t
 			case 7 : return 1;

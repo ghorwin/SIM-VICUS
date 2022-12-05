@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_EPDDatasetH
-#define VICUS_EPDDatasetH
+#ifndef VICUS_EpdDatasetH
+#define VICUS_EpdDatasetH
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
@@ -106,6 +106,9 @@ public:
 	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Returns an EPD with all Parameters scaled by the defined factor. */
+	EpdDataset scaleByFactor(const double &factor) const;
+
 	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
 		to see if the EPDDatest exists already and has the latest version.
 	*/
@@ -113,6 +116,12 @@ public:
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	/*! Defines Operator + .*/
+	EpdDataset operator+(const EpdDataset& epd);
+
+	/*! Defines Operator += .*/
+	void operator+=(const EpdDataset& epd);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -139,7 +148,7 @@ public:
 	QString							m_expireYear;							// XML:E
 
 	/*! Reference unit. */
-	QString							m_referenceUnit;						// XML:E
+	IBK::Unit						m_referenceUnit;						// XML:E
 
 	/*! Reference quantity. */
 	double							m_referenceQuantity;					// XML:E
@@ -159,4 +168,4 @@ public:
 };
 
 }
-#endif // VICUS_EPDDatasetH
+#endif // VICUS_EpdDatasetH

@@ -23,7 +23,7 @@
 	GNU General Public License for more details.
 */
 
-#include "VICUS_EPDCategroySet.h"
+#include "VICUS_EpdCategroySet.h"
 
 
 namespace VICUS {

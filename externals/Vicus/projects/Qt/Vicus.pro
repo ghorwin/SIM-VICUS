@@ -108,8 +108,8 @@ SOURCES += \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
-	../../src/VICUS_EPDCategroySet.cpp \
-	../../src/VICUS_EPDDataset.cpp \
+	../../src/VICUS_EpdCategroySet.cpp \
+	../../src/VICUS_EpdDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \

@@ -13,7 +13,11 @@
 
 #include <VICUS_Project.h>
 
+#include <QtExt_Conversions.h>
+
 #include <QProgressDialog>
+
+#include <fstream>
 
 SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettings & settings) :
 	QWidget(parent),
@@ -23,15 +27,19 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettin
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
 
-//	m_lcaSettings->initDefaults();
+	//	m_lcaSettings->initDefaults();
 
 	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LCASettings::P_TimePeriod].get_value("a")));
 	m_ui->lineEditPriceIncrease->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LCASettings::P_PriceIncrease].get_value("%")));
 
-	m_ui->filepathOekoBauDat->setup("", true, true, tr("ÖKOBAUDAT container files (*.csv);;All files (*.*)"),
+	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("R"),
 									SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_prj = SVProjectHandler::instance().project();
+
+	m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
+
+	m_db = &SVSettings::instance().m_db;
 }
 
 SVSimulationLCAOptions::~SVSimulationLCAOptions() {
@@ -39,6 +47,39 @@ SVSimulationLCAOptions::~SVSimulationLCAOptions() {
 }
 
 void SVSimulationLCAOptions::calculateLCA() {
+	FUNCID(SVSimulationLCAOptions::calculateLCA);
+
+	IBK::Path path(m_ui->filepathResults->filename().toStdString());
+	QString filename = m_ui->lineEditResultName->text();
+	IBK::Path file(filename.toStdString());
+	file.addExtension(".txt");
+	path /= file;
+
+	if(!path.isValid()) {
+		QMessageBox::warning(this, tr("Invalid Result path or file"), tr("Define a valid result path and filename first before calculating LCA."));
+		return;
+	}
+
+
+	/// 1) Aggregate all used components from project and sum up all their areas
+	/// 2) go through all layers and their referenced epds and use the epds reference unit for global calculation
+	/// 3) Global calculation means that layer data needs to be converted in a manner that it coresponds to reference unit
+	/// 4) Now calculate the final LCA Data for each component and material layer using converted material data and reference unit
+	/// 5) Aggregate data for each component type --> such as floor, etc.
+
+	// First we aggregate all data for used components
+	aggregateProjectComponents();
+
+	// Calculate all total EPD Data for Components
+	calculateTotalLcaDataForComponents();
+
+	// Aggregate all data by type of component
+	aggregateAggregatedComponentsByType();
+
+	// Write calculation to file
+	writeLcaDataToTxtFile(path);
+
+
 #if 0
 	FUNCID(LCA::calculateLCA);
 
@@ -77,7 +118,7 @@ void SVSimulationLCAOptions::calculateLCA() {
 				const VICUS::ComponentInstance * compInstance = s.m_componentInstance;
 				if (compInstance != nullptr) {
 					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_idComponent,
-													s.m_displayName.toStdString(),"Component", "surface");
+																			s.m_displayName.toStdString(),"Component", "surface");
 					//save surface area
 					compRes[comp.m_id].m_area += surf.geometry().area();
 				}
@@ -97,18 +138,18 @@ void SVSimulationLCAOptions::calculateLCA() {
 			//get construction
 			///TODO Dirk baufähig gemacht müsste rückgängig gemacht werden
 			VICUS::Construction constr;
-//					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
-//													   comp.m_displayName.toStdString(),"Construction",
-//													   "component");
+			//					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
+			//													   comp.m_displayName.toStdString(),"Construction",
+			//													   "component");
 
 			//calculate each construction
 			for(auto l : constr.m_materialLayers){
 				//check if material exists
 				VICUS::Material mat =
 						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_idMaterial,
-														   constr.m_displayName.string(),
-														   "Material",
-														   "construction");
+													   constr.m_displayName.string(),
+													   "Material",
+													   "construction");
 
 				//material exists already in the new user database
 				if(materialIdAndEpd.find(mat.m_id) != materialIdAndEpd.end())
@@ -121,16 +162,16 @@ void SVSimulationLCAOptions::calculateLCA() {
 						continue;
 
 					VICUS::EPDDataset epd = elementExists<VICUS::EPDDataset>(m_dbEPDs, idEpd,
-																   mat.m_displayName.string(),
-																   "EPD",
-																   "material");
+																			 mat.m_displayName.string(),
+																			 "EPD",
+																			 "material");
 
 					//if we found the right dataset add values A1- A2
 					if(epd.m_module == VICUS::EPDDataset::M_A1 ||
-					   epd.m_module == VICUS::EPDDataset::M_A2 ||
-					   epd.m_module == VICUS::EPDDataset::M_A1_A2||
-					   epd.m_module == VICUS::EPDDataset::M_A3 ||
-					   epd.m_module == VICUS::EPDDataset::M_A1_A3){
+							epd.m_module == VICUS::EPDDataset::M_A2 ||
+							epd.m_module == VICUS::EPDDataset::M_A1_A2||
+							epd.m_module == VICUS::EPDDataset::M_A3 ||
+							epd.m_module == VICUS::EPDDataset::M_A1_A3){
 						//add all values in a category A
 						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
 							IBK::Parameter para = epd.m_para[i];
@@ -208,21 +249,21 @@ void SVSimulationLCAOptions::calculateLCA() {
 				MatEpd &matEpd = materialIdAndEpd[l.m_idMaterial];
 				double rho = m_dbOpaqueMaterials[l.m_idMaterial].m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
-//				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
-//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-//							   rho, 0, m_adjustment);
+				//				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
+				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+				//							   rho, 0, m_adjustment);
 
 				addEpdMaterialToComponent(matEpd.m_epdB, comp, compResErsatz[compId],
-							   0, l.m_thickness.get_value("m"),
-							   rho, 1, m_adjustment);
+										  0, l.m_thickness.get_value("m"),
+										  rho, 1, m_adjustment);
 
-//				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
-//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-//							   rho, 2, m_adjustment);
+				//				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
+				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+				//							   rho, 2, m_adjustment);
 
-//				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
-//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-//							   rho, 3, m_adjustment);
+				//				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
+				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+				//							   rho, 3, m_adjustment);
 
 			}
 
@@ -253,7 +294,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 	if (SVSettings::instance().showDoNotShowAgainQuestion(this, "reloading-oekobaudat",
 														  tr("Reloading ÖKOBAUDAT"),
 														  tr("Reloading ÖKOBAUDAT will delete all references to currently existing EPDs in Database. Continue?"),
-			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+														  QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;
 
 	// Explode all lines
@@ -273,12 +314,23 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 	IBK::StopWatch timer;
 	timer.start();
 
+	std::map<std::string, std::string> oekobauDatUnit2IBKUnit;
+	oekobauDatUnit2IBKUnit["qm"] = "m2";
+	oekobauDatUnit2IBKUnit["pcs."] = "-";
+	oekobauDatUnit2IBKUnit["kgkm"] = "kg/m3";
+	oekobauDatUnit2IBKUnit["MJ"] = "MJ";
+	oekobauDatUnit2IBKUnit["m3"] = "m3";
+	oekobauDatUnit2IBKUnit["m"] = "m";
+	oekobauDatUnit2IBKUnit["kg"] = "kg";
+	oekobauDatUnit2IBKUnit["a"] = "a";
+
+
 	for (unsigned int row = 0; row<dataLines.size(); ++row) {
 		std::string &line = dataLines[row];
-//		IBK::trim(line, ",");
-//		IBK::trim(line, "\"");
-//		IBK::trim(line, "MULTILINESTRING ((");
-//		IBK::trim(line, "))");
+		//		IBK::trim(line, ",");
+		//		IBK::trim(line, "\"");
+		//		IBK::trim(line, "MULTILINESTRING ((");
+		//		IBK::trim(line, "))");
 		IBK::explode(line, tokens, ";", IBK::EF_KeepEmptyTokens);
 		dataSets.push_back(VICUS::EpdDataset());
 		VICUS::EpdDataset &epd = dataSets.back();
@@ -313,7 +365,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				case ColRegistrationNumber:
 				case ColRegistrationBody:
 				case ColUUIDOfThePredecessor:
-				break;
+					break;
 
 				case ColUUID:				epd.m_uuid = QString::fromStdString(t);			break;
 				case ColNameDe:				epd.m_displayName.setString(t, "De");			break;
@@ -347,7 +399,9 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 					epd.m_referenceQuantity = val;
 				} break;
-				case ColReferenceUnit:		epd.m_referenceUnit = QString::fromStdString(t);		break;
+				case ColReferenceUnit: {
+					epd.m_referenceUnit = IBK::Unit(oekobauDatUnit2IBKUnit[t]);
+				} break;
 				case ColURL:				epd.m_dataSource = QString::fromStdString(t);			break;
 
 				case ColWeightPerUnitArea: {
@@ -476,44 +530,211 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 
 void SVSimulationLCAOptions::addComponentInstance(const VICUS::ComponentInstance & compInstance) {
-	if(m_compIdToAggregatedData.find(compInstance.m_id) != m_compIdToAggregatedData.end())
+	if(m_compIdToAggregatedData.find(compInstance.m_idComponent) == m_compIdToAggregatedData.end())
 		m_compIdToAggregatedData[compInstance.m_idComponent] = AggregatedComponentData(compInstance);
 	else
 		m_compIdToAggregatedData[compInstance.m_idComponent].addArea(compInstance);
 }
 
-void SVSimulationLCAOptions::analyseProjectComponents() {
+
+void SVSimulationLCAOptions::aggregateProjectComponents() {
 	QStringList lifetime, cost, epd;
 
 	for(const VICUS::ComponentInstance &ci : m_prj.m_componentInstances) {
 		// Add CI to aggregated data map
 		addComponentInstance(ci);
 
-		const VICUS::Component &comp = *SVSettings::instance().m_db.m_components[ci.m_idComponent];
-		const VICUS::Construction &con = *SVSettings::instance().m_db.m_constructions[comp.m_idConstruction];
+		const VICUS::Component *comp = m_db->m_components[ci.m_idComponent];
+		if(comp == nullptr)
+			continue;
 
-		for(const VICUS::MaterialLayer &matLayer : con.m_materialLayers) {
+		const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
+		if(con == nullptr)
+			continue;
+
+		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
 			// Check Cost & lifetime of used Materials
 			bool isLifetimeDefined = !matLayer.m_lifetime.empty();
 			bool isCostDefined = !matLayer.m_cost.empty();
 			// Check EPDs of used Materials
-			const VICUS::Material &mat = *SVSettings::instance().m_db.m_materials[matLayer.m_idMaterial];
+			const VICUS::Material *mat = m_db->m_materials[matLayer.m_idMaterial];
 
-			bool isEPDDefined = !mat.m_epdCategorySet.isEmpty();
+			if(mat == nullptr)
+				continue;
+
+			bool isEPDDefined = !mat->m_epdCategorySet.isEmpty();
 
 			if(!isLifetimeDefined)
-				lifetime << QString::fromStdString(mat.m_displayName.string());
+				lifetime << QString::fromStdString(mat->m_displayName.string());
 			if(!isCostDefined)
-				cost << QString::fromStdString(mat.m_displayName.string());
-			if(!isEPDDefined)
-				epd << QString::fromStdString(mat.m_displayName.string());
+				cost << QString::fromStdString(mat->m_displayName.string());
+			if(!isEPDDefined) {
+				epd << QString::fromStdString(mat->m_displayName.string());
+				m_idComponentEpdUndefined.insert(comp->m_id);
+			}
 		}
 	}
 
+	lifetime.removeDuplicates();
+	cost.removeDuplicates();
+	epd.removeDuplicates();
+
+
 	QString messageText(tr("Lifetime:\t%1\nCost:\t%2\nEPD:\t%3\n\nProceed and skip all components without needed Data?")
-						 .arg(lifetime.join("\n\t\t")).arg(cost.join("\n\t\t")).arg(epd.join("\n\t\t")));
+						.arg(lifetime.join("\n\t\t"))
+						.arg(cost.join("\n\t\t"))
+						.arg(epd.join("\n\t\t")));
 	if(QMessageBox::warning(this, "LCA/LCC Information is missing", messageText) == QMessageBox::Cancel)
 		return;
+}
+
+void SVSimulationLCAOptions::aggregateAggregatedComponentsByType() {
+	for(std::map<unsigned int, AggregatedComponentData>::iterator itAggregatedComp = m_compIdToAggregatedData.begin();
+		itAggregatedComp != m_compIdToAggregatedData.end(); ++itAggregatedComp)
+	{
+		const AggregatedComponentData &aggregatedData = itAggregatedComp->second;
+		if(m_typeToAggregatedCompData.find(aggregatedData.m_component->m_type) == m_typeToAggregatedCompData.end())
+			m_typeToAggregatedCompData[aggregatedData.m_component->m_type] = aggregatedData;
+		else
+			m_typeToAggregatedCompData[aggregatedData.m_component->m_type].addAggregatedData(aggregatedData);
+	}
+}
+
+double SVSimulationLCAOptions::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
+																double layerThickness, double layerArea){
+	if(refUnit.name() == "kg")
+		return layerArea * layerThickness * layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); // area * thickness * density --> layer mass
+
+	if(refUnit.name() == "m2")
+		return layerArea;
+
+	if(refUnit.name() == "m3")
+		return layerArea * layerThickness;
+
+	if(refUnit.name() == "-")
+		return 1; // Pieces are always set to 1 for now
+
+	if(refUnit.name() == "MJ")
+		return 1; // Also not implemented yet
+
+	if(refUnit.name() == "kg/m3")
+		return layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3");
+
+	if(refUnit.name() == "a")
+		return 50; // Also not implemented yet
+}
+
+void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
+											   const AggregatedComponentData::Category &category) {
+
+	lcaStream << categoryText + "\t\t\t\t\t\t\t"  << std::endl;
+
+	for(std::map<VICUS::Component::ComponentType, AggregatedComponentData>::iterator itAggregatedComp = m_typeToAggregatedCompData.begin();
+		itAggregatedComp != m_typeToAggregatedCompData.end(); ++itAggregatedComp)
+	{
+
+		QStringList lcaDataType;
+		const AggregatedComponentData &aggregatedTypeData = itAggregatedComp->second;
+
+		lcaDataType << VICUS::KeywordList::Description("Component::ComponentType", aggregatedTypeData.m_component->m_type);
+		lcaDataType << "";
+		lcaDataType << QString::number(aggregatedTypeData.m_area);
+		lcaDataType << QString::number(aggregatedTypeData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_GWP].get_value());
+		lcaDataType << QString::number(aggregatedTypeData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_ODP].get_value());
+		lcaDataType << QString::number(aggregatedTypeData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_POCP].get_value());
+		lcaDataType << QString::number(aggregatedTypeData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_AP].get_value());
+		lcaDataType << QString::number(aggregatedTypeData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_EP].get_value());
+
+		lcaStream << lcaDataType.join("\t").toStdString() << std::endl;
+
+		for(const VICUS::Component *comp : aggregatedTypeData.m_additionalComponents) {
+
+			const AggregatedComponentData &aggregatedCompData = m_compIdToAggregatedData[comp->m_id];
+
+			QStringList lcaData;
+
+			lcaData << "";
+			lcaData << QtExt::MultiLangString2QString(comp->m_displayName);
+			lcaData << QString::number(aggregatedTypeData.m_area);
+			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_GWP].get_value());
+			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_ODP].get_value());
+			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_POCP].get_value());
+			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_AP].get_value());
+			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_EP].get_value());
+
+			lcaStream << lcaData.join("\t").toStdString() << std::endl;
+
+		}
+
+	}
+}
+
+void SVSimulationLCAOptions::writeLcaDataToTxtFile(const IBK::Path &resultPath) {
+	std::ofstream lcaStream(resultPath.str());
+	// Write header
+	lcaStream << "Category\tComponent type\tComponent name\Area [m2]\tGWP (CO2-Äqu.) [kg/(m2a)\tODP (R11-Äqu.) [kg/(m2a)]\tPOCP (C2H4-Äqu.) [kg/(m2a)]\tAP (SO2-Äqu.) [kg/(m2a)]\tEP (PO4-Äqu.) [kg/(m2a)]" << std::endl;
+
+	writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
+	// writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
+	writeDataToStream(lcaStream, "Category C - Disposal", AggregatedComponentData::C_CategoryC);
+	writeDataToStream(lcaStream, "Category D - Deposit", AggregatedComponentData::C_CategoryD);
+
+	lcaStream.close();
+
+}
+
+
+void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
+	// Go through all used components.
+	// Go through all used material layers in components.
+
+	for(std::map<unsigned int, AggregatedComponentData>::iterator itAggregatedComp = m_compIdToAggregatedData.begin();
+		itAggregatedComp != m_compIdToAggregatedData.end(); ++itAggregatedComp)
+	{
+		if(m_idComponentEpdUndefined.find(itAggregatedComp->first) != m_idComponentEpdUndefined.end())
+			continue; // we skip components when there are epds not defined
+
+		double area = itAggregatedComp->second.m_area;
+		const VICUS::Component *comp = itAggregatedComp->second.m_component;
+
+		qDebug() << QString::fromStdString(comp->m_displayName.string());
+		qDebug() << comp->m_idConstruction;
+
+		if(comp == nullptr)
+			continue;
+
+		const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
+		if(con == nullptr)
+			continue;
+
+		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
+			const VICUS::Material &mat = *m_db->m_materials[matLayer.m_idMaterial];
+			const VICUS::EpdDataset &epdCatA = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryA];
+			const VICUS::EpdDataset &epdCatB = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryB];
+			const VICUS::EpdDataset &epdCatC = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryC];
+			const VICUS::EpdDataset &epdCatD = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryD];
+
+
+			// We do the unit conversion and handling to get all our reference units correctly managed
+			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryA]
+					= epdCatA.scaleByFactor(
+						conversionFactorEpdReferenceUnit(epdCatA.m_referenceUnit,
+														 mat, matLayer.m_thickness.get_value("m"), area));
+			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryB]
+					= epdCatB.scaleByFactor(
+						conversionFactorEpdReferenceUnit(epdCatB.m_referenceUnit,
+														 mat, matLayer.m_thickness.get_value("m"), area));
+			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryC]
+					= epdCatC.scaleByFactor(
+						conversionFactorEpdReferenceUnit(epdCatC.m_referenceUnit,
+														 mat, matLayer.m_thickness.get_value("m"), area));
+			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryD]
+					= epdCatD.scaleByFactor(
+						conversionFactorEpdReferenceUnit(epdCatD.m_referenceUnit,
+														 mat, matLayer.m_thickness.get_value("m"), area));
+
+		}
+	}
 }
 
 
@@ -537,6 +758,6 @@ void SVSimulationLCAOptions::on_pushButtonImportOkoebaudat_clicked() {
 
 
 void SVSimulationLCAOptions::on_pushButtonLcaLcc_clicked() {
-	analyseProjectComponents();
+	calculateLCA();
 }
 

@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_EPDCategroySetH
-#define VICUS_EPDCategroySetH
+#ifndef VICUS_EpdCategroySetH
+#define VICUS_EpdCategroySetH
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
@@ -38,16 +38,15 @@ namespace VICUS {
 	An EPD Category Set defines a material EPD, that needs to be combined by severel different
 	sub-EPDs for each Category (A,B,C,D).
 */
-class EPDCategroySet
-{
+class EpdCategroySet {
 
 public:
 	VICUS_READWRITE
-	VICUS_COMP(EPDCategroySet)
+	VICUS_COMP(EpdCategroySet)
 
-	EPDCategroySet() {}
+	EpdCategroySet() {}
 
-	EPDCategroySet(unsigned int idCatA, unsigned int idCatB, unsigned int idCatC, unsigned int idCatD):
+	EpdCategroySet(unsigned int idCatA, unsigned int idCatB, unsigned int idCatC, unsigned int idCatD):
 		m_idCategoryA(idCatA),
 		m_idCategoryB(idCatB),
 		m_idCategoryC(idCatC),
@@ -72,7 +71,7 @@ public:
 
 };
 
-inline bool EPDCategroySet::operator!=(const EPDCategroySet & other) const {
+inline bool EpdCategroySet::operator!=(const EpdCategroySet & other) const {
 	if (m_idCategoryA != other.m_idCategoryA) return true;
 	if (m_idCategoryB != other.m_idCategoryB) return true;
 	if (m_idCategoryC != other.m_idCategoryC) return true;
@@ -81,4 +80,4 @@ inline bool EPDCategroySet::operator!=(const EPDCategroySet & other) const {
 }
 
 }
-#endif // VICUS_EPDCategroySetH
+#endif // VICUS_EpdCategroySetH

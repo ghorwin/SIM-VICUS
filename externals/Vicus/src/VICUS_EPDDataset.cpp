@@ -23,9 +23,16 @@
 	GNU General Public License for more details.
 */
 
-#include "VICUS_EPDDataset.h"
+#include "VICUS_EpdDataset.h"
 
 namespace VICUS {
+
+EpdDataset EpdDataset::scaleByFactor(const double & factor) const {
+	EpdDataset epd = *this;
+	for(unsigned int i=0; i<NUM_P; ++i)
+		epd.m_para[i].value = factor * m_para[i].value; // no testing needed so straight forward
+	return epd;
+}
 
 bool EpdDataset::behavesLike(const EpdDataset & other) const
 {
@@ -79,6 +86,18 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+EpdDataset EpdDataset::operator+(const EpdDataset & epd) {
+	VICUS::EpdDataset addedEpd = *this;
+	for(unsigned int i=0; i<NUM_P; ++i)
+		addedEpd.m_para[i].value += epd.m_para[i].value;
+	return addedEpd;
+}
+
+void EpdDataset::operator+=(const EpdDataset & epd) {
+	for(unsigned int i=0; i<NUM_P; ++i)
+		m_para[i].value += epd.m_para[i].value;
 }
 
 }
