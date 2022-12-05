@@ -39,13 +39,12 @@ namespace Ui {
 
 class ModificationInfo;
 
-/*! A widget to edit building properties.
-	This widget is actually just a container for all the individual property widgets.
-	The type of property to be edited is set with function setPropertyType(), called from
-	SVPropertyWidget::onViewStateChanged(). This switches between different widgets (in the stacked widget).
 
-	Note: the highlighting mode of the scene is not set here.
-*/
+/*!
+ *  This class owns the ToolBox and pointers to all building editing widgets, which are used in the ToolBox. It also provides them with the currently selected objects.
+ *  It reacts on project changes (and selection changes), updates the editing widgets and also updates th color view.
+ */
+
 class SVPropBuildingEditWidget : public QWidget {
 	Q_OBJECT
 
@@ -58,7 +57,6 @@ public:
 	*/
 	void setPropertyType(int buildingPropertyType);
 
-	int currentPropertyType();
 
 public slots:
 
@@ -72,8 +70,8 @@ public slots:
 	*/
 	void onColorRefreshNeeded();
 
-private slots:
-	void on_comboBoxBuildingProperties_currentIndexChanged(int index);
+	/*! Connects to the ToolBox and changes the color view according to the currently selectd page */
+	void onCurrentBuildingPropertyTypeChanged(int propertyType);
 
 private:
 	/*! Updates all edit widgets to current project state.

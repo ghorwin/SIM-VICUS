@@ -111,8 +111,6 @@ public:
 		PM_AddGeometry,
 		/*! Shows the "Edit geometry" widget and tool page (requires selection). */
 		PM_EditGeometry,
-		/*! Shows the "Edit network" widget and tool page. */
-		PM_EditNetwork,
 		/*! Shows the "Widget with list of newly placed vertexes" */
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */

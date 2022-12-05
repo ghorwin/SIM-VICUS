@@ -127,8 +127,6 @@
          <addaction name="actionAlignGeometry"/>
          <addaction name="actionCopyGeometry"/>
          <addaction name="separator"/>
-         <addaction name="actionEditNetworkGeometry"/>
-         <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
@@ -331,21 +329,6 @@
    </property>
    <property name="toolTip">
     <string>Edit Site Parametrization</string>
-   </property>
-  </action>
-  <action name="actionEditNetworkGeometry">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/NetworkGeo.png</normaloff>:/gfx/actions/NetworkGeo.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit Network Geometry</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit Network Geometry</string>
    </property>
   </action>
  </widget>

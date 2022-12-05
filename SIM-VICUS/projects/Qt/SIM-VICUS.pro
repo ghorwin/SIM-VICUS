@@ -102,6 +102,12 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
+    ../../src/SVPropNetworkEdgesWidget.cpp \
+    ../../src/SVPropNetworkEditWidget.cpp \
+    ../../src/SVPropNetworkGeometryWidget.cpp \
+    ../../src/SVPropNetworkHeatExchangeWidget.cpp \
+    ../../src/SVPropNetworkNodesWidget.cpp \
+    ../../src/SVPropNetworkSubStationWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -118,8 +124,6 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
-	../../src/SVPropEditNetwork.cpp \
-	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -290,6 +294,12 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
+    ../../src/SVPropNetworkEdgesWidget.h \
+    ../../src/SVPropNetworkEditWidget.h \
+    ../../src/SVPropNetworkGeometryWidget.h \
+    ../../src/SVPropNetworkHeatExchangeWidget.h \
+    ../../src/SVPropNetworkNodesWidget.h \
+    ../../src/SVPropNetworkSubStationWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -306,8 +316,6 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
-	../../src/SVPropEditNetwork.h \
-	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
@@ -536,9 +544,13 @@ FORMS    += \
 	../../src/SVPropBuildingZoneProperty.ui \
 	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
-	../../src/SVPropEditNetwork.ui \
 	../../src/SVPropFloorManagerWidget.ui \
-	../../src/SVPropNetworkPropertiesWidget.ui \
+	../../src/SVPropNetworkEdgesWidget.ui \
+	../../src/SVPropNetworkEditWidget.ui \
+	../../src/SVPropNetworkGeometryWidget.ui \
+	../../src/SVPropNetworkHeatExchangeWidget.ui \
+	../../src/SVPropNetworkNodesWidget.ui \
+	../../src/SVPropNetworkSubStationWidget.ui \
 	../../src/SVPropSiteWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \

@@ -38,12 +38,10 @@
 #include "SVPropAddGeometry.h"
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
-#include "SVPropNetworkPropertiesWidget.h"
 #include "SVPropBuildingEditWidget.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
-#include "SVPropEditNetwork.h"
-
+#include "SVPropNetworkEditWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -81,8 +79,8 @@ void SVPropertyWidget::setBuildingPropertyType(int buildingPropertyType) {
 
 
 void SVPropertyWidget::setNetworkPropertyType(int networkPropertyType) {
-	showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
-	qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
+//	showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
+//	qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
 }
 
 
@@ -103,13 +101,6 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 			showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 		break;
 
-		case SVViewState::PM_EditNetwork : {
-			showPropertyWidget<SVPropEditNetwork>(M_EditNetwork);
-			SVPropEditNetwork *propEditNetworkWidget = qobject_cast<SVPropEditNetwork*>(m_propWidgets[M_EditNetwork]);
-			propEditNetworkWidget->updateComboBoxNetworks();
-			propEditNetworkWidget->updateUi();
-		} break;
-
 		case SVViewState::PM_VertexList:
 			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
 			setMinimumWidth(500);
@@ -126,14 +117,10 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 
 		case SVViewState::PM_BuildingProperties : {
 			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
-			SVPropBuildingEditWidget *propBuildingWidget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
-			propBuildingWidget->setPropertyType(propBuildingWidget->currentPropertyType());
 		} break;
 
 		case SVViewState::PM_NetworkProperties : {
-			showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
-			SVPropNetworkPropertiesWidget *propNetworkWidget = qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties]);
-			propNetworkWidget->setPropertyType(propNetworkWidget->currentPropertyType());
+			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
 		} break;
 	}
 }

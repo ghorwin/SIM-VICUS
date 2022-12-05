@@ -26,6 +26,8 @@
 #include "SVPropBuildingEditWidget.h"
 #include "ui_SVPropBuildingEditWidget.h"
 
+#include <QtExt_ToolBox.h>
+
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
 #include "SVConstants.h"
@@ -46,35 +48,23 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropBuildingEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->mainLayout->setMargin(0);
+	m_ui->toolBox->layout()->setMargin(0);
 
-	// populate combobox
-	m_ui->comboBoxBuildingProperties->blockSignals(true);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Component"), BT_Components);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Sub-Surfaces"), BT_SubSurfaceComponents);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Construction orientation"), BT_ComponentOrientation);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Surface connections/component instances"), BT_SurfaceConnection);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Supply Systems"), BT_SupplySystems);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
-	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
-	m_ui->comboBoxBuildingProperties->blockSignals(false);
-	m_ui->comboBoxBuildingProperties->setCurrentIndex(0);
-
-	// Mind: order in which the widgets are added is important, see setPropertyType()
-	// Note: keep this order in sync with the enum and the combobox
-	m_ui->stackedWidget->addWidget(new SVPropBuildingComponentsWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingSubComponentsWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingComponentOrientationWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingBoundaryConditionsWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceConnectionWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneTemplatesWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingSurfaceHeatingWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropSupplySystemsWidget(this));
-	m_ui->stackedWidget->addWidget(new SVPropBuildingZoneProperty(this));
-	m_ui->stackedWidget->addWidget(new SVPropFloorManagerWidget(this));
+	// add pages to tool box:
+	// Note: NEVER change the order, it must correspond to BuildingPropertyType enum.
+	m_ui->toolBox->blockSignals(true);
+	m_ui->toolBox->addPage(tr("Component"), new SVPropBuildingComponentsWidget(this));
+	m_ui->toolBox->addPage(tr("Sub-Surfaces"), new SVPropBuildingSubComponentsWidget(this));
+	m_ui->toolBox->addPage(tr("Construction orientation"), new SVPropBuildingComponentOrientationWidget(this));
+	m_ui->toolBox->addPage(tr("Boundary conditions"), new SVPropBuildingBoundaryConditionsWidget(this));
+	m_ui->toolBox->addPage(tr("Surface connections/component instances"), new SVPropBuildingSurfaceConnectionWidget(this));
+	m_ui->toolBox->addPage(tr("Zone templates"), new SVPropBuildingZoneTemplatesWidget(this));
+	m_ui->toolBox->addPage(tr("Surface heating"), new SVPropBuildingSurfaceHeatingWidget(this));
+	m_ui->toolBox->addPage(tr("Supply Systems"), new SVPropSupplySystemsWidget(this));
+	m_ui->toolBox->addPage(tr("Room properties"), new SVPropBuildingZoneProperty(this));
+	m_ui->toolBox->addPage(tr("Building levels"), new SVPropFloorManagerWidget(this));
+	m_ui->toolBox->blockSignals(false);
+	m_ui->toolBox->setCurrentIndex(BT_Components);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
@@ -82,8 +72,14 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
 			this, &SVPropBuildingEditWidget::onColorRefreshNeeded);
 
+	connect(m_ui->toolBox, &QtExt::ToolBox::indexChanged,
+			this, &SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged);
+
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified, nullptr);
+
+	// update color view initially
+	onCurrentBuildingPropertyTypeChanged((BuildingPropertyType)m_ui->toolBox->currentIndex());
 }
 
 
@@ -93,16 +89,7 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
-	// if type has not changed we need to manually trigger the slot to get color update
-	if (buildingPropertyType != currentPropertyType())
-		m_ui->comboBoxBuildingProperties->setCurrentIndex(buildingPropertyType);
-	else
-		on_comboBoxBuildingProperties_currentIndexChanged(buildingPropertyType);
-}
-
-
-int SVPropBuildingEditWidget::currentPropertyType() {
-	return m_ui->comboBoxBuildingProperties->currentIndex();
+	m_ui->toolBox->setCurrentIndex((unsigned int)buildingPropertyType);
 }
 
 
@@ -123,8 +110,8 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		break;
 
 		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
-			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
-			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
+			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi();
+			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -144,47 +131,8 @@ void SVPropBuildingEditWidget::onColorRefreshNeeded() {
 	updateUi(false);
 }
 
-
-// *** PRIVATE FUNCTIONS ***
-
-void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
-	// TODO Andreas : this function currently updates all widgets in the stacked widget, regardless of which
-	//                is currently visible. This makes switching property modes very fast, but whenever the project
-	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,
-	//                modify the update logic.
-	// Note: It is not meaningful to update the widgets based on their visibility.
-	// It could be that project data changes and then the user switches to a different widget, which has then not be updated yet.
-	dynamic_cast<SVPropBuildingComponentsWidget*>(m_ui->stackedWidget->widget(BT_Components))->updateUi();
-	dynamic_cast<SVPropBuildingSubComponentsWidget*>(m_ui->stackedWidget->widget(BT_SubSurfaceComponents))->updateUi();
-	dynamic_cast<SVPropBuildingComponentOrientationWidget*>(m_ui->stackedWidget->widget(BT_ComponentOrientation))->updateUi();
-	dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->stackedWidget->widget(BT_BoundaryConditions))->updateUi();
-	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->stackedWidget->widget(BT_SurfaceConnection))->updateUi(onlyNodeStateModified);
-	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->stackedWidget->widget(BT_ZoneTemplates))->updateUi();
-	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->stackedWidget->widget(BT_SurfaceHeating))->updateUi();
-	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->stackedWidget->widget(BT_SupplySystems))->updateUi();
-	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->stackedWidget->widget(BT_ZoneProperty))->updateUi();
-	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
-}
-
-
-void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged(int index) {
-
-	BuildingPropertyTypes buildingPropType = (BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toUInt();
-
-	// show property page
-	switch (buildingPropType) {
-		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(BT_Components); break;
-		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(BT_SubSurfaceComponents); break;
-		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(BT_ComponentOrientation); break;
-		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(BT_BoundaryConditions); break;
-		case BT_SurfaceConnection		: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceConnection); break;
-		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneTemplates); break;
-		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(BT_SurfaceHeating); break;
-		case BT_SupplySystems			: m_ui->stackedWidget->setCurrentIndex(BT_SupplySystems); break;
-		case BT_ZoneProperty			: m_ui->stackedWidget->setCurrentIndex(BT_ZoneProperty); break;
-		case BT_FloorManager			: m_ui->stackedWidget->setCurrentIndex(BT_FloorManager); break;
-	}
-
+void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int propertyType) {
+	BuildingPropertyType buildingPropType = BuildingPropertyType(propertyType);
 	// set coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	switch (buildingPropType) {
@@ -200,5 +148,27 @@ void SVPropBuildingEditWidget::on_comboBoxBuildingProperties_currentIndexChanged
 		case BT_FloorManager			: vs.m_objectColorMode = SVViewState::OCM_None; break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+// *** PRIVATE FUNCTIONS ***
+
+void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
+	// TODO Andreas : this function currently updates all widgets in the stacked widget, regardless of which
+	//                is currently visible. This makes switching property modes very fast, but whenever the project
+	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,
+	//                modify the update logic.
+	// Note: It is not meaningful to update the widgets based on their visibility.
+	// It could be that project data changes and then the user switches to a different widget, which has then not be updated yet.
+	dynamic_cast<SVPropBuildingComponentsWidget*>(m_ui->toolBox->widget(BT_Components))->updateUi();
+	dynamic_cast<SVPropBuildingSubComponentsWidget*>(m_ui->toolBox->widget(BT_SubSurfaceComponents))->updateUi();
+	dynamic_cast<SVPropBuildingComponentOrientationWidget*>(m_ui->toolBox->widget(BT_ComponentOrientation))->updateUi();
+	dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->toolBox->widget(BT_BoundaryConditions))->updateUi();
+	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->toolBox->widget(BT_SurfaceConnection))->updateUi(onlyNodeStateModified);
+	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->toolBox->widget(BT_ZoneTemplates))->updateUi();
+	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi();
+	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->toolBox->widget(BT_SupplySystems))->updateUi();
+	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
+	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 

@@ -51,7 +51,7 @@
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
-#include "SVPropEditNetwork.h"
+#include "SVPropNetworkGeometryWidget.h"
 
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
@@ -251,7 +251,6 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionBuildingParametrization->setChecked(false);
 	m_ui->actionCopyGeometry->setChecked(false);
 	m_ui->actionAlignGeometry->setChecked(false);
-	m_ui->actionEditNetworkGeometry->setChecked(false);
 	m_ui->actionNetworkParametrization->setChecked(false);
 	m_ui->actionRotateGeometry->setChecked(false);
 	m_ui->actionScaleGeometry->setChecked(false);
@@ -269,7 +268,6 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 		modType == SVProjectHandler::NetworkGeometryChanged) {
 		const VICUS::Project &p = project();
 		m_ui->actionNetworkParametrization->setEnabled(!p.m_geometricNetworks.empty());
-		m_ui->actionEditNetworkGeometry->setEnabled(!p.m_geometricNetworks.empty());
 	}
 
 	switch (modType) {
@@ -664,23 +662,6 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 	}
 	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
 	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Copy);
-}
-
-
-void SVGeometryView::on_actionEditNetworkGeometry_triggered() {
-	uncheckAllActionsInButtonBar();
-	m_ui->actionEditNetworkGeometry->setChecked(true);
-
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to geometry mode, show addGeometry property widget
-	if (vs.m_propertyWidgetMode != SVViewState::PM_EditNetwork ||
-		vs.inPropertyEditingMode() )
-	{
-		vs.m_propertyWidgetMode = SVViewState::PM_EditNetwork;
-		vs.m_objectColorMode = SVViewState::OCM_None;
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-		SVViewStateHandler::instance().setViewState(vs);
-	}
 }
 
 

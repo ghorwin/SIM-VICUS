@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVPropBuildingEditWidget</class>
- <widget class="QWidget" name="SVPropBuildingEditWidget">
+ <class>SVPropNetworkEditWidget</class>
+ <widget class="QWidget" name="SVPropNetworkEditWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>730</height>
+    <width>456</width>
+    <height>894</height>
    </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
