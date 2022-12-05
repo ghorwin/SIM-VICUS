@@ -126,6 +126,7 @@ SOURCES += \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationLCAOptions.cpp \
+	../../src/SVSimulationLCAResultsDialog.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
@@ -318,6 +319,7 @@ HEADERS  += \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationLCAOptions.h \
+	../../src/SVSimulationLCAResultsDialog.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
@@ -553,6 +555,7 @@ FORMS    += \
 	../../src/SVPropVertexListWidget.ui \
 	../../src/SVScheduleHolidayWidget.ui \
 	../../src/SVSimulationLCAOptions.ui \
+	../../src/SVSimulationLCAResultsDialog.ui \
 	../../src/SVSimulationLocationOptions.ui \
 	../../src/SVSimulationModelOptions.ui \
 	../../src/SVSimulationNetworkOptions.ui \
