@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_EPDCategroySet.h>
+#include <VICUS_EpdCategroySet.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void EPDCategroySet::readXML(const TiXmlElement * element) {
-	FUNCID(EPDCategroySet::readXML);
+void EpdCategroySet::readXML(const TiXmlElement * element) {
+	FUNCID(EpdCategroySet::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -56,15 +56,15 @@ void EPDCategroySet::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EPDCategroySet' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EpdCategroySet' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EPDCategroySet' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EpdCategroySet' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * EPDCategroySet::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("EPDCategroySet");
+TiXmlElement * EpdCategroySet::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("EpdCategroySet");
 	parent->LinkEndChild(e);
 
 	if (m_idCategoryA != VICUS::INVALID_ID)

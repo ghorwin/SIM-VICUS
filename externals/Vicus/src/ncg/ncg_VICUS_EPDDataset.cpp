@@ -83,7 +83,7 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 			else if (cName == "ExpireYear")
 				m_expireYear = QString::fromStdString(c->GetText());
 			else if (cName == "ReferenceUnit")
-				m_referenceUnit = QString::fromStdString(c->GetText());
+				m_referenceUnit = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "ReferenceQuantity")
 				m_referenceQuantity = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IBK:Parameter") {
@@ -92,7 +92,7 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("EPDDataset::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("EpdDataset::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -101,7 +101,7 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "Type") {
 				try {
-					m_type = (Type)KeywordList::Enumeration("EPDDataset::Type", c->GetText());
+					m_type = (Type)KeywordList::Enumeration("EpdDataset::Type", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -110,7 +110,7 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "Module") {
 				try {
-					m_module = (Module)KeywordList::Enumeration("EPDDataset::Module", c->GetText());
+					m_module = (Module)KeywordList::Enumeration("EpdDataset::Module", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -124,16 +124,16 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EPDDataset' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EpdDataset' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EPDDataset' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EpdDataset' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
 TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("EPDDataset");
+	TiXmlElement * e = new TiXmlElement("EpdDataset");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
@@ -154,15 +154,15 @@ TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 	if (!m_expireYear.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "ExpireYear", nullptr, std::string(), m_expireYear.toStdString());
-	if (!m_referenceUnit.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "ReferenceUnit", nullptr, std::string(), m_referenceUnit.toStdString());
+	if (m_referenceUnit.id() != 0)
+		TiXmlElement::appendSingleAttributeElement(e, "ReferenceUnit", nullptr, std::string(), m_referenceUnit.name());
 	TiXmlElement::appendSingleAttributeElement(e, "ReferenceQuantity", nullptr, std::string(), IBK::val2string<double>(m_referenceQuantity));
 
 	if (m_type != NUM_T)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Type",  m_type));
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("EpdDataset::Type",  m_type));
 
 	if (m_module != NUM_M)
-		TiXmlElement::appendSingleAttributeElement(e, "Module", nullptr, std::string(), KeywordList::Keyword("EPDDataset::Module",  m_module));
+		TiXmlElement::appendSingleAttributeElement(e, "Module", nullptr, std::string(), KeywordList::Keyword("EpdDataset::Module",  m_module));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
