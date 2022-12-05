@@ -45,6 +45,7 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
+	../../src/VICUS_EpdCategoryDataset.h \
 	../../src/VICUS_EpdCategroySet.h \
 	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
@@ -108,6 +109,7 @@ SOURCES += \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
+	../../src/VICUS_EpdCategoryDataset.cpp \
 	../../src/VICUS_EpdCategroySet.cpp \
 	../../src/VICUS_EpdDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
@@ -208,3 +210,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
 	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp \
+
+DISTFILES += \
+	../../src/.gitignore
