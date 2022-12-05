@@ -100,9 +100,7 @@ private slots:
 
 	void on_pushButtonRemoveUnusedElements_clicked();
 
-	void on_lineEditFilter_textEdited(const QString &filterString);
-
-	void on_lineEditFilter_editingFinished();
+	void on_toolButtonApplyFilter_clicked();
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.

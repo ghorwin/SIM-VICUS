@@ -14,11 +14,45 @@
    <item>
     <widget class="QGroupBox" name="groupBoxTableView">
      <layout class="QGridLayout" name="gridLayoutTableView">
-      <item row="1" column="1">
-       <widget class="QToolButton" name="toolButtonCopy">
+      <item row="1" column="2">
+       <widget class="QToolButton" name="toolButtonRemove">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QToolButton" name="toolButtonAdd">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
+        <property name="toolTip">
+         <string>Moves DB element from user database to local project.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/fromDB.png</normaloff>:/gfx/actions/24x24/fromDB.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -48,6 +82,37 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QToolButton" name="toolButtonCopy">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="lineEditFilter">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Filter Name:</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="5">
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -61,7 +126,7 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="0" colspan="8">
+      <item row="0" column="0" colspan="9">
        <widget class="QTableView" name="tableView">
         <property name="minimumSize">
          <size>
@@ -83,68 +148,20 @@
         </attribute>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QToolButton" name="toolButtonRemove">
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="7">
-       <widget class="QLineEdit" name="lineEditFilter">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
-        <property name="toolTip">
-         <string>Moves DB element from user database to local project.</string>
-        </property>
+      <item row="1" column="8">
+       <widget class="QToolButton" name="toolButtonApplyFilter">
         <property name="text">
-         <string/>
+         <string>...</string>
         </property>
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/fromDB.png</normaloff>:/gfx/actions/24x24/fromDB.png</iconset>
+          <normaloff>:/gfx/actions/search_icon.png</normaloff>:/gfx/actions/search_icon.png</iconset>
         </property>
         <property name="iconSize">
          <size>
           <width>24</width>
           <height>24</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QToolButton" name="toolButtonAdd">
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Filter Name:</string>
         </property>
        </widget>
       </item>
