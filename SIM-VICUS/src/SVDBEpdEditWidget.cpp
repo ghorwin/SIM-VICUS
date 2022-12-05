@@ -60,7 +60,7 @@ SVDBEPDEditWidget::SVDBEPDEditWidget(QWidget * parent) :
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetEpdData);
 	m_ui->tableWidgetEpdData->setColumnCount(3);
 	QStringList header;
-	header << "Name" << "Value" << "Unit";
+	header << "Module" << "GWP" << "ODP" << "POCP" << "AP" << "EP";
 	m_ui->tableWidgetEpdData->setHorizontalHeaderLabels(header);
 
 	m_ui->tableWidgetEpdData->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -114,13 +114,16 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
 
 	std::vector<IBK::Parameter> paras;
-	for(unsigned int i=0; i<VICUS::EpdDataset::NUM_P; ++i) {
-		IBK::Parameter &para = m_current->m_para[i];
 
-		if(para.empty())
-			continue;
+	for(unsigned int j=0; j<m_current->m_epdCategoryDataset.size(); ++j) {
+		for(unsigned int i=0; i<VICUS::EpdCategoryDataset::NUM_P; ++i) {
+			IBK::Parameter &para = m_current->m_epdCategoryDataset[j].m_para[i];
 
-		paras.push_back(para);
+			if(para.empty())
+				continue;
+
+			paras.push_back(para);
+		}
 	}
 
 	m_ui->tableWidgetEpdData->setRowCount((int)paras.size());

@@ -44,7 +44,6 @@ public:
 		ColCheck,
 		ColName,
 		ColType,
-		ColModule,
 		NumColumns
 	};
 
@@ -73,7 +72,7 @@ public:
 
 	// ** other members **
 	/*! Add EPD to Database. */
-	void importDatasets(const std::vector<VICUS::EpdDataset> &epds);
+	void importDatasets(const std::map<QString, VICUS::EpdDataset> & epds);
 
 	/*! Tells the model that an item has been modified, triggers a dataChanged() signal. */
 	void setItemModified(unsigned int id);

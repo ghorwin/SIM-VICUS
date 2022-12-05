@@ -70,11 +70,6 @@ QVariant SVDBEpdTableModel::data ( const QModelIndex & index, int role) const {
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
-				case ColModule				: {
-					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Module", it->second.m_module);
-					return QString::fromStdString(keyword);
-				}
-
 				case ColType				: {
 					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Type", it->second.m_type);
 					return QString::fromStdString(keyword);
@@ -136,7 +131,6 @@ QVariant SVDBEpdTableModel::headerData(int section, Qt::Orientation orientation,
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
 				case ColType				: return tr("Type");
-				case ColModule				: return tr("Module");
 
 				default: ;
 			}
@@ -202,7 +196,6 @@ void SVDBEpdTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColName, QHeaderView::Stretch);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColType, QHeaderView::ResizeToContents);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColModule, QHeaderView::ResizeToContents);
 }
 
 
@@ -251,12 +244,14 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 	}
 }
 
-void SVDBEpdTableModel::importDatasets(const std::vector<VICUS::EpdDataset> & epds){
+void SVDBEpdTableModel::importDatasets(const std::map<QString, VICUS::EpdDataset> & epds){
 	beginResetModel();
 	// materials
 	std::map<unsigned int, unsigned int> epdElementsIDMap; // newID = materialIDMap[oldID];
 	for(unsigned int i=0; i<epds.size(); ++i) {
-		VICUS::EpdDataset &epd = const_cast<VICUS::EpdDataset &>(epds[i]);
+		auto it = epds.begin();
+		std::advance(it, i);
+		VICUS::EpdDataset &epd = const_cast<VICUS::EpdDataset &>(it->second);
 
 		importDBElement(epd, m_db->m_epdDatasets, epdElementsIDMap,
 			"EPD-Element '%1' with #%2 imported -> new ID #%3.\n",
