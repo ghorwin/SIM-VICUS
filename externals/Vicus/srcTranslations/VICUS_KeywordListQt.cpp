@@ -57,6 +57,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame construction");
 	tr("Loam");
 	tr("Not selected");
+	tr("Generic");
+	tr("Specific");
+	tr("Average");
+	tr("Representative");
+	tr("Template");
 	tr("mass of material in dependence of the area.");
 	tr("Dry density of the material.");
 	tr("Global Warming Potential.");
@@ -88,11 +93,6 @@ KeywordListQt::KeywordListQt() {
 	tr("C3-C4");
 	tr("C4");
 	tr("D");
-	tr("Generic");
-	tr("Specific");
-	tr("Average");
-	tr("Representative");
-	tr("Template");
 	tr("Air change rate");
 	tr("Shielding coefficient for n50 value");
 	tr("normal");
