@@ -30,10 +30,10 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lTiCPP \
 	-lIDFReader \
 	-lVicus \
+	-lclipper \
 	-lShading \
 	-lDataIO \
 	-lCCM \
-	-lclipper \
 	-lIBK \
 	-lIBKMK \
 	-lsundials \
@@ -104,6 +104,7 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
+	#../../src/SVDatabaseSortFilterProxyModel.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -295,6 +296,7 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
+	#../../src/SVDatabaseSortFilterProxyModel.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -558,7 +560,6 @@ FORMS    += \
 	../../src/SVSimulationPerformanceOptions.ui \
 	../../src/SVSimulationRunRequestDialog.ui \
 	../../src/SVSimulationShadingOptions.ui \
-	../../src/SVSimulationShadingOptions_kopie.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \

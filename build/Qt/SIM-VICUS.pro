@@ -36,9 +36,9 @@ NandradCodeGenerator.file = ../../NandradCodeGenerator/projects/Qt/NandradCodeGe
 NandradFMUGenerator.file = ../../NandradFMUGenerator/projects/Qt/NandradFMUGenerator.pro
 
 CCM.file = ../../externals/CCM/projects/Qt/CCM.pro
-Shading.file = ../../externals/Shading/projects/Qt/Shading.pro
 DataIO.file = ../../externals/DataIO/projects/Qt/DataIO.pro
 clipper.file = ../../externals/clipper/projects/Qt/clipper.pro
+Shading.file = ../../externals/Shading/projects/Qt/Shading.pro
 IBK.file = ../../externals/IBK/projects/Qt/IBK.pro
 IBKMK.file = ../../externals/IBKMK/projects/Qt/IBKMK.pro
 IntegratorFramework.file = ../../externals/IntegratorFramework/projects/Qt/IntegratorFramework.pro
@@ -61,11 +61,11 @@ DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImport
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
-SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO
+SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO clipper
 NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP
-Shading.depends = IBK TiCPP CCM IBKMK DataIO
+Shading.depends = IBK TiCPP CCM IBKMK DataIO clipper
 DataIO.depends = IBK
 IBKMK.depends = IBK sundials
 TiCPP.depends = IBK
