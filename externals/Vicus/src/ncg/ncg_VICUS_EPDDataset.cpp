@@ -66,10 +66,6 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'Type' element.") ), FUNC_ID);
 
-		if (!element->FirstChildElement("Module"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'Module' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -86,31 +82,21 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 				m_referenceUnit = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "ReferenceQuantity")
 				m_referenceQuantity = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "IBK:Parameter") {
-				IBK::Parameter p;
-				NANDRAD::readParameterElement(c, p);
-				bool success = false;
-				para_t ptype;
-				try {
-					ptype = (para_t)KeywordList::Enumeration("EpdDataset::para_t", p.name);
-					m_para[ptype] = p; success = true;
+			else if (cName == "EpdCategoryDataset") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "EpdCategoryDataset")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					EpdCategoryDataset obj;
+					obj.readXML(c2);
+					m_epdCategoryDataset.push_back(obj);
+					c2 = c2->NextSiblingElement();
 				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "Type") {
 				try {
 					m_type = (Type)KeywordList::Enumeration("EpdDataset::Type", c->GetText());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
-			}
-			else if (cName == "Module") {
-				try {
-					m_module = (Module)KeywordList::Enumeration("EpdDataset::Module", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -161,14 +147,17 @@ TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 	if (m_type != NUM_T)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("EpdDataset::Type",  m_type));
 
-	if (m_module != NUM_M)
-		TiXmlElement::appendSingleAttributeElement(e, "Module", nullptr, std::string(), KeywordList::Keyword("EpdDataset::Module",  m_module));
+	if (!m_epdCategoryDataset.empty()) {
+		TiXmlElement * child = new TiXmlElement("EpdCategoryDataset");
+		e->LinkEndChild(child);
 
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		if (!m_para[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
+		for (std::vector<EpdCategoryDataset>::const_iterator it = m_epdCategoryDataset.begin();
+			it != m_epdCategoryDataset.end(); ++it)
+		{
+			it->writeXML(child);
 		}
 	}
+
 	return e;
 }
 
