@@ -27,15 +27,15 @@
 
 namespace VICUS {
 
-EpdDataset EpdDataset::scaleByFactor(const double & factor) const {
-	EpdDataset epd = *this;
-	for(unsigned int i=0; i<NUM_P; ++i)
-		epd.m_para[i].value = factor * m_para[i].value; // no testing needed so straight forward
+VICUS::EpdDataset VICUS::EpdDataset::scaleByFactor(const double & factor) const {
+	VICUS::EpdDataset epd = *this;
+	for(unsigned int i=0; i<epd.m_epdCategoryDataset.size(); ++i) {
+		epd.m_epdCategoryDataset[i].scaleByFactor(factor);
+	}
 	return epd;
 }
 
-bool EpdDataset::behavesLike(const EpdDataset & other) const
-{
+bool EpdDataset::behavesLike(const EpdDataset & other) const {
 
 	if(m_referenceUnit != other.m_referenceUnit ||
 			m_referenceQuantity != other.m_referenceQuantity)
@@ -44,12 +44,20 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const
 	if(m_category != other.m_category)
 		return false;
 
-	for (unsigned int i=0; i<NUM_P; ++i) {
-		para_t t = static_cast<para_t>(i);
-		if(m_para[t].empty() && other.m_para[t].empty())
-			continue;
-		if(m_para[t] != other.m_para[t])
-			return false;
+	if(m_epdCategoryDataset.size() != other.m_epdCategoryDataset.size())
+		return false;
+
+	for(unsigned int i = 0; i<m_epdCategoryDataset.size(); ++i) {
+		const EpdCategoryDataset &ds      = m_epdCategoryDataset[i];
+		const EpdCategoryDataset &dsOther = other.m_epdCategoryDataset[i];
+
+		for (unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i) {
+			EpdCategoryDataset::para_t t = static_cast<EpdCategoryDataset::para_t>(i);
+			if(ds.m_para[t].empty() && dsOther.m_para[t].empty())
+				continue;
+			if(ds.m_para[t] != dsOther.m_para[t])
+				return false;
+		}
 	}
 
 	return true;
@@ -62,11 +70,15 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 		return Different;
 
 	//first check critical data
+	if(m_epdCategoryDataset.size() != otherEPD->m_epdCategoryDataset.size())
+		return Different;
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
-		if(m_para[i] != otherEPD->m_para[i])
-			return Different;
+	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i){
+		for(unsigned int j=0; j<EpdCategoryDataset::NUM_P; ++j){
+			if(m_epdCategoryDataset[i].m_para[j] != otherEPD->m_epdCategoryDataset[i].m_para[j])
+				return Different;
+		}
 	}
 	if(m_uuid != otherEPD->m_uuid ||
 			m_referenceUnit != otherEPD->m_referenceUnit||
@@ -90,14 +102,17 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 
 EpdDataset EpdDataset::operator+(const EpdDataset & epd) {
 	VICUS::EpdDataset addedEpd = *this;
-	for(unsigned int i=0; i<NUM_P; ++i)
-		addedEpd.m_para[i].value += epd.m_para[i].value;
+	for(unsigned int j=0; j<m_epdCategoryDataset.size(); ++j) {
+		for(unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i)
+			addedEpd.m_epdCategoryDataset[j].m_para[i].value += epd.m_epdCategoryDataset[j].m_para[i].value;
+	}
 	return addedEpd;
 }
 
 void EpdDataset::operator+=(const EpdDataset & epd) {
-	for(unsigned int i=0; i<NUM_P; ++i)
-		m_para[i].value += epd.m_para[i].value;
+//	for(unsigned int i=0; i<NUM_P; ++i) {
+//		m_para[i].value += epd.m_para[i].value;
+//	}
 }
 
 }

@@ -29,6 +29,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_EpdCategoryDataset.h"
 
 #include <QString>
 #include <QColor>
@@ -40,57 +41,6 @@ namespace VICUS {
 /*! TODO wait for implementation */
 class EpdDataset : public AbstractDBElement {
 public:
-	/*! Basic parameters. */
-	enum para_t {
-		//thermal paramters
-		/*! Mass of material in dependence to the area. */
-		P_AreaDensity,				// Keyword: AreaDensity				[kg/m2]	'mass of material in dependence of the area.'
-		/*! Dry density of the material. */
-		P_DryDensity,				// Keyword: Density					[kg/m3]	'Dry density of the material.'
-		/*! Global Warming Potential. */
-		P_GWP,						// Keyword: GWP						[kg]	'Global Warming Potential.'
-		/*! Depletion potential of the stratospheric ozone layer . */
-		P_ODP,						// Keyword: ODP						[kg]	'Depletion potential of the stratospheric ozone layer.'
-		/*! Photochemical Ozone Creation Potential . */
-		P_POCP,						// Keyword: POCP					[kg]	'Photochemical Ozone Creation Potential.'
-		/*! Acidification potential . */
-		P_AP,						// Keyword: AP						[kg]	'Acidification potential.'
-		/*! Eutrophication potential. */
-		P_EP,						// Keyword: EP						[kg]	'Eutrophication potential.'
-		/*! Total use of non-renewable primary energy resources. */
-		P_PENRT,					// Keyword: PENRT					[W/mK]	'Total use of non-renewable primary energy resources.'
-		/*! Total use of renewable primary energy resources . */
-		P_PERT,						// Keyword: PERT					[W/mK]	'Total use of renewable primary energy resources .'
-
-		NUM_P
-	};
-
-	//the most frequently used categories
-	enum Module {
-		M_A1,								// Keyword: A1
-		M_A2,								// Keyword: A2
-		M_A1_A2,							// Keyword: A1-A2
-		M_A3,								// Keyword: A3
-		M_A1_A3,							// Keyword: A1-A3
-		M_A4,								// Keyword: A4
-		M_A5,								// Keyword: A5
-		M_B1,								// Keyword: B1
-		M_B2,								// Keyword: B2
-		M_B3,								// Keyword: B3
-		M_B4,								// Keyword: B4
-		M_B5,								// Keyword: B5
-		M_B6,								// Keyword: B6
-		M_B7,								// Keyword: B7
-		M_C1,								// Keyword: C1
-		M_C2,								// Keyword: C2
-		M_C2_C3,							// Keyword: C2-C3
-		M_C2_C4,							// Keyword: C2-C4
-		M_C3,								// Keyword: C3
-		M_C3_C4,							// Keyword: C3-C4
-		M_C4,								// Keyword: C4
-		M_D,								// Keyword: D
-		NUM_M
-	};
 
 	enum Type {
 		T_Generic,							// Keyword: Generic
@@ -100,7 +50,6 @@ public:
 		T_Template,							// Keyword: Template
 		NUM_T
 	};
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 	VICUS_READWRITE_OVERRIDE
@@ -156,15 +105,8 @@ public:
 	/*! Sub type element. */
 	Type							m_type = NUM_T;							// XML:E:required
 
-	/*! Category type A1, A2, ... */
-	Module							m_module = NUM_M;						// XML:E:required
-
-	/*! List of parameters. */
-	IBK::Parameter					m_para[NUM_P];							// XML:E
-
-
-
-
+	/*! Vector with all category specific datasats. */
+	std::vector<EpdCategoryDataset> m_epdCategoryDataset;					// XML:E
 };
 
 }
