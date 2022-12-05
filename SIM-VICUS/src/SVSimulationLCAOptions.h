@@ -40,6 +40,7 @@ public:
 			m_area(0.0)
 		{
 			addArea(compInst);
+			m_additionalComponents.insert(m_component);
 		}
 
 		void addArea(const VICUS::ComponentInstance &compInst) {
@@ -200,6 +201,9 @@ private:
 	*/
 	void calculateTotalLcaDataForComponents();
 
+	/*! Reset all LCA Data. */
+	void resetLcaData();
+
 
 	void writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
 						   const AggregatedComponentData::Category & category);
@@ -230,8 +234,8 @@ private:
 	*/
 	std::set<unsigned int>								m_idComponentEpdUndefined;
 
-	/*! Copy of VICUS Project. */
-	VICUS::Project										m_prj;
+	/*! Reference to VICUS Project. */
+	const VICUS::Project								&m_prj;
 };
 
 #endif // SVSIMULATIONLCAOPTIONS_H

@@ -22,7 +22,8 @@
 SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettings & settings) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationLCAOptions),
-	m_lcaSettings(&settings)
+	m_lcaSettings(&settings),
+	m_prj(SVProjectHandler::instance().project())
 {
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
@@ -34,8 +35,6 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettin
 
 	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("R"),
 									SVSettings::instance().m_dontUseNativeDialogs);
-
-	m_prj = SVProjectHandler::instance().project();
 
 	m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
 
@@ -66,6 +65,9 @@ void SVSimulationLCAOptions::calculateLCA() {
 	/// 3) Global calculation means that layer data needs to be converted in a manner that it coresponds to reference unit
 	/// 4) Now calculate the final LCA Data for each component and material layer using converted material data and reference unit
 	/// 5) Aggregate data for each component type --> such as floor, etc.
+
+	// Reset all LCA Data from previous calculations.
+	resetLcaData();
 
 	// First we aggregate all data for used components
 	aggregateProjectComponents();
@@ -636,6 +638,15 @@ void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const s
 		QStringList lcaDataType;
 		const AggregatedComponentData &aggregatedTypeData = itAggregatedComp->second;
 
+		std::set<unsigned int> usedCompIds;
+		for(const VICUS::Component *comp : aggregatedTypeData.m_additionalComponents) {
+			if(m_idComponentEpdUndefined.find(comp->m_id) == m_idComponentEpdUndefined.end()) {
+				usedCompIds.insert(comp->m_id);
+			}
+		}
+		if(usedCompIds.empty())
+			continue;
+
 		lcaDataType << VICUS::KeywordList::Description("Component::ComponentType", aggregatedTypeData.m_component->m_type);
 		lcaDataType << "";
 		lcaDataType << QString::number(aggregatedTypeData.m_area);
@@ -651,11 +662,14 @@ void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const s
 
 			const AggregatedComponentData &aggregatedCompData = m_compIdToAggregatedData[comp->m_id];
 
+			if(usedCompIds.find(comp->m_id) == usedCompIds.end())
+				continue; // Skip unused ids
+
 			QStringList lcaData;
 
 			lcaData << "";
 			lcaData << QtExt::MultiLangString2QString(comp->m_displayName);
-			lcaData << QString::number(aggregatedTypeData.m_area);
+			lcaData << QString::number(aggregatedCompData.m_area);
 			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_GWP].get_value());
 			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_ODP].get_value());
 			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_POCP].get_value());
@@ -672,7 +686,7 @@ void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const s
 void SVSimulationLCAOptions::writeLcaDataToTxtFile(const IBK::Path &resultPath) {
 	std::ofstream lcaStream(resultPath.str());
 	// Write header
-	lcaStream << "Category\tComponent type\tComponent name\Area [m2]\tGWP (CO2-Äqu.) [kg/(m2a)\tODP (R11-Äqu.) [kg/(m2a)]\tPOCP (C2H4-Äqu.) [kg/(m2a)]\tAP (SO2-Äqu.) [kg/(m2a)]\tEP (PO4-Äqu.) [kg/(m2a)]" << std::endl;
+	lcaStream << "Category\tComponent type\tComponent name\tArea [m2]\tGWP (CO2-Äqu.) [kg/(m2a)\tODP (R11-Äqu.) [kg/(m2a)]\tPOCP (C2H4-Äqu.) [kg/(m2a)]\tAP (SO2-Äqu.) [kg/(m2a)]\tEP (PO4-Äqu.) [kg/(m2a)]" << std::endl;
 
 	writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
 	// writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
@@ -709,32 +723,43 @@ void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
 
 		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
 			const VICUS::Material &mat = *m_db->m_materials[matLayer.m_idMaterial];
-			const VICUS::EpdDataset &epdCatA = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryA];
-			const VICUS::EpdDataset &epdCatB = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryB];
-			const VICUS::EpdDataset &epdCatC = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryC];
-			const VICUS::EpdDataset &epdCatD = *m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryD];
+			const VICUS::EpdDataset *epdCatA = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryA];
+			const VICUS::EpdDataset *epdCatB = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryB];
+			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryC];
+			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryD];
 
 
 			// We do the unit conversion and handling to get all our reference units correctly managed
-			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryA]
-					= epdCatA.scaleByFactor(
-						conversionFactorEpdReferenceUnit(epdCatA.m_referenceUnit,
-														 mat, matLayer.m_thickness.get_value("m"), area));
-			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryB]
-					= epdCatB.scaleByFactor(
-						conversionFactorEpdReferenceUnit(epdCatB.m_referenceUnit,
-														 mat, matLayer.m_thickness.get_value("m"), area));
-			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryC]
-					= epdCatC.scaleByFactor(
-						conversionFactorEpdReferenceUnit(epdCatC.m_referenceUnit,
-														 mat, matLayer.m_thickness.get_value("m"), area));
-			itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryD]
-					= epdCatD.scaleByFactor(
-						conversionFactorEpdReferenceUnit(epdCatD.m_referenceUnit,
-														 mat, matLayer.m_thickness.get_value("m"), area));
+			if(epdCatA != nullptr)
+				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryA]
+						= epdCatA->scaleByFactor(
+							conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
+															 mat, matLayer.m_thickness.get_value("m"), area));
+			if(epdCatB != nullptr)
+				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryB]
+						= epdCatB->scaleByFactor(
+							conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
+															 mat, matLayer.m_thickness.get_value("m"), area));
+			if(epdCatC != nullptr)
+				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryC]
+						= epdCatC->scaleByFactor(
+							conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
+															 mat, matLayer.m_thickness.get_value("m"), area));
+			if(epdCatD != nullptr)
+				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryD]
+						= epdCatD->scaleByFactor(
+							conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
+															 mat, matLayer.m_thickness.get_value("m"), area));
 
 		}
 	}
+}
+
+
+void SVSimulationLCAOptions::resetLcaData() {
+	m_compIdToAggregatedData.clear();
+	m_typeToAggregatedCompData.clear();
+	m_idComponentEpdUndefined.clear();
 }
 
 
