@@ -48,7 +48,20 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="6">
+      <item row="1" column="5">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>1156</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" colspan="8">
        <widget class="QTableView" name="tableView">
         <property name="minimumSize">
          <size>
@@ -70,29 +83,26 @@
         </attribute>
        </widget>
       </item>
-      <item row="1" column="5">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>1156</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0">
-       <widget class="QToolButton" name="toolButtonAdd">
+      <item row="1" column="2">
+       <widget class="QToolButton" name="toolButtonRemove">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
         </property>
         <property name="iconSize">
          <size>
           <width>24</width>
           <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="lineEditFilter">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
          </size>
         </property>
        </widget>
@@ -117,17 +127,24 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QToolButton" name="toolButtonRemove">
+      <item row="1" column="0">
+       <widget class="QToolButton" name="toolButtonAdd">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
         </property>
         <property name="iconSize">
          <size>
           <width>24</width>
           <height>24</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Filter Name:</string>
         </property>
        </widget>
       </item>

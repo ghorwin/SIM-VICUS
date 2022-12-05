@@ -100,6 +100,10 @@ private slots:
 
 	void on_pushButtonRemoveUnusedElements_clicked();
 
+	void on_lineEditFilter_textEdited(const QString &filterString);
+
+	void on_lineEditFilter_editingFinished();
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.
@@ -143,6 +147,8 @@ private:
 	/*! The edit widget (owned). */
 	SVAbstractDatabaseEditWidget	*m_editWidget	= nullptr;
 	QWidget							*m_editWidgetContainerWidget = nullptr;
+
+	int								m_nameColumnIdx = -2;
 
 	friend class SVMainWindow;
 };

@@ -639,7 +639,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_networkControllers, duplicatePairs[DT_NetworkControllers]);
 	findDublicates(m_subNetworks, duplicatePairs[DT_SubNetworks]);
 	findDublicates(m_supplySystems, duplicatePairs[DT_SupplySystems]);
-	findDublicates(m_epdDatasets, duplicatePairs[DT_EPDDatasets]);
+	//findDublicates(m_epdDatasets, duplicatePairs[DT_EPDDatasets]);
 	findDublicates(m_schedules, duplicatePairs[DT_Schedules]);
 	findDublicates(m_internalLoads, duplicatePairs[DT_InternalLoads]);
 	findDublicates(m_zoneControlThermostat, duplicatePairs[DT_ZoneControlThermostat]);
@@ -995,6 +995,7 @@ void SVDatabase::removeLocalElements() {
 	m_materials.removeLocalElements();
 	m_constructions.removeLocalElements();
 	m_windows.removeLocalElements();
+	m_epdDatasets.removeLocalElements();
 	m_windowGlazingSystems.removeLocalElements();
 	m_boundaryConditions.removeLocalElements();
 	m_components.removeLocalElements();

@@ -173,6 +173,8 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_ui->tableView->setItemDelegate(dg);
 
 	m_ui->tableView->installEventFilter(this);
+
+
 }
 
 
@@ -743,5 +745,57 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 
 SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
 	return m_dbModel;
+}
+
+
+void SVDatabaseEditDialog::on_lineEditFilter_textEdited(const QString &filterString) {
+
+	// Store column idx of name column
+	if(m_nameColumnIdx == -2) {
+		bool foundCol = false;
+		int colCount = m_dbModel->columnCount();
+		for(int i=0; i<colCount; ++i) {
+			QString header = m_dbModel->headerData(i, Qt::Horizontal).toString();
+			if(header == "Name") {
+				m_nameColumnIdx = i;
+				foundCol = true;
+				break;
+			}
+		}
+		if(!foundCol)
+			m_nameColumnIdx = -1;
+	}
+
+	if(m_nameColumnIdx != -1) {
+		//m_proxyModel->setFilterWildcard(filterString);
+		//m_proxyModel->setFilterKeyColumn(m_nameColumnIdx);
+	}
+}
+
+
+void SVDatabaseEditDialog::on_lineEditFilter_editingFinished() {
+	QString filter = m_ui->lineEditFilter->text();
+
+	// Store column idx of name column
+	if(m_nameColumnIdx == -2) {
+		bool foundCol = false;
+		int colCount = m_dbModel->columnCount();
+		for(int i=0; i<colCount; ++i) {
+			QString header = m_dbModel->headerData(i, Qt::Horizontal).toString();
+			if(header == "Name") {
+				m_nameColumnIdx = i;
+				foundCol = true;
+				break;
+			}
+		}
+		if(!foundCol)
+			m_nameColumnIdx = -1;
+	}
+
+	if(m_nameColumnIdx != -1) {
+		m_proxyModel->setFilterWildcard(filter);
+		m_proxyModel->setFilterKeyColumn(m_nameColumnIdx);
+	}
+
 }
 
