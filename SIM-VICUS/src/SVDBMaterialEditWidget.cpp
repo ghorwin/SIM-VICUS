@@ -304,21 +304,21 @@ void SVDBMaterialEditWidget::on_toolButtonSelectCatA_clicked() {
 	if (idCatA != VICUS::INVALID_ID && idCatA != m_current->m_epdCategorySet.m_idCategoryA) {
 		VICUS::EpdDataset * epd = const_cast<VICUS::EpdDataset *>(m_db->m_epdDatasets[idCatA]);
 
-		if(epd->m_module != VICUS::EpdDataset::M_A1 &&
-				epd->m_module != VICUS::EpdDataset::M_A1_A2  &&
-				epd->m_module != VICUS::EpdDataset::M_A1_A3  &&
-				epd->m_module != VICUS::EpdDataset::M_A2  &&
-				epd->m_module != VICUS::EpdDataset::M_A3  &&
-				epd->m_module != VICUS::EpdDataset::M_A4  &&
-				epd->m_module != VICUS::EpdDataset::M_A5 )
-		{
-			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
-			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
-										   tr("You want to assign an EPD with Module '%1' to Category A.\n"
-											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
-										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
-				return;
-		}
+//		if(epd->m_module != VICUS::EpdDataset::M_A1 &&
+//				epd->m_module != VICUS::EpdDataset::M_A1_A2  &&
+//				epd->m_module != VICUS::EpdDataset::M_A1_A3  &&
+//				epd->m_module != VICUS::EpdDataset::M_A2  &&
+//				epd->m_module != VICUS::EpdDataset::M_A3  &&
+//				epd->m_module != VICUS::EpdDataset::M_A4  &&
+//				epd->m_module != VICUS::EpdDataset::M_A5 )
+//		{
+//			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+//			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+//										   tr("You want to assign an EPD with Module '%1' to Category A.\n"
+//											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+//										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+//				return;
+//		}
 
 		m_current->m_epdCategorySet.m_idCategoryA = idCatA;
 		modelModify();
@@ -334,21 +334,21 @@ void SVDBMaterialEditWidget::on_toolButtonSelectCatB_clicked() {
 	if (idCatB != VICUS::INVALID_ID && idCatB != m_current->m_epdCategorySet.m_idCategoryB) {
 		VICUS::EpdDataset * epd = const_cast<VICUS::EpdDataset *>(m_db->m_epdDatasets[idCatB]);
 
-		if(epd->m_module != VICUS::EpdDataset::M_B1 &&
-				epd->m_module != VICUS::EpdDataset::M_B2  &&
-				epd->m_module != VICUS::EpdDataset::M_B3  &&
-				epd->m_module != VICUS::EpdDataset::M_B4  &&
-				epd->m_module != VICUS::EpdDataset::M_B5  &&
-				epd->m_module != VICUS::EpdDataset::M_B6  &&
-				epd->m_module != VICUS::EpdDataset::M_B7 )
-		{
-			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
-			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
-										   tr("You want to assign an EPD with Module '%1' to Category B.\n"
-											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
-										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
-				return;
-		}
+//		if(epd->m_module != VICUS::EpdDataset::M_B1 &&
+//				epd->m_module != VICUS::EpdDataset::M_B2  &&
+//				epd->m_module != VICUS::EpdDataset::M_B3  &&
+//				epd->m_module != VICUS::EpdDataset::M_B4  &&
+//				epd->m_module != VICUS::EpdDataset::M_B5  &&
+//				epd->m_module != VICUS::EpdDataset::M_B6  &&
+//				epd->m_module != VICUS::EpdDataset::M_B7 )
+//		{
+//			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+//			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+//										   tr("You want to assign an EPD with Module '%1' to Category B.\n"
+//											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+//										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+//				return;
+//		}
 
 		m_current->m_epdCategorySet.m_idCategoryB = idCatB;
 		modelModify();
@@ -365,21 +365,21 @@ void SVDBMaterialEditWidget::on_toolButtonSelectCatC_clicked() {
 	if (idCatC != VICUS::INVALID_ID && idCatC != m_current->m_epdCategorySet.m_idCategoryB) {
 		VICUS::EpdDataset * epd = const_cast<VICUS::EpdDataset *>(m_db->m_epdDatasets[idCatC]);
 
-		if(epd->m_module != VICUS::EpdDataset::M_C1 &&
-				epd->m_module != VICUS::EpdDataset::M_C2 &&
-				epd->m_module != VICUS::EpdDataset::M_C2_C4 &&
-				epd->m_module != VICUS::EpdDataset::M_C2_C3 &&
-				epd->m_module != VICUS::EpdDataset::M_C3 &&
-				epd->m_module != VICUS::EpdDataset::M_C3_C4 &&
-				epd->m_module != VICUS::EpdDataset::M_C4 )
-		{
-			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
-			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
-										   tr("You want to assign an EPD with Module '%1' to Category C.\n"
-											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
-										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
-				return;
-		}
+//		if(epd->m_module != VICUS::EpdDataset::M_C1 &&
+//				epd->m_module != VICUS::EpdDataset::M_C2 &&
+//				epd->m_module != VICUS::EpdDataset::M_C2_C4 &&
+//				epd->m_module != VICUS::EpdDataset::M_C2_C3 &&
+//				epd->m_module != VICUS::EpdDataset::M_C3 &&
+//				epd->m_module != VICUS::EpdDataset::M_C3_C4 &&
+//				epd->m_module != VICUS::EpdDataset::M_C4 )
+//		{
+//			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+//			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+//										   tr("You want to assign an EPD with Module '%1' to Category C.\n"
+//											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+//										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+//				return;
+//		}
 
 
 		m_current->m_epdCategorySet.m_idCategoryC = idCatC;
@@ -396,15 +396,15 @@ void SVDBMaterialEditWidget::on_toolButtonSelectCatD_clicked() {
 	if (idCatD != VICUS::INVALID_ID && idCatD != m_current->m_epdCategorySet.m_idCategoryB) {
 		VICUS::EpdDataset * epd = const_cast<VICUS::EpdDataset *>(m_db->m_epdDatasets[idCatD]);
 
-		if(epd->m_module != VICUS::EpdDataset::M_D )
-		{
-			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
-			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
-										   tr("You want to assign an EPD with Module '%1' to Category D.\n"
-											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
-										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
-				return;
-		}
+//		if(epd->m_module != VICUS::EpdDataset::M_D )
+//		{
+//			std::string keyword = VICUS::KeywordList::Keyword("EPDDataset::Module", epd->m_module);
+//			if (QMessageBox::warning(this, tr("Material EPD Assignement"),
+//										   tr("You want to assign an EPD with Module '%1' to Category D.\n"
+//											  "Are you sure to do this?").arg(QString::fromStdString(keyword)),
+//										   QMessageBox::Yes | QMessageBox::Discard) == QMessageBox::Discard)
+//				return;
+//		}
 
 
 		m_current->m_epdCategorySet.m_idCategoryD = idCatD;
