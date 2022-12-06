@@ -9,12 +9,40 @@
 
 namespace QtExt {
 
+/*! Private container class for a widget with meta data. */
+class ToolBox::Page: public QWidget {
+public:
+
+	Page(QtExt::ClickableLabel *pageName, QtExt::ClickableLabel *arrowIcon, QtExt::ClickableLabel *icon, QWidget *widget, QFrame *frame, QWidget *parent):
+		m_label(pageName),
+		m_arrowIcon(arrowIcon),
+		m_icon(icon),
+		m_widget(widget),
+		m_frame(frame),
+		m_parent(parent)
+	{}
+
+	/*! Stores pointer to label, needed to toggle font weight */
+	QtExt::ClickableLabel		*m_label = nullptr;
+	/*! Stores pointer to arrow icon, neded to toggle icon. */
+	QtExt::ClickableLabel		*m_arrowIcon = nullptr;
+	/*! Stores pointer to icon. */
+	QtExt::ClickableLabel		*m_icon = nullptr;
+	/*! Stores pointer to widget, neded to toggle visibility */
+	QWidget						*m_widget = nullptr;
+	/*! Stores pointer to vertical frame */
+	QFrame						*m_frame = nullptr;
+	/*! Parent widget. */
+	QWidget						*m_parent = nullptr;
+};
+
+
 ToolBox::ToolBox(QWidget *parent):
 	QWidget(parent), m_layout(new QVBoxLayout(this))
 {
 	setLayout(m_layout);
 	m_layout->setContentsMargins(0,0,0,0);
-	m_layout->setSpacing(2);
+	m_layout->setSpacing(1);
 	m_arrowDown = QPixmap(":/gfx/master/arrow_down.png");
 	m_arrowRight = QPixmap(":/gfx/master/arrow_right.png");
 }
@@ -29,7 +57,7 @@ ToolBox::~ToolBox() {
 void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon, int headerFontSize) {
 
 	// create header layout and add arrow, icon (if existing) and label to it
-	QHBoxLayout *hLay = new QHBoxLayout(this);
+	QHBoxLayout *hLay = new QHBoxLayout(); // no parent pointer here!
 
 	ClickableLabel *labelArrow = new ClickableLabel(m_pages.size(), "", this);
 	labelArrow->setPixmap(m_arrowRight);
@@ -58,9 +86,9 @@ void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon
 	hFrame->setLayout(hLay);
 
 	// create vertical layout that contains the header frame and widget
-	QVBoxLayout *vLay = new QVBoxLayout(this);
+	QVBoxLayout *vLay = new QVBoxLayout();
 	vLay->addWidget(hFrame);
-	widget->layout()->setContentsMargins(20, 0, 10, 10);
+	widget->layout()->setContentsMargins(20, 0, 2, 2);
 	vLay->addWidget(widget);
 	vLay->setContentsMargins(2,2,2,2);
 
@@ -85,11 +113,15 @@ void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon
 	setCurrentIndex(0);
 }
 
+
 QWidget * ToolBox::widget(unsigned int index) const {
+	Q_ASSERT(index < m_pages.size());
 	return m_pages[index]->m_widget;
 }
 
+
 void ToolBox::setCurrentIndex(unsigned int index) {
+	Q_ASSERT(index < m_pages.size());
 	// Note: We first collapse everything and AFTER that expand the target widget.
 	// Otherwise we might have two widgets visible for a short moment, which could destroy the layout as there is not enough space.
 	for (Page *page: m_pages) {

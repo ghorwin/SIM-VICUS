@@ -47,32 +47,7 @@ signals:
 	void indexChanged(unsigned int currentIndex);
 
 private:
-	/*! Private container class for a widget with meta data. */
-	class Page: public QWidget {
-	public:
-
-		Page(QtExt::ClickableLabel *pageName, QtExt::ClickableLabel *arrowIcon, QtExt::ClickableLabel *icon, QWidget *widget, QFrame *frame, QWidget *parent):
-			m_label(pageName),
-			m_arrowIcon(arrowIcon),
-			m_icon(icon),
-			m_widget(widget),
-			m_frame(frame),
-			m_parent(parent)
-		{}
-
-		/*! Stores pointer to label, needed to toggle font weight */
-		QtExt::ClickableLabel		*m_label = nullptr;
-		/*! Stores pointer to arrow icon, neded to toggle icon. */
-		QtExt::ClickableLabel		*m_arrowIcon = nullptr;
-		/*! Stores pointer to icon. */
-		QtExt::ClickableLabel		*m_icon = nullptr;
-		/*! Stores pointer to widget, neded to toggle visibility */
-		QWidget						*m_widget = nullptr;
-		/*! Stores pointer to vertical frame */
-		QFrame						*m_frame = nullptr;
-		/*! Parent widget. */
-		QWidget						*m_parent = nullptr;
-	};
+	class Page;
 
 	/*! Stores pointer to all pages. */
 	std::vector<Page*>						m_pages;
