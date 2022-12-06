@@ -19,7 +19,13 @@ public:
 	explicit ClickableLabel(const QString &text="", QWidget* parent = Q_NULLPTR);
 	explicit ClickableLabel(int id, const QString &text="", QWidget* parent = Q_NULLPTR);
 
+	int id() const{
+		return m_id;
+	}
+
+	/*! Font weight when hovered */
 	QString m_hoverWeight = "bold";
+	/*! Default font weight */
 	QString m_normalWeight = "normal";
 
 	bool	m_active = false;
@@ -32,12 +38,12 @@ protected:
 	void mousePressEvent(QMouseEvent* event) override;
 
 	void enterEvent(QEvent */*ev*/) override {
-		setStyleSheet("QLabel { font-weight: bold }");
+		setStyleSheet(QString("QLabel { font-weight: %1 }").arg(m_hoverWeight));
 	}
 
 	void leaveEvent(QEvent *ev) override {
 		if (!m_active)
-			setStyleSheet("QLabel { font-weight: normal }");
+			setStyleSheet(QString("QLabel { font-weight: %1 }").arg(m_normalWeight));
 	}
 
 	int		m_id = -1;

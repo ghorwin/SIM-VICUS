@@ -3,9 +3,8 @@
 
 #include <QWidget>
 
-namespace QtExt {
-	class ClickableLabel;
-}
+#include "QtExt_ClickableLabel.h"
+
 
 class QVBoxLayout;
 class QFrame;
@@ -25,18 +24,46 @@ class ToolBox : public QWidget
 {
 	Q_OBJECT
 
+	struct Page: public QWidget {
+
+		Page(QtExt::ClickableLabel *pageName, QtExt::ClickableLabel *arrowIcon, QtExt::ClickableLabel *icon, QWidget *widget, QFrame *frame, QWidget *parent):
+			m_label(pageName),
+			m_arrowIcon(arrowIcon),
+			m_icon(icon),
+			m_widget(widget),
+			m_frame(frame),
+			m_parent(parent)
+		{}
+
+		/*! Stores pointer to label, needed to toggle font weight */
+		QtExt::ClickableLabel		*m_label = nullptr;
+		/*! Stores pointer to arrow icon, neded to toggle icon. */
+		QtExt::ClickableLabel		*m_arrowIcon = nullptr;
+		/*! Stores pointer to icon. */
+		QtExt::ClickableLabel		*m_icon = nullptr;
+		/*! Stores pointer to widget, neded to toggle visibility */
+		QWidget						*m_widget = nullptr;
+		/*! Stores pointer to vertical frame */
+		QFrame						*m_frame = nullptr;
+		/*! Parent widget. */
+		QWidget						*m_parent = nullptr;
+
+	};
+
+
 public:
+
 	explicit ToolBox(QWidget *parent = nullptr);
+	~ToolBox() override;
 
 	/*!
 	 * Adds a page with given header name, widget and custom icon
 	 */
-	void addPage(const QString & headerName, QWidget * widget, QIcon * icon = nullptr,
-				   QFont::Weight headerFontWeight = QFont::Bold, int headerFontSize=10);
+	void addPage(const QString & headerName, QWidget * widget, QIcon * icon = nullptr, int headerFontSize=10);
 
 	/*! Returns widget according to given index */
 	QWidget * widget(unsigned int index) const {
-		return m_widgets[index];
+		return m_pages[index]->m_widget;
 	}
 
 	/*! Set index from outside, triggers slot onLabelClicked() and thereby emits indexChanged() signal  */
@@ -53,19 +80,13 @@ signals:
 	void indexChanged(unsigned int currentIndex);
 
 private:
-	/*! Stores pointer to all widgets, neded to toggle visibility */
-	std::vector<QWidget*>					m_widgets;
-	/*! Stores pointer to all arrow icons, neded to toggle icon. Always has same length like m_widgets. */
-	std::vector<QtExt::ClickableLabel*>		m_arrowIcons;
-	std::vector<QtExt::ClickableLabel*>		m_labels;
-
-	std::vector<QFrame*>					m_frames;
-
-	/*! Holds the layout. */
+	/*! Stores pointer to all pages. */
+	std::vector<Page*>						m_pages;
+	/*! Stores pointer to layouts. */
 	QVBoxLayout								*m_layout;
-	/*! Stores collapsed arrow icon */
+	/*! Collapsed arrow icon */
 	QPixmap									m_arrowRight;
-	/*! Stores expanded arrow icon */
+	/*! Expanded arrow icon */
 	QPixmap									m_arrowDown;
 
 };
