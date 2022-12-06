@@ -19,11 +19,37 @@ namespace QtExt {
  * that also tells their given id.
  */
 
-class ToolBox : public QWidget
-{
+class ToolBox : public QWidget {
 	Q_OBJECT
 
-	struct Page: public QWidget {
+public:
+
+	explicit ToolBox(QWidget *parent = nullptr);
+	~ToolBox() override;
+
+	/*! Adds a page with given header name, widget and custom icon. */
+	void addPage(const QString & headerName, QWidget * widget, QIcon * icon = nullptr, int headerFontSize=10);
+
+	/*! Returns widget according to given index. */
+	QWidget * widget(unsigned int index) const;
+
+	/*! Set index from outside, does not emit indexChanged() signal. */
+	void setCurrentIndex(unsigned int index);
+
+	/*! Returns index of currently expanded page */
+	unsigned int currentIndex();
+
+public slots:
+	/*! Changes arrow icons and visibility of given page, connected to ClickableLabels */
+	void onLabelClicked();
+
+signals:
+	void indexChanged(unsigned int currentIndex);
+
+private:
+	/*! Private container class for a widget with meta data. */
+	class Page: public QWidget {
+	public:
 
 		Page(QtExt::ClickableLabel *pageName, QtExt::ClickableLabel *arrowIcon, QtExt::ClickableLabel *icon, QWidget *widget, QFrame *frame, QWidget *parent):
 			m_label(pageName),
@@ -46,43 +72,12 @@ class ToolBox : public QWidget
 		QFrame						*m_frame = nullptr;
 		/*! Parent widget. */
 		QWidget						*m_parent = nullptr;
-
 	};
 
-
-public:
-
-	explicit ToolBox(QWidget *parent = nullptr);
-	~ToolBox() override;
-
-	/*!
-	 * Adds a page with given header name, widget and custom icon
-	 */
-	void addPage(const QString & headerName, QWidget * widget, QIcon * icon = nullptr, int headerFontSize=10);
-
-	/*! Returns widget according to given index */
-	QWidget * widget(unsigned int index) const {
-		return m_pages[index]->m_widget;
-	}
-
-	/*! Set index from outside, triggers slot onLabelClicked() and thereby emits indexChanged() signal  */
-	void setCurrentIndex(unsigned int index);
-
-	/*! Returns index of currently expanded page */
-	unsigned int currentIndex();
-
-public slots:
-	/*! Changes arrow icons and visibility of given page, connected to ClickableLabels */
-	void onLabelClicked(unsigned int id);
-
-signals:
-	void indexChanged(unsigned int currentIndex);
-
-private:
 	/*! Stores pointer to all pages. */
 	std::vector<Page*>						m_pages;
 	/*! Stores pointer to layouts. */
-	QVBoxLayout								*m_layout;
+	QVBoxLayout								*m_layout = nullptr;
 	/*! Collapsed arrow icon */
 	QPixmap									m_arrowRight;
 	/*! Expanded arrow icon */

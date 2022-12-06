@@ -10,9 +10,8 @@
 namespace QtExt {
 
 ToolBox::ToolBox(QWidget *parent):
-	QWidget{parent}
+	QWidget(parent), m_layout(new QVBoxLayout(this))
 {
-	m_layout = new QVBoxLayout(this);
 	setLayout(m_layout);
 	m_arrowDown = QPixmap(":/gfx/master/arrow_down.png");
 	m_arrowRight = QPixmap(":/gfx/master/arrow_right.png");
@@ -73,40 +72,35 @@ void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon
 	m_pages.push_back(page);
 
 	// add connections
-	connect(labelArrow, qOverload<int>(&ClickableLabel::clicked),
-			this, &ToolBox::onLabelClicked);
-	connect(labelPageName, qOverload<int>(&ClickableLabel::clicked),
-			this, &ToolBox::onLabelClicked);
+	connect(labelArrow, &ClickableLabel::clicked, this, &ToolBox::onLabelClicked);
+	connect(labelPageName, &ClickableLabel::clicked, this, &ToolBox::onLabelClicked);
 	if (labelIcon != nullptr)
-		connect(labelIcon, qOverload<int>(&ClickableLabel::clicked),
-				this, &ToolBox::onLabelClicked);
+		connect(labelIcon, &ClickableLabel::clicked, this, &ToolBox::onLabelClicked);
 
 	// update
-	onLabelClicked(0);
+	setCurrentIndex(0);
 }
 
-
-void ToolBox::setCurrentIndex(unsigned int index){
-	onLabelClicked(index);
+QWidget * ToolBox::widget(unsigned int index) const {
+	return m_pages[index]->m_widget;
 }
 
-
-void ToolBox::onLabelClicked(unsigned int index) {
-
+void ToolBox::setCurrentIndex(unsigned int index) {
 	// Note: We first collapse everything and AFTER that expand the target widget.
 	// Otherwise we might have two widgets visible for a short moment, which could destroy the layout as there is not enough space.
 	for (Page *page: m_pages) {
-		page->m_label->setStyleSheet("QLabel { font-weight: normal }");
-		page->m_label->m_active = false;
 		page->m_widget->setVisible(false);
 		page->m_arrowIcon->setPixmap(m_arrowRight);
 	}
 
-	m_pages[index]->m_label->setStyleSheet("QLabel { font-weight: bold }");
-	m_pages[index]->m_label->m_active = true;
 	m_pages[index]->m_widget->setVisible(true);
 	m_pages[index]->m_arrowIcon->setPixmap(m_arrowDown);
+}
 
+
+void ToolBox::onLabelClicked() {
+	int index = qobject_cast<ClickableLabel*>(sender())->id();
+	setCurrentIndex(index);
 	emit indexChanged(index);
 }
 
