@@ -580,9 +580,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			if (mouseDelta != QPoint(0,0)) {
 
 				if( SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-					// updated rubberband
-					m_rubberbandObject.setViewport(m_viewPort);
-					m_rubberbandObject.setRubberband(QVector3D(localMousePos.x(), localMousePos.y(), 0));
+					// update rubberband
+					m_rubberbandObject.setRubberband(m_viewPort, QVector3D(localMousePos.x(), localMousePos.y(), 0));
 
 					return true;
 				}
@@ -1248,15 +1247,13 @@ void Scene::render() {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDisable(GL_DEPTH_TEST);
 
-		// float scalefac = SVSettings::instance().m_ratio;
+		// TODO : we don't really need a transformation matrix and can just use a shader without transform
 		QMatrix4x4 mat;
 		mat.setToIdentity();
 		mat.ortho(  -m_viewPort.width()/2,  m_viewPort.width()/2, -m_viewPort.height()/2, m_viewPort.height()/2, -1.0f, 1.0f );
 
 		m_rubberbandShader->bind();
 		m_rubberbandShader->shaderProgram()->setUniformValue(m_rubberbandShader->m_uniformIDs[0], mat);
-		m_rubberbandObject.setViewport(m_viewPort);
-		//m_rubberbandObject.setRubberband(QVector3D(0, 0, 0), QVector3D(m_viewPort.width()/2, m_viewPort.height()/2,0));
 		m_rubberbandObject.render();
 		m_rubberbandShader->release();
 
@@ -2271,6 +2268,7 @@ void Scene::leaveCoordinateSystemTranslationMode(bool abort) {
 	setDefaultViewState();
 }
 
+
 void Scene::enterRubberbandMode() {
 	// begin rubberband
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -2279,6 +2277,7 @@ void Scene::enterRubberbandMode() {
 
 	qDebug() << "Start rubberband selection.";
 }
+
 
 void Scene::leaveRubberbandMode() {
 	qDebug() << "Finishing rubberband selection.";

@@ -89,13 +89,10 @@ public:
 	void setStartPoint(const QVector3D &topLeft);
 
 	/*! Set bottom right end point of rubberband. */
-	void setRubberband(const QVector3D &bottomRight);
+	void setRubberband(const QRect & viewport, const QVector3D &bottomRight);
 
 	/*! Converts a QVector3D to an ClipperLib Int-Point. */
 	ClipperLib::IntPoint toClipperIntPoint(const QVector3D &p);
-
-	/*! Updates the viewport rect of scene. */
-	void setViewport(const QRect &viewport);
 
 	/*! Selects Objects based on rubberband.
 		And also pushws the undo-action.
