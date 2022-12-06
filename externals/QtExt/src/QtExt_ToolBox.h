@@ -13,9 +13,8 @@ namespace QtExt {
 
 /*!
  * \brief The ToolBox class implements a widget similar to QToolBox with some more flexibility and custom style.
- * Basically, this class holds multiple pages (given as QWidgets) that can be expanded/collapsed. The idea of this class
- * is that only ONE page is expanded at a time. Each page contains a header with collapsed/expanded arrow icon. An additional
- * icon can be added to the header as well. Each page has a unique id that needs to be provided when adding the widget.
+ * Basically, this class holds multiple pages that can be expanded/collapsed. The idea of this class is that only ONE page is expanded at a time.
+ * Each page contains a header with collapsed/expanded arrow icon. An additional icon can be added to the header as well.
  * Header label and icons are all QtExt::ClickableLabels, so they have no click animation but still emit a clicked(id) signal
  * that also tells their given id.
  */
