@@ -26,7 +26,16 @@ ClickableLabel::ClickableLabel(int id, const QString & text, QWidget* parent):
 void ClickableLabel::setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet) {
 	m_normalStyleSheet = normalStyleSheet;
 	m_hoverStyleSheet = hoverStyleSheet;
-	if (m_hovered)
+	if (m_active)
+		QLabel::setStyleSheet(m_hoverStyleSheet);
+	else
+		QLabel::setStyleSheet(m_normalStyleSheet);
+}
+
+
+void ClickableLabel::setActive(bool active) {
+	m_active = active;
+	if (m_active)
 		QLabel::setStyleSheet(m_hoverStyleSheet);
 	else
 		QLabel::setStyleSheet(m_normalStyleSheet);
@@ -43,15 +52,14 @@ void ClickableLabel::mousePressEvent(QMouseEvent * event) {
 
 void ClickableLabel::enterEvent(QEvent * ev) {
 	QLabel::enterEvent(ev);
-	m_hovered = true;
 	QLabel::setStyleSheet(m_hoverStyleSheet);
 }
 
 
 void ClickableLabel::leaveEvent(QEvent *ev) {
 	QLabel::leaveEvent(ev);
-	m_hovered = false;
-	QLabel::setStyleSheet(m_normalStyleSheet);
+	if (!m_active)
+		QLabel::setStyleSheet(m_normalStyleSheet);
 }
 
 

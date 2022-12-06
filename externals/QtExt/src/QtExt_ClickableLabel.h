@@ -18,15 +18,17 @@ public:
 	explicit ClickableLabel(int id, const QString &text="", QWidget* parent = Q_NULLPTR);
 
 	unsigned int id() const { return m_id; }
-	bool isHovered() const { return m_hovered; }
 
 	void setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet);
+
+	/*! Switches button to active mode and set the "hovered" style sheet, even if mouse leaves label. */
+	void setActive(bool active);
 
 signals:
 	/*! Emitted when user left-clicks in label.
 		\code
-		// retrieve ID of clicked label
-		int labelId = qobject_cast<ClickableLabel>(sender())->id();
+		// retrieve ID of clicked label in slot
+		int labelId = qobject_cast<ClickableLabel*>(sender())->id();
 		\endcode
 	*/
 	void clicked();
@@ -42,7 +44,7 @@ protected:
 private:
 	unsigned int		m_id		= -1;
 
-	bool				m_hovered	= false;
+	bool				m_active	= false;
 
 	/*! Regular style-sheet. */
 	QString				m_normalStyleSheet;

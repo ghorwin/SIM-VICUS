@@ -13,14 +13,18 @@ ToolBox::ToolBox(QWidget *parent):
 	QWidget(parent), m_layout(new QVBoxLayout(this))
 {
 	setLayout(m_layout);
+	m_layout->setContentsMargins(0,0,0,0);
+	m_layout->setSpacing(2);
 	m_arrowDown = QPixmap(":/gfx/master/arrow_down.png");
 	m_arrowRight = QPixmap(":/gfx/master/arrow_right.png");
 }
+
 
 ToolBox::~ToolBox() {
 	for (Page *page: m_pages)
 		delete page;
 }
+
 
 void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon, int headerFontSize) {
 
@@ -91,10 +95,12 @@ void ToolBox::setCurrentIndex(unsigned int index) {
 	for (Page *page: m_pages) {
 		page->m_widget->setVisible(false);
 		page->m_arrowIcon->setPixmap(m_arrowRight);
+		page->m_label->setActive(false);
 	}
 
 	m_pages[index]->m_widget->setVisible(true);
 	m_pages[index]->m_arrowIcon->setPixmap(m_arrowDown);
+	m_pages[index]->m_label->setActive(true);
 }
 
 
