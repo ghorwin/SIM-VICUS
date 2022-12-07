@@ -1,5 +1,5 @@
-#ifndef QTEXT_TOOLBOXH
-#define QTEXT_TOOLBOXH
+#ifndef QtExt_ToolBoxH
+#define QtExt_ToolBoxH
 
 #include <QWidget>
 
@@ -11,14 +11,12 @@ class QFrame;
 
 namespace QtExt {
 
-/*!
- * \brief The ToolBox class implements a widget similar to QToolBox with some more flexibility and custom style.
- * Basically, this class holds multiple pages that can be expanded/collapsed. The idea of this class is that only ONE page is expanded at a time.
- * Each page contains a header with collapsed/expanded arrow icon. An additional icon can be added to the header as well.
- * Header label and icons are all QtExt::ClickableLabels, so they have no click animation but still emit a clicked(id) signal
- * that also tells their given id.
- */
-
+/*! The ToolBox class implements a widget similar to QToolBox with some more flexibility and custom style.
+	Basically, this class holds multiple pages that can be expanded/collapsed. The idea of this class is that only ONE page is expanded at a time.
+	Each page contains a header with collapsed/expanded arrow icon. An additional icon can be added to the header as well.
+	Header label and icons are all QtExt::ClickableLabels, so they have no click animation but still emit a clicked(id) signal
+	that also tells their given id.
+*/
 class ToolBox : public QWidget {
 	Q_OBJECT
 
@@ -39,7 +37,7 @@ public:
 	/*! Returns index of currently expanded page */
 	unsigned int currentIndex();
 
-public slots:
+private slots:
 	/*! Changes arrow icons and visibility of given page, connected to ClickableLabels */
 	void onLabelClicked();
 
@@ -62,4 +60,4 @@ private:
 
 } // namespace QtExt
 
-#endif // QTEXT_TOOLBOXH
+#endif // QtExt_ToolBoxH

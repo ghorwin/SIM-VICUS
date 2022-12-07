@@ -1,5 +1,5 @@
-#ifndef QTEXT_CLICKABLELABELH
-#define QTEXT_CLICKABLELABELH
+#ifndef QtExt_ClickableLabelH
+#define QtExt_ClickableLabelH
 
 #include <QWidget>
 #include <QLabel>
@@ -55,4 +55,4 @@ private:
 } // namespace QtExt
 
 
-#endif // QTEXT_CLICKABLELABELH
+#endif // QtExt_ClickableLabelH
