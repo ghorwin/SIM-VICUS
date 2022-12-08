@@ -478,7 +478,7 @@ void SVSmartSelectDialog::updateButtonsAndListWidget() {
 
 		QListWidgetItem *item = new QListWidgetItem(o.m_name);
 		item->setFlags(item->flags() & ~Qt::ItemIsUserCheckable);
-		item->setData(Qt::UserRole, o.m_options.size());
+		item->setData(Qt::UserRole, (int)o.m_options.size());
 		QFont fnt;
 		if (o.m_options.size() > 0)
 			fnt.setWeight(QFont::Bold);
