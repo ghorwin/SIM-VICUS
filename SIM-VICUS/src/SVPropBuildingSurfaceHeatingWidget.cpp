@@ -50,7 +50,7 @@ SVPropBuildingSurfaceHeatingWidget::~SVPropBuildingSurfaceHeatingWidget() {
 }
 
 
-void SVPropBuildingSurfaceHeatingWidget::updateUi() {
+void SVPropBuildingSurfaceHeatingWidget::updateUi(bool onlySelectionModified) {
 
 	// get list of selected surfaces
 	std::vector<const VICUS::Surface*> surfs;
@@ -85,9 +85,11 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->comboBoxSurfaceHeatingComponentFilter->setCurrentIndex(selectedIndex);
 	m_ui->comboBoxSurfaceHeatingComponentFilter->blockSignals(false);
 
-	m_ui->tableWidgetSurfaceHeating->blockSignals(true);
-	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
-	m_ui->tableWidgetSurfaceHeating->setRowCount(0);
+	if (!onlySelectionModified) {
+		m_ui->tableWidgetSurfaceHeating->blockSignals(true);
+		m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
+		m_ui->tableWidgetSurfaceHeating->setRowCount(0);
+	}
 
 
 	// process all component instances
@@ -128,6 +130,10 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 			if (ci.m_idSurfaceHeating != VICUS::INVALID_ID)
 				selectedSurfaceHeatingCI.insert(&ci);
 		}
+
+		// we dont update the entire table widget when only the selection has been modified
+		if (onlySelectionModified)
+			continue;
 
 		// add new row
 		int row = m_ui->tableWidgetSurfaceHeating->rowCount();
@@ -209,10 +215,14 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 			item->setData(Qt::UserRole, ci.m_idSupplySystem);
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 5, item);
-	}
-	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
-	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
 
+	} // end of for loop
+
+
+	if (!onlySelectionModified) {
+		m_ui->tableWidgetSurfaceHeating->blockSignals(false);
+		m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
+	}
 
 	// enable/disable selection-based buttons
 	on_tableWidgetSurfaceHeating_itemSelectionChanged();
@@ -234,9 +244,8 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 }
 
 
-
 void SVPropBuildingSurfaceHeatingWidget::on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int /*index*/) {
-	updateUi();
+	updateUi(false);
 }
 
 

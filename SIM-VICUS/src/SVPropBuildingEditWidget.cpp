@@ -110,7 +110,7 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		break;
 
 		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
-			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi();
+			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(false);
 			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
 		break;
 
@@ -166,7 +166,7 @@ void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
 	dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->toolBox->widget(BT_BoundaryConditions))->updateUi();
 	dynamic_cast<SVPropBuildingSurfaceConnectionWidget*>(m_ui->toolBox->widget(BT_SurfaceConnection))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->toolBox->widget(BT_ZoneTemplates))->updateUi();
-	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi();
+	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->toolBox->widget(BT_SupplySystems))->updateUi();
 	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
