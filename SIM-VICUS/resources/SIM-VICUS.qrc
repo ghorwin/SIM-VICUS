@@ -113,5 +113,7 @@
         <file>gfx/actions/copy_building.png</file>
         <file>gfx/actions/misc_operations.png</file>
         <file>gfx/actions/SmartSelect.png</file>
+        <file>gfx/actions/24x24/arrow-right-grey.png</file>
+        <file>gfx/actions/24x24/arrow-source-grey.png</file>
     </qresource>
 </RCC>

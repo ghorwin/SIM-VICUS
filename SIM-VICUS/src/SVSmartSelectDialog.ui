@@ -7,17 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>706</width>
-    <height>481</height>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Smart object selection</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidgetGroup">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>true</bool>
@@ -30,47 +30,17 @@
        <string>Building objects</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayoutBuildings">
-       <item row="2" column="0">
-        <layout class="QVBoxLayout" name="verticalLayoutOptions">
-         <item>
-          <widget class="QPushButton" name="pushButtonDummy">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="1">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelFilterInfo">
+         <property name="text">
+          <string>TextLabel</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>570</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="1" column="0" colspan="3">
         <layout class="QHBoxLayout" name="horizontalLayoutBreadCrums">
          <item>
-          <widget class="QPushButton" name="pushButtonReset">
+          <widget class="QToolButton" name="toolButtonReset">
            <property name="toolTip">
             <string>Resets all filters.</string>
            </property>
@@ -79,7 +49,7 @@
            </property>
            <property name="icon">
             <iconset resource="../resources/SIM-VICUS.qrc">
-             <normaloff>:/gfx/actions/24x24/right.png</normaloff>:/gfx/actions/24x24/right.png</iconset>
+             <normaloff>:/gfx/actions/24x24/arrow-source-grey.png</normaloff>:/gfx/actions/24x24/arrow-source-grey.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -104,12 +74,8 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="labelFilterInfo">
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
+       <item row="2" column="0" colspan="3">
+        <widget class="QListWidget" name="listWidgetOptions"/>
        </item>
       </layout>
      </widget>
@@ -243,6 +209,26 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="checkBoxFilterBoundaryCondition">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>filter for boundary condition</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxBoundaryCondition"/>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -259,6 +245,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources>
