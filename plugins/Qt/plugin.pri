@@ -75,13 +75,13 @@ equals(TEMPLATE,lib) {
 
 	CONFIG(debug, debug|release) {
 		OBJECTS_DIR = debug$${DIR_PREFIX}
-		DESTDIR = ../../bin/debug$${DIR_PREFIX}/plugins
-		DLLDESTDIR = ../../bin/debug$${DIR_PREFIX}/plugins
+		DESTDIR = $$PWD/../../bin/debug$${DIR_PREFIX}/plugins/$$TARGET
+		DLLDESTDIR = $$PWD/../../bin/debug$${DIR_PREFIX}/plugins/$$TARGET
 	}
 	else {
 		OBJECTS_DIR = release$${DIR_PREFIX}
-		DESTDIR = ../../bin/release$${DIR_PREFIX}/plugins
-		DLLDESTDIR = ../../bin/release$${DIR_PREFIX}/plugins
+		DESTDIR = $$PWD/../../bin/release$${DIR_PREFIX}/plugins/$$TARGET
+		DLLDESTDIR = $$PWD/../../bin/release$${DIR_PREFIX}/plugins/$$TARGET
 	}
 
 	# using of shared libs only for non MC compiler

@@ -92,6 +92,7 @@
 #include "SVView3DDialog.h"
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
+#include "SVPluginLoader.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -141,6 +142,7 @@ void SVMainWindow::addUndoCommand(QUndoCommand * command) {
 SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_ui(new Ui::SVMainWindow),
 	m_undoStack(new QUndoStack(this)),
+	m_pluginLoader(new SVPluginLoader),
 	m_postProcHandler(new SVPostProcHandler),
 	m_viewStateHandler(new SVViewStateHandler)
 {
@@ -177,6 +179,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 SVMainWindow::~SVMainWindow() {
 	delete m_ui;
 	delete m_undoStack;
+	delete m_pluginLoader;
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
 
@@ -1813,6 +1816,7 @@ void SVMainWindow::setupDockWidgets() {
 
 
 void SVMainWindow::setupPlugins() {
+	m_pluginLoader->loadPlugins();
 
 }
 
