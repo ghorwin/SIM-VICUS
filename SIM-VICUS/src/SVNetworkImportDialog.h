@@ -55,37 +55,71 @@ private slots:
 
 	void on_radioButtonAddToExistingNetwork_clicked(bool checked);
 
-	void on_pushButtonSelectPipelineFile_clicked();
-
+	/*! Imports the pipeline with the selected inputs*/
 	void on_pushButtonImportPipeline_clicked();
 
-	void on_pushButtonSelectSubStationFile_clicked();
-
+	/*! Imports the substation with the selected inputs*/
 	void on_pushButtonImportSubStation_clicked();
 
+	/*! Opens a dialog to select the available pipes and saves the ids in m_availablePipes*/
 	void on_pushButtonSelectAvailablePipes_clicked();
 
+	/*! Opens a dialog to select the default pipe and saves the selected id in m_defaultPipe*/
 	void on_pushButtonSelectDefaultPipe_clicked();
+
+	/*! triggers a check if the import button for pipelines should be enables*/
+	void on_lineEditPipelineFileName_editingFinished();
+
+	/*! triggers a check if the import button for substations should be enabled*/
+	void on_lineEditMaxHeatingDemand_editingFinished();
+
+	/*! triggers a check if the import button for substations should be enabled*/
+	void on_lineEditSubStationFileName_editingFinished();
 
 private:
 
 	//stores the selected default pipe for pipe network import
-	const VICUS::NetworkPipe * m_defaultPipe = nullptr;
+	unsigned int m_defaultPipeId = VICUS::INVALID_ID;
 
-	/*! hier die dokumentation */
+	/*! stores the available Pipes for the imprt that the user has selected */
 	std::vector<unsigned int> m_availablePipes;
 
-	// TODO Anton: enums haben bei uns immer das Bennungsschema "Akronym_Name" wobei Akronym den enum Namen abkürzt. In dem Fall: IT_Pipeline und IT_Substation (IT für ImportType)
 	enum ImportType {
-		Pipeline,
-		SubStation,
+		IT_Pipeline,
+		IT_SubStation,
+		NUM_IT
 	};
 
 	/*! Toggles enable state of line edit, combobox */
 	void toggleExistingOrNewNetwork(bool readExisting);
 
+	/*! reads the json contents of the filepath and stores them in obj */
+	void convert2QJsonObject(const IBK::Path &filePath, QJsonObject &obj) const;
+
 	/*! Reads either a geoJSON or csv file of either pipeline data or sub stations (based on given importType) and adds that to given network */
 	void readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId, ImportType importType) const;
+
+	/*! reads csv-files from QGIS with multiple rows, containing "MULTILINESTRING"s and adds according nodes/edges to the network.
+		Lines that share a common node (identical coordinates) are automatically connected.
+	*/
+	void readGridFromCSV(VICUS::Network & network, const IBK::Path &filePath, unsigned int nextId) const;
+
+	/*! reads geoJson-file and adds according nodes/edges to the network.
+		Lines that share a common node (identical coordinates) are automatically connected.
+	*/
+	void readGridFromGeoJson(VICUS::Network & network, const QJsonObject & jsonObj, unsigned int nextId) const;
+
+	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.*/
+	void readBuildingsFromCSV(VICUS::Network & network, const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) const;
+
+	/*! reads geoJson-file and adds according nodes of type NT_BUILDING to the network*/
+	void readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &heatDemand, unsigned int nextId) const;
+
+	/*! checks if the file name is set and a default pipe is selected and enables/disables the import button*/
+	void checkIfPipelineImportIsEnabled();
+
+	/*! checks if the file name is set and the max heating demand is greater 0 and enables/disables the import button*/
+	void checkIfSubStationImportIsEnabled();
 
 	QString uniqueName(const QString & name);
 

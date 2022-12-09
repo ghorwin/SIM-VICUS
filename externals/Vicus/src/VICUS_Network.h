@@ -117,28 +117,6 @@ public:
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
 	unsigned int addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
-	/*! reads csv-files from QGIS with multiple rows, containing "MULTILINESTRING"s and adds according nodes/edges to the network.
-		Lines that share a common node (identical coordinates) are automatically connected.
-	*/
-	void readGridFromCSV(const IBK::Path & filePath, unsigned int nextId);
-
-	/*! reads geoJson-files
-	 *  adds according nodes/edges to the network.
-		Lines that share a common node (identical coordinates) are automatically connected.
-	*/
-	void readGridFromGeoJson(const IBK::Path & filePath, unsigned int nextId, unsigned int defaultPipeId, const Database<NetworkPipe> &pipeDB);
-
-	void readBuildingsFromGeoJson(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId);
-
-	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.
-	*/
-	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand, unsigned int nextId);
-
-	QJsonObject exportGridToGeoJson(const Database<NetworkPipe> &pipeDB);
-
-	QJsonObject exportBuildingToGeoJson();
-
-
 	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
 	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & addedNodes, std::vector<unsigned int> & addedEdges);
 

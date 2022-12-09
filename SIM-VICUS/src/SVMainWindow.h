@@ -343,8 +343,6 @@ private slots:
 
 	void on_actionEditProjectNotes_triggered();
 
-	void on_actionExport_Network_as_GeoJson_triggered();
-
 	void on_actionExportNetworkAsGeoJson_triggered();
 
 private:

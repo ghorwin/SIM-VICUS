@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QMap>
 
+#include <VICUS_Network.h>
+
 namespace Ui {
 class SVNetworkExportDialog;
 }
@@ -18,14 +20,28 @@ public:
 	bool edit();
 
 private slots:
-	void on_pushButtonExport_clicked();
 
-	void on_pushButtonSelectFileLocation_clicked();
+	void on_checkBoxExportPipeline_toggled(/*bool checked*/);
+
+	void on_checkBoxExportSubStation_toggled(/*bool checked*/);
+
+	/*! triggers a check if the export button should be enabled*/
+	void on_lineEditExportFileName_editingFinished();
+
+	/*! triggers exportToGeoJson and a file will be written*/
+	void on_buttonBox_accepted();
 
 private:
 	Ui::SVNetworkExportDialog * m_ui;
 
 	QMap<QString, unsigned> m_existingNetworksMap;
+
+	/*! reads the given network and saves its features in geoJson format*/
+	void exportToGeoJson(VICUS::Network & network);
+
+	/*! checks if a file name is set and if at least one checkbox is checked*/
+	void checkIfExportIsReady();
+
 };
 
 #endif // SVNETWORKEXPORTDIALOG_H

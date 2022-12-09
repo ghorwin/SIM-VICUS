@@ -2,8 +2,20 @@
 
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>
+
+#include <QFile>
+#include <QJsonParseError>
 #include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonParseError>
+#include <QJsonValue>
+
+#include <QPushButton>
+
+#include <IBKMK_UTM.h>
+
 #include <fstream>
+
 #include "SVProjectHandler.h"
 #include "SVNetworkExportDialog.h"
 #include "ui_SVNetworkExportDialog.h"
@@ -26,6 +38,7 @@ bool SVNetworkExportDialog::edit() {
 	// store pointer to network for dialog functions to access
 	const VICUS::Project &p = project();
 
+	m_ui->lineEditExportFileName->setup("", true, false, tr("GeoJson-Files (*.geojson)"),SVSettings::instance().m_dontUseNativeDialogs);
 
 	// update existing networks combobox
 	m_ui->comboBoxNetworkSelection->clear();
@@ -34,21 +47,130 @@ bool SVNetworkExportDialog::edit() {
 		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
 			m_existingNetworksMap.insert(it->m_displayName, it->m_id);
 		m_ui->comboBoxNetworkSelection->addItems(QStringList(m_existingNetworksMap.keys()));
-		m_ui->pushButtonExport->setEnabled(true);
-	} else {
-		m_ui->pushButtonExport->setEnabled(false);
 	}
+
+	checkIfExportIsReady();
+
+	//setup the UTM Zone combobox
+	QStringList texts;
+	for(int i = 0; i < 60; i++){
+		texts.append(QString().fromStdString(std::to_string(i)));
+	}
+	m_ui->comboBoxUTMZone->clear();
+	m_ui->comboBoxUTMZone->addItems(texts);
+	m_ui->comboBoxUTMZone->setCurrentIndex(32);
 
 	return exec();
 }
 
-void SVNetworkExportDialog::on_pushButtonExport_clicked() {
-	unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelection->currentText());
-	VICUS::Network network = *VICUS::element(project().m_geometricNetworks, id);
-	// how to determine if it is a building or a grid?
-	IBK::Path exportFile(m_ui->lineEditExportFileName->text().toStdString());
-	QJsonObject root = network.exportGridToGeoJson(SVSettings::instance().m_db.m_pipes);
-	QByteArray ba = QJsonDocument(root).toJson();
+void SVNetworkExportDialog::exportToGeoJson(VICUS::Network & network) {
+
+	VICUS::Database<VICUS::NetworkPipe> &pipeDB = SVSettings::instance().m_db.m_pipes;
+
+	QJsonObject jsonFile;
+	// fill with meta data
+	jsonFile["type"] = "FeatureCollection";
+	jsonFile["name"] = network.m_displayName;
+	QJsonObject crs;
+	crs["type"] = "name";
+	QJsonObject namedCrs;
+	namedCrs["name"] = "urn:ogc:def:crs:OGC:1.3:CRS84"; //standard crs
+	crs["properties"] = namedCrs;
+	jsonFile["crs"] = crs;
+
+	QJsonArray features;
+	int featureId = 0;
+
+	// export the pipeline edge by edge if selected
+	if(m_ui->checkBoxExportPipeline){
+		for(const VICUS::NetworkEdge & edge : network.m_edges){
+			QJsonObject feature;
+			feature["feature"] = "Feature";
+			QJsonObject properties;
+			properties["id"] = featureId;
+			properties["part"] = QString::number(featureId++);
+
+			double pipeThickness = pipeDB[edge.m_idPipe]->m_para[VICUS::NetworkPipe::P_DiameterOutside].get_value("mm");
+			properties["da"] = pipeThickness;
+
+			feature["properties"] = properties;
+			QJsonObject geometry;
+			geometry["type"] = "LineString";
+
+			QJsonArray coordinates;
+			// each feature contains coordinates of the node of one edge
+			QJsonArray coordinate1;
+			QJsonArray coordinate2;
+
+			const VICUS::NetworkNode * node1 = edge.m_node1;
+			const VICUS::NetworkNode * node2 = edge.m_node2;
+
+			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+			bool isSouthern = m_ui->radioButtonSouthern->isChecked();
+
+			double lat1, lon1;
+			double x1 = node1->m_position.m_x + network.m_origin.m_x;
+			double y1 = node1->m_position.m_y + network.m_origin.m_y;
+			IBKMK::UTMXYToLatLon (x1, y1, utmZone, isSouthern, lat1, lon1);
+			coordinate1.push_back(IBKMK::RadToDeg(lon1));
+			coordinate1.push_back(IBKMK::RadToDeg(lat1));
+
+			double lat2, lon2;
+			double x2 = node2->m_position.m_x + network.m_origin.m_x;
+			double y2 = node2->m_position.m_y + network.m_origin.m_y;
+			IBKMK::UTMXYToLatLon (x2, y2, utmZone, isSouthern, lat2, lon2);
+			coordinate2.push_back(IBKMK::RadToDeg(lon2));
+			coordinate2.push_back(IBKMK::RadToDeg(lat2));
+
+			coordinates.push_back(coordinate1);
+			coordinates.push_back(coordinate2);
+
+			geometry["coordinates"] = coordinates;
+			feature["geometry"] = geometry;
+			features.push_back(feature);
+		}
+	}
+	// export all nodes of the network with type substation
+	if(m_ui->checkBoxExportSubStation){
+		for(const VICUS::NetworkNode & n : network.m_nodes){
+			if(n.m_type != VICUS::NetworkNode::NT_SubStation) {
+				continue;
+			}
+			QJsonObject feature;
+			feature["type"] = "Feature";
+
+			QJsonObject properties;
+			properties["id"] = featureId++;
+			properties["Name"] = n.m_displayName;
+
+			feature["properties"] = properties;
+
+			QJsonObject geometry;
+			geometry["type"] = "Point";
+
+			QJsonArray coordinates;
+			//convert coordinates to lat-lon format
+			double lat, lon;
+			double x = n.m_position.m_x + network.m_origin.m_x;
+			double y = n.m_position.m_y + network.m_origin.m_y;
+			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+			bool isSouthern = m_ui->radioButtonSouthern->isChecked();
+			IBKMK::UTMXYToLatLon (x, y, utmZone, isSouthern, lat, lon);
+
+			coordinates.push_back(IBKMK::RadToDeg(lon));
+			coordinates.push_back(IBKMK::RadToDeg(lat));
+
+			geometry["coordinates"] = coordinates;
+			feature["geometry"] = geometry;
+			features.push_back(feature);
+		}
+	}
+	jsonFile["features"] = features;
+
+	// write to a file
+	QByteArray ba = QJsonDocument(jsonFile).toJson(QJsonDocument::Compact);
+
+	IBK::Path exportFile(m_ui->lineEditExportFileName->filename().toStdString());
 
 	std::ofstream geoJsonFile(exportFile.str());
 
@@ -59,19 +181,47 @@ void SVNetworkExportDialog::on_pushButtonExport_clicked() {
 
 	geoJsonFile.close();
 
+	// show message that file was created
 	SVSettings::instance().showDoNotShowAgainMessage(this, "export-file-created", QString(tr("Export file was created")), QString(tr("File was saved at: ") + "%1" ).arg(exportFile.c_str()));
+}
 
+void SVNetworkExportDialog::on_checkBoxExportPipeline_toggled(/*bool checked*/) {
+	checkIfExportIsReady();
 }
 
 
-void SVNetworkExportDialog::on_pushButtonSelectFileLocation_clicked() {
-	QString fname = QFileDialog::getSaveFileName(this, tr("Select file name and location"),
-												 "../../data/vicus/GeometryTests/Network", tr("GeoJson-Files (*.geojson)"), nullptr,
-												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-												 );
+void SVNetworkExportDialog::on_checkBoxExportSubStation_toggled(/*bool checked*/) {
+	checkIfExportIsReady();
+}
 
-	if(!fname.endsWith(".geojson"))
-			fname += ".geojson";
-	m_ui->lineEditExportFileName->setText(fname);
+void SVNetworkExportDialog::checkIfExportIsReady(){
+	//check if a network is selected
+	if(!m_ui->comboBoxNetworkSelection->currentText().isEmpty())
+		//check if a file is selected
+		if(!m_ui->lineEditExportFileName->filename().isEmpty()){
+			//check if at least one checkbox is checked
+			if(m_ui->checkBoxExportPipeline->isChecked() || m_ui->checkBoxExportSubStation->isChecked()){
+				m_ui->buttonBox->button(QDialogButtonBox::StandardButton::Ok)->setEnabled(true);
+				return;
+			}
+		}
+	m_ui->buttonBox->button(QDialogButtonBox::StandardButton::Ok)->setEnabled(false);
+}
+
+
+void SVNetworkExportDialog::on_lineEditExportFileName_editingFinished() {
+	if(!m_ui->lineEditExportFileName->filename().endsWith(".geojson")){
+		m_ui->lineEditExportFileName->setFilename(m_ui->lineEditExportFileName->filename() + ".geojson");
+	}
+	checkIfExportIsReady();
+}
+
+
+void SVNetworkExportDialog::on_buttonBox_accepted()
+{
+	unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelection->currentText());
+	VICUS::Network network = *VICUS::element(project().m_geometricNetworks, id);
+
+	exportToGeoJson(network);
 }
 
