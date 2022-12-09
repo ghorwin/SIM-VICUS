@@ -275,6 +275,8 @@ void SceneView::resetCamera(int position) {
 		case 6 : {
 			std::vector<const VICUS::Surface*> surfaces;
 			std::vector<const VICUS::SubSurface*> subsurfaces;
+			std::vector<const VICUS::NetworkNode*> nodes;
+			std::vector<const VICUS::NetworkEdge*> edges;
 			std::set<const VICUS::Object *> selectedObjects;
 			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 			if (selectedObjects.empty())
@@ -288,11 +290,35 @@ void SceneView::resetCamera(int position) {
 					if (sub != nullptr)
 						subsurfaces.push_back(sub);
 				}
+				const VICUS::NetworkNode *n = dynamic_cast<const VICUS::NetworkNode*>(o);
+				if (n != nullptr)
+					nodes.push_back(n);
+				const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
+				if (e != nullptr)
+					edges.push_back(e);
 			}
 
+			// find center
 			IBKMK::Vector3D center;
-			// compute bounding box of visible geometry
-			project().boundingBox(surfaces, subsurfaces, center);
+			if (!surfaces.empty() || !subsurfaces.empty()) {
+				// compute bounding box of visible geometry
+				project().boundingBox(surfaces, subsurfaces, center);
+			}
+			else if (!nodes.empty() || !edges.empty()) {
+				int counter = 0;
+				for (const VICUS::NetworkNode *n: nodes) {
+					center += n->m_position;
+					++counter;
+				}
+				for (const VICUS::NetworkEdge *e: edges) {
+					center += e->m_node1->m_position;
+					++counter;
+					center += e->m_node2->m_position;
+					++counter;
+				}
+				center/=static_cast<double>(counter);
+			}
+
 			// move camera to position and a little bit back
 			Camera c;
 			c.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
