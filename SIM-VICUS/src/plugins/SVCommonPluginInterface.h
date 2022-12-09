@@ -2,6 +2,8 @@
 #define SVCommonPluginInterfaceH
 
 #include <QtPlugin>
+#include <QJsonDocument>
+
 class QWidget;
 
 /*! This class declares common plugin interface functions.
@@ -30,6 +32,18 @@ public:
 		for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
 	*/
 	virtual QString title() const = 0;
+
+	/*! Optionally return a pixmap to show in the plugin manager.
+		nullptr means "use default plugin icon".
+		No ownership transfer!
+	*/
+	virtual const QPixmap * icon() const { return nullptr; }
+
+	/*! Optionally return a list of pixmaps to show in the plugin manager.
+		nullptr means "no screenshots".
+		No ownership transfer!
+	*/
+	virtual const QList<QPixmap> * screenShots() const { return nullptr; }
 
 	/*! If this function returns true, the plugin provides a
 		settings/configuration page.

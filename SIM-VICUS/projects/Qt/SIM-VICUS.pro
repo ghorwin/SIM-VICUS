@@ -102,12 +102,13 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
-    ../../src/SVPropNetworkEdgesWidget.cpp \
-    ../../src/SVPropNetworkEditWidget.cpp \
-    ../../src/SVPropNetworkGeometryWidget.cpp \
-    ../../src/SVPropNetworkHeatExchangeWidget.cpp \
-    ../../src/SVPropNetworkNodesWidget.cpp \
-    ../../src/SVPropNetworkSubStationWidget.cpp \
+	../../src/SVPluginLoader.cpp \
+	../../src/SVPropNetworkEdgesWidget.cpp \
+	../../src/SVPropNetworkEditWidget.cpp \
+	../../src/SVPropNetworkGeometryWidget.cpp \
+	../../src/SVPropNetworkHeatExchangeWidget.cpp \
+	../../src/SVPropNetworkNodesWidget.cpp \
+	../../src/SVPropNetworkSubStationWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -172,7 +173,7 @@ SOURCES += \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
 	../../src/core3D/Vic3DOrbitControllerObject.cpp \
 	../../src/core3D/Vic3DPickObject.cpp \
-  ../../src/core3D/Vic3DRubberbandObject.cpp \
+	../../src/core3D/Vic3DRubberbandObject.cpp \
 	../../src/core3D/Vic3DScene.cpp \
 	../../src/core3D/Vic3DSceneView.cpp \
 	../../src/core3D/Vic3DShaderProgram.cpp \
@@ -294,12 +295,13 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
-    ../../src/SVPropNetworkEdgesWidget.h \
-    ../../src/SVPropNetworkEditWidget.h \
-    ../../src/SVPropNetworkGeometryWidget.h \
-    ../../src/SVPropNetworkHeatExchangeWidget.h \
-    ../../src/SVPropNetworkNodesWidget.h \
-    ../../src/SVPropNetworkSubStationWidget.h \
+	../../src/SVPluginLoader.h \
+	../../src/SVPropNetworkEdgesWidget.h \
+	../../src/SVPropNetworkEditWidget.h \
+	../../src/SVPropNetworkGeometryWidget.h \
+	../../src/SVPropNetworkHeatExchangeWidget.h \
+	../../src/SVPropNetworkNodesWidget.h \
+	../../src/SVPropNetworkSubStationWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -368,7 +370,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DOpenGLWindow.h \
 	../../src/core3D/Vic3DOrbitControllerObject.h \
 	../../src/core3D/Vic3DPickObject.h \
-  ../../src/core3D/Vic3DRubberbandObject.h \
+	../../src/core3D/Vic3DRubberbandObject.h \
 	../../src/core3D/Vic3DScene.h \
 	../../src/core3D/Vic3DSceneView.h \
 	../../src/core3D/Vic3DShaderProgram.h \

@@ -9,7 +9,7 @@
 class DummyImportPlugin : public QObject, public SVImportPluginInterface {
 public:
 	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.ImportInterface")  // optionally add  'FILE "ImporterProperties.json"'
+	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.ImportInterface" FILE "../data/metadata.json")
 	Q_INTERFACES(SVImportPluginInterface)
 
 public:

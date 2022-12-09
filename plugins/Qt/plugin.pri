@@ -75,13 +75,13 @@ equals(TEMPLATE,lib) {
 
 	CONFIG(debug, debug|release) {
 		OBJECTS_DIR = debug$${DIR_PREFIX}
-		DESTDIR = ../../../../bin/debug$${DIR_PREFIX}/plugins
-		DLLDESTDIR = ../../../../bin/debug$${DIR_PREFIX}/plugins
+		DESTDIR = ../../bin/debug$${DIR_PREFIX}/plugins
+		DLLDESTDIR = ../../bin/debug$${DIR_PREFIX}/plugins
 	}
 	else {
 		OBJECTS_DIR = release$${DIR_PREFIX}
-		DESTDIR = ../../../../bin/release$${DIR_PREFIX}/plugins
-		DLLDESTDIR = ../../../../bin/release$${DIR_PREFIX}/plugins
+		DESTDIR = ../../bin/release$${DIR_PREFIX}/plugins
+		DLLDESTDIR = ../../bin/release$${DIR_PREFIX}/plugins
 	}
 
 	# using of shared libs only for non MC compiler
@@ -95,8 +95,8 @@ equals(TEMPLATE,lib) {
 	}
 
 	# we need to link against our libs
-	QMAKE_LIBDIR += ../../../../externals/lib$${DIR_PREFIX}
-	LIBS += -L../../../../externals/lib$${DIR_PREFIX}
+	QMAKE_LIBDIR += ../../externals/lib$${DIR_PREFIX}
+	LIBS += -L../../externals/lib$${DIR_PREFIX}
 
 	win32:LIBS += -lshell32
 	win32:LIBS += -liphlpapi

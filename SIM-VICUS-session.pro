@@ -56,8 +56,8 @@ IDFReader.file = externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = NandradSolver/projects/Qt/NandradModel.pro
 clipper.file = externals/clipper/projects/Qt/clipper.pro
 
-DummyDatabasePlugin.file = plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
-DummyImportPlugin.file = plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
+DummyDatabasePlugin.file = plugins/DummyDatabasePlugin/DummyDatabasePlugin.pro
+DummyImportPlugin.file = plugins/DummyImportPlugin/DummyImportPlugin.pro
 
 CO2ComfortVentilation.file = FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVentilation.pro
 
@@ -83,3 +83,4 @@ Vicus.depends = IBK TiCPP Nandrad IBKMK CCM
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 DummyDatabasePlugin.depends = Vicus
 DummyImportPlugin.depends = Vicus
+

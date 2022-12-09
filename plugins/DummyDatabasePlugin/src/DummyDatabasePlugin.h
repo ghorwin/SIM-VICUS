@@ -9,7 +9,7 @@
 class DummyDatabasePlugin : public QObject, public SVDatabasePluginInterface {
 public:
 	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.DatabaseInterface")  // optionally add  'FILE "DatabaseProperties.json"'
+	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.DatabaseInterface"  FILE "../data/metadata.json")
 	Q_INTERFACES(SVDatabasePluginInterface)
 public:
 
