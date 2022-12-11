@@ -2,6 +2,7 @@
 
 #include <IBK_messages.h>
 #include <IBK_MultiLanguageString.h>
+#include <IBK_Version.h>
 
 #include <QPluginLoader>
 #include <QDir>
@@ -101,12 +102,31 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 	pd.m_loader.setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
 	pd.m_metadata = pd.m_loader.metaData().value("MetaData").toObject();
 	pd.decodeMetadata(); // to have some fallback data
-	// TODO : check for matching versions before attempting to load the plugin
+	// check for matching versions before attempting to load the plugin
+	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
+		pd.m_result = LR_IncompatibleVersion;
+		IBK::IBK_Message(IBK::FormatString("  Plugin library '%1' does not match installed version '%2', since it requires '%3'.\n")
+						 .arg(pluginPath.toStdString()), IBK::MSG_ERROR);
+		return;
+	}
 
 	QObject *plugin = pd.m_loader.instance();
 	if (plugin != nullptr) {
 		IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(pluginFilePath.toStdString()) );
-		// ok, we have a plugin, retrieve metadata
+		// ok, we have a plugin, check for valid interfaces
+
+		SVDatabasePluginInterface * dbIface = qobject_cast<SVDatabasePluginInterface*>(plugin);
+		if (dbIface != nullptr) {
+			pd.m_interfaceType = IT_Database;
+			IBK::IBK_Message(IBK::FormatString("    Database interface\n") );
+		}
+		else {
+			SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
+			if (iface != nullptr) {
+				pd.m_interfaceType = IT_Import;
+				IBK::IBK_Message(IBK::FormatString("    Import interface\n") );
+			}
+		}
 	}
 	else {
 		QString errtxt = pd.m_loader.errorString();
@@ -138,15 +158,48 @@ QJsonDocument SVPluginLoader::loadPluginMetadata(const QString & pluginPath) {
 	return QJsonDocument::fromJson(metadata);
 }
 
-
-void SVPluginLoader::PluginData::decodeMetadata() {
-	if (m_metadata.contains("description") && m_metadata["description"].isString()) {
-		IBK::MultiLanguageString ml( m_metadata["description"].toString().toStdString() );
+QString retrieveMultilanguageText(const QJsonObject & o, const QString & name) {
+	if (o.contains(name) && o[name].isString()) {
+		IBK::MultiLanguageString ml( o[name].toString().toStdString() );
 		// retrieve string for current languange
 		std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
-		m_longDesc = QString::fromStdString(ml.string(langID, "en")); // use english as fall-back language
+		return QString::fromStdString(ml.string(langID, "en")); // use english as fall-back language
 	}
+	return QString();
+}
 
-	// TODO : other stuff
+void SVPluginLoader::PluginData::decodeMetadata() {
+	m_longDesc = retrieveMultilanguageText(m_metadata, "long-description");
+	m_shortDesc = retrieveMultilanguageText(m_metadata, "short-description");
+	m_pluginVersion = m_metadata["version"].toString();
+	m_abiVersion = m_metadata["abi-version"].toString();
+	m_license = m_metadata["license"].toString();
+	m_webpage = m_metadata["webpage"].toString();
+	m_author = m_metadata["author"].toString();
+}
 
+
+bool SVPluginLoader::PluginData::matchesVersion() const {
+	QStringList range = m_abiVersion.split("-");
+	unsigned int major1=0, minor1=0;
+	unsigned int major2=0, minor2=0;
+	if (range.count() == 2) {
+		if (!IBK::Version::extractMajorMinorVersionNumber(range[0].toStdString(), major1, minor1) &&
+			!IBK::Version::extractMajorMinorVersionNumber(range[1].toStdString(), major2, minor2))
+		{
+			return false;
+		}
+	}
+	else {
+		if (!IBK::Version::extractMajorMinorVersionNumber(range[0].toStdString(), major1, minor1))
+			return false;
+		major2 = major1;
+		minor2 = minor1;
+	}
+	// now check if vicus version is between first and second version
+	IBK::Version first(major1, minor1);
+	IBK::Version second(major2, minor2);
+	IBK::Version vicusVer(VICUS::VERSION);
+	if (first > vicusVer || second < vicusVer) return false;
+	else return true;
 }

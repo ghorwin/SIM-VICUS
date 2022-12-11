@@ -73,6 +73,22 @@ namespace IBK {
 */
 class Version {
 public:
+	Version(unsigned int major, unsigned int minor) : m_major(major), m_minor(minor), m_patch(0) {}
+	Version(unsigned int major, unsigned int minor, unsigned int patch) : m_major(major), m_minor(minor), m_patch(patch) {}
+	/*! Attempts to decode version number in format major.minor.patch or major.minor. If patch version is missing,
+		patch version is set to 0. If parsing fails, version 1.0.0 is created.
+	*/
+	Version(const std::string & version);
+
+	bool operator==(const Version & other) const { return m_major == other.m_major && m_minor == other.m_minor && m_patch == other.m_patch; }
+	bool operator<(const Version & other) const;
+	bool operator>(const Version & other) const { return !operator==(other) && !operator<(other); }
+
+	unsigned int m_major	= 1;
+	unsigned int m_minor	= 0;
+	unsigned int m_patch	= 0;
+
+
 	/*! Reads the first 4 integers from input stream and decodes version information.
 		The information of the header is stored in the arguments that are passed by reference.
 	*/

@@ -1,5 +1,8 @@
 {
-   "description":"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin.",
-   "version":"1.0.0",
-   "ABI-version":"0.9"
+	"short-description":"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin.",
+	"version":"1.0.0",
+	"abi-version":"0.9",
+	"webpage":"https://sim-vicus.de",
+	"author":"Andreas Nicolai",
+	"license":"LGPL 2 or newer"
 }

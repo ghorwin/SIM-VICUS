@@ -11,6 +11,11 @@
 */
 class SVPluginLoader {
 public:
+	enum InterfaceType {
+		IT_Import,
+		IT_Database,
+		NUM_IT
+	};
 
 	enum LoadResult {
 		/*! Used when plugin was read successfully and is working for this version of SIM-VICUS. */
@@ -29,6 +34,9 @@ public:
 		/*! Attempts to retrieve as much useful information from the meta data in member m_metadata as possible. */
 		void decodeMetadata();
 
+		/*! Checks if abi-version of plugin includes current VICUS-Version. */
+		bool matchesVersion() const;
+
 		/*! Source-path, where Plugin-Shared-Lib was read from.
 			May be of format "repository:<plugin-name>", in which case the plugin
 			is retrieved upon installing from the webpage repository.
@@ -45,6 +53,8 @@ public:
 		/*! Stores the result of the load operation. */
 		LoadResult	m_result;
 
+		InterfaceType m_interfaceType = NUM_IT;
+
 		/*! Encoded metadata, either from file or delivered from plugin.
 			Use decodeMetadata() to extract relevant information and store that in
 			member variables for easy access.
@@ -55,6 +65,15 @@ public:
 		QString m_shortDesc;
 		/*! A longer description text, already in application language. */
 		QString m_longDesc;
+		/*! Version identifyer for plugin (free text). */
+		QString m_pluginVersion;
+		/*! Required ABI version (i.e. VICUS::VERSION to compare against); can be wildcard '*' for "independent of VICUS" or
+			a range in format "0.8 - 0.10".
+		*/
+		QString m_abiVersion;
+		QString m_license;
+		QString m_webpage;
+		QString m_author;
 
 		/*! The application icon. */
 		QPixmap			m_icon;
