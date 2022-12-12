@@ -19,11 +19,10 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lIBK -lIBKMK
+LIBS += -lIBK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src \
-		../../../IBKMK/src
+		../../../IBK/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
