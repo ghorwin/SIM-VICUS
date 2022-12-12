@@ -1051,7 +1051,7 @@ void DataIO::openAndReadHeader(const IBK::Path & fname, std::ifstream & in, IBK:
 #if defined(_WIN32) && !defined(__MINGW32__)
 	in.open(fname_tmp.wstr().c_str(), std::ios_base::binary);
 #else
-	in.open(fname_tmp.str().c_str(), std::ios_base::binary);
+	in.open(fname_tmp.c_str(), std::ios_base::binary);
 #endif // _WIN32
 
 	if (!in)
