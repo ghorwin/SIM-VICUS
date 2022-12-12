@@ -7,6 +7,10 @@
 #include <QPluginLoader>
 #include <QDir>
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 #include <QtExt_LanguageHandler.h>
 
 #include "SVSettings.h"
