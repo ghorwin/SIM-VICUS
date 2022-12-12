@@ -31,17 +31,6 @@ INCLUDEPATH = \
 
 DEPENDPATH = $${INCLUDEPATH}
 
-win32 {
-PRE_TARGETDEPS += \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
-}
-
-
 SOURCES +=  \
 	../../src/FMUVariableTableModel.cpp \
 	../../src/NandradFMUGeneratorWidget.cpp \
