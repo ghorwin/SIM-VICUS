@@ -68,7 +68,7 @@ SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *pare
 	m_ui->lineEditDeadBand->setup(0, 1400, tr("Dead Band for all Parameters."), true, true);
 	m_ui->lineEditHorizontal->setup(0, 1400, tr("Global Radiation Sensor Horizontal."), true, true);
 
-	setEnabled(false);
+	//setEnabled(false);
 
 	// initial state is "nothing selected"
 //	updateInput(-1);
@@ -134,6 +134,7 @@ void SVDBZoneControlShadingEditWidget::updateInput(int id) {
 
 	// for built-ins, disable editing/make read-only
 	bool isbuiltIn = m_current->m_builtIn;
+	if(isbuiltIn){
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
 	m_ui->comboBoxMethod->setEnabled(!isbuiltIn);
@@ -143,6 +144,9 @@ void SVDBZoneControlShadingEditWidget::updateInput(int id) {
 	m_ui->lineEditSouth->setEnabled(!isbuiltIn);
 	m_ui->lineEditHorizontal->setEnabled(!isbuiltIn);
 	m_ui->lineEditDeadBand->setEnabled(!isbuiltIn);
+	}
+
+	checkCategory();
 
 }
 
@@ -164,6 +168,7 @@ void SVDBZoneControlShadingEditWidget::on_comboBoxMethod_currentIndexChanged(int
 		modelModify();
 
 	}
+	checkCategory();
 }
 
 
@@ -285,3 +290,31 @@ void SVDBZoneControlShadingEditWidget::on_pushButtonColor_colorChanged() {
 		modelModify();
 	}
 }
+
+void SVDBZoneControlShadingEditWidget::checkCategory() {
+	VICUS::ZoneControlShading::Category mode = static_cast<VICUS::ZoneControlShading::Category>(m_ui->comboBoxMethod->currentIndex());
+	switch (mode) {
+	case VICUS::ZoneControlShading::Category::C_GlobalHorizontalSensor:
+		{
+		m_ui->lineEditEast->setEnabled(false);
+		m_ui->lineEditWest->setEnabled(false);
+		m_ui->lineEditNorth->setEnabled(false);
+		m_ui->lineEditSouth->setEnabled(false);
+		m_ui->lineEditHorizontal->setEnabled(true);
+		}
+	break;
+	case VICUS::ZoneControlShading::Category::C_GlobalHorizontalAndVerticalSensors:
+		{
+		m_ui->lineEditHorizontal->setEnabled(false);
+		m_ui->lineEditEast->setEnabled(true);
+		m_ui->lineEditWest->setEnabled(true);
+		m_ui->lineEditNorth->setEnabled(true);
+		m_ui->lineEditSouth->setEnabled(true);
+		}
+	break;
+	case VICUS::ZoneControlShading::Category::NUM_C:
+		break;
+
+	}
+}
+
