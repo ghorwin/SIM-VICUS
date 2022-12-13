@@ -590,10 +590,11 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlVentilationNatural";
-				case 6 : return "Infiltration";
-				case 7 : return "NaturalVentilation";
-				case 8 : return "IdealHeatingCooling";
+				case 5 : return "ControlShading";
+				case 6 : return "ControlVentilationNatural";
+				case 7 : return "Infiltration";
+				case 8 : return "NaturalVentilation";
+				case 9 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -1084,10 +1085,11 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlVentilationNatural";
-				case 6 : return "Infiltration";
-				case 7 : return "NaturalVentilation";
-				case 8 : return "IdealHeatingCooling";
+				case 5 : return "ControlShading";
+				case 6 : return "ControlVentilationNatural";
+				case 7 : return "Infiltration";
+				case 8 : return "NaturalVentilation";
+				case 9 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -1579,10 +1581,11 @@ namespace VICUS {
 				case 2 : return "Lighting loads";
 				case 3 : return "Other internal loads";
 				case 4 : return "Thermostat control";
-				case 5 : return "Natural ventilation control";
-				case 6 : return "Infiltration loads";
-				case 7 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
-				case 8 : return "Heating/cooling loads";
+				case 5 : return "Shading control";
+				case 6 : return "Natural ventilation control";
+				case 7 : return "Infiltration loads";
+				case 8 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
+				case 9 : return "Heating/cooling loads";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -2077,6 +2080,7 @@ namespace VICUS {
 				case 6 : return "";
 				case 7 : return "";
 				case 8 : return "";
+				case 9 : return "";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -2567,10 +2571,11 @@ namespace VICUS {
 				case 2 : return "#FFEECC";
 				case 3 : return "#602222";
 				case 4 : return "#E00010";
-				case 5 : return "#00A000";
-				case 6 : return "#A0B0FF";
-				case 7 : return "#22EE22";
-				case 8 : return "#B08000";
+				case 5 : return "#A2F0F4";
+				case 6 : return "#00A000";
+				case 7 : return "#A0B0FF";
+				case 8 : return "#22EE22";
+				case 9 : return "#B08000";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
@@ -3065,6 +3070,7 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
@@ -3189,7 +3195,7 @@ namespace VICUS {
 			// ZoneIdealHeatingCooling::para_t
 			case 56 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 57 : return 9;
+			case 57 : return 10;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -3313,7 +3319,7 @@ namespace VICUS {
 			// ZoneIdealHeatingCooling::para_t
 			case 56 : return 1;
 			// ZoneTemplate::SubTemplateType
-			case 57 : return 9;
+			case 57 : return 10;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

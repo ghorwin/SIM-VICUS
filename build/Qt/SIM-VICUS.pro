@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-		../../FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVentilation.pro \
+../../FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVentilation.pro \
 		DummyDatabasePlugin \
 		DummyImportPlugin \
 		SIM-VICUS \
@@ -53,8 +53,8 @@ Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 IDFReader.file = ../../externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = ../../NandradSolver/projects/Qt/NandradModel.pro
-DummyDatabasePlugin.file = ../../plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
-DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
+DummyDatabasePlugin.file = ../../plugins/DummyDatabasePlugin/DummyDatabasePlugin.pro
+DummyImportPlugin.file = ../../plugins/DummyImportPlugin/DummyImportPlugin.pro
 
 
 # dependencies

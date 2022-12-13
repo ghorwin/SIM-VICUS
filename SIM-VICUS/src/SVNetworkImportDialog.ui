@@ -7,23 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>571</width>
-    <height>472</height>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Pipe Network</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBoxSelectNetwork">
      <property name="title">
@@ -46,9 +36,6 @@
          <string>unnamed</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxNetworkSelectionBox"/>
       </item>
       <item row="1" column="0">
        <widget class="QRadioButton" name="radioButtonAddToExistingNetwork">
@@ -73,180 +60,178 @@
         </property>
        </spacer>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Sub station import</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>File Name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QLineEdit" name="lineEditSubStationFileName"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSelectSubStationFile">
-          <property name="text">
-           <string>Select file</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Maximal heating demand: </string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,2">
-        <item>
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
-          <property name="text">
-           <string>5000</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_13">
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string>W</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonImportSubStation">
-          <property name="text">
-           <string>Import</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QComboBox" name="comboBoxNetworkSelectionBox"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Pipeline import</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0" columnstretch="0,0">
-      <item row="2" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
-        <item>
-         <widget class="QLabel" name="labelDefaulPipeName">
-          <property name="text">
-           <string>No pipe selected</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSelectDefaultPipe">
-          <property name="text">
-           <string>Select pipe</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>File name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Default pipe: </string>
+         <string>Default pipe</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLineEdit" name="lineEditPipelineFileName"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSelectPipelineFile">
-          <property name="text">
-           <string>Select file</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="0" column="1" colspan="2">
+       <widget class="QtExt::BrowseFilenameWidget" name="lineEditPipelineFileName"/>
       </item>
-      <item row="1" column="1">
+      <item row="7" column="2">
+       <widget class="QPushButton" name="pushButtonImportPipeline">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Import</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
        <widget class="QPushButton" name="pushButtonSelectAvailablePipes">
         <property name="text">
-         <string>Select available pipes</string>
+         <string>Select available pipes ...</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonImportPipeline">
-          <property name="text">
-           <string>Import</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="1" column="1" rowspan="2" colspan="2">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:rgb(119, 118, 123)</string>
+        </property>
+        <property name="text">
+         <string>for geojson files specify the pipe thickness with property attribute &quot;da&quot;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
-      <item row="1" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string/>
         </property>
        </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="labelDefaulPipeName">
+        <property name="text">
+         <string>No pipe selected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="pushButtonSelectDefaultPipe">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>File name</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Sub station import</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>File Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="pushButtonImportSubStation">
+        <property name="text">
+         <string>Import</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Maximal heating demand [W]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QtExt::BrowseFilenameWidget" name="lineEditSubStationFileName"/>
+      </item>
+      <item row="2" column="1">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>5000</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>UTM specifications for geojson import</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>UTM Zone</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxUTMZone"/>
       </item>
      </layout>
     </widget>
@@ -261,6 +246,11 @@
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_BrowseFilenameWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

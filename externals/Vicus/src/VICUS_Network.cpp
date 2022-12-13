@@ -1,4 +1,4 @@
-/*	The SIM-VICUS data model library.
+﻿/*	The SIM-VICUS data model library.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -35,7 +35,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QJsonObject>
+
 #include <QJsonParseError>
 #include <QJsonValue>
 
@@ -97,9 +97,13 @@ unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v,
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
-		for (const NetworkNode &n: m_nodes){
-			if (n.m_position.distanceTo(v) < GeometricResolution)
+		for (NetworkNode &n: m_nodes){
+			if (n.m_position.distanceTo(v) < GeometricResolution){
+				if(n.m_type != type){
+					n.m_type = type;
+				}
 				return n.m_id;
+			}
 		}
 	}
 	// else add new node
@@ -298,179 +302,6 @@ bool Network::checkConnectedGraph() const {
 	return (connectedEdge.size() && m_edges.size() && connectedNodes.size() == m_nodes.size());
 }
 
-
-void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
-	std::vector<std::string> cont;
-	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
-
-	// extract vector of string-xy-pairs
-	std::vector<std::string> tokens;
-	for (std::string &line: cont){
-		if (line.find("MULTILINESTRING ((") == std::string::npos)
-			continue;
-		IBK::trim(line, ",");
-		IBK::trim(line, "\"");
-		IBK::trim(line, "MULTILINESTRING ((");
-		IBK::trim(line, "))");
-		IBK::explode(line, tokens, ",", IBK::EF_NoFlags);
-
-		// convert this vector to double and add it as a graph
-		std::vector<std::vector<double> > polyLine;
-		for (std::string str: tokens){
-			std::vector<std::string> xyStr;
-			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
-			double x = IBK::string2val<double>(xyStr[0]);
-			double y = IBK::string2val<double>(xyStr[1]);
-			polyLine.push_back({x, y});
-		}
-		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			addEdge(++nextId, n1, n2, true, INVALID_ID);
-		}
-	}
-}
-
-
-// TODO Anton: hier vlt besser eine const reference zurückgeben, könnte groß werden ?
-// und die Funktion in den ImportDialog verschieben, da sie mit dem Netzwerk eigentlich nichts zu tun hat
-QJsonObject convert2QJsonObject(const IBK::Path &filePath) {
-	FUNCID(Network::calcTemperatureChangeIndicator);
-	QFile file;
-	file.setFileName(filePath.absolutePath().c_str());
-	if(!file.open(QIODevice::ReadOnly)){
-		throw IBK::Exception("Json file couldn't be opened/found!", FUNC_ID);
-	}
-
-	QByteArray byteArray;
-	byteArray = file.readAll();
-	file.close();
-
-	QJsonParseError parseError;
-	QJsonDocument jsonDoc;
-	jsonDoc = QJsonDocument::fromJson(byteArray, &parseError);
-	if(parseError.error != QJsonParseError::NoError){
-		throw IBK::Exception(QString("Parse error at %1:%1").arg(parseError.offset).arg(parseError.errorString()).toStdString(), FUNC_ID);
-	}
-
-	return jsonDoc.object();
-}
-
-
-void Network::readGridFromGeoJson(const IBK::Path &filePath, unsigned int nextId, unsigned int defaultPipeId, const Database<NetworkPipe> &pipeDB) {
-
-	QJsonObject jsonObj = convert2QJsonObject(filePath);
-
-	const QJsonArray features = jsonObj["features"].toArray();
-
-	for(const QJsonValue & feature :  features){
-
-		QJsonObject geometry = feature.toObject()["geometry"].toObject();
-		if(geometry["type"].toString()  !=  "LineString")
-			continue;
-
-		std::vector<std::vector<double> > polyLine;
-		unsigned int pipeId = defaultPipeId;
-
-		QJsonObject properties = feature.toObject()["properties"].toObject();
-		double givenThickness = properties["da"].toDouble(); // should be in mm
-
-//		double bestDiff = 10000;
-
-		//find a fitting pipe from the available ones or keep default pipe
-		double minDiff = std::numeric_limits<double>::max();
-		for(unsigned int id : m_availablePipes){
-			double pipeThickness = pipeDB[id]->m_para[NetworkPipe::P_DiameterOutside].get_value("mm");
-			double diff = givenThickness - pipeThickness;
-
-			// TODO Anton: so vielleicht einfacher? Oder habe ich was übersehen? Warum quadrieren?
-			if ( (diff<1) && (diff < minDiff) ) {
-				minDiff = diff;
-				pipeId = id;
-			}
-
-//			if(diff == 0){
-//				// if the pipe has exacly the same diameter take it
-//				pipeId = id;
-//				break;
-//			}
-//			if(diff * diff <= 1){
-//				//if the difference is less or equal than one cm, take it, but keep on looking for better ones
-//				if(bestDiff > (diff * diff)){
-//					bestDiff = (diff * diff);
-//					pipeId = id;
-//				}
-//			}
-		}
-
-		// TODO Anton: Warnungen möglichst direkt verhindern, so dass man die relevanten Warnungen am Ende noch beachtet.
-		// hier z.B.  float - double conversion
-
-		for(const QJsonValue & coordinates : geometry["coordinates"].toArray()){
-			double x,y;
-			double lon = coordinates.toArray()[0].toDouble();
-			double lat = coordinates.toArray()[1].toDouble();
-			//covert the LatLon Coordiantes to metric ones
-			IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
-			polyLine.push_back({x, y});
-		}
-
-		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			addEdge(++nextId, n1, n2, true, pipeId);		}
-	}
-}
-
-
-void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
-	std::vector<std::string> cont;
-	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
-
-	// extract vector of string-xy
-	std::vector<std::string> lineSepStr;
-	std::vector<std::string> xyStr;
-	for (std::string &line: cont){
-		if (line.find("POINT") == std::string::npos)
-			continue;
-		IBK::explode(line, lineSepStr, ",", IBK::EF_NoFlags);
-		IBK::trim(lineSepStr[0], "\"");
-		IBK::trim(lineSepStr[0], "POINT ((");
-		IBK::trim(lineSepStr[0], "))");
-		IBK::explode(lineSepStr[0], xyStr, " ", IBK::EF_NoFlags);
-		if (xyStr.size()!=2)
-			continue;
-		// add node
-		unsigned id = addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - m_origin,
-				NetworkNode::NT_SubStation);
-		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
-	}
-}
-
-
-void Network::readBuildingsFromGeoJson(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
-	QJsonObject jsonObj = convert2QJsonObject(filePath);
-
-	const QJsonArray features = jsonObj["features"].toArray();
-
-	// TODO Anton: hier wieder Warnungen verhindern durch float-double conversion
-	for(const QJsonValue & feature :  features){
-		QJsonObject geometry = feature.toObject()["geometry"].toObject();
-		if(geometry["type"].toString()  !=  "Point")
-			continue;
-		QJsonValue coordinates = geometry["coordinates"];
-		double x,y;
-		double lon = coordinates.toArray()[0].toDouble();
-		double lat = coordinates.toArray()[1].toDouble();
-		//covert the LatLon Coordiantes to metric ones
-		IBKMK::LatLonToUTMXY(lat, lon, 0, x, y);
-
-		// add node
-		unsigned id = addNode(++nextId, IBKMK::Vector3D(x, y, 0) - m_origin,
-				NetworkNode::NT_SubStation);
-		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
-	}
-}
 
 
 void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> &addedNodes, std::vector<unsigned int> &addedEdges){

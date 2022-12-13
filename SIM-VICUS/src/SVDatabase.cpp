@@ -1065,6 +1065,7 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 		case VICUS::ZoneTemplate::ST_IntLoadLighting:
 		case VICUS::ZoneTemplate::ST_IntLoadOther:					return m_internalLoads[id];
 		case VICUS::ZoneTemplate::ST_ControlThermostat:				return m_zoneControlThermostat[id];
+		case VICUS::ZoneTemplate::ST_ControlShading:				return m_zoneControlShading[id];
 		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:		return m_zoneControlVentilationNatural[id];
 		case VICUS::ZoneTemplate::ST_Infiltration:					return m_infiltration[id];
 		case VICUS::ZoneTemplate::ST_VentilationNatural:			return m_ventilationNatural[id];

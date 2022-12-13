@@ -275,6 +275,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Lighting loads");
 	tr("Other internal loads");
 	tr("Thermostat control");
+	tr("Shading control");
 	tr("Natural ventilation control");
 	tr("Infiltration loads");
 	tr("NaturalVentilation");

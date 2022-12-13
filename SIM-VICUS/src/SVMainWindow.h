@@ -51,6 +51,7 @@ class SVLogWidget;
 class SVGeometryView;
 class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
+class SVNetworkExportDialog;
 class SVImportIDFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
@@ -344,6 +345,8 @@ private slots:
 
 	void on_actionEditProjectNotes_triggered();
 
+	void on_actionExportNetworkAsGeoJson_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -461,6 +464,9 @@ private:
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;
+
+	/*! Network export dialog */
+	SVNetworkExportDialog		*m_networkExportDialog									= nullptr;
 
 	/*! Network edit dialog */
 	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;

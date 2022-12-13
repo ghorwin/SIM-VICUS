@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1658</width>
-    <height>1265</height>
+    <width>1112</width>
+    <height>707</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1658</width>
-     <height>30</height>
+     <width>1112</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -44,6 +44,7 @@
     <addaction name="actionFileOpenProjectDir"/>
     <addaction name="actionFileExportProjectPackage"/>
     <addaction name="actionFileExportView3D"/>
+    <addaction name="actionExportNetworkAsGeoJson"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
@@ -800,6 +801,11 @@
   <action name="actionEditProjectNotes">
    <property name="text">
     <string>Edit project notes</string>
+   </property>
+  </action>
+  <action name="actionExportNetworkAsGeoJson">
+   <property name="text">
+    <string>Export Network as GeoJson...</string>
    </property>
   </action>
  </widget>
