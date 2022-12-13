@@ -76,6 +76,8 @@ private slots:
 	/*! triggers a check if the import button for substations should be enabled*/
 	void on_lineEditSubStationFileName_editingFinished();
 
+	void on_comboBoxNetworkSelectionBox_currentIndexChanged(int index);
+
 private:
 
 	//stores the selected default pipe for pipe network import
@@ -121,13 +123,14 @@ private:
 	/*! checks if the file name is set and the max heating demand is greater 0 and enables/disables the import button*/
 	void checkIfSubStationImportIsEnabled();
 
+	/*! updates combobox etc. */
+	void updateUi();
+
 	QString uniqueName(const QString & name);
 
 	Ui::SVNetworkImportDialog		*m_ui;
 
 	VICUS::Network					m_network;
-
-	QMap<QString, unsigned>			m_existingNetworksMap;
 
 	QString							m_lastPipelineFilePath;
 	QString							m_lastSubstationFilePath;

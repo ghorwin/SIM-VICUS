@@ -42,6 +42,7 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QJsonValue>
+#include <QJsonObject>
 
 #include <VICUS_Network.h>
 #include <VICUS_NetworkLine.h>
@@ -58,7 +59,6 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVNetworkDialogSelectPipes.h"
 #include "SVConversions.h"
-#include "VICUS_Network.h"
 
 
 
@@ -68,6 +68,18 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->lineEditMaxHeatingDemand->setup(0, 1e9, tr("HeatingDemand must be > 0 m!"), false, true);
+	m_ui->lineEditOriginX->setup(0, std::numeric_limits<double>::max(), tr("Origin x-Postion"), true, true);
+	m_ui->lineEditOriginY->setup(0, std::numeric_limits<double>::max(), tr("Origin y-Postion"), true, true);
+	m_ui->lineEditOriginZ->setup(0, std::numeric_limits<double>::max(), tr("Origin z-Postion"), true, true);
+
+	//setup the UTM Zone combobox
+	QStringList texts;
+	for(int i = 0; i < 60; i++){
+		texts.append(QString().fromStdString(std::to_string(i)));
+	}
+	m_ui->comboBoxUTMZone->clear();
+	m_ui->comboBoxUTMZone->addItems(texts);
+	m_ui->comboBoxUTMZone->setCurrentIndex(32);
 }
 
 
@@ -78,13 +90,7 @@ SVNetworkImportDialog::~SVNetworkImportDialog() {
 
 bool SVNetworkImportDialog::edit() {
 
-	// store pointer to network for dialog functions to access
 	const VICUS::Project &p = project();
-
-	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
-	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
-	m_ui->radioButtonNewNetwork->setChecked(p.m_geometricNetworks.empty());
-	toggleExistingOrNewNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 
 	m_ui->lineEditPipelineFileName->setup(m_lastPipelineFilePath, true, true, tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"),
 										  SVSettings::instance().m_dontUseNativeDialogs);
@@ -92,30 +98,34 @@ bool SVNetworkImportDialog::edit() {
 	m_ui->lineEditSubStationFileName->setup(m_lastPipelineFilePath, true, true, tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"),
 											SVSettings::instance().m_dontUseNativeDialogs);
 
-	checkIfPipelineImportIsEnabled();
-	checkIfSubStationImportIsEnabled();
-
-	//setup the UTM Zone combobox
-	QStringList texts;
-	for(int i = 0; i < 60; i++){
-		texts.append(QString().fromStdString(std::to_string(i)));
-	}
-	m_ui->comboBoxUTMZone->clear();
-	m_ui->comboBoxUTMZone->addItems(texts);
-	m_ui->comboBoxUTMZone->setCurrentIndex(32);
-
-
-	// update existing networks combobox
-	if (!p.m_geometricNetworks.empty()){
-		m_existingNetworksMap.clear();
-		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
-			m_existingNetworksMap.insert(it->m_displayName, it->m_id);
-		m_ui->comboBoxNetworkSelectionBox->clear();
-		m_ui->comboBoxNetworkSelectionBox->addItems(QStringList(m_existingNetworksMap.keys()));
-	}
+	updateUi();
 
 	return exec();
 }
+
+
+void SVNetworkImportDialog::updateUi() {
+	const VICUS::Project &p = project();
+	m_ui->radioButtonAddToExistingNetwork->setEnabled(!p.m_geometricNetworks.empty());
+	m_ui->radioButtonAddToExistingNetwork->setChecked(!p.m_geometricNetworks.empty());
+	m_ui->radioButtonNewNetwork->setChecked(p.m_geometricNetworks.empty());
+	toggleExistingOrNewNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
+
+	checkIfPipelineImportIsEnabled();
+	checkIfSubStationImportIsEnabled();
+
+	// update existing networks combobox
+	m_ui->comboBoxNetworkSelectionBox->clear();
+	m_ui->comboBoxNetworkSelectionBox->blockSignals(true);
+	if (!p.m_geometricNetworks.empty()){
+		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
+			m_ui->comboBoxNetworkSelectionBox->addItem(it->m_displayName, it->m_id);
+	}
+	m_ui->comboBoxNetworkSelectionBox->blockSignals(false);
+
+	on_comboBoxNetworkSelectionBox_currentIndexChanged(m_ui->comboBoxNetworkSelectionBox->count()-1);
+}
+
 
 
 void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
@@ -145,9 +155,8 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 
 			//convert to a std set
 			std::set<QString> networkNames;
-			for(const QString & name : m_existingNetworksMap.keys()){
-				networkNames.insert(name);
-			}
+			for(int i=0; i<m_ui->comboBoxNetworkSelectionBox->count(); ++i)
+				networkNames.insert(m_ui->comboBoxNetworkSelectionBox->itemText(i));
 			m_network.m_displayName = VICUS::uniqueName(m_ui->lineEditNetworkName->text(), networkNames);
 
 			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
@@ -156,7 +165,8 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 
 		// add to existing network
 		else {
-			unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
+			unsigned int id = m_ui->comboBoxNetworkSelectionBox->currentData().toUInt();
+			Q_ASSERT(VICUS::element(project().m_geometricNetworks, id) != nullptr);
 			m_network = *VICUS::element(project().m_geometricNetworks, id);
 			readNetworkData(networkFile, m_network, p.nextUnusedID(), IT_Pipeline);
 			//transfer the availabe pipes (if given) to the network
@@ -177,6 +187,7 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 		return;
 	}
 
+	updateUi();
 }
 
 
@@ -207,9 +218,8 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 
 			//convert to a std set
 			std::set<QString> networkNames;
-			for(const QString & name : m_existingNetworksMap.keys()){
-				networkNames.insert(name);
-			}
+			for(int i=0; i<m_ui->comboBoxNetworkSelectionBox->count(); ++i)
+				networkNames.insert(m_ui->comboBoxNetworkSelectionBox->itemText(i));
 			m_network.m_displayName = VICUS::uniqueName(m_ui->lineEditNetworkName->text(), networkNames);
 
 			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
@@ -218,7 +228,8 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 
 		// add to existing network
 		else {
-			unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
+			unsigned int id = m_ui->comboBoxNetworkSelectionBox->currentData().toUInt();
+			Q_ASSERT(VICUS::element(project().m_geometricNetworks, id) != nullptr);
 			m_network = *VICUS::element(project().m_geometricNetworks, id);
 			readNetworkData(networkFile, m_network, p.nextUnusedID(), IT_SubStation);
 			//transfer the availabe pipes (if given) to the network
@@ -238,13 +249,16 @@ void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
 		QMessageBox::critical(this, QString(), tr("Error reading GIS data file:\n%1").arg(ex.what()));
 		return;
 	}
+
+	updateUi();
 }
 
 
-void SVNetworkImportDialog::toggleExistingOrNewNetwork(bool readExisting) {
+void SVNetworkImportDialog::toggleExistingOrNewNetwork(bool readExisting){
 	m_ui->comboBoxNetworkSelectionBox->setEnabled(readExisting);
 	m_ui->lineEditNetworkName->setEnabled(!readExisting);
 }
+
 
 void SVNetworkImportDialog::convert2QJsonObject(const IBK::Path &filePath, QJsonObject & obj) const {
 	FUNCID(SVNetworkImportDialog::convert2QJsonObject);
@@ -310,7 +324,9 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 	qInfo() << QString(tr("Number of nodes: ")+"%1").arg(m_network.m_nodes.size());
 	qInfo() << QString(tr("Coordinate range: ")+"[%L1,%L2]...[%L3,%L4]").arg(m_network.m_extends.left)
 										 .arg(m_network.m_extends.top).arg(m_network.m_extends.right).arg(m_network.m_extends.bottom);
+
 }
+
 
 void SVNetworkImportDialog::readGridFromCSV(VICUS::Network & network,const IBK::Path &filePath, unsigned int nextId) const{
 	std::vector<std::string> cont;
@@ -343,6 +359,7 @@ void SVNetworkImportDialog::readGridFromCSV(VICUS::Network & network,const IBK::
 		}
 	}
 }
+
 
 void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const QJsonObject & jsonObj, unsigned int nextId) const {
 
@@ -392,6 +409,7 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 	}
 }
 
+
 void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) const {
 	std::vector<std::string> cont;
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
@@ -415,6 +433,7 @@ void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const
 		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
+
 
 void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &heatDemand, unsigned int nextId) const {
 
@@ -523,3 +542,19 @@ void SVNetworkImportDialog::on_lineEditSubStationFileName_editingFinished() {
 	checkIfSubStationImportIsEnabled();
 }
 
+
+void SVNetworkImportDialog::on_comboBoxNetworkSelectionBox_currentIndexChanged(int /*index*/) {
+	int currentId = m_ui->comboBoxNetworkSelectionBox->currentData().toInt();
+	if (currentId>0) {
+		const VICUS::Network *net = VICUS::element(project().m_geometricNetworks, (unsigned int)currentId);
+		Q_ASSERT(net != nullptr);
+		m_ui->lineEditOriginX->setValue(net->m_origin.m_x);
+		m_ui->lineEditOriginY->setValue(net->m_origin.m_y);
+		m_ui->lineEditOriginZ->setValue(net->m_origin.m_z);
+	}
+	else {
+		m_ui->lineEditOriginX->clear();
+		m_ui->lineEditOriginY->clear();
+		m_ui->lineEditOriginZ->clear();
+	}
+}

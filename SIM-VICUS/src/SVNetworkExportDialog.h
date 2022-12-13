@@ -12,11 +12,11 @@ class SVNetworkExportDialog;
 
 class SVNetworkExportDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit SVNetworkExportDialog(QWidget *parent = nullptr);
-    ~SVNetworkExportDialog();
+	explicit SVNetworkExportDialog(QWidget *parent = nullptr);
+	~SVNetworkExportDialog();
 	bool edit();
 
 private slots:
@@ -34,13 +34,11 @@ private slots:
 private:
 	Ui::SVNetworkExportDialog * m_ui;
 
-	QMap<QString, unsigned> m_existingNetworksMap;
-
 	/*! reads the given network and saves its features in geoJson format*/
-	void exportToGeoJson(VICUS::Network & network);
+	void exportToGeoJson(unsigned int networkId);
 
 	/*! checks if a file name is set and if at least one checkbox is checked*/
-	void checkIfExportIsReady();
+	void updateOkButtonEnableState();
 
 };
 
