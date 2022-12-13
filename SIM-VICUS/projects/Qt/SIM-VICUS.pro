@@ -73,22 +73,6 @@ INCLUDEPATH = \
 
 DEPENDPATH = $${INCLUDEPATH}
 
-win32 {
-PRE_TARGETDEPS += \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/Shading.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/clipper.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/TiCPP.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IDFReader.lib \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBKMK.lib
-}
-
 
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
@@ -102,7 +86,13 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
-	../../src/SVNetworkExportDialog.cpp \
+	../../src/SVPluginLoader.cpp \
+	../../src/SVPropNetworkEdgesWidget.cpp \
+	../../src/SVPropNetworkEditWidget.cpp \
+	../../src/SVPropNetworkGeometryWidget.cpp \
+	../../src/SVPropNetworkHeatExchangeWidget.cpp \
+	../../src/SVPropNetworkNodesWidget.cpp \
+	../../src/SVPropNetworkSubStationWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -119,8 +109,6 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
-	../../src/SVPropEditNetwork.cpp \
-	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -168,8 +156,7 @@ SOURCES += \
 	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
 	../../src/core3D/Vic3DOrbitControllerObject.cpp \
-	../../src/core3D/Vic3DPickObject.cpp \
-  ../../src/core3D/Vic3DRubberbandObject.cpp \
+	../../src/core3D/Vic3DRubberbandObject.cpp \
 	../../src/core3D/Vic3DScene.cpp \
 	../../src/core3D/Vic3DSceneView.cpp \
 	../../src/core3D/Vic3DShaderProgram.cpp \
@@ -291,7 +278,13 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
-	../../src/SVNetworkExportDialog.h \
+	../../src/SVPluginLoader.h \
+	../../src/SVPropNetworkEdgesWidget.h \
+	../../src/SVPropNetworkEditWidget.h \
+	../../src/SVPropNetworkGeometryWidget.h \
+	../../src/SVPropNetworkHeatExchangeWidget.h \
+	../../src/SVPropNetworkNodesWidget.h \
+	../../src/SVPropNetworkSubStationWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -308,8 +301,6 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
-	../../src/SVPropEditNetwork.h \
-	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
@@ -361,8 +352,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DOpenGLException.h \
 	../../src/core3D/Vic3DOpenGLWindow.h \
 	../../src/core3D/Vic3DOrbitControllerObject.h \
-	../../src/core3D/Vic3DPickObject.h \
-  ../../src/core3D/Vic3DRubberbandObject.h \
+	../../src/core3D/Vic3DRubberbandObject.h \
 	../../src/core3D/Vic3DScene.h \
 	../../src/core3D/Vic3DSceneView.h \
 	../../src/core3D/Vic3DShaderProgram.h \
@@ -519,7 +509,6 @@ FORMS    += \
 	../../src/SVMeasurementWidget.ui \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
-	../../src/SVNetworkExportDialog.ui \
 	../../src/SVNetworkImportDialog.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
@@ -539,9 +528,13 @@ FORMS    += \
 	../../src/SVPropBuildingZoneProperty.ui \
 	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
-	../../src/SVPropEditNetwork.ui \
 	../../src/SVPropFloorManagerWidget.ui \
-	../../src/SVPropNetworkPropertiesWidget.ui \
+	../../src/SVPropNetworkEdgesWidget.ui \
+	../../src/SVPropNetworkEditWidget.ui \
+	../../src/SVPropNetworkGeometryWidget.ui \
+	../../src/SVPropNetworkHeatExchangeWidget.ui \
+	../../src/SVPropNetworkNodesWidget.ui \
+	../../src/SVPropNetworkSubStationWidget.ui \
 	../../src/SVPropSiteWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
