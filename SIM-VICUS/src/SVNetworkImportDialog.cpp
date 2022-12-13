@@ -75,7 +75,7 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	//setup the UTM Zone combobox
 	QStringList texts;
 	for(int i = 0; i < 60; i++){
-		texts.append(QString().fromStdString(std::to_string(i)));
+		texts.append(QString("%1").arg(i));
 	}
 	m_ui->comboBoxUTMZone->clear();
 	m_ui->comboBoxUTMZone->addItems(texts);
@@ -89,8 +89,6 @@ SVNetworkImportDialog::~SVNetworkImportDialog() {
 
 
 bool SVNetworkImportDialog::edit() {
-
-	const VICUS::Project &p = project();
 
 	m_ui->lineEditPipelineFileName->setup(m_lastPipelineFilePath, true, true, tr("GeoJson-Files (*.geojson);;CSV-Files (*.csv)"),
 										  SVSettings::instance().m_dontUseNativeDialogs);
