@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -31,9 +31,17 @@
      <addaction name="actionFileImportEneryPlusIDF"/>
      <addaction name="actionFileImportNetworkGISData"/>
     </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionExportNetworkAsGeoJson"/>
+     <addaction name="actionFileExportView3D"/>
+     <addaction name="actionFileExportProjectPackage"/>
+    </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
-    <addaction name="menuImport"/>
+    <addaction name="separator"/>
     <addaction name="actionFileReload"/>
     <addaction name="actionFileRecentProjects"/>
     <addaction name="separator"/>
@@ -41,10 +49,9 @@
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
+    <addaction name="menuImport"/>
+    <addaction name="menuExport"/>
     <addaction name="actionFileOpenProjectDir"/>
-    <addaction name="actionFileExportProjectPackage"/>
-    <addaction name="actionFileExportView3D"/>
-    <addaction name="actionExportNetworkAsGeoJson"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
@@ -806,6 +813,11 @@
   <action name="actionExportNetworkAsGeoJson">
    <property name="text">
     <string>Export Network as GeoJson...</string>
+   </property>
+  </action>
+  <action name="actionaa">
+   <property name="text">
+    <string>aa</string>
    </property>
   </action>
  </widget>

@@ -173,7 +173,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
 
-    m_ui->actionDBZoneControlShading->setEnabled(true);
+	m_ui->actionDBZoneControlShading->setEnabled(true);
 }
 
 
@@ -1493,6 +1493,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
+	m_ui->actionExportNetworkAsGeoJson->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 

@@ -68,9 +68,9 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->lineEditMaxHeatingDemand->setup(0, 1e9, tr("HeatingDemand must be > 0 m!"), false, true);
-	m_ui->lineEditOriginX->setup(0, std::numeric_limits<double>::max(), tr("Origin x-Postion"), true, true);
-	m_ui->lineEditOriginY->setup(0, std::numeric_limits<double>::max(), tr("Origin y-Postion"), true, true);
-	m_ui->lineEditOriginZ->setup(0, std::numeric_limits<double>::max(), tr("Origin z-Postion"), true, true);
+	m_ui->lineEditOriginX->setup(0, std::numeric_limits<double>::max(), tr("Origin x-position"), true, true);
+	m_ui->lineEditOriginY->setup(0, std::numeric_limits<double>::max(), tr("Origin y-position"), true, true);
+	m_ui->lineEditOriginZ->setup(0, std::numeric_limits<double>::max(), tr("Origin z-position"), true, true);
 
 	//setup the UTM Zone combobox
 	QStringList texts;
