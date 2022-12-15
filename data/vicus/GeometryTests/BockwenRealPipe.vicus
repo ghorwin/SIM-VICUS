@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.7">
+<VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Mo. Juli 19 14:39:08 2021</Created>
-		<LastEdited>Mo Apr 25 15:47:06 2022</LastEdited>
+		<LastEdited>Do. Dez. 15 18:10:34 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -1009,6 +1009,7 @@
 			<SubSurfaceComponentInstance id="19" idSubSurfaceComponent="160004" idSideASurface="218" />
 			<SubSurfaceComponentInstance id="20" idSubSurfaceComponent="160004" idSideASurface="220" />
 		</SubSurfaceComponentInstances>
+		<PlainGeometry />
 		<EmbeddedDatabase>
 			<Materials>
 				<Material id="10012" displayName="de:[SimQuality] Teppichboden|en:[SimQuality] Carpeting" color="#bf6e40">
@@ -1356,17 +1357,6 @@
 					<IdSideBBoundaryCondition>40004</IdSideBBoundaryCondition>
 				</SubSurfaceComponent>
 			</SubSurfaceComponents>
-			<SurfaceHeatings>
-				<SurfaceHeating id="350002" displayName="DE: TF10-2 |EN: &lt;new surface heating model&gt;" color="#5aff82" type="IdealPipeRegister">
-					<HeatingCoolingCurvePoints>Tout:-14,20,23,30;Tsupply:35,20,23,18;</HeatingCoolingCurvePoints>
-					<IdPipe>1000001</IdPipe>
-					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
-					<IBK:Parameter name="CoolingLimit" unit="W/m2">40</IBK:Parameter>
-					<IBK:Parameter name="PipeSpacing" unit="m">0.1</IBK:Parameter>
-					<IBK:Parameter name="MaxFluidVelocity" unit="m/s">1</IBK:Parameter>
-					<IBK:Parameter name="TemperatureDifferenceSupplyReturn" unit="K">7</IBK:Parameter>
-				</SurfaceHeating>
-			</SurfaceHeatings>
 			<Pipes>
 				<NetworkPipe id="1000001" displayName=" 20 x 2">
 					<IBK:Parameter name="DiameterOutside" unit="mm">20</IBK:Parameter>
