@@ -669,9 +669,6 @@ void SVMainWindow::setup() {
 	m_ui->centralWidget->setLayout(lay);
 	m_welcomeScreen->updateWelcomePage();
 
-	// *** Ptoject Notes Dialog ***
-	m_notesDialog = new SVNotesDialog(this);
-
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProject(QString)), this, SLOT(onOpenProjectByFilename(QString)));
@@ -1478,6 +1475,32 @@ void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
 }
 
 
+void SVMainWindow::on_actionEditProjectNotes_triggered() {
+	// create on first use
+	if (m_notesDialog == nullptr)
+		m_notesDialog = new SVNotesDialog(this);
+
+	m_notesDialog->exec();
+}
+
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered() {
+	// opens import network dialog
+	if (m_networkExportDialog == nullptr)
+		m_networkExportDialog = new SVNetworkExportDialog(this);
+
+	m_networkExportDialog->edit();
+}
+
+
+void SVMainWindow::on_actionPluginsManager_triggered() {
+	// show plugin view
+
+}
+
+
+
 void SVMainWindow::onUpdateActions() {
 	// purpose of this function is to update the view layout based on the existance of a project or none
 
@@ -2131,20 +2154,5 @@ static bool copyRecursively(const QString &srcFilePath,
 			return false;
 	}
 	return true;
-}
-
-
-void SVMainWindow::on_actionEditProjectNotes_triggered() {
-	m_notesDialog->exec();
-}
-
-
-void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered()
-{
-	// opens import network dialog
-	if (m_networkExportDialog == nullptr)
-		m_networkExportDialog = new SVNetworkExportDialog(this);
-
-	m_networkExportDialog->edit();
 }
 

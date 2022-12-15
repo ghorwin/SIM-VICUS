@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -193,6 +193,7 @@
     <property name="title">
      <string>Plugins</string>
     </property>
+    <addaction name="actionPluginsManager"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -818,6 +819,14 @@
   <action name="actionaa">
    <property name="text">
     <string>aa</string>
+   </property>
+  </action>
+  <action name="actionPluginsManager">
+   <property name="text">
+    <string>Plugin manager...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the plugin manager.</string>
    </property>
   </action>
  </widget>
