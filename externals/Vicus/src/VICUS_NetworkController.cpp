@@ -203,10 +203,9 @@ NetworkController::para_t NetworkController::setPointType(ControlledProperty con
 		case CP_PumpOperation:
 			return P_HeatLossOfFollowingElementThreshold;
 		case CP_ThermostatValue:
-		case NUM_CP:
-			return NUM_P; // no parameter to be set here
+		case NUM_CP: ; // no parameter to be set here
 	}
-
+	return NUM_P;
 }
 
 
