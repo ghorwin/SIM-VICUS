@@ -64,23 +64,23 @@ static int const Skip = -2;        //edge that would otherwise close a path
 #define NEAR_ZERO(val) (((val) > -TOLERANCE) && ((val) < TOLERANCE))
 
 struct TEdge {
-  IntPoint Bot;
-  IntPoint Curr; //current (updated for every new scanbeam)
-  IntPoint Top;
-  double Dx;
-  PolyType PolyTyp;
-  EdgeSide Side; //side only refers to current side of solution poly
-  int WindDelta; //1 or -1 depending on winding direction
-  int WindCnt;
-  int WindCnt2; //winding count of the opposite polytype
-  int OutIdx;
-  TEdge *Next;
-  TEdge *Prev;
-  TEdge *NextInLML;
-  TEdge *NextInAEL;
-  TEdge *PrevInAEL;
-  TEdge *NextInSEL;
-  TEdge *PrevInSEL;
+  IntPoint Bot = 0;
+  IntPoint Curr = 0; //current (updated for every new scanbeam)
+  IntPoint Top = 0;
+  double Dx = 0;
+  PolyType PolyTyp = (PolyType)0;
+  EdgeSide Side = (EdgeSide)0; //side only refers to current side of solution poly
+  int WindDelta = 0; //1 or -1 depending on winding direction
+  int WindCnt = 0;
+  int WindCnt2 = 0; //winding count of the opposite polytype
+  int OutIdx = 0;
+  TEdge *Next = nullptr;
+  TEdge *Prev = nullptr;
+  TEdge *NextInLML = nullptr;
+  TEdge *NextInAEL = nullptr;
+  TEdge *PrevInAEL = nullptr;
+  TEdge *NextInSEL = nullptr;
+  TEdge *PrevInSEL = nullptr;
 };
 
 struct IntersectNode {
@@ -264,6 +264,8 @@ class Int128
     Int128(const Int128 &val): lo(val.lo), hi(val.hi){}
 
     Int128(const long64& _hi, const ulong64& _lo): lo(_lo), hi(_hi){}
+
+    Int128& operator = (const Int128 &other) { lo = other.lo; hi = other.hi; return *this; }
 
     Int128& operator = (const long64 &val)
     {
@@ -718,7 +720,7 @@ void DisposeOutPts(OutPt*& pp)
 
 inline void InitEdge(TEdge* e, TEdge* eNext, TEdge* ePrev, const IntPoint& Pt)
 {
-  std::memset(e, 0, sizeof(TEdge));
+  *e = TEdge();
   e->Next = eNext;
   e->Prev = ePrev;
   e->Curr = Pt;
