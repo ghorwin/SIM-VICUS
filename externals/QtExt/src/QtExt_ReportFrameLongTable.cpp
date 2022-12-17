@@ -33,7 +33,7 @@ void ReportFrameLongTable::update(QPaintDevice* paintDevice, double width) {
 }
 
 unsigned int ReportFrameLongTable::numberOfSubFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
-	int tableCount = m_table.fittingTableRows(paintDevice, heightFirst - m_headingHeight, heightRest).size();
+	unsigned int tableCount = (unsigned int)m_table.fittingTableRows(paintDevice, heightFirst - m_headingHeight, heightRest).size();
 	return tableCount;
 }
 

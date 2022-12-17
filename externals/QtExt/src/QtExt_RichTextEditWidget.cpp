@@ -54,8 +54,6 @@
 
 #include "QtExt_RichTextEditWidget.h"
 
-const QString rsrcPath = ":/gfx/master";
-
 namespace QtExt {
 
 RichTextEditWidget::RichTextEditWidget(QWidget *parent)
@@ -129,27 +127,27 @@ QString RichTextEditWidget::htmlText() const {
 void RichTextEditWidget::setupEditActions() {
 	QToolBar *tb = addToolBar(tr("Edit Actions"));
 
-	const QIcon undoIcon = QIcon::fromTheme("edit-undo", QIcon(rsrcPath + "/editundo.png"));
+	const QIcon undoIcon = QIcon::fromTheme("edit-undo", QIcon(":/gfx/master/editundo.png"));
 	actionUndo = tb->addAction(undoIcon, tr("&Undo"), this, SLOT(undo()));
 	actionUndo->setShortcut(QKeySequence::Undo);
 
-	const QIcon redoIcon = QIcon::fromTheme("edit-redo", QIcon(rsrcPath + "/editredo.png"));
+	const QIcon redoIcon = QIcon::fromTheme("edit-redo", QIcon(":/gfx/master/editredo.png"));
 	actionRedo = tb->addAction(redoIcon, tr("&Redo"), this, SLOT(redo()));
 	actionRedo->setPriority(QAction::LowPriority);
 	actionRedo->setShortcut(QKeySequence::Redo);
 
 #ifndef QT_NO_CLIPBOARD
-	const QIcon cutIcon = QIcon::fromTheme("edit-cut", QIcon(rsrcPath + "/editcut.png"));
+	const QIcon cutIcon = QIcon::fromTheme("edit-cut", QIcon(":/gfx/master/editcut.png"));
 	actionCut = tb->addAction(cutIcon, tr("Cu&t"), this, SLOT(cut()));
 	actionCut->setPriority(QAction::LowPriority);
 	actionCut->setShortcut(QKeySequence::Cut);
 
-	const QIcon copyIcon = QIcon::fromTheme("edit-copy", QIcon(rsrcPath + "/editcopy.png"));
+	const QIcon copyIcon = QIcon::fromTheme("edit-copy", QIcon(":/gfx/master/editcopy.png"));
 	actionCopy = tb->addAction(copyIcon, tr("&Copy"), this, SLOT(copy()));
 	actionCopy->setPriority(QAction::LowPriority);
 	actionCopy->setShortcut(QKeySequence::Copy);
 
-	const QIcon pasteIcon = QIcon::fromTheme("edit-paste", QIcon(rsrcPath + "/editpaste.png"));
+	const QIcon pasteIcon = QIcon::fromTheme("edit-paste", QIcon(":/gfx/master/editpaste.png"));
 	actionPaste = tb->addAction(pasteIcon, tr("&Paste"), this, SLOT(paste()));
 	actionPaste->setPriority(QAction::LowPriority);
 	actionPaste->setShortcut(QKeySequence::Paste);
@@ -162,7 +160,7 @@ void RichTextEditWidget::setupTextActions()
 {
 	QToolBar *tb = addToolBar(tr("Format Actions"));
 
-	const QIcon boldIcon = QIcon::fromTheme("format-text-bold", QIcon(rsrcPath + "/textbold.png"));
+	const QIcon boldIcon = QIcon::fromTheme("format-text-bold", QIcon(":/gfx/master/textbold.png"));
 	actionTextBold = tb->addAction(boldIcon, tr("&Bold"), this, SLOT(textBold()));
 	actionTextBold->setShortcut(Qt::CTRL + Qt::Key_B);
 	actionTextBold->setPriority(QAction::LowPriority);
@@ -171,7 +169,7 @@ void RichTextEditWidget::setupTextActions()
 	actionTextBold->setFont(bold);
 	actionTextBold->setCheckable(true);
 
-	const QIcon italicIcon = QIcon::fromTheme("format-text-italic", QIcon(rsrcPath + "/textitalic.png"));
+	const QIcon italicIcon = QIcon::fromTheme("format-text-italic", QIcon(":/gfx/master/textitalic.png"));
 	actionTextItalic = tb->addAction(italicIcon, tr("&Italic"), this, SLOT(textItalic()));
 	actionTextItalic->setPriority(QAction::LowPriority);
 	actionTextItalic->setShortcut(Qt::CTRL + Qt::Key_I);
@@ -180,7 +178,7 @@ void RichTextEditWidget::setupTextActions()
 	actionTextItalic->setFont(italic);
 	actionTextItalic->setCheckable(true);
 
-	const QIcon underlineIcon = QIcon::fromTheme("format-text-underline", QIcon(rsrcPath + "/textunder.png"));
+	const QIcon underlineIcon = QIcon::fromTheme("format-text-underline", QIcon(":/gfx/master/textunder.png"));
 	actionTextUnderline = tb->addAction(underlineIcon, tr("&Underline"), this, SLOT(textUnderline()));
 	actionTextUnderline->setShortcut(Qt::CTRL + Qt::Key_U);
 	actionTextUnderline->setPriority(QAction::LowPriority);
@@ -189,22 +187,22 @@ void RichTextEditWidget::setupTextActions()
 	actionTextUnderline->setFont(underline);
 	actionTextUnderline->setCheckable(true);
 
-	const QIcon leftIcon = QIcon::fromTheme("format-justify-left", QIcon(rsrcPath + "/textleft.png"));
+	const QIcon leftIcon = QIcon::fromTheme("format-justify-left", QIcon(":/gfx/master/textleft.png"));
 	actionAlignLeft = new QAction(leftIcon, tr("&Left"), this);
 	actionAlignLeft->setShortcut(Qt::CTRL + Qt::Key_L);
 	actionAlignLeft->setCheckable(true);
 	actionAlignLeft->setPriority(QAction::LowPriority);
-	const QIcon centerIcon = QIcon::fromTheme("format-justify-center", QIcon(rsrcPath + "/textcenter.png"));
+	const QIcon centerIcon = QIcon::fromTheme("format-justify-center", QIcon(":/gfx/master/textcenter.png"));
 	actionAlignCenter = new QAction(centerIcon, tr("C&enter"), this);
 	actionAlignCenter->setShortcut(Qt::CTRL + Qt::Key_E);
 	actionAlignCenter->setCheckable(true);
 	actionAlignCenter->setPriority(QAction::LowPriority);
-	const QIcon rightIcon = QIcon::fromTheme("format-justify-right", QIcon(rsrcPath + "/textright.png"));
+	const QIcon rightIcon = QIcon::fromTheme("format-justify-right", QIcon(":/gfx/master/textright.png"));
 	actionAlignRight = new QAction(rightIcon, tr("&Right"), this);
 	actionAlignRight->setShortcut(Qt::CTRL + Qt::Key_R);
 	actionAlignRight->setCheckable(true);
 	actionAlignRight->setPriority(QAction::LowPriority);
-	const QIcon fillIcon = QIcon::fromTheme("format-justify-fill", QIcon(rsrcPath + "/textjustify.png"));
+	const QIcon fillIcon = QIcon::fromTheme("format-justify-fill", QIcon(":/gfx/master/textjustify.png"));
 	actionAlignJustify = new QAction(fillIcon, tr("&Justify"), this);
 	actionAlignJustify->setShortcut(Qt::CTRL + Qt::Key_J);
 	actionAlignJustify->setCheckable(true);
@@ -249,11 +247,15 @@ void RichTextEditWidget::setupTextActions()
 	typedef void (QComboBox::*QComboIntSignal)(int);
 	connect(comboListFormat, static_cast<QComboIntSignal>(&QComboBox::activated), this, &RichTextEditWidget::textStyle);
 
-	typedef void (QComboBox::*QComboStringSignal)(const QString &);
 	comboFont = new QFontComboBox(tb);
 	tb->addWidget(comboFont);
-	connect(comboFont, static_cast<QComboStringSignal>(&QComboBox::activated), this, &RichTextEditWidget::textFamily);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+	connect(comboFont, &QComboBox::textActivated, this, &RichTextEditWidget::textFamily);
+#else
+	typedef void (QComboBox::*QComboStringSignal)(const QString &);
+	connect(comboFont, static_cast<QComboStringSignal>(&QComboBox::activated), this, &RichTextEditWidget::textFamily);
+#endif
 	comboSize = new QComboBox(tb);
 	comboSize->setObjectName("comboSize");
 	tb->addWidget(comboSize);
@@ -264,7 +266,11 @@ void RichTextEditWidget::setupTextActions()
 		comboSize->addItem(QString::number(size));
 	comboSize->setCurrentIndex(standardSizes.indexOf(QApplication::font().pointSize()));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+	connect(comboSize, &QComboBox::textActivated, this, &RichTextEditWidget::textSize);
+#else
 	connect(comboSize, static_cast<QComboStringSignal>(&QComboBox::activated), this, &RichTextEditWidget::textSize);
+#endif
 }
 
 void RichTextEditWidget::textBold() {

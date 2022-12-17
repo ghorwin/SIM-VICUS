@@ -446,7 +446,7 @@ void Report::setFramesVisibility(int type) {
 	}
 	else {
 		for(const auto& it : vect) {
-			visible = getSpecialVisibility(it, type, mainVisible);
+			visible = hasSpecialVisibility(it, type, mainVisible);
 			setFrameVisibility(it, visible);
 			visible = mainVisible;
 		}

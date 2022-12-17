@@ -111,8 +111,8 @@ public:
 	*/
 	TextFrameInformations();
 
-//	/*! Constructor with necessary informations to create content.*/
-//	TextFrameInformations(QTextDocument* textDocument, const QString& text);
+	/*! Constructor with necessary informations to create content.*/
+	TextFrameInformations(QTextDocument* textDocument, const QString& text, bool adaptive);
 
 	~TextFrameInformations();
 

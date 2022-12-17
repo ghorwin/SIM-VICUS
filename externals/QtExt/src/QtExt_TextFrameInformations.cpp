@@ -55,11 +55,11 @@ TextFrameInformations::TextFrameInformations() :
 {
 }
 
-//TextFrameInformations::TextFrameInformations(QTextDocument* textDocument, const QString& text) :
-//		m_textDocument(0)
-//{
-//	set(textDocument, text);
-//}
+TextFrameInformations::TextFrameInformations(QTextDocument* textDocument, const QString& text, bool adaptive) :
+		m_textDocument(0)
+{
+	set(textDocument, text, adaptive);
+}
 
 TextFrameInformations::~TextFrameInformations() {
 }

@@ -53,8 +53,6 @@
 #include <QToolButton>
 #include <QDebug>
 
-//#include "QtExt_Constants.h"
-
 
 namespace QtExt {
 
@@ -78,12 +76,12 @@ NorthPanel::NorthPanel( QWidget * parent) :
 	m_progressAbortButton = new QtExt::IconButton(m_progressWidget);
 	m_progressAbortButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum);
 	m_progressAbortButton->setNormalIcons(
-		QPixmap(QString::fromUtf8(":/master/delete_16x16/02_delete_inactive.png")),
-		QPixmap(QString::fromUtf8(":/master/delete_16x16/03_delete_active.png")),
+		QPixmap(QString::fromUtf8(":/gfx/panels/delete_16x16/02_delete_inactive.png")),
+		QPixmap(QString::fromUtf8(":/gfx/panels/delete_16x16/03_delete_active.png")),
 		QPixmap()
 	);
 	m_progressAbortButton->setCheckedIcons(
-		QPixmap(QString::fromUtf8(":/master/delete_16x16/04_delete_pressed.png")),
+		QPixmap(QString::fromUtf8(":/gfx/panels/delete_16x16/04_delete_pressed.png")),
 		QPixmap(),
 		QPixmap()
 	);
@@ -116,7 +114,7 @@ NorthPanel::NorthPanel( QWidget * parent) :
 	/// \todo customize label and Logo
 	m_labelLogo = new QLabel("place UserLogo");
 	m_labelLogo->setTextInteractionFlags( Qt::NoTextInteraction );
-	m_labelLogo->setPixmap ( QPixmap(QString::fromUtf8(":/master/Delphin_Logo_headline/Version_2/Delphin_Logo_no_background/Delphin_Logo_headline_no_background_50x195.png" ) ) );
+	m_labelLogo->setPixmap ( QPixmap(QString::fromUtf8(":/gfx/panels/Delphin_Logo_headline/Version_2/Delphin_Logo_no_background/Delphin_Logo_headline_no_background_50x195.png" ) ) );
 
 	QGridLayout * gridlay = new QGridLayout;
 	// logo is placed in the top left (column 0, rows 1 and 2)
@@ -140,7 +138,11 @@ NorthPanel::NorthPanel( QWidget * parent) :
 	m_labelLogo->setVisible( true );
 	m_progressWidget->setVisible(false);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+	unsigned int npHeight = qMax(50, m_labelLogo->pixmap(Qt::ReturnByValue).height());
+#else
 	unsigned int npHeight = qMax(50, m_labelLogo->pixmap()->height());
+#endif
 	resize(100, npHeight);
 	setMinimumHeight(npHeight);
 	setMaximumHeight(npHeight);

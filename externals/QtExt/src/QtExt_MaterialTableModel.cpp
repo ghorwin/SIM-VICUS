@@ -82,17 +82,15 @@ QVariant MaterialTableModel::headerData( int section, Qt::Orientation orientatio
 			case MaterialBase::MC_PRODUCTID			: return tr("ProductName");
 			case MaterialBase::MC_PRODUCER			: return tr("Producer");
 			case MaterialBase::MC_SOURCE			: return tr("DataSource");
-			case MaterialBase::MC_RHO				: return trUtf8("%1 [kg/m%2]").arg(QString::fromWCharArray(L"\u03C1")).arg(QString::fromWCharArray(L"\u00B3"));
+			case MaterialBase::MC_RHO				: return tr("%1 [kg/m%2]").arg(QString::fromWCharArray(L"\u03C1"), QString::fromWCharArray(L"\u00B3"));
 			case MaterialBase::MC_CET				: return tr("cp [J/kgK]");
-			case MaterialBase::MC_MEW				: return trUtf8("%1 [-]").arg(QString::fromWCharArray(L"\u03BC"));
-			case MaterialBase::MC_LAMBDA			: return trUtf8("%1 [W/mK]").arg(QString::fromWCharArray(L"\u03BB"));
-			case MaterialBase::MC_W80				: return trUtf8("W80 [kg/m%1]").arg(QString::fromWCharArray(L"\u00B3"));
+			case MaterialBase::MC_MEW				: return tr("%1 [-]").arg(QString::fromWCharArray(L"\u03BC"));
+			case MaterialBase::MC_LAMBDA			: return tr("%1 [W/mK]").arg(QString::fromWCharArray(L"\u03BB"));
+			case MaterialBase::MC_W80				: return tr("W80 [kg/m%1]").arg(QString::fromWCharArray(L"\u00B3"));
 			case MaterialBase::MC_WSAT				: return tr("WSat [kg/m%1]").arg(QString::fromWCharArray(L"\u00B3"));
-			case MaterialBase::MC_AW				: return trUtf8("Aw\n[kg/m%1s%2]")
-													.arg(QString::fromWCharArray(L"\u00B2"))
-													.arg(QString::fromWCharArray(L"\u00BD"));
-			case MaterialBase::MC_SD				: return trUtf8("sd [m]");
-			case MaterialBase::MC_KAir				: return trUtf8("Kair [s/m]");
+			case MaterialBase::MC_AW				: return tr("Aw\n[kg/m%1s%2]").arg(QString::fromWCharArray(L"\u00B2"), QString::fromWCharArray(L"\u00BD"));
+			case MaterialBase::MC_SD				: return tr("sd [m]");
+			case MaterialBase::MC_KAir				: return tr("Kair [s/m]");
 			default : ;
 		}
 	}

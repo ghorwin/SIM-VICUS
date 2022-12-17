@@ -53,40 +53,40 @@ PanelButton::PanelButton( QWidget * parent, Direction direction ):
 		case PanelButton::DD_NORTH :
 		{
 			setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_top/03_arrows_flat_top_enabled_24x24.png")), QIcon::Normal, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_top/04_arrows_flat_top_hover_24x24.png")), QIcon::Active, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_bottom/05_arrows_flat_bottom_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_bottom/06_arrows_flat_bottom_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_top/03_arrows_flat_top_enabled_24x24.png")), QIcon::Normal, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_top/04_arrows_flat_top_hover_24x24.png")), QIcon::Active, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_bottom/05_arrows_flat_bottom_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_bottom/06_arrows_flat_bottom_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
 			setIcon(iconBtn);
 			m_direction = PanelButton::DD_NORTH;
 			setMaximumHeight(PANEL_BUTTON_SIZE);
 		} break;
 		case PanelButton::DD_SOUTH :
 			setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_bottom/03_arrows_flat_bottom_enabled_24x24.png")), QIcon::Normal, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_bottom/04_arrows_flat_bottom_hover_24x24.png")), QIcon::Active, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_top/05_arrows_flat_top_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_top/06_arrows_flat_top_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_bottom/03_arrows_flat_bottom_enabled_24x24.png")), QIcon::Normal, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_bottom/04_arrows_flat_bottom_hover_24x24.png")), QIcon::Active, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_top/05_arrows_flat_top_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_top/06_arrows_flat_top_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
 			setIcon(iconBtn);
 			m_direction = PanelButton::DD_SOUTH;
 			setMaximumHeight(PANEL_BUTTON_SIZE);
 			break;
 		case PanelButton::DD_EAST :
 			setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_right/03_arrows_flat_right_enabled_24x24.png")), QIcon::Normal, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_right/04_arrows_flat_right_hover_24x24.png")), QIcon::Active, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_left/05_arrows_flat_left_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_left/06_arrows_flat_top_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_right/03_arrows_flat_right_enabled_24x24.png")), QIcon::Normal, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_right/04_arrows_flat_right_hover_24x24.png")), QIcon::Active, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_left/05_arrows_flat_left_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_left/06_arrows_flat_left_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
 			setIcon(iconBtn);
 			m_direction = PanelButton::DD_EAST;
 			setMaximumWidth(PANEL_BUTTON_SIZE);
 			break;
 		case PanelButton::DD_WEST :
 			setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_left/03_arrows_flat_left_enabled_24x24.png")), QIcon::Normal, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_left/04_arrows_flat_left_hover_24x24.png")), QIcon::Active, QIcon::On);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_right/05_arrows_flat_right_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
-			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/master/arrow_flat_right/06_arrows_flat_right_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_left/03_arrows_flat_left_enabled_24x24.png")), QIcon::Normal, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_left/04_arrows_flat_left_hover_24x24.png")), QIcon::Active, QIcon::On);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_right/05_arrows_flat_right_enabled_checked_24x24.png")), QIcon::Normal, QIcon::Off);
+			iconBtn.addPixmap(QPixmap(QString::fromUtf8(":/gfx/panels/arrow_flat_right/06_arrows_flat_right_hover_checked_24x24.png")), QIcon::Active, QIcon::Off);
 			setIcon(iconBtn);
 			m_direction = PanelButton::DD_WEST;
 			setMaximumWidth(PANEL_BUTTON_SIZE);
