@@ -104,7 +104,7 @@ void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTa
 
 
 void SVDBNetworkComponentEditWidget::updateInput(int id) {
-	FUNCID(SVDBNetworkComponentEditWidget::updateInput);
+//	FUNCID(SVDBNetworkComponentEditWidget::updateInput);
 
 	m_current = nullptr; // disable edit triggers
 
