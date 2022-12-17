@@ -65,6 +65,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 					return (int)(room.m_para[VICUS::Room::P_Volume].get_value("m3")*100)/100.0;
 				return QVariant();
 			}
+		break;
 
 		case Qt::EditRole : {
 			Q_ASSERT(index.column() == 3 || index.column() == 4);
@@ -83,6 +84,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				return QVariant();
 			}
 		}
+		break;
 
 		case Qt::FontRole : {
 			//      with valid value -> black, bold
@@ -93,11 +95,11 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				return f;
 			}
 		}
+		break;
 
-			// UserRole returns value reference
-		case Qt::UserRole : {
-			return room.m_id;
-		}
+		// UserRole returns value reference
+		case Qt::UserRole :  return room.m_id;
+
 		case Qt::ForegroundRole : {
 			// vars with INVALID values -> red text color
 			if (index.column() == 2)
@@ -107,6 +109,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				if (!room.m_para[VICUS::Room::P_Volume].empty() && room.m_para[VICUS::Room::P_Volume].get_value("m3") < 1e-2)
 					return QColor(Qt::red);
 		}
+		break;
 	}
 	return QVariant();
 }
