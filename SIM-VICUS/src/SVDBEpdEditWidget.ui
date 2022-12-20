@@ -25,91 +25,98 @@
   <property name="windowTitle">
    <string>Construction editor</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
-   <item row="2" column="1">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0">
+   <item row="2" column="2">
     <widget class="QtExt::LanguageStringEditWidget1" name="lineEditCategory"/>
    </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="labelRefUnit">
-     <property name="text">
-      <string>Reference Unit:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="2">
-    <widget class="QTableWidget" name="tableWidgetEpdData"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelManufacturer">
-     <property name="text">
-      <string>Manufacturer:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="lineEditDataSource"/>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
+   <item row="3" column="2">
     <widget class="QLineEdit" name="lineEditManufacturer"/>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="labelRefQuantity">
-     <property name="text">
-      <string>Reference Quantity:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
+   <item row="4" column="2">
     <widget class="QLineEdit" name="lineEditExpireYear"/>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="1" colspan="2">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelExpireYear">
-     <property name="text">
-      <string>Expire year:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QLineEdit" name="lineEditRefQuantity"/>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="lineEditUUID"/>
-   </item>
-   <item row="7" column="1">
+   <item row="9" column="2">
     <widget class="QLineEdit" name="lineEditRefUnit"/>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="1">
     <widget class="QLabel" name="labelCategory">
      <property name="text">
       <string>Category:</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Data source:</string>
+   <item row="7" column="1" colspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="0" column="1">
     <widget class="QLabel" name="labelUUID">
      <property name="text">
       <string>UUID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="labelExpireYear">
+     <property name="text">
+      <string>Expire year:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1" colspan="2">
+    <widget class="QTableWidget" name="tableWidgetEpdData"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="labelManufacturer">
+     <property name="text">
+      <string>Manufacturer:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLabel" name="labelRefUnit">
+     <property name="text">
+      <string>Reference Unit:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
+    <widget class="QLineEdit" name="lineEditRefQuantity"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEditUUID"/>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="labelRefQuantity">
+     <property name="text">
+      <string>Reference Quantity:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2" rowspan="2">
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" rowspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Data source:</string>
      </property>
     </widget>
    </item>
