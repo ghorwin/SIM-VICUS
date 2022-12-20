@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_LCASettingsH
-#define VICUS_LCASettingsH
+#ifndef VICUS_LcaSettingsH
+#define VICUS_LcaSettingsH
 
 #include <IBK_Flag.h>
 
@@ -32,11 +32,13 @@
 #include <IBK_Parameter.h>
 
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_EpdCategoryDataset.h"
+
 
 namespace VICUS {
 
 /*! Stores general settings about LCA Options. */
-class LCASettings {
+class LcaSettings {
 	VICUS_READWRITE_PRIVATE
 public:
 
@@ -45,15 +47,52 @@ public:
 	enum para_t {
 		P_TimePeriod,					// Keyword: TimePeriod					[a]		'Time period for consideration [a].'
 		P_PriceIncrease,				// Keyword: PriceIncrease				[%]		'Yearly price increase [%].'
+		P_FactorBnbSimpleMode,			// Keyword: FactorSimpleMode			[-]		'Calculation factor for simple mode calculation (BNB). [-]'
+		P_NetUsageArea,					// Keyword: NetUsageArea				[-]		'Net usage area [-].'
 		NUM_P
 	};
 
+	//the most frequently used categories
+	enum Module {
+		M_A1 = 0x00001,								// Keyword: A1
+		M_A2 = 0x00002,								// Keyword: A2
+		M_A3 = 0x00004,								// Keyword: A3
+		M_A4 = 0x00008,								// Keyword: A4
+		M_A5 = 0x00010,								// Keyword: A5
+		M_B1 = 0x00020,								// Keyword: B1
+		M_B2 = 0x00040,								// Keyword: B2
+		M_B3 = 0x00080,								// Keyword: B3
+		M_B4 = 0x00100,								// Keyword: B4
+		M_B5 = 0x00200,								// Keyword: B5
+		M_B6 = 0x00400,								// Keyword: B6
+		M_B7 = 0x00800,								// Keyword: B7
+		M_C1 = 0x01000,								// Keyword: C1
+		M_C2 = 0x02000,								// Keyword: C2
+		M_C3 = 0x04000,								// Keyword: C3
+		M_C4 = 0x08000,								// Keyword: C4
+		M_D  = 0x10000,								// Keyword: D
+		NUM_M = 17
+	};
 
-	VICUS_READWRITE_IFNOTEMPTY(LCASettings)
-	VICUS_COMP(LCASettings)
+	/*! LCA Caluclation modes. */
+	enum LcaCalculationMode {
+		CM_Simple,							// Keyword: Simple					'Use predefined certification system settings.'
+		CM_Detailed,						// Keyword: Detailed				'Set detailed LCA Settings.'
+		NUM_CM
+	};
+
+	/*! Certificytion systems predefined modules. */
+	enum LcaCertificationSytem {
+		CS_BNB = LcaSettings::M_A1 | LcaSettings::M_A2 | LcaSettings::M_A3 | LcaSettings::M_B2 |
+					LcaSettings::M_B4 | LcaSettings::M_B6 | LcaSettings::M_C3 | LcaSettings::M_C4,		// Keyword: BNB				'Bewertungssystem Nachhaltiges Bauen (BNB)'
+		NUM_CS = 1
+	};
+
+	VICUS_READWRITE_IFNOTEMPTY(LcaSettings)
+	VICUS_COMP(LcaSettings)
 
 	/*! Constructor. */
-	LCASettings() {
+	LcaSettings() {
 		initDefaults();
 	}
 
@@ -64,13 +103,29 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Time Period for LCA/LCC consideration. */
-	IBK::Parameter						m_para[NUM_P];			// XML:E
+	IBK::Parameter						m_para[NUM_P];									// XML:E
+
+	/*! Set flags for LCA Calculations. */
+	IBK::Flag							m_flags[NUM_M];									// XML:E
+
+	/*! Calculation mode of LCA. */
+	LcaCalculationMode					m_lcaCalculationMode;							// XML:E
+
+	/*! Certification system to be used for LCA. */
+	LcaCertificationSytem				m_lcaCertificationSystem;						// XML:E
 
 };
 
-inline bool LCASettings::operator!=(const LCASettings & other) const {
-	if (m_para[P_TimePeriod] != other.m_para[P_TimePeriod]) return true;
-	if (m_para[P_PriceIncrease] != other.m_para[P_PriceIncrease]) return true;
+inline bool LcaSettings::operator!=(const LcaSettings & other) const {
+	for(unsigned int i=0; i<NUM_P; ++i)
+		if (m_para[i] != other.m_para[i]) return true;
+
+	for(unsigned int i=0; i<NUM_M; ++i)
+		if(m_flags[i].isEnabled() != other.m_flags[i].isEnabled()) return true;
+
+	if(m_lcaCalculationMode != other.m_lcaCalculationMode) return true;
+	if(m_lcaCertificationSystem != other.m_lcaCertificationSystem) return true;
+
 	return false;
 }
 
@@ -78,4 +133,4 @@ inline bool LCASettings::operator!=(const LCASettings & other) const {
 } // namespace VICUS
 
 
-#endif // VICUS_LCASettingsH
+#endif // VICUS_LcaSettingsH
