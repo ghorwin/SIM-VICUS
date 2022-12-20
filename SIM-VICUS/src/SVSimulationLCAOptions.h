@@ -4,11 +4,11 @@
 #include <QWidget>
 
 #include <SVMainWindow.h>
-#include <SVDBEPDEditWidget.h>
+#include <SVDBEpdEditWidget.h>
 
 #include <SVSettings.h>
 
-#include <VICUS_LCASettings.h>
+#include <VICUS_LcaSettings.h>
 #include <VICUS_Project.h>
 
 namespace Ui {
@@ -22,6 +22,7 @@ public:
 
 	struct AggregatedComponentData {
 
+		/*! All Categoruies. */
 		enum Category {
 			C_CategoryA,
 			C_CategoryB,
@@ -29,7 +30,6 @@ public:
 			C_CategoryD,
 			NUM_C
 		};
-
 
 		AggregatedComponentData() {}
 
@@ -43,6 +43,7 @@ public:
 			m_additionalComponents.insert(m_component);
 		}
 
+		/*! Adds area of an component instance to the aggregated component data. */
 		void addArea(const VICUS::ComponentInstance &compInst) {
 			const VICUS::Surface *surfA = compInst.m_sideASurface;
 			const VICUS::Surface *surfB = compInst.m_sideASurface;
@@ -56,6 +57,9 @@ public:
 				m_area += surfB->geometry().area();
 		}
 
+		/*! Combines Aggregated Component data.
+			Adds Area, Aggregated LCA Data and inserts pointer to additional components.
+		*/
 		void addAggregatedData(const AggregatedComponentData &aggregatedData) {
 
 			m_area += aggregatedData.m_area;
@@ -67,15 +71,16 @@ public:
 		}
 
 		/*! Pointer to VICUS Component. */
-		const VICUS::Component		*m_component = nullptr;
+		const VICUS::Component					*m_component = nullptr;
 
-		std::set<const VICUS::Component *>	m_additionalComponents;
+		/*! Vector with additional components. */
+		std::set<const VICUS::Component *>		m_additionalComponents;
 
 		/*! Area of all components used in VICUS project. */
-		double						m_area;
+		double									m_area;
 
 		/*! Global EPD of used Component. */
-		VICUS::EpdDataset			m_totalEpdData[NUM_C];
+		VICUS::EpdDataset						m_totalEpdData[NUM_C];
 
 	};
 
@@ -159,15 +164,45 @@ public:
 		ColA2WDP,
 	};
 
-	SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettings &settings);
+	SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings &settings);
 	~SVSimulationLCAOptions();
 
 	void calculateLCA();
 
+	/*! Updates user interface with properties from the project data structure.
+		This function is called whenever the dialog is first shown.
+	*/
+	void updateUi();
+
 private slots:
 	void on_pushButtonImportOkoebaudat_clicked();
 
-	void on_pushButtonLcaLcc_clicked();
+
+	/*! Sets the modules state in lca settings from the specified toggled checkbox.
+		Uses the checkbox' text and determines which states need to be set.
+	*/
+	void setModuleState(int state);
+
+
+
+
+	void on_comboBoxCalculationMode_currentIndexChanged(int index);
+
+	void on_comboBoxCertificationSystem_currentIndexChanged(int index);
+
+
+
+	void on_pushButtonAreaDetection_clicked();
+
+	void on_pushButtonLcc_clicked();
+
+	void on_pushButtonLca_clicked();
+
+	void on_lineEditArea_editingFinishedSuccessfully();
+
+	void on_lineEditTimePeriod_editingFinishedSuccessfully();
+
+	void on_lineEditPriceIncrease_editingFinishedSuccessfully();
 
 private:
 	/*! Import ÖKOBAUDAT as csv from
@@ -208,6 +243,9 @@ private:
 	void writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
 						   const AggregatedComponentData::Category & category);
 
+	/*! Sets the CheckBox state and uses a specified bitmask to determine whether it is checked. */
+	void setCheckBoxState(QCheckBox *cb, int bitmask);
+
 	/*! set value. */
 	template<typename T>
 	void setValue(T & member, const T & value, bool foundExistingEpd);
@@ -216,7 +254,7 @@ private:
 	Ui::SVSimulationLCAOptions							*m_ui;
 
 	/*! Pointer to LCA Settings. */
-	VICUS::LCASettings									*m_lcaSettings = nullptr;
+	VICUS::LcaSettings									*m_lcaSettings = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
@@ -240,6 +278,9 @@ private:
 
 	/*! Reference to VICUS Project. */
 	const VICUS::Project								&m_prj;
+
+	/*! Store checked data. */
+	std::vector<IBK::Flag>								m_intParas[VICUS::EpdCategoryDataset::NUM_M];
 
 };
 
