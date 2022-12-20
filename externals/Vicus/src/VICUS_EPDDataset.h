@@ -105,6 +105,9 @@ public:
 	/*! Sub type element. */
 	Type							m_type = NUM_T;							// XML:E:required
 
+    /*! String with all modules defined, separated by Comma. */
+    QString                         m_modules;                              // XML:E:required
+
 	/*! Vector with all category specific datasats. */
 	std::vector<EpdCategoryDataset> m_epdCategoryDataset;					// XML:E
 };
