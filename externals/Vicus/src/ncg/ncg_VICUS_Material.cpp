@@ -94,7 +94,7 @@ void Material::readXML(const TiXmlElement * element) {
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
-			else if (cName == "EpdCategroySet")
+			else if (cName == "EpdCategorySet")
 				m_epdCategorySet.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);

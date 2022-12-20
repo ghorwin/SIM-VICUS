@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_EPDDataset.h>
+#include <VICUS_EpdDataset.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -66,6 +66,10 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'Type' element.") ), FUNC_ID);
 
+		if (!element->FirstChildElement("Modules"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'Modules' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -82,6 +86,8 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 				m_referenceUnit = NANDRAD::readUnitElement(c, cName);
 			else if (cName == "ReferenceQuantity")
 				m_referenceQuantity = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "Modules")
+				m_modules = QString::fromStdString(c->GetText());
 			else if (cName == "EpdCategoryDataset") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -146,6 +152,8 @@ TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 
 	if (m_type != NUM_T)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("EpdDataset::Type",  m_type));
+	if (!m_modules.isEmpty())
+		TiXmlElement::appendSingleAttributeElement(e, "Modules", nullptr, std::string(), m_modules.toStdString());
 
 	if (!m_epdCategoryDataset.empty()) {
 		TiXmlElement * child = new TiXmlElement("EpdCategoryDataset");

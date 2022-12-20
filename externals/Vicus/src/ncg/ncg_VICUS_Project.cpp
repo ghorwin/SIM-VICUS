@@ -100,7 +100,7 @@ void Project::readXML(const TiXmlElement * element) {
 				m_outputs.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
-			else if (cName == "LCASettings")
+			else if (cName == "LcaSettings")
 				m_lcaSettings.readXML(c);
 			else if (cName == "PlainGeometry")
 				m_plainGeometry.readXML(c);
