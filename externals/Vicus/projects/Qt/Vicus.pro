@@ -46,7 +46,7 @@ HEADERS += \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EpdCategoryDataset.h \
-	../../src/VICUS_EpdCategroySet.h \
+	../../src/VICUS_EpdCategorySet.h \
 	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
 	../../src/VICUS_GridPlane.h \
@@ -110,7 +110,7 @@ SOURCES += \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EpdCategoryDataset.cpp \
-	../../src/VICUS_EpdCategroySet.cpp \
+  ../../src/VICUS_EpdCategorySet.cpp \
 	../../src/VICUS_EpdDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
 	../../src/VICUS_Infiltration.cpp \
@@ -164,13 +164,14 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
-	../../src/ncg/ncg_VICUS_EpdCategroySet.cpp \
+	../../src/ncg/ncg_VICUS_EpdCategorySet.cpp \
 	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
+  ../../src/ncg/ncg_VICUS_LcaSettings.cpp \
 	../../src/ncg/ncg_VICUS_LcaSettings.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
