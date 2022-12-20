@@ -43,6 +43,8 @@ public:
 		ColId,
 		ColCheck,
 		ColName,
+        ColManufacturer,
+        ColModules,
 		ColType,
 		NumColumns
 	};

@@ -70,6 +70,8 @@ QVariant SVDBEpdTableModel::data ( const QModelIndex & index, int role) const {
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
+                case ColModules				: return it->second.m_modules;
+                case ColManufacturer		: return it->second.m_manufacturer;
 				case ColType				: {
 					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Type", it->second.m_type);
 					return QString::fromStdString(keyword);
@@ -130,8 +132,9 @@ QVariant SVDBEpdTableModel::headerData(int section, Qt::Orientation orientation,
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
+                case ColManufacturer        : return tr("Manufacturer");
+                case ColModules             : return tr("Modules");
 				case ColType				: return tr("Type");
-
 				default: ;
 			}
 		} break;
@@ -195,6 +198,8 @@ void SVDBEpdTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColName, QHeaderView::Stretch);
+    tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColManufacturer, QHeaderView::Fixed);
+    tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColModules, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColType, QHeaderView::ResizeToContents);
 }
 
@@ -252,6 +257,8 @@ void SVDBEpdTableModel::importDatasets(const std::map<QString, VICUS::EpdDataset
 		auto it = epds.begin();
 		std::advance(it, i);
 		VICUS::EpdDataset &epd = const_cast<VICUS::EpdDataset &>(it->second);
+
+        qDebug() << epd.m_uuid << "\t" << QtExt::MultiLangString2QString(epd.m_displayName) << "\t" << QtExt::MultiLangString2QString(epd.m_category) << "\t" << epd.m_manufacturer;
 
 		importDBElement(epd, m_db->m_epdDatasets, epdElementsIDMap,
 			"EPD-Element '%1' with #%2 imported -> new ID #%3.\n",
