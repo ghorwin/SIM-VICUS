@@ -29,7 +29,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_EpdCategroySet.h"
+#include "VICUS_EpdCategorySet.h"
 
 #include <QString>
 #include <QColor>
@@ -134,7 +134,7 @@ public:
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	/*! Holds all Data for combined EPDs for Material. */
-	EpdCategroySet					m_epdCategorySet;						// XML:E
+	EpdCategorySet					m_epdCategorySet;						// XML:E
 
 };
 
