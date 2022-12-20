@@ -23,11 +23,10 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_EpdCategroyDatasetH
-#define VICUS_EpdCategroyDatasetH
+#ifndef VICUS_EpdCategoryDatasetH
+#define VICUS_EpdCategoryDatasetH
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
 #include <IBK_Parameter.h>
@@ -39,7 +38,6 @@ namespace VICUS {
 	sub-EPDs for each Category (A,B,C,D).
 */
 class EpdCategoryDataset {
-
 public:
 	VICUS_READWRITE
 	VICUS_COMP(EpdCategoryDataset)
@@ -73,9 +71,7 @@ public:
 	enum Module {
 		M_A1,								// Keyword: A1
 		M_A2,								// Keyword: A2
-		M_A1_A2,							// Keyword: A1-A2
 		M_A3,								// Keyword: A3
-		M_A1_A3,							// Keyword: A1-A3
 		M_A4,								// Keyword: A4
 		M_A5,								// Keyword: A5
 		M_B1,								// Keyword: B1
@@ -87,10 +83,7 @@ public:
 		M_B7,								// Keyword: B7
 		M_C1,								// Keyword: C1
 		M_C2,								// Keyword: C2
-		M_C2_C3,							// Keyword: C2-C3
-		M_C2_C4,							// Keyword: C2-C4
 		M_C3,								// Keyword: C3
-		M_C3_C4,							// Keyword: C3-C4
 		M_C4,								// Keyword: C4
 		M_D,								// Keyword: D
 		NUM_M
@@ -98,8 +91,8 @@ public:
 
 	EpdCategoryDataset() {}
 
-	EpdCategoryDataset(const Module &module) :
-		m_module(module)
+	EpdCategoryDataset(const std::vector<Module> &modules) :
+		m_modules(modules)
 	{}
 
 	~EpdCategoryDataset();
@@ -109,13 +102,12 @@ public:
 
 
 	/*! Category type A1, A2, ... */
-	Module							m_module = NUM_M;						// XML:E:required
+	std::vector<Module>				m_modules;
 
 	/*! List of parameters. */
-	IBK::Parameter					m_para[NUM_P];							// XML:E
-
+	IBK::Parameter					m_para[NUM_P];
 
 };
 
 }
-#endif // VICUS_EpdCategroyDatasetH
+#endif // VICUS_EpdCategoryDatasetH
