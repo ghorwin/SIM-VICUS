@@ -95,7 +95,7 @@ public:
 
 	/*! EPD results for
 		//for-Schleife über alle Materialienhole building. */
-	//VICUS::EPDCategroySet					m_results;							// XML:E
+	//VICUS::EPDCategorySet					m_results;							// XML:E
 
 	/*! the factor 1.2 is according to the use of simplified procedure. */
 	double									m_adjustment = 1.2;					// XML:E

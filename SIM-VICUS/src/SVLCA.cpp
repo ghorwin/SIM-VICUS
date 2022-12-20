@@ -25,9 +25,8 @@
 
 #include "SVLCA.h"
 
-#include "SVSettings.h"
 
-#include <VICUS_EPDCategroySet.h>
+#include <VICUS_EpdCategorySet.h>
 #include <VICUS_ComponentInstance.h>
 
 #include <IBK_FileReader.h>
