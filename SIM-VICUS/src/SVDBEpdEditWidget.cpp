@@ -43,10 +43,7 @@
 #include <IBK_StringUtils.h>
 
 #include "SVStyle.h"
-#include "SVConstants.h"
 #include "SVDBEpdTableModel.h"
-#include "SVDatabaseEditDialog.h"
-#include "SVMainWindow.h"
 
 
 
@@ -58,13 +55,13 @@ SVDBEPDEditWidget::SVDBEPDEditWidget(QWidget * parent) :
 	m_ui->setupUi(this);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetEpdData);
-	m_ui->tableWidgetEpdData->setColumnCount(3);
+	m_ui->tableWidgetEpdData->setColumnCount(8);
 	QStringList header;
-	header << "Module" << "GWP" << "ODP" << "POCP" << "AP" << "EP";
+	header << "Module" << "GWP\n[kg]" << "ODP\n[kg]" << "POCP\n[kg]" << "AP\n[kg]" << "EP\n[kg]" << "PERT\n[W/mK]" << "PENRT\n[W/mK]";
 	m_ui->tableWidgetEpdData->setHorizontalHeaderLabels(header);
 
 	m_ui->tableWidgetEpdData->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-	for (int i=1; i<3; ++i) {
+	for (int i=1; i<8; ++i) {
 		m_ui->tableWidgetEpdData->horizontalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
 	}
 
@@ -91,7 +88,7 @@ void SVDBEPDEditWidget::updateInput(int id) {
 		m_ui->lineEditCategory->setString(IBK::MultiLanguageString());
 		m_ui->lineEditManufacturer->setText("");
 		m_ui->lineEditExpireYear->setText("");
-		m_ui->lineEditDataSource->setText("");
+		m_ui->textBrowser->setText("");
 
 		m_ui->tableWidgetEpdData->reset();
 
@@ -104,7 +101,7 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditCategory->setString(m_current->m_category);
-	m_ui->lineEditDataSource->setText(m_current->m_dataSource);
+	m_ui->textBrowser->setText(m_current->m_dataSource);
 	m_ui->lineEditExpireYear->setText(m_current->m_expireYear);
 	m_ui->lineEditManufacturer->setText(m_current->m_manufacturer);
 
@@ -112,28 +109,51 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	m_ui->lineEditRefUnit->setText(QString::fromStdString(m_current->m_referenceUnit.name()));
 
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
-
-	std::vector<IBK::Parameter> paras;
+	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdCategoryDataset.size());
 
 	for(unsigned int j=0; j<m_current->m_epdCategoryDataset.size(); ++j) {
+		QString moduleString = "";
+		for (unsigned int i=0; i<m_current->m_epdCategoryDataset[j].m_modules.size(); ++i) {
+			const VICUS::EpdCategoryDataset::Module &module = m_current->m_epdCategoryDataset[j].m_modules[i];
+			moduleString += QString(i > 0 ? ", " : "") + VICUS::KeywordList::Description("EpdCategoryDataset::Module", module); // add ", " in between beginning from the second module
+		}
+		m_ui->tableWidgetEpdData->setItem((int)j, 0, new QTableWidgetItem(moduleString));
+
 		for(unsigned int i=0; i<VICUS::EpdCategoryDataset::NUM_P; ++i) {
 			IBK::Parameter &para = m_current->m_epdCategoryDataset[j].m_para[i];
 
-			if(para.empty())
+			int row = 1;
+			if(para.name == "GWP")
+				row = 1;
+			else if(para.name == "ODP")
+				row = 2;
+			else if(para.name == "POCP")
+				row = 3;
+			else if(para.name == "AP")
+				row = 4;
+			else if(para.name == "EP")
+				row = 5;
+			else if(para.name == "PENRT")
+				row = 6;
+			else if(para.name == "PERT")
+				row = 7;
+			else
 				continue;
+			//            else if(para.name == "PENRT")
+			//                row = 6;
+			//            else if(para.name == "PERT")
+			//                row = 2;
 
-			paras.push_back(para);
+			QString val;
+			if(para.empty())
+				val = "-";
+			else {
+				val = QString::number(para.value);
+			}
+
+
+			m_ui->tableWidgetEpdData->setItem((int)j, row, new QTableWidgetItem(val))   ;
 		}
-	}
-
-	m_ui->tableWidgetEpdData->setRowCount((int)paras.size());
-
-	for(unsigned int i=0; i<paras.size(); ++i) {
-		IBK::Parameter &para = paras[i];
-
-		m_ui->tableWidgetEpdData->setItem((int)i, 0, new QTableWidgetItem(QString::fromStdString(para.name)));
-		m_ui->tableWidgetEpdData->setItem((int)i, 1, new QTableWidgetItem(QString("%1").arg(para.get_value())));
-		m_ui->tableWidgetEpdData->setItem((int)i, 2, new QTableWidgetItem(QString::fromStdString(para.unit().name())));
 	}
 
 }
