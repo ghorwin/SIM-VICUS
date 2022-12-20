@@ -1,4 +1,6 @@
 #include "SVSimulationLCAOptions.h"
+#include "IBKMK_3DCalculations.h"
+#include "SVUndoModifyProject.h"
 #include "ui_SVSimulationLCAOptions.h"
 
 #include <IBK_Parameter.h>
@@ -10,6 +12,7 @@
 #include <SVDatabaseEditDialog.h>
 #include <SVDBEpdTableModel.h>
 #include <SVProjectHandler.h>
+#include <VICUS_KeywordList.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_EpdDataset.h>
@@ -21,7 +24,7 @@
 
 #include <fstream>
 
-SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettings & settings) :
+SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings & settings) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationLCAOptions),
 	m_lcaSettings(&settings),
@@ -32,15 +35,56 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LCASettin
 
 	//	m_lcaSettings->initDefaults();
 
-	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LCASettings::P_TimePeriod].get_value("a")));
-	m_ui->lineEditPriceIncrease->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LCASettings::P_PriceIncrease].get_value("%")));
-
-	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
-									SVSettings::instance().m_dontUseNativeDialogs);
-
-	m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
-
 	m_db = &SVSettings::instance().m_db;
+
+
+	m_ui->checkBoxA1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A1);
+	m_ui->checkBoxA2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A2);
+	m_ui->checkBoxA3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A3);
+	m_ui->checkBoxA4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A4);
+	m_ui->checkBoxA5->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A5);
+	m_ui->checkBoxB1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B1);
+	m_ui->checkBoxB2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B2);
+	m_ui->checkBoxB3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B3);
+	m_ui->checkBoxB4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B4);
+	m_ui->checkBoxB5->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B5);
+	m_ui->checkBoxB6->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B6);
+	m_ui->checkBoxB7->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B7);
+	m_ui->checkBoxC1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C1);
+	m_ui->checkBoxC2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C2);
+	m_ui->checkBoxC3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C3);
+	m_ui->checkBoxC4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C4);
+	m_ui->checkBoxD ->setProperty("category", (int)VICUS::EpdCategoryDataset::M_D);
+
+	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxA3, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxA4, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxA5, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB3, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB4, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB5, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB6, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxB7, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxC1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxC2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxC3, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxC4, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+	connect(m_ui->checkBoxD, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
+
+	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
+		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::LcaCalculationMode", i), i);
+
+	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
+		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::LcaCertificationSytem", i), i);
+
+	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
+	m_ui->lineEditPriceIncrease->setup(0, 100, "Price increase", true, true);
+	m_ui->lineEditTimePeriod->setup(0, 1e10, "Time period for evaluation", false, true);
+
+	updateUi();
 }
 
 SVSimulationLCAOptions::~SVSimulationLCAOptions() {
@@ -83,7 +127,7 @@ void SVSimulationLCAOptions::calculateLCA() {
 	// Write calculation to file
 	writeLcaDataToTxtFile(path);
 
-
+{
 #if 0
 	FUNCID(LCA::calculateLCA);
 
@@ -276,6 +320,7 @@ void SVSimulationLCAOptions::calculateLCA() {
 	}
 #endif
 }
+}
 
 
 bool convertString2Val(double &val, const std::string &text, unsigned int row, unsigned int column) {
@@ -342,6 +387,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 	oekobauDatUnit2IBKUnit["kg"] = "kg";
 	oekobauDatUnit2IBKUnit["a"] = "a";
 
+    unsigned int id = 1090000;
 
 	for (unsigned int row = 0; row<dataLines.size(); ++row) {
 		std::string &line = dataLines[row];
@@ -393,20 +439,28 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 					QString uuid = QString::fromStdString(t);
 
+                    int i = 0;
+                    if(uuid == "07d95427-572c-413c-ab1a-ef5e991c69ef")
+                        i = i;
+
 					// do we already have an EPD with the specific UUID
 					if(dataSets.find(uuid) != dataSets.end()) { // We found one
 						epd = &dataSets[uuid];
 						foundExistingEpd = true;
 					}
 					else { // Create new one
-						epd = new VICUS::EpdDataset;
-						dataSets[uuid] = *epd;
+                        dataSets[uuid] = VICUS::EpdDataset();
+                        epd = &dataSets[uuid];
+                        epd->m_uuid = uuid;
+                        epd->m_id = id++;
 					}
 
 					setValue<QString>(epd->m_uuid, uuid, foundExistingEpd);
 
 				} break;
-				case ColNameDe:				epd->m_displayName.setString(t, "De");			break;
+                case ColNameDe:
+                        epd->m_displayName.setString(t, "De");
+                break;
 				case ColNameEn:				epd->m_displayName.setString(t, "En");			break;
 				case ColCategoryDe:			epd->m_category.setString(t, "De");				break;
 				case ColCategoryEn:			epd->m_category.setString(t, "En");				break;
@@ -456,54 +510,74 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 
 				case ColModule: {
-					VICUS::EpdCategoryDataset::Module module = VICUS::EpdCategoryDataset::NUM_M;
+					std::vector<VICUS::EpdCategoryDataset::Module> modules;
+                    std::string moduleType = t.substr(0, 1);
+
+                    if(!epd->m_modules.isEmpty()) {
+                        if(epd->m_modules.indexOf(moduleType.c_str(), 0) == -1)
+                            epd->m_modules = QString("%1, %2").arg(epd->m_modules).arg(QString::fromStdString(moduleType));
+                    }
+                    else
+                        epd->m_modules = QString::fromStdString(moduleType);
 
 					if (t == "A1")
-						module = VICUS::EpdCategoryDataset::M_A1;
+						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
 					else if (t == "A2")
-						module = VICUS::EpdCategoryDataset::M_A2;
+						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
 					else if (t == "A3")
-						module = VICUS::EpdCategoryDataset::M_A3;
-					else if (t == "A1-A2")
-						module = VICUS::EpdCategoryDataset::M_A1_A2;
-					else if (t == "A1-A3")
-						module = VICUS::EpdCategoryDataset::M_A1_A3;
+						modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+					else if (t == "A1-A2") {
+						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+					}
+					else if (t == "A1-A3") {
+						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+						modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+					}
 					else if (t == "A4")
-						module = VICUS::EpdCategoryDataset::M_A4;
+						modules.push_back(VICUS::EpdCategoryDataset::M_A4);
 					else if (t == "A5")
-						module = VICUS::EpdCategoryDataset::M_A5;
+						modules.push_back(VICUS::EpdCategoryDataset::M_A5);
 					else if (t == "B1")
-						module = VICUS::EpdCategoryDataset::M_B1;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B1);
 					else if (t == "B2")
-						module = VICUS::EpdCategoryDataset::M_B2;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B2);
 					else if (t == "B3")
-						module = VICUS::EpdCategoryDataset::M_B3;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B3);
 					else if (t == "B4")
-						module = VICUS::EpdCategoryDataset::M_B4;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B4);
 					else if (t == "B5")
-						module = VICUS::EpdCategoryDataset::M_B5;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B5);
 					else if (t == "B6")
-						module = VICUS::EpdCategoryDataset::M_B6;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B6);
 					else if (t == "B7")
-						module = VICUS::EpdCategoryDataset::M_B7;
+						modules.push_back(VICUS::EpdCategoryDataset::M_B7);
 					else if (t == "C1")
-						module = VICUS::EpdCategoryDataset::M_C1;
+						modules.push_back(VICUS::EpdCategoryDataset::M_C1);
 					else if (t == "C2")
-						module = VICUS::EpdCategoryDataset::M_C2;
-					else if (t == "C2-C3")
-						module = VICUS::EpdCategoryDataset::M_C2_C3;
-					else if (t == "C2-C4")
-						module = VICUS::EpdCategoryDataset::M_C2_C4;
+						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+					else if (t == "C2-C3") {
+						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					}
+					else if (t == "C2-C4") {
+						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+					}
 					else if (t == "C3")
-						module = VICUS::EpdCategoryDataset::M_C3;
-					else if (t == "C3-C4")
-						module = VICUS::EpdCategoryDataset::M_C3_C4;
+						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					else if (t == "C3-C4") {
+						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+					}
 					else if (t == "C4")
-						module = VICUS::EpdCategoryDataset::M_C4;
+						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
 					else if (t == "D")
-						module = VICUS::EpdCategoryDataset::M_D;
+						modules.push_back(VICUS::EpdCategoryDataset::M_D);
 
-					epdCategoryDataSet->m_module = module;
+					epdCategoryDataSet->m_modules = modules;
 
 				} break;
 
@@ -568,6 +642,9 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 			}
 		}
 		epd->m_epdCategoryDataset.push_back(*epdCategoryDataSet);
+
+        if(epd->m_manufacturer.isEmpty())
+            qDebug() << "Found emtpty epd: " << epd->m_uuid;
 	}
 
 	dlg->setValue(dataLines.size());
@@ -734,6 +811,99 @@ void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const s
 	}
 }
 
+
+void SVSimulationLCAOptions::setModuleState(int state) {
+
+	QCheckBox *cb = dynamic_cast<QCheckBox*>(sender());
+
+	Q_ASSERT(cb != nullptr);
+
+	VICUS::EpdCategoryDataset::Module mod = static_cast<VICUS::EpdCategoryDataset::Module>(cb->property("category").toInt());
+	m_lcaSettings->m_flags[mod].set(m_lcaSettings->m_flags[mod].name(), state == Qt::Checked);
+
+}
+
+void SVSimulationLCAOptions::setCheckBoxState(QCheckBox *cb, int bitmask) {
+	cb->blockSignals(true);
+	cb->setChecked((m_lcaSettings->m_lcaCertificationSystem & bitmask) == bitmask);
+	cb->blockSignals(false);
+}
+
+void SVSimulationLCAOptions::updateUi() {
+	m_ui->groupBoxLcaCalc->blockSignals(true);
+	m_ui->groupBoxLccSettings->blockSignals(true);
+	m_ui->groupBoxGeneral->blockSignals(true);
+
+	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
+	m_ui->lineEditPriceIncrease->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_PriceIncrease].get_value("%")));
+
+	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
+									SVSettings::instance().m_dontUseNativeDialogs);
+
+	m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
+
+
+	QObjectList ol;
+	ol.push_back(m_ui->checkBoxA1);
+	ol.push_back(m_ui->checkBoxA2);
+	ol.push_back(m_ui->checkBoxA3);
+	ol.push_back(m_ui->checkBoxA4);
+	ol.push_back(m_ui->checkBoxA5);
+	ol.push_back(m_ui->checkBoxB1);
+	ol.push_back(m_ui->checkBoxB2);
+	ol.push_back(m_ui->checkBoxB3);
+	ol.push_back(m_ui->checkBoxB4);
+	ol.push_back(m_ui->checkBoxB5);
+	ol.push_back(m_ui->checkBoxB6);
+	ol.push_back(m_ui->checkBoxB7);
+	ol.push_back(m_ui->checkBoxC1);
+	ol.push_back(m_ui->checkBoxC2);
+	ol.push_back(m_ui->checkBoxC3);
+	ol.push_back(m_ui->checkBoxC4);
+	ol.push_back(m_ui->checkBoxD);
+
+	//qDebug() << m_lcaSettings->m_lcaCertificationSystem;
+
+	setCheckBoxState(m_ui->checkBoxA1, VICUS::LcaSettings::M_A1);
+	setCheckBoxState(m_ui->checkBoxA2, VICUS::LcaSettings::M_A2);
+	setCheckBoxState(m_ui->checkBoxA3, VICUS::LcaSettings::M_A3);
+	setCheckBoxState(m_ui->checkBoxA4, VICUS::LcaSettings::M_A4);
+	setCheckBoxState(m_ui->checkBoxA5, VICUS::LcaSettings::M_A5);
+
+	setCheckBoxState(m_ui->checkBoxB1, VICUS::LcaSettings::M_B1);
+	setCheckBoxState(m_ui->checkBoxB2, VICUS::LcaSettings::M_B2);
+	setCheckBoxState(m_ui->checkBoxB3, VICUS::LcaSettings::M_B3);
+	setCheckBoxState(m_ui->checkBoxB4, VICUS::LcaSettings::M_B4);
+	setCheckBoxState(m_ui->checkBoxB5, VICUS::LcaSettings::M_B5);
+	setCheckBoxState(m_ui->checkBoxB6, VICUS::LcaSettings::M_B6);
+	setCheckBoxState(m_ui->checkBoxB7, VICUS::LcaSettings::M_B7);
+
+	setCheckBoxState(m_ui->checkBoxC1, VICUS::LcaSettings::M_C1);
+	setCheckBoxState(m_ui->checkBoxC2, VICUS::LcaSettings::M_C2);
+	setCheckBoxState(m_ui->checkBoxC3, VICUS::LcaSettings::M_C3);
+	setCheckBoxState(m_ui->checkBoxC4, VICUS::LcaSettings::M_C4);
+
+	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
+
+	if(m_lcaSettings->m_lcaCalculationMode == VICUS::LcaSettings::CM_Detailed) {
+		for(unsigned int i=0; i<ol.count(); ++i) {
+			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
+			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
+			cb->setChecked(m_lcaSettings->m_flags[mod].isEnabled());
+		}
+	}
+
+	m_ui->groupBoxCatA->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatB->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatC->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatD->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
+
+	m_ui->groupBoxLcaCalc->blockSignals(false);
+	m_ui->groupBoxLccSettings->blockSignals(false);
+	m_ui->groupBoxGeneral->blockSignals(false);
+}
+
+
 void SVSimulationLCAOptions::writeLcaDataToTxtFile(const IBK::Path &resultPath) {
 	std::ofstream lcaStream(resultPath.str());
 	// Write header
@@ -777,10 +947,10 @@ void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
 
 		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
 			const VICUS::Material &mat = *m_db->m_materials[matLayer.m_idMaterial];
-			const VICUS::EpdDataset *epdCatA = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryA];
-			const VICUS::EpdDataset *epdCatB = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryB];
-			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryC];
-			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategoryD];
+			const VICUS::EpdDataset *epdCatA = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatA]];
+			const VICUS::EpdDataset *epdCatB = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatB]];
+			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatC]];
+			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatD]];
 
 
 			// We do the unit conversion and handling to get all our reference units correctly managed
@@ -836,7 +1006,89 @@ void SVSimulationLCAOptions::on_pushButtonImportOkoebaudat_clicked() {
 }
 
 
-void SVSimulationLCAOptions::on_pushButtonLcaLcc_clicked() {
-	calculateLCA();
+void SVSimulationLCAOptions::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
+	m_lcaSettings->m_lcaCalculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
+	m_ui->comboBoxCertificationSystem->setEnabled(mode == 0);
+
+	updateUi();
+}
+
+
+void SVSimulationLCAOptions::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
+	m_lcaSettings->m_lcaCertificationSystem = (certiSystem == 0 ? VICUS::LcaSettings::CS_BNB : VICUS::LcaSettings::NUM_CS);
+
+	updateUi();
+}
+
+
+
+void SVSimulationLCAOptions::on_pushButtonAreaDetection_clicked() {
+	double area = 0;
+
+	for(const VICUS::Building &b : m_prj.m_buildings) {
+		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
+			for(const VICUS::Room &r : bl.m_rooms) {
+				for(const VICUS::Surface &s : r.m_surfaces) {
+					const_cast<VICUS::Surface &>(s).m_visible = false;
+					VICUS::Component::ComponentType ct = m_db->m_components[s.m_componentInstance->m_idComponent]->m_type;
+					qDebug() << "Surface name:" << s.m_displayName;
+					if( ct == VICUS::Component::CT_Ceiling || ct == VICUS::Component::CT_FloorToAir || ct == VICUS::Component::CT_FloorToCellar
+							|| ct == VICUS::Component::CT_FloorToGround || ct == VICUS::Component::CT_Ceiling ) {
+						const IBKMK::Vector3D &n = s.geometry().normal();
+						double angle = IBKMK::angleBetweenVectorsDeg(n, IBKMK::Vector3D(0,0,-1) );
+						qDebug() << "Angle between vertical and surface: " << angle;
+						if(angle < 5) {
+							qDebug() << "Surface added.";
+							area += s.geometry().area();
+							const_cast<VICUS::Surface &>(s).m_visible = true;
+						}
+					}
+				}
+			}
+		}
+	}
+	m_ui->lineEditArea->setText(QString::number(area));
+}
+
+
+void SVSimulationLCAOptions::on_pushButtonLcc_clicked() {
+
+}
+
+
+void SVSimulationLCAOptions::on_pushButtonLca_clicked() {
+	try {
+		calculateLCA();
+	}
+	catch (IBK::Exception &ex) {
+		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
+	}
+}
+
+
+void SVSimulationLCAOptions::on_lineEditArea_editingFinishedSuccessfully() {
+	if(m_ui->lineEditArea->isValid()) {
+		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
+	}
+	else
+		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].value);
+}
+
+
+void SVSimulationLCAOptions::on_lineEditTimePeriod_editingFinishedSuccessfully() {
+	if(m_ui->lineEditArea->isValid()) {
+		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, m_ui->lineEditArea->value());
+	}
+	else
+		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].value);
+}
+
+
+void SVSimulationLCAOptions::on_lineEditPriceIncrease_editingFinishedSuccessfully() {
+	if(m_ui->lineEditArea->isValid()) {
+		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_PriceIncrease, m_ui->lineEditArea->value());
+	}
+	else
+		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_PriceIncrease].value);
 }
 
