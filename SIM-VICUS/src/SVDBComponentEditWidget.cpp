@@ -365,10 +365,10 @@ void SVDBComponentEditWidget::updateLcaTable() {
 
 		m_ui->tableWidgetLca->setItem((int)i, 0,	new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
 
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryA, 1, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryB, 2, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryC, 3, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategoryD, 4, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatA], 1, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatB], 2, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatC], 3, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatD], 4, i);
 	}
 }
 
