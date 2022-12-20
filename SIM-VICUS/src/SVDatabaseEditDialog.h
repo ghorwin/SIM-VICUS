@@ -31,7 +31,7 @@
 #include <VICUS_InternalLoad.h>
 
 namespace Ui {
-	class SVDatabaseEditDialog;
+class SVDatabaseEditDialog;
 }
 
 class SVAbstractDatabaseTableModel;
@@ -69,7 +69,7 @@ public:
 				pressed, the function returns the ID of the selected item. Otherwise, if the
 				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
-	unsigned int select(unsigned int initialId, bool resetModel = true);
+	unsigned int select(unsigned int initialId, bool resetModel = true, QString filterText = "", int filterColumn = -1);
 
 	/*! Event filter for resizing events in order to resize row to its contents. */
 	bool eventFilter(QObject * obj, QEvent * event) override;
@@ -147,6 +147,8 @@ private:
 	QWidget							*m_editWidgetContainerWidget = nullptr;
 
 	int								m_nameColumnIdx = -2;
+
+	QString							m_currentFilter = "";
 
 	friend class SVMainWindow;
 };

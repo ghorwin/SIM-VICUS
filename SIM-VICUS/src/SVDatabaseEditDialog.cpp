@@ -208,7 +208,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 }
 
 
-unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetModel) {
+unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetModel,  QString filterText, int filterColumn) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
@@ -221,6 +221,12 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetMode
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
+
+    if(filterColumn > 1 && !filterText.isEmpty()) {
+		m_currentFilter = filterText;
+        m_proxyModel->setFilterKeyColumn(filterColumn);
+        m_proxyModel->setFilterWildcard(filterText);
+    }
 
 	// update "isRferenced" property of all elements
 	if (SVProjectHandler::instance().isValid()){
@@ -239,6 +245,9 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetMode
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
 	}
+
+    m_proxyModel->setFilterWildcard("");
+	m_currentFilter = ""; // Reset filter
 
 	// nothing selected/dialog aborted
 	return initialId;
