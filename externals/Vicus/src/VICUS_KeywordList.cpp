@@ -55,8 +55,8 @@ namespace VICUS {
 		"KeywordList::MyParameters",
 		"LcaSettings::para_t",
 		"LcaSettings::Module",
-		"LcaSettings::LcaCalculationMode",
-		"LcaSettings::LcaCertificationSytem",
+		"LcaSettings::CalculationMode",
+		"LcaSettings::CertificationSytem",
 		"Material::para_t",
 		"Material::Category",
 		"Network::PipeModel",
@@ -168,7 +168,7 @@ namespace VICUS {
 			case 4 :
 			switch (t) {
 				case 0 : return "AreaDensity";
-				case 1 : return "Density";
+				case 1 : return "DryDensity";
 				case 2 : return "GWP";
 				case 3 : return "ODP";
 				case 4 : return "POCP";
@@ -201,10 +201,10 @@ namespace VICUS {
 			// EpdCategorySet::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "A";
-				case 1 : return "B";
-				case 2 : return "C";
-				case 3 : return "D";
+				case 0 : return "IDCategoryA";
+				case 1 : return "IDCategoryB";
+				case 2 : return "IDCategoryC";
+				case 3 : return "IDCategoryD";
 			} break;
 			// EpdDataset::Type
 			case 7 :
@@ -290,6 +290,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "TimePeriod";
 				case 1 : return "PriceIncrease";
+				case 2 : return "FactorSimpleMode";
+				case 3 : return "NetUsageArea";
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -312,13 +314,13 @@ namespace VICUS {
 				case 15 : return "C4";
 				case 16 : return "D";
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return "Simple";
-				case 1 : return "Detailled";
+				case 1 : return "Detailed";
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return "BNB";
@@ -739,7 +741,7 @@ namespace VICUS {
 			case 4 :
 			switch (t) {
 				case 0 : return "AreaDensity";
-				case 1 : return "Density";
+				case 1 : return "DryDensity";
 				case 2 : return "GWP";
 				case 3 : return "ODP";
 				case 4 : return "POCP";
@@ -772,10 +774,10 @@ namespace VICUS {
 			// EpdCategorySet::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "A";
-				case 1 : return "B";
-				case 2 : return "C";
-				case 3 : return "D";
+				case 0 : return "IDCategoryA";
+				case 1 : return "IDCategoryB";
+				case 2 : return "IDCategoryC";
+				case 3 : return "IDCategoryD";
 			} break;
 			// EpdDataset::Type
 			case 7 :
@@ -861,6 +863,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "TimePeriod";
 				case 1 : return "PriceIncrease";
+				case 2 : return "FactorSimpleMode";
+				case 3 : return "NetUsageArea";
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -883,13 +887,13 @@ namespace VICUS {
 				case 15 : return "C4";
 				case 16 : return "D";
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return "Simple";
-				case 1 : return "Detailled";
+				case 1 : return "Detailed";
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return "BNB";
@@ -1344,10 +1348,10 @@ namespace VICUS {
 			// EpdCategorySet::Category
 			case 6 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "A";
-				case 1 : if (no_description != nullptr) *no_description = true; return "B";
-				case 2 : if (no_description != nullptr) *no_description = true; return "C";
-				case 3 : if (no_description != nullptr) *no_description = true; return "D";
+				case 0 : return "ID of Catefory A";
+				case 1 : return "ID of Catefory B";
+				case 2 : return "ID of Catefory C";
+				case 3 : return "ID of Catefory D";
 			} break;
 			// EpdDataset::Type
 			case 7 :
@@ -1433,6 +1437,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Time period for consideration [a].";
 				case 1 : return "Yearly price increase [%].";
+				case 2 : return "Calculation factor for simple mode calculation (BNB). [-]";
+				case 3 : return "Net usage area [-].";
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -1455,13 +1461,13 @@ namespace VICUS {
 				case 15 : if (no_description != nullptr) *no_description = true; return "C4";
 				case 16 : if (no_description != nullptr) *no_description = true; return "D";
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return "Use predefined certification system settings.";
 				case 1 : return "Set detailed LCA Settings.";
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return "Bewertungssystem Nachhaltiges Bauen (BNB)";
@@ -1915,10 +1921,10 @@ namespace VICUS {
 			// EpdCategorySet::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
+				case 0 : return "-";
+				case 1 : return "-";
+				case 2 : return "-";
+				case 3 : return "-";
 			} break;
 			// EpdDataset::Type
 			case 7 :
@@ -2004,6 +2010,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "a";
 				case 1 : return "%";
+				case 2 : return "-";
+				case 3 : return "-";
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -2026,13 +2034,13 @@ namespace VICUS {
 				case 15 : return "";
 				case 16 : return "";
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return "";
@@ -2575,6 +2583,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -2597,13 +2607,13 @@ namespace VICUS {
 				case 15 : return "#FFFFFF";
 				case 16 : return "#FFFFFF";
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -3146,6 +3156,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// LcaSettings::Module
 			case 19 :
@@ -3168,13 +3180,13 @@ namespace VICUS {
 				case 15 : return std::numeric_limits<double>::quiet_NaN();
 				case 16 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3580,12 +3592,12 @@ namespace VICUS {
 			// KeywordList::MyParameters
 			case 17 : return 2;
 			// LcaSettings::para_t
-			case 18 : return 2;
+			case 18 : return 4;
 			// LcaSettings::Module
 			case 19 : return 17;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 : return 2;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 : return 1;
 			// Material::para_t
 			case 22 : return 6;
@@ -3718,12 +3730,12 @@ namespace VICUS {
 			// KeywordList::MyParameters
 			case 17 : return 1;
 			// LcaSettings::para_t
-			case 18 : return 1;
+			case 18 : return 3;
 			// LcaSettings::Module
 			case 19 : return 16;
-			// LcaSettings::LcaCalculationMode
+			// LcaSettings::CalculationMode
 			case 20 : return 1;
-			// LcaSettings::LcaCertificationSytem
+			// LcaSettings::CertificationSytem
 			case 21 : return 0;
 			// Material::para_t
 			case 22 : return 5;

@@ -83,10 +83,10 @@ KeywordListQt::KeywordListQt() {
 	tr("C3");
 	tr("C4");
 	tr("D");
-	tr("A");
-	tr("B");
-	tr("C");
-	tr("D");
+	tr("ID of Catefory A");
+	tr("ID of Catefory B");
+	tr("ID of Catefory C");
+	tr("ID of Catefory D");
 	tr("Generic");
 	tr("Specific");
 	tr("Average");
@@ -124,6 +124,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Some mass");
 	tr("Time period for consideration [a].");
 	tr("Yearly price increase [%].");
+	tr("Calculation factor for simple mode calculation (BNB). [-]");
+	tr("Net usage area [-].");
 	tr("A1");
 	tr("A2");
 	tr("A3");
