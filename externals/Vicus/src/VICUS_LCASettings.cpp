@@ -12,7 +12,8 @@ void VICUS::LcaSettings::initDefaults() {
 	for(unsigned int i=0; i<NUM_M; ++i)
 		m_flags[i].set(KeywordList::Keyword("LcaSettings::Module", i), false);
 
-	m_lcaCalculationMode = LcaCalculationMode::CM_Simple;
-	m_lcaCertificationSystem = LcaCertificationSytem::CS_BNB;
+	m_calculationMode = CalculationMode::CM_Simple;
+	m_certificationSystem = CertificationSytem::CS_BNB;
 
+	m_certificationModules = CertificationType::CT_BNB;
 }

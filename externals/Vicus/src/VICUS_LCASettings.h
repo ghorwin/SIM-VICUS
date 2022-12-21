@@ -75,17 +75,22 @@ public:
 	};
 
 	/*! LCA Caluclation modes. */
-	enum LcaCalculationMode {
+	enum CalculationMode {
 		CM_Simple,							// Keyword: Simple					'Use predefined certification system settings.'
 		CM_Detailed,						// Keyword: Detailed				'Set detailed LCA Settings.'
 		NUM_CM
 	};
 
 	/*! Certificytion systems predefined modules. */
-	enum LcaCertificationSytem {
-		CS_BNB = LcaSettings::M_A1 | LcaSettings::M_A2 | LcaSettings::M_A3 | LcaSettings::M_B2 |
-					LcaSettings::M_B4 | LcaSettings::M_B6 | LcaSettings::M_C3 | LcaSettings::M_C4,		// Keyword: BNB				'Bewertungssystem Nachhaltiges Bauen (BNB)'
-		NUM_CS = 1
+	enum CertificationSytem {
+		CS_BNB,							// Keyword: BNB				'Bewertungssystem Nachhaltiges Bauen (BNB)'
+		NUM_CS
+	};
+
+	/*! Certificytion systems predefined modules. */
+	enum CertificationType {
+		CT_BNB = LcaSettings::M_A1 | LcaSettings::M_A2 | LcaSettings::M_A3 | LcaSettings::M_B2 |
+					LcaSettings::M_B4 | LcaSettings::M_B6 | LcaSettings::M_C3 | LcaSettings::M_C4
 	};
 
 	VICUS_READWRITE_IFNOTEMPTY(LcaSettings)
@@ -103,16 +108,19 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Time Period for LCA/LCC consideration. */
-	IBK::Parameter						m_para[NUM_P];									// XML:E
+	IBK::Parameter						m_para[NUM_P];								// XML:E
 
 	/*! Set flags for LCA Calculations. */
-	IBK::Flag							m_flags[NUM_M];									// XML:E
+	IBK::Flag							m_flags[NUM_M];								// XML:E
 
 	/*! Calculation mode of LCA. */
-	LcaCalculationMode					m_lcaCalculationMode;							// XML:E
+	CalculationMode						m_calculationMode;							// XML:E
 
 	/*! Certification system to be used for LCA. */
-	LcaCertificationSytem				m_lcaCertificationSystem;						// XML:E
+	CertificationSytem					m_certificationSystem;						// XML:E
+
+	/*! Filter for checking, which modules are selected by certification system. */
+	CertificationType					m_certificationModules;
 
 };
 
@@ -123,8 +131,8 @@ inline bool LcaSettings::operator!=(const LcaSettings & other) const {
 	for(unsigned int i=0; i<NUM_M; ++i)
 		if(m_flags[i].isEnabled() != other.m_flags[i].isEnabled()) return true;
 
-	if(m_lcaCalculationMode != other.m_lcaCalculationMode) return true;
-	if(m_lcaCertificationSystem != other.m_lcaCertificationSystem) return true;
+	if(m_calculationMode != other.m_calculationMode) return true;
+	if(m_certificationSystem != other.m_certificationSystem) return true;
 
 	return false;
 }
