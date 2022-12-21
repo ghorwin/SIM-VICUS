@@ -39,7 +39,6 @@ namespace VICUS {
 */
 class EpdCategoryDataset {
 public:
-	VICUS_READWRITE
 	VICUS_COMP(EpdCategoryDataset)
 
 	/*! Basic parameters. */
@@ -48,7 +47,7 @@ public:
 		/*! Mass of material in dependence to the area. */
 		P_AreaDensity,				// Keyword: AreaDensity				[kg/m2]	'mass of material in dependence of the area.'
 		/*! Dry density of the material. */
-		P_DryDensity,				// Keyword: Density					[kg/m3]	'Dry density of the material.'
+		P_DryDensity,				// Keyword: DryDensity				[kg/m3]	'Dry density of the material.'
 		/*! Global Warming Potential. */
 		P_GWP,						// Keyword: GWP						[kg]	'Global Warming Potential.'
 		/*! Depletion potential of the stratospheric ozone layer . */
@@ -99,6 +98,10 @@ public:
 
 	/*! Returns an EPD with all Parameters scaled by the defined factor. */
 	EpdCategoryDataset scaleByFactor(const double &factor) const;
+
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 
 	/*! Category type A1, A2, ... */
