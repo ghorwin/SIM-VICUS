@@ -4,7 +4,7 @@ ADOC=SIM-VICUS-Plugin-Development
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=de -a webfonts! $ADOC.adoc &&
+asciidoctor -a lang=de $ADOC.adoc &&
 
 echo &&
 echo '*** Generating pdf ***' &&

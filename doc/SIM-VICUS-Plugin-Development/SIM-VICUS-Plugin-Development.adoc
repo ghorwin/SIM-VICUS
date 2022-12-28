@@ -1,7 +1,7 @@
 SIM-VICUS Plugin Entwicklung
 ============================
 Andreas Nicolai <https://github.com/ghorwin>
-v2.0 (22.09.2021)
+v2.0 (28.12.2022)
 // v2.0 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -17,7 +17,9 @@ v2.0 (22.09.2021)
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
 :tabsize: 2
-
+// disable webfonts
+//:!webfonts:
+:icons: font
 
 :caution-caption: Achtung
 :example-caption: Beispiel
@@ -39,12 +41,14 @@ v2.0 (22.09.2021)
 Plugins sind letztlich dynamisch geladene Bibliotheken, bzw. _shared library_ oder _dynamically linked library (DLL)_. Zum Verständnis der Versionierungsanforderungen unten hilft vielleicht ein kurzer Einblick in die interne Funktionsweise von C/C++.
 
 In C/C++ werden Variablen über Speicheradressen verwaltet. Über die Adresse im Speicher und den Typ weiß der Compiler, wie der rohe Speicherinhalt zu interpretieren ist.
-Bei Objekten wird die Adresse auf den Beginn des Objekts gespeichert, und über die Membervariablen und deren Typen weiß der Compiler dann, wo im darauffolgenden Speicher die Daten liegen.
-Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, siehe auch https://en.wikipedia.org/wiki/Data_structure_alignment.
+Bei Objekten (_struct_ oder _class_) wird die Adresse auf den Beginn des Objekts gespeichert. Bei Membervariablen weiß der Compiler dann durch deren Typen und _offset_ (Abstand von der Startadresse des Objekts), wo im darauffolgenden Speicher deren Daten liegen.
+
+Der _offset_ einer Membervariablen ist aber nicht nur von der Größe der jeweiligen Datentypen abhängig. Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, durch ein sogenanntes _padding_ (siehe auch https://en.wikipedia.org/wiki/Data_structure_alignment ).
 
 Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man folgendes Testprogramm mit verschiedenen Compilern und Betriebssystemen ausführt:
 
-[source,c++]
+.Beispiel für die unterschiedliche Größe von Strukturen durch Padding in Abhängigkeit von Typ und Reihenfolge der Membervariablen. `sizeof` liefert den Speicherbedarf für eine Variable, `offsetof` liefert die Anzahl der Bytes zwischen Aresse des Objekts und Adresse der Membervariablen.
+[source,cpp]
 ----
 #include <iostream>
 
@@ -88,28 +92,91 @@ int main() {
 //   Offset of B.d: 8
 ----
 
-Das bedeutet, dass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch _nicht darauf verlassen_. 
+Das bedeutet, dass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider _nicht darauf verlassen_. 
 
-Das ist wichtig, wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden. Daraus leitet sich die erste Grundregel ab bei der Verwendung von dynamisch geladenen Bibliotheken ab:
+Das ist wichtig wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden. 
+
+Daraus leitet sich die erste Grundregel ab bei der Verwendung von dynamisch geladenen Bibliotheken ab:
 
 [IMPORTANT]
-----
-Host-Programm und DLLs müssen stets mit binär-compatiblen Compilern compiliert werden. Das muss nicht zwingend die gleiche Compiler-Version sein, z.B. gilt Binärcompatibilität für eine Reihe von Visual Studio Compilern (ab 2015/VC14), siehe https://learn.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017?view=msvc-170
-----
-
-### Quelltextunterschiede
+====
+Host-Programm und DLLs müssen stets mit binär-compatiblen Compilern compiliert werden. Das muss nicht zwingend die gleiche Compiler-Version sein. Z.B. gilt Binärcompatibilität für eine Reihe von Visual Studio Compilern (ab 2015/VC14), siehe https://learn.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017?view=msvc-170
+====
 
 
-// Version 2 des Struct X
-struct X
-{
-    short s; /* 2 bytes */
-             /* 2 padding bytes */
-    int   i; /* 4 bytes */
-    char  c; /* 1 byte */
-             /* 3 padding bytes */
-}; 
+### Quelltextunterschiede und Versionierung
+
+Software "lebt" und wird weiterentwickelt. Dies gilt für Plugins und für das eigentliche Hauptprogramm gleichermaßen. Die Trennung von Plugin und Hauptsoftware hat ja auch den Grund, dass ein (externer) Pluginentwickler eigene, vom Hauptprogramm unabhängige Release-Zyklen haben kann und z.B. ein Plugin auch für mehrere Hauptprogrammversionen gültig sein kann. Allerdings sind Hauptprogramm und Plugin nicht komplett unabhängig, wenn Sie gemeinschaftlich auf Daten im Speicher zugreifen bzw. komplexe Objekte austauschen.
+
+Die größte Unabhängigkeit zwischen Plugin und Hauptprogramm erreicht man, wenn man:
+
+- keine komplexen Datentypen zum Datenaustausch nutzt, sondern ausschließlich einfache Datentypen (_PODs - plain old data types_) wie int, bool, double, char austauschen. Ein `std::string` ist bereits ein komplexer Datentyp, sodass zum Austausch von Zeichenketten meist nur ein `const char *` verwendet wird.
+
+- keinen gegenseitigen Speicherzugriff auf den jeweiligen Datenbereich des Plugins oder Hauptprogramms erlaubt
+
+Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins nicht anwendbar. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.
+
+#### Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich
+
+Dies ist einer der häufigten Fälle und betrifft im Fall von SIM-VICUS zumeist das Datenmodell in der _VICUS_ Bibliothek und dadurch auch _NANDRAD_ und die _IBK_ Libs (und alle anderen Bibliotheken, die Datenstrukturen von Membervariablen innerhalb von `VICUS::Project` deklarieren).
+
+Nehmen wir an, es gibt eine Veränderung in einer Klasse `PlainGeometry`:
+
+.Typische Erweiterung einer Datenstruktur während des Entwicklungsprozesses; hierbei wird eine neue Membervariable `m_displayName` hinzugefügt, welche die bisherigen Membervariablen innerhalb des Objekts im Speicher nach hinten verschiebt.
+[source,cpp,tabsize=4]
 ----
+// Ursprungsversion
+class PlainGeometry {
+public:
+    // ...
+
+	/*! Polygons with holes/subsurfaces inside the polygon. */
+	std::vector<Surface>						m_surfaces; 			// XML:E
+	/*! Indicates whether all children elements are visible. */
+	bool										m_visible = true;		// XML:A
+	/*! Indicates whether all children elements are selected. */
+	bool										m_selected = false;
+};
+
+
+
+// Neue Version
+class PlainGeometry {
+public:
+    // ...
+
+    /*! Descriptive name. */
+    std::string                                 m_displayName;   		// XML:A
+	/*! Polygons with holes/subsurfaces inside the polygon. */
+	std::vector<Surface>						m_surfaces; 			// XML:E
+	/*! Indicates whether all children elements are visible. */
+	bool										m_visible = true;		// XML:A
+	/*! Indicates whether all children elements are selected. */
+	bool										m_selected = false;
+};
+----
+
+Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines `PlainGeometry` Objekts und greift auf die Membervariable `m_surfaces` zu. Im Quelltext des Plugins stand diese Variable an erster Stelle, allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String. Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.
+
+Das Problem: sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich). Also muss das Hauptprogramm anhand von _Plugin-Metadaten_ feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.
+
+[IMPORTANT]
+====
+Plugins müssen Metadaten mitliefern, die Auskunft über die verwendeten Datenstrukturversionen bzw. Bibliotheksversionen geben.
+====
+
+Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen ein Plugin anzuwenden ist, also beispielsweise `SIM-VICUS-Versions = 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
+
+Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. `SIM-VICUS-Versions = 0.9.4..0.9.5`.
+
+[CAUTION]
+====
+Die Pflege der Metadaten und Kompatibilitätsversionen ist für korrekt funktionierende Plugins kritisch!
+====
+
+
+
+#### Plugin-Schnittstelle seitens des Hauptprogramms ändert sich
 
 
 

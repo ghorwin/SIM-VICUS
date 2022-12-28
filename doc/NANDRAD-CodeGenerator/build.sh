@@ -4,7 +4,7 @@ ADOC=NANDRAD-CodeGenerator
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=en -a webfonts! $ADOC.adoc &&
+asciidoctor -a lang=en $ADOC.adoc &&
 
 echo '*** Generating pdf ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py pdf . &&
