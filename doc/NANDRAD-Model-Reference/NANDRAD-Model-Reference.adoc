@@ -14,7 +14,7 @@ v0.7 (28.12.2022)
 :source-highlighter: rouge
 :rouge-style: custom
 :title-page:
-:stylesdir: ../adoc_utils/css
+:stylesdir: ../css
 :stylesheet: roboto_ubuntu.css
 :tabsize: 2
 :title-page:

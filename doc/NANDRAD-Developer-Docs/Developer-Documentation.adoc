@@ -14,7 +14,7 @@ Andreas Nicolai <https://github.com/ghorwin>
 :source-highlighter: rouge
 :rouge-style: custom
 :title-page:
-:stylesdir: ../adoc_utils/css
+:stylesdir: ../css
 :stylesheet: roboto_ubuntu.css
 
 ## Introduction

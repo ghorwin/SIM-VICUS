@@ -14,12 +14,9 @@ v2.0 (28.12.2022)
 :source-highlighter: rouge
 :rouge-style: custom
 :title-page:
-:stylesdir: ../adoc_utils/css
+:stylesdir: ../css
 :stylesheet: roboto_ubuntu.css
 :tabsize: 2
-// disable webfonts
-//:!webfonts:
-:icons: font
 
 :caution-caption: Achtung
 :example-caption: Beispiel

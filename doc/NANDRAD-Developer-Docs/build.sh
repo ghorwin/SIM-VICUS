@@ -4,7 +4,7 @@ ADOC=Developer-Documentation
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=en $ADOC.adoc &&
+asciidoctor -a lang=de -a icons=font -a stylesdir=../css -a iconfont-remote!  $ADOC.adoc &&
 
 echo '*** Generating pdf ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py pdf . &&
