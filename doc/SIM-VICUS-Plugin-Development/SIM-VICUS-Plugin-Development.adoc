@@ -32,4 +32,85 @@ v2.0 (22.09.2021)
 
 :xrefstyle: short
 
-## Überblick
+## Hintergrund-Informationen
+
+### Dynamische Bibliotheken und Binärkompatibilität
+
+Plugins sind letztlich dynamisch geladene Bibliotheken, bzw. _shared library_ oder _dynamically linked library (DLL)_. Zum Verständnis der Versionierungsanforderungen unten hilft vielleicht ein kurzer Einblick in die interne Funktionsweise von C/C++.
+
+In C/C++ werden Variablen über Speicheradressen verwaltet. Über die Adresse im Speicher und den Typ weiß der Compiler, wie der rohe Speicherinhalt zu interpretieren ist.
+Bei Objekten wird die Adresse auf den Beginn des Objekts gespeichert, und über die Membervariablen und deren Typen weiß der Compiler dann, wo im darauffolgenden Speicher die Daten liegen.
+Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, siehe auch https://en.wikipedia.org/wiki/Data_structure_alignment.
+
+Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man folgendes Testprogramm mit verschiedenen Compilern und Betriebssystemen ausführt:
+
+[source,c++]
+----
+#include <iostream>
+
+using namespace std;
+
+struct A {
+    char c; // 1 Byte
+    char d; // 1 Byte
+            // 2 Byte Padding
+    int i;  // 4 Byte
+};
+
+struct B {
+    char c; // 1 Byte
+            // 3 Byte Padding
+    int i;  // 4 Byte
+    char d; // 1 Byte
+            // 3 Byte Padding
+};
+
+int main() {
+    A a;
+    B b;
+
+    std::cout << "Size of A: " << sizeof(A) << std::endl;
+    std::cout << "  Offset of A.d: " << offsetof(A,d) << std::endl;
+    std::cout << "  Offset of A.i: " << offsetof(A,i) << std::endl;
+    std::cout << "Size of B: " << sizeof(B) << std::endl;
+    std::cout << "  Offset of B.i: " << offsetof(B,i) << std::endl;
+    std::cout << "  Offset of B.d: " << offsetof(B,d) << std::endl;
+    return 0;
+}
+
+
+// Ausgabe:
+// Size of A: 8
+//   Offset of A.d: 1
+//   Offset of A.i: 4
+// Size of B: 12
+//   Offset of B.i: 4
+//   Offset of B.d: 8
+----
+
+Das bedeutet, dass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch _nicht darauf verlassen_. 
+
+Das ist wichtig, wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden. Daraus leitet sich die erste Grundregel ab bei der Verwendung von dynamisch geladenen Bibliotheken ab:
+
+[IMPORTANT]
+----
+Host-Programm und DLLs müssen stets mit binär-compatiblen Compilern compiliert werden. Das muss nicht zwingend die gleiche Compiler-Version sein, z.B. gilt Binärcompatibilität für eine Reihe von Visual Studio Compilern (ab 2015/VC14), siehe https://learn.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017?view=msvc-170
+----
+
+### Quelltextunterschiede
+
+
+// Version 2 des Struct X
+struct X
+{
+    short s; /* 2 bytes */
+             /* 2 padding bytes */
+    int   i; /* 4 bytes */
+    char  c; /* 1 byte */
+             /* 3 padding bytes */
+}; 
+----
+
+
+
+
