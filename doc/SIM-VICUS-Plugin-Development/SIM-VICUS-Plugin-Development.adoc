@@ -1,0 +1,35 @@
+SIM-VICUS Plugin Entwicklung
+============================
+Andreas Nicolai <https://github.com/ghorwin>
+v2.0 (22.09.2021)
+// v2.0 date_on_line_above
+:Author Initials: AN
+:toc: left
+:toclevels: 3
+:toc-title: Inhaltsverzeichnis
+:icons: font
+:imagesdir: ./images
+:numbered:
+:website: https://github.com/ghorwin/SIM-VICUS
+:source-highlighter: rouge
+:rouge-style: custom
+:title-page:
+:stylesdir: ../adoc_utils/css
+:stylesheet: roboto_ubuntu.css
+:tabsize: 2
+
+
+:caution-caption: Achtung
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:section-refsig: Abschnitt
+
+
+// Bildskalierung: 1400px/16cm  : 16cm/1400px = 0,011429 cm/px
+//
+// Beispiel: Bildbreite = 1076  -> Breite in cm = 1076 * 0,011428 = 12.2 cm
+
+:xrefstyle: short
+
+## Überblick

@@ -1,7 +1,7 @@
 NANDRAD Modell-Referenz
 =======================
-Andreas Nicolai <andreas.nicolai@tu-dresden.de>, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke
-v0.7 (09.01.2022)
+Andreas Nicolai <https://github.com/ghorwin>, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke
+v0.7 (28.12.2022)
 // v0.7 date_on_line_above
 :Author Initials: AN
 :toc: left

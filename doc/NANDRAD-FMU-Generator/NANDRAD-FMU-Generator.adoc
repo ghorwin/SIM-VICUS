@@ -1,7 +1,7 @@
 NANDRAD FMU-Generator
 =====================
-Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v2.0 (22.09.2021)
+Andreas Nicolai <https://github.com/ghorwin>
+v2.0 (28.12.2022)
 // v2.0 date_on_line_above
 :Author Initials: AN
 :toc: left

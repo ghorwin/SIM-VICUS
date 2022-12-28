@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke">
+<meta name="author" content="Andreas Nicolai &lt;https://github.com/ghorwin&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke">
 <title>NANDRAD Modell-Referenz</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -71,8 +71,8 @@ table {
 <div id="header">
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
-<span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.7 (09.01.2022)</span>
+<span id="author" class="author">Andreas Nicolai &lt;https://github.com/ghorwin&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
+<span id="revnumber">version 0.7 (28.12.2022)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -171,7 +171,12 @@ table {
 <li><a href="#_vermeidung_von_sprüngen_leistungsverbesserung">14.3.4. Vermeidung von Sprüngen / Leistungsverbesserung</a></li>
 </ul>
 </li>
-<li><a href="#annualSchedules">14.4. Jahresschaltpläne</a></li>
+<li><a href="#annualSchedules">14.4. Jahresschaltpläne</a>
+<ul class="sectlevel3">
+<li><a href="#_definition_von_jahreszeitplänen_im_xml_file">14.4.1. Definition von Jahreszeitplänen im XML-File</a></li>
+<li><a href="#_definition_von_jahreszeitplänen_durch_einbindung_von_tsv_dateien">14.4.2. Definition von Jahreszeitplänen durch Einbindung von TSV-Dateien</a></li>
+</ul>
+</li>
 <li><a href="#schedule_variable_list">14.5. Variablenliste</a></li>
 </ul>
 </li>
@@ -317,7 +322,8 @@ table {
 <li><a href="#_regler_thermostatvalue">18.8.4. Regler: ThermostatValue</a></li>
 <li><a href="#_regler_massflux">18.8.5. Regler: MassFlux</a></li>
 <li><a href="#_regler_pumpoperation">18.8.6. Regler: PumpOperation</a></li>
-<li><a href="#_parameter_für_die_regler_logik">18.8.7. Parameter für die Regler-Logik</a></li>
+<li><a href="#_regler_pressuredifferenceworstpoint">18.8.7. Regler: PressureDifferenceWorstpoint</a></li>
+<li><a href="#_parameter_für_die_regler_logik">18.8.8. Parameter für die Regler-Logik</a></li>
 </ul>
 </li>
 <li><a href="#_ausgaben_8">18.9. Ausgaben</a>
@@ -3801,6 +3807,8 @@ die geplanten Werte)</p>
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_definition_von_jahreszeitplänen_im_xml_file">14.4.1. Definition von Jahreszeitplänen im XML-File</h4>
 <div class="paragraph">
 <p>Innerhalb des XML-tags <code>AnnualSchedules</code> gibt es ein oder mehrere XML-Tochtertags <code>ScheduleGroup</code>, jedes mit einem obligatorischen XML-Attribut <code>objectList</code>. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <a href="#ex_AnnualSchedule">Beispiel 37</a> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen <code>ScheduleGroup</code> definiert sind.</p>
 </div>
@@ -3836,6 +3844,74 @@ die geplanten Werte)</p>
 </div>
 <div class="paragraph">
 <p>Die Einheit des X-Wertes muss eine Zeiteinheit sein. Die Einheit des Y-Wertes ist die Einheit der geplanten Menge.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_definition_von_jahreszeitplänen_durch_einbindung_von_tsv_dateien">14.4.2. Definition von Jahreszeitplänen durch Einbindung von TSV-Dateien</h4>
+<div class="paragraph">
+<p>Ein Jahreszeitplan kann ebenso über die Einbindung von Daten aus einem *tsv-File eingebunden werden. Hierbei muss die Datei den folgenden Konventionen entsprechen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Die Nullte Spalte enthält das Zeitintervall. Deren Einheit ist frei wählbar (a,d,h,min,s).</p>
+</li>
+<li>
+<p>Die nachfolgenden Spalten müssen mit der jeweiligen Einheit des Parameters im Header versehen werden.</p>
+</li>
+</ul>
+</div>
+<div id="ex_AnnualSchedule_TSV" class="exampleblock">
+<div class="title">Beispiel 38. Beispiel tsv-Datei</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml">Time [h]    PersonHeatLoadPerAreaSchedule [W/m2]    EquipmentHeatLoadPerAreaSchedule [W/m2]
+0   10  30
+1   15  30
+2   20  30
+3   10  30
+4   20  30
+...</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="ex_AnnualSchedule_XML" class="exampleblock">
+<div class="title">Beispiel 39. Definition von Jahresplänen aus TSV-Datei</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;AnnualSchedules&gt;</span>
+    ...
+    <span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"All zones"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;AnnualSchedule</span> <span class="na">name=</span><span class="s">"PersonHeatLoadPerAreaSchedule"</span> <span class="na">interpolationMethod=</span><span class="s">"constant"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;TSVFile&gt;</span>$(Project Directory)/Schedules.tsv?1<span class="nt">&lt;/TSVFile&gt;</span>
+        <span class="nt">&lt;/AnnualSchedule&gt;</span>
+    <span class="nt">&lt;/ScheduleGroup&gt;</span>
+    ...
+<span class="nt">&lt;/AnnualSchedules&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Angabe der <strong>Spalte</strong> des zeitplangesteuerten Parameters aus dem TSV-File wird am Ende des Dateipfades festgelegt.</p>
+</div>
+<div class="paragraph">
+<p>&lt;TSVFile&gt;$(Project Directory)/Schedules.tsv?<strong>1</strong>&lt;/TSVFile&gt;</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -3909,16 +3985,6 @@ die geplanten Werte)</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Beleuchtungsleistung</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DomesticWaterSetpointTemperature</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Solltemperatur für Brauchwasser</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DomesticWaterMassFlow</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Massenstrom des Brauchwasserbedarfs für die gesamte Zone (Warmwasser und Geräte)</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ThermalEnergyLossPerPerson</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">W/Person</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Energie der Aktivitäten einer einzelnen Person, die nicht als Heizwärme zur Verfügung steht</p></td>
@@ -3942,6 +4008,11 @@ die geplanten Werte)</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>MassFluxRate</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fraktion des realen Massenstroms zum maximalen Massenstrom für verschiedene Tageszeiten</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PersonHeatLoadPerAreaSchedule</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W/m2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interne Wärmelast infolge flächenabhängiger Personenbelegung</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureHead</code></p></td>
@@ -4038,7 +4109,7 @@ die geplanten Werte)</p>
 <p>Die Ausgaben werden im XML-tag <code>Outputs</code> definiert, mit der folgenden allgemeinen Struktur:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 38. Parameter-Definition für Ausgaben</div>
+<div class="title">Beispiel 40. Parameter-Definition für Ausgaben</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4073,7 +4144,7 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 39. Globale Ausgabeparameter</div>
+<div class="title">Beispiel 41. Globale Ausgabeparameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4093,7 +4164,7 @@ die geplanten Werte)</p>
 <p>Ausgaberaster legen fest, <em>wann</em> Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 40. Ausgaberaster für die gesamte Simulation mit stündlichen Schritten</div>
+<div class="title">Beispiel 42. Ausgaberaster für die gesamte Simulation mit stündlichen Schritten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4212,7 +4283,7 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 41. Ausgaberasterauswertung</div>
+<div class="title">Beispiel 43. Ausgaberasterauswertung</div>
 <div class="content">
 <div class="paragraph">
 <p>Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen. Dann wäre 16,5 - 12,5 = 4 h. 4h ist ein exaktes Vielfaches von 2 h. Das Ausgaberaster wäre also zu diesem Simulationszeitpunkt "aktiv" und alle Ausgaben, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
@@ -4223,7 +4294,7 @@ die geplanten Werte)</p>
 <p>Zwischen den Intervallen kann es Lücken geben, in denen keine Ausgaben geschrieben werden:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 42. Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</div>
+<div class="title">Beispiel 44. Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4253,7 +4324,7 @@ die geplanten Werte)</p>
 <p>Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 43. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
+<div class="title">Beispiel 45. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4262,6 +4333,25 @@ die geplanten Werte)</p>
       <span class="nt">&lt;Quantity&gt;</span>AirTemperature<span class="nt">&lt;/Quantity&gt;</span>
       <span class="nt">&lt;ObjectListName&gt;</span>All zones<span class="nt">&lt;/ObjectListName&gt;</span>
       <span class="nt">&lt;GridName&gt;</span>hourly<span class="nt">&lt;/GridName&gt;</span>
+    <span class="nt">&lt;/OutputDefinition&gt;</span>
+    ... <span class="c">&lt;!-- weitere Definitionen --&gt;</span>
+<span class="nt">&lt;/Definitions&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 46. Ausgabe der Globalstrahlung auf eine Fläche eines bestimmten Sensor <em>id=2000000</em> von der Location in der Objektliste <em>Location</em> und unter Verwendung des Ausgaberasters <em>hourly</em> sowie einer separaten Ausgabedatei <em>Sensordata.tsv</em></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Definitions&gt;</span>
+    <span class="nt">&lt;OutputDefinition&gt;</span>
+      <span class="nt">&lt;Quantity&gt;</span>GlobalSWRadOnPlane[2000000]<span class="nt">&lt;/Quantity&gt;</span>
+      <span class="nt">&lt;ObjectListName&gt;</span>Loaction<span class="nt">&lt;/ObjectListName&gt;</span>
+      <span class="nt">&lt;GridName&gt;</span>hourly<span class="nt">&lt;/GridName&gt;</span>
+      <span class="c">&lt;!-- die Globalstrahlungsdaten werden in der Datei Sensordata.tsv separat abgelegt --&gt;</span>
+      <span class="nt">&lt;FileName&gt;</span>Sensordata<span class="nt">&lt;FileName&gt;</span>
     <span class="nt">&lt;/OutputDefinition&gt;</span>
     ... <span class="c">&lt;!-- weitere Definitionen --&gt;</span>
 <span class="nt">&lt;/Definitions&gt;</span></code></pre>
@@ -4486,7 +4576,7 @@ die geplanten Werte)</p>
 <div class="sect3">
 <h4 id="_beispiele">15.3.4. Beispiele</h4>
 <div class="exampleblock">
-<div class="title">Beispiel 44. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
+<div class="title">Beispiel 47. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4519,7 +4609,7 @@ die geplanten Werte)</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 45. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
+<div class="title">Beispiel 48. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4676,10 +4766,10 @@ Dieses Format wird nativ von <em>PostProc</em> unterstützt und die Daten könne
 <div class="sect2">
 <h3 id="simulation_parameters">16.1. Simulationsparameter</h3>
 <div class="paragraph">
-<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 46</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
+<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 49</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
-<div class="title">Beispiel 46. Simulationsparameter</div>
+<div class="title">Beispiel 49. Simulationsparameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5563,7 +5653,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben. Modelle werden verwendet, um gleichartige Funktionalität für mehrere Objekte (meist Zonen) zu definieren. Die in den Modellblöcken abgelegten Parameter gelten dann für alle (via Objektlisten) ausgewählten Objekte. Allerdings können objektspezifische Eigenschaften (bspw. Nutzfläche bei Zonen) in die Modell einfließen.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 47. Modelldefinitionslisten innerhalb des XML-Elements <code>Models</code></div>
+<div class="title">Beispiel 50. Modelldefinitionslisten innerhalb des XML-Elements <code>Models</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5647,8 +5737,22 @@ Start = 14*24 + 6 = 342 h</pre>
 <div class="paragraph">
 <p>Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen (Fugenlüftung/Infiltration). Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz <code>NaturalVentilationModel</code> definiert wird. Über die Objektliste werden die Zonen ausgewählt.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Dieses Modell sollte nicht zusammen mit dem Luftströmungsmodell (Luftströmungs-Netzwerk) verwendet werden.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="exampleblock">
-<div class="title">Beispiel 48. Drei veschiedene Modellvarianten und deren Parameter beim Modell für natürliche Lüftung/Infiltration</div>
+<div class="title">Beispiel 51. Drei veschiedene Modellvarianten und deren Parameter beim Modell für natürliche Lüftung/Infiltration</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5738,7 +5842,10 @@ Start = 14*24 + 6 = 342 h</pre>
 <p><code>Scheduled</code> - Luftwechselrate ändert sich nach einem definierten Zeitplan. Dieses Modell sollte verwendet werden, wenn ein spezielles Lüftungsmodell über die FMU-Schnittstelle dazugeschaltet wird.</p>
 </li>
 <li>
-<p><code>ScheduledWithBaseACR</code> - Es werden ein Grundluftwechsel und eine <em>Erhöhung</em> des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien.</p>
+<p><code>ScheduledWithBaseACR</code> - Es werden ein Grundluftwechsel und eine <em>Erhöhung</em> des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien. Speziellfür diesen Modelltyp sind die Grenztemperaturen <em>MaxAirTemperature</em> und <em>MinAirTemperature</em> als konstante Parameter gegeben. Dies ist eine spezielle AUsprägung des allgemeineren Falles <em>ScheduledWithBaseACRDynamicTLimit</em> und  primär zum Testen vorgesehen.</p>
+</li>
+<li>
+<p><code>ScheduledWithBaseACRDynamicTLimit</code> - Es werden ein Grundluftwechsel und eine <em>Erhöhung</em> des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien. Dazu zählen die Unter- und Überschreitung der Grenztemperaturen <em>MaxAirTemperature</em> und <em>MinAirTemperature</em>, welche als zeitabhängige Zeitpläne gegeben sind.</p>
 </li>
 <li>
 <p>(*)<code>Realistic</code>- Lüftungsrate ergibt sich aus physikalischen Bedingungen (Wind, Temperaturdifferenzen, Fensteröffnungszustand, &#8230;&#8203;)</p>
@@ -5782,14 +5889,14 @@ Start = 14*24 + 6 = 342 h</pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaxAirTemperature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>VentilationMaxAirTemperature</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">obere Raumluft-Grenztemperatur</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;-100.0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>ScheduledWithBaseACR</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MinAirTemperature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>VentilationMinAirTemperature</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">untere Raumluft-Grenztemperatur</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;-100.0&#160;</p></td>
@@ -5800,7 +5907,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock">m/s</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maximale Windgeschwindigkeit für erhöhte Lüftung</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>ScheduledWithBaseACR</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>ScheduledWithBaseACR</code> und <em>ScheduledWithBaseACRDynamicTLimit</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -5814,7 +5921,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter <code>VentilationRateSchedule</code> für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 49. Zeitplan, der den Parameter <em>VentilationRateSchedule</em> bereitstellt</div>
+<div class="title">Beispiel 52. Zeitplan, der den Parameter <em>VentilationRateSchedule</em> bereitstellt</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5852,7 +5959,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Beim Modelltyp <code>ScheduledWithBaseACR</code> wird ein Grundluftwechsel (Schedule <code>VentilationRateSchedule</code>) analog zum Modelltyp <code>Scheduled</code> verwendet. Unter bestimmten Bedingungen wird dieser Grundluftwechsel durch ein zusätzlichen Luftwechsel entsprechend eines gegebenen Zeitplans in  <code>VentilationRateIncreaseSchedule</code> <strong>erhöht</strong>.</p>
+<p>Bei den Modelltypen <code>ScheduledWithBaseACR</code> und <em>ScheduledWithBaseACRDynamicTLimit</em> wird ein Grundluftwechsel (Schedule <code>VentilationRateSchedule</code>) analog zum Modelltyp <code>Scheduled</code> verwendet. Unter bestimmten Bedingungen wird dieser Grundluftwechsel durch ein zusätzlichen Luftwechsel entsprechend eines gegebenen Zeitplans in  <code>VentilationRateIncreaseSchedule</code> <strong>erhöht</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Die Luftwechselrate wird berechnet:</p>
@@ -5871,14 +5978,14 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Bei Definition der <code>VentilationRateIncreaseSchedule</code> für das <code>ScheduledWithBaseACR</code> beachten, dass dies die <em>zusätzliche</em> Lüftungsrate zum Grundluftwechsel ist.</p>
+<p>Bei Definition der <code>VentilationRateIncreaseSchedule</code> ist zu beachten, dass dies die <em>zusätzliche</em> Lüftungsrate zum Grundluftwechsel ist.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 50. Zeitplan für Modelltyp <code>ScheduledWithBaseACR</code>; Grundluftwechsel = 0.5 1/h, Luftwechsel bei Erhöhung = 2 1/h = (0.5 + 1.5) 1/h</div>
+<div class="title">Beispiel 53. Zeitplan für Modelltyp <code>ScheduledWithBaseACR</code>; Grundluftwechsel = 0.5 1/h, Luftwechsel bei Erhöhung = 2 1/h = (0.5 + 1.5) 1/h</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5891,6 +5998,32 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
         <span class="nt">&lt;Values&gt;</span>
             VentilationRateSchedule [1/h]:0.5;
           VentilationRateIncreaseSchedule [1/h]:1.5
+        <span class="nt">&lt;/Values&gt;</span>
+      <span class="nt">&lt;/DailyCycle&gt;</span>
+    <span class="nt">&lt;/DailyCycles&gt;</span>
+  <span class="nt">&lt;/Schedule&gt;</span>
+<span class="nt">&lt;/ScheduleGroup&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Modelltyp <em>ScheduledWithBaseACRDynamicTLimit</em> verlangt zusätzlich den Schedule <code>VentilationMaxAirTemperatureSchedule</code> und <code>VentilationMinAirTemperatureSchedule</code>. Die dazugehörigen Grenztemperaturen werden dann dynamisch ausgewertet. Konstante Temperaturannahmen werden hiervon umfasst und können durch passende Zeitpläne generiert werden:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 54. Zeitplan für Modelltyp <code>ScheduledWithBaseACRDynamicTLimit</code>; konstante Grenztemperaturen (Minimum: 23 C, Maximum 100 C)</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"All zones"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;DailyCycles&gt;</span>
+      <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
+        <span class="c">&lt;!-- Konstante Grenztemperaturen --&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>
+          VentilationMaxAirTemperatureSchedule [C]:100;
+            VentilationMinAirTemperatureSchedule [C]:23
         <span class="nt">&lt;/Values&gt;</span>
       <span class="nt">&lt;/DailyCycle&gt;</span>
     <span class="nt">&lt;/DailyCycles&gt;</span>
@@ -5966,7 +6099,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 <p>Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (<code>Shading</code>, siehe <a href="#window_shading">Fensterverschattung</a>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden. Da es bei Verschattungseinrichtungen keinen expliziten Zonenbezug gibt, werden Verschattungskontrollmodelle über ihre eindeutige ID referenziert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 51. Parameterdefinition für Verschattungsregelungsmodell</div>
+<div class="title">Beispiel 55. Parameterdefinition für Verschattungsregelungsmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6068,7 +6201,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 <p>Das Modell für interne Lasten wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen. Wie auch beim Modell für natürliche Lüften dürfen Zonen immer nur einmal referenziert werden (es  dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 52. Definitionsblock für interne Lasten</div>
+<div class="title">Beispiel 56. Definitionsblock für interne Lasten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6275,7 +6408,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Wie auch beim Lüftungsmodell  darf nur ein Modell pro Zone existieren.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 53. Definitionsblock für Thermostate</div>
+<div class="title">Beispiel 57. Definitionsblock für Thermostate</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6549,7 +6682,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <p>Ein Anlagensystem-Modell ist optional - ohne ein solches System kann ein Heizungssystem auch direkt die Kontrollgrößen eines Thermostats abgreifen.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 54. Anlagensystemmodell für die Umsetzung einer idealen Heizung</div>
+<div class="title">Beispiel 58. Anlagensystemmodell für die Umsetzung einer idealen Heizung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6571,7 +6704,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <p>Das Modell beschreibt eine ideale thermisches Raumluftkonditionierung. Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf  nur ein Modell pro Zone existieren (d.h. bei mehreren <code>IdealHeatingCoolingModel</code> Definitionen dürfen die Objektlisten nicht gleiche Zonen enthalten).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 55. Definitionsblock für ideale thermische Konditionierung</div>
+<div class="title">Beispiel 59. Definitionsblock für ideale thermische Konditionierung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6742,7 +6875,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <p>Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine Flächenheizung. Dies kann eine Fußbodenheizung sein, eine Kapillarrohrmatte, ein elektrisches Heizregister oder eine Betonkernaktivierung. Der Wärmeübertragungsmechanismus ist nicht abgebildet, es wird lediglich Wärme der beheizten/gekühlten Konstruktionsschicht zugefügt oder entfernt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 56. Definitionsblock für ideale Flächenheizungen</div>
+<div class="title">Beispiel 60. Definitionsblock für ideale Flächenheizungen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6910,7 +7043,7 @@ Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 57. Definitionsblock für Rohrregister-Heizungen</div>
+<div class="title">Beispiel 61. Definitionsblock für Rohrregister-Heizungen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7172,7 +7305,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Das Modell summiert die Heizleistungen der ausgewählten Objekte und liefert die Gesamtwärmeleistung (Heizung/Kühlung).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 58. Definitionsblock für ein Summationsmodell</div>
+<div class="title">Beispiel 62. Definitionsblock für ein Summationsmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7287,7 +7420,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 59. Definitionsblock für ein solches Schnittstellenmodell</div>
+<div class="title">Beispiel 63. Definitionsblock für ein solches Schnittstellenmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7378,10 +7511,13 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.</p>
 </div>
 <div class="paragraph">
+<p>NANDRAD unterstützt geschlossene hydraulische Netzwerke, d.h. typische Rohrnetzwerke, Fußbodenheizungen, Wärmetauscher etc. und offene Luftströmungsnetzwerke. In letzteren wird ein Luftaustausch mit Raumluftzonen möglich.</p>
+</div>
+<div class="paragraph">
 <p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag <code>HydraulicNetworks</code> abgelegt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 60. Hydraulische Netzwerke</div>
+<div class="title">Beispiel 64. Hydraulische Netzwerke</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7421,7 +7557,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 61. Typische Definition eines einzelnen Netzwerks</div>
+<div class="title">Beispiel 65. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7618,7 +7754,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 62. Definition eines Netzwerkfluids</div>
+<div class="title">Beispiel 66. Definition eines Netzwerkfluids</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7758,7 +7894,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden im XML-tag <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 63. Definition von Rohreigenschaften</div>
+<div class="title">Beispiel 67. Definition von Rohreigenschaften</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7868,7 +8004,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 64. Definition einer Komponente</div>
+<div class="title">Beispiel 68. Definition einer Komponente</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8246,7 +8382,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 <p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <a href="#NetworkControlElements">Abschnitt 18.8</a>).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 65. Definition einer ControlledPump</div>
+<div class="title">Beispiel 69. Definition einer ControlledPump</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8632,7 +8768,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </table>
 </div>
 <div id="ex_HeatPumpVariableIdealCarnotSourceSide" class="exampleblock">
-<div class="title">Beispiel 66. Definition einer HeatPumpVariableIdealCarnotSourceSide</div>
+<div class="title">Beispiel 70. Definition einer HeatPumpVariableIdealCarnotSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8673,7 +8809,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <h4 id="_modelltyp_heatpumpvariablesourceside">ModellTyp: HeatPumpVariableSourceSide</h4>
 <div class="paragraph">
 <p>Das Model <code>HeatPumpVariableSourceSide</code> ist eine ideale Wärmepumpe mit variable Heizleistung, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Abschnitt 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.
-Im Gegensatz zum Modell <code>HeatPumpVariableIdealCarnotSourceSide</code>, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung des COP in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpVariableSourceSide">Beispiel 67</a>).</p>
+Im Gegensatz zum Modell <code>HeatPumpVariableIdealCarnotSourceSide</code>, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung des COP in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpVariableSourceSide">Beispiel 71</a>).</p>
 </div>
 <div class="paragraph">
 <p>Weiterhin werden diese Parameter benötigt:</p>
@@ -8739,7 +8875,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </table>
 </div>
 <div id="ex_HeatPumpVariableSourceSide" class="exampleblock">
-<div class="title">Beispiel 67. Definition einer HeatPumpVariableSourceSide</div>
+<div class="title">Beispiel 71. Definition einer HeatPumpVariableSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8775,7 +8911,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert.</p>
 </div>
 <div class="paragraph">
-<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpOnOffSourceSide">Beispiel 68</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
+<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpOnOffSourceSide">Beispiel 72</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
 </div>
 <div class="paragraph">
 <p>Weitere benötigte Parameter sind:</p>
@@ -8822,7 +8958,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tbody>
 </table>
 <div id="ex_HeatPumpOnOffSourceSide" class="exampleblock">
-<div class="title">Beispiel 68. Definition einer HeatPumpOnOffSourceSide</div>
+<div class="title">Beispiel 72. Definition einer HeatPumpOnOffSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8867,7 +9003,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Dieses Modell ermöglicht das präzise Vorgeben einer Medientemperatur in einem Strömungselement und der Berechnung der für die Temperaturänderung benötigten Heiz-/Kühlenergie.</p>
 </div>
 <div id="ex_HydraulicElement_IdealHeaterCooler" class="exampleblock">
-<div class="title">Beispiel 69. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 73. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8912,7 +9048,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="paragraph">
-<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 69</a>).</p>
+<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 73</a>).</p>
 </div>
 </div>
 </div>
@@ -8925,7 +9061,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div id="xml_example_flow_element" class="exampleblock">
-<div class="title">Beispiel 70. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 74. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8995,8 +9131,13 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pipePropertiesId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ID des referenzierten <code>HydraulicNetworkPipeProperties</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">optional
-(<em>benötigt für Rohre</em>)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">optional (<em>benötigt für Rohre</em>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ObservedPressureDiffElementIds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datatable mit IDs der Strömungselemente, welche mit WorstpointController überwacht werden</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">optional (_benötigt nur wenn ein <code>HydraulicNetworkControlElement</code> mit Option WorstpointController referenziert wird _)</p></td>
 </tr>
 </tbody>
 </table>
@@ -9024,10 +9165,10 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 71</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 75</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 71. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 75. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9070,7 +9211,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 72</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 76</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -9100,7 +9241,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 72. Definition eines Rohrelements</div>
+<div class="title">Beispiel 76. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9117,7 +9258,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 73. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 77. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9151,7 +9292,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelElements</code> kann man ein Element mit Druckverlust definieren, welches identische in parallelen Strängen verbaut ist, ohne dazu jeden identischen Strang separat modellieren zu müssen.</p>
 </div>
 <div id="ex_parallel_valve" class="exampleblock">
-<div class="title">Beispiel 74. Definition eines parallelen Ventils</div>
+<div class="title">Beispiel 78. Definition eines parallelen Ventils</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9185,7 +9326,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>In thermische Netzwerken kann für ein Strömungselement (<a href="#NetworkElements">Abschnitt 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 75. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
+<div class="title">Beispiel 79. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9410,11 +9551,11 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <div class="sect2">
 <h3 id="_regelung_von_strömungselementen">18.7. Regelung von Strömungselementen</h3>
 <div class="paragraph">
-<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 76</a> referenziert
+<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 80</a> referenziert
 das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkControlElement</code> im Attribut <code>controlElementId</code>.</p>
 </div>
 <div id="ex_controlled_heat_exchanger" class="exampleblock">
-<div class="title">Beispiel 76. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
+<div class="title">Beispiel 80. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9443,7 +9584,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 </div>
 <div class="paragraph">
-<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 76</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Abschnitt 18.8</a> beschrieben.</p>
+<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 80</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Abschnitt 18.8</a> beschrieben.</p>
 </div>
 </div>
 <div class="sect2">
@@ -9452,7 +9593,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 <p>Alle Reglerkomponenten werden in einer Liste <code>ControlElements</code> abgelegt, welche sich innerhalb des <code>HydraulicNetwork</code> Elements befindet.</p>
 </div>
 <div id="ex_controlElement" class="exampleblock">
-<div class="title">Beispiel 77. Definitionsliste von Massenstrom-Reglermodellen</div>
+<div class="title">Beispiel 81. Definitionsliste von Massenstrom-Reglermodellen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9542,7 +9683,84 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_parameter_für_die_regler_logik">18.8.7. Parameter für die Regler-Logik</h4>
+<h4 id="_regler_pressuredifferenceworstpoint">18.8.7. Regler: PressureDifferenceWorstpoint</h4>
+<div class="paragraph">
+<p>Mit dem Regler <code>PressureDifferenceWorstpoint</code> kann eine Schlechtpunktregelung mit einer <code>ControlledPump</code> implementiert werden. Die Schlechtpunktregelung wählt automatisch ein <code>Strömungselement</code> bzw. eine Gruppe von <code>Strömungselementen</code> aus welche den niedrigsten Druckverlust haben. Dieser Druckverlust wird dann nach dem Sollwert <code>PressureDifferenceSetpoint</code> geregelt.
+Dabei werden alle <code>Strömungselementen</code> berücksichtigt welche in dem <code>DataTable</code> <code>ObservedPressureDiffElementIds</code> angegeben wurden. Dieser <code>DataTable</code> muss in der Definition des Strömungselements der Pumpe angegeben werden.
+Ein Beispiel einer Implementierung zeigt <a href="#ex_worstpoint_controller">Beispiel 82</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Bei Verwendung dieses Reglers sollte unbedingt ein PI-Regler mit niedrigem P-Anteil verwendet werden, andernfalls treten numerische Probleme auf</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="ex_worstpoint_controller" class="exampleblock">
+<div class="title">Beispiel 82. Beispiel einer Implementiertung eines Schlechtpunktreglers</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ControlElements&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkControlElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">controlledProperty=</span><span class="s">"PressureDifferenceWorstpoint"</span>  <span class="na">modelType=</span><span class="s">"Constant"</span> <span class="na">controllerType=</span><span class="s">"PIController"</span> <span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Kp"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.001<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Ki"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.1<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureDifferenceSetpoint"</span> <span class="na">unit=</span><span class="s">"Pa"</span><span class="nt">&gt;</span>20000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;/HydraulicNetworkControlElement&gt;</span>
+<span class="nt">&lt;/ControlElements&gt;</span>
+
+...
+
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"301"</span> <span class="na">inletNodeId=</span><span class="s">"7"</span> <span class="na">outletNodeId=</span><span class="s">"1"</span> <span class="na">componentId=</span><span class="s">"2"</span> <span class="na">controlElementId=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Controlled pump"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ObservedPressureDiffElementIds&gt;</span>;1:401;2:501;3:601<span class="nt">&lt;/ObservedPressureDiffElementIds&gt;</span>
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"401"</span> <span class="na">inletNodeId=</span><span class="s">"4"</span> <span class="na">outletNodeId=</span><span class="s">"7"</span> <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">displayName=</span><span class="s">"hx1"</span><span class="nt">&gt;</span>
+...
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"501"</span> <span class="na">inletNodeId=</span><span class="s">"4"</span> <span class="na">outletNodeId=</span><span class="s">"7"</span> <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">displayName=</span><span class="s">"hx2"</span><span class="nt">&gt;</span>
+...
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"601"</span> <span class="na">inletNodeId=</span><span class="s">"5"</span> <span class="na">outletNodeId=</span><span class="s">"7"</span> <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">displayName=</span><span class="s">"hx3"</span><span class="nt">&gt;</span>
+...
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Der DataTable <code>ObservedPressureDiffElementIds</code> hat die Struktur &lt;NODE_ID1&gt;:&lt;ELEMENT_ID1&gt;,&lt;ELEMENT_ID2&gt;; &lt;NODE_ID&gt;:&lt;ELEMENT_ID1&gt;,&lt;ELEMENT_ID2&gt;; &#8230;&#8203;;
+Dabei sind die ELEMENT_IDs ids der <code>Strömungselemente</code> und NODE_IDs sind frei wählbare IDs welche z.B. einen geometrischen Punkt definieren (z.B. eine VICUS NodeId).</p>
+</div>
+<div class="paragraph">
+<p>Im Beispiel <a href="#ex_worstpoint_controller">Beispiel 82</a> wird zu jedem Zeitpunkt der  Wärmetauscher (aus hx1, hx2, hx3) ausgewählt, welcher den niedrigsten Druckverlust hat. Dieser Druckverlust wird dann auf den Sollwert <code>PressureDifferenceSetpoint</code> geregelt.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Als zusätzliche Ausgaben sind <code>PressureDifferenceAtWorstpoint</code> und <code>WorstpointNodeId</code> verfügbar. Dabei gibt <code>WorstpointNodeId</code> immer die NODE_ID aus welche zum Strömungselement mit dem niedrigstem Druckverlust gehört (entsprechend des DataTable <code>ObservedPressureDiffElementIds</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parameter_für_die_regler_logik">18.8.8. Parameter für die Regler-Logik</h4>
 <div class="paragraph">
 <p>Reglersollwerte</p>
 </div>
@@ -9579,6 +9797,12 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 <td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Grenzwert des Wärmestroms des folgenden Elements</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>PumpOperation</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureDifferenceSetpoint</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sollwert des Schlechtpunktreglers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>PressureDifferenceWorstpoint</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -9620,10 +9844,10 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 <div class="sect2">
 <h3 id="_ausgaben_8">18.9. Ausgaben</h3>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 78</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 83</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 78. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 83. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9802,10 +10026,10 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </ul>
 </div>
 <div class="paragraph">
-<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 79</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
+<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 84</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 79. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 84. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9836,7 +10060,7 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 <p>Die Spezifikation der FMU Schnittstelle der zu generierenden NANDRAD-FMU wird im XML-Element <code>FMIDescription</code> definiert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 80. Definition einer FMU-Schnittstelle</div>
+<div class="title">Beispiel 85. Definition einer FMU-Schnittstelle</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10454,8 +10678,8 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.7 (09.01.2022)<br>
-Last updated 2022-01-09 18:05:27 +0100
+Version 0.7 (28.12.2022)<br>
+Last updated 2022-12-28 06:54:11 +0100
 </div>
 </div>
 <style>

@@ -72,8 +72,8 @@ table {
 <h1>SIM-VICUS and NANDRAD Developers Manual</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
-<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.5.0 (08.10.2021)</span>
+<span id="email" class="email"><a href="https://github.com/ghorwin" class="bare">https://github.com/ghorwin</a></span><br>
+<span id="revdate">0.5.0 (28.12.2022)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -294,6 +294,14 @@ table {
 <div class="literalblock">
 <div class="content">
 <pre>choco install cmake</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Download and install JOM (newer versions of the Qt maintenance tool do no longer install JOM together with QtCreator). Either download from <a href="https://cmake.org" class="bare">https://cmake.org</a> or use <em>chocolatey</em> (<a href="https://chocolatey.org" class="bare">https://chocolatey.org</a>) and run</p>
+<div class="literalblock">
+<div class="content">
+<pre>choco install jom</pre>
 </div>
 </div>
 </li>
@@ -795,7 +803,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 
 <span class="c1">// Longer function declarations in two or more lines should place</span>
 <span class="c1">// the { in the next line to clearly mark the start of the scope.</span>
-<span class="kt">void</span> <span class="nf">someFunctionWithManyArguments</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec1</span><span class="p">,</span>
+<span class="kt">void</span> <span class="n">someFunctionWithManyArguments</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec1</span><span class="p">,</span>
     <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec2</span><span class="p">,</span>
     <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">vec3</span><span class="p">)</span>
 <span class="p">{</span>
@@ -804,7 +812,7 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 
 
 <span class="c1">// The following source code shows typical indentation rules</span>
-<span class="kt">void</span> <span class="nf">indentationAndOtherRules</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">void</span> <span class="n">indentationAndOtherRules</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// recommendation: use 'if (' instead of 'if( '</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">someCondition</span><span class="p">)</span> <span class="p">{</span>
@@ -2719,7 +2727,7 @@ erfolgt in folgenden Schritten:</p>
 <p>Dann unten bei der Ausführungsumgebung die Details ausklappen</p>
 </li>
 <li>
-<p>Die Umgebungsvariable <code>LD_LIBRARY_PATH</code> hinzufügen, und als Wert den Pfad zum <code>SIM-VICUS/externals/lib_x64</code> Pfad eintragen</p>
+<p>Die Umgebungsvariable <code>LD_LIBRARY_PATH</code> hinzufügen, und als Wert den Pfad zum <code>SIM-VICUS/externals/lib_x64:</code> Pfad eintragen; MasterSim muss beim Laden der FMU-Bibliothek alle von ihr gelinkten, dynamischen Bibliotheken finden.</p>
 </li>
 </ol>
 </div>
@@ -2986,8 +2994,8 @@ B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
 </span> 			&lt;/Definitions&gt;
  			&lt;Grids&gt;
  				&lt;OutputGrid name="Hourly values"&gt;
-
- 				... &lt;Rest abgeschnitten&gt;...</code></pre>
+<span class="err">
+</span> 				... &lt;Rest abgeschnitten&gt;...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3033,7 +3041,7 @@ B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-08 09:14:08 +0200
+Last updated 2022-12-28 06:53:46 +0100
 </div>
 </div>
 <style>
@@ -3143,6 +3151,10 @@ pre.rouge .mo {
 pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
   color: #009999;
 }
+pre.rouge .sa {
+  color: #000000;
+  font-weight: bold;
+}
 pre.rouge .sb {
   color: #d14;
 }
@@ -3176,7 +3188,7 @@ pre.rouge .s1 {
 pre.rouge .ss {
   color: #990073;
 }
-pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+pre.rouge .s, pre.rouge .dl {
   color: #d14;
 }
 pre.rouge .na {
