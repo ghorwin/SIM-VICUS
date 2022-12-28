@@ -4,7 +4,7 @@ ADOC=NANDRAD-Model-Reference
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=en $ADOC.adoc &&
+asciidoctor -a lang=en -a webfonts! $ADOC.adoc &&
 
 echo &&
 echo '*** Generating pdf ***' &&

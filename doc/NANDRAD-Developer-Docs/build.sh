@@ -4,7 +4,7 @@ ADOC=Developer-Documentation
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=en -r asciidoctor-mathematical $ADOC.adoc &&
+asciidoctor -a lang=en -a webfonts! -r asciidoctor-mathematical $ADOC.adoc &&
 
 echo '*** Generating pdf ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py pdf . &&

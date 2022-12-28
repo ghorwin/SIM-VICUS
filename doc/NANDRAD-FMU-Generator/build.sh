@@ -4,7 +4,7 @@ ADOC=NANDRAD-FMU-Generator
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
-asciidoctor -a lang=de -r asciidoctor-mathematical $ADOC.adoc &&
+asciidoctor -a lang=de -a webfonts! -r asciidoctor-mathematical $ADOC.adoc &&
 
 echo &&
 echo '*** Generating pdf ***' &&
