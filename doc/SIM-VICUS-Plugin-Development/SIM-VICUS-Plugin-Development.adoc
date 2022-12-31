@@ -171,9 +171,9 @@ Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das 
 Plugins müssen Metadaten mitliefern, die Auskunft über die verwendeten Datenstrukturversionen bzw. Bibliotheksversionen geben.
 ====
 
-Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise `SIM-VICUS-Versions = 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
+Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise `vicus-version : 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
 
-Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. `SIM-VICUS-Versions = 0.9.4..0.9.5`.
+Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. `vicus-version : 0.9.4..0.9.5`.
 
 [CAUTION]
 ====
@@ -256,4 +256,100 @@ festgelegt wird. Nehmen wir mal an, dass das Plugin kompiliert wird und dabei di
 Sobald man die Schnittstelle eines Plugins (oder Elternklasse) im Hauptprogramm ändert, muss man die Interface-ID anpassen!
 ====
 
+
+## Plugin-Entwicklung
+
+Folgende Schritte sind für die Entwicklung eines Plugins notwendig:
+
+1. Kopieren eines Plugin-Beispiel-Projektverzeichnisses `SIM-VICUS/plugins/xxx` und Anpassen/Umbenennen der Dateinamen und `.pro` und `CMakeLists.txt`-Dateien
+2. Implementieren der Plugin-Schnittstelle (siehe Beispiel unten)
+3. Aktualisieren der Meta-Daten JSON-Datei (siehe Beispiel unten)
+4. Plugin kompilieren
+5. Plugin Veröffentlichen: Plugin als zip-Datei + Meta-Daten JSON auf Server hochladen in Verzeichnisstruktur (siehe Beispiel unten)
+
+
+### Implementieren der Schnittstelle
+
+Für alle Plugins müssen die allgemeinen Schnittstellenfunktionen implementiert werden:
+
+.Schnittstellenfunktionen für alle Plugins (`SVCommonPluginInterface`)
+[source,cpp,tabsize=4]
+----
+
+/*! Returns a title text for the plugin, used in the main menu for settings and
+	for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+*/
+virtual QString title() const;
+
+/*! Optionally return a pixmap to show in the plugin manager.
+	nullptr means "use default plugin icon".
+	No ownership transfer!
+*/
+virtual const QPixmap * icon() const;
+
+/*! Optionally return a list of pixmaps to show in the plugin manager.
+	nullptr means "no screenshots".
+	No ownership transfer!
+*/
+virtual const QList<QPixmap> * screenShots() const;
+
+/*! If this function returns true, the plugin provides a
+	settings/configuration page.
+*/
+virtual bool hasSettingsDialog() const;
+
+/*! If a settings dialog page is provided, this function is called when
+	the user clicks on the respective settings dialog menu entry.
+	\param parent Parent class pointer, to be used as parent for modal dialogs.
+	\return Returns a bitmask that signals what kind of update is needed
+		in the user-interface as consequence of the settings dialogs
+		changes (see SettingsDialogUpdateNeeds).
+*/
+virtual int showSettingsDialog(QWidget * parent);
+----
+
+
+- `title()` - liefert einen kurzen Titel des Plugins, beispielsweise `IFC Import-Plugin`. Der Text kann internationalisiert werden, im Format `en:PV-Panel designer and optimizer|de:PV-Panel-Entwurfs- und Optimierung`.
+
+- `icon()` - liefert optional ein Icon (min. 64x64 Pixel) zur Anzeige im Pluginmanager aus
+
+- `screenShots()` - liefert optional eine Liste von Screenshots zur Anzeige im Pluginmanager aus
+
+- `hasSettingsDialog()` - liefert optional true, falls das Plugin einen Einstellungsdialog hat, der ins _Plugins_-Hauptmenü eingegliedert werden soll
+
+-  `showSettingsDialog()` - implementiert die Anzeige des Plugin-spezifischen Einstellungsdialogs. Rückgabewert signalisiert, ob und inwieweit die Programmoberfläche aktualisiert werden soll
+
+
+Die anderen Schnittstellenfunktionen sind in den jeweils abgeleiteten Klassen deklariert.
+
+### Plugin-Meta-Daten
+
+Die Metadaten des Plugins werden in einer JSON-Datei abgelegt, welche vom Resource-Compiler in das Plugin kompiliert wird und durch den PluginLoader ausgelesen wird. Damit muss die JSON-Datei nicht zusätzlich zum Plugin installiert werden.
+
+[[ex_JSON]]
+.JSON-Datei für ein Plugin
+.JSON-Plugin-Metadaten-Datei
+====
+[source,json]
+----
+{
+	"short-description":"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin.",
+	"long-description":"en:This is a dummy database plugin that privides lots of data, but only as an example.|de:Dies ist ein Datenbank-Plugin dass unglaublich viele Daten liefert, aber eben nur als Beispiel.",
+	"version":"1.0.0",
+	"vicus-version":"0.9",
+	"webpage":"https://sim-vicus.de",
+	"author":"Andreas Nicolai",
+	"license":"LGPL 2 or newer"
+}
+----
+====
+
+- `title`: Titel des Plugins (wie zurückgeliefert von `title()`) 
+- `short-description`: Kurzbeschreibung des Plugins zur Anzeige im Pluginmanager, kann mehrzeilig sein.
+- `long-description`: (optional) Langbeschreibung des Plugins, mit Detailinformationen und ggfs. Versions-/Updateinformation
+- `version`: Version des _Plugins_
+- `vicus-version`: Kompatible SIM-VICUS-Versionen (Datenstrukturversionen)
+- `webpage` : (optional) Webseite des Plugin-Entwicklers
+- `author`: (optional) Authoren und Copyright-Info
+- `license`: Lizenzinformation; bei _commercial_  sollte das Plugin eine Aktivierung/Lizensierung beinhalten
 
