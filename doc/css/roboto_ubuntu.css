@@ -84,7 +84,7 @@ a.bare:visited {color: #204f83;}
 a:hover {color: #317ed4;}
 #toc.toc2 a:hover {color: #f1b464;}*/
 /* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+code,kbd,pre,samp{font-family:"Consolas","Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
 
 /* Table styles */
 th{background-color: var(--tertiarycolor);color:var(--black) !important;}

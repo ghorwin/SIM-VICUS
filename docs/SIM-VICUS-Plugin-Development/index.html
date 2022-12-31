@@ -94,7 +94,7 @@ a.bare:visited {color: #204f83;}
 a:hover {color: #317ed4;}
 #toc.toc2 a:hover {color: #f1b464;}*/
 /* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+code,kbd,pre,samp{font-family:"Consolas","Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
 
 /* Table styles */
 th{background-color: var(--tertiarycolor);color:var(--black) !important;}
@@ -340,7 +340,7 @@ pre.rouge {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="https://github.com/ghorwin" class="bare">https://github.com/ghorwin</a></span><br>
-<span id="revnumber">version 2.0 (28.12.2022)</span>
+<span id="revnumber">version 1.0 (31.12.2022)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -350,8 +350,8 @@ pre.rouge {
 <li><a href="#_dynamische_bibliotheken_und_binärkompatibilität">1.1. Dynamische Bibliotheken und Binärkompatibilität</a></li>
 <li><a href="#_quelltextunterschiede_und_versionierung">1.2. Quelltextunterschiede und Versionierung</a>
 <ul class="sectlevel3">
-<li><a href="#_gemeinsam_genutzte_datenstruktur_im_hauptprogramm_ändert_sich">1.2.1. Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich</a></li>
-<li><a href="#_plugin_schnittstelle_seitens_des_hauptprogramms_ändert_sich">1.2.2. Plugin-Schnittstelle seitens des Hauptprogramms ändert sich</a></li>
+<li><a href="#_fall_1_gemeinsam_genutzte_datenstruktur_im_hauptprogramm_ändert_sich">1.2.1. Fall 1: Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich</a></li>
+<li><a href="#_fall_2_plugin_schnittstelle_ändert_sich">1.2.2. Fall 2: Plugin-Schnittstelle ändert sich</a></li>
 </ul>
 </li>
 </ul>
@@ -376,10 +376,12 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 <p>Der <em>offset</em> einer Membervariablen ist aber nicht nur von der Größe der jeweiligen Datentypen abhängig. Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, durch ein sogenanntes <em>padding</em> (siehe auch <a href="https://en.wikipedia.org/wiki/Data_structure_alignment" class="bare">https://en.wikipedia.org/wiki/Data_structure_alignment</a> ).</p>
 </div>
 <div class="paragraph">
-<p>Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man folgendes Testprogramm mit verschiedenen Compilern und Betriebssystemen ausführt:</p>
+<p>Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man das Testprogramm <a href="#ex_struct">Beispiel 1</a> mit verschiedenen Compilern und Betriebssystemen ausführt.</p>
 </div>
+<div id="ex_struct" class="exampleblock">
+<div class="title">Beispiel 1. Beispiel für die unterschiedliche Größe von Strukturen durch Padding in Abhängigkeit von Typ und Reihenfolge der Membervariablen. <code>sizeof</code> liefert den Speicherbedarf für eine Variable, <code>offsetof</code> liefert die Anzahl der Bytes zwischen Aresse des Objekts und Adresse der Membervariablen.</div>
+<div class="content">
 <div class="listingblock">
-<div class="title">Beispiel für die unterschiedliche Größe von Strukturen durch Padding in Abhängigkeit von Typ und Reihenfolge der Membervariablen. <code>sizeof</code> liefert den Speicherbedarf für eine Variable, <code>offsetof</code> liefert die Anzahl der Bytes zwischen Aresse des Objekts und Adresse der Membervariablen.</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span>
@@ -423,8 +425,10 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 <span class="c1">//   Offset of B.d: 8</span></code></pre>
 </div>
 </div>
+</div>
+</div>
 <div class="paragraph">
-<p>Das bedeutet, dass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider <em>nicht darauf verlassen</em>.</p>
+<p>Am Beispiel wird deutlich, dass die Reihenfolge der Membervariablen in einem struct oder einer Klasse Auswirkungen auf die Speicheranordnung hat. Bei unterschiedlichen Compilern/Plattformen kann das auch individuell unterschiedlich gemacht werden, sodass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider <em>nicht darauf verlassen</em>.</p>
 </div>
 <div class="paragraph">
 <p>Das ist wichtig wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden.</p>
@@ -466,18 +470,20 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </ul>
 </div>
 <div class="paragraph">
-<p>Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins nicht anwendbar. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.</p>
+<p>Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins <strong><em>nicht praktikabel</em></strong>. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.</p>
 </div>
 <div class="sect3">
-<h4 id="_gemeinsam_genutzte_datenstruktur_im_hauptprogramm_ändert_sich">1.2.1. Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich</h4>
+<h4 id="_fall_1_gemeinsam_genutzte_datenstruktur_im_hauptprogramm_ändert_sich">1.2.1. Fall 1: Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich</h4>
 <div class="paragraph">
 <p>Dies ist einer der häufigten Fälle und betrifft im Fall von SIM-VICUS zumeist das Datenmodell in der <em>VICUS</em> Bibliothek und dadurch auch <em>NANDRAD</em> und die <em>IBK</em> Libs (und alle anderen Bibliotheken, die Datenstrukturen von Membervariablen innerhalb von <code>VICUS::Project</code> deklarieren).</p>
 </div>
 <div class="paragraph">
-<p>Nehmen wir an, es gibt eine Veränderung in einer Klasse <code>PlainGeometry</code>:</p>
+<p>Nehmen wir an, es gibt eine Veränderung in einer Klasse <code>PlainGeometry</code> wie im <a href="#ex_plainGeometry">Beispiel 2</a> gezeigt.</p>
 </div>
+<div id="ex_plainGeometry" class="exampleblock">
+<div class="title">Beispiel 2. Typische Erweiterung einer Datenstruktur während des Entwicklungsprozesses; hierbei wird eine neue Membervariable <code>m_displayName</code> hinzugefügt, welche die bisherigen Membervariablen innerhalb des Objekts im Speicher nach hinten verschiebt.</div>
+<div class="content">
 <div class="listingblock">
-<div class="title">Typische Erweiterung einer Datenstruktur während des Entwicklungsprozesses; hierbei wird eine neue Membervariable <code>m_displayName</code> hinzugefügt, welche die bisherigen Membervariablen innerhalb des Objekts im Speicher nach hinten verschiebt.</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="cpp"><span class="c1">// Ursprungsversion</span>
 <span class="k">class</span> <span class="nc">PlainGeometry</span> <span class="p">{</span>
@@ -510,11 +516,16 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 <span class="p">};</span></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines <code>PlainGeometry</code> Objekts und greift auf die Membervariable <code>m_surfaces</code> zu. Im Quelltext des Plugins stand diese Variable an erster Stelle, allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String. Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.</p>
+</div>
 </div>
 <div class="paragraph">
-<p>Das Problem: sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich). Also muss das Hauptprogramm anhand von <em>Plugin-Metadaten</em> feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.</p>
+<p>Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines <code>PlainGeometry</code> Objekts und greift auf die Membervariable <code>m_surfaces</code> zu. Im Quelltext des Plugins stand diese Variable an erster Stelle (offset 0), allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String (beim offset 0). Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.</p>
+</div>
+<div class="paragraph">
+<p><strong>Das Problem:</strong> sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich).</p>
+</div>
+<div class="paragraph">
+<p><strong>Lösung:</strong> Das Hauptprogramm muss anhand von <em>Plugin-Metadaten</em> feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -531,7 +542,7 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </table>
 </div>
 <div class="paragraph">
-<p>Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen ein Plugin anzuwenden ist, also beispielsweise <code>SIM-VICUS-Versions = 0.9.4</code>. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.</p>
+<p>Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise <code>SIM-VICUS-Versions = 0.9.4</code>. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.</p>
 </div>
 <div class="paragraph">
 <p>Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. <code>SIM-VICUS-Versions = 0.9.4..0.9.5</code>.</p>
@@ -552,8 +563,95 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_plugin_schnittstelle_seitens_des_hauptprogramms_ändert_sich">1.2.2. Plugin-Schnittstelle seitens des Hauptprogramms ändert sich</h4>
+<h4 id="_fall_2_plugin_schnittstelle_ändert_sich">1.2.2. Fall 2: Plugin-Schnittstelle ändert sich</h4>
+<div class="paragraph">
+<p>Unter <em>Plugin-Schnittstelle</em> versteht man die Deklaration der Funktionen, die im Plugin seitens des Hauptprogramms aufgerufen werden. <a href="#ex_PluginInterface">Beispiel 3</a> zeigt eine solche Schnittstelle für ein Datenbank-Plugin.</p>
+</div>
+<div id="ex_PluginInterface" class="exampleblock">
+<div class="title">Beispiel 3. Plugin-Schnittstellen-Deklaration</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="cm">/*! Interface for a plugin that provides VICUS database elements. */</span>
+<span class="k">class</span> <span class="nc">SVDatabasePluginInterface</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="cm">/*! Virtual D'tor. */</span>
+    <span class="k">virtual</span> <span class="o">~</span><span class="n">SVDatabasePluginInterface</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
 
+    <span class="cm">/*! Returns a title text for the plugin, used in the main menu for settings and
+        for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+    */</span>
+    <span class="k">virtual</span> <span class="n">QString</span> <span class="n">title</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="cm">/*! This function needs to be implemented by the database plugin to populate the database with its own data.
+    */</span>
+    <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">retrieve</span><span class="p">(</span><span class="k">const</span> <span class="n">SVDatabase</span> <span class="o">&amp;</span> <span class="n">currentDB</span><span class="p">,</span> <span class="n">SVDatabase</span> <span class="o">&amp;</span> <span class="n">augmentedDB</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+</span>
+<span class="n">Q_DECLARE_INTERFACE</span><span class="p">(</span><span class="n">SVDatabasePluginInterface</span><span class="p">,</span> <span class="n">SVDatabasePluginInterface_iid</span><span class="p">)</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Bei einer solchen Schnittstellendeklaration handelt es sich einfach um eine Klasse mit virtuellen Memberfunktionen. Diese Schnittstelle wird vom konkreten Plugin geerbt und implementiert (im Plugin-Quelltext). Die Schnittstellendeklaration teilt dem Hauptprogramm lediglich mit, welche Funktionen mit welchen Argumenten vom Plugin zur Verfügung gestellt werden.</p>
+</div>
+<div class="paragraph">
+<p>Wenn das Hauptprogramm nun eine dynamische Bibliothek lädt, dann wird zunächst nur ein Zeiger auf die Klassenschnittstelle (das Objekt des Plugins) geladen. Das Hauptprogramm könnte nun mittels <code>dynamic_cast</code> prüfen, ob es sich um ein Plugin einer bestimmten Schnittstellendeklaration handelt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="kt">void</span> <span class="o">*</span> <span class="n">ptrToPlugin</span> <span class="o">=</span> <span class="p">...</span> <span class="p">;</span> <span class="c1">// Zeiger hält Plugin-Objekt-Adresse</span>
+
+<span class="n">SVDatabasePluginInterface</span> <span class="o">*</span> <span class="n">dbPlugin</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">SVDatabasePluginInterface</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">ptrToPlugin</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dbPlugin</span> <span class="o">!=</span> <span class="nb">nullptr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// es ist ein DB-Plugin!</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Eine Schnittstellendeklaration ändert sich z.B. dann, wenn das Hauptprogramm eine neue Funktion für das Plugin oder ein verändertes Verhalten unterstützt. Im Gegensatz zur Fall 1 oben muss das nicht zwingend eine Datenstrukturänderung bedingen, es kann z.B. einfach ein neues Argument sein, was zu einer deklarierten Funktion hinzugefügt wird.</p>
+</div>
+<div class="paragraph">
+<p><strong>Das Problem:</strong> Wenn sich innerhalb der Deklaration von <code>SVDatabasePluginInterface</code> eine Memberfunktion ändert, z.B. die Argumente geändert werden oder neue Funktionen hinzugefügt werden, dann ändert sich dadurch nicht der Typ des Objekts. D.h. der <code>dynamic_cast</code> liefert weiterhin eine gültige Adresse.  Wenn nun das Hauptprogramm mittels dieser Adresse eine neue Memberfunktion (deklariert in einer neuen Version der Pluginschnittstelle im Hauptprogramm) im Plugin (kompiliert mit alter Schnittstelle) aufruft, führt dies zu einer Access Violation/SEGFAULT.</p>
+</div>
+<div class="paragraph">
+<p><strong>Die Lösung:</strong> Die Schnittstelle, d.h. die gesamte Deklaration der Schnittstelle muss seitens des Hauptprogramms bei der Zeigerkonvertierung auf Passgenauigkeit geprüft werden. Dies gelingt <em>nicht</em> mit <code>dynamic_cast</code>, jedoch bietet Qt die Möglichkeit, mittels <code>qobject_cast</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="n">SVDatabasePluginInterface</span> <span class="o">*</span> <span class="n">dbPlugin</span> <span class="o">=</span> <span class="n">qobject_cast</span><span class="o">&lt;</span><span class="n">SVDatabasePluginInterface</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">ptrToPlugin</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die <code>qobject_cast</code>-Funktion prüft dabei zusätzlich noch die Interface-ID, welche mit</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="cp">#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+</span>
+<span class="n">Q_DECLARE_INTERFACE</span><span class="p">(</span><span class="n">SVDatabasePluginInterface</span><span class="p">,</span> <span class="n">SVDatabasePluginInterface_iid</span><span class="p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>festgelegt wird. Nehmen wir mal an, dass das Plugin kompiliert wird und dabei die Interface-ID als <code>ibk.sim-vicus.Plugin.DatabaseInterface/1.0</code> festgelegt wird. Nun ändert sich die Schnittstelle im Hauptprogramm und seitens des Hauptprogramms wird die Versionsnummer auf <code>ibk.sim-vicus.Plugin.DatabaseInterface/2.0</code> erhöht. Beim Einladen des Plugins mit der alten Schnittstelle liefert der <code>qobject_cast</code> nun wegen unpassender Interface-IDs einen n ullptr zurück. Dadurch kann man absichern, dass die Schnittstelle zum Zeitpunkt der Plugin- und Hauptprogramm-Kompilierung identisch sind.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Sobald man die Schnittstelle eines Plugins (oder Elternklasse) im Hauptprogramm ändert, muss man die Interface-ID anpassen!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -561,8 +659,8 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 2.0 (28.12.2022)<br>
-Last updated 2022-12-28 19:36:08 +0100
+Version 1.0 (31.12.2022)<br>
+Last updated 2022-12-31 12:44:07 +0100
 </div>
 </div>
 </body>

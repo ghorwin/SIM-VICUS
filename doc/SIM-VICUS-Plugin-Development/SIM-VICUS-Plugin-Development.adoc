@@ -1,8 +1,8 @@
 SIM-VICUS Plugin Entwicklung
 ============================
 Andreas Nicolai <https://github.com/ghorwin>
-v2.0 (28.12.2022)
-// v2.0 date_on_line_above
+v1.0 (31.12.2022)
+// v1.0 date_on_line_above
 :Author Initials: AN
 :toc: left
 :toclevels: 3
@@ -42,9 +42,11 @@ Bei Objekten (_struct_ oder _class_) wird die Adresse auf den Beginn des Objekts
 
 Der _offset_ einer Membervariablen ist aber nicht nur von der Größe der jeweiligen Datentypen abhängig. Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, durch ein sogenanntes _padding_ (siehe auch https://en.wikipedia.org/wiki/Data_structure_alignment ).
 
-Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man folgendes Testprogramm mit verschiedenen Compilern und Betriebssystemen ausführt:
+Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man das Testprogramm <<ex_struct>> mit verschiedenen Compilern und Betriebssystemen ausführt.
 
+[[ex_struct]]
 .Beispiel für die unterschiedliche Größe von Strukturen durch Padding in Abhängigkeit von Typ und Reihenfolge der Membervariablen. `sizeof` liefert den Speicherbedarf für eine Variable, `offsetof` liefert die Anzahl der Bytes zwischen Aresse des Objekts und Adresse der Membervariablen.
+====
 [source,cpp]
 ----
 #include <iostream>
@@ -88,8 +90,9 @@ int main() {
 //   Offset of B.i: 4
 //   Offset of B.d: 8
 ----
+====
 
-Das bedeutet, dass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider _nicht darauf verlassen_. 
+Am Beispiel wird deutlich, dass die Reihenfolge der Membervariablen in einem struct oder einer Klasse Auswirkungen auf die Speicheranordnung hat. Bei unterschiedlichen Compilern/Plattformen kann das auch individuell unterschiedlich gemacht werden, sodass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider _nicht darauf verlassen_. 
 
 Das ist wichtig wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden. 
 
@@ -111,15 +114,17 @@ Die größte Unabhängigkeit zwischen Plugin und Hauptprogramm erreicht man, wen
 
 - keinen gegenseitigen Speicherzugriff auf den jeweiligen Datenbereich des Plugins oder Hauptprogramms erlaubt
 
-Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins nicht anwendbar. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.
+Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins **_nicht praktikabel_**. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.
 
-#### Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich
+#### Fall 1: Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich
 
 Dies ist einer der häufigten Fälle und betrifft im Fall von SIM-VICUS zumeist das Datenmodell in der _VICUS_ Bibliothek und dadurch auch _NANDRAD_ und die _IBK_ Libs (und alle anderen Bibliotheken, die Datenstrukturen von Membervariablen innerhalb von `VICUS::Project` deklarieren).
 
-Nehmen wir an, es gibt eine Veränderung in einer Klasse `PlainGeometry`:
+Nehmen wir an, es gibt eine Veränderung in einer Klasse `PlainGeometry` wie im <<ex_plainGeometry>> gezeigt.
 
+[[ex_plainGeometry]]
 .Typische Erweiterung einer Datenstruktur während des Entwicklungsprozesses; hierbei wird eine neue Membervariable `m_displayName` hinzugefügt, welche die bisherigen Membervariablen innerhalb des Objekts im Speicher nach hinten verschiebt.
+====
 [source,cpp,tabsize=4]
 ----
 // Ursprungsversion
@@ -152,17 +157,21 @@ public:
 	bool										m_selected = false;
 };
 ----
+====
 
-Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines `PlainGeometry` Objekts und greift auf die Membervariable `m_surfaces` zu. Im Quelltext des Plugins stand diese Variable an erster Stelle, allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String. Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.
 
-Das Problem: sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich). Also muss das Hauptprogramm anhand von _Plugin-Metadaten_ feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.
+Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines `PlainGeometry` Objekts und greift auf die Membervariable `m_surfaces` zu. Im Quelltext des Plugins stand diese Variable an erster Stelle (offset 0), allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String (beim offset 0). Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.
+
+**Das Problem:** sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich). 
+
+**Lösung:** Das Hauptprogramm muss anhand von _Plugin-Metadaten_ feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.
 
 [IMPORTANT]
 ====
 Plugins müssen Metadaten mitliefern, die Auskunft über die verwendeten Datenstrukturversionen bzw. Bibliotheksversionen geben.
 ====
 
-Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen ein Plugin anzuwenden ist, also beispielsweise `SIM-VICUS-Versions = 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
+Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise `SIM-VICUS-Versions = 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
 
 Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. `SIM-VICUS-Versions = 0.9.4..0.9.5`.
 
@@ -173,8 +182,78 @@ Die Pflege der Metadaten und Kompatibilitätsversionen ist für korrekt funktion
 
 
 
-#### Plugin-Schnittstelle seitens des Hauptprogramms ändert sich
+#### Fall 2: Plugin-Schnittstelle ändert sich
+
+Unter _Plugin-Schnittstelle_ versteht man die Deklaration der Funktionen, die im Plugin seitens des Hauptprogramms aufgerufen werden. <<ex_PluginInterface>> zeigt eine solche Schnittstelle für ein Datenbank-Plugin.
 
 
+[[ex_PluginInterface]]
+.Plugin-Schnittstellen-Deklaration
+====
+[source,cpp,tabsize=4]
+----
+/*! Interface for a plugin that provides VICUS database elements. */
+class SVDatabasePluginInterface {
+public:
+	/*! Virtual D'tor. */
+	virtual ~SVDatabasePluginInterface() = default;
+
+	/*! Returns a title text for the plugin, used in the main menu for settings and
+		for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+	*/
+	virtual QString title() const = 0;
+
+	/*! This function needs to be implemented by the database plugin to populate the database with its own data.
+	*/
+	virtual bool retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) = 0;
+};
+
+#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVDatabasePluginInterface, SVDatabasePluginInterface_iid)
+
+----
+====
+
+Bei einer solchen Schnittstellendeklaration handelt es sich einfach um eine Klasse mit virtuellen Memberfunktionen. Diese Schnittstelle wird vom konkreten Plugin geerbt und implementiert (im Plugin-Quelltext). Die Schnittstellendeklaration teilt dem Hauptprogramm lediglich mit, welche Funktionen mit welchen Argumenten vom Plugin zur Verfügung gestellt werden.
+
+Wenn das Hauptprogramm nun eine dynamische Bibliothek lädt, dann wird zunächst nur ein Zeiger auf die Klassenschnittstelle (das Objekt des Plugins) geladen. Das Hauptprogramm könnte nun mittels `dynamic_cast` prüfen, ob es sich um ein Plugin einer bestimmten Schnittstellendeklaration handelt:
+
+[source,cpp,tabsize=4]
+----
+void * ptrToPlugin = ... ; // Zeiger hält Plugin-Objekt-Adresse
+
+SVDatabasePluginInterface * dbPlugin = dynamic_cast<SVDatabasePluginInterface *>(ptrToPlugin);
+if (dbPlugin != nullptr) {
+    // es ist ein DB-Plugin!
+}
+----
+
+Eine Schnittstellendeklaration ändert sich z.B. dann, wenn das Hauptprogramm eine neue Funktion für das Plugin oder ein verändertes Verhalten unterstützt. Im Gegensatz zur Fall 1 oben muss das nicht zwingend eine Datenstrukturänderung bedingen, es kann z.B. einfach ein neues Argument sein, was zu einer deklarierten Funktion hinzugefügt wird.
+
+**Das Problem:** Wenn sich innerhalb der Deklaration von `SVDatabasePluginInterface` eine Memberfunktion ändert, z.B. die Argumente geändert werden oder neue Funktionen hinzugefügt werden, dann ändert sich dadurch nicht der Typ des Objekts. D.h. der `dynamic_cast` liefert weiterhin eine gültige Adresse.  Wenn nun das Hauptprogramm mittels dieser Adresse eine neue Memberfunktion (deklariert in einer neuen Version der Pluginschnittstelle im Hauptprogramm) im Plugin (kompiliert mit alter Schnittstelle) aufruft, führt dies zu einer Access Violation/SEGFAULT.
+
+**Die Lösung:** Die Schnittstelle, d.h. die gesamte Deklaration der Schnittstelle muss seitens des Hauptprogramms bei der Zeigerkonvertierung auf Passgenauigkeit geprüft werden. Dies gelingt _nicht_ mit `dynamic_cast`, jedoch bietet Qt die Möglichkeit, mittels `qobject_cast`:
+
+[source,cpp,tabsize=4]
+----
+SVDatabasePluginInterface * dbPlugin = qobject_cast<SVDatabasePluginInterface*>(ptrToPlugin);
+----
+
+Die `qobject_cast`-Funktion prüft dabei zusätzlich noch die Interface-ID, welche mit 
+
+[source,cpp,tabsize=4]
+----
+#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVDatabasePluginInterface, SVDatabasePluginInterface_iid)
+----
+
+festgelegt wird. Nehmen wir mal an, dass das Plugin kompiliert wird und dabei die Interface-ID als `ibk.sim-vicus.Plugin.DatabaseInterface/1.0` festgelegt wird. Nun ändert sich die Schnittstelle im Hauptprogramm und seitens des Hauptprogramms wird die Versionsnummer auf `ibk.sim-vicus.Plugin.DatabaseInterface/2.0` erhöht. Beim Einladen des Plugins mit der alten Schnittstelle liefert der `qobject_cast` nun wegen unpassender Interface-IDs einen n ullptr zurück. Dadurch kann man absichern, dass die Schnittstelle zum Zeitpunkt der Plugin- und Hauptprogramm-Kompilierung identisch sind.
+
+[IMPORTANT]
+====
+Sobald man die Schnittstelle eines Plugins (oder Elternklasse) im Hauptprogramm ändert, muss man die Interface-ID anpassen!
+====
 
 
