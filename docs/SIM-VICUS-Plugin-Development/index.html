@@ -340,7 +340,7 @@ pre.rouge {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="https://github.com/ghorwin" class="bare">https://github.com/ghorwin</a></span><br>
-<span id="revnumber">version 1.0 (31.12.2022)</span>
+<span id="revnumber">version 1.0 (01.01.2023)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -354,6 +354,14 @@ pre.rouge {
 <li><a href="#_fall_2_plugin_schnittstelle_ändert_sich">1.2.2. Fall 2: Plugin-Schnittstelle ändert sich</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#_plugin_entwicklung">2. Plugin-Entwicklung</a>
+<ul class="sectlevel2">
+<li><a href="#_implementieren_der_schnittstelle">2.1. Implementieren der Schnittstelle</a></li>
+<li><a href="#_plugin_meta_daten">2.2. Plugin-Meta-Daten</a></li>
+<li><a href="#_plugin_erstellung">2.3. Plugin-Erstellung</a></li>
+<li><a href="#_plugin_veröffentlichung">2.4. Plugin-Veröffentlichung</a></li>
 </ul>
 </li>
 </ul>
@@ -542,10 +550,10 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </table>
 </div>
 <div class="paragraph">
-<p>Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise <code>SIM-VICUS-Versions = 0.9.4</code>. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.</p>
+<p>Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise <code>vicus-version : 0.9.4</code>. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.</p>
 </div>
 <div class="paragraph">
-<p>Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. <code>SIM-VICUS-Versions = 0.9.4..0.9.5</code>.</p>
+<p>Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. <code>vicus-version : 0.9.4..0.9.5</code>.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -656,11 +664,384 @@ Bei Objekten (<em>struct</em> oder <em>class</em>) wird die Adresse auf den Begi
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_plugin_entwicklung">2. Plugin-Entwicklung</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Folgende Schritte sind für die Entwicklung eines Plugins notwendig:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Kopieren eines Plugin-Beispiel-Projektverzeichnisses <code>SIM-VICUS/plugins/xxx</code> und Anpassen/Umbenennen der Dateinamen und <code>.pro</code> und <code>CMakeLists.txt</code>-Dateien</p>
+</li>
+<li>
+<p>Aktualisieren der Meta-Daten JSON-Datei (siehe Beispiel unten)</p>
+</li>
+<li>
+<p>Implementieren der Plugin-Schnittstelle (siehe Beispiel unten)</p>
+</li>
+<li>
+<p>Plugin kompilieren</p>
+</li>
+<li>
+<p>Plugin veröffentlichen: Plugin als zip-Datei + Meta-Daten JSON auf Server hochladen in Verzeichnisstruktur (siehe Beispiel unten)</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_implementieren_der_schnittstelle">2.1. Implementieren der Schnittstelle</h3>
+<div class="paragraph">
+<p>Für alle Plugins müssen die allgemeinen Schnittstellenfunktionen implementiert werden:</p>
+</div>
+<div class="listingblock">
+<div class="title">Schnittstellenfunktionen für alle Plugins (<code>SVCommonPluginInterface</code>)</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="cm">/*! Returns a title text for the plugin, used in the main menu for settings and
+    for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+*/</span>
+<span class="k">virtual</span> <span class="n">QString</span> <span class="n">title</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="cm">/*! Optionally return a pixmap to show in the plugin manager.
+    nullptr means "use default plugin icon".
+    No ownership transfer!
+*/</span>
+<span class="k">virtual</span> <span class="k">const</span> <span class="n">QPixmap</span> <span class="o">*</span> <span class="n">icon</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="cm">/*! Optionally return a list of pixmaps to show in the plugin manager.
+    nullptr means "no screenshots".
+    No ownership transfer!
+*/</span>
+<span class="k">virtual</span> <span class="k">const</span> <span class="n">QList</span><span class="o">&lt;</span><span class="n">QPixmap</span><span class="o">&gt;</span> <span class="o">*</span> <span class="n">screenShots</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="cm">/*! If this function returns true, the plugin provides a
+    settings/configuration page.
+*/</span>
+<span class="k">virtual</span> <span class="kt">bool</span> <span class="n">hasSettingsDialog</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+
+<span class="cm">/*! If a settings dialog page is provided, this function is called when
+    the user clicks on the respective settings dialog menu entry.
+    \param parent Parent class pointer, to be used as parent for modal dialogs.
+    \return Returns a bitmask that signals what kind of update is needed
+        in the user-interface as consequence of the settings dialogs
+        changes (see SettingsDialogUpdateNeeds).
+*/</span>
+<span class="k">virtual</span> <span class="kt">int</span> <span class="nf">showSettingsDialog</span><span class="p">(</span><span class="n">QWidget</span> <span class="o">*</span> <span class="n">parent</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>title()</code> - liefert einen kurzen Titel des Plugins, beispielsweise <code>IFC Import-Plugin</code>. Der Text kann internationalisiert werden, im Format <code>en:PV-Panel designer and optimizer|de:PV-Panel-Entwurfs- und Optimierung</code>.</p>
+</li>
+<li>
+<p><code>icon()</code> - liefert optional ein Icon (min. 64x64 Pixel) zur Anzeige im Pluginmanager aus</p>
+</li>
+<li>
+<p><code>screenShots()</code> - liefert optional eine Liste von Screenshots zur Anzeige im Pluginmanager aus</p>
+</li>
+<li>
+<p><code>hasSettingsDialog()</code> - liefert optional true, falls das Plugin einen Einstellungsdialog hat, der ins <em>Plugins</em>-Hauptmenü eingegliedert werden soll</p>
+</li>
+<li>
+<p><code>showSettingsDialog()</code> - implementiert die Anzeige des Plugin-spezifischen Einstellungsdialogs. Rückgabewert signalisiert, ob und inwieweit die Programmoberfläche aktualisiert werden soll</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die anderen Schnittstellenfunktionen sind in den jeweils abgeleiteten Klassen deklariert.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plugin_meta_daten">2.2. Plugin-Meta-Daten</h3>
+<div class="paragraph">
+<p>Die Metadaten des Plugins werden in einer JSON-Datei abgelegt, welche vom Resource-Compiler in das Plugin kompiliert wird und durch den PluginLoader ausgelesen wird. Damit muss die JSON-Datei nicht zusätzlich zum Plugin installiert werden.</p>
+</div>
+<div id="ex_JSON" class="exampleblock">
+<div class="title">Beispiel 4. JSON-Plugin-Metadaten-Datei</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"short-description"</span><span class="p">:</span><span class="s2">"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"long-description"</span><span class="p">:</span><span class="s2">"en:This is a dummy database plugin that privides lots of data, but only as an example.|de:Dies ist ein Datenbank-Plugin dass unglaublich viele Daten liefert, aber eben nur als Beispiel."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"vicus-version"</span><span class="p">:</span><span class="s2">"0.9"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"webpage"</span><span class="p">:</span><span class="s2">"https://sim-vicus.de"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"author"</span><span class="p">:</span><span class="s2">"Andreas Nicolai"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"license"</span><span class="p">:</span><span class="s2">"LGPL 2 or newer"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>title</code>: Titel des Plugins (wie zurückgeliefert von <code>title()</code>)</p>
+</li>
+<li>
+<p><code>short-description</code>: Kurzbeschreibung des Plugins zur Anzeige im Pluginmanager, kann mehrzeilig sein.</p>
+</li>
+<li>
+<p><code>long-description</code>: (optional) Langbeschreibung des Plugins, mit Detailinformationen und ggfs. Versions-/Updateinformation</p>
+</li>
+<li>
+<p><code>version</code>: Version des <em>Plugins</em></p>
+</li>
+<li>
+<p><code>vicus-version</code>: Kompatible SIM-VICUS-Versionen (Datenstrukturversionen)</p>
+</li>
+<li>
+<p><code>webpage</code> : (optional) Webseite des Plugin-Entwicklers</p>
+</li>
+<li>
+<p><code>author</code>: (optional) Authoren und Copyright-Info</p>
+</li>
+<li>
+<p><code>license</code>: Lizenzinformation; bei <em>commercial</em>  sollte das Plugin eine Aktivierung/Lizensierung beinhalten</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Eigentlich wäre es ausreichend, den Titel/Namen des Plugins über die JSON-Metadaten zu übermitteln. Da der Pluginmanager aber bei fehlenden Metadaten dennoch in der Lage sein muss, das Plugin zu benennen, ist die zwingend zu implementierende pur virtuelle Memberfunktion <code>title()</code> der sicherste Weg, an einen Anzeigenamen zu kommen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die JSON-Datei wird beim Kompilieren angegeben, wie im <a href="#ex_PluginExample">Beispiel 5</a> gezeigt.</p>
+</div>
+<div id="ex_PluginExample" class="exampleblock">
+<div class="title">Beispiel 5. Headerdatei eines minimalistischen Plugins</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="cp">#ifndef DummyDatabasePluginH
+#define DummyDatabasePluginH
+</span>
+<span class="cp">#include</span> <span class="cpf">&lt;QObject&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;QtPlugin&gt;</span><span class="cp">
+</span>
+<span class="cp">#include</span> <span class="cpf">&lt;SVDatabasePluginInterface.h&gt;</span><span class="cp">
+</span>
+<span class="k">class</span> <span class="nc">DummyDatabasePlugin</span> <span class="o">:</span> <span class="k">public</span> <span class="n">QObject</span><span class="p">,</span> <span class="k">public</span> <span class="n">SVDatabasePluginInterface</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Q_OBJECT</span>
+    <span class="n">Q_PLUGIN_METADATA</span><span class="p">(</span><span class="n">IID</span> <span class="s">"ibk.sim-vicus.Plugin.DatabaseInterface"</span>  <span class="kt">FILE</span> <span class="s">"../data/metadata.json"</span><span class="p">)</span>
+    <span class="n">Q_INTERFACES</span><span class="p">(</span><span class="n">SVDatabasePluginInterface</span><span class="p">)</span>
+<span class="nl">public:</span>
+
+    <span class="c1">// SVCommonPluginInterface interface</span>
+    <span class="n">QString</span> <span class="n">title</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="s">"Database-Plugin-Dummy"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kt">bool</span> <span class="n">hasSettingsDialog</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">true</span><span class="p">;}</span>
+    <span class="kt">int</span> <span class="n">showSettingsDialog</span><span class="p">(</span><span class="n">QWidget</span> <span class="o">*</span> <span class="n">parent</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+
+    <span class="c1">// SVDatabasePluginInterface interface</span>
+    <span class="kt">bool</span> <span class="n">retrieve</span><span class="p">(</span><span class="k">const</span> <span class="n">SVDatabase</span> <span class="o">&amp;</span> <span class="n">currentDB</span><span class="p">,</span> <span class="n">SVDatabase</span> <span class="o">&amp;</span> <span class="n">additionalDBElemnts</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#endif // DummyDatabasePluginH</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wichtig ist die Zeile mit <code>Q_PLUGIN_METADATA()</code>, in der sowohl die implementierte Schnittstelle also auch die Metadaten deklariert werden. Mit <code>Q_INTERFACES(SVDatabasePluginInterface)</code> werden die implementierten Schnittstellen angegeben, also letztlich die Klassen, welche vererbt und implementiert werden. Bei SIM-VICUS Plugins sollte dies immer nur eine Schnittstelle sein (auch wenn man sicherlich Import- und Databank-Plugin-Schnittstellen in einem Plugin kombinieren könnte).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plugin_erstellung">2.3. Plugin-Erstellung</h3>
+<div class="paragraph">
+<p>Das Plugin wird mit CMake oder qmake im Release-Modus übersetzt und es entsteht eine <code>dll</code> unter Windows oder <code>so</code>, bzw. <code>dylib</code> unter Linux bzw. Mac. Diese ist durch die eingebettete JSON-Datei bereits komplett fertig für die Auslieferung.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plugin_veröffentlichung">2.4. Plugin-Veröffentlichung</h3>
+<div class="paragraph">
+<p>Plugins werden auf der SIM-VICUS-Webseite veröffentlicht. Das passiert entweder manuell durch den Admin oder durch das Plugin-Upload-Tool. Auf dem Server befindet sich eine Plugin-Listen-Datei im JSON-Format, welche eine Übersicht über alle verfügbaren Plugins und deren Versionsnummern enthält.</p>
+</div>
+<div class="paragraph">
+<p>Die Plugins selbst werden in einer Verzeichnisstruktur auf dem Server gehostet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>plugins.json
+plugins/
+  1/
+    screenshots/
+      image1.png
+      image2.png
+      ...
+      imageN.png
+    1.0/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+    1.1/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+  2/
+    2.5.2/
+      PVDesignPlugin.zip
+      PVDesignPlugin.json
+      ...
+  3/
+    ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Top-Level liegt die Plugin-Listen-Datei <code>plugins.json</code>. In dieser werden Plugins, deren Versionen und deren VICUS-Kompatibilitäts-Versionen mit dem jeweiligen Pfad referenziert, also beispielsweise:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+   </span><span class="nl">"plugins"</span><span class="p">:[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"title"</span><span class="p">:</span><span class="s2">"Brick Material DB Plugin"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"short-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"long-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"vicus-version"</span><span class="p">:</span><span class="s2">"0.9"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"webpage"</span><span class="p">:</span><span class="s2">"https://sim-vicus.de"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"author"</span><span class="p">:</span><span class="s2">"Andreas Nicolai"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"license"</span><span class="p">:</span><span class="s2">"LGPL 2 or newer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"screenshots"</span><span class="p">:[</span><span class="w">
+            </span><span class="s2">"image1.png"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image2.png"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image3.png"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="nl">"path"</span><span class="p">:</span><span class="s2">"1/1.0/BrickMaterialDBPlugin"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"title"</span><span class="p">:</span><span class="s2">"Brick Material DB Plugin"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"short-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"long-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="s2">"1.1"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"vicus-version"</span><span class="p">:</span><span class="s2">"0.9"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"webpage"</span><span class="p">:</span><span class="s2">"https://sim-vicus.de"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"author"</span><span class="p">:</span><span class="s2">"Andreas Nicolai"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"license"</span><span class="p">:</span><span class="s2">"LGPL 2 or newer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"screenshots"</span><span class="p">:[</span><span class="w">
+            </span><span class="s2">"image1.png"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image2.png"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image5-newVersion.png"</span><span class="w">
+         </span><span class="p">],</span><span class="w">
+         </span><span class="nl">"path"</span><span class="p">:</span><span class="s2">"1/1.1/BrickMaterialDBPlugin"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"title"</span><span class="p">:</span><span class="s2">"PV Panel Designer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"short-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"long-description"</span><span class="p">:</span><span class="s2">"xxx"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"version"</span><span class="p">:</span><span class="s2">"2.5.2"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"vicus-version"</span><span class="p">:</span><span class="s2">"0.9"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"webpage"</span><span class="p">:</span><span class="s2">"https://sim-vicus.de"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"author"</span><span class="p">:</span><span class="s2">"Andreas Nicolai"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"license"</span><span class="p">:</span><span class="s2">"LGPL 2 or newer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"path"</span><span class="p">:</span><span class="s2">"2/2.5.2/PVDesignPlugin"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die JSON-Datei enthält effektiv die Metadaten der einzelnen Plugins und zusätzlich das Element <code>path</code>.</p>
+</div>
+<div class="paragraph">
+<p>Durch Anhängen von <code>*.zip</code> bzw. <code>*.json</code> an den <code>path</code> erhält man die jeweiligen Dateien zum Download.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Ablage der Plugin-JSON-Dateien ist notwendig, sodass bei Dateioperationen z.B. Kopieren eines Plugin-Verzeichnisses in die Verzeichnisstruktur, ein Skript automatisiert eine aktualisierte <code>plugins.json</code> generieren kann, die dann immer synchron mit der Verzeichnisliste ist und somit keine 404-Fehler beim Download liefert.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die Angabe von <em>screenshots</em> ist optional. Screenshots werden im Plugin-Top-Level-Verzeichnis, also bspw. <code>1/screenshots</code> oder <code>2/screenshots</code> abgelegt, sodass die gleichen Screenshots von mehrere Plugin-Versionen referenziert werden können (Screenshots ändern sich ja kaum). Referenziert werden diese dann <em>ohne</em> Pfadangabe, also nur via <code>image1.png</code>. Falls bei einer neuen Pluginversion neue/aktualisierte Screenshotversionen hinzukommen, so gibt man in der <code>screenshots</code>-Zeile für dieses Plugin einfach die neuen Dateinamen für die Screenshots an.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Der Titel eines Plugins sollte sich eigentlich nicht ändern. Aber es wäre möglich, dass bei einem Update bspw. Tippfehler oder Übersetzungsfehler behoben werden, wodurch das Plugin eben einen anderen Titel erhalten könnte.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Plugins mit gleichem obersten Pfad (durchnummeriert, 1, 2, etc.) sind unterschiedliche Versionen des gleichen Plugins und werden vom Plugin-Manager entsprechend nur einmal in der Liste dargestellt. Aus Sicht des Website-Hostings sollte der Workflow beim Plugin-Download immer so aussehen:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download der Datei <a href="https://sim-vicus.de/plugins/plugins.json" class="bare">https://sim-vicus.de/plugins/plugins.json</a></p>
+</li>
+<li>
+<p>Generieren der Plugin-Liste</p>
+</li>
+<li>
+<p>Für jedes angezeigte Plugin generieren der Screenshot-Pfade und Download/Cache der Screenshot-Bilder.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Nun kann eine vollständige Liste/Übersicht aller verfügbaren Plugins angezeigt werden.</p>
+</div>
+<div class="paragraph">
+<p>Bei der Installation:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Nutzer-Auswahl eines Plugins und Version, woraus sich der Pfad ergib, z.B. <code>1/1.0/BrickMaterialDBPlugin</code></p>
+</li>
+<li>
+<p>Download des Plugins <code>1/1.0/BrickMaterialDBPlugin.zip</code> und entpacken im nutzerspezifischen Pluginsverzeichnis: <code>%APPDATA%/SIM-VICUS/plugins/</code> bzw. <code>~/.local/share/SIM-VICUS/plugins</code>. Dabei wird die Verzeichnisstruktur auf dem Server gespiegelt.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Man könnte einfach die gesamte Verzeichnisstruktur im <code>plugins</code>-Verzeichnis lokal in des nutzerspezifische Pluginsverzeichnis kopieren und SIM-VICUS würde dann beim Start alle kompatiblen Plugins laden. Das erleichtert Tests und Entwicklung, da man nur eine Verzeichnisstruktur unterstützen und parsen muss.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0 (31.12.2022)<br>
-Last updated 2022-12-31 12:44:07 +0100
+Version 1.0 (01.01.2023)<br>
+Last updated 2023-01-01 13:06:45 +0100
 </div>
 </div>
 </body>

@@ -1,7 +1,7 @@
 SIM-VICUS Plugin Entwicklung
 ============================
 Andreas Nicolai <https://github.com/ghorwin>
-v1.0 (31.12.2022)
+v1.0 (01.01.2023)
 // v1.0 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -261,11 +261,11 @@ Sobald man die Schnittstelle eines Plugins (oder Elternklasse) im Hauptprogramm 
 
 Folgende Schritte sind für die Entwicklung eines Plugins notwendig:
 
-1. Kopieren eines Plugin-Beispiel-Projektverzeichnisses `SIM-VICUS/plugins/xxx` und Anpassen/Umbenennen der Dateinamen und `.pro` und `CMakeLists.txt`-Dateien
-2. Implementieren der Plugin-Schnittstelle (siehe Beispiel unten)
-3. Aktualisieren der Meta-Daten JSON-Datei (siehe Beispiel unten)
-4. Plugin kompilieren
-5. Plugin Veröffentlichen: Plugin als zip-Datei + Meta-Daten JSON auf Server hochladen in Verzeichnisstruktur (siehe Beispiel unten)
+. Kopieren eines Plugin-Beispiel-Projektverzeichnisses `SIM-VICUS/plugins/xxx` und Anpassen/Umbenennen der Dateinamen und `.pro` und `CMakeLists.txt`-Dateien
+. Aktualisieren der Meta-Daten JSON-Datei (siehe Beispiel unten)
+. Implementieren der Plugin-Schnittstelle (siehe Beispiel unten)
+. Plugin kompilieren
+. Plugin veröffentlichen: Plugin als zip-Datei + Meta-Daten JSON auf Server hochladen in Verzeichnisstruktur (siehe Beispiel unten)
 
 
 ### Implementieren der Schnittstelle
@@ -344,7 +344,7 @@ Die Metadaten des Plugins werden in einer JSON-Datei abgelegt, welche vom Resour
 ----
 ====
 
-- `title`: Titel des Plugins (wie zurückgeliefert von `title()`) 
+- `title`: Titel des Plugins (wie zurückgeliefert von `title()`)
 - `short-description`: Kurzbeschreibung des Plugins zur Anzeige im Pluginmanager, kann mehrzeilig sein.
 - `long-description`: (optional) Langbeschreibung des Plugins, mit Detailinformationen und ggfs. Versions-/Updateinformation
 - `version`: Version des _Plugins_
@@ -352,4 +352,175 @@ Die Metadaten des Plugins werden in einer JSON-Datei abgelegt, welche vom Resour
 - `webpage` : (optional) Webseite des Plugin-Entwicklers
 - `author`: (optional) Authoren und Copyright-Info
 - `license`: Lizenzinformation; bei _commercial_  sollte das Plugin eine Aktivierung/Lizensierung beinhalten
+
+[NOTE]
+====
+Eigentlich wäre es ausreichend, den Titel/Namen des Plugins über die JSON-Metadaten zu übermitteln. Da der Pluginmanager aber bei fehlenden Metadaten dennoch in der Lage sein muss, das Plugin zu benennen, ist die zwingend zu implementierende pur virtuelle Memberfunktion `title()` der sicherste Weg, an einen Anzeigenamen zu kommen.
+====
+
+Die JSON-Datei wird beim Kompilieren angegeben, wie im <<ex_PluginExample>> gezeigt.
+
+[[ex_PluginExample]]
+.Headerdatei eines minimalistischen Plugins
+====
+[source,c++,tabsize=4]
+----
+#ifndef DummyDatabasePluginH
+#define DummyDatabasePluginH
+
+#include <QObject>
+#include <QtPlugin>
+
+#include <SVDatabasePluginInterface.h>
+
+class DummyDatabasePlugin : public QObject, public SVDatabasePluginInterface {
+public:
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.DatabaseInterface"  FILE "../data/metadata.json")
+	Q_INTERFACES(SVDatabasePluginInterface)
+public:
+
+	// SVCommonPluginInterface interface
+	QString title() const override { return "Database-Plugin-Dummy"; }
+	bool hasSettingsDialog() const override { return true;}
+	int showSettingsDialog(QWidget * parent) override;
+
+	// SVDatabasePluginInterface interface
+	bool retrieve(const SVDatabase & currentDB, SVDatabase & additionalDBElemnts) override;
+};
+
+#endif // DummyDatabasePluginH
+----
+
+Wichtig ist die Zeile mit `Q_PLUGIN_METADATA()`, in der sowohl die implementierte Schnittstelle also auch die Metadaten deklariert werden. Mit `Q_INTERFACES(SVDatabasePluginInterface)` werden die implementierten Schnittstellen angegeben, also letztlich die Klassen, welche vererbt und implementiert werden. Bei SIM-VICUS Plugins sollte dies immer nur eine Schnittstelle sein (auch wenn man sicherlich Import- und Databank-Plugin-Schnittstellen in einem Plugin kombinieren könnte).
+====
+
+### Plugin-Erstellung
+
+Das Plugin wird mit CMake oder qmake im Release-Modus übersetzt und es entsteht eine `dll` unter Windows oder `so`, bzw. `dylib` unter Linux bzw. Mac. Diese ist durch die eingebettete JSON-Datei bereits komplett fertig für die Auslieferung.
+
+### Plugin-Veröffentlichung
+
+Plugins werden auf der SIM-VICUS-Webseite veröffentlicht. Das passiert entweder manuell durch den Admin oder durch das Plugin-Upload-Tool. Auf dem Server befindet sich eine Plugin-Listen-Datei im JSON-Format, welche eine Übersicht über alle verfügbaren Plugins und deren Versionsnummern enthält.
+
+Die Plugins selbst werden in einer Verzeichnisstruktur auf dem Server gehostet:
+
+----
+plugins.json
+plugins/
+  1/
+    screenshots/
+      image1.png
+      image2.png
+      ...
+      imageN.png
+    1.0/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+    1.1/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+  2/
+    2.5.2/
+      PVDesignPlugin.zip
+      PVDesignPlugin.json
+      ...
+  3/
+    ...
+----
+
+Top-Level liegt die Plugin-Listen-Datei `plugins.json`. In dieser werden Plugins, deren Versionen und deren VICUS-Kompatibilitäts-Versionen mit dem jeweiligen Pfad referenziert, also beispielsweise:
+
+[source,json]
+----
+{
+   "plugins":[
+      {
+         "title":"Brick Material DB Plugin",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"1.0.0",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "screenshots":[
+            "image1.png",
+            "image2.png",
+            "image3.png"
+         ],
+         "path":"1/1.0/BrickMaterialDBPlugin"
+      },
+      {
+         "title":"Brick Material DB Plugin",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"1.1",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "screenshots":[
+            "image1.png",
+            "image2.png",
+            "image5-newVersion.png"
+         ],
+         "path":"1/1.1/BrickMaterialDBPlugin"
+      },
+      {
+         "title":"PV Panel Designer",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"2.5.2",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "path":"2/2.5.2/PVDesignPlugin"
+      }
+   ]
+}
+----
+
+Die JSON-Datei enthält effektiv die Metadaten der einzelnen Plugins und zusätzlich das Element `path`.
+
+Durch Anhängen von `*.zip` bzw. `*.json` an den `path` erhält man die jeweiligen Dateien zum Download.
+
+[NOTE]
+====
+Die Ablage der Plugin-JSON-Dateien ist notwendig, sodass bei Dateioperationen z.B. Kopieren eines Plugin-Verzeichnisses in die Verzeichnisstruktur, ein Skript automatisiert eine aktualisierte `plugins.json` generieren kann, die dann immer synchron mit der Verzeichnisliste ist und somit keine 404-Fehler beim Download liefert.
+====
+
+Die Angabe von _screenshots_ ist optional. Screenshots werden im Plugin-Top-Level-Verzeichnis, also bspw. `1/screenshots` oder `2/screenshots` abgelegt, sodass die gleichen Screenshots von mehrere Plugin-Versionen referenziert werden können (Screenshots ändern sich ja kaum). Referenziert werden diese dann _ohne_ Pfadangabe, also nur via `image1.png`. Falls bei einer neuen Pluginversion neue/aktualisierte Screenshotversionen hinzukommen, so gibt man in der `screenshots`-Zeile für dieses Plugin einfach die neuen Dateinamen für die Screenshots an.
+
+[NOTE]
+====
+Der Titel eines Plugins sollte sich eigentlich nicht ändern. Aber es wäre möglich, dass bei einem Update bspw. Tippfehler oder Übersetzungsfehler behoben werden, wodurch das Plugin eben einen anderen Titel erhalten könnte.
+====
+
+Plugins mit gleichem obersten Pfad (durchnummeriert, 1, 2, etc.) sind unterschiedliche Versionen des gleichen Plugins und werden vom Plugin-Manager entsprechend nur einmal in der Liste dargestellt. Aus Sicht des Website-Hostings sollte der Workflow beim Plugin-Download immer so aussehen:
+
+. Download der Datei https://sim-vicus.de/plugins/plugins.json 
+. Generieren der Plugin-Liste
+. Für jedes angezeigte Plugin generieren der Screenshot-Pfade und Download/Cache der Screenshot-Bilder.
+
+Nun kann eine vollständige Liste/Übersicht aller verfügbaren Plugins angezeigt werden. 
+
+Bei der Installation:
+
+. Nutzer-Auswahl eines Plugins und Version, woraus sich der Pfad ergib, z.B. `1/1.0/BrickMaterialDBPlugin`
+. Download des Plugins `1/1.0/BrickMaterialDBPlugin.zip` und entpacken im nutzerspezifischen Pluginsverzeichnis: `%APPDATA%/SIM-VICUS/plugins/` bzw. `~/.local/share/SIM-VICUS/plugins`. Dabei wird die Verzeichnisstruktur auf dem Server gespiegelt.
+
+[TIP]
+====
+Man könnte einfach die gesamte Verzeichnisstruktur im `plugins`-Verzeichnis lokal in des nutzerspezifische Pluginsverzeichnis kopieren und SIM-VICUS würde dann beim Start alle kompatiblen Plugins laden. Das erleichtert Tests und Entwicklung, da man nur eine Verzeichnisstruktur unterstützen und parsen muss.
+====
+
+
+
+
+ 
+
+
+
 
