@@ -121,7 +121,7 @@ public:
 		FUNCID(Database::import);
 		for (typename std::map<unsigned int, T>::const_iterator it = other.begin(); it != other.end(); ++it) {
 			typename std::map<unsigned int, T>::const_iterator this_it = m_data.find(it->first);
-			if (it != m_data.end()) {
+			if (this_it != m_data.end()) {
 				IBK::IBK_Message(IBK::FormatString("DB element with duplicate ID #%1 was not imported.").arg(it->first), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 				continue;
 			}
