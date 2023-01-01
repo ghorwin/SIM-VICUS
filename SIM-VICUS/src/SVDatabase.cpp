@@ -215,6 +215,35 @@ void SVDatabase::writeDatabases() {
 }
 
 
+void SVDatabase::mergeDatabases(const SVDatabase & db) {
+	// process all databases and import not yet existing elements
+	m_materials.import(db.m_materials);
+	m_constructions.import(db.m_constructions);
+	m_windows.import(db.m_windows);
+	m_windowGlazingSystems.import(db.m_windowGlazingSystems);
+	m_boundaryConditions.import(db.m_boundaryConditions);
+	m_components.import(db.m_components);
+	m_subSurfaceComponents.import(db.m_subSurfaceComponents);
+	m_surfaceHeatings.import(db.m_surfaceHeatings);
+	m_pipes.import(db.m_pipes);
+	m_fluids.import(db.m_fluids);
+	m_networkComponents.import(db.m_networkComponents);
+	m_networkControllers.import(db.m_networkControllers);
+	m_subNetworks.import(db.m_subNetworks);
+	m_supplySystems.import(db.m_supplySystems);
+	m_schedules.import(db.m_schedules);
+	m_internalLoads.import(db.m_internalLoads);
+	m_zoneControlThermostat.import(db.m_zoneControlThermostat);
+	m_zoneControlShading.import(db.m_zoneControlShading);
+	m_zoneControlVentilationNatural.import(db.m_zoneControlVentilationNatural);
+	m_zoneIdealHeatingCooling.import(db.m_zoneIdealHeatingCooling);
+	m_ventilationNatural.import(db.m_ventilationNatural);
+	m_infiltration.import(db.m_infiltration);
+	m_zoneTemplates.import(db.m_zoneTemplates);
+
+}
+
+
 // Local sort operator, so sort AbstractDBElement vectors by m_id member
 struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::AbstractDBElement, bool> {
 	bool operator()(VICUS::AbstractDBElement & x, VICUS::AbstractDBElement & y) const {

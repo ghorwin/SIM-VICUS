@@ -113,6 +113,22 @@ public:
 			m_data[t.m_id] = t;
 	}
 
+	/*! Imports elements from other DB that do not yet exist in current DB. The imported DB is expected to
+		holds only IDs that are not yet present in the current DB.
+		For each element with duplicate ID a warning message is issued in IBK_message().
+	*/
+	void import(const Database<T> & other) {
+		FUNCID(Database::import);
+		for (typename std::map<unsigned int, T>::const_iterator it = other.begin(); it != other.end(); ++it) {
+			typename std::map<unsigned int, T>::const_iterator this_it = m_data.find(it->first);
+			if (it != m_data.end()) {
+				IBK::IBK_Message(IBK::FormatString("DB element with duplicate ID #%1 was not imported.").arg(it->first), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				continue;
+			}
+			m_data[it->first] = it->second;
+		}
+	}
+
 	/*! Adds a new item to the database.
 		\param newData New object to be added.
 		\param suggestedId ID of object to insert (possibly when adding this data object from a project file), or 0,
@@ -307,6 +323,7 @@ private:
 	/*! Counter that holds the next unused user material ID. */
 	unsigned int								m_userIdCounter;
 };
+
 
 } // namespace VICUS
 

@@ -77,6 +77,11 @@ public:
 	/*! Writes user-defined database. */
 	void writeDatabases();
 
+	/*! Import DB elements from other database into our database, but only if the IDs of the imported
+		DB elements to not yet exist. Import errors are logged to IBK::IBK_message()
+	*/
+	void mergeDatabases(const SVDatabase & db);
+
 
 	/*! Searches through project and all copies all references database elements into
 		the embedded project database.
