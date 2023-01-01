@@ -124,12 +124,9 @@ public:
 		// check if suggestedId is already used
 		bool used = false;
 		if (suggestedId != 0) {
-			for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); ++it) {
-				if (it->first == suggestedId) {
-					used = true;
-					break;
-				}
-			}
+			typename std::map<unsigned int, T>::const_iterator it = m_data.find(suggestedId);
+			if (it != m_data.end())
+				used = true;
 		}
 		// if used, or suggestedId == 0 (new object), find first unused user-space ID
 		if (suggestedId == 0 || used) {
