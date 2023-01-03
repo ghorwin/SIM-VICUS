@@ -75,8 +75,10 @@ public:
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters() const;
 
+	/*! Calls the generated readXMLPrivate and additionally reads the view factors */
 	void readXML(const TiXmlElement * element);
 
+	/*! Calls the generated writeXMLPrivate and additionally reads the view factors */
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 

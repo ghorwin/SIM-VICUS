@@ -74,6 +74,8 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Is called in case the given interface is connected to a zone and moreover has a long wave emission model defined. It then checks if all construction instances connected to the same zone
+	 *  also have a long wave emission model defined and stores pointers to the connected interfaces. Also checks if all required view factors are given by the according zone. */
 	void checkAndPrepareLongWaveHeatExchange(const Project & prj, Interface & ourInterface);
 
 	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.

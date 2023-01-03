@@ -184,8 +184,10 @@ private:
 	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
 	std::vector<const double*>						m_valueRefs;
 
+	/*! References to values of long wave radiation that is emitted by other instances and received by this one at side A. */
 	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationA;
 
+	/*! References to values of long wave radiation that is emitted by other instances and received by this one at side B. */
 	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationB;
 
 	/*! Input references used by this object. These references store optional loads from
@@ -194,7 +196,9 @@ private:
 	*/
 	std::vector<InputReference>						m_inputRefs;
 
+	/*! Input references to values of long wave radiation that is emitted by other instances and received by this one at side A. */
 	std::vector<InputReference>						m_inputRefsAbsorbedLWRadiationA;
+	/*! Input references to values of long wave radiation that is emitted by other instances and received by this one at side B. */
 	std::vector<InputReference>						m_inputRefsAbsorbedLWRadiationB;
 
 	/*! Construction interface. */

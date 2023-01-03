@@ -131,10 +131,10 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 
 	// check and initialize inner long wave radiation heat exchange
 	if (m_interfaceA.m_zoneId > 0 &&
-		m_interfaceA.m_longWaveEmission.m_modelType == InterfaceLongWaveEmission::MT_Constant)
+		m_interfaceA.m_longWaveEmission.m_modelType != InterfaceLongWaveEmission::NUM_MT)
 		checkAndPrepareLongWaveHeatExchange(prj, m_interfaceA);
 	if (m_interfaceB.m_zoneId > 0 &&
-		m_interfaceB.m_longWaveEmission.m_modelType == InterfaceLongWaveEmission::MT_Constant)
+		m_interfaceB.m_longWaveEmission.m_modelType != InterfaceLongWaveEmission::NUM_MT)
 		checkAndPrepareLongWaveHeatExchange(prj, m_interfaceB);
 
 }

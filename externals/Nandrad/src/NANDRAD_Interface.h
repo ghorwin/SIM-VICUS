@@ -111,10 +111,14 @@ public:
 
 	// *** Runtime variables ***
 
+	/*! Stores pointer to connected zone */
 	const Zone									*m_zone;
 
+	/*! Stores view factors for construction instances visible from this one, whereby the key is the id of the visible construction instance. */
 	std::map<unsigned int, double>				m_viewFactors;
 
+	/*! Stores pointer to interfaces visible from this one, whereby the key is the id of the according construction instance.
+	 *  This is required to have access to the emission coefficient of the visible interface. */
 	std::map<unsigned int, const NANDRAD::Interface*>	m_connectedInterfaces;
 };
 

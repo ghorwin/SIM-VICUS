@@ -65,7 +65,7 @@ void Interface::updateComment(const std::vector<Zone> & zones) {
 				m_comment = IBK::FormatString("Interface to '%1'").arg(it->m_displayName).str();
 			else
 				m_comment = IBK::FormatString("Interface to anonymous zone with id #%1").arg(m_zoneId).str();
-			// store pointer
+			// store pointer to zone
 			m_zone = &(*it);
 		}
 		else {

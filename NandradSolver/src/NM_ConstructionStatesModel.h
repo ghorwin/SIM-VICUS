@@ -226,7 +226,11 @@ private:
 	/*! Surface temperature at right side (side B) [K]. */
 	double							m_TsB;
 
+	/*! Emitted long wave radiation to all construction instances visible from side A. The values are stored in a map with the key being the id of the targeted (radiation receiving) construction instance.
+	 *  The value of the map is the heat flux in [W] */
 	std::map<unsigned int, double>	m_emittedLongWaveRadiationA;
+	/*! Emitted long wave radiation to all construction instances visible from side B. The values are stored in a map with the key being the id of the targeted (radiation receiving) construction instance.
+	 *  The value of the map is the heat flux in [W] */
 	std::map<unsigned int, double>	m_emittedLongWaveRadiationB;
 
 

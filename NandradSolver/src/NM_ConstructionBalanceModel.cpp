@@ -379,6 +379,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		}
 	} // model object loop
 
+	// insert references for absorbed long wave radiation
 	m_inputRefs.insert(m_inputRefs.end(), m_inputRefsAbsorbedLWRadiationA.begin(), m_inputRefsAbsorbedLWRadiationA.end());
 	m_inputRefs.insert(m_inputRefs.end(), m_inputRefsAbsorbedLWRadiationB.begin(), m_inputRefsAbsorbedLWRadiationB.end());
 
@@ -404,7 +405,7 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 	for(unsigned int i = 0; i < NUM_InputRef; ++i)
 		m_valueRefs[i] = resultValueRefs[i];
 
-	// copy optional values for inside long wave radiation
+	// copy optional values for inside long wave radiation, side A and B
 	unsigned int lastIdx = NUM_InputRef;
 	for (unsigned int i = lastIdx; i < lastIdx + m_inputRefsAbsorbedLWRadiationA.size(); ++i)
 		m_valueRefsAbsorbedLWRadiationA.push_back( resultValueRefs[i] );

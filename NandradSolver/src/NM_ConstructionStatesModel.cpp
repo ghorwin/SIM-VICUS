@@ -170,6 +170,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_vectorValuedResults.resize(1);
 	m_vectorValuedResults[VVR_ElementTemperature] = VectorValuedQuantity(nPrimaryStateResults(), 0);
 
+	// initialize emitted long wave radiation map with zeros
 	for (auto it=m_con->m_interfaceA.m_connectedInterfaces.begin(); it!=m_con->m_interfaceA.m_connectedInterfaces.end(); ++it)
 		m_emittedLongWaveRadiationA[it->first] = 0;
 	for (auto it=m_con->m_interfaceB.m_connectedInterfaces.begin(); it!=m_con->m_interfaceB.m_connectedInterfaces.end(); ++it)
@@ -344,6 +345,8 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 			for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
 				resultInputValueReferences.push_back(std::make_pair(&m_activeLayerMeanTemperature, &m_vectorValuedResults[VVR_ElementTemperature].data()[i] ) );
 		}
+
+
 	}
 }
 
