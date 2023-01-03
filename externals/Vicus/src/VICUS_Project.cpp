@@ -972,10 +972,19 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	{
 		// TODO Dirk das ist erstmal nur vorübergehend
 		// es muss dafür ein Dialog im SV... erstellt werden und später die Werte übergeben werden
-		NANDRAD::Sensor sensor;
-		sensor.createSensor(2000000, 0,0);
 
-		p.m_location.m_sensors.push_back(sensor);
+		//create sensors for all the 5 orientations
+
+		for(unsigned int i = 0; i < 5; i++){
+			NANDRAD::Sensor s;
+			if(i == 0){
+				s.createSensor(2000000 + i, 0, 0);
+			} else {
+			s.createSensor(2000000 + i, 90 * (i - 1),90);
+			}
+
+			p.m_location.m_sensors.push_back(s);
+		}
 	}
 
 	// do we have a climate path?

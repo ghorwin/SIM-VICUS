@@ -78,6 +78,7 @@ SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
+	../../src/SVCoSimSupplySystemDialog.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
+	../../src/SVNetworkExportDialog.cpp \
 	../../src/SVPluginLoader.cpp \
 	../../src/SVPropNetworkEdgesWidget.cpp \
 	../../src/SVPropNetworkEditWidget.cpp \
@@ -269,6 +271,7 @@ SOURCES += \
 
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
+	../../src/SVCoSimSupplySystemDialog.h \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
@@ -278,6 +281,7 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
+	../../src/SVNetworkExportDialog.h \
 	../../src/SVPluginLoader.h \
 	../../src/SVPropNetworkEdgesWidget.h \
 	../../src/SVPropNetworkEditWidget.h \
@@ -469,6 +473,7 @@ HEADERS  += \
 FORMS    += \
 	../../src/SVAboutDialog.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
+	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
@@ -509,6 +514,7 @@ FORMS    += \
 	../../src/SVMeasurementWidget.ui \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
+	../../src/SVNetworkExportDialog.ui \
 	../../src/SVNetworkImportDialog.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
