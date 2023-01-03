@@ -51,8 +51,8 @@ public:
 		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
 		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
 		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
-		R_FluxLongWaveradiationA,			// Keyword: FluxLongWaveradiationA		[W]			'Long wave radiation flux across interface A (into construction)'
-		R_FluxLongWaveradiationB,			// Keyword: FluxLongWaveradiationB		[W]			'Long wave radiation flux across interface B (into construction)'
+		R_FluxLongWaveRadiationA,			// Keyword: FluxLongWaveRadiationA		[W]			'Long wave radiation flux across interface A (into construction)'
+		R_FluxLongWaveRadiationB,			// Keyword: FluxLongWaveRadiationB		[W]			'Long wave radiation flux across interface B (into construction)'
 		NUM_R
 	};
 
@@ -184,11 +184,18 @@ private:
 	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
 	std::vector<const double*>						m_valueRefs;
 
+	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationA;
+
+	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationB;
+
 	/*! Input references used by this object. These references store optional loads from
 		internal sources as well as obnligatory references for heat exchange with all neighboring
 		zones.
 	*/
 	std::vector<InputReference>						m_inputRefs;
+
+	std::vector<InputReference>						m_inputRefsAbsorbedLWRadiationA;
+	std::vector<InputReference>						m_inputRefsAbsorbedLWRadiationB;
 
 	/*! Construction interface. */
 	const NANDRAD::ConstructionInstance				*m_con			= nullptr;
@@ -212,6 +219,7 @@ private:
 
 	double											m_totalAdsorptionAreaA = 6666;
 	double											m_totalAdsorptionAreaB = 7777;
+
 };
 
 } // namespace NANDRAD_MODEL

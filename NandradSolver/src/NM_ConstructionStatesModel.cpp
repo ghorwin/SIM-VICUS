@@ -169,6 +169,11 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	m_results.resize(skalarResultCount);
 	m_vectorValuedResults.resize(1);
 	m_vectorValuedResults[VVR_ElementTemperature] = VectorValuedQuantity(nPrimaryStateResults(), 0);
+
+	for (auto it=m_con->m_interfaceA.m_connectedInterfaces.begin(); it!=m_con->m_interfaceA.m_connectedInterfaces.end(); ++it)
+		m_emittedLongWaveRadiationA[it->first] = 0;
+	for (auto it=m_con->m_interfaceB.m_connectedInterfaces.begin(); it!=m_con->m_interfaceB.m_connectedInterfaces.end(); ++it)
+		m_emittedLongWaveRadiationB[it->first] = 0;
 }
 
 
@@ -207,8 +212,37 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 		result.m_description = "Temperature of the active material layer";
 		result.m_name = "ActiveLayerTemperature";
 		result.m_unit = "C";
-
 		resDesc.push_back(result);
+	}
+
+	// emmited inner long wave radiation of surface A
+	if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
+		m_con->m_interfaceA.m_zoneId != 0) {
+		res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+		res.m_id = m_id; // id of emmitting instance (ourself)
+		res.m_constant = true;
+		res.m_name = "EmittedLongWaveRadiation";
+		res.m_unit = "W";
+		const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesA = m_con->m_interfaceA.m_connectedInterfaces;
+		for (auto it = connectedInterfacesA.begin(); it!=connectedInterfacesA.end(); ++it)
+			res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
+		res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
+		resDesc.push_back(res);
+	}
+
+	// emmited long wave radiation of surface B
+	if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
+		m_con->m_interfaceB.m_zoneId != 0) {
+		res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+		res.m_id = m_id; // id of emmitting instance (ourself)
+		res.m_constant = true;
+		res.m_name = "EmittedLongWaveRadiation";
+		res.m_unit = "W";
+		const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesB = m_con->m_interfaceB.m_connectedInterfaces;
+		for (auto it = connectedInterfacesB.begin(); it!=connectedInterfacesB.end(); ++it)
+			res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
+		res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
+		resDesc.push_back(res);
 	}
 }
 
@@ -250,6 +284,16 @@ const double * ConstructionStatesModel::resultValueRef(const InputReference & qu
 			return &vecResults[(size_t)quantityName.m_index];
 		}
 		// Note: function may throw an IBK::Exception if the requested index is out of range
+	}
+
+	// emitted long wave radiation to construction instance with given target id
+	if (quantityName.m_name == "EmittedLongWaveRadiation") {
+		if ( m_emittedLongWaveRadiationA.find((unsigned int)quantityName.m_index) != m_emittedLongWaveRadiationA.end() )
+			return &m_emittedLongWaveRadiationA.at((unsigned int)quantity.m_name.m_index);
+		else if ( m_emittedLongWaveRadiationB.find((unsigned int)quantity.m_name.m_index) != m_emittedLongWaveRadiationB.end() )
+			return &m_emittedLongWaveRadiationB.at((unsigned int)quantity.m_name.m_index);
+		else
+			IBK_ASSERT(false); // index not found: programming error
 	}
 
 	return nullptr; // quantity not found
@@ -442,7 +486,7 @@ int ConstructionStatesModel::update(const double * y) {
 		m_activeLayerMeanTemperature /= m_con->m_constructionType->m_materialLayers[m_activeLayerIndex].m_thickness;
 	}
 
-	// *** Ambient Boundary Conditions ***
+	// *** Boundary Conditions ***
 
 	// left side (A)
 	if (m_con->m_interfaceA.m_id != NANDRAD::INVALID_ID) {
@@ -456,7 +500,7 @@ int ConstructionStatesModel::update(const double * y) {
 			m_results[R_SolarRadiationFluxA] = m_con->m_interfaceA.m_solarAbsorption.radFlux(qRadGlobal);
 		}
 
-		// long wave radiation
+		// long wave radiation balance with the ambient
 		if (m_con->m_interfaceA.m_zoneId == 0 && m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
 			double eps = m_con->m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 			double incomingLWRadiation = m_loads->qLWRad(m_con->m_id);
@@ -466,6 +510,19 @@ int ConstructionStatesModel::update(const double * y) {
 			m_results[R_LongWaveRadiationFluxA] = radiationBalance;
 		}
 
+		// emitted long wave radiation to other construction instance
+		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			IBK_ASSERT(m_con->m_interfaceA.m_viewFactors.size() == m_con->m_interfaceA.m_connectedInterfaces.size());
+			const double &sourceEps = m_con->m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+			for (auto it=m_con->m_interfaceA.m_viewFactors.begin(); it!=m_con->m_interfaceA.m_viewFactors.end(); ++it) {
+				const double &TsA2 = m_TsA * m_TsA;
+				const double &viewFactor = it->second;
+				unsigned int targetId = it->first; // id of targeted construction instance
+				const double &targetEps = m_con->m_interfaceA.m_connectedInterfaces.at(targetId)->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+				const double &area = m_con->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				m_emittedLongWaveRadiationA[targetId] = area * viewFactor * sourceEps * targetEps * IBK::BOLTZMANN * TsA2 * TsA2;
+			}
+		}
 	}
 
 	// right side (B)
@@ -490,6 +547,19 @@ int ConstructionStatesModel::update(const double * y) {
 			m_results[R_LongWaveRadiationFluxB] = radiationBalance;
 		}
 
+		// emitted long wave radiation to other construction instance
+		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			IBK_ASSERT(m_con->m_interfaceB.m_viewFactors.size() == m_con->m_interfaceB.m_connectedInterfaces.size());
+			const double &sourceEps = m_con->m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+			for (auto it=m_con->m_interfaceB.m_viewFactors.begin(); it!=m_con->m_interfaceB.m_viewFactors.end(); ++it) {
+				const double &TsB2 = m_TsB * m_TsB;
+				const double &viewFactor = it->second;
+				unsigned int targetId = it->first; // id of targeted construction instance
+				const double &targetEps = m_con->m_interfaceB.m_connectedInterfaces.at(targetId)->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+				const double &area = m_con->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				m_emittedLongWaveRadiationB[targetId] = area * viewFactor * sourceEps * targetEps * IBK::BOLTZMANN * TsB2 * TsB2;
+			}
+		}
 	}
 
 	return 0; // signal success

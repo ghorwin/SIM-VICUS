@@ -106,6 +106,16 @@ public:
 				 with Project::writeXML(). Any existing text will be overwritten.
 	*/
 	std::string									m_comment;				// XML:C
+
+
+
+	// *** Runtime variables ***
+
+	const Zone									*m_zone;
+
+	std::map<unsigned int, double>				m_viewFactors;
+
+	std::map<unsigned int, const NANDRAD::Interface*>	m_connectedInterfaces;
 };
 
 } // namespace NANDRAD

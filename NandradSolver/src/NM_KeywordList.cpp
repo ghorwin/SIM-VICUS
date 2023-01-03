@@ -79,8 +79,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "FluxHeatConductionB";
 				case 2 : return "FluxShortWaveRadiationA";
 				case 3 : return "FluxShortWaveRadiationB";
-				case 4 : return "FluxLongWaveradiationA";
-				case 5 : return "FluxLongWaveradiationB";
+				case 4 : return "FluxLongWaveRadiationA";
+				case 5 : return "FluxLongWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -286,8 +286,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "FluxHeatConductionB";
 				case 2 : return "FluxShortWaveRadiationA";
 				case 3 : return "FluxShortWaveRadiationB";
-				case 4 : return "FluxLongWaveradiationA";
-				case 5 : return "FluxLongWaveradiationB";
+				case 4 : return "FluxLongWaveRadiationA";
+				case 5 : return "FluxLongWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -514,8 +514,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "Surface temperature at interface B";
 				case 2 : return "Solar radiation flux density into surface A";
 				case 3 : return "Solar radiation flux density into surface B";
-				case 4 : return "Absorbed minus emitted long wave radiation flux density for surface A";
-				case 5 : return "Absorbed minus emitted long wave radiation flux density for surface B";
+				case 4 : return "Absorbed minus emitted ambient long wave radiation flux density for surface A";
+				case 5 : return "Absorbed minus emitted ambient long wave radiation flux density for surface B";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
