@@ -240,6 +240,32 @@ void SceneView::toggleRubberbandMode() {
 
 
 void SceneView::resetCamera(int position) {
+
+	std::vector<const VICUS::Surface*> surfaces;
+	std::vector<const VICUS::SubSurface*> subsurfaces;
+	std::set<const VICUS::Object *> selectedObjects;
+	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+	for (const VICUS::Object * o : selectedObjects) {
+		const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
+		if (s != nullptr)
+			surfaces.push_back(s);
+		else {
+			const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
+			if (sub != nullptr)
+				subsurfaces.push_back(sub);
+		}
+	}
+
+	IBKMK::Vector3D center(0,0,0);
+	// compute bounding box of visible geometry
+	IBKMK::Vector3D bDim(100,100,100);
+	double factor = 100;
+	if (!selectedObjects.empty()){
+		bDim = project().boundingBox(surfaces, subsurfaces, center);
+
+	}
+
+
 	// reset camera position
 	switch (position) {
 		case 0 :
@@ -247,77 +273,42 @@ void SceneView::resetCamera(int position) {
 			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
 			break;
 
-		case 1 : // from north
+		case 1 : // from south
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,-0.1f), QVector3D(0,0,1));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, bDim.m_y + factor,0);
+
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
 			break;
 
-		case 2 : // from east
+		case 2 : // from west
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(-100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,-0.1f), QVector3D(0,0,1));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(bDim.m_x + factor, 0,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
 			break;
 
-		case 3 : // from south
+		case 3 : // from north
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, +100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,-0.1f), QVector3D(0,0,1));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, bDim.m_y + factor,0);
+
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
 			break;
 
-		case 4 : // from west
+		case 4 : // from east
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,-0.1f), QVector3D(0,0,1));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x + factor, 0,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
 			break;
 
 		case 5 : // from above
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, 0, 100);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, bDim.m_z + factor);
+
 			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
 			break;
 
 		case 6 : {
-			std::vector<const VICUS::Surface*> surfaces;
-			std::vector<const VICUS::SubSurface*> subsurfaces;
-			std::vector<const VICUS::NetworkNode*> nodes;
-			std::vector<const VICUS::NetworkEdge*> edges;
-			std::set<const VICUS::Object *> selectedObjects;
-			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 			if (selectedObjects.empty())
 				return; // nothing selected/visible, do nothing
-			for (const VICUS::Object * o : selectedObjects) {
-				const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
-				if (s != nullptr)
-					surfaces.push_back(s);
-				else {
-					const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
-					if (sub != nullptr)
-						subsurfaces.push_back(sub);
-				}
-				const VICUS::NetworkNode *n = dynamic_cast<const VICUS::NetworkNode*>(o);
-				if (n != nullptr)
-					nodes.push_back(n);
-				const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
-				if (e != nullptr)
-					edges.push_back(e);
-			}
-
-			// find center
-			IBKMK::Vector3D center;
-			if (!surfaces.empty() || !subsurfaces.empty()) {
-				// compute bounding box of visible geometry
-				project().boundingBox(surfaces, subsurfaces, center);
-			}
-			else if (!nodes.empty() || !edges.empty()) {
-				int counter = 0;
-				for (const VICUS::NetworkNode *n: nodes) {
-					center += n->m_position;
-					++counter;
-				}
-				for (const VICUS::NetworkEdge *e: edges) {
-					center += e->m_node1->m_position;
-					++counter;
-					center += e->m_node2->m_position;
-					++counter;
-				}
-				center/=static_cast<double>(counter);
-			}
 
 			// move camera to position and a little bit back
 			Camera c;
@@ -329,6 +320,27 @@ void SceneView::resetCamera(int position) {
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center;
 
 		} break;
+
+		case 7: // birds eye view from south east
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x + factor, -(bDim.m_y + factor), bDim.m_z + factor);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
+			break;
+
+		case 8: // birds eye view from south west
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x + factor), -(bDim.m_y + factor), bDim.m_z + factor);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
+			break;
+
+		case 9: // birds eye view from north east
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x + factor, +(bDim.m_y + factor), bDim.m_z + factor);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
+			break;
+
+		case 10: // birds eye view from north west
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x + factor), +(bDim.m_y + factor), bDim.m_z + factor);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
+			break;
+
 
 	}
 	// trick scene into updating
