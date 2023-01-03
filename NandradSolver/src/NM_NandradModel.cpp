@@ -2356,7 +2356,7 @@ void NandradModel::initOutputReferenceList() {
 	// create the mapping file
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
-	for (auto m : m_varSubstitutionMap)
+	for (const auto & m : m_varSubstitutionMap)
 		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 
