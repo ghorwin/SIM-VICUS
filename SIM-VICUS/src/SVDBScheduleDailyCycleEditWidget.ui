@@ -6,30 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
-    <height>264</height>
+    <width>657</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,0">
+   <item row="0" column="0">
     <widget class="SVDBDailyCycleInputWidget" name="dailyCycleInputWidget" native="true"/>
    </item>
-   <item>
+   <item row="0" column="1" rowspan="2">
     <widget class="QTableWidget" name="tableWidgetDayCycle">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
@@ -80,6 +68,21 @@
        <string>3.5</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelEditInfo">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>To edit several values together, select multiple cells in table and type a number followed by enter.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
