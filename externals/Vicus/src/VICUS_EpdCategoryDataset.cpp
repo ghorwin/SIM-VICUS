@@ -42,6 +42,14 @@ EpdCategoryDataset::~EpdCategoryDataset() {
 
 }
 
+bool EpdCategoryDataset::isValid() const {
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (m_para[i].empty())
+			return false;
+	}
+	return true;
+}
+
 EpdCategoryDataset EpdCategoryDataset::scaleByFactor(const double & factor) const {
 	EpdCategoryDataset epd = *this;
 	for(unsigned int i=0; i<NUM_P; ++i)

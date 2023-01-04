@@ -66,6 +66,8 @@ public:
 		NUM_P
 	};
 
+
+
 	//the most frequently used categories
 	enum Module {
 		M_A1,								// Keyword: A1
@@ -95,6 +97,9 @@ public:
 	{}
 
 	~EpdCategoryDataset();
+
+	/*! Checks if all parameters of Category dataset. */
+	bool isValid() const;
 
 	/*! Returns an EPD with all Parameters scaled by the defined factor. */
 	EpdCategoryDataset scaleByFactor(const double &factor) const;
