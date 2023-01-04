@@ -105,7 +105,9 @@ void SVSimulationModelOptions::updateUi() {
 	m_ui->spinBoxSolarRadiationToRoofCeiling->setValue(solarValues[2]);
 	m_ui->spinBoxSolarRadiationToWalls->setValue(solarValues[3]);
 
+	m_ui->checkBoxUsePerez->blockSignals(true);
 	m_ui->checkBoxUsePerez->setChecked(m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled());
+	m_ui->checkBoxUsePerez->blockSignals(false);
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);
 	int idx = m_simParams->m_solarLoadsDistributionModel.m_distributionType;
 	m_ui->comboBoxSolarDistributionModeltype->setCurrentIndex(idx);
@@ -232,5 +234,13 @@ void SVSimulationModelOptions::on_spinBoxSolarRadiationToRoofCeiling_valueChange
 void SVSimulationModelOptions::on_spinBoxSolarRadiationToWalls_valueChanged(int /*arg1*/) {
 	double val = m_ui->spinBoxSolarRadiationToWalls->value();
 	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls] = IBK::Parameter("RadiationLoadFractionWalls", val, IBK::Unit("%"));
+}
+
+
+void SVSimulationModelOptions::on_checkBoxUsePerez_toggled(bool checked) {
+	if (checked)
+		m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].set( NANDRAD::KeywordList::Keyword("Location::flag_t", NANDRAD::Location::F_PerezDiffuseRadiationModel), true);
+	else
+		m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].clear();
 }
 
