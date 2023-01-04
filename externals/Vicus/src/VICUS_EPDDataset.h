@@ -27,7 +27,6 @@
 #define VICUS_EpdDatasetH
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_EpdCategoryDataset.h"
 
@@ -72,6 +71,14 @@ public:
 	/*! Defines Operator += .*/
 	void operator+=(const EpdDataset& epd);
 
+	/*! Returns expanded all combined EPD Category Datasets into unique Datasets.
+		Before: EpdCategoryDataset: A1,A2,A3 -> Data
+		After:	EpdCategoryDataset:	A1 -> Data
+									A2 -> Data
+									A3 -> Data
+	*/
+	std::vector<EpdCategoryDataset> expandCategoryDatasets() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
@@ -105,8 +112,8 @@ public:
 	/*! Sub type element. */
 	Type							m_type = NUM_T;							// XML:E:required
 
-    /*! String with all modules defined, separated by Comma. */
-    QString                         m_modules;                              // XML:E:required
+	/*! String with all modules defined, separated by Comma. */
+	QString							m_modules;								// XML:E:required
 
 	/*! Vector with all category specific datasats. */
 	std::vector<EpdCategoryDataset> m_epdCategoryDataset;					// XML:E

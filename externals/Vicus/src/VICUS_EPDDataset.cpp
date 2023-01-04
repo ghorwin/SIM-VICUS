@@ -30,7 +30,7 @@ namespace VICUS {
 VICUS::EpdDataset VICUS::EpdDataset::scaleByFactor(const double & factor) const {
 	VICUS::EpdDataset epd = *this;
 	for(unsigned int i=0; i<epd.m_epdCategoryDataset.size(); ++i) {
-		epd.m_epdCategoryDataset[i].scaleByFactor(factor);
+		epd.m_epdCategoryDataset[i] = epd.m_epdCategoryDataset[i].scaleByFactor(factor);
 	}
 	return epd;
 }
@@ -101,18 +101,38 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 }
 
 EpdDataset EpdDataset::operator+(const EpdDataset & epd) {
-	VICUS::EpdDataset addedEpd = *this;
-	for(unsigned int j=0; j<m_epdCategoryDataset.size(); ++j) {
-		for(unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i)
-			addedEpd.m_epdCategoryDataset[j].m_para[i].value += epd.m_epdCategoryDataset[j].m_para[i].value;
+	VICUS::EpdDataset addedEpd = *this; // Copy of element
+
+	std::vector<EpdCategoryDataset> expandedCatsA = addedEpd.expandCategoryDatasets();
+	for(unsigned int k=0; k<expandedCatsA.size(); ++k) {
+		std::vector<EpdCategoryDataset> expandedCatsB = epd.expandCategoryDatasets();
+		for(unsigned int j=0; j<expandedCatsB.size(); ++j) {
+			// We can assume, that we have always only 1 element in the vector
+			if(expandedCatsA[k].m_modules[0] == expandedCatsB[j].m_modules[0]) {
+				for(unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i)
+					expandedCatsA[k].m_para[i].value += expandedCatsB[j].m_para[i].value;
+			}
+		}
 	}
 	return addedEpd;
 }
 
 void EpdDataset::operator+=(const EpdDataset & epd) {
-//	for(unsigned int i=0; i<NUM_P; ++i) {
-//		m_para[i].value += epd.m_para[i].value;
-//	}
+	*this = *this + epd;
+}
+
+std::vector<EpdCategoryDataset> EpdDataset::expandCategoryDatasets() const {
+	std::vector<EpdCategoryDataset> expandedCats;
+
+	for(const VICUS::EpdCategoryDataset &cat : m_epdCategoryDataset) {
+		for(const VICUS::EpdCategoryDataset::Module &mod : cat.m_modules) {
+			VICUS::EpdCategoryDataset catData = cat;
+			catData.m_modules = std::vector<VICUS::EpdCategoryDataset::Module>(1, mod);
+			expandedCats.push_back(catData);
+		}
+	}
+
+	return expandedCats;
 }
 
 }
