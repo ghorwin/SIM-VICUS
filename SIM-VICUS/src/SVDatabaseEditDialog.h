@@ -102,6 +102,8 @@ private slots:
 
 	void on_toolButtonApplyFilter_clicked();
 
+	void on_comboBoxColumn_currentIndexChanged(int index);
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.

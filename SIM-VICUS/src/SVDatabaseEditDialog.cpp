@@ -174,7 +174,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 
 	m_ui->tableView->installEventFilter(this);
 
-
+	for(unsigned int i=0; i<m_dbModel->columnCount(); ++i){
+		QString name = m_dbModel->headerData(i, Qt::Horizontal).toString();
+		if(name == "") continue; // Skip valid column
+		m_ui->comboBoxColumn->addItem(name, i);
+	}
 }
 
 
@@ -761,25 +765,13 @@ SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
 void SVDatabaseEditDialog::on_toolButtonApplyFilter_clicked() {
 	QString filter = m_ui->lineEditFilter->text();
 
-	// Store column idx of name column
-	if(m_nameColumnIdx == -2) {
-		bool foundCol = false;
-		int colCount = m_dbModel->columnCount();
-		for(int i=0; i<colCount; ++i) {
-			QString header = m_dbModel->headerData(i, Qt::Horizontal).toString();
-			if(header == "Name") {
-				m_nameColumnIdx = i;
-				foundCol = true;
-				break;
-			}
-		}
-		if(!foundCol)
-			m_nameColumnIdx = -1;
-	}
+	int filterCol = m_ui->comboBoxColumn->currentData().toInt();
 
-	if(m_nameColumnIdx != -1) {
-		m_proxyModel->setFilterWildcard(filter);
-		m_proxyModel->setFilterKeyColumn(m_nameColumnIdx);
-	}
+	m_proxyModel->setFilterWildcard(filter);
+	m_proxyModel->setFilterKeyColumn(filterCol);
+}
+
+void SVDatabaseEditDialog::on_comboBoxColumn_currentIndexChanged(int index) {
+	m_proxyModel->setFilterWildcard("");
 }
 
