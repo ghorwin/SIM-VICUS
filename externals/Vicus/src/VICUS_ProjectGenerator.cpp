@@ -929,7 +929,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 			QString buildingLevelName = bl.m_displayName;
 			for (const VICUS::Room & r : bl.m_rooms){
 				zones.push_back(&r);
-				QString name = QString("%2.%3.%4(%1)").arg(r.m_id).arg(buildingName).arg(buildingLevelName).arg(r.m_displayName);
+				QString name = QString("%2.%3.%4(ID=%1)").arg(r.m_id).arg(buildingName, buildingLevelName, r.m_displayName);
 
 				MappingElement mapEle;
 				mapEle.m_idRoomVicus = r.m_id;
@@ -939,9 +939,9 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				mapEle.m_nameRoomVicus = r.m_displayName.toStdString();
 
 				if(!r.m_para[VICUS::Room::P_Area].empty())
-					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].get_value("m2");
+					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].value; // in m2
 				if(!r.m_para[VICUS::Room::P_Volume].empty())
-					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].get_value("m3");
+					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].value; // in m3
 
 				roomIdsToRoomNames[r.m_id] = name.toStdString();
 
