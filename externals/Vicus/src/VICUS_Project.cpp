@@ -991,7 +991,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
 
-	generateBuildingProjectDataNeu(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
+	generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
 								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
 
 	if (!errorStack.isEmpty())

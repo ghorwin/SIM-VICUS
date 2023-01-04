@@ -714,7 +714,7 @@ bool Project::exportAreaAndVolume() {
 }
 
 
-void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
+void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 											 std::vector<MappingElement> &mappings) const{
 
