@@ -99,6 +99,10 @@ private slots:
 	void on_pushButtonRemoveUnusedElements_clicked();
 
 	void onStyleChanged();
+	
+	void on_toolButtonApplyFilter_clicked();
+
+	void on_comboBoxColumn_currentIndexChanged(int index);
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.
@@ -142,6 +146,10 @@ private:
 	/*! The edit widget (owned). */
 	SVAbstractDatabaseEditWidget	*m_editWidget	= nullptr;
 	QWidget							*m_editWidgetContainerWidget = nullptr;
+
+	int								m_nameColumnIdx = -2;
+
+	QString							m_currentFilter = "";
 
 	friend class SVMainWindow;
 };

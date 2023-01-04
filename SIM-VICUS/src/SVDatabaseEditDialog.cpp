@@ -183,6 +183,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 
 	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
 			this, &SVDatabaseEditDialog::onStyleChanged);
+	for(unsigned int i=0; i<m_dbModel->columnCount(); ++i){
+		QString name = m_dbModel->headerData(i, Qt::Horizontal).toString();
+		if(name == "") continue; // Skip valid column
+		m_ui->comboBoxColumn->addItem(name, i);
+	}
 }
 
 
@@ -756,3 +761,23 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+
+SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
+	return m_dbModel;
+}
+
+
+
+void SVDatabaseEditDialog::on_toolButtonApplyFilter_clicked() {
+	QString filter = m_ui->lineEditFilter->text();
+
+	int filterCol = m_ui->comboBoxColumn->currentData().toInt();
+
+	m_proxyModel->setFilterWildcard(filter);
+	m_proxyModel->setFilterKeyColumn(filterCol);
+}
+
+void SVDatabaseEditDialog::on_comboBoxColumn_currentIndexChanged(int index) {
+	m_proxyModel->setFilterWildcard("");
+}
+
