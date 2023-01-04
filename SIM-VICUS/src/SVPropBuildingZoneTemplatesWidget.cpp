@@ -38,7 +38,7 @@ SVPropBuildingZoneTemplatesWidget::~SVPropBuildingZoneTemplatesWidget() {
 void SVPropBuildingZoneTemplatesWidget::updateUi() {
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // visible (selected and not selected)
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, false); // we always show all in table
 
 	m_zoneTemplateAssignments.clear();
 	const VICUS::Database<VICUS::ZoneTemplate> & db_zt = SVSettings::instance().m_db.m_zoneTemplates;
@@ -132,11 +132,8 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 }
 
 
-void SVPropBuildingZoneTemplatesWidget::zoneTemplateSelectionChanged() {
-	// do nothing, if checkbox isn't active; that also means that when the checkbox is unchecked,
-	// we will not automatically show all hidden objects again
-	if (!m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
-		return;
+void SVPropBuildingZoneTemplatesWidget::zoneTemplateVisibleZonesSelectionChanged() {
+	bool showOnlySelected = m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked();
 
 	// compose node states for all rooms and their surfaces based on template association
 
@@ -156,7 +153,7 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateSelectionChanged() {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// skip all rooms that do not have the same zone template as we have
-				if (r.m_idZoneTemplate != zt->m_id) continue;
+				if (showOnlySelected && r.m_idZoneTemplate != zt->m_id) continue;
 				nodeIDs.insert(r.m_id); // Mind: unique IDs!
 				for (const VICUS::Surface & s : r.m_surfaces)
 					nodeIDs.insert(s.m_id); // Mind: unique IDs!
@@ -165,7 +162,7 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateSelectionChanged() {
 	}
 
 	// trigger undo-action
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Exclusive selection by zone template"), SVUndoTreeNodeState::VisibilityState, nodeIDs, true, true);
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Change zone visibility based on zone template selection"), SVUndoTreeNodeState::VisibilityState, nodeIDs, true, true);
 	undo->push();
 }
 
@@ -276,21 +273,22 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonExchangeZoneTemplates_click
 
 
 void SVPropBuildingZoneTemplatesWidget::on_checkBoxZoneTemplateColorOnlyActive_toggled(bool) {
-	zoneTemplateVisibilityChanged();
+	zoneTemplateColoredZoneSelectionChanged();
 }
 
 
 void SVPropBuildingZoneTemplatesWidget::on_checkBoxZoneTemplateShowOnlyActive_toggled(bool) {
-	zoneTemplateSelectionChanged();
+	zoneTemplateVisibleZonesSelectionChanged();
 }
 
 
 void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *) {
 	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked())
-		zoneTemplateVisibilityChanged();
+		zoneTemplateColoredZoneSelectionChanged();
 	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
-		zoneTemplateSelectionChanged();
+		zoneTemplateVisibleZonesSelectionChanged();
 }
+
 
 void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTemplate_clicked() {
 	int row = m_ui->tableWidgetZoneTemplates->currentRow();
@@ -329,7 +327,7 @@ const VICUS::ZoneTemplate * SVPropBuildingZoneTemplatesWidget::currentlySelected
 	return cit->first;
 }
 
-void SVPropBuildingZoneTemplatesWidget::zoneTemplateVisibilityChanged() {
+void SVPropBuildingZoneTemplatesWidget::zoneTemplateColoredZoneSelectionChanged() {
 	// set currently selected zone template ID in view state and trigger a recoloring
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked()) {
