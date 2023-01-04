@@ -75,10 +75,10 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettin
 	connect(m_ui->checkBoxD, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
 
 	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
-		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::LcaCalculationMode", i), i);
+		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::CalculationMode", i), i);
 
 	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
-		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::LcaCertificationSytem", i), i);
+		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::CertificationSytem", i), i);
 
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
 	m_ui->lineEditPriceIncrease->setup(0, 100, "Price increase", true, true);
@@ -127,199 +127,199 @@ void SVSimulationLCAOptions::calculateLCA() {
 	// Write calculation to file
 	writeLcaDataToTxtFile(path);
 
-{
+	{
 #if 0
-	FUNCID(LCA::calculateLCA);
+		FUNCID(LCA::calculateLCA);
 
-	/*! Summarize all components with all constructions and material layers.
+		/*! Summarize all components with all constructions and material layers.
 		Categorize all construction with their surface areas.
 	*/
 
-	/* Annahmen: diese Strukturen müssen umbenannt werden. */
-	std::map<unsigned int, VICUS::Component>				m_dbComponents;
-	std::map<unsigned int, VICUS::Construction>				m_dbConstructions;
-	std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
-	std::map<unsigned int, VICUS::EPDDataset>				m_dbEPDs;
+		/* Annahmen: diese Strukturen müssen umbenannt werden. */
+		std::map<unsigned int, VICUS::Component>				m_dbComponents;
+		std::map<unsigned int, VICUS::Construction>				m_dbConstructions;
+		std::map<unsigned int, VICUS::Material>					m_dbOpaqueMaterials;
+		std::map<unsigned int, VICUS::EPDDataset>				m_dbEPDs;
 
 
-	struct MatEpd{
-		VICUS::EPDDataset m_epdA;
-		VICUS::EPDDataset m_epdB;
-		VICUS::EPDDataset m_epdC;
-		VICUS::EPDDataset m_epdD;
-	};
+		struct MatEpd{
+			VICUS::EPDDataset m_epdA;
+			VICUS::EPDDataset m_epdB;
+			VICUS::EPDDataset m_epdC;
+			VICUS::EPDDataset m_epdD;
+		};
 
-	std::map<unsigned int, LCAComponentResult>		compRes;
-	std::map<unsigned int, LCAComponentResult>		compResErsatz;
+		std::map<unsigned int, LCAComponentResult>		compRes;
+		std::map<unsigned int, LCAComponentResult>		compResErsatz;
 
-	//holds the data for each material
-	std::map<unsigned int, MatEpd>					materialIdAndEpd;
-	double netFloorArea = m_building.m_netFloorArea;
+		//holds the data for each material
+		std::map<unsigned int, MatEpd>					materialIdAndEpd;
+		double netFloorArea = m_building.m_netFloorArea;
 
-	/* Calculate all surface areas according to all components. */
-	for (auto &bl : m_building.m_buildingLevels) {
-		for (auto &r : bl.m_rooms) {
-			for (auto &s : r.m_surfaces) {
-				const VICUS::Surface &surf = s;
+		/* Calculate all surface areas according to all components. */
+		for (auto &bl : m_building.m_buildingLevels) {
+			for (auto &r : bl.m_rooms) {
+				for (auto &s : r.m_surfaces) {
+					const VICUS::Surface &surf = s;
 
-				// get component
-				const VICUS::ComponentInstance * compInstance = s.m_componentInstance;
-				if (compInstance != nullptr) {
-					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_idComponent,
-																			s.m_displayName.toStdString(),"Component", "surface");
-					//save surface area
-					compRes[comp.m_id].m_area += surf.geometry().area();
-				}
-				else {
-					/// TODO : error handling if component instance pointer is empty (no component associated)
+					// get component
+					const VICUS::ComponentInstance * compInstance = s.m_componentInstance;
+					if (compInstance != nullptr) {
+						VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_idComponent,
+																				s.m_displayName.toStdString(),"Component", "surface");
+						//save surface area
+						compRes[comp.m_id].m_area += surf.geometry().area();
+					}
+					else {
+						/// TODO : error handling if component instance pointer is empty (no component associated)
+					}
 				}
 			}
 		}
-	}
 
-	//calculate all lca for each component
-	for (auto &c : compRes) {
-		const VICUS::Component &comp = m_dbComponents[c.first];
+		//calculate all lca for each component
+		for (auto &c : compRes) {
+			const VICUS::Component &comp = m_dbComponents[c.first];
 
-		//opaque construction
-		if(comp.m_idConstruction != VICUS::INVALID_ID){
-			//get construction
-			///TODO Dirk baufähig gemacht müsste rückgängig gemacht werden
-			VICUS::Construction constr;
-			//					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
-			//													   comp.m_displayName.toStdString(),"Construction",
-			//													   "component");
+			//opaque construction
+			if(comp.m_idConstruction != VICUS::INVALID_ID){
+				//get construction
+				///TODO Dirk baufähig gemacht müsste rückgängig gemacht werden
+				VICUS::Construction constr;
+				//					elementExists<VICUS::Construction>(m_dbConstructions, comp.m_idOpaqueConstruction,
+				//													   comp.m_displayName.toStdString(),"Construction",
+				//													   "component");
 
-			//calculate each construction
-			for(auto l : constr.m_materialLayers){
-				//check if material exists
-				VICUS::Material mat =
-						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_idMaterial,
-													   constr.m_displayName.string(),
-													   "Material",
-													   "construction");
+				//calculate each construction
+				for(auto l : constr.m_materialLayers){
+					//check if material exists
+					VICUS::Material mat =
+							elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_idMaterial,
+														   constr.m_displayName.string(),
+														   "Material",
+														   "construction");
 
-				//material exists already in the new user database
-				if(materialIdAndEpd.find(mat.m_id) != materialIdAndEpd.end())
-					continue;
-
-				MatEpd &matEpd = materialIdAndEpd[mat.m_id];
-				//check each material epd id
-				for (auto idEpd : mat.m_idEpds) {
-					if(idEpd == VICUS::INVALID_ID)
+					//material exists already in the new user database
+					if(materialIdAndEpd.find(mat.m_id) != materialIdAndEpd.end())
 						continue;
 
-					VICUS::EPDDataset epd = elementExists<VICUS::EPDDataset>(m_dbEPDs, idEpd,
-																			 mat.m_displayName.string(),
-																			 "EPD",
-																			 "material");
+					MatEpd &matEpd = materialIdAndEpd[mat.m_id];
+					//check each material epd id
+					for (auto idEpd : mat.m_idEpds) {
+						if(idEpd == VICUS::INVALID_ID)
+							continue;
 
-					//if we found the right dataset add values A1- A2
-					if(epd.m_module == VICUS::EPDDataset::M_A1 ||
-							epd.m_module == VICUS::EPDDataset::M_A2 ||
-							epd.m_module == VICUS::EPDDataset::M_A1_A2||
-							epd.m_module == VICUS::EPDDataset::M_A3 ||
-							epd.m_module == VICUS::EPDDataset::M_A1_A3){
-						//add all values in a category A
-						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
-							IBK::Parameter para = epd.m_para[i];
-							//...
-							if(para.value != 0){
-								matEpd.m_epdA.m_para[i].set(para.name,
-															matEpd.m_epdA.m_para[i].get_value(para.unit())
-															+ para.get_value(para.unit()),
-															para.unit());
+						VICUS::EPDDataset epd = elementExists<VICUS::EPDDataset>(m_dbEPDs, idEpd,
+																				 mat.m_displayName.string(),
+																				 "EPD",
+																				 "material");
+
+						//if we found the right dataset add values A1- A2
+						if(epd.m_module == VICUS::EPDDataset::M_A1 ||
+								epd.m_module == VICUS::EPDDataset::M_A2 ||
+								epd.m_module == VICUS::EPDDataset::M_A1_A2||
+								epd.m_module == VICUS::EPDDataset::M_A3 ||
+								epd.m_module == VICUS::EPDDataset::M_A1_A3){
+							//add all values in a category A
+							for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
+								IBK::Parameter para = epd.m_para[i];
+								//...
+								if(para.value != 0){
+									matEpd.m_epdA.m_para[i].set(para.name,
+																matEpd.m_epdA.m_para[i].get_value(para.unit())
+																+ para.get_value(para.unit()),
+																para.unit());
+								}
 							}
 						}
-					}
-					else if (epd.m_module == VICUS::EPDDataset::M_B6) {
-						//add all values in a category B
-						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
-							IBK::Parameter para = epd.m_para[i];
-							//...
-							if(para.value != 0){
-								matEpd.m_epdB.m_para[i].set(para.name,
-															matEpd.m_epdB.m_para[i].get_value(para.unit())
-															+ para.get_value(para.unit()),
-															para.unit());
+						else if (epd.m_module == VICUS::EPDDataset::M_B6) {
+							//add all values in a category B
+							for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
+								IBK::Parameter para = epd.m_para[i];
+								//...
+								if(para.value != 0){
+									matEpd.m_epdB.m_para[i].set(para.name,
+																matEpd.m_epdB.m_para[i].get_value(para.unit())
+																+ para.get_value(para.unit()),
+																para.unit());
+								}
 							}
 						}
-					}
-					else if (epd.m_module == VICUS::EPDDataset::M_C2 ||
-							 epd.m_module == VICUS::EPDDataset::M_C2_C4 ||
-							 epd.m_module == VICUS::EPDDataset::M_C3 ||
-							 epd.m_module == VICUS::EPDDataset::M_C2_C3 ||
-							 epd.m_module == VICUS::EPDDataset::M_C3_C4 ||
-							 epd.m_module == VICUS::EPDDataset::M_C4) {
-						//add all values in a category C
-						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
-							IBK::Parameter para = epd.m_para[i];
-							//...
-							if(para.value != 0){
-								matEpd.m_epdC.m_para[i].set(para.name,
-															matEpd.m_epdC.m_para[i].get_value(para.unit())
-															+ para.get_value(para.unit()),
-															para.unit());
+						else if (epd.m_module == VICUS::EPDDataset::M_C2 ||
+								 epd.m_module == VICUS::EPDDataset::M_C2_C4 ||
+								 epd.m_module == VICUS::EPDDataset::M_C3 ||
+								 epd.m_module == VICUS::EPDDataset::M_C2_C3 ||
+								 epd.m_module == VICUS::EPDDataset::M_C3_C4 ||
+								 epd.m_module == VICUS::EPDDataset::M_C4) {
+							//add all values in a category C
+							for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
+								IBK::Parameter para = epd.m_para[i];
+								//...
+								if(para.value != 0){
+									matEpd.m_epdC.m_para[i].set(para.name,
+																matEpd.m_epdC.m_para[i].get_value(para.unit())
+																+ para.get_value(para.unit()),
+																para.unit());
+								}
 							}
 						}
-					}
-					else if (epd.m_module == VICUS::EPDDataset::M_D) {
-						//add all values in a category D
-						for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
-							IBK::Parameter para = epd.m_para[i];
-							//...
-							if(para.value != 0){
-								matEpd.m_epdD.m_para[i].set(para.name,
-															matEpd.m_epdD.m_para[i].get_value(para.unit())
-															+ para.get_value(para.unit()),
-															para.unit());
+						else if (epd.m_module == VICUS::EPDDataset::M_D) {
+							//add all values in a category D
+							for (unsigned int i=0;i< VICUS::EPDDataset::NUM_P; ++i) {
+								IBK::Parameter para = epd.m_para[i];
+								//...
+								if(para.value != 0){
+									matEpd.m_epdD.m_para[i].set(para.name,
+																matEpd.m_epdD.m_para[i].get_value(para.unit())
+																+ para.get_value(para.unit()),
+																para.unit());
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
 
 
 
-	for (auto &e : compRes) {
-		//Component result object
-		LCAComponentResult &comp = e.second;
-		unsigned int compId = e.first;
+		for (auto &e : compRes) {
+			//Component result object
+			LCAComponentResult &comp = e.second;
+			unsigned int compId = e.first;
 
-		//check if opaque construction is available
-		if(m_dbComponents[compId].m_idConstruction != VICUS::INVALID_ID){
-			const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idConstruction];
+			//check if opaque construction is available
+			if(m_dbComponents[compId].m_idConstruction != VICUS::INVALID_ID){
+				const VICUS::Construction &constr = m_dbConstructions[m_dbComponents[compId].m_idConstruction];
 
-			//get values for all material layers in each category of the lifecycle
-			for(auto &l : constr.m_materialLayers){
-				MatEpd &matEpd = materialIdAndEpd[l.m_idMaterial];
-				double rho = m_dbOpaqueMaterials[l.m_idMaterial].m_para[VICUS::Material::P_Density].get_value("kg/m3");
+				//get values for all material layers in each category of the lifecycle
+				for(auto &l : constr.m_materialLayers){
+					MatEpd &matEpd = materialIdAndEpd[l.m_idMaterial];
+					double rho = m_dbOpaqueMaterials[l.m_idMaterial].m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
-				//				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
-				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-				//							   rho, 0, m_adjustment);
+					//				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
+					//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+					//							   rho, 0, m_adjustment);
 
-				addEpdMaterialToComponent(matEpd.m_epdB, comp, compResErsatz[compId],
-										  0, l.m_thickness.get_value("m"),
-										  rho, 1, m_adjustment);
+					addEpdMaterialToComponent(matEpd.m_epdB, comp, compResErsatz[compId],
+											  0, l.m_thickness.get_value("m"),
+											  rho, 1, m_adjustment);
 
-				//				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
-				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-				//							   rho, 2, m_adjustment);
+					//				addEpdMaterialToComponent(matEpd.m_epdC, comp, compResErsatz[compId],
+					//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+					//							   rho, 2, m_adjustment);
 
-				//				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
-				//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
-				//							   rho, 3, m_adjustment);
+					//				addEpdMaterialToComponent(matEpd.m_epdD, comp, compResErsatz[compId],
+					//							   l.m_lifeCylce, l.m_thickness.get_value("m"),
+					//							   rho, 3, m_adjustment);
+
+				}
 
 			}
 
 		}
-
-	}
 #endif
-}
+	}
 }
 
 
@@ -387,7 +387,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 	oekobauDatUnit2IBKUnit["kg"] = "kg";
 	oekobauDatUnit2IBKUnit["a"] = "a";
 
-    unsigned int id = 1090000;
+	unsigned int id = 1090000;
 
 	for (unsigned int row = 0; row<dataLines.size(); ++row) {
 		std::string &line = dataLines[row];
@@ -424,227 +424,227 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				continue;
 
 			switch (col) {
-				// Not imported coloumns
-				case ColVersion:
-				case ColConformity:
-				case ColCountryCode:
-				case ColReferenceYear:
-				case ColPublishedOn:
-				case ColRegistrationNumber:
-				case ColRegistrationBody:
-				case ColUUIDOfThePredecessor:
-					break;
+			// Not imported coloumns
+			case ColVersion:
+			case ColConformity:
+			case ColCountryCode:
+			case ColReferenceYear:
+			case ColPublishedOn:
+			case ColRegistrationNumber:
+			case ColRegistrationBody:
+			case ColUUIDOfThePredecessor:
+				break;
 
-				case ColUUID: {
+			case ColUUID: {
 
-					QString uuid = QString::fromStdString(t);
+				QString uuid = QString::fromStdString(t);
 
-                    int i = 0;
-                    if(uuid == "07d95427-572c-413c-ab1a-ef5e991c69ef")
-                        i = i;
+				int i = 0;
+				if(uuid == "07d95427-572c-413c-ab1a-ef5e991c69ef")
+					i = i;
 
-					// do we already have an EPD with the specific UUID
-					if(dataSets.find(uuid) != dataSets.end()) { // We found one
-						epd = &dataSets[uuid];
-						foundExistingEpd = true;
-					}
-					else { // Create new one
-                        dataSets[uuid] = VICUS::EpdDataset();
-                        epd = &dataSets[uuid];
-                        epd->m_uuid = uuid;
-                        epd->m_id = id++;
-					}
+				// do we already have an EPD with the specific UUID
+				if(dataSets.find(uuid) != dataSets.end()) { // We found one
+					epd = &dataSets[uuid];
+					foundExistingEpd = true;
+				}
+				else { // Create new one
+					dataSets[uuid] = VICUS::EpdDataset();
+					epd = &dataSets[uuid];
+					epd->m_uuid = uuid;
+					epd->m_id = id++;
+				}
 
-					setValue<QString>(epd->m_uuid, uuid, foundExistingEpd);
+				setValue<QString>(epd->m_uuid, uuid, foundExistingEpd);
 
-				} break;
-                case ColNameDe:
-                        epd->m_displayName.setString(t, "De");
-                break;
-				case ColNameEn:				epd->m_displayName.setString(t, "En");			break;
-				case ColCategoryDe:			epd->m_category.setString(t, "De");				break;
-				case ColCategoryEn:			epd->m_category.setString(t, "En");				break;
-				case ColType: {
-					VICUS::EpdDataset::Type type = VICUS::EpdDataset::NUM_T;
+			} break;
+			case ColNameDe:
+				epd->m_displayName.setString(t, "De");
+				break;
+			case ColNameEn:				epd->m_displayName.setString(t, "En");			break;
+			case ColCategoryDe:			epd->m_category.setString(t, "De");				break;
+			case ColCategoryEn:			epd->m_category.setString(t, "En");				break;
+			case ColType: {
+				VICUS::EpdDataset::Type type = VICUS::EpdDataset::NUM_T;
 
-					if (t == "average dataset")
-						type = VICUS::EpdDataset::T_Average;
-					else if (t == "specific dataset")
-						type = VICUS::EpdDataset::T_Specific;
-					else if (t == "representative dataset")
-						type = VICUS::EpdDataset::T_Representative;
-					else if (t == "generic dataset")
-						type = VICUS::EpdDataset::T_Generic;
-					else if (t == "template dataset")
-						type = VICUS::EpdDataset::T_Template;
+				if (t == "average dataset")
+					type = VICUS::EpdDataset::T_Average;
+				else if (t == "specific dataset")
+					type = VICUS::EpdDataset::T_Specific;
+				else if (t == "representative dataset")
+					type = VICUS::EpdDataset::T_Representative;
+				else if (t == "generic dataset")
+					type = VICUS::EpdDataset::T_Generic;
+				else if (t == "template dataset")
+					type = VICUS::EpdDataset::T_Template;
 
-					setValue<VICUS::EpdDataset::Type>(epd->m_type, type, foundExistingEpd);
+				setValue<VICUS::EpdDataset::Type>(epd->m_type, type, foundExistingEpd);
 
-				} break;
-				case ColExpireYear:			epd->m_expireYear = QString::fromStdString(t);			break;
-				case ColDeclarationOwner:	epd->m_manufacturer = QString::fromStdString(t);			break;
-				case ColReferenceSize: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-
-
-					setValue<double>(epd->m_referenceQuantity, val, foundExistingEpd);
-				} break;
-				case ColReferenceUnit: {
-
-					if(!foundExistingEpd) {
-						IBK::Unit unit(oekobauDatUnit2IBKUnit[t]);
-						epd->m_referenceUnit = unit;
-					}
-					else {
-						if(epd->m_referenceUnit.name() != oekobauDatUnit2IBKUnit[t])
-							qDebug() << "Units do not match";
-					}
-
-				} break;
-				case ColURL: {
-					QString string = QString::fromStdString(t);
-					setValue<QString>(epd->m_dataSource, string, foundExistingEpd);
-				} break;
+			} break;
+			case ColExpireYear:			epd->m_expireYear = QString::fromStdString(t);			break;
+			case ColDeclarationOwner:	epd->m_manufacturer = QString::fromStdString(t);			break;
+			case ColReferenceSize: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
 
 
-				case ColModule: {
-					std::vector<VICUS::EpdCategoryDataset::Module> modules;
-                    std::string moduleType = t.substr(0, 1);
+				setValue<double>(epd->m_referenceQuantity, val, foundExistingEpd);
+			} break;
+			case ColReferenceUnit: {
 
-                    if(!epd->m_modules.isEmpty()) {
-                        if(epd->m_modules.indexOf(moduleType.c_str(), 0) == -1)
-                            epd->m_modules = QString("%1, %2").arg(epd->m_modules).arg(QString::fromStdString(moduleType));
-                    }
-                    else
-                        epd->m_modules = QString::fromStdString(moduleType);
+				if(!foundExistingEpd) {
+					IBK::Unit unit(oekobauDatUnit2IBKUnit[t]);
+					epd->m_referenceUnit = unit;
+				}
+				else {
+					if(epd->m_referenceUnit.name() != oekobauDatUnit2IBKUnit[t])
+						qDebug() << "Units do not match";
+				}
 
-					if (t == "A1")
-						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
-					else if (t == "A2")
-						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
-					else if (t == "A3")
-						modules.push_back(VICUS::EpdCategoryDataset::M_A3);
-					else if (t == "A1-A2") {
-						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
-						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
-					}
-					else if (t == "A1-A3") {
-						modules.push_back(VICUS::EpdCategoryDataset::M_A1);
-						modules.push_back(VICUS::EpdCategoryDataset::M_A2);
-						modules.push_back(VICUS::EpdCategoryDataset::M_A3);
-					}
-					else if (t == "A4")
-						modules.push_back(VICUS::EpdCategoryDataset::M_A4);
-					else if (t == "A5")
-						modules.push_back(VICUS::EpdCategoryDataset::M_A5);
-					else if (t == "B1")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B1);
-					else if (t == "B2")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B2);
-					else if (t == "B3")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B3);
-					else if (t == "B4")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B4);
-					else if (t == "B5")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B5);
-					else if (t == "B6")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B6);
-					else if (t == "B7")
-						modules.push_back(VICUS::EpdCategoryDataset::M_B7);
-					else if (t == "C1")
-						modules.push_back(VICUS::EpdCategoryDataset::M_C1);
-					else if (t == "C2")
-						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
-					else if (t == "C2-C3") {
-						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
-						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-					}
-					else if (t == "C2-C4") {
-						modules.push_back(VICUS::EpdCategoryDataset::M_C2);
-						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
-					}
-					else if (t == "C3")
-						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-					else if (t == "C3-C4") {
-						modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
-					}
-					else if (t == "C4")
-						modules.push_back(VICUS::EpdCategoryDataset::M_C4);
-					else if (t == "D")
-						modules.push_back(VICUS::EpdCategoryDataset::M_D);
-
-					epdCategoryDataSet->m_modules = modules;
-
-				} break;
+			} break;
+			case ColURL: {
+				QString string = QString::fromStdString(t);
+				setValue<QString>(epd->m_dataSource, string, foundExistingEpd);
+			} break;
 
 
-				case ColWeightPerUnitArea: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
+			case ColModule: {
+				std::vector<VICUS::EpdCategoryDataset::Module> modules;
+				std::string moduleType = t.substr(0, 1);
 
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
-				} break;
-				case ColBulkDensity: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
-				} break;
-				case ColGWP: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
+				if(!epd->m_modules.isEmpty()) {
+					if(epd->m_modules.indexOf(moduleType.c_str(), 0) == -1)
+						epd->m_modules = QString("%1, %2").arg(epd->m_modules).arg(QString::fromStdString(moduleType));
+				}
+				else
+					epd->m_modules = QString::fromStdString(moduleType);
 
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
-				} break;
-				case ColODP: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
-				} break;
-				case ColPOCP: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
+				if (t == "A1")
+					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+				else if (t == "A2")
+					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+				else if (t == "A3")
+					modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+				else if (t == "A1-A2") {
+					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+				}
+				else if (t == "A1-A3") {
+					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+					modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+				}
+				else if (t == "A4")
+					modules.push_back(VICUS::EpdCategoryDataset::M_A4);
+				else if (t == "A5")
+					modules.push_back(VICUS::EpdCategoryDataset::M_A5);
+				else if (t == "B1")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B1);
+				else if (t == "B2")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B2);
+				else if (t == "B3")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B3);
+				else if (t == "B4")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B4);
+				else if (t == "B5")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B5);
+				else if (t == "B6")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B6);
+				else if (t == "B7")
+					modules.push_back(VICUS::EpdCategoryDataset::M_B7);
+				else if (t == "C1")
+					modules.push_back(VICUS::EpdCategoryDataset::M_C1);
+				else if (t == "C2")
+					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+				else if (t == "C2-C3") {
+					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+				}
+				else if (t == "C2-C4") {
+					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+				}
+				else if (t == "C3")
+					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+				else if (t == "C3-C4") {
+					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+				}
+				else if (t == "C4")
+					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+				else if (t == "D")
+					modules.push_back(VICUS::EpdCategoryDataset::M_D);
 
-				} break;
-				case ColAP: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AP].set("AP", val, IBK::Unit("kg"));
-				} break;
-				case ColEP: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_EP].set("EP", val, IBK::Unit("kg"));
-				} break;
-				case ColPENRT: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
-				} break;
-				case ColPERT: {
-					double val;
-					if(!convertString2Val(val, t, row, col))
-						continue;
-					epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
-				} break;
+				epdCategoryDataSet->m_modules = modules;
+
+			} break;
+
+
+			case ColWeightPerUnitArea: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
+			} break;
+			case ColBulkDensity: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
+			} break;
+			case ColGWP: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
+			} break;
+			case ColODP: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
+			} break;
+			case ColPOCP: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
+
+			} break;
+			case ColAP: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AP].set("AP", val, IBK::Unit("kg"));
+			} break;
+			case ColEP: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_EP].set("EP", val, IBK::Unit("kg"));
+			} break;
+			case ColPENRT: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
+			} break;
+			case ColPERT: {
+				double val;
+				if(!convertString2Val(val, t, row, col))
+					continue;
+				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
+			} break;
 			}
 		}
 		epd->m_epdCategoryDataset.push_back(*epdCategoryDataSet);
 
-        if(epd->m_manufacturer.isEmpty())
-            qDebug() << "Found emtpty epd: " << epd->m_uuid;
+		if(epd->m_manufacturer.isEmpty())
+			qDebug() << "Found emtpty epd: " << epd->m_uuid;
 	}
 
 	dlg->setValue(dataLines.size());
@@ -798,11 +798,11 @@ void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const s
 			lcaData << "";
 			lcaData << QtExt::MultiLangString2QString(comp->m_displayName);
 			lcaData << QString::number(aggregatedCompData.m_area);
-//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_GWP].get_value());
-//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_ODP].get_value());
-//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_POCP].get_value());
-//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_AP].get_value());
-//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_EP].get_value());
+			//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_GWP].get_value());
+			//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_ODP].get_value());
+			//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_POCP].get_value());
+			//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_AP].get_value());
+			//			lcaData << QString::number(aggregatedCompData.m_totalEpdData[category].m_para[VICUS::EpdDataset::P_EP].get_value());
 
 			lcaStream << lcaData.join("\t").toStdString() << std::endl;
 
@@ -825,7 +825,7 @@ void SVSimulationLCAOptions::setModuleState(int state) {
 
 void SVSimulationLCAOptions::setCheckBoxState(QCheckBox *cb, int bitmask) {
 	cb->blockSignals(true);
-	cb->setChecked((m_lcaSettings->m_lcaCertificationSystem & bitmask) == bitmask);
+	cb->setChecked((m_lcaSettings->m_certificationModules & bitmask) == bitmask);
 	cb->blockSignals(false);
 }
 
@@ -885,7 +885,7 @@ void SVSimulationLCAOptions::updateUi() {
 
 	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
 
-	if(m_lcaSettings->m_lcaCalculationMode == VICUS::LcaSettings::CM_Detailed) {
+	if(m_lcaSettings->m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
 		for(unsigned int i=0; i<ol.count(); ++i) {
 			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
 			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
@@ -893,10 +893,10 @@ void SVSimulationLCAOptions::updateUi() {
 		}
 	}
 
-	m_ui->groupBoxCatA->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatB->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatC->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatD->setEnabled(m_lcaSettings->m_lcaCalculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatA->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatB->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatC->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatD->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
 
 	m_ui->groupBoxLcaCalc->blockSignals(false);
 	m_ui->groupBoxLccSettings->blockSignals(false);
@@ -947,10 +947,10 @@ void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
 
 		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
 			const VICUS::Material &mat = *m_db->m_materials[matLayer.m_idMaterial];
-			const VICUS::EpdDataset *epdCatA = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatA]];
-			const VICUS::EpdDataset *epdCatB = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatB]];
-			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatC]];
-			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatD]];
+			const VICUS::EpdDataset *epdCatA = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA]];
+			const VICUS::EpdDataset *epdCatB = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB]];
+			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA]];
+			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD]];
 
 
 			// We do the unit conversion and handling to get all our reference units correctly managed
@@ -1007,7 +1007,7 @@ void SVSimulationLCAOptions::on_pushButtonImportOkoebaudat_clicked() {
 
 
 void SVSimulationLCAOptions::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
-	m_lcaSettings->m_lcaCalculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
+	m_lcaSettings->m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
 	m_ui->comboBoxCertificationSystem->setEnabled(mode == 0);
 
 	updateUi();
@@ -1015,7 +1015,11 @@ void SVSimulationLCAOptions::on_comboBoxCalculationMode_currentIndexChanged(int 
 
 
 void SVSimulationLCAOptions::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
-	m_lcaSettings->m_lcaCertificationSystem = (certiSystem == 0 ? VICUS::LcaSettings::CS_BNB : VICUS::LcaSettings::NUM_CS);
+	m_lcaSettings->m_certificationSystem = static_cast<VICUS::LcaSettings::CertificationSytem>(certiSystem);
+	switch(m_lcaSettings->m_certificationSystem) {
+		case (VICUS::LcaSettings::CS_BNB) :	m_lcaSettings->m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
+		case (VICUS::LcaSettings::NUM_CS) : break;
+	}
 
 	updateUi();
 }
