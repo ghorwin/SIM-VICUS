@@ -181,29 +181,33 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 	FUNCID(ConstructionInstance::checkAndPrepareLongWaveHeatExchange);
 
 	// Collect all construction instances and interfaces that interact with this one over the same zone
-	std::set<const NANDRAD::ConstructionInstance*>	connectedConstructionInstances;
+	std::vector<const NANDRAD::ConstructionInstance*> connectedConstructionInstances;
 	ourInterface.m_connectedInterfaces.clear();
 	for (const ConstructionInstance &ci: prj.m_constructionInstances) {
 		if (ci.m_id == m_id)
 			continue;
 		if (ci.m_interfaceA.m_zoneId == ourInterface.m_zoneId) {
 			ourInterface.m_connectedInterfaces[ci.m_id] = &ci.m_interfaceA;
-			connectedConstructionInstances.insert(&ci);
+			connectedConstructionInstances.push_back(&ci);
 		}
 		else if (ci.m_interfaceB.m_zoneId == ourInterface.m_zoneId) {
 			ourInterface.m_connectedInterfaces[ci.m_id] = &ci.m_interfaceB;
-			connectedConstructionInstances.insert(&ci);
+			connectedConstructionInstances.push_back(&ci);
 		}
 	}
 
 	// check if all of them have also long wave BC activated
+	unsigned int i=0;
+	IBK_ASSERT(ourInterface.m_connectedInterfaces.size() == connectedConstructionInstances.size());
 	for (auto it=ourInterface.m_connectedInterfaces.begin(); it!=ourInterface.m_connectedInterfaces.end(); ++it) {
 		const NANDRAD::Interface *inter = it->second;
 		IBK_ASSERT(inter != nullptr);
-		if (inter->m_longWaveEmission.m_modelType != InterfaceLongWaveEmission::MT_Constant) {
-			throw IBK::Exception( IBK::FormatString("Interface #%1 exchanges long wave radiation with another interface (#%2), but has no long wave emission model defined.")
-								 .arg(inter->m_id).arg(ourInterface.m_id), FUNC_ID );
+		if (inter->m_longWaveEmission.m_modelType == InterfaceLongWaveEmission::NUM_MT) {
+			throw IBK::Exception( IBK::FormatString("Interface #%1 in construction instance #%2 (%3) exchanges long wave radiation with interface #%4 in construction instance #%5 (%6), but it has no long wave emission model defined.")
+								 .arg(inter->m_id).arg(connectedConstructionInstances[i]->m_id).arg(connectedConstructionInstances[i]->m_displayName)
+								 .arg(ourInterface.m_id).arg(m_id).arg(m_displayName), FUNC_ID );
 		}
+		++i;
 	}
 
 	// now collect view factors from the given zone and store them as "our own" view factors, i.e. view factors from this ci to the connected one

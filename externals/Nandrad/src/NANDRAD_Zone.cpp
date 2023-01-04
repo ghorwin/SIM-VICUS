@@ -121,10 +121,9 @@ void Zone::readXML(const TiXmlElement * element) {
 
 
 TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
-	writeXMLPrivate(parent);
 
-	TiXmlElement * e = new TiXmlElement("Zone");
-	parent->LinkEndChild(e);
+	TiXmlElement * e = writeXMLPrivate(parent);
+
 	// write view factors
 	if(!m_viewFactors.empty() ) {
 		std::string str("\n");
@@ -133,7 +132,7 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 					IBK::val2string<unsigned int>(m_viewFactors[i].first.second) + std::string(" ") +
 					IBK::val2string<double>(m_viewFactors[i].second) + std::string("\n");
 		}
-		TiXmlElement::appendSingleAttributeElement(e,"ViewFactors", nullptr, std::string(), str);
+		TiXmlElement::appendSingleAttributeElement(e, "ViewFactors", nullptr, std::string(), str);
 	}
 	return e;
 }

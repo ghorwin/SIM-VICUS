@@ -1155,8 +1155,8 @@ void NandradModel::initWallsAndInterfaces() {
 			// now the net surface area has been computed, which is needed in the next loop
 		}
 		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2' (id=%3).")
-								 .arg(i).arg(ci.m_displayName).arg(ci.m_id), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.")
+								 .arg(ci.m_id).arg(ci.m_displayName), FUNC_ID);
 		}
 	}
 	// Prepare data for flux distribution:
@@ -1259,8 +1259,8 @@ void NandradModel::initWallsAndInterfaces() {
 
 		}
 		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2' (id=%3).")
-								 .arg(i).arg(ci.m_displayName).arg(ci.m_id), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing construction instance #%1 '%2'.")
+								 .arg(ci.m_id).arg(ci.m_displayName), FUNC_ID);
 		}
 
 	}
