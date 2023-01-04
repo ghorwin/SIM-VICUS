@@ -23,7 +23,7 @@
 	GNU General Public License for more details.
 */
 
-#include "SVDBEPDEditWidget.h"
+#include "SVDBEpdEditWidget.h"
 #include "ui_SVDBEPDEditWidget.h"
 
 #include <QtExt_ConstructionLayer.h>
@@ -117,7 +117,9 @@ void SVDBEPDEditWidget::updateInput(int id) {
 			const VICUS::EpdCategoryDataset::Module &module = m_current->m_epdCategoryDataset[j].m_modules[i];
 			moduleString += QString(i > 0 ? ", " : "") + VICUS::KeywordList::Description("EpdCategoryDataset::Module", module); // add ", " in between beginning from the second module
 		}
-		m_ui->tableWidgetEpdData->setItem((int)j, 0, new QTableWidgetItem(moduleString));
+		QTableWidgetItem *item = new QTableWidgetItem(moduleString);
+		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+		m_ui->tableWidgetEpdData->setItem((int)j, 0, item);
 
 		for(unsigned int i=0; i<VICUS::EpdCategoryDataset::NUM_P; ++i) {
 			IBK::Parameter &para = m_current->m_epdCategoryDataset[j].m_para[i];
@@ -151,11 +153,21 @@ void SVDBEPDEditWidget::updateInput(int id) {
 				val = QString::number(para.value);
 			}
 
-
-			m_ui->tableWidgetEpdData->setItem((int)j, row, new QTableWidgetItem(val))   ;
+			QTableWidgetItem *item = new QTableWidgetItem(val);
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+			m_ui->tableWidgetEpdData->setItem((int)j, row, item);
 		}
 	}
 
+	bool isEnabled = m_current->m_local;
+
+	m_ui->lineEditCategory->setEnabled(isEnabled);
+	m_ui->lineEditExpireYear->setEnabled(isEnabled);
+	m_ui->lineEditManufacturer->setEnabled(isEnabled);
+	m_ui->lineEditRefQuantity->setEnabled(isEnabled);
+	m_ui->lineEditUUID->setEnabled(isEnabled);
+	m_ui->lineEditRefUnit->setEnabled(isEnabled);
+	m_ui->textBrowser->setEnabled(isEnabled);
 }
 
 SVDBEpdTableModel * SVDBEPDEditWidget::dbModel() const {
