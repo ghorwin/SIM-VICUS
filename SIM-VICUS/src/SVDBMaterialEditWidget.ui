@@ -145,134 +145,141 @@
        <string>EPD</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="6" column="0" colspan="4">
+       <item row="3" column="0" colspan="2">
         <widget class="QPushButton" name="pushButton">
          <property name="text">
           <string>Assign EPD to all Categories</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="4">
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Deposit</string>
+       <item row="0" column="0" colspan="2">
+        <widget class="QTabWidget" name="tabWidgetLca">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <layout class="QGridLayout" name="gridLayout_10">
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEditCatD">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButtonSelectCatD">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetCatD"/>
-          </item>
-         </layout>
+         <widget class="QWidget" name="production">
+          <attribute name="title">
+           <string>Production</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatA">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatA">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatA">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>300</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="usage">
+          <attribute name="title">
+           <string>Usage</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatB">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatB">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatB">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="disposal">
+          <attribute name="title">
+           <string>Disposal</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_12">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatC">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatC">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatC">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="deposit">
+          <attribute name="title">
+           <string>Deposit</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_13">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatD">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatD">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatD"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
-       <item row="2" column="0" colspan="4">
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>Disposal</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEditCatC">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButtonSelectCatC">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetCatC"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="4">
-        <widget class="QGroupBox" name="groupBoxProduction">
-         <property name="title">
-          <string>Production</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButtonSelectCatA">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEditCatA">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetCatA"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="4">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Usage</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEditCatB">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="toolButtonSelectCatB">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetCatB"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>510</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="5" column="0" colspan="4">
+       <item row="2" column="0" colspan="2">
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

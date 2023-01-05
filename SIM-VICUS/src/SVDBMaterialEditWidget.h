@@ -35,6 +35,7 @@ namespace Ui {
 class SVDBMaterialTableModel;
 class SVDatabase;
 class QTableWidgetItem;
+class QLineEdit;
 
 namespace VICUS {
 	class Material;
@@ -105,7 +106,9 @@ private slots:
 	void on_lineEditConductivity_editingFinished();
 	void on_lineEditDensity_editingFinished();
 	void on_lineEditSpecHeatCapacity_editingFinished();
+
 	void on_comboBoxCategory_currentIndexChanged(int index);
+
 	void on_pushButtonColor_colorChanged();
 
 	void on_toolButtonSelectCatA_clicked();
@@ -122,6 +125,12 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	/*! Updates all category specific data and sets all subcategories such as A1,A2,... .*/
+	void updateCategory(unsigned int idCategory, VICUS::Material &mat, const VICUS::LcaSettings::LcaCategory category, QLineEdit *lineEdit);
+
+	/*! Updates tab states of all categories such A,B,C,D to see whether all sub-categories are set properly. */
+	void updateCategoryValidity(unsigned int idCategory, const VICUS::LcaSettings::LcaCategory category);
+
 	Ui::SVDBMaterialEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */
@@ -135,6 +144,9 @@ private:
 		A nullptr pointer means that there is no material to edit.
 	*/
 	VICUS::Material				*m_current;
+
+	/*! Pointer to LCA Settings .*/
+	const VICUS::LcaSettings	*m_lcaSettings;
 
 	/*! Map with all table widget items. Key is module enum.
 	*/
