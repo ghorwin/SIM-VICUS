@@ -138,10 +138,10 @@ public:
 	std::vector<std::string>						m_intMoistLoadObjListNames;
 
 	// Object list name = schedule group name is not stored, since it matches the respective object list
-	// name in m_objLists
+	// name in m_intLoadObjLists
 	std::vector< std::vector<NANDRAD::Schedule> >	m_intLoadSchedules;
 	// Object list name = schedule group name is not stored, since it matches the respective object list
-	// name in m_objLists
+	// name in m_intMoistLoadObjLists
 	std::vector< std::vector<NANDRAD::Schedule> >	m_intMoistLoadSchedules;
 };
 
@@ -846,11 +846,9 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intMoistLoadObjLists.begin(), internalLoads.m_intMoistLoadObjLists.end());
 	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
-	// if moisture
-	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i) {
-		p.m_schedules.m_scheduleGroups[internalLoads.m_intMoistLoadObjLists[i].m_name] =
-				internalLoads.m_intMoistLoadSchedules[i];
-	}
+	// Note: if moisture is not enabled, m_intMoistLoadSchedules will be empty
+	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i) 
+		p.m_schedules.m_scheduleGroups[internalLoads.m_intMoistLoadObjLists[i].m_name] =  internalLoads.m_intMoistLoadSchedules[i];
 
 	// *** Ventilation ***
 	p.m_models.m_naturalVentilationModels = ventilation.m_natVentObjects;
@@ -1204,7 +1202,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 	allDays.m_dailyCycles.push_back( dc );
 
-	// we only need an all day schedule if we miss at least on of the schedules
+	// we only need an all day schedule if we miss at least one of the schedules
 	if (!dc.m_values.m_values.empty()) {
 		loadScheds.push_back(allDays);
 		moistScheds.push_back(allDays);
@@ -1259,17 +1257,18 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, loadScheds);
 
 			// create schedule for moisture load
-			if(enableMoisture) {
+			if (enableMoisture) {
 				const Schedule * moistRateSchedule = m_scheduleDB[intLoadPerson->m_idMoistureRatePerPersonSchedule];
 				// we allow missing moisture rate
-				if(moistRateSchedule != nullptr) {
+				if (moistRateSchedule != nullptr) {
+					// TODO : check if this is correct - why multiply a m2-based load with an occupancy? This is likely wrong.
 					VICUS::Schedule combinedMoistSchedule = moistRateSchedule->multiply(*occupancySchedule);
 					combinedMoistSchedule = combinedMoistSchedule.multiply(personPerArea);
 
 					// - convert and insert VICUS::Schedule to NANDRAD schedule group
 					combinedMoistSchedule.insertIntoNandradSchedulegroup(personMoistSchedName, moistScheds);
 
-					// register a moistuzre vrate schedule
+					// register a moisture rate schedule
 					moistRateScheduleExists = true;
 				}
 			}
@@ -1400,7 +1399,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	}
 
 
-	if(enableMoisture && moistRateScheduleExists) {
+	if (enableMoisture && moistRateScheduleExists) {
 		// generate NANDRAD::InternalMoistureLoads object
 		NANDRAD::InternalMoistureLoadsModel internalMoistLoadsModel;
 		internalMoistLoadsModel.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);  /*VICUS::uniqueId(m_internalLoadObjects)*/;
@@ -1423,7 +1422,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 				break;
 			}
 		}
-		if(!foundModel) {
+		if (!foundModel) {
 			// append definitions and create new object list
 			NANDRAD::ObjectList ol;
 			ol.m_name = IBK::pick_name("InternalMoistureLoads-" + zt->m_displayName.string(), m_intMoistLoadObjListNames.begin(), m_intMoistLoadObjListNames.end());

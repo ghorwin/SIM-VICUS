@@ -55,7 +55,7 @@ public:
 		P_Power,						// Keyword: Power					[W]			'Power'
 		/*! Power per Area. */
 		P_PowerPerArea,					// Keyword: PowerPerArea			[W/m2]		'Power per area'
-		/*! Moisture rate per Area. */
+		/*! Moisture production rate per Area. */
 		P_MoistureRatePerArea,			// Keyword: MoistureRatePerArea		[kg/m2s]	'Moisture production rate per area'
 		/*! Convective Heat Factor. */
 		P_ConvectiveHeatFactor,			// Keyword: ConvectiveHeatFactor	[---]		'Convective heat factor'
@@ -119,10 +119,10 @@ public:
 	/*! Schedule ID. */
 	unsigned int					m_idOccupancySchedule = INVALID_ID;			// XML:E
 
-	/*! Only required for person*/
+	/*! Only required for person */
 	unsigned int					m_idActivitySchedule = INVALID_ID;			// XML:E
 
-	/*! Only required for person and moisture balance enabled*/
+	/*! Only required for person and moisture balance enabled */
 	unsigned int					m_idMoistureRatePerPersonSchedule = INVALID_ID;			// XML:E
 
 	/*! Only required for electric equipment, lights, other. */

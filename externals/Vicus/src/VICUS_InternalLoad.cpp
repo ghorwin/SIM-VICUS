@@ -82,14 +82,14 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 			}
 
 			// check schedule moist rate
-			if(m_idMoistureRatePerPersonSchedule != INVALID_ID) {
+			if (m_idMoistureRatePerPersonSchedule != INVALID_ID) {
 				const Schedule *moistSched = scheduleDB[m_idMoistureRatePerPersonSchedule];
 				if (moistSched == nullptr) {
 					m_errorMsg = "Moisture rate schedule with id '" + std::to_string(m_idMoistureRatePerPersonSchedule) + "' does not exist.";
 					return false;
 				}
 				if (!moistSched->isValid()) {
-					m_errorMsg = "Moisture rate schedule '" + moistSched->m_displayName.string("de", true) + "' is invalid.";
+					m_errorMsg = "Moisture rate schedule '" + moistSched->m_displayName.string("en", true) + "' is invalid.";
 					return false;
 				}
 			}

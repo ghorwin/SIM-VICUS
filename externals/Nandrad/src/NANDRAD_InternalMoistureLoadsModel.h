@@ -31,7 +31,7 @@
 
 namespace NANDRAD {
 
-/*! Contains schedules or constant parameters for internal loads (related to zone area). */
+/*! Contains schedules or constant parameters for internal loads (moisture production rate, related to zone area). */
 class InternalMoistureLoadsModel {
 public:
 	/*! Different model variants. */
