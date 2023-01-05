@@ -213,10 +213,8 @@ void InternalMoistureLoadsModel::inputReferences(std::vector<InputReference> & i
 void InternalMoistureLoadsModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												const std::vector<const double *> & resultValueRefs)
 {
-	IBK_ASSERT (m_internalMoistureLoadsModel->m_modelType == NANDRAD::InternalMoistureLoadsModel::MT_Constant
-			&& resultValueRefs.size() == m_zoneAreas.size() ||
-				m_internalMoistureLoadsModel->m_modelType == NANDRAD::InternalMoistureLoadsModel::MT_Scheduled
-			&& resultValueRefs.size() == 2 * m_zoneAreas.size());
+	IBK_ASSERT ((m_internalMoistureLoadsModel->m_modelType == NANDRAD::InternalMoistureLoadsModel::MT_Constant && resultValueRefs.size() == m_zoneAreas.size()) ||
+				(m_internalMoistureLoadsModel->m_modelType == NANDRAD::InternalMoistureLoadsModel::MT_Scheduled && resultValueRefs.size() == 2 * m_zoneAreas.size()) );
 
 	m_valueRefs = resultValueRefs; // Note: we set all our input refs as mandatory, so we can rely on getting valid pointers
 }
@@ -258,15 +256,13 @@ int InternalMoistureLoadsModel::update() {
 	}
 	// loop through all zone areas
 	for(unsigned int i = 0; i < nZones; ++i) {
-		// retrieve zone area
+		// retrieve moisture production rate (from persons) in [kg/s]
 		double moistureMassflux = personMoistureLoadPtr[i];
-		// retrieve zone air temperature
+		// retrieve zone air temperature in [K]
 		double zoneTemp = *m_valueRefs[i];
 
-		// constants
-		double cVapor = IBK::C_VAPOR;
-		double hEvap  = IBK::H_EVAP;
-		personMoistureEnthalpyFluxPtr[i] = moistureMassflux * (cVapor * zoneTemp + hEvap);
+		// moisture production enthalpy in [W]
+		personMoistureEnthalpyFluxPtr[i] = moistureMassflux * (IBK::C_VAPOR * zoneTemp + IBK::H_EVAP);
 	}
 
 	return 0; // signal success
