@@ -1268,27 +1268,46 @@ void SVMainWindow::on_actionViewResetView_triggered() {
 
 
 void SVMainWindow::on_actionViewFromNorth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
-}
-
-
-void SVMainWindow::on_actionViewFromEast_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
-}
-
-
-void SVMainWindow::on_actionViewFromSouth_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
 }
 
 
-void SVMainWindow::on_actionViewFromWest_triggered() {
+void SVMainWindow::on_actionViewFromEast_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+}
+
+
+void SVMainWindow::on_actionViewFromSouth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+}
+
+
+void SVMainWindow::on_actionViewFromWest_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
 }
 
 
 void SVMainWindow::on_actionViewFromAbove_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+}
+
+void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(8);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(10);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(7);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(9);
 }
 
 
