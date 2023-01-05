@@ -17,3 +17,26 @@ void VICUS::LcaSettings::initDefaults() {
 
 	m_certificationModules = CertificationType::CT_BNB;
 }
+
+bool VICUS::LcaSettings::isLcaCategoryDefined(EpdCategoryDataset::Module mod) const {
+	switch (mod) {
+		case EpdCategoryDataset::M_A1:	return m_certificationModules & M_A1;
+		case EpdCategoryDataset::M_A2:	return m_certificationModules & M_A2;
+		case EpdCategoryDataset::M_A3:	return m_certificationModules & M_A3;
+		case EpdCategoryDataset::M_A4:	return m_certificationModules & M_A4;
+		case EpdCategoryDataset::M_A5:	return m_certificationModules & M_A5;
+		case EpdCategoryDataset::M_B1:	return m_certificationModules & M_B1;
+		case EpdCategoryDataset::M_B2:	return m_certificationModules & M_B2;
+		case EpdCategoryDataset::M_B3:	return m_certificationModules & M_B3;
+		case EpdCategoryDataset::M_B4:	return m_certificationModules & M_B4;
+		case EpdCategoryDataset::M_B5:	return m_certificationModules & M_B5;
+		case EpdCategoryDataset::M_B6:	return m_certificationModules & M_B6;
+		case EpdCategoryDataset::M_B7:	return m_certificationModules & M_B7;
+		case EpdCategoryDataset::M_C1:	return m_certificationModules & M_C1;
+		case EpdCategoryDataset::M_C2:	return m_certificationModules & M_C2;
+		case EpdCategoryDataset::M_C3:	return m_certificationModules & M_C3;
+		case EpdCategoryDataset::M_C4:	return m_certificationModules & M_C4;
+		case EpdCategoryDataset::M_D:	return m_certificationModules & M_D;
+		case EpdCategoryDataset::NUM_M: return m_certificationModules & NUM_M;
+	}
+}
