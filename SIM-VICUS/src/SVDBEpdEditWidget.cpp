@@ -112,6 +112,7 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdCategoryDataset.size());
 
 	for(unsigned int j=0; j<m_current->m_epdCategoryDataset.size(); ++j) {
+
 		QString moduleString = "";
 		for (unsigned int i=0; i<m_current->m_epdCategoryDataset[j].m_modules.size(); ++i) {
 			const VICUS::EpdCategoryDataset::Module &module = m_current->m_epdCategoryDataset[j].m_modules[i];
