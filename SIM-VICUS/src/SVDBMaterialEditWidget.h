@@ -34,6 +34,7 @@ namespace Ui {
 
 class SVDBMaterialTableModel;
 class SVDatabase;
+class QTableWidgetItem;
 
 namespace VICUS {
 	class Material;
@@ -49,6 +50,39 @@ namespace VICUS {
 */
 class SVDBMaterialEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
+
+	enum ColCatA {
+		CA_A1,
+		CA_A2,
+		CA_A3,
+		CA_A4,
+		CA_A5,
+		NUM_CA
+	};
+
+	enum ColCatB {
+		CB_B1,
+		CB_B2,
+		CB_B3,
+		CB_B4,
+		CB_B5,
+		CB_B6,
+		CB_B7,
+		NUM_CB
+	};
+
+	enum ColCatC {
+		CC_C1,
+		CC_C2,
+		CC_C3,
+		CC_C4,
+		NUM_CC
+	};
+
+	enum ColCatD {
+		CD_D,
+		NUM_CD
+	};
 
 public:
 	explicit SVDBMaterialEditWidget(QWidget *parent = nullptr);
@@ -82,6 +116,8 @@ private slots:
 
 	void on_toolButtonSelectCatD_clicked();
 
+	void on_pushButton_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
@@ -99,6 +135,15 @@ private:
 		A nullptr pointer means that there is no material to edit.
 	*/
 	VICUS::Material				*m_current;
+
+	/*! Map with all table widget items. Key is module enum.
+	*/
+	std::map<VICUS::EpdCategoryDataset::Module, QTableWidgetItem*> m_moduleToTableItem;
+
+	QWidgetList					m_catACheckboxes;
+	QWidgetList					m_catBCheckboxes;
+	QWidgetList					m_catCCheckboxes;
+	QWidgetList					m_catDCheckboxes;
 };
 
 #endif // SVDBMaterialEditWidgetH

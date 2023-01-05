@@ -145,118 +145,121 @@
        <string>EPD</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
-       <item row="3" column="3">
-        <widget class="QToolButton" name="toolButtonSelectCatD">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+       <item row="6" column="0" colspan="4">
+        <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>...</string>
+          <string>Assign EPD to all Categories</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEditCatD">
-         <property name="enabled">
-          <bool>false</bool>
+       <item row="4" column="0" colspan="4">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Deposit</string>
          </property>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditCatD">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QToolButton" name="toolButtonSelectCatD">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetCatD"/>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QToolButton" name="toolButtonSelectCatA">
-         <property name="text">
-          <string>...</string>
+       <item row="2" column="0" colspan="4">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Disposal</string>
          </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditCatC">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QToolButton" name="toolButtonSelectCatC">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetCatC"/>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEditCatC">
-         <property name="enabled">
-          <bool>false</bool>
+       <item row="0" column="0" colspan="4">
+        <widget class="QGroupBox" name="groupBoxProduction">
+         <property name="title">
+          <string>Production</string>
          </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="1">
+           <widget class="QToolButton" name="toolButtonSelectCatA">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditCatA">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetCatA"/>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelCatB">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
+       <item row="1" column="0" colspan="4">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Usage</string>
          </property>
-         <property name="text">
-          <string>Category B:</string>
-         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditCatB">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QToolButton" name="toolButtonSelectCatB">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetCatB"/>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="labelCatC">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Category C:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEditCatA">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QToolButton" name="toolButtonSelectCatB">
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="labelCatA">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Category A:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEditCatB">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="QToolButton" name="toolButtonSelectCatC">
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="labelCatD">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Category D:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
+       <item row="7" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -268,6 +271,13 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="5" column="0" colspan="4">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -354,7 +364,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>lineEditCatA</tabstop>
   <tabstop>lineEditDensity</tabstop>
   <tabstop>lineEditSpecHeatCapacity</tabstop>
   <tabstop>graphicsViewCategoryPicture</tabstop>
@@ -364,11 +373,8 @@
   <tabstop>tabWidgetThermal</tabstop>
   <tabstop>lineEditConductivity</tabstop>
   <tabstop>lineEditName</tabstop>
-  <tabstop>lineEditCatB</tabstop>
   <tabstop>pushButtonColor</tabstop>
-  <tabstop>lineEditCatC</tabstop>
   <tabstop>comboBoxCategory</tabstop>
-  <tabstop>lineEditCatD</tabstop>
  </tabstops>
  <resources/>
  <connections/>
