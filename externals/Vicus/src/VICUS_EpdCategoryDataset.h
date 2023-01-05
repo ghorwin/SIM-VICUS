@@ -70,23 +70,23 @@ public:
 
 	//the most frequently used categories
 	enum Module {
-		M_A1,								// Keyword: A1
-		M_A2,								// Keyword: A2
-		M_A3,								// Keyword: A3
-		M_A4,								// Keyword: A4
-		M_A5,								// Keyword: A5
-		M_B1,								// Keyword: B1
-		M_B2,								// Keyword: B2
-		M_B3,								// Keyword: B3
-		M_B4,								// Keyword: B4
-		M_B5,								// Keyword: B5
-		M_B6,								// Keyword: B6
-		M_B7,								// Keyword: B7
-		M_C1,								// Keyword: C1
-		M_C2,								// Keyword: C2
-		M_C3,								// Keyword: C3
-		M_C4,								// Keyword: C4
-		M_D,								// Keyword: D
+		M_A1,		// Keyword: A1					'Raw material procurement (A1)'
+		M_A2,		// Keyword: A2					'Transport (A2)'
+		M_A3,		// Keyword: A3					'Production (A3)'
+		M_A4,		// Keyword: A4					'Transport (A4)'
+		M_A5,		// Keyword: A5					'Construction / Installation (A5)'
+		M_B1,		// Keyword: B1					'Usage (B1)'
+		M_B2,		// Keyword: B2					'Maintenance (B2)'
+		M_B3,		// Keyword: B3					'Maintenance (B3)'
+		M_B4,		// Keyword: B4					'Replacement (B4)'
+		M_B5,		// Keyword: B5					'Modernisation (B5)'
+		M_B6,		// Keyword: B6					'Energy consumption in operation (B6)'
+		M_B7,		// Keyword: B7					'Water consumption in operation (B7)'
+		M_C1,		// Keyword: C1					'deconstruction / demolition (C1)'
+		M_C2,		// Keyword: C2					'Transport (C2)'
+		M_C3,		// Keyword: C3					'Waste recycling (C3)'
+		M_C4,		// Keyword: C4					'Disposal (C4)'
+		M_D,		// Keyword: D					'Potential for reuse, recovery and recycling (D)'
 		NUM_M
 	};
 

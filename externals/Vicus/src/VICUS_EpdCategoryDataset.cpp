@@ -27,9 +27,9 @@
 
 #include <IBK_MessageHandler.h>
 #include <IBK_messages.h>
-#include <IBK_StringUtils.h>.h>
+#include <IBK_StringUtils.h>
 
-#include <VICUS_KeywordList.h>.h>
+#include <VICUS_KeywordList.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -130,7 +130,7 @@ TiXmlElement * EpdCategoryDataset::writeXML(TiXmlElement * parent) const {
 		for (std::vector<Module>::const_iterator it = m_modules.begin();
 			it != m_modules.end(); ++it)
 		{
-			moduleString += std::string(count > 0 ? "," : "") + VICUS::KeywordList::Description("EpdCategoryDataset::Module", *it); // add ", " in between beginning from the second module
+			moduleString += std::string(count > 0 ? "," : "") + VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", *it); // add "," in between beginning from the second module
 			++count;
 		}
 
