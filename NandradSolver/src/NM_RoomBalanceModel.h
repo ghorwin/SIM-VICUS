@@ -174,15 +174,23 @@ private:
 
 	/*! Number of infiltration model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_infiltrationModelCount = 0;
-	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into room). */
-	const double *									m_infiltrationValueRef = nullptr;
+	/*! Value reference for natural ventilation/infiltration heat flux in [W] (positive if into room). */
+	const double *									m_infiltrationHeatfluxValueRef = nullptr;
+	/*! Value reference for natural ventilation/infiltration mass flux in [kg/s] (positive if into room). */
+	const double *									m_infiltrationMoistMassfluxValueRef = nullptr;
 
 	/*! Number of internal loads model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_internalLoadsModelCount = 0;
+	/*! Number of internal moisture loads model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_internalMoistureLoadsModelCount = 0;
 	/*! Value reference for natural equipment loads in [W] (positive if into room). */
 	const double *									m_equipmentLoadValueRef = nullptr;
 	/*! Value reference for natural person loads in [W] (positive if into room). */
 	const double *									m_personLoadValueRef = nullptr;
+	/*! Value reference for person moisture loads in [kg/s] (positive if into room). */
+	const double *									m_personMoistureLoadValueRef = nullptr;
+	/*! Value reference for person moisture enthalpy fluxes in [W] (positive if into room). */
+	const double *									m_personMoistureEnthalpyFluxValueRef = nullptr;
 	/*! Value reference for natural lighting loads in [W] (positive if into room). */
 	const double *									m_lightingLoadValueRef = nullptr;
 

@@ -46,6 +46,7 @@ public:
 	enum VectorValuedResults {
 		VVR_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Natural ventilation/infiltration air change rate'
 		VVR_VentilationHeatFlux,			// Keyword: VentilationHeatFlux				[W]		'Natural ventilation/infiltration heat flux'
+		VVR_VentilationMoistureMassFlux,	// Keyword: VentilationMoistureMassFlux		[kg/s]	'Natural ventilation/infiltration moisture mass flux'
 		NUM_VVR
 	};
 

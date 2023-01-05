@@ -71,6 +71,7 @@ public:
 		SQ_VentilationMinAirTemperatureSchedule,				// Keyword: VentilationMinAirTemperatureSchedule			[C]
 		SQ_EquipmentHeatLoadPerAreaSchedule,					// Keyword: EquipmentHeatLoadPerAreaSchedule				[W/m2]
 		SQ_PersonHeatLoadPerAreaSchedule,						// Keyword: PersonHeatLoadPerAreaSchedule					[W/m2]
+		SQ_PersonMoistureLoadPerAreaSchedule,					// Keyword: PersonMoistureLoadPerAreaSchedule				[kg/m2s]
 		SQ_LightingHeatLoadPerAreaSchedule,						// Keyword: LightingHeatLoadPerAreaSchedule					[W/m2]
 		SQ_HeatingSetpointSchedule,								// Keyword: HeatingSetpointSchedule							[C]
 		SQ_CoolingSetpointSchedule,								// Keyword: CoolingSetpointSchedule							[C]

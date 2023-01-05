@@ -81,6 +81,19 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				return false;
 			}
 
+			// check schedule moist rate
+			if(m_idMoistureRatePerPersonSchedule != INVALID_ID) {
+				const Schedule *moistSched = scheduleDB[m_idMoistureRatePerPersonSchedule];
+				if (moistSched == nullptr) {
+					m_errorMsg = "Moisture rate schedule with id '" + std::to_string(m_idMoistureRatePerPersonSchedule) + "' does not exist.";
+					return false;
+				}
+				if (!moistSched->isValid()) {
+					m_errorMsg = "Moisture rate schedule '" + moistSched->m_displayName.string("de", true) + "' is invalid.";
+					return false;
+				}
+			}
+
 			const Schedule * occSched = scheduleDB[m_idOccupancySchedule];
 			if (occSched == nullptr) {
 				m_errorMsg = "Occupancy schedule with id '" + std::to_string(m_idActivitySchedule) + "' does not exist.";
@@ -180,6 +193,7 @@ AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement 
 			m_powerMethod != otherIntLoad->m_powerMethod ||
 			m_idOccupancySchedule != otherIntLoad->m_idOccupancySchedule ||
 			m_idActivitySchedule != otherIntLoad->m_idActivitySchedule ||
+			m_idMoistureRatePerPersonSchedule != otherIntLoad->m_idMoistureRatePerPersonSchedule ||
 			m_idPowerManagementSchedule != otherIntLoad->m_idPowerManagementSchedule)
 		return Different;
 

@@ -70,6 +70,8 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 				m_idOccupancySchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdActivitySchedule")
 				m_idActivitySchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdMoistureRatePerPersonSchedule")
+				m_idMoistureRatePerPersonSchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdPowerManagementSchedule")
 				m_idPowerManagementSchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "ActivateCO2Production")
@@ -152,6 +154,8 @@ TiXmlElement * InternalLoad::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdOccupancySchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idOccupancySchedule));
 	if (m_idActivitySchedule != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdActivitySchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idActivitySchedule));
+	if (m_idMoistureRatePerPersonSchedule != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdMoistureRatePerPersonSchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idMoistureRatePerPersonSchedule));
 	if (m_idPowerManagementSchedule != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdPowerManagementSchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idPowerManagementSchedule));
 	TiXmlElement::appendSingleAttributeElement(e, "ActivateCO2Production", nullptr, std::string(), IBK::val2string<bool>(m_activateCO2Production));

@@ -1,0 +1,285 @@
+# Hygrothermal
+
+
+## InternalLoadsConstantSingleZone.nandrad
+
+- einzelne Zone mit konstanter natürlicher Lüftung und konstantem Außenklima
+- Variablen: Luftwechselrate n, Feuchtemassendichte der Zone rhoVapor, Startwert rhoVapor0, 
+  Feuchtemassendichte der Außenluft rhoVaporAmb, trockene Luftmassedichte der Zone (bezogen auf Gesamtvolumen), 
+  Startwert rhoAir0, trockene Luftmassedichte der Außenluft rhoAir0, Zonenenvolumen V
+
+```
+  n         	 : 0.5 1/h
+  rhoVapor0      : 0.0105598 kg/m3 (entspicht 80% Lufteeuchte bei 15.5 °C Raumlufttemperatur)
+  rhoVaporAmb 	 : 0.0138083 kg/m3 (entspicht 80% Lufteeuchte bei 20 °C Außenlufttemperatur)
+  rhoAir0        : 1.2057 kg/m3 
+  rhoAirAmb 	 : 1.1817 kg/m3 
+```
+
+Die Bilanzgleichungen im Raum:
+
+```
+V d/dt rhoVapor(t) = mdot * (rhoVaporAmb/rhoGasAmb - rhoVapor(t)/rhoGas(t) )
+V d/dt rhoAir(t)   = mdot * (rhoAirAmb/rhoGasAmb   - rhoAir(t)/rhoGas(t) )
+```
+
+mit dem Austauschmassestrom
+```
+mdot = n * V * rhoGasAmb 
+```
+
+### Feuchtebilanz:
+
+Wird näherungsweise
+```
+mdot * rhoVapor(t)/rhoGas(t) = n * V * rhoVapor(t) 
+```
+gesetzt, so liefert dies den Ansatz
+```
+V d/dt rhoVapor(t) = n * V * (rhoVaporAmb - rhoVapor(t) )
+```
+mit der analytischen Näherungslösung
+```
+rhoVapor(t) = rhoVapor0 * exp(-n(t - t0)) + rhoVaporAmb * (1 - exp(-n*(t - t0))
+```
+und den Werten:
+```
+- t = 1h:  rhoVapor = 0.0118 kg/m3
+- t = 2h:  rhoVapor = 0.0126 kg/m3
+- t = 10h: rhoVapor = 0.0138 kg/m3
+```
+
+
+### Luftbilanz
+
+Analog gilt die näherungsweise Bilanz für trockene Luft
+
+```
+V d/dt rhoAir(t) = n * V * (rhoAirAmb - rhoAir(t) )
+```
+mit der Lösung 
+```
+rhoAir(t) = rhoAir0 * exp(-n(t - t0)) + rhoAirAmb * (1 - exp(-n*(t - t0))
+```
+Dies ergibt die Werte:
+```
+- t = 1h:  rhoAir = 1.2 kg/m3
+- t = 2h:  rhoAir = 1.191 kg/m3
+- t = 10h: rhoAir = 1.182 kg/m3
+```
+
+### Energiebilanz
+
+Für die Temperaturen gilt die Bilanzgleichung.
+
+```
+V * d/dt u(t) = mdot * ( cVapor ( rhoVaporAmb/rhoGasAmb * Tamb - rhoVapor(t)/rhoGas(t) * T(t) ) + Hevap * (rhoVaporAmb/rhoGasAmb - rhoVapor(t)/rhoGas(t)) ) 
+			  + mdot *   cAir * ( rhoAirAmb/rhoGasAmb   * Tamb - rhoAir(t)/rhoGas(t)   * T(t) ) )
+```
+mit
+
+```
+u(t) = (rhoAir(t) * cAir + rhoVapor(t) * cVapor) * T(t) + rhoVapor(t) * Hevap
+```
+Eingesetzt die Bilanzen für Feuchte und trockene Luft, vereinfacht sich die Gleichung zu
+```
+V * (rhoAir(t) * cAir + rhoVapor(t) * cVapor) * d/dt T(t) = mdot * cVapor * rhoVaporAmb/rhoGasAmb * (Tamb - T(t)) 
+														  + mdot * cAir   * rhoAirAmb/rhoGasAmb   * (Tamb - T(t))
+														  = n * V * (cVapor * rhoVaporAmb + cAir * rhoAirAmb) * (Tamb - T(t)) 
+```
+also
+```
+d/dt T(t) = n * (cVapor * rhoVaporAmb + cAir * rhoAirAmb)/((cVapor * (rhoVapor0 - rhoVaporAmb) + cAir * (rhoAir0 - rhoAirAmb) ) * exp(-n(t - t0)) + cVapor * rhoVaporAmb + cAir * rhoAirAmb) * (Tamb - T(t)) 
+```
+Die führt auf die analytische Lösung
+```
+T(t) = T0 + (Tamb - T0) * (cVapor * rhoVaporAmb + cAir * rhoAirAmb) * (1 - exp(-n *(t - t0)))
+		 / ( (cVapor * (rhoVapor0 - rhoVaporAmb) + cAir * (rhoAir0 - rhoAirAmb) ) * exp(-n(t - t0)) + cVapor * rhoVaporAmb + cAir * rhoAirAmb))
+```
+oder auch 
+```
+T(t) =  T0 + (Tamb - T0) * (cVapor * rhoVaporAmb + cAir * rhoAirAmb) / ( rhoAir(t) * cAir + rhoVapor(t) * cVapor) * (1 - exp(-n *(t - t0)))
+    	 
+```
+
+Eingesetzt spezifischen Wärmekapazitäten für Luft und Wasserdampf cAir und cVapor, der Luftmassedichte rhoAir der spezifischen Dampfumwandlungsenthalpie Hevap:
+
+```
+  cAir         	 : 1006 J/kgK
+  cVapor      	 : 2050 J/kgK
+  Hevap          : 3.08e+06 J/kg
+```
+sowie die Starttemperaturen T0 und der Außenlufttemperatur Tamb:
+
+```
+  T0      	 	 : 15.5 C
+  Tamb 	 	     : 20 C
+```
+ergeben sich die Werte:
+```
+- t = 1h:  17.2 C
+- t = 2h:  18.3 C
+- t = 10h: 20.0 C
+```
+
+Eine leichte Veränderung der Temperaturwerte ist zu erwarten, wenn anstelle der zeitabhängigen Luftmassedichte eine Materialkonstante verwendet wird.
+
+
+## InternalLoadsInfiltrationConstantSingleZone.nandrad
+
+Zusätzlich zum Luftautausch kommt eine konstante Feuchtelast durch Personen mdotPerArea hinzu mit
+
+```
+  mdotPerArea  	 : 1.667e-06 kg/m2s
+  area      	 : 30 m2
+  V				 : 90 m3
+```
+
+Die Feuchtebilanz ändert sich zu
+```
+V d/dt rhoVapor(t) = mdot * (rhoVaporAmb/rhoGasAmb - rhoVapor(t)/rhoGas(t) ) + mdotPerArea * area
+```
+
+Der stationäre Zustand wird erreicht bei
+
+```
+xiMoistInf = rhoVaporInf/rhoGasInf =  (mdot * rhoVaporAmb/rhoGasAmb + mdotPerArea * area)/mdot
+```
+mit dem Wert
+```
+xiMoistInf = 0.0149
+```
+Damit gilt automatisch
+```
+xiAirInf = rhoAirInf/rhoGasInf = 0.9851
+```
+
+Für die Temperaturen gilt die stationäre Bilanzgleichung
+
+```
+0 = mdot * ( cVapor ( xiMoistAmb * Tamb - xiMoistInf * T(t) ) + Hevap * (xiMoistAmb - xiMoistInf) ) 
+  + mdot *   cAir * ( xiAirAmb   * Tamb - xiAirInf   * T(t) ) ) + mdotPerArea * area * (cVapor * T(t) + Hevap)
+```
+mit
+```
+xiMoistAmb = rhoVaporAmb/rhoGasAmb
+xiAirAmb   = rhoAirAmb/rhoGasAmb
+```
+Daraus ergibt sich die Zonenendtemperatur
+```
+TInf =( mdot * ( (cVapor * xiMoistAmb + cAir * xiAirAmb) * Tamb + Hevap * (xiMoistAmb - xiMoistInf)) + mdotPerArea * area * Hevap)
+	/( mdot * (cVapor * xiMoistInf + cAir * xiAirInf) - mdotPerArea * area * cVapor) 
+```
+mit den Werten
+```
+mdot       = 0.01494 kg/m3
+xiMoistAmb = 0.01155
+xiAirAmb   = 0,98845
+TInf       = 20.96 C
+```
+
+Aus der idealen Gasgleichung
+```
+rhoVaporInf = xiMoistInf * rhoGasInf = pVaporInf/(RVapor * TInf)
+rhoAirInf   = xiAirInf   * rhoGasInf = (pRef - pVaporInf)/(RAir * TInf)
+```
+folgt
+```
+rhoGasInf = pRef/(RVapor * TInf) / (xiMoistInf + xiAirInf * RAir/RVapor)
+```
+Mit
+```
+pRef   = 101325 Pa
+RVapor = 461.89 J/kgK
+RAir   = 287.1  J/kgK
+```
+ergibt sich
+```
+rhoGasInf   = 1,189 kg/m3
+rhoVaporInf = 0.0177 kg/m3
+```
+
+
+## InfiltrationScheduledSingleZone.nandrad
+
+* Variable Lüftungszyklen:
+Mi-Mo: 6-10 Uhr, n = 0.4 1/h 
+Di:    14-16 Uhr, n = 0.1 1/h
+```
+  rhoVapor0      : 0.003393 kg/m3 (entspicht 50% Luftfeuchte bei 5 °C Raumlufttemperatur)
+  rhoVaporAmb 	 : 0.0138083 kg/m3 (entspicht 80% Luftfeuchte bei 20 °C Außenlufttemperatur)
+  rhoAir0        : 1.2634 kg/m3 
+  rhoAirAmb 	 : 1.1817 kg/m3 
+  T0             : 5 C
+```
+
+```
+10 h: n = 0.4 1/h, rhoVapor = 0.0117 kg/m3, rhoAir = 1.198 kg/m3, T = 16.9 C
+40 h: n = 0.1 1/h, rhoVapor = 0.0121 kg/m3, rhoAir = 1.195 kg/m3, T = 17.4 C
+58 h: n = 0.4 1/h, rhoVapor = 0.0135 kg/m3, rhoAir = 1.184 kg/m3, T = 19.5 C
+```
+
+## InfiltrationScheduledSingleZone.nandrad
+
+* Variable Lüftungszyklen:
+Mi-Mo: 6-10 Uhr, n = 0.4 1/h 
+Di:   14-16 Uhr, n = 0.1 1/h
+
+Startwerte:
+```
+  rhoVapor0      : 0.003393 kg/m3 (entspicht 50% Luftfeuchte bei 5 °C Raumlufttemperatur)
+  rhoVaporAmb 	 : 0.0138083 kg/m3 (entspicht 80% Luftfeuchte bei 20 °C Außenlufttemperatur)
+  rhoAir0        : 1.2634 kg/m3 
+  rhoAirAmb 	 : 1.1817 kg/m3 
+```
+Ergebnisprognose:
+```
+t > 10 h: n = 0.4 1/h, rhoVapor = 0.0117 kg/m3, rhoAir = 1.198 kg/m3, T = 16.9 C
+t > 40 h: n = 0.1 1/h, rhoVapor = 0.0121 kg/m3, rhoAir = 1.195 kg/m3, T = 17.4 C
+t > 58 h: n = 0.4 1/h, rhoVapor = 0.0135 kg/m3, rhoAir = 1.184 kg/m3, T = 19.5 C
+```
+
+## InfternalLoadsScheduledSingleZone.nandrad
+
+* Variable Personenlasten:
+Mi-Mo: 6-10 Uhr, mdotPerArea = 1.667e-07 kg/m2s
+Di:   14-16 Uhr, mdotPerArea = 6.667e-08 kg/m2s
+
+Die Feuchtebilanz und Luftbilanz ändern sich zu
+```
+V d/dt rhoVapor(t) = mdotPerArea * area
+V d/dt rhoAir(t)   = 0
+```
+mit der Lösung
+
+```
+rhoVapor(t) = rhoVapor0 + mdotPerArea * area/V * (t - t0)
+rhoAir(t)   = rhoAir0 
+```
+
+Für die Temperaturen gilt die Bilanzgleichung
+
+```
+V * d/dt u(t) = mdotPerArea * area * (cVapor * T(t) + Hevap)
+```
+mit eingesetzter Luft- und Feuchtebilanz:
+```
+V * (rhoAir0 * cAir + rhoVapor(t)) * d/dt T(t) = 0
+```
+Ignoriert man die Zeitabhängigkeit von rhoVapor, so ergibt dies die Näherungslösung
+```
+T(t) = T0
+```
+
+Startwerte:
+```
+  rhoVapor0      : 0.00863 kg/m3 (entspicht 50% Luftfeuchte bei 20 °C Raumlufttemperatur)
+  rhoAir0        : 1.205 kg/m3 
+  T0             : 20 C
+```
+Ergebnisprognose:
+```
+t > 10 h: mdotPerArea = 1.667e-07 kg/m2s, rhoVapor = 0.00943 kg/m3, T = 20.0 C
+t > 40 h: mdotPerArea = 6.667e-08 kg/m2s, rhoVapor = 0.00959 kg/m3, T = 20.0 C
+t > 58 h: mdotPerArea = 1.667e-07 kg/m2s, rhoVapor = 0.0104 kg/m3,  T = 20.0 C
+```

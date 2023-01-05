@@ -73,30 +73,30 @@ public:
 
 		const AbstractDBElement * subTemplate = nullptr;
 		switch (subType) {
-		case VICUS::ZoneTemplate::ST_IntLoadPerson:
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-		case VICUS::ZoneTemplate::ST_IntLoadLighting:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
 			break;
 
-		case VICUS::ZoneTemplate::ST_IntLoadOther:
+			case VICUS::ZoneTemplate::ST_IntLoadOther:
 			break;
-		case VICUS::ZoneTemplate::ST_ControlThermostat:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_ControlThermostat:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_Infiltration:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_Infiltration:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_VentilationNatural:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_VentilationNatural:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::NUM_ST:
+			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 		}
 
@@ -123,19 +123,26 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, bool enableMoisture, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 	// i.e. m_internalLoadObjects[3] references m_objLists[3] and
 	//      m_schedules[3] corresponds also to m_objLists[3]
 
 	std::vector<NANDRAD::InternalLoadsModel>		m_internalLoadObjects;
-	std::vector<NANDRAD::ObjectList>				m_objLists;
-	std::vector<std::string>						m_objListNames;
+	std::vector<NANDRAD::InternalMoistureLoadsModel>
+													m_internalMoistLoadObjects;
+	std::vector<NANDRAD::ObjectList>				m_intLoadObjLists;
+	std::vector<std::string>						m_intLoadObjListNames;
+	std::vector<NANDRAD::ObjectList>				m_intMoistLoadObjLists;
+	std::vector<std::string>						m_intMoistLoadObjListNames;
 
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
-	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+	std::vector< std::vector<NANDRAD::Schedule> >	m_intLoadSchedules;
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_intMoistLoadSchedules;
 };
 
 class VentilationModelGenerator : public ModelGeneratorBase {
@@ -821,8 +828,10 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
 	ThermostatModelGenerator thermostats(this);
 	thermostats.m_placeholders = p.m_placeholders;
+
+	bool enableMoist = p.m_simulationParameter.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	for (const VICUS::Room * r : zones) {
-		internalLoads.generate(r, usedModelIds, errorStack);
+		internalLoads.generate(r, usedModelIds, enableMoist, errorStack);
 		ventilation.generate(r, usedModelIds, errorStack);
 		idealHeatCool.generate(r, usedModelIds, errorStack);
 		thermostats.generate(r, usedModelIds, errorStack);
@@ -833,9 +842,15 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 
 	// *** InternalLoads ***
 	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
-	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_objLists.begin(), internalLoads.m_objLists.end());
-	for (unsigned int i=0; i<internalLoads.m_schedules.size(); ++i)
-		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
+	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intLoadObjLists.begin(), internalLoads.m_intLoadObjLists.end());
+	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intMoistLoadObjLists.begin(), internalLoads.m_intMoistLoadObjLists.end());
+	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
+	// if moisture
+	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i) {
+		p.m_schedules.m_scheduleGroups[internalLoads.m_intMoistLoadObjLists[i].m_name] =
+				internalLoads.m_intMoistLoadSchedules[i];
+	}
 
 	// *** Ventilation ***
 	p.m_models.m_naturalVentilationModels = ventilation.m_natVentObjects;
@@ -1142,7 +1157,7 @@ void Project::addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, 
 
 
 
-void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack) {
+void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, bool enableMoisture, QStringList & errorStack) {
 	// check if we have a zone template with id to internal loads
 
 	// InternalLoad holds data for sub templates ST_IntLoadPerson, ST_IntLoadEquipment or ST_IntLoadLighting
@@ -1167,13 +1182,15 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// generate schedules
 
 	std::string personSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea) + "Schedule [W/m2]";
+	std::string personMoistSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalMoistureLoadsModel::para_t", NANDRAD::InternalMoistureLoadsModel::P_PersonMoistureLoadPerArea) + "Schedule [kg/m2s]";
 	std::string equipmentSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea) + "Schedule [W/m2]";
 	std::string lightingSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea) + "Schedule [W/m2]";
 
 	// schedule generation:
 	//
 	// 1. create basic schedule (name?)
-	std::vector<NANDRAD::Schedule> scheds; // contains all schedules for this internal loads parametrization
+	std::vector<NANDRAD::Schedule> loadScheds; // contains all schedules for this internal loads parametrization
+	std::vector<NANDRAD::Schedule> moistScheds; // contains all schedules for this internal moisture loads parametrization
 
 	// 2. initialize with "AllDays" DailyCycle
 	NANDRAD::Schedule allDays;
@@ -1184,11 +1201,15 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	if (intLoadPerson == nullptr)		dc.m_values.m_values[personSchedName].push_back(0);
 	if (intLoadEquipment == nullptr)	dc.m_values.m_values[equipmentSchedName].push_back(0);
 	if (intLoadLighting == nullptr)		dc.m_values.m_values[lightingSchedName].push_back(0);
+
 	allDays.m_dailyCycles.push_back( dc );
 
 	// we only need an all day schedule if we miss at least on of the schedules
-	if (!dc.m_values.m_values.empty())
-		scheds.push_back(allDays);
+	if (!dc.m_values.m_values.empty()) {
+		loadScheds.push_back(allDays);
+		moistScheds.push_back(allDays);
+	}
+
 
 	// initialize load fractions with 0
 	double personRadiationFraction = 0;
@@ -1198,6 +1219,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// for each given VICUS schedule, generate a set of schedules and insert them in vector scheds (unless already existing, in which case these are extended)
 
 	// *** Person loads (category = IC_Person)***
+	bool moistRateScheduleExists = false;
 
 	if (intLoadPerson != nullptr) {
 		if (!intLoadPerson->isValid(m_scheduleDB)) {
@@ -1234,7 +1256,23 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			combinedSchedule = combinedSchedule.multiply(personPerArea);
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, loadScheds);
+
+			// create schedule for moisture load
+			if(enableMoisture) {
+				const Schedule * moistRateSchedule = m_scheduleDB[intLoadPerson->m_idMoistureRatePerPersonSchedule];
+				// we allow missing moisture rate
+				if(moistRateSchedule != nullptr) {
+					VICUS::Schedule combinedMoistSchedule = moistRateSchedule->multiply(*occupancySchedule);
+					combinedMoistSchedule = combinedMoistSchedule.multiply(personPerArea);
+
+					// - convert and insert VICUS::Schedule to NANDRAD schedule group
+					combinedMoistSchedule.insertIntoNandradSchedulegroup(personMoistSchedName, moistScheds);
+
+					// register a moistuzre vrate schedule
+					moistRateScheduleExists = true;
+				}
+			}
 		}
 	}
 
@@ -1271,7 +1309,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, loadScheds);
 		}
 	}
 
@@ -1307,7 +1345,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(lightingSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(lightingSchedName, loadScheds);
 		}
 	}
 
@@ -1337,9 +1375,9 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
 		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
-				NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
+			NANDRAD::Schedules::equalSchedules(m_intLoadSchedules[i], loadScheds) ) {
 			// insert our zone ID in object list
-			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+			m_intLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
 			break;
 		}
@@ -1347,7 +1385,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	if(!foundModel) {
 		// append definitions and create new object list
 		NANDRAD::ObjectList ol;
-		ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_intLoadObjListNames.begin(), m_intLoadObjListNames.end());
 		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		ol.m_filterID.m_ids.insert(r->m_id);
 
@@ -1356,9 +1394,51 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 		// add all definitions
 		m_internalLoadObjects.push_back(internalLoadsModel);
-		m_schedules.push_back(scheds);
-		m_objLists.push_back(ol);
-		m_objListNames.push_back(ol.m_name);
+		m_intLoadSchedules.push_back(loadScheds);
+		m_intLoadObjLists.push_back(ol);
+		m_intLoadObjListNames.push_back(ol.m_name);
+	}
+
+
+	if(enableMoisture && moistRateScheduleExists) {
+		// generate NANDRAD::InternalMoistureLoads object
+		NANDRAD::InternalMoistureLoadsModel internalMoistLoadsModel;
+		internalMoistLoadsModel.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);  /*VICUS::uniqueId(m_internalLoadObjects)*/;
+		const VICUS::ZoneTemplate * zt = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+		internalMoistLoadsModel.m_displayName = zt->m_displayName.string();
+		internalMoistLoadsModel.m_modelType = NANDRAD::InternalMoistureLoadsModel::MT_Scheduled;
+
+		// Now we check if we have already an internal moisture loads model object with exactly the same schedule
+		// (the internal moisture loads model object and corresponding schedule have same ID).
+		// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
+		// otherwise we add load and schedule definitions and generate a new object list.
+
+		bool foundModel = false;
+		for (unsigned int i=0; i<m_internalMoistLoadObjects.size(); ++i) {
+			if (m_internalMoistLoadObjects[i].equal(internalMoistLoadsModel) &&
+				NANDRAD::Schedules::equalSchedules(m_intMoistLoadSchedules[i], moistScheds) ) {
+				// insert our zone ID in object list
+				m_intMoistLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
+				foundModel = true;
+				break;
+			}
+		}
+		if(!foundModel) {
+			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("InternalMoistureLoads-" + zt->m_displayName.string(), m_intMoistLoadObjListNames.begin(), m_intMoistLoadObjListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			internalMoistLoadsModel.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_internalMoistLoadObjects.push_back(internalMoistLoadsModel);
+			m_intMoistLoadSchedules.push_back(moistScheds);
+			m_intMoistLoadObjLists.push_back(ol);
+			m_intMoistLoadObjListNames.push_back(ol.m_name);
+		}
 	}
 }
 

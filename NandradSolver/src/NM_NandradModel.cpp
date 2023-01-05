@@ -82,6 +82,7 @@
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
 #include "NM_InternalLoadsModel.h"
+#include "NM_InternalMoistureLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
 #include "NM_HydraulicNetworkModel.h"
@@ -1307,6 +1308,28 @@ void NandradModel::initModels() {
 
 			try {
 				m.checkParameters();
+				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
+			}
+
+			registerStateDependendModel(mod);
+		}
+	}
+
+	// internal moisture loads
+	if (!m_project->m_models.m_internalMoistureLoadsModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing internal moisture loads models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (const NANDRAD::InternalMoistureLoadsModel & m : m_project->m_models.m_internalMoistureLoadsModels) {
+			NANDRAD_MODEL::InternalMoistureLoadsModel * mod = new NANDRAD_MODEL::InternalMoistureLoadsModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters(m_project->m_simulationParameter);
 				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
 			}
 			catch (IBK::Exception & ex) {

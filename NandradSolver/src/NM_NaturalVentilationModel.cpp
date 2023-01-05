@@ -69,8 +69,12 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'Zone'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
+	unsigned int varCount = 2; // air change rate and heat flux are the first quantities
+	if (m_moistureBalanceEnabled) {
+		varCount = NUM_VVR; // more variables for hygrothermal calculation
+	}
 	// reserve storage memory for results
-	m_vectorValuedResults.resize(NUM_VVR);
+	m_vectorValuedResults.resize(varCount);
 
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
 }
@@ -84,8 +88,14 @@ void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) 
 		return; // nothing to compute, return
 	// get IDs of ventilated zones
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
+
+	unsigned int varCount = 2; // air change rate and heat flux are the first quantities
+	if (m_moistureBalanceEnabled) {
+		varCount = NUM_VVR; // more variables for hygrothermal calculation
+	}
+
 	// resize result vectors accordingly
-	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
+	for (unsigned int varIndex=0; varIndex<varCount; ++varIndex)
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
 
 	// we also cache the zonal volumes for faster computation
@@ -113,9 +123,14 @@ void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription
 	// Retrieve index information from vector valued results.
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 
+	int varCount = 2; // air change rate and heat flux are the first quantities
+	if (m_moistureBalanceEnabled) {
+		varCount = NUM_VVR; // more variables for hygrothermal calculation
+	}
+
 	// For each of the zones in the object list we generate vector-valued results as defined
 	// in the type VectorValuedResults.
-	for (int varIndex=0; varIndex<NUM_VVR; ++varIndex) {
+	for (int varIndex=0; varIndex < varCount; ++varIndex) {
 		// store name, unit and description of the vector quantity
 		const std::string &quantityName = KeywordList::Keyword("NaturalVentilationModel::VectorValuedResults", varIndex );
 		const std::string &quantityUnit = KeywordList::Unit("NaturalVentilationModel::VectorValuedResults", varIndex );
@@ -132,20 +147,26 @@ void NaturalVentilationModel::resultDescriptions(std::vector<QuantityDescription
 
 const double * NaturalVentilationModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
+
+	int varCount = 2; // air change rate and heat flux are the first quantities
+	if (m_moistureBalanceEnabled) {
+		varCount = NUM_VVR; // more variables for hygrothermal calculation
+	}
+
 	// determine variable enum index
-	unsigned int varIndex=0;
-	for (; varIndex<NUM_VVR; ++varIndex) {
+	int varIndex=0;
+	for (; varIndex<varCount; ++varIndex) {
 		if (KeywordList::Keyword("NaturalVentilationModel::VectorValuedResults", (VectorValuedResults)varIndex ) == quantityName.m_name)
 			break;
 	}
-	if (varIndex == NUM_VVR)
+	if (varIndex == varCount)
 		return nullptr;
 	// now check the index
 	if (quantityName.m_index == -1) // no index - return start of vector
-		return m_vectorValuedResults[varIndex].dataPtr();
+		return m_vectorValuedResults[(unsigned int) varIndex].dataPtr();
 	// search for index
 	try {
-		const double & valRef = m_vectorValuedResults[varIndex][(unsigned int)quantityName.m_index];
+		const double & valRef = m_vectorValuedResults[(unsigned int) varIndex][(unsigned int)quantityName.m_index];
 		return &valRef;
 	} catch (...) {
 		// exception is thrown when index is not available - return nullptr
@@ -181,6 +202,23 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 	}
 
 	// offset 1 + nZones
+	if(m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
+		ref.m_id = 0;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+		ref.m_name.m_name = "MoistureDensity";
+		ref.m_required = true;
+		inputRefs.push_back(ref);
+		for (unsigned int id : m_objectList->m_filterID.m_ids) {
+			InputReference ref;
+			ref.m_id = id;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ref.m_name.m_name = "MoistureDensity";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		}
+	}
+
+	// offset 1 + nZones (+ 1 + nZones)
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled
 		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
 		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit)
@@ -195,7 +233,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		}
 	}
 
-	// offset 1 + 2*nZones
+	// offset 1 + 2*nZones (+ 1 + nZones)
 	// for MT_ScheduledWithBaseACR we also need VentilationRateIncreaseSchedule
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
 		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
@@ -209,7 +247,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		}
 	}
 
-	// offset 1 + 3*nZones
+	// offset 1 + 3*nZones (+ 1 + nZones)
 	// for MT_ScheduledWithBaseACRDynamicTLimit we also need MinimumAirTemperature
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
@@ -222,7 +260,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		}
 	}
 
-	// offset 1 + 4*nZones
+	// offset 1 + 4*nZones (+ 1 + nZones)
 	// for MT_ScheduledWithBaseACRDynamicTLimit we also need MaximumAirTemperature
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
@@ -235,9 +273,9 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		}
 	}
 
-	// offset 1 + 2*nZones for MT_Scheduled  or
-	// offset 1 + 3*nZones for MT_ScheduledWithBaseACR
-	// offset 1 + 5*nZones for MT_ScheduledWithBaseACRDynamicTLimit
+	// offset 1 + 2*nZones (+ 1 + nZones)  for MT_Scheduled  or
+	// offset 1 + 3*nZones (+ 1 + nZones)  for MT_ScheduledWithBaseACR
+	// offset 1 + 5*nZones (+ 1 + nZones)  for MT_ScheduledWithBaseACRDynamicTLimit
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
 		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		// also the wind speed from location
@@ -257,6 +295,10 @@ void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescri
 {
 	// simply store and check value references
 	unsigned int expectedSize = 1 + m_objectList->m_filterID.m_ids.size(); // ambient temperature and all zone's temperatures
+	// moisture balance
+	if(m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled())
+		expectedSize += 1 + m_objectList->m_filterID.m_ids.size(); // ambient and room air moisture density
+
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled)
 		expectedSize += m_objectList->m_filterID.m_ids.size(); // VentilationRateSchedule
 	else if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
@@ -289,6 +331,21 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 		resultInputValueReferences.push_back(
 					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
 	}
+
+	if(m_moistureBalanceEnabled) {
+		unsigned int offset = 1 + m_objectList->m_filterID.m_ids.size();
+
+		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+			// pair: result - input
+			// dependency on room moisture density of corresponding zone
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_VentilationMoistureMassFlux].dataPtr() + i, m_valueRefs[1+i]) );
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_VentilationMoistureMassFlux].dataPtr() + i, m_valueRefs[1+i+offset]) );
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i+offset]) );
+		}
+	}
 }
 
 
@@ -297,16 +354,30 @@ int NaturalVentilationModel::update() {
 	// Note: order of value refs
 	//  - ambient temperature from loads
 	//  - zonal air temperatures (size = zoneCount)
+	//  - ambient moisture densities from loads
+	//  - zonal moisture densities (size = zoneCount)
 	//  - zonal VentilationRateSchedule (size = zoneCount)
 	//  - (only for MT_ScheduledWithBaseACR) zonal VentilationRateIncreaseSchedule (size = zoneCount)
 	//  - (only for MT_ScheduledWithBaseACR) WindVelocity
 
-
 	// get ambient temperature in  [K]
 	double Tambient = *m_valueRefs[0];
-	// loop over all zones
+
+	// store offset for variables that are needed for calculation
+	unsigned int varOffset = 1 + zoneCount;
+
+	// correct offset in tha case of moisture calulation and ambient moisture density
+	if(m_moistureBalanceEnabled) {
+		// set offset
+		varOffset += 1 + zoneCount;
+	}
+
+	// Compute air change rate:
+
+	// store pointer to result quantities
 	double * resultVentRate = m_vectorValuedResults[VVR_VentilationRate].dataPtr();
-	double * resultVentHeatFlux = m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr();
+
+	// loop over all zones
 	for (unsigned int i=0; i<zoneCount; ++i) {
 		// get room air temperature in [K]
 		double Tzone = *m_valueRefs[i+1];
@@ -316,14 +387,14 @@ int NaturalVentilationModel::update() {
 
 			case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
 				// retrieve scheduled ventilation rate from schedules
-				rate = *m_valueRefs[1+zoneCount+i];
+				rate = *m_valueRefs[varOffset+i];
 			} break;
 
 			case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR : {
 				// initialize rate with base rate
-				rate = *m_valueRefs[1+zoneCount+i];
+				rate = *m_valueRefs[varOffset+i];
 				// get the scheduled quantities
-				double varWindVelocity = *m_valueRefs[1+3*zoneCount];
+				double varWindVelocity = *m_valueRefs[varOffset+2*zoneCount];
 				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
 				if (varWindVelocity > varWindSpeedACRLimit)
 					break; // wind speed too large, no increase of ventilation possible - keep already determined "rate"
@@ -356,7 +427,7 @@ int NaturalVentilationModel::update() {
 				}
 
 				// get _additional_ ventilation rate
-				double rateIncrease = *m_valueRefs[1+2*zoneCount+i];
+				double rateIncrease = *m_valueRefs[varOffset + zoneCount +i];
 
 				// compute final rate
 				rate += eps * rateIncrease;
@@ -364,16 +435,16 @@ int NaturalVentilationModel::update() {
 
 			case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit : {
 				// initialize rate with base rate
-				rate = *m_valueRefs[1+zoneCount+i];
+				rate = *m_valueRefs[varOffset+i];
 				// get the scheduled quantities
-				double varWindVelocity = *m_valueRefs[1+5*zoneCount];
+				double varWindVelocity = *m_valueRefs[varOffset + 4*zoneCount];
 				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
 				if (varWindVelocity > varWindSpeedACRLimit)
 					break; // wind speed too large, no increase of ventilation possible - keep already determined "rate"
 
 				// get comfort range of temperatures
-				double maxRoomTemp = *m_valueRefs[1+4*zoneCount + i];
-				double minRoomTemp = *m_valueRefs[1+3*zoneCount + i];
+				double maxRoomTemp = *m_valueRefs[varOffset + 3*zoneCount + i];
+				double minRoomTemp = *m_valueRefs[varOffset + 2*zoneCount + i];
 
 				// we only increase ventilation when outside of the comfort zone _and_ if increasing the ventilation rate helps
 				const double RAMPING_DELTA_T = 0.2; // ramping range
@@ -399,7 +470,7 @@ int NaturalVentilationModel::update() {
 				}
 
 				// get _additional_ ventilation rate
-				double rateIncrease = *m_valueRefs[1+2*zoneCount+i];
+				double rateIncrease = *m_valueRefs[varOffset + zoneCount + i];
 
 				// compute final rate
 				rate += eps * rateIncrease;
@@ -408,8 +479,94 @@ int NaturalVentilationModel::update() {
 		}
 		// store ventilation rate result
 		resultVentRate[i] = rate;
-		// compute ventilation heat flux in [W]
-		resultVentHeatFlux[i] = IBK::RHO_AIR*IBK::C_AIR*m_zoneVolumes[i]*(Tambient - Tzone)*rate;
+	}
+
+	// calculate heat and moisture mass fluxes
+
+	// moist air
+	if(m_moistureBalanceEnabled) {
+		// get ambient vapor, gas and air density [kg/m3]
+		double rhoVaporAmbient = 0.0;
+		double rhoGasAmbient = IBK::RHO_AIR;
+		double rhoAirAmbient = IBK::RHO_AIR;
+		double xiVaporAmbient = 0.0;
+		double xiAirAmbient = 1.0;
+
+		// constant parameters
+		double RVapor = IBK::R_VAPOR;
+		double RAir = IBK::R_AIR;
+		double cVapor = IBK::C_VAPOR;
+		double cAir = IBK::C_AIR;
+		double pGasRef = IBK::GASPRESS_REF;
+		double HEvap = IBK::H_EVAP;
+
+		// store pointer to result quantities
+		double * resultVentHeatFlux = m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr();
+		double * resultVentMassFlux = m_vectorValuedResults[VVR_VentilationMoistureMassFlux].dataPtr();
+
+		// compute ambient conditions
+		rhoVaporAmbient = *m_valueRefs[1 + zoneCount];
+		// compute gas density of ambient air
+		double pVaporAmbient = rhoVaporAmbient * RVapor * Tambient;
+		rhoAirAmbient = (pGasRef - pVaporAmbient)/(RAir * Tambient);
+		rhoGasAmbient = rhoAirAmbient + rhoVaporAmbient;
+
+		// compute density ratios
+		xiAirAmbient = rhoAirAmbient/rhoGasAmbient;
+		xiVaporAmbient = rhoVaporAmbient/ rhoGasAmbient;
+
+		// loop over all zones
+		for (unsigned int i=0; i<zoneCount; ++i) {
+			// get room air temperature in [K]
+			double Tzone = *m_valueRefs[i+1];
+			// get zone vapor density in [kg/m3]
+			double rhoVaporZone = *m_valueRefs[2 + zoneCount + i];
+
+			// get ventilation rate in [1/s]
+			double rate = resultVentRate[i];
+
+			// calculate air and gas density inside the room
+			double pVaporZone = rhoVaporZone * RVapor * Tzone;
+			double rhoAirZone = (pGasRef - pVaporZone)/(RAir * Tzone);
+			double rhoGasZone = rhoAirZone + rhoVaporZone;
+
+			// volumetric flux rate (user input) is defined related to outside air conditions
+			double massFluxGas = m_zoneVolumes[i] * rate * rhoGasAmbient;
+
+			// compute density ration for zone air
+			double xiAirZone = rhoAirZone/rhoGasZone;
+			double xiVaporZone = rhoVaporZone/rhoGasZone;
+
+			// compute mass flux differences between incoming and outgoing air in [kg/s]
+			resultVentMassFlux[i] = massFluxGas * (xiVaporAmbient - xiVaporZone);
+			// compute enthalpy flux differences between incoming and outgoing air in [W]
+			resultVentHeatFlux[i] =  massFluxGas * (
+					  (xiAirAmbient * cAir  * Tambient               - xiAirZone * cAir  * Tzone)
+					+ (xiVaporAmbient * (cVapor  * Tambient + HEvap) - xiVaporZone * (cVapor  * Tzone + HEvap))
+					);
+		}
+	}
+	// dry air
+	else {
+		// get ambient temperature in  [K]
+		double Tambient = *m_valueRefs[0];
+
+		// constant parameters
+		double cAir = IBK::C_AIR;
+		double rhoAirAmbient = IBK::RHO_AIR;
+
+		// store pointer to result quantities
+		double * resultVentHeatFlux = m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr();
+
+		// loop over all zones
+		for (unsigned int i=0; i<zoneCount; ++i) {
+			// get room air temperature in [K]
+			double Tzone = *m_valueRefs[i+1];
+
+			// get ventilation rate in [1/s]
+			double rate = resultVentRate[i];
+			resultVentHeatFlux[i] = rhoAirAmbient * cAir * m_zoneVolumes[i]*(Tambient - Tzone)*rate;
+		}
 	}
 
 	return 0; // signal success

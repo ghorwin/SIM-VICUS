@@ -529,9 +529,14 @@ void SVDatabase::updateElementChildren() {
 				zt.m_childrenRefs.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
 				switch (tempType) {
-					case VICUS::ZoneTemplate::ST_IntLoadPerson:
+					case VICUS::ZoneTemplate::ST_IntLoadPerson: {
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idActivitySchedule]);
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idOccupancySchedule]);
+						VICUS::Schedule *moistSchedule = m_schedules[intLoad->m_idMoistureRatePerPersonSchedule];
+						// moisture production rate is optional
+						if(moistSchedule != nullptr)
+							intLoad->m_childrenRefs.insert(moistSchedule);
+					}
 					break;
 					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
@@ -884,6 +889,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
 				// might be any of the following four
 				replaceID(elementID, replacementElementID, c.m_idActivitySchedule, m_internalLoads);
+				replaceID(elementID, replacementElementID, c.m_idMoistureRatePerPersonSchedule, m_internalLoads);
 				replaceID(elementID, replacementElementID, c.m_idOccupancySchedule, m_internalLoads);
 				replaceID(elementID, replacementElementID, c.m_idPowerManagementSchedule, m_internalLoads);
 			}

@@ -92,7 +92,6 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		m_ui->labelPersonCountUnit->setText("");
 		m_ui->lineEditPersonCount->setText("-");
 		m_ui->lineEditConvectiveFactor->setText("-");
 		return;
@@ -119,20 +118,18 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 
 	switch (m_current->m_personCountMethod) {
 		case VICUS::InternalLoad::PCM_AreaPerPerson:{
-			m_ui->labelPersonCountUnit->setText(tr("m2 per Person"));
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
 
 		}break;
 		case VICUS::InternalLoad::PCM_PersonPerArea: {
-			m_ui->labelPersonCountUnit->setText(tr("Person per m2"));
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
 		}break;
 		case VICUS::InternalLoad::PCM_PersonCount:
 		case VICUS::InternalLoad::NUM_PCM:{
-			m_ui->labelPersonCountUnit->setText(tr("Person"));
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
 		}break;
 	}
+	m_ui->labelPersonCount->setText(tr("Max. person count [%1]:").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", m_current->m_personCountMethod)));
 
 	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idOccupancySchedule ]);
 	if (occSched != nullptr)
@@ -146,6 +143,12 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	else
 		m_ui->lineEditActivityScheduleName->setText(tr("<select schedule>"));
 
+	VICUS::Schedule * moistSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idMoistureRatePerPersonSchedule ]);
+	if (moistSched != nullptr)
+		m_ui->lineEditMoistureRateScheduleName->setText(QtExt::MultiLangString2QString(moistSched->m_displayName));
+	else
+		m_ui->lineEditMoistureRateScheduleName->setText(tr("<select schedule>"));
+
 	// for built-ins, disable editing/make read-only
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
@@ -154,6 +157,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditPersonCount->setEnabled(!isbuiltIn);
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditActivityScheduleName->setEnabled(!isbuiltIn);
+	m_ui->lineEditMoistureRateScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
 	m_ui->toolButtonRemoveActivitySchedule->setEnabled(!isbuiltIn);
 	m_ui->toolButtonRemoveOccupancySchedule->setEnabled(!isbuiltIn);
@@ -195,7 +199,7 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 		}
 	}
 
-	m_ui->labelPersonCountUnit->setText(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", index));
+	m_ui->labelPersonCount->setText(tr("Max. person count [%1]:").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", index)));
 
 	updatePlot();
 }
@@ -266,6 +270,17 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 	}
 	updateInput((int)m_current->m_id);
 
+}
+
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectMoistureRate_clicked()
+{
+	// open schedule edit dialog in selection mode
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idMoistureRatePerPersonSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idMoistureRatePerPersonSchedule != newId) {
+		m_current->m_idMoistureRatePerPersonSchedule = newId;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBInternalLoadsPersonEditWidget::modelModify() {
@@ -409,3 +424,4 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveActivitySchedule_clic
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+
