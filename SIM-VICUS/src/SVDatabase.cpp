@@ -162,7 +162,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_subNetworks.readXML(				userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
 	if (t == NUM_DT || t == DT_SupplySystems)
 		m_supplySystems.readXML(			userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", false);
-	if (t == NUM_DT || t == DT_EPDDatasets)
+	if (t == NUM_DT || t == DT_EpdDatasets)
 		m_epdDatasets.readXML(				userDbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
@@ -860,7 +860,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		} break;
 
 
-		case SVDatabase::DT_EPDDatasets: {
+		case SVDatabase::DT_EpdDatasets: {
 			for (const auto & p : m_epdDatasets) {
 				VICUS::EpdDataset & c = const_cast<VICUS::EpdDataset &>(p.second); // const-cast is ok here
 				replaceID(elementID, replacementElementID, c.m_id, m_epdDatasets);
@@ -1046,7 +1046,7 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_subNetworks.removeNotReferencedLocalElements(); break;
 		case DT_SupplySystems:
 			m_supplySystems.removeNotReferencedLocalElements(); break;
-		case DT_EPDDatasets:
+		case DT_EpdDatasets:
 			m_epdDatasets.removeNotReferencedLocalElements(); break;
 		case DT_NetworkControllers:
 			m_networkControllers.removeNotReferencedLocalElements();  break;
@@ -1143,7 +1143,7 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_SupplySystems:
 			Q_ASSERT(m_supplySystems[id] != nullptr);
 			m_supplySystems[id]->collectLocalChildren(localChildren); break;
-		case DT_EPDDatasets:
+		case DT_EpdDatasets:
 			Q_ASSERT(m_epdDatasets[id] != nullptr);
 			m_epdDatasets[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:

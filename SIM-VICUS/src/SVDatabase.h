@@ -53,7 +53,7 @@ public:
 		DT_NetworkControllers,
 		DT_SubNetworks,
 		DT_SupplySystems,
-		DT_EPDDatasets,
+		DT_EpdDatasets,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneControlThermostat,
