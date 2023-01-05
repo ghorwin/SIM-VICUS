@@ -327,10 +327,6 @@ private slots:
 	void on_actionViewFromSouth_triggered();
 	void on_actionViewFromWest_triggered();
 	void on_actionViewFromAbove_triggered();
-	void on_actionBirdsEyeViewNorthWest_triggered();
-	void on_actionBirdsEyeViewNorthEast_triggered();
-	void on_actionBirdsEyeViewSouthWest_triggered();
-	void on_actionBirdsEyeViewSouthEast_triggered();
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationExportFMI_triggered();
@@ -351,7 +347,6 @@ private slots:
 	void on_actionExportNetworkAsGeoJson_triggered();
 
 	void on_actionPluginsManager_triggered();
-
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
