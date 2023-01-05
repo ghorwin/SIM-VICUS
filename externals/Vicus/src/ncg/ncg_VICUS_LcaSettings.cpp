@@ -67,18 +67,18 @@ void LcaSettings::readXMLPrivate(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LcaCalculationMode") {
+			else if (cName == "CalculationMode") {
 				try {
-					m_lcaCalculationMode = (LcaCalculationMode)KeywordList::Enumeration("LcaSettings::LcaCalculationMode", c->GetText());
+					m_calculationMode = (CalculationMode)KeywordList::Enumeration("LcaSettings::CalculationMode", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
-			else if (cName == "LcaCertificationSystem") {
+			else if (cName == "CertificationSystem") {
 				try {
-					m_lcaCertificationSystem = (LcaCertificationSytem)KeywordList::Enumeration("LcaSettings::LcaCertificationSytem", c->GetText());
+					m_certificationSystem = (CertificationSytem)KeywordList::Enumeration("LcaSettings::CertificationSytem", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -116,11 +116,11 @@ TiXmlElement * LcaSettings::writeXMLPrivate(TiXmlElement * parent) const {
 		}
 	}
 
-	if (m_lcaCalculationMode != NUM_CM)
-		TiXmlElement::appendSingleAttributeElement(e, "LcaCalculationMode", nullptr, std::string(), KeywordList::Keyword("LcaSettings::LcaCalculationMode",  m_lcaCalculationMode));
+	if (m_calculationMode != NUM_CM)
+		TiXmlElement::appendSingleAttributeElement(e, "CalculationMode", nullptr, std::string(), KeywordList::Keyword("LcaSettings::CalculationMode",  m_calculationMode));
 
-	if (m_lcaCertificationSystem != NUM_CS)
-		TiXmlElement::appendSingleAttributeElement(e, "LcaCertificationSystem", nullptr, std::string(), KeywordList::Keyword("LcaSettings::LcaCertificationSytem",  m_lcaCertificationSystem));
+	if (m_certificationSystem != NUM_CS)
+		TiXmlElement::appendSingleAttributeElement(e, "CertificationSystem", nullptr, std::string(), KeywordList::Keyword("LcaSettings::CertificationSytem",  m_certificationSystem));
 	return e;
 }
 
