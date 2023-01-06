@@ -233,6 +233,11 @@ protected:
 	/*! The central stopwatch, to measure execution time. */
 	IBK::StopWatch			m_stopWatch;
 
+	/*! Timer for creating backup copies of restart file - this is slow, hence we do this
+		only every few minutes.
+	*/
+	IBK::StopWatch			m_restartFileRenameWatch;
+
 	/*! Pointer to default integrator implementation (owned and released). */
 	IntegratorInterface		*m_defaultIntegrator;
 	/*! Pointer to default linear equation system solver implementation (owned and released). */

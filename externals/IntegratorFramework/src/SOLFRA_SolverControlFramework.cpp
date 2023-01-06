@@ -548,23 +548,32 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 	// do nothing if no filename is set
 	if (m_restartFilename.str().empty()) return;
 
+	// if restart file exists, rename it to bak, but only once every 10 minutes - this is
+	// for really long simulations, where we accept potentially duplicate output steps
+	// in output files (when we restart to a time point past that we had already several
+	// outputs written), in order to save a lot of simulation time
+	if (m_restartFileRenameWatch.difference() > 600*1000) {
+		if (m_restartFilename.isFile()) {
+			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
+			const_cast<SolverControlFramework*>(this)->m_restartFileRenameWatch.start(); // reset timer
+		}
+	}
+
 	// try to open file for writing
 	std::ofstream out;
-	if (m_restartMode == RestartFromAll)
+	if (m_restartMode == RestartFromAll) {
+		// append to existing file
 #if defined(_MSC_VER)
 		out.open(m_restartFilename.wstr().c_str(), std::ios_base::app | std::ios_base::binary);
-	else {
-		// if restart file exists, rename it to bak
-		if (m_restartFilename.isFile())
-			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
-		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
-	}
 #else
 		out.open(m_restartFilename.c_str(), std::ios_base::app | std::ios_base::binary);
+#endif
+	}
 	else {
-		// if restart file exists, rename it to bak
-		if (m_restartFilename.isFile())
-			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
+		// create new file
+#if defined(_MSC_VER)
+		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
+#else
 		out.open(m_restartFilename.c_str(), std::ios_base::binary);
 	}
 #endif
