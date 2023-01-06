@@ -11,6 +11,8 @@ NetworkController::NetworkController(){
 }
 
 bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
+
+	std::string err;
 	// call check function of NANDRAD::HydraulicNetworkControlElement
 	try {
 		// TODO Hauke:
@@ -25,7 +27,7 @@ bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 		const Schedule * setPointSched = scheduleDB[m_idReferences[VICUS::NetworkController::ID_Schedule]];
 		if (setPointSched == nullptr)
 			return false;
-		if (!setPointSched->isValid())
+		if (!setPointSched->isValid(err, true))
 			return false;
 	}
 

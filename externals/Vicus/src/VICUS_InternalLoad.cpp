@@ -30,6 +30,7 @@
 namespace VICUS {
 
 bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
+	std::string err;
 	switch (m_category) {
 		case VICUS::InternalLoad::IC_Person: {
 
@@ -76,7 +77,7 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				m_errorMsg = "Activity schedule with id '" + std::to_string(m_idActivitySchedule) + "' does not exist.";
 				return false;
 			}
-			if (!actSched->isValid()) {
+			if (!actSched->isValid(err, true)) {
 				m_errorMsg = "Activity schedule '" + actSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
 			}
@@ -88,7 +89,7 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 					m_errorMsg = "Moisture rate schedule with id '" + std::to_string(m_idMoistureRatePerPersonSchedule) + "' does not exist.";
 					return false;
 				}
-				if (!moistSched->isValid()) {
+				if (!moistSched->isValid(err, true)) {
 					m_errorMsg = "Moisture rate schedule '" + moistSched->m_displayName.string("en", true) + "' is invalid.";
 					return false;
 				}
@@ -99,7 +100,7 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				m_errorMsg = "Occupancy schedule with id '" + std::to_string(m_idActivitySchedule) + "' does not exist.";
 				return false;
 			}
-			if (!occSched->isValid()) {
+			if (!occSched->isValid(err, true)) {
 				m_errorMsg = "Occupancy schedule '" + actSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
 			}
@@ -147,7 +148,7 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				m_errorMsg = "Power management schedule with id '" + std::to_string(m_idPowerManagementSchedule) + "' does not exist.";
 				return false;
 			}
-			if (!powerSched->isValid()) {
+			if (!powerSched->isValid(err, true)) {
 				m_errorMsg = "Power management '" + powerSched->m_displayName.string("de", true) + "' is invalid.";
 				return false;
 			}

@@ -431,6 +431,7 @@ public:
 	std::vector<NANDRAD::Zone>											m_zones;
 	std::vector<NANDRAD::ObjectList>									m_objectLists;
 	std::set<QString>													m_objectListNames;
+	std::map< std::string, IBK::Path>									m_placeholders;
 
 	/*! Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
 		These ids are kept in the header of the shading file for later replacement of the ids.
@@ -764,6 +765,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	// *** Create Construction Instances, Constructions (opak & tranparent) and materials ***
 
 	ConstructionInstanceModelGenerator constrInstaModelGenerator(this);
+	constrInstaModelGenerator.m_placeholders = p.m_placeholders;
 	constrInstaModelGenerator.addInputData(p.m_objectLists);
 	constrInstaModelGenerator.generate(m_componentInstances, errorStack, idSet);
 	constrInstaModelGenerator.generateMaterials();
@@ -847,7 +849,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
 	// Note: if moisture is not enabled, m_intMoistLoadSchedules will be empty
-	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i) 
+	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_intMoistLoadObjLists[i].m_name] =  internalLoads.m_intMoistLoadSchedules[i];
 
 	// *** Ventilation ***
@@ -2054,8 +2056,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 			// only take first digit after comma into account
 			unsigned int schedId = bc->m_heatConduction.m_idSchedule;
 			const VICUS::Schedule *sched = m_scheduleDB[schedId];
-
-			if(sched != nullptr && sched->isValid()){
+			std::string err;
+			if(sched != nullptr && sched->isValid(err, true, m_placeholders)){
 				if(gze.m_tempSchedIdToZoneId.find(schedId) != gze.m_tempSchedIdToZoneId.end())
 					iface.m_zoneId = gze.m_tempSchedIdToZoneId[schedId];
 				else{
