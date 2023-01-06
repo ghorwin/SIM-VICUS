@@ -30,7 +30,7 @@ public:
 	explicit PrecondILU(PreconditionerType precondType = PrecondInterface::Right );
 
 	/*! Destructor, releases band matrix memory. */
-	~PrecondILU() override;
+	~PrecondILU();
 
 	/*! Returns type of precondition (where it should be applied in context of the iteration linear equation solver). */
 	virtual PreconditionerType preconditionerType() const override { return m_precondType; }

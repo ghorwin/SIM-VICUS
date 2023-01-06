@@ -131,12 +131,6 @@ public:
 	/*! Specifies the restart file name. */
 	void setRestartFile(const std::string & fname, RestartFileMode restartMode=RestartFromLast);
 
-	/*! Specifies the interval for restart file writing.
-		\param simTimeDt Maximum simtime in [s] that can pass before a new restart info is written.
-		\param readTimeDt Minimum real time in [s] that must pass before new restart info is written (5 mins is a good value).
-	*/
-	void setRestartInfoInterval(double simTimeDt, double realTimeDt);
-
 	/*! Returns pointer to integrator implementation (not owned). */
 	const IntegratorInterface		*integrator() const { return m_integrator; }
 
@@ -183,10 +177,6 @@ public:
 	IBK::Path				m_restartFilename;
 	/*! Defines restart file handling. */
 	RestartFileMode			m_restartMode;
-	/*! Simulation time in [s] to wait before writing restart info (default 1 d simulation time). */
-	double					m_simTimeDt;
-	/*! Real (wall clock) time in [s] to wait before writing restart info (default 5 min real time). */
-	double					m_realTimeDt;
 
 	/*! If set to true before a call to run() or restart(), the framework will
 		return from run() or restart() once the solver initialization was done.
