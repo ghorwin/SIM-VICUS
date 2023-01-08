@@ -28,8 +28,8 @@
 			<InternalMoistureLoadsModels>
 				<InternalMoistureLoadsModel id="401" displayName="Zone moisture loads" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<!-- 0.001 g/m2s * 10 m2 -> 0.01 g/s -> 36 g/h -->
-					<IBK:Parameter name="MoistureLoadPerArea" unit="g/m2s">0.001</IBK:Parameter>
+					<!-- 0.001 g/m2s * 10 m2 -> 0.01 g/s -> 3.6 g/h -->
+					<IBK:Parameter name="MoistureLoadPerArea" unit="g/m2s">0.0001</IBK:Parameter>
 				</InternalMoistureLoadsModel>
 			</InternalMoistureLoadsModels>
 			<NaturalVentilationModels>
