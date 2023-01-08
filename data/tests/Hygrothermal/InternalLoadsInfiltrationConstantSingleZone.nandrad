@@ -2,18 +2,20 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Internal loads test: single zone, constant loads, all convective</Comment>
+			<Comment>Internal loads test: single zone, constant moisture load, constant infiltration starting after 1 day; 
+				first we expect constant temperature, yet humidity increase, then when ventilation is turned on, we want to see a steady-state result
+			</Comment>
 		</ProjectInfo>
 		<Zones>
 			<Zone id="1" displayName="Office" type="Active">
-				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<SimulationParameter>
 			<IBK:Flag name="EnableMoistureBalance">true</IBK:Flag>
-			<IBK:Parameter name="InitialTemperature" unit="C">15,5</IBK:Parameter>
-			<IBK:Parameter name="InitialRelativeHumidity" unit="%">80</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">40</IBK:Parameter>
 			<Interval>
 				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
 			</Interval>
@@ -26,16 +28,41 @@
 			<InternalMoistureLoadsModels>
 				<InternalMoistureLoadsModel id="401" displayName="Zone moisture loads" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<IBK:Parameter name="PersonMoistureLoadPerArea" unit="kg/m2s">1.667e-06</IBK:Parameter>
+					<!-- 0.001 g/m2s * 10 m2 -> 0.01 g/s -> 36 g/h -->
+					<IBK:Parameter name="MoistureLoadPerArea" unit="g/m2s">0.001</IBK:Parameter>
 				</InternalMoistureLoadsModel>
 			</InternalMoistureLoadsModels>
 			<NaturalVentilationModels>
-				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
 		</Models>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<!-- every day constant -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0.4</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Monday (first day) no ventilation -->
+					<Schedule type="Monday">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
 			<Definitions>
@@ -48,6 +75,18 @@
 				<OutputDefinition>
 					<Quantity>MoistureDensity</Quantity>
 					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>RelativeHumidity</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>VentilationRate[1]</Quantity>
+					<ObjectListName>Ventilation models</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -69,6 +108,10 @@
 			</ObjectList>
 			<ObjectList name="Loads">
 				<FilterID>401</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation models">
+				<FilterID>501</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

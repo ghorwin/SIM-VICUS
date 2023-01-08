@@ -187,10 +187,10 @@ private:
 	const double *									m_equipmentLoadValueRef = nullptr;
 	/*! Value reference for natural person loads in [W] (positive if into room). */
 	const double *									m_personLoadValueRef = nullptr;
-	/*! Value reference for person moisture loads in [kg/s] (positive if into room). */
-	const double *									m_personMoistureLoadValueRef = nullptr;
+	/*! Value reference for moisture loads in [kg/s] (positive if into room). */
+	const double *									m_moistureLoadValueRef = nullptr;
 	/*! Value reference for person moisture enthalpy fluxes in [W] (positive if into room). */
-	const double *									m_personMoistureEnthalpyFluxValueRef = nullptr;
+	const double *									m_moistureEnthalpyFluxValueRef = nullptr;
 	/*! Value reference for natural lighting loads in [W] (positive if into room). */
 	const double *									m_lightingLoadValueRef = nullptr;
 

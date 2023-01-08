@@ -122,8 +122,8 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
-	/*! Constant person moisture load per area (only for constant model. */
-	double											m_personMoistureLoadPerArea = 999;
+	/*! Constant moisture load per area (only for constant model), cached in setup(). */
+	double											m_moistureLoadPerArea = 999;
 
 	/*! Quick access pointer to object list (for scheduled model). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;

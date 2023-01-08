@@ -45,7 +45,7 @@ void InternalMoistureLoadsModel::setup(const NANDRAD::InternalMoistureLoadsModel
 	// copy parameters for type 'Constant'
 	switch (m_internalMoistureLoadsModel->m_modelType) {
 		case NANDRAD::InternalMoistureLoadsModel::MT_Constant : {
-			m_personMoistureLoadPerArea = m_internalMoistureLoadsModel->m_para[NANDRAD::InternalMoistureLoadsModel::P_MoistureLoadPerArea].value;
+			m_moistureLoadPerArea = m_internalMoistureLoadsModel->m_para[NANDRAD::InternalMoistureLoadsModel::P_MoistureLoadPerArea].value;
 		}
 		break;
 
@@ -121,7 +121,7 @@ void InternalMoistureLoadsModel::initResults(const std::vector<AbstractModel *> 
 			double area = m_zoneAreas[i];
 
 			// calculate moisture load in [kg/s]
-			moistureLoadPtr[i] = area * m_personMoistureLoadPerArea;
+			moistureLoadPtr[i] = area * m_moistureLoadPerArea;
 		}
 	}
 
