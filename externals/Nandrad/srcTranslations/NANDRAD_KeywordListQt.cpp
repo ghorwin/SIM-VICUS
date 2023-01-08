@@ -166,7 +166,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Complete lighting load per zone floor area.");
 	tr("Constant internal loads");
 	tr("Scheduled internal loads");
-	tr("Complete person moisture load per zone floor area.");
+	tr("Moisture load per zone floor area.");
 	tr("Start time point.");
 	tr("End time point.");
 	tr("StepSize.");

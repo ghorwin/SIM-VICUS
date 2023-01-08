@@ -46,23 +46,23 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Person Count. */
-		P_PersonCount,					// Keyword: PersonCount				[-]			'Person count'
+		P_PersonCount,						// Keyword: PersonCount						[-]			'Person count'
 		/*! Person per area. */
-		P_PersonPerArea,				// Keyword: PersonPerArea			[Person/m2]	'Person per area'
+		P_PersonPerArea,					// Keyword: PersonPerArea					[Person/m2]	'Person per area'
 		/*! Area per person. */
-		P_AreaPerPerson,				// Keyword: AreaPerPerson			[m2/Person]	'Area per person'
+		P_AreaPerPerson,					// Keyword: AreaPerPerson					[m2/Person]	'Area per person'
 		/*! Power. */
-		P_Power,						// Keyword: Power					[W]			'Power'
+		P_Power,							// Keyword: Power							[W]			'Power'
 		/*! Power per Area. */
-		P_PowerPerArea,					// Keyword: PowerPerArea			[W/m2]		'Power per area'
+		P_PowerPerArea,						// Keyword: PowerPerArea					[W/m2]		'Power per area'
 		/*! Moisture production rate per Area. */
-		P_MoistureRatePerArea,			// Keyword: MoistureRatePerArea		[kg/m2s]	'Moisture production rate per area'
+		P_MoistureProductionRatePerArea,	// Keyword: MoistureProductionRatePerArea	[kg/m2s]	'Moisture production rate per area'
 		/*! Convective Heat Factor. */
-		P_ConvectiveHeatFactor,			// Keyword: ConvectiveHeatFactor	[---]		'Convective heat factor'
+		P_ConvectiveHeatFactor,				// Keyword: ConvectiveHeatFactor			[---]		'Convective heat factor'
 		/*! Latent Heat Factor. */
-		P_LatentHeatFactor,				// Keyword: LatentHeatFactor		[---]		'Latent heat factor'
+		P_LatentHeatFactor,					// Keyword: LatentHeatFactor				[---]		'Latent heat factor'
 		/*! Loss Heat Factor. */
-		P_LossHeatFactor,				// Keyword: LossHeatFactor			[---]		'Loss heat factor'
+		P_LossHeatFactor,					// Keyword: LossHeatFactor					[---]		'Loss heat factor'
 		NUM_P
 	};
 
@@ -122,8 +122,8 @@ public:
 	/*! Only required for person */
 	unsigned int					m_idActivitySchedule = INVALID_ID;			// XML:E
 
-	/*! Only required for person and moisture balance enabled */
-	unsigned int					m_idMoistureRatePerPersonSchedule = INVALID_ID;			// XML:E
+	/*! Only required for moisture balance enabled */
+	unsigned int					m_idMoistureProductionRatePerAreaSchedule = INVALID_ID;			// XML:E
 
 	/*! Only required for electric equipment, lights, other. */
 	unsigned int					m_idPowerManagementSchedule = INVALID_ID;	// XML:E

@@ -1182,7 +1182,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// generate schedules
 
 	std::string personSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea) + "Schedule [W/m2]";
-	std::string personMoistSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalMoistureLoadsModel::para_t", NANDRAD::InternalMoistureLoadsModel::P_PersonMoistureLoadPerArea) + "Schedule [kg/m2s]";
+	std::string personMoistSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalMoistureLoadsModel::para_t", NANDRAD::InternalMoistureLoadsModel::P_MoistureLoadPerArea) + "Schedule [kg/m2s]";
 	std::string equipmentSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea) + "Schedule [W/m2]";
 	std::string lightingSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea) + "Schedule [W/m2]";
 
@@ -1260,7 +1260,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 			// create schedule for moisture load
 			if (enableMoisture) {
-				const Schedule * moistRateSchedule = m_scheduleDB[intLoadPerson->m_idMoistureRatePerPersonSchedule];
+				const Schedule * moistRateSchedule = m_scheduleDB[intLoadPerson->m_idMoistureProductionRatePerAreaSchedule];
 				// we allow missing moisture rate
 				if (moistRateSchedule != nullptr) {
 					// TODO : check if this is correct - why multiply a m2-based load with an occupancy? This is likely wrong.

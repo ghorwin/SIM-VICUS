@@ -143,7 +143,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	else
 		m_ui->lineEditActivityScheduleName->setText(tr("<select schedule>"));
 
-	VICUS::Schedule * moistSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idMoistureRatePerPersonSchedule ]);
+	VICUS::Schedule * moistSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idMoistureProductionRatePerAreaSchedule ]);
 	if (moistSched != nullptr)
 		m_ui->lineEditMoistureRateScheduleName->setText(QtExt::MultiLangString2QString(moistSched->m_displayName));
 	else
@@ -275,9 +275,9 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectMoistureRate_clicked()
 {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idMoistureRatePerPersonSchedule);
-	if (newId != VICUS::INVALID_ID && m_current->m_idMoistureRatePerPersonSchedule != newId) {
-		m_current->m_idMoistureRatePerPersonSchedule = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idMoistureProductionRatePerAreaSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idMoistureProductionRatePerAreaSchedule != newId) {
+		m_current->m_idMoistureProductionRatePerAreaSchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);

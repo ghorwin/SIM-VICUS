@@ -139,8 +139,8 @@ namespace NANDRAD_MODEL {
 			// InternalMoistureLoadsModel::VectorValuedResults
 			case 9 :
 			switch (t) {
-				case 0 : return "PersonMoistureLoad";
-				case 1 : return "PersonMoistureEnthalpyFlux";
+				case 0 : return "MoistureLoad";
+				case 1 : return "MoistureEnthalpyFlux";
 			} break;
 			// KeywordList::MyParameters
 			case 10 :
@@ -240,7 +240,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "VentilationMinAirTemperatureSchedule";
 				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : return "PersonHeatLoadPerAreaSchedule";
-				case 6 : return "PersonMoistureLoadPerAreaSchedule";
+				case 6 : return "MoistureLoadPerAreaSchedule";
 				case 7 : return "LightingHeatLoadPerAreaSchedule";
 				case 8 : return "HeatingSetpointSchedule";
 				case 9 : return "CoolingSetpointSchedule";
@@ -355,8 +355,8 @@ namespace NANDRAD_MODEL {
 			// InternalMoistureLoadsModel::VectorValuedResults
 			case 9 :
 			switch (t) {
-				case 0 : return "PersonMoistureLoad";
-				case 1 : return "PersonMoistureEnthalpyFlux";
+				case 0 : return "MoistureLoad";
+				case 1 : return "MoistureEnthalpyFlux";
 			} break;
 			// KeywordList::MyParameters
 			case 10 :
@@ -456,7 +456,7 @@ namespace NANDRAD_MODEL {
 				case 3 : return "VentilationMinAirTemperatureSchedule";
 				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : return "PersonHeatLoadPerAreaSchedule";
-				case 6 : return "PersonMoistureLoadPerAreaSchedule";
+				case 6 : return "MoistureLoadPerAreaSchedule";
 				case 7 : return "LightingHeatLoadPerAreaSchedule";
 				case 8 : return "HeatingSetpointSchedule";
 				case 9 : return "CoolingSetpointSchedule";
@@ -572,8 +572,8 @@ namespace NANDRAD_MODEL {
 			// InternalMoistureLoadsModel::VectorValuedResults
 			case 9 :
 			switch (t) {
-				case 0 : return "Person moisture load per zone";
-				case 1 : return "Person moisture enthalpy flux per zone";
+				case 0 : return "Total moisture load per zone";
+				case 1 : return "Moisture enthalpy flux per zone (sensible and latent heat)";
 			} break;
 			// KeywordList::MyParameters
 			case 10 :
@@ -673,7 +673,7 @@ namespace NANDRAD_MODEL {
 				case 3 : if (no_description != nullptr) *no_description = true; return "VentilationMinAirTemperatureSchedule";
 				case 4 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
-				case 6 : if (no_description != nullptr) *no_description = true; return "PersonMoistureLoadPerAreaSchedule";
+				case 6 : if (no_description != nullptr) *no_description = true; return "MoistureLoadPerAreaSchedule";
 				case 7 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";
 				case 8 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
 				case 9 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";

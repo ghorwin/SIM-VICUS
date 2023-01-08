@@ -208,7 +208,7 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "MoistureRatePerArea";
+				case 5 : return "MoistureProductionRatePerArea";
 				case 6 : return "ConvectiveHeatFactor";
 				case 7 : return "LatentHeatFactor";
 				case 8 : return "LossHeatFactor";
@@ -704,7 +704,7 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "MoistureRatePerArea";
+				case 5 : return "MoistureProductionRatePerArea";
 				case 6 : return "ConvectiveHeatFactor";
 				case 7 : return "LatentHeatFactor";
 				case 8 : return "LossHeatFactor";

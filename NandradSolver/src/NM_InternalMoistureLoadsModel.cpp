@@ -45,7 +45,7 @@ void InternalMoistureLoadsModel::setup(const NANDRAD::InternalMoistureLoadsModel
 	// copy parameters for type 'Constant'
 	switch (m_internalMoistureLoadsModel->m_modelType) {
 		case NANDRAD::InternalMoistureLoadsModel::MT_Constant : {
-			m_personMoistureLoadPerArea = m_internalMoistureLoadsModel->m_para[NANDRAD::InternalMoistureLoadsModel::P_PersonMoistureLoadPerArea].value;
+			m_personMoistureLoadPerArea = m_internalMoistureLoadsModel->m_para[NANDRAD::InternalMoistureLoadsModel::P_MoistureLoadPerArea].value;
 		}
 		break;
 
@@ -108,19 +108,20 @@ void InternalMoistureLoadsModel::initResults(const std::vector<AbstractModel *> 
 		m_zoneAreas.push_back(it->m_para[NANDRAD::Zone::P_Area].value ); // already checked in Zone::checkParameters()
 
 	}
-	// calculate initial solution for constant model
+
+	// for constant model, precompute constant moisture production rates and store in result variable vector
 	if (m_internalMoistureLoadsModel->m_modelType == NANDRAD::InternalMoistureLoadsModel::MT_Constant) {
-		// retrieve iterator to all result quantities
-		double * personMoistureLoadPtr = m_vectorValuedResults[VVR_PersonMoistureLoad].dataPtr();
+		// pointer to result vector
+		double * moistureLoadPtr = m_vectorValuedResults[VVR_MoistureLoad].dataPtr();
 
 		unsigned int nZones = m_zoneAreas.size();
 		// loop through all zone areas
-		for(unsigned int i = 0; i < nZones; ++i) {
+		for (unsigned int i = 0; i < nZones; ++i) {
 			// retrieve zone area
 			double area = m_zoneAreas[i];
 
 			// calculate moisture load in [kg/s]
-			personMoistureLoadPtr[i] = area * m_personMoistureLoadPerArea;
+			moistureLoadPtr[i] = area * m_personMoistureLoadPerArea;
 		}
 	}
 
@@ -185,7 +186,7 @@ void InternalMoistureLoadsModel::inputReferences(std::vector<InputReference> & i
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
 
-	// set reference to all zone air temperatures
+	// set reference to all zone air temperatures which is required for all model types
 	for (unsigned int id : m_objectList->m_filterID.m_ids) {
 		InputReference ref;
 		ref.m_id = id;
@@ -202,7 +203,7 @@ void InternalMoistureLoadsModel::inputReferences(std::vector<InputReference> & i
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ref.m_name.m_name = "PersonMoistureLoadPerAreaSchedule";
+			ref.m_name.m_name = "MoistureLoadPerAreaSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
@@ -230,39 +231,44 @@ void InternalMoistureLoadsModel::stateDependencies(std::vector<std::pair<const d
 
 		// dependency on room air temperature of corresponding zone
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_PersonMoistureEnthalpyFlux].dataPtr() + i, m_valueRefs[i]) );
+					std::make_pair(m_vectorValuedResults[VVR_MoistureEnthalpyFlux].dataPtr() + i, m_valueRefs[i]) );
 	}
 }
 
 
 int InternalMoistureLoadsModel::update() {
-
 	unsigned int nZones = m_zoneAreas.size();
 
 	// retrieve iterator to all result quantities
-	double * personMoistureLoadPtr = m_vectorValuedResults[VVR_PersonMoistureLoad].dataPtr();
-	double * personMoistureEnthalpyFluxPtr = m_vectorValuedResults[VVR_PersonMoistureEnthalpyFlux].dataPtr();
+	double * moistureLoadPtr = m_vectorValuedResults[VVR_MoistureLoad].dataPtr();
+	double * moistureEnthalpyFluxPtr = m_vectorValuedResults[VVR_MoistureEnthalpyFlux].dataPtr();
 
-	// calculate person moisture load for constant model
+	// calculate moisture load for scheduled model
 	if (m_internalMoistureLoadsModel->m_modelType != NANDRAD::InternalMoistureLoadsModel::MT_Constant) {
 
+		// Note: for constant model, the moisture load [kg/s] was already precomputed in initResults() and
+		//       stored in m_vectorValuedResults[VVR_MoistureLoad]
+
 		// loop through all zone areas
-		for(unsigned int i = 0; i < nZones; ++i) {
+		for (unsigned int i = 0; i < nZones; ++i) {
 			// retrieve zone area
 			double area = m_zoneAreas[i];
-			double personMoistureLoadPerArea = *m_valueRefs[nZones + i];
-			personMoistureLoadPtr[i] = area * personMoistureLoadPerArea;
+			double moistureLoadPerArea = *m_valueRefs[nZones + i]; // from schedule, in [kg/m2s]
+			moistureLoadPtr[i] = area * moistureLoadPerArea; // in [kg/s]
 		}
 	}
+
+	// enthalpy calculation
+
 	// loop through all zone areas
-	for(unsigned int i = 0; i < nZones; ++i) {
-		// retrieve moisture production rate (from persons) in [kg/s]
-		double moistureMassflux = personMoistureLoadPtr[i];
+	for (unsigned int i = 0; i < nZones; ++i) {
+		// retrieve moisture production rate in [kg/s]
+		double moistureMassProductionRate = moistureLoadPtr[i];
 		// retrieve zone air temperature in [K]
 		double zoneTemp = *m_valueRefs[i];
 
-		// moisture production enthalpy in [W]
-		personMoistureEnthalpyFluxPtr[i] = moistureMassflux * (IBK::C_VAPOR * zoneTemp + IBK::H_EVAP);
+		// moisture production enthalpy in [W] (sensible and latent heat of evaporation)
+		moistureEnthalpyFluxPtr[i] = moistureMassProductionRate * (IBK::C_VAPOR * zoneTemp + IBK::H_EVAP);
 	}
 
 	return 0; // signal success

@@ -44,8 +44,8 @@ class InternalMoistureLoadsModel : public AbstractModel, public AbstractStateDep
 public:
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
-		VVR_PersonMoistureLoad,					// Keyword: PersonMoistureLoad					[kg/s]	'Person moisture load per zone'
-		VVR_PersonMoistureEnthalpyFlux,			// Keyword: PersonMoistureEnthalpyFlux			[W]		'Person moisture enthalpy flux per zone'
+		VVR_MoistureLoad,						// Keyword: MoistureLoad						[kg/s]	'Total moisture load per zone'
+		VVR_MoistureEnthalpyFlux,				// Keyword: MoistureEnthalpyFlux				[W]		'Moisture enthalpy flux per zone (sensible and latent heat)'
 		NUM_VVR
 	};
 

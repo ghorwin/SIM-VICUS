@@ -445,7 +445,7 @@ namespace NANDRAD {
 			// InternalMoistureLoadsModel::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "PersonMoistureLoadPerArea";
+				case 0 : return "MoistureLoadPerArea";
 			} break;
 			// Interval::para_t
 			case 42 :
@@ -1102,7 +1102,7 @@ namespace NANDRAD {
 			// InternalMoistureLoadsModel::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "PersonMoistureLoadPerArea";
+				case 0 : return "MoistureLoadPerArea";
 			} break;
 			// Interval::para_t
 			case 42 :
@@ -1760,7 +1760,7 @@ namespace NANDRAD {
 			// InternalMoistureLoadsModel::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "Complete person moisture load per zone floor area.";
+				case 0 : return "Moisture load per zone floor area.";
 			} break;
 			// Interval::para_t
 			case 42 :

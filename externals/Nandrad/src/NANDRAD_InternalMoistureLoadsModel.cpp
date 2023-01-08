@@ -24,11 +24,10 @@
 namespace NANDRAD {
 
 void InternalMoistureLoadsModel::checkParameters(const NANDRAD::SimulationParameter& simPara) const {
-
 	FUNCID(InternalMoistureLoadsModel::checkParameters);
 
 	// model is only allowed for hygrothermal simulation
-	if(!simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled())
+	if (!simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled())
 		throw IBK::Exception(IBK::FormatString("Model is only allowed for hygrothermal simulation!"),
 							 FUNC_ID);
 
@@ -38,16 +37,15 @@ void InternalMoistureLoadsModel::checkParameters(const NANDRAD::SimulationParame
 	// check parameters for constant model
 	if (m_modelType == MT_Constant) {
 		// check fixed parameters
-		m_para[P_PersonMoistureLoadPerArea].checkedValue("PersonMoistureLoadPerArea", "kg/m2s", "kg/m2s",
-													 0, true,
-													 std::numeric_limits<double>::max(), true,
-								 "Person moisture load per area must be >= 0 kg/m2s.");
-
+		m_para[P_MoistureLoadPerArea].checkedValue("MoistureLoadPerArea", "kg/m2s", "kg/m2s",
+												   0, true,
+												   std::numeric_limits<double>::max(), true,
+												   "Moisture load per area must be >= 0 kg/m2s.");
 	}
 	else { // modelType == MT_Scheduled
-		// invalid constant definitions
-		if(!m_para[P_PersonMoistureLoadPerArea].name.empty()) {
-			throw IBK::Exception(IBK::FormatString("Invalid parameter 'PersonMoistureLoadPerArea' for model type 'Scheduled'!"),
+		// must not have a constant definition when using schedules model
+		if (!m_para[P_MoistureLoadPerArea].name.empty()) {
+			throw IBK::Exception(IBK::FormatString("Invalid parameter 'MoistureLoadPerArea' for model type 'Scheduled'!"),
 								 FUNC_ID);
 		}
 	}
@@ -55,12 +53,12 @@ void InternalMoistureLoadsModel::checkParameters(const NANDRAD::SimulationParame
 
 bool InternalMoistureLoadsModel::equal(const InternalMoistureLoadsModel & other) const {
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
-		if(m_para[i] != other.m_para[i])
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (m_para[i] != other.m_para[i])
 			return false;
 	}
 
-	if(m_modelType != other.m_modelType)
+	if (m_modelType != other.m_modelType)
 		return false;
 
 	return true;

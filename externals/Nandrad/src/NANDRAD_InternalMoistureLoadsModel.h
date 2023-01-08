@@ -45,7 +45,7 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_PersonMoistureLoadPerArea,	// Keyword: PersonMoistureLoadPerArea	[kg/m2s]	'Complete person moisture load per zone floor area.'
+		P_MoistureLoadPerArea,	// Keyword: MoistureLoadPerArea	[kg/m2s]	'Moisture load per zone floor area.'
 		NUM_P
 	};
 
