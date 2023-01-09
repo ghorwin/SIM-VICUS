@@ -1344,23 +1344,23 @@ namespace VICUS {
 			// EpdCategoryDataset::Module
 			case 5 :
 			switch (t) {
-				case 0 : return "Raw material procurement (A1)";
-				case 1 : return "Transport (A2)";
-				case 2 : return "Production (A3)";
-				case 3 : return "Transport (A4)";
-				case 4 : return "Construction / Installation (A5)";
-				case 5 : return "Usage (B1)";
-				case 6 : return "Maintenance (B2)";
-				case 7 : return "Maintenance (B3)";
-				case 8 : return "Replacement (B4)";
-				case 9 : return "Modernisation (B5)";
-				case 10 : return "Energy consumption in operation (B6)";
-				case 11 : return "Water consumption in operation (B7)";
-				case 12 : return "deconstruction / demolition (C1)";
-				case 13 : return "Transport (C2)";
-				case 14 : return "Waste recycling (C3)";
-				case 15 : return "Disposal (C4)";
-				case 16 : return "Potential for reuse, recovery and recycling (D)";
+				case 0 : return "A1: Raw material procurement";
+				case 1 : return "A2: Transport";
+				case 2 : return "A3: Production";
+				case 3 : return "A4: Transport";
+				case 4 : return "A5: Construction / Installation (A5)";
+				case 5 : return "B1: Usage";
+				case 6 : return "B2: Maintenance";
+				case 7 : return "B3: Maintenance";
+				case 8 : return "B4: Replacement";
+				case 9 : return "B5: Modernisation";
+				case 10 : return "B6: Energy consumption in operation";
+				case 11 : return "B7: Water consumption in operation";
+				case 12 : return "C1: deconstruction / demolition";
+				case 13 : return "C2: Transport";
+				case 14 : return "C3: Waste recycling";
+				case 15 : return "C4: Disposal";
+				case 16 : return "D: Potential for reuse, recovery and recycling";
 			} break;
 			// EpdCategorySet::Category
 			case 6 :
