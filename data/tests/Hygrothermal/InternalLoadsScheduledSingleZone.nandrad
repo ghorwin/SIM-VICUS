@@ -44,7 +44,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0 6 10</TimePoints>
-								<Values>PersonMoistureLoadPerAreaSchedule [kg/m2s]:0 1.667e-07 0</Values>
+								<Values>MoistureLoadPerAreaSchedule [kg/m2s]:0 1.667e-07 0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -52,7 +52,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0 14 16</TimePoints>
-								<Values>PersonMoistureLoadPerAreaSchedule [kg/m2s]:0 6.667e-08 0</Values>
+								<Values>MoistureLoadPerAreaSchedule [kg/m2s]:0 6.667e-08 0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

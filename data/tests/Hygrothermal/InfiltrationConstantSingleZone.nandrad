@@ -4,7 +4,6 @@
 		<ProjectInfo>
 			<Comment>Constant ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
 			<Created>2020-08-24</Created>
-			<LastEdited>2020-08-24</LastEdited>
 		</ProjectInfo>
 		<Zones>
 			<Zone id="1" displayName="Office" type="Active">
@@ -59,7 +58,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>

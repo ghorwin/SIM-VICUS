@@ -523,13 +523,17 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 	resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_CompleteThermalLoad]));
 
 	if (m_moistureBalanceEnabled) {
+		// the moisture balance now depends on the sum of all moisture mass fluxes
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[1], &m_results[R_CompleteMoistureLoad]));
+
 		if (m_infiltrationMoistMassfluxValueRef != nullptr)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteMoistureLoad], m_infiltrationMoistMassfluxValueRef));
 
-		// the moisture balance now depends on the sum of all moisture mass fluxes
-		resultInputValueReferences.push_back(std::make_pair(&m_ydot[1], &m_results[R_CompleteMoistureLoad]));
-		// the room energy balance depends on the moisture enthalpy flux
-		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_moistureEnthalpyFluxValueRef));
+		// The room energy balance depends on the moisture production model results
+		if (m_moistureEnthalpyFluxValueRef != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_moistureEnthalpyFluxValueRef));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteMoistureLoad], m_moistureLoadValueRef));
+		}
 	}
 
 }

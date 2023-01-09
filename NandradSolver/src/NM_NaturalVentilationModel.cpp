@@ -95,8 +95,13 @@ void NaturalVentilationModel::initResults(const std::vector<AbstractModel *> &) 
 	}
 
 	// resize result vectors accordingly
-	for (unsigned int varIndex=0; varIndex<varCount; ++varIndex)
+	unsigned int dummyVal=900;
+	for (unsigned int varIndex=0; varIndex<varCount; ++varIndex) {
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
+		// initialize with dummy values for debugging
+		for (unsigned int i=0; i< m_vectorValuedResults[varIndex].size(); ++i)
+			 m_vectorValuedResults[varIndex].dataPtr()[i] = ++dummyVal;
+	}
 
 	// we also cache the zonal volumes for faster computation
 	for (unsigned int id : indexKeys) {
@@ -454,13 +459,6 @@ int NaturalVentilationModel::update() {
 
 	// moist air
 	if (m_moistureBalanceEnabled) {
-		// get ambient vapor, gas and air density [kg/m3]
-		double rhoVaporAmbient = *m_valueRefs[1];
-		double rhoGasAmbient = IBK::RHO_AIR;
-		double rhoAirAmbient = IBK::RHO_AIR;
-		double xiVaporAmbient = 0.0;
-		double xiAirAmbient = 1.0;
-
 		// constant parameters
 		double RVapor = IBK::R_VAPOR;
 		double RAir = IBK::R_AIR;
@@ -473,14 +471,18 @@ int NaturalVentilationModel::update() {
 		double * resultVentHeatFlux = m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr();
 		double * resultVentMassFlux = m_vectorValuedResults[VVR_VentilationMoistureMassFlux].dataPtr();
 
-		// compute gas density of ambient air
+		// get ambient vapor, gas and air density [kg/m3]
+		double rhoVaporAmbient = *m_valueRefs[1];
 		double pVaporAmbient = rhoVaporAmbient * RVapor * Tambient;
-		rhoAirAmbient = (pGasRef - pVaporAmbient)/(RAir * Tambient);
-		rhoGasAmbient = rhoAirAmbient + rhoVaporAmbient;
+		double rhoAirAmbient = (pGasRef - pVaporAmbient)/(RAir * Tambient);
+		if (rhoAirAmbient < 0)
+			rhoAirAmbient = 0;
+		// compute gas density of ambient air
+		double rhoGasAmbient = rhoAirAmbient + rhoVaporAmbient;
 
 		// compute density ratios
-		xiAirAmbient = rhoAirAmbient/rhoGasAmbient;
-		xiVaporAmbient = rhoVaporAmbient/ rhoGasAmbient;
+		double xiAirAmbient = rhoAirAmbient/rhoGasAmbient;
+		double xiVaporAmbient = rhoVaporAmbient/ rhoGasAmbient;
 
 		// loop over all zones
 		for (unsigned int i=0; i<zoneCount; ++i) {
@@ -488,7 +490,7 @@ int NaturalVentilationModel::update() {
 			// get room air temperature in [K]
 			double Tzone = *m_valueRefs[varOffset];
 			// get zone vapor density in [kg/m3]
-			double rhoVaporZone = *m_valueRefs[varOffset + i];
+			double rhoVaporZone = *m_valueRefs[varOffset + 1];
 
 			// get ventilation rate in [1/s]
 			double rate = resultVentRate[i];
