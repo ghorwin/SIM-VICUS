@@ -289,7 +289,7 @@ HEADERS  += \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
-	../../src/SVDBEPDEditWidget.h \
+  ../../src/SVDBEpdEditWidget.h \
 	../../src/SVDBEpdTableModel.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
 	../../src/SVDBNetworkControllerTableModel.h \
