@@ -997,9 +997,13 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// These ids are kept in the header of the shading file for later replacement of the ids.
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
-
-	generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
+	try {
+		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
 								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("%1\nCould not export NANDRAD project.").arg(ex.what()), FUNC_ID);
+	}
 
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);
