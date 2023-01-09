@@ -16,10 +16,12 @@ SVSimulationLCAResultsDialog::~SVSimulationLCAResultsDialog() {
 
 void SVSimulationLCAResultsDialog::setLcaResults() {
 	//m_ui->treeWidgetLcaResults->
+	setup();
 }
 
 void SVSimulationLCAResultsDialog::setup() {
 	// Add data to treeWidget
+	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(15);
 	QStringList headers;
 	headers << "Category" << "Component type" << "Component name" << "Area [m2]" << "GWP (CO2-Äqu.) [kg/(m2a)";
