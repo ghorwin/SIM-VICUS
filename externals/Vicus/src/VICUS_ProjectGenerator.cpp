@@ -197,19 +197,39 @@ public:
 
 class ControlledShadingModelGenerator : public ModelGeneratorBase{
 public:
+
+
 	ControlledShadingModelGenerator(const VICUS::Project * pro) :
 		ModelGeneratorBase(pro)
 	{}
 
 	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
 
-	// identifies the orientation of the corresponding sensor
-	enum SensorOrientations {S_Horizontal, S_North, S_East, S_South, S_West, NUM_S};
+	/*! identifies the orientation of the corresponding sensor. */
+	enum SensorOrientation {
+		S_Horizontal,
+		S_North,
+		S_East,
+		S_South,
+		S_West,
+		NUM_S
+	};
 
-	// stores all the models
-	QMap<unsigned int, QMap<ControlledShadingModelGenerator::SensorOrientations, NANDRAD::ShadingControlModel>> m_shadingModels = QMap<unsigned int, QMap<ControlledShadingModelGenerator::SensorOrientations, NANDRAD::ShadingControlModel>>();
+	struct ZoneShadingModel {
 
-	static SensorOrientations calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category);
+		ZoneShadingModel() {}
+
+		std::map<SensorOrientation, NANDRAD::ShadingControlModel>			m_shadingControlModels;
+	};
+
+	static SensorOrientation calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category);
+
+	/*! Stores all the models.
+		\param key - is zone control model id
+		\param entry - SensorShadingModel
+	*/
+	std::map<unsigned int, ZoneShadingModel>								m_shadingModels;
+
 };
 
 class IdealHeatingCoolingModelGenerator : public ModelGeneratorBase{
@@ -438,7 +458,7 @@ public:
 	std::vector<NANDRAD::ConstructionType>			m_constructions;
 	std::vector<NANDRAD::WindowGlazingSystem>		m_windowGlazingSystems;
 
-	QMap<unsigned int, QMap<ControlledShadingModelGenerator::SensorOrientations, NANDRAD::ShadingControlModel>> * m_shadingModels = nullptr;
+	std::map<unsigned int, ControlledShadingModelGenerator::ZoneShadingModel> * m_shadingModels = nullptr;
 
 	// all ground zone exports: schedules (periods or spline), zones, object lists
 	std::map<std::string,std::vector<NANDRAD::Schedule>>				m_schedsMap;
@@ -769,7 +789,7 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	std::vector<const VICUS::Room *> zones;
 
 	// add all the sensors in the ids
-	for(unsigned int i = 0; i < ControlledShadingModelGenerator::SensorOrientations::NUM_S; i++){
+	for(unsigned int i = 0; i < ControlledShadingModelGenerator::NUM_S; i++){
 		idSet.insert(2000000 + i); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
 	}
 
@@ -890,9 +910,9 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 			p.m_schedules.m_annualSchedules[thermostats.m_objLists[i].m_name] = thermostats.m_schedGroupSplines[i];
 
 	// *** Controlled Shading ***
-	for(auto map : controlledShading.m_shadingModels.values()){
-		for(auto shadingModel : map.values()){
-			p.m_models.m_shadingControlModels.push_back(shadingModel);
+	for(std::pair<unsigned int, ControlledShadingModelGenerator::ZoneShadingModel> shadingModels : controlledShading.m_shadingModels){
+		for(auto shadingModel : shadingModels.second.m_shadingControlModels){
+			p.m_models.m_shadingControlModels.push_back(shadingModel.second);
 		}
 	}
 
@@ -1723,14 +1743,17 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 }
 
 void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
-	const ZoneControlShading* zoneControllShading = nullptr;
+	const ZoneControlShading* zoneControlShading = nullptr;
 
 	try {
-		zoneControllShading = dynamic_cast<const ZoneControlShading*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlShading));
+		zoneControlShading = dynamic_cast<const ZoneControlShading*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlShading));
 	}  catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
 		return;
 	}
+
+	if(zoneControlShading == nullptr)
+		return;		// No shading control is defined in zone
 
 	// iterate other all surfaces of the room
 	for(const Surface & surface : r->m_surfaces){
@@ -1739,14 +1762,14 @@ void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigne
 			continue;
 		}
 		IBKMK::Vector3D normal = surface.geometry().normal();
-		SensorOrientations orientation = calculateSensorOrientation(normal, zoneControllShading->m_category);
-		if(m_shadingModels.contains(zoneControllShading->m_id)){
-			if(m_shadingModels[zoneControllShading->m_id].contains(orientation))
+		SensorOrientation orientation = calculateSensorOrientation(normal, zoneControlShading->m_category);
+		if(m_shadingModels.find(zoneControlShading->m_id) != m_shadingModels.end()){
+			if(m_shadingModels[zoneControlShading->m_id].m_shadingControlModels.find(orientation) != m_shadingModels[zoneControlShading->m_id].m_shadingControlModels.end())
 				// shading model already exists for this surface
 				continue;
 		} else {
 			// create map, since it is the first entry
-			m_shadingModels[zoneControllShading->m_id] = QMap<ControlledShadingModelGenerator::SensorOrientations, NANDRAD::ShadingControlModel>();
+			m_shadingModels[zoneControlShading->m_id] = ZoneShadingModel();
 		}
 		//create a new shadingModel and save it in the map
 		NANDRAD::ShadingControlModel shadingModel = NANDRAD::ShadingControlModel();
@@ -1758,28 +1781,28 @@ void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigne
 		double minIntensity = 0;
 		switch(orientation){
 		case ControlledShadingModelGenerator::S_Horizontal: {
-			maxIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value();
-			minIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value() - zoneControllShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
 			break;
 		}
 		case ControlledShadingModelGenerator::S_North: {
-			maxIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalNorth].get_value();
-			minIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalNorth].get_value() - zoneControllShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalNorth].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalNorth].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
 			break;
 		}
 		case ControlledShadingModelGenerator::S_East: {
-			maxIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalEast].get_value();
-			minIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalEast].get_value() - zoneControllShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalEast].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalEast].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
 			break;
 		}
 		case ControlledShadingModelGenerator::S_South: {
-			maxIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalSouth].get_value();
-			minIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalSouth].get_value() - zoneControllShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalSouth].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalSouth].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
 			break;
 		}
 		case ControlledShadingModelGenerator::S_West: {
-			maxIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalWest].get_value();
-			minIntensity = zoneControllShading->m_para[ZoneControlShading::P_GlobalWest].get_value() - zoneControllShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalWest].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalWest].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
 			break;
 		}
 		case ControlledShadingModelGenerator::NUM_S:
@@ -1795,13 +1818,13 @@ void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigne
 		// set the sensor id, based on the orientation
 		shadingModel.m_sensorId = 2000000 + orientation;
 
-		m_shadingModels[zoneControllShading->m_id][orientation] = shadingModel;
+		m_shadingModels.at(zoneControlShading->m_id).m_shadingControlModels[orientation] = shadingModel;
 
 	}
 
 }
 
-ControlledShadingModelGenerator::SensorOrientations ControlledShadingModelGenerator::calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category){
+ControlledShadingModelGenerator::SensorOrientation ControlledShadingModelGenerator::calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category){
 	double altitude = std::asin(normal.m_z) / IBK::DEG2RAD;
 	if (altitude < 0){
 		altitude += 360;
@@ -1811,15 +1834,15 @@ ControlledShadingModelGenerator::SensorOrientations ControlledShadingModelGenera
 		azimut += 360;
 
 	if((altitude > 45 && altitude < 135) || category == ZoneControlShading::C_GlobalHorizontalSensor)
-		return SensorOrientations::S_Horizontal;
+		return SensorOrientation::S_Horizontal;
 	if(azimut > 45 && azimut <= 135)
-		return SensorOrientations::S_East;
+		return SensorOrientation::S_East;
 	if(azimut > 135 && azimut <= 225)
-		return SensorOrientations::S_South;
+		return SensorOrientation::S_South;
 	if(azimut > 225 && azimut <= 315)
-		return SensorOrientations::S_West;
-	//else return north
-	return SensorOrientations::S_North;
+		return SensorOrientation::S_West;
+	//else return south
+	return SensorOrientation::S_North;
 
 }
 
@@ -1999,24 +2022,24 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 								if(idZoneControlShading != VICUS::INVALID_ID){
 									//sub surface has controlled shading
 									const VICUS::ZoneControlShading * zcs = VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, idZoneControlShading);
-									NANDRAD::WindowShading shading = NANDRAD::WindowShading();
+									NANDRAD::WindowShading shading;
 									shading.m_modelType = NANDRAD::WindowShading::MT_Controlled;
 									//TODO give user possibility to set Reductionfactor in UI, right now its set default to 0.6
 									NANDRAD::KeywordList::setParameter(shading.m_para, "WindowShading::para_t",
-																	   NANDRAD::WindowShading::P_ReductionFactor, 0.6);
+																	   NANDRAD::WindowShading::P_ReductionFactor, winV.m_para[Window::P_ReductionFactor].get_value());
 									//calc the sensor orientation
 									const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(ss.m_parent);
-									ControlledShadingModelGenerator::SensorOrientations oriantaion = ControlledShadingModelGenerator::calculateSensorOrientation(s->geometry().normal(), zcs->m_category);
+									ControlledShadingModelGenerator::SensorOrientation ori = ControlledShadingModelGenerator::calculateSensorOrientation(s->geometry().normal(), zcs->m_category);
 									//check if shading model already exists for this ZoneControlShading
 									Q_ASSERT(m_shadingModels != nullptr);
-									if(!m_shadingModels->contains(zcs->m_id)){
+									if(m_shadingModels->find(zcs->m_id) == m_shadingModels->end()){
 										errorStack.push_back(QString("Error during model generation, no zone control shading found with id %1").arg(zcs->m_id));
 									}
 
-									if(!(*m_shadingModels)[zcs->m_id].contains(oriantaion)){
-										errorStack.push_back(QString("Error during model generation, no model for the orientation %1").arg(oriantaion));
+									if(m_shadingModels->at(zcs->m_id).m_shadingControlModels.find(ori) == m_shadingModels->at(zcs->m_id).m_shadingControlModels.end()){
+										errorStack.push_back(QString("Error during model generation, no model for the orientation %1").arg(ori));
 									}
-									shading.m_controlModelId = (*m_shadingModels)[zcs->m_id][oriantaion].m_id;
+									shading.m_controlModelId = m_shadingModels->at(zcs->m_id).m_shadingControlModels[ori].m_id;
 									emb.m_window.m_shading = shading;
 								}
 							}
@@ -2039,6 +2062,8 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 						  .arg(ss.m_id).arg(ss.m_displayName);
 			continue;
 		}
+
+
 
 		//add ids for shading file later
 		// Attention if we have coupled sub surfaces this is not valid
