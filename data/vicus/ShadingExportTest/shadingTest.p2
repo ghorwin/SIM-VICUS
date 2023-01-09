@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.3">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>/home/anton/Documents/Vicus-Files/examples</Path>
+			<SubDir Color="#416fce" Checked="0">.</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">DataFiles</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SimQuality/reference</SubDir>
+			<SubDir Color="#d02000" Checked="0">SingleFamilyHouse</SubDir>
+			<SubDir Color="#ffee00" Checked="1">shadingTest</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="Model: Solar Intensity On Shading Sensor Average">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?16|17|18|19|20</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?16|17|18|19|20</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?16|17|18|19|20</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?16|17|18|19|20</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?16|17|18|19|20</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Model: Shading Control Value">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Embedded Object: Shading Factor">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>6</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>11</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>10</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>9</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>8</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/states.tsv?4|5|6|7|8|9|10|11|12|13|14|15</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>7</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#7e0021</PenColor>
+						<MarkerColor>#7e0021</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Embedded Object: Flux Short Wave Radiation">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>16</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>23</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>15</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>22</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>21</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>28</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>20</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>27</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>19</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>26</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>18</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>25</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>17</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/anton/Documents/Vicus-Files/examples/shadingTest/results/fluxes.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|21|22|23|24|25|26|27|28|29|30|31|32|33|34</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>24</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#7e0021</PenColor>
+						<MarkerColor>#7e0021</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#83caff</PenColor>
+						<MarkerColor>#83caff</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#314004</PenColor>
+						<MarkerColor>#314004</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#4b1f6f</PenColor>
+						<MarkerColor>#4b1f6f</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#c5000b</PenColor>
+						<MarkerColor>#c5000b</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#0084d1</PenColor>
+						<MarkerColor>#0084d1</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>965174400000</Maximum>
+						<Minimum>965088000000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+						<Maximum>83.09178743961354</Maximum>
+						<Minimum>-62.801932367149675</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>551.99516324062881</Maximum>
+						<Minimum>460.70133010882711</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

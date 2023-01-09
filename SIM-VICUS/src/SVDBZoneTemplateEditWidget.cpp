@@ -167,6 +167,13 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 		m_ui->pushButtonAddIdealHeatingCooling->setEnabled(false);
 		m_ui->pushButtonAddIdealHeatingCooling->setChecked(true);
 	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_ControlShading] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddShading->setEnabled(true);
+	else{
+		m_ui->pushButtonAddShading->setEnabled(false);
+		m_ui->pushButtonAddShading->setChecked(true);
+	}
+
 
 
 	// now the sub-template stuff
@@ -220,7 +227,6 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(iload->m_displayName) );
 			}
 		} break;
-		break;
 		case VICUS::ZoneTemplate::ST_IntLoadLighting:{
 			m_ui->labelSubTemplate->setText(tr("Internal Loads - Lighting loads:"));
 			// lookup corresponding dataset entry in database
@@ -255,7 +261,16 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(ideal->m_displayName) );
 		}
 		break;
-
+		case VICUS::ZoneTemplate::ST_ControlShading:{
+			m_ui->labelSubTemplate->setText(tr("Shading:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::ZoneControlShading * ideal = m_db->m_zoneControlShading[(unsigned int)subTemplateId];
+			if (ideal == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(ideal->m_displayName) );
+		}
+		break;
 		case VICUS::ZoneTemplate::NUM_ST:
 		break;
 	}
@@ -296,6 +311,7 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 			case VICUS::ZoneTemplate::ST_Infiltration:			on_pushButtonAddInfiltration_clicked();			break;
 			case VICUS::ZoneTemplate::ST_VentilationNatural:	on_pushButtonAddVentilationNatural_clicked();	break;
 			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:	on_pushButtonAddIdealHeatingCooling_clicked();	break;
+			case VICUS::ZoneTemplate::ST_ControlShading:	on_pushButtonAddShading_clicked();					break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 

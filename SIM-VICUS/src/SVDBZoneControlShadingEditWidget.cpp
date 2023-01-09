@@ -305,7 +305,7 @@ void SVDBZoneControlShadingEditWidget::checkCategory() {
 	break;
 	case VICUS::ZoneControlShading::Category::C_GlobalHorizontalAndVerticalSensors:
 		{
-		m_ui->lineEditHorizontal->setEnabled(false);
+		m_ui->lineEditHorizontal->setEnabled(true);
 		m_ui->lineEditEast->setEnabled(true);
 		m_ui->lineEditWest->setEnabled(true);
 		m_ui->lineEditNorth->setEnabled(true);

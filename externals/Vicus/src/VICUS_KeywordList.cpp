@@ -509,6 +509,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -1005,6 +1006,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -1502,6 +1504,7 @@ namespace VICUS {
 				case 1 : return "Frame area fraction of the window";
 				case 2 : return "Divider width of the window";
 				case 3 : return "Divider area fraction of the window";
+				case 4 : return "Reduction factor for dynamic shading";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -1998,6 +2001,7 @@ namespace VICUS {
 				case 1 : return "---";
 				case 2 : return "m";
 				case 3 : return "---";
+				case 4 : return "---";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -2494,6 +2498,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -2990,6 +2995,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -3175,7 +3181,7 @@ namespace VICUS {
 			// Window::Method
 			case 43 : return 3;
 			// Window::para_t
-			case 44 : return 4;
+			case 44 : return 5;
 			// WindowDivider::para_t
 			case 45 : return 1;
 			// WindowFrame::para_t
@@ -3299,7 +3305,7 @@ namespace VICUS {
 			// Window::Method
 			case 43 : return 2;
 			// Window::para_t
-			case 44 : return 3;
+			case 44 : return 4;
 			// WindowDivider::para_t
 			case 45 : return 0;
 			// WindowFrame::para_t
