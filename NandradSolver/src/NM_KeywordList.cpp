@@ -597,7 +597,7 @@ namespace NANDRAD_MODEL {
 				case 10 : return "Ambient CO2 concentration.";
 				case 11 : return "Ambient CO2 density.";
 				case 12 : return "Solar declination (0 - north).";
-				case 13 : return "Solar elevation (0 - at horizont, 90 - directly above).";
+				case 13 : return "Solar elevation (0 - at horizont, 90 - zenith).";
 				case 14 : return "Solar azimuth (0 - north).";
 				case 15 : return "Albedo value of the surrounding [0..1].";
 				case 16 : return "Latitude.";

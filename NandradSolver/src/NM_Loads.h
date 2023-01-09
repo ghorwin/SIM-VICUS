@@ -73,7 +73,7 @@ public:
 		R_CO2Concentration,			// Keyword: CO2Concentration			[---]	'Ambient CO2 concentration.'
 		R_CO2Density,				// Keyword: CO2Density					[kg/m3]	'Ambient CO2 density.'
 		R_DeclinationAngle,			// Keyword: DeclinationAngle			[Deg]	'Solar declination (0 - north).'
-		R_ElevationAngle,			// Keyword: ElevationAngle				[Deg]	'Solar elevation (0 - at horizont, 90 - directly above).'
+		R_ElevationAngle,			// Keyword: ElevationAngle				[Deg]	'Solar elevation (0 - at horizont, 90 - zenith).'
 		R_AzimuthAngle,				// Keyword: AzimuthAngle				[Deg]	'Solar azimuth (0 - north).'
 		R_Albedo,					// Keyword: Albedo						[---]	'Albedo value of the surrounding [0..1].'
 		R_Latitude,					// Keyword: Latitude					[Deg]	'Latitude.'

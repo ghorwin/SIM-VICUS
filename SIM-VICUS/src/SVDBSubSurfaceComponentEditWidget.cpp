@@ -59,6 +59,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 
 	// construction group box
 	m_ui->lineEditWindowName->setReadOnly(true);
+	m_ui->lineEditReductionFactor->setup(0, 1, "Reduction factor for dynamic shading", true, true);
 
 	updateInput(-1);
 }
@@ -297,3 +298,17 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditionSide
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+
+void SVDBSubSurfaceComponentEditWidget::on_lineEditReductionFactor_editingFinishedSuccessfully() {
+	if(m_current->m_idWindow == VICUS::INVALID_ID)
+		return;
+
+	double val = m_ui->lineEditReductionFactor->value();
+
+	VICUS::Window *win = const_cast<VICUS::Window*>(m_db->m_windows[m_current->m_idWindow]);
+
+	Q_ASSERT(win != nullptr);
+
+	VICUS::KeywordList::setParameter(win->m_para, "Window::para_t", VICUS::Window::P_ReductionFactor, val);
+}
+
