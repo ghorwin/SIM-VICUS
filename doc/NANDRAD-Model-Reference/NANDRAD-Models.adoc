@@ -31,7 +31,8 @@ In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke besc
 | XML-Tag | Modell/Kurzbeschreibung
 | `NaturalVentilationModels` | Natürliche Lüftung/Infiltration -> <<model_natural_ventilation>>
 | `ShadingControlModels` | Kontrollmodell für dynamische Verschattung -> <<model_shading_control>>
-| `InternalLoadsModels` | Interne Lasten (Geräte, Personen, Beleuchtung) -> <<model_internal_loads>>
+| `InternalLoadModels` | Interne Lasten (Geräte, Personen, Beleuchtung) -> <<model_internal_loads>>
+| `InternalMoistureLoadModels` | Interne Feuchtelasten (Personen) -> <<model_internal_moisture_loads>>
 | `Thermostats` | Kontrollmodell für Temperaturregelung -> <<model_thermostats>>
 | (*) `HVACControlModels` | Kontrollmodell für erweiterte Klimaanlagenregelung -> <<model_HVAC_control>>
 | `IdealHeatingCoolingModels` | Ideale Beheizung/Kühlung von Zonen -> <<model_ideal_heating_cooling>>
@@ -391,6 +392,66 @@ Das Modell stellt folgende Ausgangsgrößen zur Verfügung:
 Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `ConvectiveEquipmentHeatLoad[id=3]` für die konvektive Gerätelast in Zone #3.
 
 
+[[model_internal_moisture_loads]]
+## Modell für interne Feuchtelasten
+
+Das Modell beschreibt analog zum 'Internal loads model' die inneren Feuchtelasten im Raum. Dabei findet die Feuchteproduktion durch Personen Berücksichtigung. Erweiterungen sind geplant.
+Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Feuchtelasten berücksichtigt werden sollen. Alle Zonen dürfen durch maximal eine Feuchtelastenmodell referenziert werden.
+
+.Definitionsblock für interne Feuchtelasten
+====
+[source,xml]
+----
+<InternalMoistureLoadsModel id="300" modelType="Scheduled">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+</InternalMoistureLoadsModel>
+----
+====
+
+
+Das `InternalMoistureLoadsModel` unterstützt folgende XML-Attribute:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
+
+| `modelType` 
+a| Gibt an, wie die internen Lasten angesetzt werden sollen
+
+* `Constant` - Konstante Personenfeuchtelasten
+* `Scheduled` - Lasten werden über Zeitplanparameter bereitgestellt.
+
+| key | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `PersonHeatMoistureLoadPerArea` | kg/m2s | Personenfeuchteproduktion pro Zonennutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+|====================
+
+Der Modelltyp `Constant` übernimmt die internen Feuchtelasten aus den Parametern. Der Modelltyp `Scheduled` verwendet die Lasten aus dem Zeitplan: 
+
+- `PersonHeatMoistureLoadPerAreaSchedule [kg/m2s]`
+
+Die Existenz dieses Zeitplanparameters ist zwingend erforderlich.
+
+
+### Ausgaben 
+
+Das Modell stellt folgende Ausgangsgrößen zur Verfügung: 
+
+- `PersonMoistureLoad [W]`
+- `PersonMoistureEnthalpyFlux [W]`
+
+Die Ausgaben sind vektoriell und müssen mit Zonenspezifikation referenziert werden, z. B. mit: `PersonMoistureEnthalpyFlux[id=3]` für die Enthalpieströe in Verbindung mit Personenfeuchteproduktion in Zone #3.
 
 
 [[model_thermostats]]

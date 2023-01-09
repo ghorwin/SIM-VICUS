@@ -240,7 +240,7 @@ protected:
 
 	/*! Return visibilty of a frame with the given type based on properties of derived ReportSettings class.
 		Should be reimplemented in derived class in case such special visibilties exist.*/
-	virtual bool getSpecialVisibility(ReportFrameBase* frame, int type, bool mainVisible) {
+	virtual bool hasSpecialVisibility(ReportFrameBase* , int , bool ) {
 		return true;
 	}
 

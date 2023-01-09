@@ -81,6 +81,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Area per person");
 	tr("Power");
 	tr("Power per area");
+	tr("Moisture production rate per area");
 	tr("Convective heat factor");
 	tr("Latent heat factor");
 	tr("Loss heat factor");

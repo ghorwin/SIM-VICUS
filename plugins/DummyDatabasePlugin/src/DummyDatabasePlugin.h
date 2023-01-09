@@ -19,7 +19,7 @@ public:
 	int showSettingsDialog(QWidget * parent) override;
 
 	// SVDatabasePluginInterface interface
-	bool retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) override;
+	bool retrieve(const SVDatabase & currentDB, SVDatabase & additionalDBElemnts) override;
 };
 
 #endif // DummyDatabasePluginH

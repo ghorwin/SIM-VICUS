@@ -691,6 +691,7 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
 	for (VICUS::InternalLoad & e : pro.m_embeddedDB.m_internalLoads) {
 		replaceID(e.m_idActivitySchedule, schedulesIDMap);
+		replaceID(e.m_idMoistureProductionRatePerAreaSchedule, schedulesIDMap);
 		replaceID(e.m_idOccupancySchedule, schedulesIDMap);
 		replaceID(e.m_idPowerManagementSchedule, schedulesIDMap);
 		importDBElement(e, db.m_internalLoads, internalLoadIDMap,

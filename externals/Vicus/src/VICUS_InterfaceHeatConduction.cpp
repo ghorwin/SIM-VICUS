@@ -45,6 +45,7 @@ bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) 
 
 bool InterfaceHeatConduction::isValid(const Database<Schedule> &scheduleDB) const {
 
+	std::string err;
 	try {
 		switch (m_otherZoneType) {
 			case VICUS::InterfaceHeatConduction::OZ_Standard:
@@ -63,7 +64,7 @@ bool InterfaceHeatConduction::isValid(const Database<Schedule> &scheduleDB) cons
 				const Schedule * zoneSched = scheduleDB[m_idSchedule];
 				if (zoneSched == nullptr)
 					return false;
-				if (!zoneSched->isValid())
+				if (!zoneSched->isValid(err, true))
 					return false;
 			} break;
 			case VICUS::InterfaceHeatConduction::NUM_OZ:

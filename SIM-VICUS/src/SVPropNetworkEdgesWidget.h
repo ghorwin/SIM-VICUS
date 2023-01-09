@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+
+class QTableWidgetItem;
+
 namespace Ui {
 class SVPropNetworkEdgesWidget;
 }
@@ -42,6 +45,8 @@ private slots:
 	void on_pushButtonAssignPipe_clicked();
 
 	void on_tableWidgetPipes_itemSelectionChanged();
+
+	void on_tableWidgetPipes_itemDoubleClicked(QTableWidgetItem */*item*/);
 
 private:
 

@@ -44,7 +44,7 @@ const char * const PROGRAM_INFO =
 	"Andreas Nicolai and Anne Paepcke\n"
 	"Contact: \n"
 	"  andreas.nicolai [at] tu-dresden.de\n"
-	"  anne.paepcke [at] tu-dresden.de\n\n";
+	"  anne.paepcke [at] gmx.net\n\n";
 
 int main(int argc, char * argv[]) {
 	FUNCID(main);

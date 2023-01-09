@@ -12,8 +12,10 @@
 #endif
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Directories.h>
 
 #include "SVSettings.h"
+
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
 
@@ -40,7 +42,24 @@ void SVPluginLoader::loadPlugins() {
 #endif
 	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
 
-	const auto entryList = pluginsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+	QStringList entryList = pluginsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+	for (const QString &dirName : entryList) {
+		// attempt to load a plugin in this directory
+		PluginData pd;
+		loadPlugin(pluginsDir.filePath(dirName), pd);
+	}
+
+
+	// then load user-installed plugins
+	pluginsDir = QDir(QtExt::Directories::userDataDir() + "/plugins");
+#if defined(Q_OS_WIN32)
+	// Mind: we need a variable for the converted wstring here!!!
+	plugDir = pluginsDir.absolutePath().toStdWString();
+	SetDllDirectoryW(plugDir.c_str());
+#endif
+	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
+
+	entryList = pluginsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 	for (const QString &dirName : entryList) {
 		// attempt to load a plugin in this directory
 		PluginData pd;

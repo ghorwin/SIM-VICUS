@@ -89,6 +89,7 @@ SOURCES += \
 	../../src/SVDBSupplySystemTableModel.cpp \
 	../../src/SVNetworkExportDialog.cpp \
 	../../src/SVPluginLoader.cpp \
+	../../src/SVPluginManager.cpp \
 	../../src/SVPropNetworkEdgesWidget.cpp \
 	../../src/SVPropNetworkEditWidget.cpp \
 	../../src/SVPropNetworkGeometryWidget.cpp \
@@ -283,6 +284,7 @@ HEADERS  += \
 	../../src/SVDBSupplySystemTableModel.h \
 	../../src/SVNetworkExportDialog.h \
 	../../src/SVPluginLoader.h \
+	../../src/SVPluginManager.h \
 	../../src/SVPropNetworkEdgesWidget.h \
 	../../src/SVPropNetworkEditWidget.h \
 	../../src/SVPropNetworkGeometryWidget.h \
@@ -518,6 +520,7 @@ FORMS    += \
 	../../src/SVNetworkImportDialog.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
+	../../src/SVPluginManager.ui \
 	../../src/SVPreferencesDialog.ui \
 	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \

@@ -71,6 +71,16 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		try {
 			IBK::IBK_Message(IBK::FormatString("Reading climate data file '%1'\n").arg(climateFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			m_solarRadiationModel.m_climateDataLoader.readClimateData(climateFile);
+
+			// check for valid columns in climate data file
+			// TODO : we need to find out which climate data is referenced!
+			if (!m_solarRadiationModel.m_climateDataLoader.hasValidData(CCM::ClimateDataLoader::Temperature) )
+				throw IBK::Exception("Climate data file does not have valid temperature data.", FUNC_ID);
+
+			if (simPara.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
+				if (!m_solarRadiationModel.m_climateDataLoader.hasValidData(CCM::ClimateDataLoader::RelativeHumidity) )
+					throw IBK::Exception("Climate data file does not have valid realtive humidity data.", FUNC_ID);
+			}
 		}
 		catch (IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error reading climate data from file '%1")

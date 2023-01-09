@@ -51,12 +51,12 @@ private:
 	/*! Triggered when show-only-active check box was checked and table selection has changed,
 		sends a recolor signal.
 	*/
-	void zoneTemplateVisibilityChanged();
+	void zoneTemplateColoredZoneSelectionChanged();
 
 	/*! Triggered when select-active check box was checked and table selection has changed,
 		modifies visibility state of respective room nodes (and their surfaces).
 	*/
-	void zoneTemplateSelectionChanged();
+	void zoneTemplateVisibleZonesSelectionChanged();
 
 	/*! Launches ZoneTemplates db edit dialog. */
 	void openEditZoneTemplatesDialog();

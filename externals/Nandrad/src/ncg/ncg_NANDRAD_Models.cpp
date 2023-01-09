@@ -64,6 +64,18 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "InternalMoistureLoadsModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "InternalMoistureLoadsModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					InternalMoistureLoadsModel obj;
+					obj.readXML(c2);
+					m_internalMoistureLoadsModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ShadingControlModels") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -185,6 +197,18 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<InternalLoadsModel>::const_iterator it = m_internalLoadsModels.begin();
 			it != m_internalLoadsModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_internalMoistureLoadsModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("InternalMoistureLoadsModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<InternalMoistureLoadsModel>::const_iterator it = m_internalMoistureLoadsModels.begin();
+			it != m_internalMoistureLoadsModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

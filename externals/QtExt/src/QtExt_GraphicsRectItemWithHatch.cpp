@@ -67,8 +67,6 @@ namespace QtExt {
 		bool selected = option->state & QStyle::State_Selected;
 		myOption.state &= ~QStyle::State_Selected; // delete selected state in order to draw own one
 
-		QGraphicsRectItem::paint(painter, &myOption, widget);
-
 		if (m_hatchingType != HT_NoHatch) {
 
 			painter->setBrush(Qt::NoBrush);
@@ -113,6 +111,8 @@ namespace QtExt {
 
 			painter->restore();
 		}
+
+		QGraphicsRectItem::paint(painter, &myOption, widget);
 
 		// draw own selection frame
 		if( selected) {

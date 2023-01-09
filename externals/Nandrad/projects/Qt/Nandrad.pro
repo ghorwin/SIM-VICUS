@@ -59,6 +59,7 @@ HEADERS += \
 	../../src/NANDRAD_InterfaceSolarAbsorption.h \
 	../../src/NANDRAD_InterfaceVaporDiffusion.h \
 	../../src/NANDRAD_InternalLoadsModel.h \
+	../../src/NANDRAD_InternalMoistureLoadsModel.h \
 	../../src/NANDRAD_Interval.h \
 	../../src/NANDRAD_KeywordList.h \
 	../../src/NANDRAD_LinearSplineParameter.h \
@@ -125,6 +126,7 @@ SOURCES += \
 	../../src/NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/NANDRAD_InterfaceVaporDiffusion.cpp \
 	../../src/NANDRAD_InternalLoadsModel.cpp \
+	../../src/NANDRAD_InternalMoistureLoadsModel.cpp \
 	../../src/NANDRAD_Interval.cpp \
 	../../src/NANDRAD_KeywordList.cpp \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
@@ -176,6 +178,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceVaporDiffusion.cpp \
 	../../src/ncg/ncg_NANDRAD_InternalLoadsModel.cpp \
+	../../src/ncg/ncg_NANDRAD_InternalMoistureLoadsModel.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \

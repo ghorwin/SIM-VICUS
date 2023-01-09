@@ -173,7 +173,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
 
-    m_ui->actionDBZoneControlShading->setEnabled(true);
+	m_ui->actionDBZoneControlShading->setEnabled(true);
 }
 
 
@@ -668,9 +668,6 @@ void SVMainWindow::setup() {
 	lay->setSpacing(0);
 	m_ui->centralWidget->setLayout(lay);
 	m_welcomeScreen->updateWelcomePage();
-
-	// *** Ptoject Notes Dialog ***
-	m_notesDialog = new SVNotesDialog(this);
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
@@ -1271,27 +1268,46 @@ void SVMainWindow::on_actionViewResetView_triggered() {
 
 
 void SVMainWindow::on_actionViewFromNorth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
-}
-
-
-void SVMainWindow::on_actionViewFromEast_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
-}
-
-
-void SVMainWindow::on_actionViewFromSouth_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
 }
 
 
-void SVMainWindow::on_actionViewFromWest_triggered() {
+void SVMainWindow::on_actionViewFromEast_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+}
+
+
+void SVMainWindow::on_actionViewFromSouth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+}
+
+
+void SVMainWindow::on_actionViewFromWest_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
 }
 
 
 void SVMainWindow::on_actionViewFromAbove_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+}
+
+void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(8);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(10);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(7);
+}
+
+
+void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(9);
 }
 
 
@@ -1478,6 +1494,32 @@ void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
 }
 
 
+void SVMainWindow::on_actionEditProjectNotes_triggered() {
+	// create on first use
+	if (m_notesDialog == nullptr)
+		m_notesDialog = new SVNotesDialog(this);
+
+	m_notesDialog->exec();
+}
+
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered() {
+	// opens import network dialog
+	if (m_networkExportDialog == nullptr)
+		m_networkExportDialog = new SVNetworkExportDialog(this);
+
+	m_networkExportDialog->edit();
+}
+
+
+void SVMainWindow::on_actionPluginsManager_triggered() {
+	// show plugin view
+
+}
+
+
+
 void SVMainWindow::onUpdateActions() {
 	// purpose of this function is to update the view layout based on the existance of a project or none
 
@@ -1493,6 +1535,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
+	m_ui->actionExportNetworkAsGeoJson->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
@@ -1854,18 +1897,16 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 	SVDatabasePluginInterface* dbPlugin = dynamic_cast<SVDatabasePluginInterface*>(plugin);
 	if (dbPlugin != nullptr) {
 		// create copy of database
-		SVDatabase dbCopy(SVSettings::instance().m_db);
+		SVDatabase addedDB;
 		// update database entries
-		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
+		if (dbPlugin->retrieve(SVSettings::instance().m_db, addedDB)) {
 			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\n").arg(dbPlugin->title().toStdString()),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
-			// TODO : here we need to implement the check functionality for each database:
-			//        all original DB elements must also be included in the augmented DB
+			// process all DB elements in the second DB and transfer those into our db, but only if we do not have
+			// conflicting IDs
 
-			// For now, we just replace the entire DB - this is a bit dangerous, but since we do this only
-			// at the start of the application, where there is no project loaded, yet, the risk of data loss is small
-			SVSettings::instance().m_db = dbCopy;
+
 		}
 		else {
 			IBK::IBK_Message(IBK::FormatString("  Error importing database entries from plugin '%1'").arg(dbPlugin->title().toStdString()),
@@ -2130,20 +2171,5 @@ static bool copyRecursively(const QString &srcFilePath,
 			return false;
 	}
 	return true;
-}
-
-
-void SVMainWindow::on_actionEditProjectNotes_triggered() {
-	m_notesDialog->exec();
-}
-
-
-void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered()
-{
-	// opens import network dialog
-	if (m_networkExportDialog == nullptr)
-		m_networkExportDialog = new SVNetworkExportDialog(this);
-
-	m_networkExportDialog->edit();
 }
 

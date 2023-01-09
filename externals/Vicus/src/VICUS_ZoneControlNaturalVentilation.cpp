@@ -32,7 +32,7 @@ namespace VICUS {
 bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB) const
 {
 	// we have to check if the object is valid
-
+	std::string err;
 	// is id valid?
 	if ( m_id == INVALID_ID )
 		return false;
@@ -53,7 +53,7 @@ bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB
 			if (sched == nullptr)
 				return false;
 
-			if (!sched->isValid())
+			if (!sched->isValid(err, true))
 				return false;
 			// either scheudle or parameter are requested
 			continue;

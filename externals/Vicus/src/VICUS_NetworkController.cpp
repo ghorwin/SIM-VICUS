@@ -11,6 +11,8 @@ NetworkController::NetworkController(){
 }
 
 bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
+
+	std::string err;
 	// call check function of NANDRAD::HydraulicNetworkControlElement
 	try {
 		// TODO Hauke:
@@ -25,7 +27,7 @@ bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 		const Schedule * setPointSched = scheduleDB[m_idReferences[VICUS::NetworkController::ID_Schedule]];
 		if (setPointSched == nullptr)
 			return false;
-		if (!setPointSched->isValid())
+		if (!setPointSched->isValid(err, true))
 			return false;
 	}
 
@@ -203,10 +205,9 @@ NetworkController::para_t NetworkController::setPointType(ControlledProperty con
 		case CP_PumpOperation:
 			return P_HeatLossOfFollowingElementThreshold;
 		case CP_ThermostatValue:
-		case NUM_CP:
-			return NUM_P; // no parameter to be set here
+		case NUM_CP: ; // no parameter to be set here
 	}
-
+	return NUM_P;
 }
 
 

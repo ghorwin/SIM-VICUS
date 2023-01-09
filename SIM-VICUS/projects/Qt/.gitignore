@@ -1,8 +1,7 @@
 /debug_x64/
 /moc/
 /ui/
-/qrc_SIM-VICUS.cpp
-/qrc_shaders.cpp
-/qrc_style.cpp
+/qrc_*.cpp
 /release_x64/
 /release/
+/debug/

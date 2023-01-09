@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class QTableWidgetItem;
+
 namespace Ui {
 class SVPropNetworkSubStationWidget;
 }
@@ -35,6 +37,8 @@ private slots:
 	void on_pushButtonAssignSubNetwork_clicked();
 
 	void on_tableWidgetSubNetworks_itemSelectionChanged();
+
+	void on_tableWidgetSubNetworks_itemDoubleClicked(QTableWidgetItem */*item*/);
 
 private:
 	Ui::SVPropNetworkSubStationWidget *m_ui;

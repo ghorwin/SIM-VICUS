@@ -98,6 +98,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 		std::string name = VICUS::KeywordList::Keyword("Component::ComponentType", i);
 		components.m_options.push_back(FilterOption(VICUS::camelCase2ReadableString(name), nullptr));
 	}
+	components.m_options.push_back(FilterOption("Invalid Component", nullptr));
 
 	// Subsurfaces
 	FilterOption & surf = m_allOptions.m_options[ET_SubSurface];
@@ -106,6 +107,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 		std::string name = VICUS::KeywordList::Keyword("SubSurfaceComponent::SubSurfaceComponentType", i);
 		surf.m_options.push_back(FilterOption(VICUS::camelCase2ReadableString(name), nullptr));
 	}
+	surf.m_options.push_back(FilterOption("Invalid sub surface", nullptr));
 
 	// Geometry
 	FilterOption & geometry = m_allOptions.m_options[ET_Geometry];
@@ -157,9 +159,9 @@ void SVSmartSelectDialog::select() {
 		m_ui->comboBoxBoundaryCondition->addItem(it->second, it->first);
 
 	// clear existing options
-	for (int i=0; i<VICUS::Component::NUM_CT; ++i)
+	for (int i=0; i<=VICUS::Component::NUM_CT; ++i) // NUM_CT also exists!
 		m_allOptions.m_options[ET_Component].m_options[VICUS::Component::ComponentType(i)].m_options.clear();
-	for (int i=0; i<VICUS::SubSurfaceComponent::NUM_CT; ++i)
+	for (int i=0; i<=VICUS::SubSurfaceComponent::NUM_CT; ++i) // NUM_CT also exists!
 		m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::SubSurfaceComponentType(i)].m_options.clear();
 
 
@@ -168,9 +170,15 @@ void SVSmartSelectDialog::select() {
 	std::set<const VICUS::Component *> components;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
 		components.insert(db.m_components[ci.m_idComponent]);
+
 	for (const VICUS::Component * comp : components) {
-		if (comp == nullptr)
-			continue;
+
+		if (comp == nullptr) {
+			m_allOptions.m_options[ET_Component].m_options[VICUS::Component::NUM_CT].m_options
+					.push_back(FilterOption("Invalid Component", nullptr) );
+		continue;
+		}
+
 		switch (comp->m_type) {
 			case VICUS::Component::CT_OutsideWall:
 				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_OutsideWall].m_options
@@ -230,8 +238,13 @@ void SVSmartSelectDialog::select() {
 	std::set<const VICUS::SubSurfaceComponent *> subSurfaceComponents;
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances)
 		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent]);
+
 	for (const VICUS::SubSurfaceComponent * comp : subSurfaceComponents) {
-		if (comp == nullptr) continue;
+		if (comp == nullptr) {
+			m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::NUM_CT].m_options
+					.push_back(FilterOption("Invalid sub surface", nullptr) );
+		continue;
+		}
 		switch (comp->m_type) {
 			case VICUS::SubSurfaceComponent::CT_Window:
 				m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::CT_Window].m_options
@@ -325,50 +338,52 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 	else {
 
 		// we have a child node, now determine the type
-		const VICUS::Component * c = dynamic_cast<const VICUS::Component *>(option->m_dbElement);
-		if (c != nullptr) {
-			// now lookup all component instances that make use of this component
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				if (ci.m_idComponent == c->m_id) {
+		const VICUS::Component * componentToLookFor = dynamic_cast<const VICUS::Component *>(option->m_dbElement);
+		// Note: it is intended that componentToLookFor can be a nullptr
+		// now lookup all component instances that make use of this component
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			VICUS::Component *comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
 
-					// filter boundary condition
-					VICUS::Component *comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-					if (comp !=nullptr) {
-						if ( boundaryConditionFilterId > 0 &&
-							comp->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
-							comp->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
-							continue;
-					}
+			if (comp == componentToLookFor) { // could be that both are nullptr
 
-					// look up referenced surfaces
-					if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
-						objs.insert(ci.m_sideASurface);
-					if (ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible)
-						objs.insert(ci.m_sideBSurface);
+				// filter boundary condition
+				if (comp !=nullptr) {
+					if ( boundaryConditionFilterId > 0 &&
+						comp->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
+						comp->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
+						continue;
 				}
+
+				// look up referenced surfaces
+				if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
+					objs.insert(ci.m_sideASurface);
+				if (ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible)
+					objs.insert(ci.m_sideBSurface);
 			}
 		}
-		const VICUS::SubSurfaceComponent * ssc = dynamic_cast<const VICUS::SubSurfaceComponent *>(option->m_dbElement);
-		if (ssc != nullptr) {
-			// now lookup all component instances that make use of this component
-			for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
-				if (ssci.m_idSubSurfaceComponent == ssc->m_id) {
 
-					// filter boundary condition
-					VICUS::SubSurfaceComponent *surfc = SVSettings::instance().m_db.m_subSurfaceComponents[ssci.m_idSubSurfaceComponent];
-					if (surfc !=nullptr) {
-						if ( boundaryConditionFilterId > 0 &&
-							surfc->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
-							surfc->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
-							continue;
-					}
 
-					// look up referenced surfaces
-					if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
-						objs.insert(ssci.m_sideASubSurface);
-					if (ssci.m_sideBSubSurface != nullptr && ssci.m_sideBSubSurface->m_visible)
-						objs.insert(ssci.m_sideBSubSurface);
+		const VICUS::SubSurfaceComponent * sscToLookFor = dynamic_cast<const VICUS::SubSurfaceComponent *>(option->m_dbElement);
+		// Note: it is intended that sscToLookFor can be a nullptr
+		// now lookup all component instances that make use of this component
+		for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
+			VICUS::SubSurfaceComponent *ssc = SVSettings::instance().m_db.m_subSurfaceComponents[ssci.m_idSubSurfaceComponent];
+
+			if (ssc == sscToLookFor) { // could be that both are nullptr
+
+				// filter boundary condition
+				if (ssc !=nullptr) {
+					if ( boundaryConditionFilterId > 0 &&
+						ssc->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
+						ssc->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
+						continue;
 				}
+
+				// look up referenced surfaces
+				if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
+					objs.insert(ssci.m_sideASubSurface);
+				if (ssci.m_sideBSubSurface != nullptr && ssci.m_sideBSubSurface->m_visible)
+					objs.insert(ssci.m_sideBSubSurface);
 			}
 		}
 

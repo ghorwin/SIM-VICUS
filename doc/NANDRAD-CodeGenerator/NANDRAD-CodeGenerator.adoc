@@ -1,7 +1,7 @@
 The NANDRAD CodeGenerator
 =========================
-Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.1 (09.08.2021)
+Andreas Nicolai <https://github.com/ghorwin>
+v1.1 (28.12.2022)
 // v1.1 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -14,7 +14,7 @@ v1.1 (09.08.2021)
 :source-highlighter: rouge
 :rouge-style: custom
 :title-page:
-:stylesdir: ../adoc_utils/css
+:stylesdir: ../css
 :stylesheet: roboto_ubuntu.css
 
 

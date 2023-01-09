@@ -81,6 +81,7 @@ public:
 	static QRectF m_clippingRect;
 
 signals:
+	/*! Emitted, when user moved a node and thus changes a value. */
 	void valueChanged();
 
 protected:

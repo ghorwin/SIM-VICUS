@@ -334,10 +334,10 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(const QString &modelName,
-										NANDRAD::Project & p, QStringList & errorStack,
-										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										std::vector<MappingElement> &mappings)const;
+	void generateBuildingProjectData(const QString &modelName,
+									 NANDRAD::Project & p, QStringList & errorStack,
+									 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+									 std::vector<MappingElement> &mappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,

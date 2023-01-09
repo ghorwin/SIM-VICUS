@@ -144,7 +144,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::write(const QStr
 	fileData << "zoneIds\t" << "=" << "[";
 
 	bool firstId =true;
-	for(const std::pair<unsigned int, double> &zoneVolume : m_zoneVolumes) {
+	for (const std::pair<const unsigned int, double> & zoneVolume : m_zoneVolumes) {
 		if(!firstId)
 			fileData << ",";
 		fileData << zoneVolume.first;
@@ -153,17 +153,17 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::write(const QStr
 	fileData << "]\n";
 
 	// write zone volumes
-	for(const std::pair<unsigned int, double> &zoneVolume : m_zoneVolumes) {
+	for (const std::pair<const unsigned int, double> & zoneVolume : m_zoneVolumes) {
 		fileData << "zoneVolumes[" << zoneVolume.first << "] = ";
 		fileData << zoneVolume.second << " m3\n";
 	}
 	// write zone floor areas
-	for(const std::pair<unsigned int, double> &zoneArea : m_zoneFloorAreas) {
+	for (const std::pair<const unsigned int, double> & zoneArea : m_zoneFloorAreas) {
 		fileData << "zoneFloorAreas[" << zoneArea.first << "] = ";
 		fileData << zoneArea.second << " m2\n";
 	}
 	// register schedules for CO2 load
-	for(const std::pair<unsigned int, QString> &zoneSchedule : m_zoneScheduleNames) {
+	for (const std::pair<const unsigned int, QString> & zoneSchedule : m_zoneScheduleNames) {
 		// skip empty schedules
 		if(zoneSchedule.second.isEmpty())
 			continue;
@@ -417,7 +417,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 	co2InputVariables[ambientTemp.m_fmiValueRef] = ambientTemp;
 
 	// create reference for room air tempertaure
-	for(const std::pair<unsigned int, double> &zoneVolume : m_zoneVolumes) {
+	for (const std::pair<const unsigned int, double> &zoneVolume : m_zoneVolumes) {
 		// use zone id as unique identifier for FMI value reference
 		unsigned int zoneId = zoneVolume.first;
 
@@ -506,13 +506,11 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 	std::vector<NANDRAD::FMIVariableDefinition> inputVars;
 	std::vector<NANDRAD::FMIVariableDefinition> outputVars;
 
-	for(const std::pair<unsigned int, NANDRAD::FMIVariableDefinition> &inputVar : co2InputVariables) {
+	for (const std::pair<const unsigned int, NANDRAD::FMIVariableDefinition> &inputVar : co2InputVariables)
 		m_inputVariables.push_back(inputVar.second);
-	}
-	for(const std::pair<unsigned int, NANDRAD::FMIVariableDefinition> &outputVar : co2OutputVariables) {
-		m_outputVariables.push_back(outputVar.second);
-	}
 
+	for (const std::pair<const unsigned int, NANDRAD::FMIVariableDefinition> &outputVar : co2OutputVariables)
+		m_outputVariables.push_back(outputVar.second);
 }
 
 

@@ -20,34 +20,23 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayoutMaster">
-   <item row="3" column="2" colspan="3">
-    <widget class="QLineEdit" name="lineEditOccupancyScheduleName">
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="5">
-    <widget class="QToolButton" name="toolButtonSelectActivity">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelDisplayName">
+     <property name="minimumSize">
       <size>
-       <width>65</width>
-       <height>20</height>
+       <width>60</width>
+       <height>0</height>
       </size>
      </property>
-    </spacer>
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
    </item>
-   <item row="0" column="5" colspan="2">
+   <item row="0" column="1">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+   </item>
+   <item row="0" column="2" colspan="2">
     <widget class="QtExt::ColorButton" name="pushButtonColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -57,63 +46,8 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="labelConvectiveFactor">
-     <property name="text">
-      <string>Convective Factor:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="labelPersonCountUnit">
-     <property name="text">
-      <string>Person</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3">
-    <widget class="QLabel" name="labelConvectiveFactorUnit">
-     <property name="text">
-      <string>-</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" colspan="3">
-    <widget class="QComboBox" name="comboBoxPersonMethod"/>
-   </item>
-   <item row="5" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="6">
-    <widget class="QToolButton" name="toolButtonRemoveActivitySchedule">
-     <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" colspan="3">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditPersonCount">
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLabel" name="labelDisplayName_3">
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelCategory_2">
      <property name="minimumSize">
       <size>
        <width>60</width>
@@ -121,11 +55,24 @@
       </size>
      </property>
      <property name="text">
-      <string>Activity Schedule Name:</string>
+      <string>Person count method:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="1" column="1" colspan="3">
+    <widget class="QComboBox" name="comboBoxPersonMethod"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelPersonCount">
+     <property name="text">
+      <string>Max. person count [Person]:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditPersonCount"/>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="labelDisplayName_2">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -140,24 +87,25 @@
       </size>
      </property>
      <property name="text">
-      <string>Occupancy Schedule Name:</string>
+      <string>Occupancy schedule:</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="labelCategory_2">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="lineEditOccupancyScheduleName">
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QToolButton" name="toolButtonSelectOccupancy">
      <property name="text">
-      <string>Person Count Method:</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="6">
+   <item row="3" column="3">
     <widget class="QToolButton" name="toolButtonRemoveOccupancySchedule">
      <property name="icon">
       <iconset resource="../resources/SIM-VICUS.qrc">
@@ -165,8 +113,8 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="labelDisplayName">
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelDisplayName_3">
      <property name="minimumSize">
       <size>
        <width>60</width>
@@ -174,32 +122,85 @@
       </size>
      </property>
      <property name="text">
-      <string>Name:</string>
+      <string>Activity schedule:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelPersonCount">
-     <property name="text">
-      <string>Max. Person Count:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="5">
-    <widget class="QToolButton" name="toolButtonSelectOccupancy">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="3">
+   <item row="4" column="1">
     <widget class="QLineEdit" name="lineEditActivityScheduleName">
      <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="7">
+   <item row="4" column="2">
+    <widget class="QToolButton" name="toolButtonSelectActivity">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QToolButton" name="toolButtonRemoveActivitySchedule">
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelMoistProd">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Moisture production rate schedule:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="lineEditMoistureRateScheduleName">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QToolButton" name="toolButtonSelectMoistureRate">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QToolButton" name="toolButtonRemoveMoistureRateSchedule">
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelConvectiveFactor">
+     <property name="text">
+      <string>Convective Factor [0..1]:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="4">
     <widget class="QwtPlot" name="widgetPlot" native="true"/>
    </item>
   </layout>
@@ -214,15 +215,15 @@
    </slots>
   </customwidget>
   <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
   <customwidget>
    <class>QwtPlot</class>

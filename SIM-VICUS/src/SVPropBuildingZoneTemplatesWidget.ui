@@ -66,7 +66,7 @@
       <item row="4" column="1">
        <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
         <property name="toolTip">
-         <string>Replaces the component association of all objects with the currently selected component.</string>
+         <string>Replaces the zone template association of all selected zones with the currently selected zone template.</string>
         </property>
         <property name="text">
          <string>Exchange...</string>

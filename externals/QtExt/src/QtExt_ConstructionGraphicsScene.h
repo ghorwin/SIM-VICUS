@@ -60,22 +60,23 @@ public:
 	};
 
 	struct LineMarker {
-
-		LineMarker() = default;
-		LineMarker(double pos, const QPen& pen, const QString& name):
+		LineMarker(double pos = 0, QPen pen = QPen(), QString name = "") :
 			m_pos(pos),
 			m_pen(pen),
 			m_name(name)
 		{}
-
-
-
 		double	m_pos = 0;
 		QPen	m_pen;
 		QString	m_name;
 	};
 
 	struct AreaMarker {
+		AreaMarker(double xstart = 0, double xend = 0, QPen framepen = QPen(), QBrush areaBrush = QBrush()) :
+			m_xStart(xstart),
+			m_xEnd(xend),
+			m_framePen(framepen),
+			m_areaBrush(areaBrush)
+		{}
 		double	m_xStart = 0;
 		double	m_xEnd = 0;
 		QPen	m_framePen;

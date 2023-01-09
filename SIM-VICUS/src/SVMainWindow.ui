@@ -4,188 +4,200 @@
  <widget class="QMainWindow" name="SVMainWindow">
   <property name="geometry">
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>1112</width>
-    <height>707</height>
+	<x>0</x>
+	<y>0</y>
+	<width>1112</width>
+	<height>707</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1112</width>
-     <height>22</height>
-    </rect>
+	<rect>
+	 <x>0</x>
+	 <y>0</y>
+	 <width>1658</width>
+	 <height>22</height>
+	</rect>
    </property>
    <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="menuImport">
-     <property name="title">
-      <string>Import</string>
-     </property>
-     <addaction name="actionFileImportEneryPlusIDF"/>
-     <addaction name="actionFileImportNetworkGISData"/>
-    </widget>
-    <addaction name="actionFileNew"/>
-    <addaction name="actionFileOpen"/>
-    <addaction name="menuImport"/>
-    <addaction name="actionFileReload"/>
-    <addaction name="actionFileRecentProjects"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileSave"/>
-    <addaction name="actionFileSaveAs"/>
-    <addaction name="actionFileClose"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileOpenProjectDir"/>
-    <addaction name="actionFileExportProjectPackage"/>
-    <addaction name="actionFileExportView3D"/>
-    <addaction name="actionExportNetworkAsGeoJson"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileQuit"/>
+	<property name="title">
+	 <string>&amp;File</string>
+	</property>
+	<widget class="QMenu" name="menuImport">
+	 <property name="title">
+	  <string>Import</string>
+	 </property>
+	 <addaction name="actionFileImportEneryPlusIDF"/>
+	 <addaction name="actionFileImportNetworkGISData"/>
+	</widget>
+	<widget class="QMenu" name="menuExport">
+	 <property name="title">
+	  <string>Export</string>
+	 </property>
+	 <addaction name="actionExportNetworkAsGeoJson"/>
+	 <addaction name="actionFileExportView3D"/>
+	 <addaction name="actionFileExportProjectPackage"/>
+	</widget>
+	<addaction name="actionFileNew"/>
+	<addaction name="actionFileOpen"/>
+	<addaction name="separator"/>
+	<addaction name="actionFileReload"/>
+	<addaction name="actionFileRecentProjects"/>
+	<addaction name="separator"/>
+	<addaction name="actionFileSave"/>
+	<addaction name="actionFileSaveAs"/>
+	<addaction name="actionFileClose"/>
+	<addaction name="separator"/>
+	<addaction name="menuImport"/>
+	<addaction name="menuExport"/>
+	<addaction name="actionFileOpenProjectDir"/>
+	<addaction name="separator"/>
+	<addaction name="actionFileQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <widget class="QMenu" name="menuLanguage">
-     <property name="title">
-      <string>&amp;Application language</string>
-     </property>
-    </widget>
-    <addaction name="actionEditTextEditProject"/>
-    <addaction name="actionEditCleanProject"/>
-    <addaction name="actionEditProjectNotes"/>
-    <addaction name="actionEditApplicationLog"/>
-    <addaction name="separator"/>
-    <addaction name="separator"/>
-    <addaction name="actionEditPreferences"/>
-    <addaction name="menuLanguage"/>
+	<property name="title">
+	 <string>&amp;Edit</string>
+	</property>
+	<widget class="QMenu" name="menuLanguage">
+	 <property name="title">
+	  <string>&amp;Application language</string>
+	 </property>
+	</widget>
+	<addaction name="actionEditTextEditProject"/>
+	<addaction name="actionEditCleanProject"/>
+	<addaction name="actionEditProjectNotes"/>
+	<addaction name="actionEditApplicationLog"/>
+	<addaction name="separator"/>
+	<addaction name="separator"/>
+	<addaction name="actionEditPreferences"/>
+	<addaction name="menuLanguage"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionHelpOnlineManual"/>
-    <addaction name="actionHelpKeyboardAndMouseControls"/>
-    <addaction name="separator"/>
-    <addaction name="actionHelpCheckForUpdates"/>
-    <addaction name="actionHelpBugReport"/>
-    <addaction name="actionHelpVisitDiscussionForum"/>
-    <addaction name="separator"/>
-    <addaction name="actionHelpLinuxDesktopIntegration"/>
-    <addaction name="separator"/>
-    <addaction name="actionHelpAbout"/>
-    <addaction name="actionHelpAboutQt"/>
+	<property name="title">
+	 <string>&amp;Help</string>
+	</property>
+	<addaction name="actionHelpOnlineManual"/>
+	<addaction name="actionHelpKeyboardAndMouseControls"/>
+	<addaction name="separator"/>
+	<addaction name="actionHelpCheckForUpdates"/>
+	<addaction name="actionHelpBugReport"/>
+	<addaction name="actionHelpVisitDiscussionForum"/>
+	<addaction name="separator"/>
+	<addaction name="actionHelpLinuxDesktopIntegration"/>
+	<addaction name="separator"/>
+	<addaction name="actionHelpAbout"/>
+	<addaction name="actionHelpAboutQt"/>
    </widget>
    <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>&amp;View</string>
-    </property>
-    <addaction name="separator"/>
-    <addaction name="actionViewFindSelectedGeometry"/>
-    <addaction name="separator"/>
-    <addaction name="actionViewResetView"/>
-    <addaction name="actionViewFromNorth"/>
-    <addaction name="actionViewFromEast"/>
-    <addaction name="actionViewFromSouth"/>
-    <addaction name="actionViewFromWest"/>
-    <addaction name="actionViewFromAbove"/>
-    <addaction name="separator"/>
-    <addaction name="actionViewShowGrid"/>
-    <addaction name="actionViewShowSurfaceNormals"/>
-    <addaction name="separator"/>
+	<property name="title">
+	 <string>&amp;View</string>
+	</property>
+	<addaction name="separator"/>
+	<addaction name="actionViewFindSelectedGeometry"/>
+	<addaction name="separator"/>
+	<addaction name="actionViewResetView"/>
+	<addaction name="actionViewFromSouth"/>
+	<addaction name="actionViewFromWest"/>
+	<addaction name="actionViewFromNorth"/>
+	<addaction name="actionViewFromEast"/>
+	<addaction name="actionBirdsEyeViewSouthEast"/>
+	<addaction name="actionBirdsEyeViewSouthWest"/>
+	<addaction name="actionBirdsEyeViewNorthEast"/>
+	<addaction name="actionBirdsEyeViewNorthWest"/>
+	<addaction name="actionViewFromAbove"/>
+	<addaction name="separator"/>
+	<addaction name="actionViewShowGrid"/>
+	<addaction name="actionViewShowSurfaceNormals"/>
+	<addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="actionToolsExternalPostProcessing"/>
-    <addaction name="actionToolsCCMeditor"/>
+	<property name="title">
+	 <string>&amp;Tools</string>
+	</property>
+	<addaction name="actionToolsExternalPostProcessing"/>
+	<addaction name="actionToolsCCMeditor"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
-    <property name="title">
-     <string>&amp;Databases</string>
-    </property>
-    <widget class="QMenu" name="menuInternal_Loads">
-     <property name="title">
-      <string>Internal loads</string>
-     </property>
-     <addaction name="actionDBInternalLoadsPerson"/>
-     <addaction name="actionDBInternalLoadsElectricEquipment"/>
-     <addaction name="actionDBInternalLoadsLights"/>
-     <addaction name="actionDBInternalLoadsOther"/>
-    </widget>
-    <widget class="QMenu" name="menuVentilationInfiltration">
-     <property name="title">
-      <string>Ventilation/Infiltration</string>
-     </property>
-     <addaction name="actionDBInfiltration"/>
-     <addaction name="actionDBVentilationNatural"/>
-    </widget>
-    <widget class="QMenu" name="menuZoneControl">
-     <property name="title">
-      <string>Zone controls</string>
-     </property>
-     <addaction name="actionDBZoneControlThermostat"/>
-     <addaction name="actionDBZoneControlShading"/>
-     <addaction name="actionDBZoneControlVentilationNatural"/>
-    </widget>
-    <addaction name="actionDBMaterials"/>
-    <addaction name="actionDBConstructions"/>
-    <addaction name="actionDBComponents"/>
-    <addaction name="actionDBSubSurfaceComponents"/>
-    <addaction name="actionDBWindows"/>
-    <addaction name="actionDBWindowGlazingSystems"/>
-    <addaction name="actionDBBoundaryConditions"/>
-    <addaction name="actionDBSchedules"/>
-    <addaction name="menuInternal_Loads"/>
-    <addaction name="menuZoneControl"/>
-    <addaction name="menuVentilationInfiltration"/>
-    <addaction name="actionDBSurfaceHeatingSystems"/>
-    <addaction name="actionDBZoneIdealHeatingCooling"/>
-    <addaction name="actionDBSupplySystems"/>
-    <addaction name="actionDBZoneTemplates"/>
-    <addaction name="separator"/>
-    <addaction name="actionDBNetworkPipes"/>
-    <addaction name="actionDBFluids"/>
-    <addaction name="actionDBHydraulicComponents"/>
-    <addaction name="actionDBSubNetworks"/>
-    <addaction name="actionDBControllers"/>
-    <addaction name="separator"/>
-    <addaction name="actionDBRemoveDuplicates"/>
+	<property name="title">
+	 <string>&amp;Databases</string>
+	</property>
+	<widget class="QMenu" name="menuInternal_Loads">
+	 <property name="title">
+	  <string>Internal loads</string>
+	 </property>
+	 <addaction name="actionDBInternalLoadsPerson"/>
+	 <addaction name="actionDBInternalLoadsElectricEquipment"/>
+	 <addaction name="actionDBInternalLoadsLights"/>
+	 <addaction name="actionDBInternalLoadsOther"/>
+	</widget>
+	<widget class="QMenu" name="menuVentilationInfiltration">
+	 <property name="title">
+	  <string>Ventilation/Infiltration</string>
+	 </property>
+	 <addaction name="actionDBInfiltration"/>
+	 <addaction name="actionDBVentilationNatural"/>
+	</widget>
+	<widget class="QMenu" name="menuZoneControl">
+	 <property name="title">
+	  <string>Zone controls</string>
+	 </property>
+	 <addaction name="actionDBZoneControlThermostat"/>
+	 <addaction name="actionDBZoneControlShading"/>
+	 <addaction name="actionDBZoneControlVentilationNatural"/>
+	</widget>
+	<addaction name="actionDBMaterials"/>
+	<addaction name="actionDBConstructions"/>
+	<addaction name="actionDBComponents"/>
+	<addaction name="actionDBSubSurfaceComponents"/>
+	<addaction name="actionDBWindows"/>
+	<addaction name="actionDBWindowGlazingSystems"/>
+	<addaction name="actionDBBoundaryConditions"/>
+	<addaction name="actionDBSchedules"/>
+	<addaction name="menuInternal_Loads"/>
+	<addaction name="menuZoneControl"/>
+	<addaction name="menuVentilationInfiltration"/>
+	<addaction name="actionDBSurfaceHeatingSystems"/>
+	<addaction name="actionDBZoneIdealHeatingCooling"/>
+	<addaction name="actionDBSupplySystems"/>
+	<addaction name="actionDBZoneTemplates"/>
+	<addaction name="separator"/>
+	<addaction name="actionDBNetworkPipes"/>
+	<addaction name="actionDBFluids"/>
+	<addaction name="actionDBHydraulicComponents"/>
+	<addaction name="actionDBSubNetworks"/>
+	<addaction name="actionDBControllers"/>
+	<addaction name="separator"/>
+	<addaction name="actionDBRemoveDuplicates"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
-    <property name="title">
-     <string>&amp;Simulation</string>
-    </property>
-    <widget class="QMenu" name="menuCoSimulation">
-     <property name="title">
-      <string>Co-Simulation</string>
-     </property>
-     <addaction name="actionSimulationCO2Balance"/>
-    </widget>
-    <addaction name="actionSimulationNANDRAD"/>
-    <addaction name="separator"/>
-    <addaction name="actionSimulationExportFMI"/>
-    <addaction name="separator"/>
-    <addaction name="menuCoSimulation"/>
+	<property name="title">
+	 <string>&amp;Simulation</string>
+	</property>
+	<widget class="QMenu" name="menuCoSimulation">
+	 <property name="title">
+	  <string>Co-Simulation</string>
+	 </property>
+	 <addaction name="actionSimulationCO2Balance"/>
+	</widget>
+	<addaction name="actionSimulationNANDRAD"/>
+	<addaction name="separator"/>
+	<addaction name="actionSimulationExportFMI"/>
+	<addaction name="separator"/>
+	<addaction name="menuCoSimulation"/>
    </widget>
    <widget class="QMenu" name="menuBuildings">
-    <property name="title">
-     <string>&amp;Buildings</string>
-    </property>
-    <addaction name="actionBuildingFloorManager"/>
-    <addaction name="actionBuildingSurfaceHeatings"/>
+	<property name="title">
+	 <string>&amp;Buildings</string>
+	</property>
+	<addaction name="actionBuildingFloorManager"/>
+	<addaction name="actionBuildingSurfaceHeatings"/>
    </widget>
    <widget class="QMenu" name="menuPlugins">
-    <property name="title">
-     <string>Plugins</string>
-    </property>
+	<property name="title">
+	 <string>Plugins</string>
+	</property>
+	<addaction name="actionPluginsManager"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -199,25 +211,25 @@
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>Main tool bar</string>
+	<string>Main tool bar</string>
    </property>
    <property name="movable">
-    <bool>false</bool>
+	<bool>false</bool>
    </property>
    <property name="allowedAreas">
-    <set>Qt::LeftToolBarArea</set>
+	<set>Qt::LeftToolBarArea</set>
    </property>
    <property name="iconSize">
-    <size>
-     <width>32</width>
-     <height>32</height>
-    </size>
+	<size>
+	 <width>32</width>
+	 <height>32</height>
+	</size>
    </property>
    <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+	<enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+	<bool>false</bool>
    </attribute>
    <addaction name="actionFileNew"/>
    <addaction name="actionFileOpen"/>
@@ -226,586 +238,626 @@
   </widget>
   <action name="actionFileNew">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filenew_32x32.png</normaloff>:/gfx/actions/32x32/filenew_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/filenew_32x32.png</normaloff>:/gfx/actions/32x32/filenew_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;New...</string>
+	<string>&amp;New...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+	<string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionFileOpen">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/fileopen_32x32.png</normaloff>:/gfx/actions/32x32/fileopen_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/fileopen_32x32.png</normaloff>:/gfx/actions/32x32/fileopen_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open...</string>
+	<string>&amp;Open...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+	<string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionFileSave">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filesave_32x32.png</normaloff>:/gfx/actions/32x32/filesave_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/filesave_32x32.png</normaloff>:/gfx/actions/32x32/filesave_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+	<string>&amp;Save</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+	<string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionFileSaveAs">
    <property name="text">
-    <string>Save &amp;as...</string>
+	<string>Save &amp;as...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+	<string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionFileExportProjectPackage">
    <property name="text">
-    <string>&amp;Export project package...</string>
+	<string>&amp;Export project package...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+	<string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionFileClose">
    <property name="text">
-    <string>C&amp;lose</string>
+	<string>C&amp;lose</string>
    </property>
    <property name="toolTip">
-    <string>Closes current project</string>
+	<string>Closes current project</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+	<string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionFileQuit">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/exit_32x32.png</normaloff>:/gfx/actions/32x32/exit_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/exit_32x32.png</normaloff>:/gfx/actions/32x32/exit_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Quit</string>
+	<string>&amp;Quit</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Q</string>
+	<string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+	<enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="actionFileRecentProjects">
    <property name="text">
-    <string>Recent &amp;projects</string>
+	<string>Recent &amp;projects</string>
    </property>
   </action>
   <action name="actionFileImportEneryPlusIDF">
    <property name="text">
-    <string>EneryPlus IDF...</string>
+	<string>EneryPlus IDF...</string>
    </property>
   </action>
   <action name="actionFileReload">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Reload project</string>
+	<string>&amp;Reload project</string>
    </property>
   </action>
   <action name="actionFileOpenProjectDir">
    <property name="text">
-    <string>Go to project directory...</string>
+	<string>Go to project directory...</string>
    </property>
    <property name="toolTip">
-    <string>Opens file manager with path to project file</string>
+	<string>Opens file manager with path to project file</string>
    </property>
    <property name="shortcut">
-    <string>F8</string>
+	<string>F8</string>
    </property>
   </action>
   <action name="actionEditTextEditProject">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open project in text editor</string>
+	<string>&amp;Open project in text editor</string>
    </property>
    <property name="shortcut">
-    <string>F2</string>
+	<string>F2</string>
    </property>
   </action>
   <action name="actionEditPreferences">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/64x64/projectProperties.png</normaloff>:/gfx/actions/64x64/projectProperties.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/64x64/projectProperties.png</normaloff>:/gfx/actions/64x64/projectProperties.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Preferences...</string>
+	<string>&amp;Preferences...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::PreferencesRole</enum>
+	<enum>QAction::PreferencesRole</enum>
    </property>
   </action>
   <action name="actionEditCleanProject">
    <property name="text">
-    <string>&amp;Clean project</string>
+	<string>&amp;Clean project</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+C</string>
+	<string>Ctrl+Shift+C</string>
    </property>
   </action>
   <action name="actionToolsExternalPostProcessing">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>External Post-Processing...</string>
+	<string>External Post-Processing...</string>
    </property>
    <property name="toolTip">
-    <string>Launches the external Post-Processing</string>
+	<string>Launches the external Post-Processing</string>
    </property>
   </action>
   <action name="actionToolsCCMeditor">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/CCMEditor_32.png</normaloff>:/gfx/actions/32x32/CCMEditor_32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/CCMEditor_32.png</normaloff>:/gfx/actions/32x32/CCMEditor_32.png</iconset>
    </property>
    <property name="text">
-    <string>External Climate Editor...</string>
+	<string>External Climate Editor...</string>
    </property>
    <property name="toolTip">
-    <string>Launches external climate editor (CCMEditor)</string>
+	<string>Launches external climate editor (CCMEditor)</string>
    </property>
   </action>
   <action name="actionDBMaterials">
    <property name="text">
-    <string>&amp;Materials...</string>
+	<string>&amp;Materials...</string>
    </property>
   </action>
   <action name="actionDBConstructions">
    <property name="text">
-    <string>Constructions...</string>
+	<string>Constructions...</string>
    </property>
   </action>
   <action name="actionDBWindows">
    <property name="text">
-    <string>&amp;Windows...</string>
+	<string>&amp;Windows...</string>
    </property>
    <property name="toolTip">
-    <string>Edit window database</string>
+	<string>Edit window database</string>
    </property>
   </action>
   <action name="actionDBComponents">
    <property name="text">
-    <string>&amp;Components...</string>
+	<string>&amp;Components...</string>
    </property>
   </action>
   <action name="actionDBBoundaryConditions">
    <property name="text">
-    <string>Boundary conditions...</string>
+	<string>Boundary conditions...</string>
    </property>
   </action>
   <action name="actionDBNetworkPipes">
    <property name="text">
-    <string>Pipes...</string>
+	<string>Pipes...</string>
    </property>
    <property name="toolTip">
-    <string>Network Pipes</string>
+	<string>Network Pipes</string>
    </property>
   </action>
   <action name="actionDBHydraulicComponents">
    <property name="text">
-    <string>Hydraulic components...</string>
+	<string>Hydraulic components...</string>
    </property>
    <property name="toolTip">
-    <string>Network hydraulic components</string>
+	<string>Network hydraulic components</string>
    </property>
   </action>
   <action name="actionNetworkEdit">
    <property name="text">
-    <string>Edit Network...</string>
+	<string>Edit Network...</string>
    </property>
   </action>
   <action name="actionNetworkImport">
    <property name="text">
-    <string>Import Network...</string>
+	<string>Import Network...</string>
    </property>
   </action>
   <action name="actionSimulationNANDRAD">
    <property name="text">
-    <string>Building Energy Simulation (NANDRAD)...</string>
+	<string>Building Energy Simulation (NANDRAD)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog</string>
+	<string>Opens the simulation start dialog</string>
    </property>
    <property name="shortcut">
-    <string>F9</string>
+	<string>F9</string>
    </property>
   </action>
   <action name="actionSimulationHydraulicNetwork">
    <property name="text">
-    <string>Hydraulic network calculation...</string>
+	<string>Hydraulic network calculation...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog</string>
+	<string>Opens the simulation start dialog</string>
    </property>
   </action>
   <action name="actionHelpKeyboardAndMouseControls">
    <property name="text">
-    <string>Keyboard and mouse controls...</string>
+	<string>Keyboard and mouse controls...</string>
    </property>
    <property name="shortcut">
-    <string>F1</string>
+	<string>F1</string>
    </property>
   </action>
   <action name="actionHelpOnlineManual">
    <property name="text">
-    <string>Online manual...</string>
+	<string>Online manual...</string>
    </property>
   </action>
   <action name="actionHelpAboutQt">
    <property name="text">
-    <string>About &amp;Qt...</string>
+	<string>About &amp;Qt...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutQtRole</enum>
+	<enum>QAction::AboutQtRole</enum>
    </property>
   </action>
   <action name="actionHelpAbout">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;About SIM-VICUS...</string>
+	<string>&amp;About SIM-VICUS...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+	<enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="actionHelpCheckForUpdates">
    <property name="text">
-    <string>Check for updates...</string>
+	<string>Check for updates...</string>
    </property>
   </action>
   <action name="actionHelpBugReport">
    <property name="text">
-    <string>Feature request or bug report...</string>
+	<string>Feature request or bug report...</string>
    </property>
    <property name="toolTip">
-    <string>Post a feature request or submit a bug report</string>
+	<string>Post a feature request or submit a bug report</string>
    </property>
   </action>
   <action name="actionHelpVisitDiscussionForum">
    <property name="text">
-    <string>Visit discussion forum...</string>
+	<string>Visit discussion forum...</string>
    </property>
   </action>
   <action name="actionBuildingFloorManager">
    <property name="text">
-    <string>Floor manager...</string>
+	<string>Floor manager...</string>
    </property>
    <property name="toolTip">
-    <string>Switches to building/level/floor manager property view</string>
+	<string>Switches to building/level/floor manager property view</string>
    </property>
   </action>
   <action name="actionViewShowSurfaceNormals">
    <property name="checkable">
-    <bool>true</bool>
+	<bool>true</bool>
    </property>
    <property name="text">
-    <string>Show surface normals</string>
+	<string>Show surface normals</string>
    </property>
   </action>
   <action name="actionDBSchedules">
    <property name="text">
-    <string>&amp;Schedules...</string>
+	<string>&amp;Schedules...</string>
    </property>
    <property name="toolTip">
-    <string>Schedules</string>
+	<string>Schedules</string>
    </property>
   </action>
   <action name="actionDBInternalLoadsPerson">
    <property name="text">
-    <string>Person...</string>
+	<string>Person...</string>
    </property>
    <property name="toolTip">
-    <string>Internal loads: Person</string>
+	<string>Internal loads: Person</string>
    </property>
   </action>
   <action name="actionDBInternalLoadsElectricEquipment">
    <property name="text">
-    <string>Electric equipment...</string>
+	<string>Electric equipment...</string>
    </property>
    <property name="toolTip">
-    <string>Internal loads: Electric equipment</string>
+	<string>Internal loads: Electric equipment</string>
    </property>
   </action>
   <action name="actionDBInternalLoadsLights">
    <property name="text">
-    <string>Lights...</string>
+	<string>Lights...</string>
    </property>
    <property name="toolTip">
-    <string>Internal loads: Lights</string>
+	<string>Internal loads: Lights</string>
    </property>
   </action>
   <action name="actionDBFluids">
    <property name="text">
-    <string>Fluids...</string>
+	<string>Fluids...</string>
    </property>
    <property name="toolTip">
-    <string>Network Fluids</string>
+	<string>Network Fluids</string>
    </property>
   </action>
   <action name="actionViewResetView">
    <property name="text">
-    <string>Reset view</string>
+	<string>Reset view</string>
    </property>
    <property name="toolTip">
-    <string>Resets view to be pointing north, close to site center.</string>
+	<string>Resets view to be pointing north, close to site center.</string>
    </property>
   </action>
   <action name="actionDBInfiltration">
    <property name="text">
-    <string>Infiltration...</string>
+	<string>Infiltration...</string>
    </property>
   </action>
   <action name="actionDBVentilationNatural">
    <property name="text">
-    <string>Natural ventilation...</string>
+	<string>Natural ventilation...</string>
    </property>
   </action>
   <action name="actionDBZoneControlThermostat">
    <property name="text">
-    <string>Thermostat...</string>
+	<string>Thermostat...</string>
    </property>
   </action>
   <action name="actionDBZoneControlShading">
    <property name="text">
-    <string>Shading...</string>
+	<string>Shading...</string>
    </property>
   </action>
   <action name="actionDBZoneControlVentilationNatural">
    <property name="text">
-    <string>Natural ventilation...</string>
+	<string>Natural ventilation...</string>
    </property>
   </action>
   <action name="actionDBInternalLoadsOther">
    <property name="text">
-    <string>Other...</string>
+	<string>Other...</string>
    </property>
   </action>
   <action name="actionSimulationExportFMI">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/FMU_32x32.png</normaloff>:/gfx/actions/32x32/FMU_32x32.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/32x32/FMU_32x32.png</normaloff>:/gfx/actions/32x32/FMU_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
+	<string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the FMU export dialog</string>
+	<string>Opens the FMU export dialog</string>
    </property>
   </action>
   <action name="actionFileExportView3D">
    <property name="text">
-    <string>Export geometry in View3D format...</string>
+	<string>Export geometry in View3D format...</string>
    </property>
   </action>
   <action name="actionDBWindowGlazingSystems">
    <property name="text">
-    <string>Window glazing systems...</string>
+	<string>Window glazing systems...</string>
    </property>
   </action>
   <action name="actionDBSubSurfaceComponents">
    <property name="text">
-    <string>Window/Door (sub-surface) components...</string>
+	<string>Window/Door (sub-surface) components...</string>
    </property>
   </action>
   <action name="actionDBZoneIdealHeatingCooling">
    <property name="text">
-    <string>Zone ideal heating/cooling...</string>
+	<string>Zone ideal heating/cooling...</string>
    </property>
   </action>
   <action name="actionDBZoneTemplates">
    <property name="text">
-    <string>Zone templates...</string>
+	<string>Zone templates...</string>
    </property>
   </action>
   <action name="actionDBControllers">
    <property name="text">
-    <string>Controllers...</string>
+	<string>Controllers...</string>
    </property>
    <property name="toolTip">
-    <string>Network controllers</string>
+	<string>Network controllers</string>
    </property>
   </action>
   <action name="actionDBSubNetworks">
    <property name="text">
-    <string>Sub networks...</string>
+	<string>Sub networks...</string>
    </property>
   </action>
   <action name="actionDBSurfaceHeatingSystems">
    <property name="text">
-    <string>Surface Heating Systems...</string>
+	<string>Surface Heating Systems...</string>
    </property>
   </action>
   <action name="actionBuildingSurfaceHeatings">
    <property name="text">
-    <string>Surface heatings...</string>
+	<string>Surface heatings...</string>
    </property>
    <property name="toolTip">
-    <string>Switches to surface heating property view</string>
+	<string>Switches to surface heating property view</string>
    </property>
   </action>
   <action name="actionDBRemoveDuplicates">
    <property name="text">
-    <string>Remove duplicates...</string>
+	<string>Remove duplicates...</string>
    </property>
    <property name="toolTip">
-    <string>Removes duplicate elements from database</string>
+	<string>Removes duplicate elements from database</string>
    </property>
   </action>
   <action name="actionViewShowGrid">
    <property name="checkable">
-    <bool>true</bool>
+	<bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+	<bool>true</bool>
    </property>
    <property name="text">
-    <string>Show main grid at z=0</string>
+	<string>Show main grid at z=0</string>
    </property>
    <property name="toolTip">
-    <string>Shows grid at z coordinate 0</string>
+	<string>Shows grid at z coordinate 0</string>
    </property>
   </action>
   <action name="actionHelpLinuxDesktopIntegration">
    <property name="text">
-    <string>Desktop integration (Linux)...</string>
+	<string>Desktop integration (Linux)...</string>
    </property>
    <property name="toolTip">
-    <string>Desktop integration (Linux),  creates .desktop file and vicus-file association</string>
-   </property>
-  </action>
-  <action name="actionViewFromNorth">
-   <property name="text">
-    <string>View from north</string>
-   </property>
-   <property name="toolTip">
-    <string>Positions camera to view geometry from north</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+8</string>
-   </property>
-  </action>
-  <action name="actionViewFromEast">
-   <property name="text">
-    <string>View from east</string>
-   </property>
-   <property name="toolTip">
-    <string>Positions camera to view geometry from east</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+6</string>
+	<string>Desktop integration (Linux),  creates .desktop file and vicus-file association</string>
    </property>
   </action>
   <action name="actionViewFromSouth">
    <property name="text">
-    <string>View from south</string>
+	<string>View from south</string>
    </property>
    <property name="toolTip">
-    <string>Positions camera to view geometry from south</string>
+	<string>Positions camera to view geometry from north</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+2</string>
+	<string>Ctrl+8</string>
    </property>
   </action>
   <action name="actionViewFromWest">
    <property name="text">
-    <string>View from west</string>
+	<string>View from west</string>
    </property>
    <property name="toolTip">
-    <string>Positions camera to view geometry from west</string>
+	<string>Positions camera to view geometry from east</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+4</string>
+	<string>Ctrl+6</string>
+   </property>
+  </action>
+  <action name="actionViewFromNorth">
+   <property name="text">
+	<string>View from north</string>
+   </property>
+   <property name="toolTip">
+	<string>Positions camera to view geometry from south</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionViewFromEast">
+   <property name="text">
+	<string>View from east</string>
+   </property>
+   <property name="toolTip">
+	<string>Positions camera to view geometry from west</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+4</string>
    </property>
   </action>
   <action name="actionViewFromAbove">
    <property name="text">
-    <string>View from above</string>
+	<string>View from above</string>
    </property>
    <property name="toolTip">
-    <string>Positions camera to view geometry from above</string>
+	<string>Positions camera to view geometry from above</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+5</string>
+	<string>Ctrl+5</string>
    </property>
   </action>
   <action name="actionViewFindSelectedGeometry">
    <property name="text">
-    <string>Find selected geometry</string>
+	<string>Find selected geometry</string>
    </property>
    <property name="toolTip">
-    <string>Positions camera to close to the currently selected geometry</string>
+	<string>Positions camera to close to the currently selected geometry</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+F</string>
+	<string>Ctrl+F</string>
    </property>
   </action>
   <action name="actionSimulationCO2Balance">
    <property name="text">
-    <string>CO2 Balance and Ventilation Control...</string>
+	<string>CO2 Balance and Ventilation Control...</string>
    </property>
    <property name="toolTip">
-    <string>Co-Simulation with CO2 balances and CO2-based ventilation control model.</string>
+	<string>Co-Simulation with CO2 balances and CO2-based ventilation control model.</string>
    </property>
   </action>
   <action name="actionDBSupplySystems">
    <property name="text">
-    <string>Supply systems...</string>
+	<string>Supply systems...</string>
    </property>
    <property name="toolTip">
-    <string>SupplySystems</string>
+	<string>SupplySystems</string>
    </property>
   </action>
   <action name="actionEditApplicationLog">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+	<iconset resource="../resources/SIM-VICUS.qrc">
+	 <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open application log in editor</string>
+	<string>&amp;Open application log in editor</string>
    </property>
    <property name="toolTip">
-    <string>Opens an editor window for the application log file</string>
+	<string>Opens an editor window for the application log file</string>
    </property>
   </action>
   <action name="actionFileImportNetworkGISData">
    <property name="text">
-    <string>Network GIS data ..</string>
+	<string>Network GIS data ..</string>
    </property>
   </action>
   <action name="actionEditProjectNotes">
    <property name="text">
-    <string>Edit project notes</string>
+	<string>Edit project notes</string>
    </property>
   </action>
+  <action name="actionBirdsEyeViewSouthEast">
+   <property name="text">
+	<string>Bird's eye view south east</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewSouthWest">
+   <property name="text">
+	<string>Bird's eye view south west</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewNorthEast">
+   <property name="text">
+	<string>Bird's eye view north east</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+9</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewNorthWest">
+   <property name="text">
+	<string>Bird's eye view north west</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+7</string>
+	</property>
+   </action>
   <action name="actionExportNetworkAsGeoJson">
    <property name="text">
-    <string>Export Network as GeoJson...</string>
+	<string>Export Network as GeoJson...</string>
+   </property>
+  </action>
+  <action name="actionPluginsManager">
+   <property name="text">
+	<string>Plugin manager...</string>
+   </property>
+   <property name="toolTip">
+	<string>Opens the plugin manager.</string>
    </property>
   </action>
  </widget>

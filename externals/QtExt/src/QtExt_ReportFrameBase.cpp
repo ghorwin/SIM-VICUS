@@ -98,7 +98,7 @@ ReportFrameItemBase* ReportFrameBase::item(size_t index) {
 }
 
 unsigned int ReportFrameBase::numberOfSubFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
-	return lastItemOnPageList(paintDevice, heightFirst, heightRest).size();
+	return (unsigned int)lastItemOnPageList(paintDevice, heightFirst, heightRest).size();
 }
 
 std::vector<ReportFrameBase*> ReportFrameBase::subFrames(QPaintDevice* paintDevice, double heightFirst, double heightRest) {
@@ -119,12 +119,12 @@ std::vector<ReportFrameBase*> ReportFrameBase::subFrames(QPaintDevice* paintDevi
 	return m_currentSubFrames;
 }
 
-std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevice, double heightFirst, double heightRest) const {
+std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* , double heightFirst, double heightRest) const {
 	// create list of heights of sections between possible page breaks
 	// such a section can be called subframe
 	double currentHeight = 0;
 	double totalHeight = 0;
-	std::vector<std::pair<double,unsigned int>> heightList;
+	std::vector<std::pair<double,size_t>> heightList;
 	for(size_t i =0; i<m_items.size(); ++i) {
 		currentHeight += m_items[i]->rect().height();
 		totalHeight += m_items[i]->rect().height();
@@ -161,7 +161,7 @@ std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* paintDevic
 	bool firstPage = true;
 	currentHeight = 0;   // contains height of the current set of subframes
 	for(size_t i=0; i<heightList.size(); ++i) {
-		std::pair<double,unsigned int>& hi = heightList[i];
+		std::pair<double,size_t>& hi = heightList[i];
 		currentHeight += hi.first; // add height of the current subframe to current height
 		if(i==0 && hi.first >= heightFirst)
 			firstPage = false;

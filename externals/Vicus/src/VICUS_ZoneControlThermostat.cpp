@@ -31,6 +31,8 @@ namespace VICUS {
 
 
 bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const {
+
+	std::string err;
 	if (m_id == INVALID_ID)
 		return false;
 
@@ -55,14 +57,14 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 			const Schedule * sched = scheduleDB[m_idHeatingSetpointSchedule];
 			if (sched == nullptr)
 				return false;
-			if (!sched->isValid())
+			if (!sched->isValid(err, true))
 				return false;
 		}
 		if (m_idCoolingSetpointSchedule != INVALID_ID) {
 			const Schedule * sched = scheduleDB[m_idCoolingSetpointSchedule];
 			if (sched == nullptr)
 				return false;
-			if (!sched->isValid())
+			if (!sched->isValid(err, true))
 				return false;
 		}
 	}
