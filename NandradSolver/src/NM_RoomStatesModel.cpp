@@ -51,6 +51,8 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 		// cache initial condition
 		m_results[R_AirTemperature] = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 		m_results[R_RelativeHumidity] = simPara.m_para[NANDRAD::SimulationParameter::P_InitialRelativeHumidity].value;
+		m_results[R_VaporPressure] = 888; // dummy value, to assist in debugging references
+		m_results[R_MoistureDensity] = 999; // dummy value, to assist in debugging references
 		m_y.resize(2); // two conserved states
 	}
 	else {
@@ -122,6 +124,9 @@ void RoomStatesModel::stateDependencies(std::vector<std::pair<const double *, co
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_VaporPressure], &m_y[0]));
 		// ...and moisture mass
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_VaporPressure], &m_y[1]));
+
+		// moisture mass density depends only on moisture mass
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_MoistureDensity], &m_y[1]));
 	}
 	else {
 		// for each computed quantity indicate which variables are needed for computation
