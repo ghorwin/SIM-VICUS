@@ -111,26 +111,6 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 
 
 	m_lcaSettings = &SVProjectHandler::instance().project().m_lcaSettings;
-	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A1, CA_A1);
-	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A2, CA_A2);
-	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A3, CA_A3);
-	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A4, CA_A4);
-	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A5, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A5, CA_A5);
-
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B1, CB_B1);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B2, CB_B2);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B3, CB_B3);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B4, CB_B4);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B5, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B5, CB_B5);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B6, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B6, CB_B6);
-	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B7, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B7, CB_B7);
-
-	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C1, CC_C1);
-	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C2, CC_C2);
-	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C3, CC_C3);
-	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C4, CC_C4);
-
-	setTableWidgetItem(m_ui->tableWidgetCatD, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_D, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_D, CD_D);
 
 	m_ui->tableWidgetCatA->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	m_ui->tableWidgetCatB->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -184,6 +164,27 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 
 	VICUS::Material * mat = const_cast<VICUS::Material *>(m_db->m_materials[(unsigned int)id]);
 	m_current = mat;
+
+	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A1, CA_A1);
+	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A2, CA_A2);
+	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A3, CA_A3);
+	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A4, CA_A4);
+	setTableWidgetItem(m_ui->tableWidgetCatA, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_A5, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_A5, CA_A5);
+
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B1, CB_B1);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B2, CB_B2);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B3, CB_B3);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B4, CB_B4);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B5, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B5, CB_B5);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B6, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B6, CB_B6);
+	setTableWidgetItem(m_ui->tableWidgetCatB, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_B7, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_B7, CB_B7);
+
+	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C1, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C1, CC_C1);
+	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C2, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C2, CC_C2);
+	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C3, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C3, CC_C3);
+	setTableWidgetItem(m_ui->tableWidgetCatC, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_C4, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_C4, CC_C4);
+
+	setTableWidgetItem(m_ui->tableWidgetCatD, m_moduleToTableItem, VICUS::EpdCategoryDataset::M_D, m_lcaSettings->m_certificationModules, VICUS::LcaSettings::M_D, CD_D);
 
 	// now update the GUI controls
 	m_ui->lineEditDensity->setValue(mat->m_para[VICUS::Material::P_Density].value);
@@ -372,13 +373,13 @@ void SVDBMaterialEditWidget::updateCategory(unsigned int idCategory, VICUS::Mate
 			lineEdit->setText(QtExt::MultiLangString2QString(epd->m_displayName));
 			// Update combobox
 			for(unsigned int i=0; i<epd->m_epdCategoryDataset.size(); ++i) {
-				QString keyword =VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", i);
-				if(!keyword.startsWith(VICUS::KeywordList::Keyword("LcaSettings::LcaCategory", category)))
-					continue;
-
 				std::vector<VICUS::EpdCategoryDataset::Module> &modules = epd->m_epdCategoryDataset[i].m_modules;
 				for(unsigned int j=0; j<modules.size(); ++j) {
 					if(m_moduleToTableItem[modules[j]] != nullptr) {
+						QString keyword = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", modules[j]);
+						if(!keyword.startsWith(VICUS::KeywordList::Keyword("LcaSettings::LcaCategory", category)))
+							continue;
+
 						if(m_moduleToTableItem[modules[j]]->data(Qt::UserRole) == true) {
 							m_moduleToTableItem[modules[j]]->setData(Qt::UserRole+1, true);
 							m_moduleToTableItem[modules[j]]->setBackgroundColor(Qt::darkGreen);
