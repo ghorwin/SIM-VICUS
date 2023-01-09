@@ -1384,7 +1384,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, loadScheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, scheds);
 		}
 	}
 
