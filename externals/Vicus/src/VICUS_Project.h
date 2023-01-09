@@ -74,6 +74,15 @@ public:
 		NUM_SG
 	};
 
+	/*! Sensor types for dynamic shading control. */
+	enum SenorType {
+		ST_Horizontal,
+		ST_North,
+		ST_East,
+		ST_South,
+		ST_West,
+		NUM_ST
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 

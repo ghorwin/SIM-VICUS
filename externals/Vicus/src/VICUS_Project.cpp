@@ -974,14 +974,12 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		// es muss dafür ein Dialog im SV... erstellt werden und später die Werte übergeben werden
 
 		//create sensors for all the 5 orientations
-
-		for(unsigned int i = 0; i < 5; i++){
+		for(unsigned int i = 0; i < NUM_ST; i++){
 			NANDRAD::Sensor s;
-			if(i == 0){
+			if(i == ST_Horizontal)
 				s.createSensor(2000000 + i, 0, 0);
-			} else {
-			s.createSensor(2000000 + i, 90 * (i - 1),90);
-			}
+			else
+				s.createSensor(2000000 + i, 90 * (i - 1),90);
 
 			p.m_location.m_sensors.push_back(s);
 		}
