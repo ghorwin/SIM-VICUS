@@ -56,6 +56,7 @@ public:
 		P_FrameFraction,			// Keyword: FrameFraction				[---]	'Frame area fraction of the window'
 		P_DividerWidth,				// Keyword: DividerWidth				[m]		'Divider width of the window'
 		P_DividerFraction,			// Keyword: DividerFraction				[---]	'Divider area fraction of the window'
+		P_ReductionFactor,			// Keyword: ReductionFactor				[---]	'Reduction factor for dynamic shading'
 		NUM_P
 	};
 
