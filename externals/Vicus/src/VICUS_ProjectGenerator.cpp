@@ -506,7 +506,6 @@ private:
 };
 
 
-
 bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 										 const IBK::Path & projectFilePath, IBK::Path & shadingFactorFilePath) const
 {
@@ -806,26 +805,10 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 
 	if (!errorStack.isEmpty())	return;
 
-	// *** read Shading File ***
-
-
-	// process all zones
-	InternalLoadsModelGenerator internalLoads(this);
-	VentilationModelGenerator ventilation(this);
-	IdealHeatingCoolingModelGenerator idealHeatCool(this);
-	ThermostatModelGenerator thermostats(this);
+	// *** Generate controlled shadings ***
 	ControlledShadingModelGenerator controlledShading(this);
-	thermostats.m_placeholders = p.m_placeholders;
-	for (const VICUS::Room * r : zones) {
-		internalLoads.generate(r, usedModelIds, errorStack);
-		ventilation.generate(r, usedModelIds, errorStack);
-		idealHeatCool.generate(r, usedModelIds, errorStack);
-		thermostats.generate(r, usedModelIds, errorStack);
+	for (const VICUS::Room * r : zones)
 		controlledShading.generate(r, usedModelIds, errorStack);
-	}
-
-	if (!errorStack.isEmpty())	return;
-
 
 
 	// *** Create Construction Instances, Constructions (opak & tranparent) and materials ***
@@ -1384,7 +1367,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, loadScheds);
 		}
 	}
 
@@ -1835,6 +1818,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	}
 }
 
+
 void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
 	const ZoneControlShading* zoneControlShading = nullptr;
 
@@ -1917,6 +1901,7 @@ void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigne
 
 }
 
+
 ControlledShadingModelGenerator::SensorOrientation ControlledShadingModelGenerator::calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category){
 	double altitude = std::asin(normal.m_z) / IBK::DEG2RAD;
 	if (altitude < 0){
@@ -1973,8 +1958,6 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 			continue;
 		}
 		emb.m_displayName = ss.m_displayName.toStdString();
-
-
 
 		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
 		//find sub surface component instance
@@ -2156,8 +2139,6 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 			continue;
 		}
 
-
-
 		//add ids for shading file later
 		// Attention if we have coupled sub surfaces this is not valid
 		surfaceIdsVicusToNandrad[ss.m_id] = emb.m_id;
@@ -2165,8 +2146,6 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		cinst.m_embeddedObjects.push_back(emb);
 	}
 }
-
-
 
 NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 																		 unsigned int interfaceID,
