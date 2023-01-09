@@ -81,7 +81,7 @@ public:
 		{
 		}
 
-		unsigned int					m_id;			///> id of surface
+        unsigned int					m_id;			///> id of surface
 
 		unsigned int					m_vicusId;		///> corresponding vicus id
 
