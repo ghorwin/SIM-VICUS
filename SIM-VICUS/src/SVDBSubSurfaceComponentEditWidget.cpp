@@ -186,6 +186,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 			}
 		}
 
+        m_ui->lineEditReductionFactor->setValue(win->m_para[VICUS::Window::P_ReductionFactor].get_value());
+
 	}
 	else {
 		m_ui->lineEditWindowName->setText("");
@@ -204,6 +206,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 
 	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
 	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
+
+    m_ui->lineEditReductionFactor->setEnabled(isEditable);
 }
 
 
