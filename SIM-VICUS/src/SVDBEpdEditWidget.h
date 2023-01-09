@@ -31,7 +31,7 @@
 #include <QtExt_ConstructionLayer.h>
 
 namespace Ui {
-	class SVDBEPDEditWidget;
+	class SVDBEpdEditWidget;
 }
 
 class QModelIndex;
@@ -53,13 +53,12 @@ class SVDatabase;
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBEPDEditWidget : public SVAbstractDatabaseEditWidget {
+class SVDBEpdEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 public:
 	/*! Constructor, requires read/write access to database object. */
-	SVDBEPDEditWidget(QWidget * parent);
-	~SVDBEPDEditWidget() override;
-
+	SVDBEpdEditWidget(QWidget * parent);
+	~SVDBEpdEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
@@ -69,9 +68,18 @@ public:
 
 	SVDBEpdTableModel * dbModel() const;
 
+private slots:
+	void on_lineEditName_editingFinished();
+
+	void on_lineEditUUID_editingFinished();
+
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
+
 	/*! The UI class. */
-	Ui::SVDBEPDEditWidget			*m_ui;
+	Ui::SVDBEpdEditWidget			*m_ui;
 
 	/*! Cached pointer to database object. */
 	SVDatabase						*m_db;

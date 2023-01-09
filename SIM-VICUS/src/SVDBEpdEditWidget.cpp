@@ -24,7 +24,8 @@
 */
 
 #include "SVDBEpdEditWidget.h"
-#include "ui_SVDBEPDEditWidget.h"
+
+#include "ui_SVDBEpdEditWidget.h"
 
 #include <QtExt_ConstructionLayer.h>
 #include <QtExt_ConstructionView.h>
@@ -47,9 +48,9 @@
 
 
 
-SVDBEPDEditWidget::SVDBEPDEditWidget(QWidget * parent) :
+SVDBEpdEditWidget::SVDBEpdEditWidget(QWidget * parent) :
 	SVAbstractDatabaseEditWidget(parent),
-	m_ui(new Ui::SVDBEPDEditWidget),
+	m_ui(new Ui::SVDBEpdEditWidget),
 	m_current(nullptr)
 {
 	m_ui->setupUi(this);
@@ -69,17 +70,17 @@ SVDBEPDEditWidget::SVDBEPDEditWidget(QWidget * parent) :
 }
 
 
-SVDBEPDEditWidget::~SVDBEPDEditWidget() {
+SVDBEpdEditWidget::~SVDBEpdEditWidget() {
 	delete m_ui;
 }
 
 
-void SVDBEPDEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
+void SVDBEpdEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
 	m_dbModel = dynamic_cast<SVDBEpdTableModel*>(dbModel);
 }
 
-void SVDBEPDEditWidget::updateInput(int id) {
+void SVDBEpdEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
 	m_ui->tableWidgetEpdData->setHidden(id == -1);
@@ -110,6 +111,8 @@ void SVDBEPDEditWidget::updateInput(int id) {
 
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
 	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdCategoryDataset.size());
+
+	m_ui->lineEditName->setString(m_current->m_displayName);
 
 	for(unsigned int j=0; j<m_current->m_epdCategoryDataset.size(); ++j) {
 
@@ -169,9 +172,34 @@ void SVDBEPDEditWidget::updateInput(int id) {
 	m_ui->lineEditUUID->setEnabled(isEnabled);
 	m_ui->lineEditRefUnit->setEnabled(isEnabled);
 	m_ui->textBrowser->setEnabled(isEnabled);
+	m_ui->lineEditName->setEnabled(isEnabled);
 }
 
-SVDBEpdTableModel * SVDBEPDEditWidget::dbModel() const {
+SVDBEpdTableModel * SVDBEpdEditWidget::dbModel() const {
 	return m_dbModel;
+}
+
+void SVDBEpdEditWidget::on_lineEditName_editingFinished() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_displayName = m_ui->lineEditName->string();
+		modelModify();
+	}
+}
+
+void SVDBEpdEditWidget::modelModify() {
+	m_db->m_epdDatasets.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+}
+
+
+void SVDBEpdEditWidget::on_lineEditUUID_editingFinished() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_uuid = m_ui->lineEditUUID->text();
+		modelModify();
+	}
 }
 
