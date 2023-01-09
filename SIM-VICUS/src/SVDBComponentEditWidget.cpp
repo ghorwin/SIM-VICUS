@@ -355,6 +355,8 @@ void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd
 }
 
 void SVDBComponentEditWidget::updateLcaTable() {
+	if(m_current == nullptr)
+		return;
 
 	// Get COnstruction
 	const VICUS::Construction &con = *m_db->m_constructions[m_current->m_idConstruction];
@@ -365,10 +367,10 @@ void SVDBComponentEditWidget::updateLcaTable() {
 
 		m_ui->tableWidgetLca->setItem((int)i, 0,	new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
 
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatA], 1, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatB], 2, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatC], 3, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCat[VICUS::EpdCategorySet::C_CatD], 4, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], 1, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB], 2, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], 3, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD], 4, i);
 	}
 }
 
