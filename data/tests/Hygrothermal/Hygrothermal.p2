@@ -4,12 +4,13 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#45ad45" Checked="0">InfiltrationConstantSingleZone</SubDir>
+			<SubDir Color="#45ad45" Checked="1">InfiltrationConstantSingleZone</SubDir>
 			<SubDir Color="#aa0000" Checked="0">InfiltrationConstantSingleZone.gcc_linux</SubDir>
 			<SubDir Color="#55aaff" Checked="0">InfiltrationScheduledSingleZone</SubDir>
 			<SubDir Color="#005500" Checked="0">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
-			<SubDir Color="#550000" Checked="1">InternalLoadsInfiltrationConstantSingleZone</SubDir>
+			<SubDir Color="#550000" Checked="0">InternalLoadsInfiltrationConstantSingleZone</SubDir>
 			<SubDir Color="#ffaaff" Checked="0">InternalLoadsInfiltrationConstantSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">InternalLoadsScheduledSingleZone</SubDir>
 			<SubDir Color="#c66300" Checked="0">InternalLoadsScheduledSingleZone.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
@@ -58,11 +59,12 @@
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>Absolute Luftfeuchte [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">kg/m3</IBK:Unit>
+						<Maximum>0.10000000000000001</Maximum>
 						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
@@ -83,55 +85,6 @@
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="$project: $basename">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>InternalLoadsInfiltrationConstantSingleZone/results/states.tsv?1</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>InternalLoadsInfiltrationConstantSingleZone/results/states.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0">
-						<TitleText>Zeit [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">C</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">%</IBK:Unit>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
-					<Legend />
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
@@ -156,10 +109,12 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>Lufttemperatur</TitleText>
+						<PenWidth>2</PenWidth>
 						<PenColor>#ff420e</PenColor>
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>Relative Luftfeuchte</TitleText>
+						<PenWidth>2</PenWidth>
 						<PenColor>#26a8cf</PenColor>
 						<MarkerColor>#26a8cf</MarkerColor>
 					</Series>
@@ -202,13 +157,85 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>InfiltrationConstantSingleZone/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationConstantSingleZone/results/states.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>Lufttemperatur</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#d30000</PenColor>
+						<MarkerColor>#d30000</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>Relative Luftfeuchtigkeit</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#1da5ff</PenColor>
+						<MarkerColor>#1da5ff</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Temperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>25</Maximum>
+						<Minimum>5</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>Luftfeuchte [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">%</IBK:Unit>
+						<Maximum>85</Maximum>
+						<Minimum>75</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project</TitleText>
+					<TitleFont>Roboto Condensed,12,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
