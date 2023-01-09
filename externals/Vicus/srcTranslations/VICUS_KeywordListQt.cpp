@@ -245,6 +245,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame area fraction of the window");
 	tr("Divider width of the window");
 	tr("Divider area fraction of the window");
+	tr("Reduction factor for dynamic shading");
 	tr("Divider material thickness.");
 	tr("Frame material thickness.");
 	tr("Standard globbed-layers model");
