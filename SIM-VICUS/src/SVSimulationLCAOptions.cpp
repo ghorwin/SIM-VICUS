@@ -1,7 +1,7 @@
 #include "SVSimulationLCAOptions.h"
 #include "IBKMK_3DCalculations.h"
-#include "SVUndoModifyProject.h"
 #include "ui_SVSimulationLCAOptions.h"
+#include "SVSimulationLCAResultsDialog.h"
 
 #include <IBK_Parameter.h>
 #include <IBK_FileReader.h>
@@ -55,6 +55,28 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettin
 	m_ui->checkBoxC3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C3);
 	m_ui->checkBoxC4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C4);
 	m_ui->checkBoxD ->setProperty("category", (int)VICUS::EpdCategoryDataset::M_D);
+
+
+	m_ui->checkBoxA1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A1));
+	m_ui->checkBoxA2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A2));
+	m_ui->checkBoxA3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A3));
+	m_ui->checkBoxA4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A4));
+	m_ui->checkBoxA5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A5));
+
+	m_ui->checkBoxB1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B1));
+	m_ui->checkBoxB2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B2));
+	m_ui->checkBoxB3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B3));
+	m_ui->checkBoxB4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B4));
+	m_ui->checkBoxB5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B5));
+	m_ui->checkBoxB6->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B6));
+	m_ui->checkBoxB7->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B7));
+
+	m_ui->checkBoxC1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C1));
+	m_ui->checkBoxC2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C2));
+	m_ui->checkBoxC3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C3));
+	m_ui->checkBoxC4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C4));
+
+	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_D));
 
 	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
 	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
@@ -324,6 +346,11 @@ void SVSimulationLCAOptions::calculateLCA() {
 
 
 bool convertString2Val(double &val, const std::string &text, unsigned int row, unsigned int column) {
+	if(text == "") {
+		val = 0.0;
+		return true;
+	}
+
 	try {
 		val = IBK::string2val<double>(text);
 	}  catch (IBK::Exception &ex) {
@@ -420,9 +447,6 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 			// qDebug() << "Row: " << row << " Column: " << col << " Text: " << QString::fromStdString(t);
 
-			if (t == "" || t == "not available")
-				continue;
-
 			switch (col) {
 			// Not imported coloumns
 			case ColVersion:
@@ -432,16 +456,16 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 			case ColPublishedOn:
 			case ColRegistrationNumber:
 			case ColRegistrationBody:
-			case ColUUIDOfThePredecessor:
-				break;
+			case ColUUIDOfThePredecessor: {
+				if(t == "")
+					continue;
+			} break;
 
 			case ColUUID: {
+				if(t == "")
+					continue;
 
 				QString uuid = QString::fromStdString(t);
-
-				int i = 0;
-				if(uuid == "07d95427-572c-413c-ab1a-ef5e991c69ef")
-					i = i;
 
 				// do we already have an EPD with the specific UUID
 				if(dataSets.find(uuid) != dataSets.end()) { // We found one
@@ -459,12 +483,29 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 			} break;
 			case ColNameDe:
+				if(t == "")
+					continue;
 				epd->m_displayName.setString(t, "De");
 				break;
-			case ColNameEn:				epd->m_displayName.setString(t, "En");			break;
-			case ColCategoryDe:			epd->m_category.setString(t, "De");				break;
-			case ColCategoryEn:			epd->m_category.setString(t, "En");				break;
+			case ColNameEn:
+				if(t == "")
+					continue;
+				epd->m_displayName.setString(t, "En");
+			break;
+			case ColCategoryDe:
+				if(t == "")
+					continue;
+				epd->m_category.setString(t, "De");
+			break;
+			case ColCategoryEn:
+				if(t == "")
+					continue;
+				epd->m_category.setString(t, "En");
+			break;
 			case ColType: {
+				if(t == "")
+					continue;
+
 				VICUS::EpdDataset::Type type = VICUS::EpdDataset::NUM_T;
 
 				if (t == "average dataset")
@@ -484,6 +525,9 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 			case ColExpireYear:			epd->m_expireYear = QString::fromStdString(t);			break;
 			case ColDeclarationOwner:	epd->m_manufacturer = QString::fromStdString(t);			break;
 			case ColReferenceSize: {
+				if(t == "")
+					continue;
+
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
@@ -492,6 +536,8 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				setValue<double>(epd->m_referenceQuantity, val, foundExistingEpd);
 			} break;
 			case ColReferenceUnit: {
+				if(t == "")
+					continue;
 
 				if(!foundExistingEpd) {
 					IBK::Unit unit(oekobauDatUnit2IBKUnit[t]);
@@ -504,12 +550,18 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 
 			} break;
 			case ColURL: {
+				if(t == "")
+					continue;
+
 				QString string = QString::fromStdString(t);
 				setValue<QString>(epd->m_dataSource, string, foundExistingEpd);
 			} break;
 
 
 			case ColModule: {
+				if(t == "")
+					continue;
+
 				std::vector<VICUS::EpdCategoryDataset::Module> modules;
 				std::string moduleType = t.substr(0, 1);
 
@@ -829,6 +881,12 @@ void SVSimulationLCAOptions::setCheckBoxState(QCheckBox *cb, int bitmask) {
 	cb->blockSignals(false);
 }
 
+SVSimulationLCAResultsDialog *SVSimulationLCAOptions::lcaResultsDialog() {
+	if(m_lcaResultDialog == nullptr)
+		m_lcaResultDialog = new SVSimulationLCAResultsDialog(this);
+	return m_lcaResultDialog;
+}
+
 void SVSimulationLCAOptions::updateUi() {
 	m_ui->groupBoxLcaCalc->blockSignals(true);
 	m_ui->groupBoxLccSettings->blockSignals(true);
@@ -1063,6 +1121,8 @@ void SVSimulationLCAOptions::on_pushButtonLcc_clicked() {
 void SVSimulationLCAOptions::on_pushButtonLca_clicked() {
 	try {
 		calculateLCA();
+		lcaResultsDialog()->setLcaResults();
+		m_lcaResultDialog->exec();
 	}
 	catch (IBK::Exception &ex) {
 		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));

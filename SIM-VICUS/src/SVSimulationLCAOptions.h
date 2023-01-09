@@ -5,6 +5,7 @@
 
 #include <SVMainWindow.h>
 #include <SVDBEpdEditWidget.h>
+#include <SVSimulationLCAResultsDialog.h>
 
 #include <SVSettings.h>
 
@@ -250,6 +251,9 @@ private:
 	template<typename T>
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
+	/*! Returns the pointer to the Results Dialog. */
+	SVSimulationLCAResultsDialog *lcaResultsDialog();
+
 	/*! Pointer to Ui */
 	Ui::SVSimulationLCAOptions							*m_ui;
 
@@ -275,6 +279,9 @@ private:
 	/*! Set with ids of components with undefined data, that we have to skip.
 	*/
 	std::set<unsigned int>								m_idComponentEpdUndefined;
+
+	/*! Pointer to LCA Result Dialog. */
+	SVSimulationLCAResultsDialog						*m_lcaResultDialog = nullptr;
 
 	/*! Reference to VICUS Project. */
 	const VICUS::Project								&m_prj;

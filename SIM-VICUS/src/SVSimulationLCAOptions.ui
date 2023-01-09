@@ -197,7 +197,7 @@
            <property name="title">
             <string>Category B - Usage</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QCheckBox" name="checkBoxB1">
               <property name="text">
@@ -247,19 +247,6 @@
               </property>
              </widget>
             </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
           </widget>
          </item>
@@ -268,7 +255,7 @@
            <property name="title">
             <string>Category D - Deposit</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QCheckBox" name="checkBoxD">
               <property name="text">
@@ -277,14 +264,14 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_5">
+             <spacer name="verticalSpacer_4">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -304,18 +291,11 @@
            <property name="title">
             <string>Category C - Disposal</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QCheckBox" name="checkBoxC1">
+             <widget class="QCheckBox" name="checkBoxC4">
               <property name="text">
-               <string>C1</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxC2">
-              <property name="text">
-               <string>C2</string>
+               <string>C4</string>
               </property>
              </widget>
             </item>
@@ -327,21 +307,28 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBoxC4">
+             <widget class="QCheckBox" name="checkBoxC2">
               <property name="text">
-               <string>C4</string>
+               <string>C2</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_4">
+             <widget class="QCheckBox" name="checkBoxC1">
+              <property name="text">
+               <string>C1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_3">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -354,7 +341,7 @@
            <property name="title">
             <string>Category A - Production</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout">
             <item>
              <widget class="QCheckBox" name="checkBoxA1">
               <property name="text">
@@ -400,14 +387,14 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_2">
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -491,18 +478,18 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QWidget</extends>
-   <header>QtExt_BrowseFilenameWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header>QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
