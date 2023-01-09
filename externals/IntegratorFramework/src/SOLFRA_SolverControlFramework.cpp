@@ -575,8 +575,8 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
 #else
 		out.open(m_restartFilename.c_str(), std::ios_base::binary);
-	}
 #endif
+	}
 	if (!out)
 		throw IBK::Exception( IBK::FormatString("Cannot open restart file '%1' for writing.").arg(m_restartFilename), FUNC_ID);
 	// write in binary mode unless debug option is set
