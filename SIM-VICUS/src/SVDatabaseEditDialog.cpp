@@ -378,6 +378,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
 			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
+			case SVDatabase::DT_EpdDatasets:			SVSettings::instance().m_db.m_epdDatasets.removeUserElements(); break;
 			case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
 			case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
 			case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
@@ -502,7 +503,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createEpdEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBEpdTableModel(parent, SVSettings::instance().m_db),
-		new SVDBEPDEditWidget(parent),
+		new SVDBEpdEditWidget(parent),
 		tr("EPD Database"), tr("EPD properties"), true
 	);
 	dlg->resize(1400,600);
