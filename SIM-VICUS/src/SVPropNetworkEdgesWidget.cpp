@@ -261,6 +261,8 @@ void SVPropNetworkEdgesWidget::on_lineEditEdgeDisplayName_editingFinished()
 }
 
 
-
-
+void SVPropNetworkEdgesWidget::on_tableWidgetPipes_itemDoubleClicked(QTableWidgetItem */*item*/)
+{
+	on_pushButtonEditPipe_clicked();
+}
 
