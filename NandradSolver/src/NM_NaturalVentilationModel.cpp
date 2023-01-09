@@ -412,8 +412,8 @@ int NaturalVentilationModel::update() {
 					break; // wind speed too large, no increase of ventilation possible - keep already determined "rate"
 
 				// get comfort range of temperatures
-				double maxRoomTemp = *m_valueRefs[varOffset + moistureBalanceOffset + 3];
-				double minRoomTemp = *m_valueRefs[varOffset + moistureBalanceOffset + 4];
+				double minRoomTemp = *m_valueRefs[varOffset + moistureBalanceOffset + 3];
+				double maxRoomTemp = *m_valueRefs[varOffset + moistureBalanceOffset + 4];
 
 				// we only increase ventilation when outside of the comfort zone _and_ if increasing the ventilation rate helps
 				const double RAMPING_DELTA_T = 0.2; // ramping range
