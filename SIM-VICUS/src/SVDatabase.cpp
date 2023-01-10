@@ -525,6 +525,7 @@ void SVDatabase::updateElementChildren() {
 			VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
 			VICUS::Infiltration *inf = m_infiltration[idType];
 			VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
+			VICUS::ZoneControlShading *ctrlShad = m_zoneControlShading[idType];
 			if (intLoad	!= nullptr) {
 				zt.m_childrenRefs.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
@@ -543,6 +544,7 @@ void SVDatabase::updateElementChildren() {
 					case VICUS::ZoneTemplate::ST_IntLoadOther:
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idPowerManagementSchedule]);
 					break;
+					case VICUS::ZoneTemplate::ST_ControlShading:
 					case VICUS::ZoneTemplate::ST_ControlThermostat:
 					case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
 					case VICUS::ZoneTemplate::ST_Infiltration:
@@ -566,6 +568,8 @@ void SVDatabase::updateElementChildren() {
 			}
 			else if(idealHeatCool != nullptr)
 				zt.m_childrenRefs.insert(idealHeatCool);
+			else if(ctrlShad != nullptr)
+				zt.m_childrenRefs.insert(ctrlShad);
 		}
 	}
 

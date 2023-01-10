@@ -2097,6 +2097,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 								unsigned int idZoneControlShading = zt->m_idReferences[ZoneTemplate::ST_ControlShading];
 								if(idZoneControlShading != VICUS::INVALID_ID){
 									//sub surface has controlled shading
+									Q_ASSERT(VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, idZoneControlShading) != nullptr);
 									const VICUS::ZoneControlShading * zcs = VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, idZoneControlShading);
 									NANDRAD::WindowShading shading;
 									shading.m_modelType = NANDRAD::WindowShading::MT_Controlled;
