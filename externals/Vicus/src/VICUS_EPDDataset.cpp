@@ -24,6 +24,7 @@
 */
 
 #include "VICUS_EpdDataset.h"
+#include "VICUS_KeywordList.h"
 
 namespace VICUS {
 
@@ -62,6 +63,20 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const {
 
 	return true;
 
+}
+
+EpdCategoryDataset EpdDataset::calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const {
+	EpdCategoryDataset dataSet;
+	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i) {
+		for(unsigned int j=0; j<m_epdCategoryDataset[i].m_modules.size(); ++j) {
+			const EpdCategoryDataset::Module &mod = m_epdCategoryDataset[i].m_modules[j];
+			QString modString = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", mod);
+			if(settings.isLcaCategoryDefined(mod) && modString.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat))) {
+				dataSet += m_epdCategoryDataset[i];
+			}
+		}
+	}
+	return dataSet;
 }
 
 AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *other) const {
@@ -119,6 +134,27 @@ EpdDataset EpdDataset::operator+(const EpdDataset & epd) {
 
 void EpdDataset::operator+=(const EpdDataset & epd) {
 	*this = *this + epd;
+}
+
+bool EpdDataset::isCategoryDefined(const LcaSettings &settings, const Category &cat) const {
+	std::vector<EpdCategoryDataset> expEpds = expandCategoryDatasets();
+	std::set<EpdCategoryDataset::Module> definedModules;
+
+	for(unsigned int i=0; i<expEpds.size(); ++i) {
+		EpdCategoryDataset::Module &mod = expEpds[i].m_modules[0]; // SHOULD ALWAYS BE 1 ENTRY ONLY WHEN EXPANDED
+		definedModules.insert(mod);
+	}
+
+	for(unsigned int j=0; j<EpdCategoryDataset::NUM_M; ++j) {
+		QString key = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", j);
+		if(!key.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat)))
+			continue;
+
+		if(definedModules.find((EpdCategoryDataset::Module)j) == definedModules.end())
+			return false;
+	}
+
+	return true;
 }
 
 std::vector<EpdCategoryDataset> EpdDataset::expandCategoryDatasets() const {

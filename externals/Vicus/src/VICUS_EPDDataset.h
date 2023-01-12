@@ -29,6 +29,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_EpdCategoryDataset.h"
+#include "VICUS_LcaSettings.h"
 
 #include <QString>
 #include <QColor>
@@ -50,6 +51,15 @@ public:
 		NUM_T
 	};
 
+	/*! All Categoruies. */
+	enum Category {
+		C_CategoryA,						// Keyword: A		'Production'
+		C_CategoryB,						// Keyword: B		'Usage'
+		C_CategoryC,						// Keyword: C		'Disposal'
+		C_CategoryD,						// Keyword: D		'Deposit'
+		NUM_C
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
@@ -57,10 +67,13 @@ public:
 	/*! Returns an EPD with all Parameters scaled by the defined factor. */
 	EpdDataset scaleByFactor(const double &factor) const;
 
-	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
+	/*! checks the parameters reference-unit, reference-quantity, the categories and the different values of the EPDs
 		to see if the EPDDatest exists already and has the latest version.
 	*/
 	bool behavesLike(const EpdDataset &other) const;
+
+	/*! Return summed total Epd Data by Category. */
+	EpdCategoryDataset calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
@@ -70,6 +83,9 @@ public:
 
 	/*! Defines Operator += .*/
 	void operator+=(const EpdDataset& epd);
+
+	/*! Returns whether a needed category defined by LCA Settings such as BNB (A1,A2,A3, ...) is valid. */
+	bool isCategoryDefined(const LcaSettings &settings, const Category &cat) const;
 
 	/*! Returns expanded all combined EPD Category Datasets into unique Datasets.
 		Before: EpdCategoryDataset: A1,A2,A3 -> Data
