@@ -31,7 +31,6 @@
 #include <IBK_Parameter.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
 namespace VICUS {
