@@ -70,7 +70,7 @@ KeywordListQt::KeywordListQt() {
 	tr("A2: Transport");
 	tr("A3: Production");
 	tr("A4: Transport");
-	tr("A5: Construction / Installation (A5)");
+	tr("A5: Construction / Installation");
 	tr("B1: Usage");
 	tr("B2: Maintenance");
 	tr("B3: Maintenance");
@@ -92,6 +92,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Average");
 	tr("Representative");
 	tr("Template");
+	tr("Production");
+	tr("Usage");
+	tr("Disposal");
+	tr("Deposit");
 	tr("Air change rate");
 	tr("Shielding coefficient for n50 value");
 	tr("normal");
