@@ -1054,13 +1054,13 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		bool isZoneOk = true;
 		try {
-			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0.1, true, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid area defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
 		}
 		try {
-			r->m_para[VICUS::Room::P_Volume].checkedValue("Volume", "m3", "m3", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+			r->m_para[VICUS::Room::P_Volume].checkedValue("Volume", "m3", "m3", 0.1, true, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid volume defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
