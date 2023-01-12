@@ -1,11 +1,9 @@
-#ifndef SVSIMULATIONLCAOPTIONS_H
-#define SVSIMULATIONLCAOPTIONS_H
+#ifndef SVSimulationLCAOptionsH
+#define SVSimulationLCAOptionsH
 
 #include <QWidget>
 
-#include <SVMainWindow.h>
-#include <SVDBEpdEditWidget.h>
-#include <SVSimulationLCAResultsDialog.h>
+#include "SVSimulationLCAResultsDialog.h"
 
 #include <SVSettings.h>
 
@@ -20,70 +18,6 @@ class SVSimulationLCAOptions : public QWidget {
 	Q_OBJECT
 
 public:
-
-	struct AggregatedComponentData {
-
-		/*! All Categoruies. */
-		enum Category {
-			C_CategoryA,
-			C_CategoryB,
-			C_CategoryC,
-			C_CategoryD,
-			NUM_C
-		};
-
-		AggregatedComponentData() {}
-
-		/*! Construct AggregatedComponentData with pointer to VICUS::Component and
-			empty Area. */
-		AggregatedComponentData(const VICUS::ComponentInstance &compInst) :
-			m_component(SVSettings::instance().m_db.m_components[compInst.m_idComponent]),
-			m_area(0.0)
-		{
-			addArea(compInst);
-			m_additionalComponents.insert(m_component);
-		}
-
-		/*! Adds area of an component instance to the aggregated component data. */
-		void addArea(const VICUS::ComponentInstance &compInst) {
-			const VICUS::Surface *surfA = compInst.m_sideASurface;
-			const VICUS::Surface *surfB = compInst.m_sideASurface;
-
-			if(surfA == nullptr && surfB == nullptr)
-				return;
-
-			if(surfA != nullptr)
-				m_area += surfA->geometry().area();
-			else if(surfB != nullptr)
-				m_area += surfB->geometry().area();
-		}
-
-		/*! Combines Aggregated Component data.
-			Adds Area, Aggregated LCA Data and inserts pointer to additional components.
-		*/
-		void addAggregatedData(const AggregatedComponentData &aggregatedData) {
-
-			m_area += aggregatedData.m_area;
-
-			for(unsigned int i=0; i<NUM_C; ++i)
-				m_totalEpdData[i] += aggregatedData.m_totalEpdData[i];
-
-			m_additionalComponents.insert(aggregatedData.m_component);
-		}
-
-		/*! Pointer to VICUS Component. */
-		const VICUS::Component					*m_component = nullptr;
-
-		/*! Vector with additional components. */
-		std::set<const VICUS::Component *>		m_additionalComponents;
-
-		/*! Area of all components used in VICUS project. */
-		double									m_area;
-
-		/*! Global EPD of used Component. */
-		VICUS::EpdDataset						m_totalEpdData[NUM_C];
-
-	};
 
 
 	/*! Column enums. */
@@ -241,8 +175,9 @@ private:
 	void resetLcaData();
 
 	/*! Write data to output file stream. */
-	void writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
-						   const AggregatedComponentData::Category & category);
+	void writeDataToStream(std::ofstream &lcaStream,
+						   const std::string &categoryText,
+						   const VICUS::EpdDataset::Category &category);
 
 	/*! Sets the CheckBox state and uses a specified bitmask to determine whether it is checked. */
 	void setCheckBoxState(QCheckBox *cb, int bitmask);
@@ -252,7 +187,7 @@ private:
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
 	/*! Returns the pointer to the Results Dialog. */
-	SVSimulationLCAResultsDialog *lcaResultsDialog();
+	SVSimulationLCAResultsDialog						*lcaResultsDialog();
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationLCAOptions							*m_ui;
@@ -291,4 +226,4 @@ private:
 
 };
 
-#endif // SVSIMULATIONLCAOPTIONS_H
+#endif // SVSimulationLCAOptionsH

@@ -1,27 +1,33 @@
 #include "SVSimulationLCAOptions.h"
 #include "IBKMK_3DCalculations.h"
 #include "ui_SVSimulationLCAOptions.h"
-#include "SVSimulationLCAResultsDialog.h"
 
+// SIM-VIUCS
+#include "SVSettings.h"
+#include "SVDatabase.h"
+#include "SVDatabaseEditDialog.h"
+#include "SVDBEpdTableModel.h"
+#include "SVProjectHandler.h"
+#include "SVMainWindow.h"
+
+// IBK
 #include <IBK_Parameter.h>
 #include <IBK_FileReader.h>
 #include <IBK_StopWatch.h>
 
-#include <SVSettings.h>
-#include <SVDatabase.h>
-#include <SVDatabaseEditDialog.h>
-#include <SVDBEpdTableModel.h>
-#include <SVProjectHandler.h>
+// VICUS
 #include <VICUS_KeywordList.h>
-
 #include <VICUS_Project.h>
 #include <VICUS_EpdDataset.h>
 #include <VICUS_EpdCategoryDataset.h>
 
+// Qt-Ext
 #include <QtExt_Conversions.h>
 
+// Qt
 #include <QProgressDialog>
 
+// std
 #include <fstream>
 
 SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings & settings) :
@@ -805,7 +811,7 @@ double SVSimulationLCAOptions::conversionFactorEpdReferenceUnit(const IBK::Unit 
 }
 
 void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
-											   const AggregatedComponentData::Category &category) {
+											   const VICUS::EpdDataset::Category &category) {
 
 	lcaStream << categoryText + "\t\t\t\t\t\t\t"  << std::endl;
 
@@ -970,10 +976,10 @@ void SVSimulationLCAOptions::writeLcaDataToTxtFile(const IBK::Path &resultPath) 
 	lcaStream << "Goal:\t\t\t\t24\t0.0000001010\t0.0063\t0.0662\t0.0086" << std::endl;
 
 
-	writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
+	writeDataToStream(lcaStream, "Category A - Production", VICUS::EpdDataset::C_CategoryA);
 	// writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
-	writeDataToStream(lcaStream, "Category C - Disposal", AggregatedComponentData::C_CategoryC);
-	writeDataToStream(lcaStream, "Category D - Deposit", AggregatedComponentData::C_CategoryD);
+	writeDataToStream(lcaStream, "Category C - Disposal", VICUS::EpdDataset::C_CategoryC);
+	writeDataToStream(lcaStream, "Category D - Deposit", VICUS::EpdDataset::C_CategoryD);
 
 	lcaStream.close();
 
@@ -1010,26 +1016,34 @@ void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
 			const VICUS::EpdDataset *epdCatC = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA]];
 			const VICUS::EpdDataset *epdCatD = m_db->m_epdDatasets[mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD]];
 
+			// We have to think about renewing our materials as well
+			// If no lifetime is defined, we take for now 50 years
+			double lifeTime;
+			if(matLayer.m_lifetime.empty())
+				lifeTime = 50;
+			else
+				lifeTime = matLayer.m_lifetime.get_value();
 
+			double renewingFactor = (lifeTime / m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value());
 			// We do the unit conversion and handling to get all our reference units correctly managed
 			if(epdCatA != nullptr)
-				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryA]
-						= epdCatA->scaleByFactor(
+				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryA]
+						= epdCatA->scaleByFactor( renewingFactor *
 							conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
 															 mat, matLayer.m_thickness.get_value("m"), area));
-			if(epdCatB != nullptr)
-				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryB]
+			if(epdCatB != nullptr) // no renewing period scaling since it is already normated for 1 a
+				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryB]
 						= epdCatB->scaleByFactor(
 							conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
 															 mat, matLayer.m_thickness.get_value("m"), area));
 			if(epdCatC != nullptr)
-				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryC]
-						= epdCatC->scaleByFactor(
+				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryC]
+						= epdCatC->scaleByFactor( renewingFactor *
 							conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
 															 mat, matLayer.m_thickness.get_value("m"), area));
 			if(epdCatD != nullptr)
-				itAggregatedComp->second.m_totalEpdData[AggregatedComponentData::C_CategoryD]
-						= epdCatD->scaleByFactor(
+				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryD]
+						= epdCatD->scaleByFactor( renewingFactor *
 							conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
 															 mat, matLayer.m_thickness.get_value("m"), area));
 
@@ -1121,7 +1135,9 @@ void SVSimulationLCAOptions::on_pushButtonLcc_clicked() {
 void SVSimulationLCAOptions::on_pushButtonLca_clicked() {
 	try {
 		calculateLCA();
-		lcaResultsDialog()->setLcaResults();
+		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings);
+		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings);
+		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings);
 		m_lcaResultDialog->exec();
 	}
 	catch (IBK::Exception &ex) {
