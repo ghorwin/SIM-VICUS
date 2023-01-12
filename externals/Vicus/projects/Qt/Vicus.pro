@@ -164,7 +164,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
-	../../src/ncg/ncg_VICUS_EpdCategorySet.cpp \
 	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
