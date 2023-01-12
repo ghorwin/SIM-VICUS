@@ -96,7 +96,7 @@ public:
 	};
 
 	/*! Certificytion systems predefined modules. */
-	enum CertificationType {
+	enum CertificationModules {
 		CT_BNB = LcaSettings::M_A1 | LcaSettings::M_A2 | LcaSettings::M_A3 | LcaSettings::M_B6 | LcaSettings::M_C3 | LcaSettings::M_C4
 	};
 
@@ -130,7 +130,7 @@ public:
 	CertificationSytem					m_certificationSystem;						// XML:E
 
 	/*! Filter for checking, which modules are selected by certification system. */
-	CertificationType					m_certificationModules;
+	CertificationModules				m_certificationModules;
 
 };
 

@@ -15,7 +15,7 @@ void VICUS::LcaSettings::initDefaults() {
 	m_calculationMode = CalculationMode::CM_Simple;
 	m_certificationSystem = CertificationSytem::CS_BNB;
 
-	m_certificationModules = CertificationType::CT_BNB;
+	m_certificationModules = CertificationModules::CT_BNB;
 }
 
 bool VICUS::LcaSettings::isLcaCategoryDefined(EpdCategoryDataset::Module mod) const {
