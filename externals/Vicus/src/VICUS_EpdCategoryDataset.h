@@ -104,6 +104,9 @@ public:
 	/*! Returns an EPD with all Parameters scaled by the defined factor. */
 	EpdCategoryDataset scaleByFactor(const double &factor) const;
 
+	/*! Defines Operator += .*/
+	void operator+=(const EpdCategoryDataset& otherEpd);
+
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;

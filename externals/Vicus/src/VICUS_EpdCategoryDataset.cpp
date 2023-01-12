@@ -57,6 +57,12 @@ EpdCategoryDataset EpdCategoryDataset::scaleByFactor(const double & factor) cons
 	return epd;
 }
 
+void EpdCategoryDataset::operator+=(const EpdCategoryDataset &otherEpd) {
+	for(unsigned int i=0; i<NUM_P; ++i)
+		m_para[i].value += otherEpd.m_para[i].value; // no testing needed so straight forward
+}
+
+
 void EpdCategoryDataset::readXML(const TiXmlElement * element) {
 	FUNCID(EpdCategoryDataset::readXML);
 
