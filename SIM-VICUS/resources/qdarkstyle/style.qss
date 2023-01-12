@@ -1569,8 +1569,8 @@ QTabBar::tab:top {
   background-color: #3a3b3f;
   color: #F0F0F0;
   margin-left: 2px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   min-width: 5px;
   border-bottom: 3px solid #3a3b3f;
   border-top-left-radius: 2px;
@@ -1580,10 +1580,15 @@ QTabBar::tab:top {
 QTabBar::tab:top:selected {
   background-color: #212124;
   color: #F0F0F0;
-  border-bottom: 1px solid #212124;
-	  border-left: 1px solid #5d4e0d;
-	  border-top: 3px solid #a08918;
-	  border-right: 1px solid #5d4e0d;
+
+  padding-left: 8px;
+  padding-right: 8px;
+
+  border-bottom: 0px solid #212124;
+  border-left: 2px solid #5d4e0d;
+  border-top: 2px solid #a08918;
+  border-right: 2px solid #5d4e0d;
+
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
 }
@@ -1592,8 +1597,6 @@ QTabBar::tab:top:!selected:hover {
   border: 1px solid #b19834;
   border-bottom: 3px solid #b19834;
   /* Fixes spyder-ide/spyder#9766 */
-  padding-left: 4px;
-  padding-right: 4px;
 }
 
 QTabBar::tab:bottom {
