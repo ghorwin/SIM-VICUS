@@ -455,16 +455,24 @@ int NaturalVentilationModel::update() {
 		resultVentRate[i] = rate;
 	}
 
+	// Note: resultVentRate[i] now contains a ventilation rate in [1/s]
+
+	// calculation of mass fluxes and enthalpies works as follows (as in DELPHIN):
+
+	// - compute volumetric flow rate in m3/s
+	// - assume constant dry air density and compute dry air mass flow rate in kg(dry_air)/s
+	// - (hygrothermal) compute density of water vapour in supply/exhaust air
+	// - compute vapour mass flow rate based on vapor pressure and absolute gas pressure (constant for now)
+	//   and ratios of ideal gas constants (this assumes that gas pressure is dominated by air pressure and
+	//   pg = pa holds for most situations
+
 	// calculate heat and moisture mass fluxes
 
 	// moist air
 	if (m_moistureBalanceEnabled) {
 		// constant parameters
-		double RVapor = IBK::R_VAPOR;
-		double RAir = IBK::R_AIR;
 		double cVapor = IBK::C_VAPOR;
 		double cAir = IBK::C_AIR;
-		double pGasRef = IBK::GASPRESS_REF;
 		double HEvap = IBK::H_EVAP;
 
 		// store pointer to result quantities
@@ -473,47 +481,43 @@ int NaturalVentilationModel::update() {
 
 		// get ambient vapor, gas and air density [kg/m3]
 		double rhoVaporAmbient = *m_valueRefs[1];
-		double pVaporAmbient = rhoVaporAmbient * RVapor * Tambient;
-		double rhoAirAmbient = (pGasRef - pVaporAmbient)/(RAir * Tambient);
-		if (rhoAirAmbient < 0)
-			rhoAirAmbient = 0;
-		// compute gas density of ambient air
-		double rhoGasAmbient = rhoAirAmbient + rhoVaporAmbient;
-
-		// compute density ratios
-		double xiAirAmbient = rhoAirAmbient/rhoGasAmbient;
-		double xiVaporAmbient = rhoVaporAmbient/ rhoGasAmbient;
 
 		// loop over all zones
 		for (unsigned int i=0; i<zoneCount; ++i) {
 			unsigned int varOffset = m_zoneVariableOffset+i*m_zoneVariableCount; // offset of first zone-specific variable
 			// get room air temperature in [K]
 			double Tzone = *m_valueRefs[varOffset];
-			// get zone vapor density in [kg/m3]
-			double rhoVaporZone = *m_valueRefs[varOffset + 1];
 
 			// get ventilation rate in [1/s]
 			double rate = resultVentRate[i];
+			double mdot_air = rate*m_zoneVolumes[i]*IBK::RHO_AIR; // dry air mass flux
 
-			// calculate air and gas density inside the room
-			double pVaporZone = rhoVaporZone * RVapor * Tzone;
-			double rhoAirZone = (pGasRef - pVaporZone)/(RAir * Tzone);
-			double rhoGasZone = rhoAirZone + rhoVaporZone;
+			// get zone vapor density in [kg/m3]
+			double rhoVaporZone = *m_valueRefs[varOffset + 1];
 
-			// volumetric flux rate (user input) is defined related to outside air conditions
-			double massFluxGas = m_zoneVolumes[i] * rate * rhoGasAmbient;
+			// [cv] = rho(Vapor) / rho(gas)
+			double cvVaporZone = rhoVaporZone / IBK::RHO_AIR; // for now a constant
+			double cvVaporAmbient = rhoVaporAmbient / IBK::RHO_AIR; // for now a constant
 
-			// compute density ration for zone air
-			double xiAirZone = rhoAirZone/rhoGasZone;
-			double xiVaporZone = rhoVaporZone/rhoGasZone;
+			// mass flux vapor
+			// mdot_v = vapor_density/air_density * mdot_air
+			// - mdot_air is an undirected air change rate
+			// - mdot_v is directed: positive = moisture mass gain in zone, negative = moisture mass loss in zone
+			double mdot_v = (cvVaporAmbient - cvVaporZone) * mdot_air;
+			resultVentMassFlux[i] = mdot_v;
 
-			// compute mass flux differences between incoming and outgoing air in [kg/s]
-			resultVentMassFlux[i] = massFluxGas * (xiVaporAmbient - xiVaporZone);
 			// compute enthalpy flux differences between incoming and outgoing air in [W]
-			resultVentHeatFlux[i] =  massFluxGas * (
-					  (xiAirAmbient * cAir  * Tambient               - xiAirZone * cAir  * Tzone)
-					+ (xiVaporAmbient * (cVapor  * Tambient + HEvap) - xiVaporZone * (cVapor  * Tzone + HEvap))
-					);
+			// but use upwinding for moisture enthalpie
+			resultVentHeatFlux[i] = cAir * (Tambient - Tzone) * mdot_air;
+			if (mdot_v > 0) {
+				// vapor flux into the zone, use ambient conditions
+				// vapor leaving the zone
+				resultVentHeatFlux[i] += (cVapor  * Tambient + HEvap)*mdot_v;
+			}
+			else {
+				// vapour out of zone, use zone conditions
+				resultVentHeatFlux[i] += (cVapor  * Tzone + HEvap) * mdot_v;
+			}
 		}
 	}
 	// dry air
