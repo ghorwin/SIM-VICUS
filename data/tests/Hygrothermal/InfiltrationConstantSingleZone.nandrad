@@ -2,7 +2,9 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Constant ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
+			<Comment>Constant ventilation rate model test for single zone, no constructions, same initial and ambient temperatures,
+					 different relative humidities. Moisture density in room air should follow analytical solution.
+			</Comment>
 			<Created>2020-08-24</Created>
 		</ProjectInfo>
 		<Zones>
@@ -13,8 +15,8 @@
 		</Zones>
 		<SimulationParameter>
 			<IBK:Flag name="EnableMoistureBalance">true</IBK:Flag>
-			<IBK:Parameter name="InitialTemperature" unit="C">15.5</IBK:Parameter>
-			<IBK:Parameter name="InitialRelativeHumidity" unit="%">80</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">50</IBK:Parameter>
 			<Interval>
 				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
 			</Interval>

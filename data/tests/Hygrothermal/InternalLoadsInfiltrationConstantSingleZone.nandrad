@@ -3,7 +3,8 @@
 	<Project>
 		<ProjectInfo>
 			<Comment>Internal loads test: single zone, constant moisture load, constant infiltration starting after 1 day; 
-				first we expect constant temperature, yet humidity increase, then when ventilation is turned on, we want to see a steady-state result
+				we expect always constant temperature, yet humidity increase in first day;  when ventilation is turned on, humidity
+				levels drop to steady-state (slightly above ambient humidity because of continuous internal moisture source).
 			</Comment>
 		</ProjectInfo>
 		<Zones>
@@ -28,8 +29,8 @@
 			<InternalMoistureLoadsModels>
 				<InternalMoistureLoadsModel id="401" displayName="Zone moisture loads" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<!-- 0.001 g/m2s * 10 m2 -> 0.01 g/s -> 3.6 g/h -->
-					<IBK:Parameter name="MoistureLoadPerArea" unit="g/m2s">0.0001</IBK:Parameter>
+					<!-- 0.003 g/m2s * 10 m2 -> 0.03 g/s -> 10.8 g/h -->
+					<IBK:Parameter name="MoistureLoadPerArea" unit="g/m2s">0.0003</IBK:Parameter>
 				</InternalMoistureLoadsModel>
 			</InternalMoistureLoadsModels>
 			<NaturalVentilationModels>

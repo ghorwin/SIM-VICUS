@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Internal loads test: single zone, scheduled loads, 100% radiative loads</Comment>
+			<Comment>Internal loads test: single zone, scheduled internal moisture load</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
