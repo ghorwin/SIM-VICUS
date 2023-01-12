@@ -59,8 +59,8 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	m_ui->lineEditNotes->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditNotes->setDialog3Caption(tr("Notes"));
 
-	m_ui->lineEditDensity->setup(1, 10000, tr("Density"), true, true);
-	m_ui->lineEditConductivity->setup(0.001, 500, tr("Thermal conductivity"), true, true);
+	m_ui->lineEditDensity->setup(0.01, 10000, tr("Density"), true, true);
+	m_ui->lineEditConductivity->setup(1e-5, 500, tr("Thermal conductivity"), true, true);
 	m_ui->lineEditSpecHeatCapacity->setup(100, 5000, tr("Specific heat capacity"), true, true);
 
 	// enter categories into combo box
