@@ -65,13 +65,13 @@ SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *pare
 	m_ui->lineEditWest->setup(0, 1400, tr("Global Radiation Sensor West."), true, true);
 	m_ui->lineEditNorth->setup(0, 1400, tr("Global Radiation Sensor North."), true, true);
 	m_ui->lineEditSouth->setup(0, 1400, tr("Global Radiation Sensor South."), true, true);
-	m_ui->lineEditDeadBand->setup(0, 1400, tr("Dead Band for all Parameters."), true, true);
 	m_ui->lineEditHorizontal->setup(0, 1400, tr("Global Radiation Sensor Horizontal."), true, true);
 
+	m_ui->lineEditDeadBand->setup(0, 1400, tr("Dead Band for all Parameters."), false, true);
 	//setEnabled(false);
 
 	// initial state is "nothing selected"
-//	updateInput(-1);
+	updateInput(-1);
 }
 
 
