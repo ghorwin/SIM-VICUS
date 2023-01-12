@@ -63,7 +63,11 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLca);
 	m_ui->tableWidgetLca->setColumnCount(5);
-	m_ui->tableWidgetLca->setHorizontalHeaderLabels(QStringList() << "Material" << "Cat. A" << "Cat. B" << "Cat. C" << "Cat. D");
+	m_ui->tableWidgetLca->setHorizontalHeaderLabels(QStringList() << "Material"
+													<< VICUS::KeywordList::Description("EpdDataset::Category", VICUS::EpdDataset::C_CategoryA)
+													<< VICUS::KeywordList::Description("EpdDataset::Category", VICUS::EpdDataset::C_CategoryB)
+													<< VICUS::KeywordList::Description("EpdDataset::Category", VICUS::EpdDataset::C_CategoryC)
+													<< VICUS::KeywordList::Description("EpdDataset::Category", VICUS::EpdDataset::C_CategoryD) );
 	m_ui->tableWidgetLca->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
 	updateInput(-1);
@@ -344,15 +348,32 @@ void SVDBComponentEditWidget::modelModify(){
 	SVProjectHandler::instance().setModified(SVProjectHandler::ComponentInstancesModified);
 }
 
-void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd, int col, int row) {
-	QString string = "-";
+
+void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd,
+				   const VICUS::EpdDataset::Category &cat, int col, int row) {
+	QIcon icon;
+	QTableWidgetItem *item = new QTableWidgetItem;
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignCenter);
 	if(idEpd != VICUS::INVALID_ID) {
 		const VICUS::EpdDataset *epd = db.m_epdDatasets[idEpd];
-		if(epd != nullptr)
-			string = QtExt::MultiLangString2QString(epd->m_displayName);
+
+		if(epd == nullptr) {
+			item->setText("-");
+			table->setItem(row, col, item);
+			return;
+		}
+
+
+		if(epd->isCategoryDefined(SVProjectHandler::instance().project().m_lcaSettings, cat))
+			icon = QIcon(":/gfx/actions/16x16/ok.png");
+		else
+			icon = QIcon(":/gfx/actions/16x16/error.png");
 	}
-	table->setItem(row, col, new QTableWidgetItem(string));
+	item->setIcon(icon);
+	table->setItem(row, col, item);
 }
+
 
 void SVDBComponentEditWidget::updateLcaTable() {
 	if(m_current == nullptr)
@@ -365,12 +386,14 @@ void SVDBComponentEditWidget::updateLcaTable() {
 		const VICUS::MaterialLayer &ml = con.m_materialLayers[i];
 		const VICUS::Material &mat = *m_db->m_materials[ml.m_idMaterial];
 
-		m_ui->tableWidgetLca->setItem((int)i, 0,	new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName)));
+		QTableWidgetItem *item = new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName));
+		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+		m_ui->tableWidgetLca->setItem((int)i, 0, item);
 
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], 1, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB], 2, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], 3, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD], 4, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], VICUS::EpdDataset::C_CategoryA, 1, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB], VICUS::EpdDataset::C_CategoryB, 2, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryC], VICUS::EpdDataset::C_CategoryC, 3, i);
+		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD], VICUS::EpdDataset::C_CategoryD, 4, i);
 	}
 }
 
