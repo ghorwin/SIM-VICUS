@@ -512,16 +512,14 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 				item2->setToolTip(tr("Layer lifetime must be greater than 0 a."));
 				//m_ui->tableWidget->setItem(row, 1, item2);
 			}
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 			return;
 		}
 		else {
 			QTableWidgetItem * item2 = m_ui->tableWidget->item(row, col);
 			item2->setBackground(QBrush());
 		}
-
-
-		m_current->m_materialLayers[materialLayerIdx].m_lifetime.value = val;
+		m_current->m_materialLayers[materialLayerIdx].m_lifetime.set("Lifetime", val);
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
 	else if(col == 6) { // Cost
@@ -537,15 +535,15 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 				item2->setToolTip(tr("Layer cost must be greater than 0.0 € per m<sup>2</sup>."));
 				//m_ui->tableWidget->setItem(row, 1, item2);
 			}
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 			return;
 		}
 		else {
 			QTableWidgetItem * item2 = m_ui->tableWidget->item(row, col);
 			item2->setBackground(QBrush());
 		}
-
-		m_current->m_materialLayers[materialLayerIdx].m_cost.value = (int)(100.0*val); // Convert back to Euro Cent
+		m_current->m_materialLayers[materialLayerIdx].m_cost.set("Cost", 100.0*val); // Convert back to Euro Cent
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
 }
