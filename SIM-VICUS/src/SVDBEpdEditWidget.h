@@ -73,6 +73,8 @@ private slots:
 
 	void on_lineEditUUID_editingFinished();
 
+	void on_lineEditUUID_textEdited(const QString &arg1);
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
