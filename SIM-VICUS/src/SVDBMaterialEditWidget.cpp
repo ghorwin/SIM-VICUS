@@ -43,7 +43,7 @@
 
 
 void setTableWidgetItem(QTableWidget *table, std::map<VICUS::EpdCategoryDataset::Module, QTableWidgetItem*> &moduleToTableItem,
-						VICUS::EpdCategoryDataset::Module module, VICUS::LcaSettings::CertificationType ct, VICUS::LcaSettings::Module mod, unsigned int row) {
+						VICUS::EpdCategoryDataset::Module module, VICUS::LcaSettings::CertificationModules ct, VICUS::LcaSettings::Module mod, unsigned int row) {
 	QTableWidgetItem *item = new QTableWidgetItem;
 	item->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", module));
 
@@ -82,7 +82,7 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 
 	m_ui->lineEditDensity->setup(1, 10000, tr("Density"), true, true);
 	m_ui->lineEditConductivity->setup(0.001, 500, tr("Thermal conductivity"), true, true);
-	m_ui->lineEditSpecHeatCapacity->setup(200, 5000, tr("Specific heat capacity"), true, true);
+	m_ui->lineEditSpecHeatCapacity->setup(100, 5000, tr("Specific heat capacity"), true, true);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetCatA);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetCatB);
