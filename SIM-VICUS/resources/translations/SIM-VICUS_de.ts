@@ -2089,7 +2089,7 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="207"/>
         <source>Pipe wall thickness</source>
-        <translation>Rohrwandstärke</translation>
+        <translation>Rohrwanddicke</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="208"/>
@@ -2265,12 +2265,12 @@
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="250"/>
         <source>Divider material thickness.</source>
-        <translation>Materialstärke der Trennwand.</translation>
+        <translation>Materialdicke der Trennwand.</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="251"/>
         <source>Frame material thickness.</source>
-        <translation>Rahmenmaterialstärke.</translation>
+        <translation>Rahmenmaterialdicke.</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="252"/>
@@ -4369,7 +4369,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="27"/>
         <source>Insulation thickness:</source>
-        <translation>Stärke der Isolierung:</translation>
+        <translation>Dicke der Isolierung:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="44"/>
@@ -4406,7 +4406,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="102"/>
         <source>Wall thickness:</source>
-        <translation>Stärke Rohrwand:</translation>
+        <translation>Dicke Rohrwand:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.ui" line="116"/>
@@ -4466,7 +4466,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.cpp" line="59"/>
         <source>Wall thickness</source>
-        <translation>Wandstärke</translation>
+        <translation>Wanddicke</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.cpp" line="60"/>
@@ -4476,7 +4476,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBPipeEditWidget.cpp" line="61"/>
         <source>Insulation thickness</source>
-        <translation>Stärke Isolierung</translation>
+        <translation>Dicke Isolierung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBPipeEditWidget.cpp" line="62"/>
@@ -5848,12 +5848,12 @@ p, li { white-space: pre-wrap; }
         <translation>Globalstrahlungssensor Süd.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="68"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="70"/>
         <source>Dead Band for all Parameters.</source>
         <translation>Totband für alle Parameter.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="69"/>
+        <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="68"/>
         <source>Global Radiation Sensor Horizontal.</source>
         <translation>Horizontaler Globalstrahlungssensor.</translation>
     </message>
