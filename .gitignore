@@ -58,3 +58,4 @@ object_script.*
 /build/cmake/bb_VC_x64_Debug/
 /build/cmake/out/
 /bin/debug_x64/ifc_convert.log
+moc_*
