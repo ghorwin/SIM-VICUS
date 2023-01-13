@@ -448,7 +448,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonSwitchControlZone_clicked(
 
 	for(unsigned int i=0; i<list.size(); ++i) {
 
-		int currentRow = list[0].row();
+		int currentRow = list[i].row();
 		unsigned int idCi = m_ui->tableWidgetSurfaceHeating->item(currentRow, 4)->data(Qt::UserRole).toUInt();
 
 		VICUS::ComponentInstance *newCi = nullptr;
