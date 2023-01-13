@@ -470,7 +470,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonSwitchControlZone_clicked(
 	else if(idCurrentRoom == idRoomB)
 		idCurrentRoom = idRoomA;
 
-	qDebug() << "Chagned Control Zone Id from #" << oldId <<  " to " << idCurrentRoom;
+	qDebug() << "Changed control Zone #" << oldId <<  "-> #" << idCurrentRoom;
 
 	// perform an undo action in order to redo/revert current operation
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
