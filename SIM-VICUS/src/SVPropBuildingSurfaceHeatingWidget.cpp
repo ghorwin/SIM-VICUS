@@ -197,6 +197,7 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi(bool onlySelectionModified) {
 
 		item = new QTableWidgetItem(surfaceNames);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, ci.m_id);
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
 
 		// column 5 - associated supply network
@@ -354,6 +355,8 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemSelect
 	// UserRole of column 2 stores ID of surface heating object; VICUS::INVALID_ID if not assigned
 	bool haveSurfaceHeating = false;
 
+	double rowCount = m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows().count();
+
 	for (QModelIndex idx : m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows()) {
 		// construct model index of second column
 		int row = idx.row();
@@ -365,6 +368,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemSelect
 		}
 	}
 	m_ui->pushButtonRemoveSurfaceHeating->setEnabled(haveSurfaceHeating);
+	m_ui->pushButtonSwitchControlZone->setEnabled(rowCount == 1 && haveSurfaceHeating);
 }
 
 
@@ -429,6 +433,45 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 			continue;
 		ci.m_idSurfaceHeatingControlZone = dlg.m_idZone;
 	}
+	// perform an undo action in order to redo/revert current operation
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+	undo->push();
+}
+
+
+
+void SVPropBuildingSurfaceHeatingWidget::on_pushButtonSwitchControlZone_clicked() {
+	// Q_ASSERT(m_selectedComponentInstances.size() == 1);
+
+	int currentRow = m_ui->tableWidgetSurfaceHeating->currentRow();
+	unsigned int idCi = m_ui->tableWidgetSurfaceHeating->item(currentRow, 4)->data(Qt::UserRole).toUInt();
+
+	VICUS::ComponentInstance *newCi = nullptr;
+	std::vector<VICUS::ComponentInstance> cis = SVProjectHandler::instance().project().m_componentInstances;
+	for(VICUS::ComponentInstance &ci : cis) {
+		if (ci.m_id == idCi) {
+			newCi = &ci;
+			break;
+		}
+	}
+
+	if(newCi == nullptr)
+		return;
+
+	unsigned int idRoomA = newCi->m_sideASurface->m_parent->m_id;
+	unsigned int idRoomB = newCi->m_sideBSurface->m_parent->m_id;
+
+	Q_ASSERT(newCi->m_surfaceHeatingControlZone != nullptr);
+	unsigned int &idCurrentRoom = const_cast<unsigned int&>(newCi->m_idSurfaceHeatingControlZone);
+	unsigned int oldId = idCurrentRoom;
+
+	if(idCurrentRoom == idRoomA)
+		idCurrentRoom = idRoomB;
+	else if(idCurrentRoom == idRoomB)
+		idCurrentRoom = idRoomA;
+
+	qDebug() << "Chagned Control Zone Id from #" << oldId <<  " to " << idCurrentRoom;
+
 	// perform an undo action in order to redo/revert current operation
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
 	undo->push();
