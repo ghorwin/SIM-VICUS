@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1112</width>
-    <height>707</height>
+    <width>1658</width>
+    <height>1265</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget"/>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1112</width>
+     <width>1658</width>
      <height>22</height>
     </rect>
    </property>
@@ -52,6 +52,8 @@
     <addaction name="menuImport"/>
     <addaction name="menuExport"/>
     <addaction name="actionFileOpenProjectDir"/>
+    <addaction name="actionFileExportProjectPackage"/>
+    <addaction name="actionFileExportView3D"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
@@ -101,6 +103,10 @@
     <addaction name="actionViewFromEast"/>
     <addaction name="actionViewFromSouth"/>
     <addaction name="actionViewFromWest"/>
+    <addaction name="actionBirdsEyeViewNorthEast"/>
+    <addaction name="actionBirdsEyeViewNorthWest"/>
+    <addaction name="actionBirdsEyeViewSouthEast"/>
+    <addaction name="actionBirdsEyeViewSouthWest"/>
     <addaction name="actionViewFromAbove"/>
     <addaction name="separator"/>
     <addaction name="actionViewShowGrid"/>
@@ -707,9 +713,9 @@
     <string>Desktop integration (Linux),  creates .desktop file and vicus-file association</string>
    </property>
   </action>
-  <action name="actionViewFromNorth">
+  <action name="actionViewFromSouth">
    <property name="text">
-    <string>View from north</string>
+    <string>View from south</string>
    </property>
    <property name="toolTip">
     <string>Positions camera to view geometry from north</string>
@@ -718,9 +724,9 @@
     <string>Ctrl+8</string>
    </property>
   </action>
-  <action name="actionViewFromEast">
+  <action name="actionViewFromWest">
    <property name="text">
-    <string>View from east</string>
+    <string>View from west</string>
    </property>
    <property name="toolTip">
     <string>Positions camera to view geometry from east</string>
@@ -729,9 +735,9 @@
     <string>Ctrl+6</string>
    </property>
   </action>
-  <action name="actionViewFromSouth">
+  <action name="actionViewFromNorth">
    <property name="text">
-    <string>View from south</string>
+    <string>View from north</string>
    </property>
    <property name="toolTip">
     <string>Positions camera to view geometry from south</string>
@@ -740,9 +746,9 @@
     <string>Ctrl+2</string>
    </property>
   </action>
-  <action name="actionViewFromWest">
+  <action name="actionViewFromEast">
    <property name="text">
-    <string>View from west</string>
+    <string>View from east</string>
    </property>
    <property name="toolTip">
     <string>Positions camera to view geometry from west</string>
@@ -814,6 +820,38 @@
   <action name="actionExportNetworkAsGeoJson">
    <property name="text">
     <string>Export Network as GeoJson...</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewSouthEast">
+   <property name="text">
+    <string>Bird's eye view south east</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewSouthWest">
+   <property name="text">
+    <string>Bird's eye view south west</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewNorthEast">
+   <property name="text">
+    <string>Bird's eye view north east</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+9</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewNorthWest">
+   <property name="text">
+    <string>Bird's eye view north west</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+7</string>
    </property>
   </action>
   <action name="actionaa">

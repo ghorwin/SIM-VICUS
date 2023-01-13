@@ -256,6 +256,7 @@ void SVPropBuildingComponentsWidget::on_pushButtonEditComponents_clicked() {
 }
 
 void SVPropBuildingComponentsWidget::on_tableWidgetComponents_cellDoubleClicked(int /*row*/, int /*column*/) {
+	//TODO Anton, check if open dialog is enabled
 	openEditComponentDialog();
 }
 

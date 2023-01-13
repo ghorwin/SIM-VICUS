@@ -238,97 +238,163 @@ void SceneView::toggleRubberbandMode() {
 	}
 }
 
+// calculates the distance needed from the selected surface to completly see in on the screen
+// max is defined as the longest length of the rendered bounding box (e.g. for zenith view is would be max(x,y) / from north would be max(x,z) ...)
+double logarithmicDistance(double max){
+	// log parameters
+	double a = 4.3;
+	double b = 0.97;
+	double c = 1.12;
+	double d =0.9;
+	double e = 2;
+	return pow(a * log10(b * max + c) + d, e);
+
+}
+
 
 void SceneView::resetCamera(int position) {
-	// reset camera position
+
+	std::vector<const VICUS::Surface*> surfaces;
+	std::vector<const VICUS::SubSurface*> subsurfaces;
+	std::set<const VICUS::Object *> selectedObjects;
+	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+	for (const VICUS::Object * o : selectedObjects) {
+		const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
+		if (s != nullptr)
+			surfaces.push_back(s);
+		else {
+			const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
+			if (sub != nullptr)
+				subsurfaces.push_back(sub);
+		}
+	}
+
+	// center and bDim will be overriden
+	IBKMK::Vector3D center(0,0,0);
+	// compute bounding box of selected geometry
+	IBKMK::Vector3D bDim(0,0,0);
+
+	if (selectedObjects.empty()){
+		// take all surfsaces into account
+		for (const VICUS::Building & b : project().m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
+							surfaces.push_back(&s);
+						for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+								subsurfaces.push_back(&sub);
+						}
+					}
+				}
+			}
+		}
+	}
+	bDim = project().boundingBox(surfaces, subsurfaces, center);
+
+
 	switch (position) {
-		case 0 :
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
-			break;
-
-		case 1 : // from north
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,-0.1f), QVector3D(0,0,1));
-			break;
-
-		case 2 : // from east
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(-100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,-0.1f), QVector3D(0,0,1));
-			break;
-
-		case 3 : // from south
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, +100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,-0.1f), QVector3D(0,0,1));
-			break;
-
-		case 4 : // from west
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,-0.1f), QVector3D(0,0,1));
-			break;
-
+		case 0 : // reset camera position -> go to point (0,0,100) and camera faces down
+			{
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0,0,100);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+				break;
+			}
+		case 1 : // from south
+			{
+				double offset =  logarithmicDistance(std::max(bDim.m_x, bDim.m_z))+ bDim.m_y/2;
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, offset,0);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
+				break;
+			}
+		case 2 : // from west
+			{
+				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_z)) +bDim.m_x/2;
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(offset, 0, 0);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
+				break;
+			}
+		case 3 : // from north
+			{
+				double offset = logarithmicDistance(std::max(bDim.m_x, bDim.m_z))+ bDim.m_y/2;
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, offset,0);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
+				break;
+			}
+		case 4 : // from east
+			{
+				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_z)) +bDim.m_x/2;
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(offset , 0, 0);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
+				break;
+			}
 		case 5 : // from above
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, 0, 100);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
-			break;
-
-		case 6 : {
-			std::vector<const VICUS::Surface*> surfaces;
-			std::vector<const VICUS::SubSurface*> subsurfaces;
-			std::vector<const VICUS::NetworkNode*> nodes;
-			std::vector<const VICUS::NetworkEdge*> edges;
-			std::set<const VICUS::Object *> selectedObjects;
-			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			{
+				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_x)) + bDim.m_z/2;
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, offset);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+				break;
+			}
+		case 6 : { // STRG + F, find the selected object
 			if (selectedObjects.empty())
 				return; // nothing selected/visible, do nothing
-			for (const VICUS::Object * o : selectedObjects) {
-				const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
-				if (s != nullptr)
-					surfaces.push_back(s);
-				else {
-					const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
-					if (sub != nullptr)
-						subsurfaces.push_back(sub);
-				}
-				const VICUS::NetworkNode *n = dynamic_cast<const VICUS::NetworkNode*>(o);
-				if (n != nullptr)
-					nodes.push_back(n);
-				const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
-				if (e != nullptr)
-					edges.push_back(e);
+
+			// extract the current camera direction vector
+			QMatrix3x3 rot = SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion().toRotationMatrix();
+			IBKMK::Vector3D direction = IBKMK::Vector3D((double) rot(0,2),(double) rot(1,2), (double) rot(2,2)) ;
+
+			// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
+			// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
+			double percentageZ = 0;
+			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_y,2)))){
+				percentageZ = direction.m_x * direction.m_x + direction.m_y * direction.m_y / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_y,2)));
+			}
+			double percentageY = 0;
+			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_z,2)))){
+				percentageY = direction.m_x * direction.m_x + direction.m_z * direction.m_z / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_z,2)));
+			}
+			double percentageX = 0;
+			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_y,2) + std::pow(direction.m_z,2)))){
+				percentageX = direction.m_y * direction.m_y + direction.m_z * direction.m_z / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_y,2) + std::pow(direction.m_z,2)));
 			}
 
-			// find center
-			IBKMK::Vector3D center;
-			if (!surfaces.empty() || !subsurfaces.empty()) {
-				// compute bounding box of visible geometry
-				project().boundingBox(surfaces, subsurfaces, center);
-			}
-			else if (!nodes.empty() || !edges.empty()) {
-				int counter = 0;
-				for (const VICUS::NetworkNode *n: nodes) {
-					center += n->m_position;
-					++counter;
-				}
-				for (const VICUS::NetworkEdge *e: edges) {
-					center += e->m_node1->m_position;
-					++counter;
-					center += e->m_node2->m_position;
-					++counter;
-				}
-				center/=static_cast<double>(counter);
-			}
+			double offset = logarithmicDistance(std::max(bDim.m_x * percentageX + bDim.m_y * percentageY, bDim.m_z * percentageZ));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
 
-			// move camera to position and a little bit back
-			Camera c;
-			c.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
-			QVector3D offset = -2*c.forward();
-			center.m_x += (double)offset.x();
-			center.m_y += (double)offset.y();
-			center.m_z += (double)offset.z();
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center;
 
 		} break;
+
+		case 7: // birds eye view from south east
+			{
+				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x / 2 + offset, -(bDim.m_y / 2 + offset), bDim.m_z / 2 + offset);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
+				break;
+			}
+		case 8: // birds eye view from south west
+			{
+				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x / 2 + offset), -(bDim.m_y / 2 + offset), bDim.m_z / 2 + offset);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
+				break;
+			}
+		case 9: // birds eye view from north east
+			{
+				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x / 2 + offset, bDim.m_y / 2 + offset, bDim.m_z / 2 + offset);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
+				break;
+			}
+		case 10: // birds eye view from north west
+			{
+				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x / 2 + offset), bDim.m_y / 2 + offset, bDim.m_z / 2 + offset);
+				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
+				break;
+			}
 
 	}
 	// trick scene into updating

@@ -66,6 +66,7 @@ class SVDBDuplicatesDialog;
 
 class SVPluginLoader;
 
+
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -327,6 +328,10 @@ private slots:
 	void on_actionViewFromSouth_triggered();
 	void on_actionViewFromWest_triggered();
 	void on_actionViewFromAbove_triggered();
+	void on_actionBirdsEyeViewNorthWest_triggered();
+	void on_actionBirdsEyeViewNorthEast_triggered();
+	void on_actionBirdsEyeViewSouthWest_triggered();
+	void on_actionBirdsEyeViewSouthEast_triggered();
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationExportFMI_triggered();
@@ -437,7 +442,7 @@ private:
 	/*! The thread pool managed by the main window. */
 	QList<SVThreadBase*>		m_threadPool;
 	/*! The plugin-loader. */
-	SVPluginLoader				*m_pluginLoader											= nullptr;
+	SVPluginLoader				*m_pluginLoader;
 
 	QAction *					m_undoAction;
 	QAction *					m_redoAction;
@@ -476,7 +481,7 @@ private:
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
 	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
 
-	/*! Shading calculation dialog. */
+	/*! FMI Export dialog. */
 	SVSimulationShadingOptions	*m_shadingCalculationDialog								= nullptr;
 
 
