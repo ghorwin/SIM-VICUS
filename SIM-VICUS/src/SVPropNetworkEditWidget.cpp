@@ -114,6 +114,15 @@ void SVPropNetworkEditWidget::onPropertyTypeChanged(int propertyType) {
 	SVViewStateHandler::instance().setViewState(vs);
 }
 
+unsigned int SVPropNetworkEditWidget::currentPropertyType() {
+	return m_ui->toolBox->currentIndex();
+}
+
+
+void SVPropNetworkEditWidget::setPropertyType(int propertyType) {
+	m_ui->toolBox->setCurrentIndex((unsigned int)propertyType);
+}
+
 
 void SVPropNetworkEditWidget::findSelectedObjects() {
 

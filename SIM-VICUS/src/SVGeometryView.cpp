@@ -358,22 +358,18 @@ void SVGeometryView::onViewStateChanged() {
 
 	bool geometryModeActive = vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry ||
 							  vs.m_propertyWidgetMode == SVViewState::PM_AddGeometry ||
-							  vs.m_propertyWidgetMode == SVViewState::PM_VertexList;
+							  vs.m_propertyWidgetMode == SVViewState::PM_VertexList ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_BuildingProperties ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_NetworkProperties ;
 	m_ui->geometryToolBar->setEnabled(geometryModeActive);
 	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
+	// the local coordinate system is always enabled, except in mode AddSubSurfaceGeometry
+	bool localCoordinateSystemEnabled = vs.m_propertyWidgetMode != SVViewState::PM_AddSubSurfaceGeometry;
 
-	bool localCoordinateSystemVisible =
-			(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-			 vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-			 vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-			 vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 
-	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
-		localCoordinateSystemVisible = false;
-
-	if (localCoordinateSystemVisible) {
-		m_actionlocalCoordinateSystemCoordinates->setVisible(true);
+	if (localCoordinateSystemEnabled) {
+		m_actionlocalCoordinateSystemCoordinates->setEnabled(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
 		m_localCoordinateSystemView->setMoveCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 		// reset local coordinate system appearance
@@ -392,7 +388,7 @@ void SVGeometryView::onViewStateChanged() {
 		}
 	}
 	else {
-		m_actionlocalCoordinateSystemCoordinates->setVisible(false);
+		m_actionlocalCoordinateSystemCoordinates->setEnabled(false);
 	}
 
 	// hide measurement widget when no longer needed
@@ -513,6 +509,9 @@ void SVGeometryView::on_actionBuildingParametrization_triggered() {
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
+	// we need to manually update the color mode, since above we reset it to OCM_None.
+	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
 
@@ -675,6 +674,9 @@ void SVGeometryView::on_actionNetworkParametrization_triggered() {
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
+	// we need to manually update the color mode, since above we reset it to OCM_None.
+	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
 

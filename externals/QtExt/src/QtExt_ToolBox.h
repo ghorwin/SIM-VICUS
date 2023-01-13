@@ -31,7 +31,7 @@ public:
 	/*! Returns widget according to given index. */
 	QWidget * widget(unsigned int index) const;
 
-	/*! Set index from outside, does not emit indexChanged() signal. */
+	/*! Set index from outside */
 	void setCurrentIndex(unsigned int index);
 
 	/*! Returns index of currently expanded page */

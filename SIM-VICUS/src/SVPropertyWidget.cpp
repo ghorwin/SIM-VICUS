@@ -79,8 +79,26 @@ void SVPropertyWidget::setBuildingPropertyType(int buildingPropertyType) {
 
 
 void SVPropertyWidget::setNetworkPropertyType(int networkPropertyType) {
-//	showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
-//	qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
+	showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
+}
+
+
+void SVPropertyWidget::updateColorMode() {
+	switch (m_propertyWidgetMode) {
+		case SVViewState::PM_BuildingProperties : {
+			// enforce color update
+			SVPropBuildingEditWidget *widget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
+		case SVViewState::PM_NetworkProperties : {
+			// enforce color update
+			SVPropNetworkEditWidget *widget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
+
+		default: break;
+	}
 }
 
 
