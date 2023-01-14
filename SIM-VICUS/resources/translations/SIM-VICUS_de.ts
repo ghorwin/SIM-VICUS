@@ -5825,7 +5825,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="60"/>
         <source>Zone control Shading model name</source>
-        <translation>Name des Schattierungsmodells für die Zonensteuerung</translation>
+        <translation>Name des Verschattungsmodells für die Zonensteuerung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlShadingEditWidget.cpp" line="64"/>
@@ -6315,7 +6315,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="184"/>
         <source>Shading</source>
-        <translation>Schattierung</translation>
+        <translation>Verschattung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="223"/>
@@ -6613,12 +6613,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="618"/>
         <source>Zone Control Shading Database</source>
-        <translation>Zonensteuerungs-Schattierungsdatenbank</translation>
+        <translation>Zonensteuerungs-Verschattungsdatenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="618"/>
         <source>Zone Control Shading properties</source>
-        <translation>Schattierungseigenschaften der Zonensteuerung</translation>
+        <translation>Verschattungseigenschaften der Zonensteuerung</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="628"/>
@@ -6724,18 +6724,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVGeometryView</name>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="446"/>
-        <location filename="../../src/SVGeometryView.cpp" line="449"/>
+        <location filename="../../src/SVGeometryView.cpp" line="442"/>
+        <location filename="../../src/SVGeometryView.cpp" line="445"/>
         <source>Invalid polygon (must be planar and not winding).</source>
         <translation>Ungültiges Polygon (muss planar und nicht gewunden sein).</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="466"/>
+        <location filename="../../src/SVGeometryView.cpp" line="462"/>
         <source>Invalid number format. Cannot parse coordinate inputs.</source>
         <translation>Ungültiges Zahlenformat. Koordinateneingaben können nicht geparst werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="477"/>
+        <location filename="../../src/SVGeometryView.cpp" line="473"/>
         <source>Invalid coordinate input, expected only one coordinate for the locked axis.</source>
         <translation>Ungültige Koordinateneingabe, nur eine Koordinate für die gesperrte Achse erwartet.</translation>
     </message>
@@ -6863,7 +6863,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Netzwerkgeometrie bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="729"/>
+        <location filename="../../src/SVGeometryView.cpp" line="731"/>
         <source>Without axis lock, enter coordinates in format &lt;x&gt; &lt;y&gt; &lt;z&gt;. With axis lock enter only the offset in the respective axis direction.</source>
         <translation>Geben Sie ohne Achsensperre die Koordinaten im Format &lt;x&gt; &lt;y&gt; &lt;z&gt; ein. Bei Achssperre geben Sie nur den Offset in der jeweiligen Achsrichtung ein.</translation>
     </message>
@@ -6999,7 +6999,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.cpp" line="181"/>
+        <location filename="../../src/SVLocalCoordinateView.cpp" line="187"/>
         <source>Selection Information</source>
         <translation>Informationen zur Auswahl</translation>
     </message>
@@ -8325,7 +8325,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVNavigationTreeWidget.cpp" line="290"/>
         <source>Obstacles/Shading Geometry</source>
-        <translation>Hindernisse/Schattierungsgeometrie</translation>
+        <translation>Hindernisse/Verschattungsgeometrie</translation>
     </message>
     <message>
         <location filename="../../src/SVNavigationTreeWidget.cpp" line="406"/>
@@ -9993,17 +9993,22 @@ p, li { white-space: pre-wrap; }
         <translation>Ausgewählte Komponenteninstanzen mit aktiven Layern</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="153"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="140"/>
         <source>Assign surface heating...</source>
         <translation>Flächenheizung zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="133"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="153"/>
+        <source>Switch control zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="120"/>
         <source>Set control zone...</source>
         <translation>Kontrollzone einstellen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="146"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="133"/>
         <source>Remove surface heating</source>
         <translation>Oberflächenheizung entfernen</translation>
     </message>
@@ -10038,37 +10043,38 @@ p, li { white-space: pre-wrap; }
         <translation>Alle Komponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="230"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="231"/>
         <source>None</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="236"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="237"/>
         <source>%1 component instance(s)</source>
         <translation>%1 Komponenteninstanz(en)</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="267"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="268"/>
         <source>Assigned surface heating</source>
         <translation>Zugeordnete Flächenheizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="296"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="297"/>
         <source>Removed surface heating assignment</source>
         <translation>Zuordnung Flächenheizung entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="338"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="339"/>
         <source>Assigned surface heatings</source>
         <translation>Zugeordnete Flächenheizungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="393"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="397"/>
         <source>Removed surface heatings</source>
         <translation>Oberflächenheizungen entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="433"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="437"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="484"/>
         <source>Changed surface heatings control zone</source>
         <translation>Geänderte Kontrollzone für Oberflächenheizungen</translation>
     </message>
@@ -12993,7 +12999,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="273"/>
         <source>Shading calculation parameters</source>
-        <translation>Parameter für die Schattierungsberechnung</translation>
+        <translation>Parameter für die Verschattungsberechnung</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="422"/>
@@ -13027,7 +13033,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="307"/>
         <source>Shading factor file name:</source>
-        <translation>Dateiname des Schattierungsfaktors:</translation>
+        <translation>Dateiname des Verschattungsfaktors:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="382"/>
@@ -13065,7 +13071,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="187"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Simulation time interval is not properly configured. Please set a valid simulation time interval and compute shading afterwards!&lt;/span&gt;</source>
-        <translation>&lt;span style=&quot;color:%1&quot;&gt;Simulationszeitintervall ist nicht richtig konfiguriert. Bitte geben Sie ein gültiges Simulationszeitintervall ein und berechnen Sie anschließend die Schattierung!&lt;/span&gt;</translation>
+        <translation>&lt;span style=&quot;color:%1&quot;&gt;Simulationszeitintervall ist nicht richtig konfiguriert. Bitte geben Sie ein gültiges Simulationszeitintervall ein und berechnen Sie anschließend die Verschattung!&lt;/span&gt;</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="210"/>
@@ -13094,7 +13100,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="368"/>
         <source>The current project does not contain any surfaces to compute shading factors for. Note that shading factors won&apos;t be generated for obstacles/annonymous geometry!</source>
-        <translation>Das aktuelle Projekt enthält keine Flächen, für die Verschattungsfaktoren berechnet werden können. Beachten Sie, dass für Hindernisse/anonyme Geometrie keine Schattierungsfaktoren generiert werden!</translation>
+        <translation>Das aktuelle Projekt enthält keine Flächen, für die Verschattungsfaktoren berechnet werden können. Beachten Sie, dass für Hindernisse/anonyme Geometrie keine Verschattungsfaktoren generiert werden!</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="373"/>
@@ -13129,7 +13135,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="685"/>
         <source>Calculate shading factors</source>
-        <translation>Schattierungsfaktoren berechnen</translation>
+        <translation>Verschattungsfaktoren berechnen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="685"/>
@@ -13139,12 +13145,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="699"/>
         <source>Calculation of shading factors was aborted.</source>
-        <translation>Die Berechnung der Schattierungsfaktoren wurde abgebrochen.</translation>
+        <translation>Die Berechnung der Verschattungsfaktoren wurde abgebrochen.</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="733"/>
         <source>Calculated shading factors have been saved to &apos;%1&apos;.</source>
-        <translation>Berechnete Schattierungsfaktoren wurden in „%1“ gespeichert.</translation>
+        <translation>Berechnete Verschattungsfaktoren wurden in „%1“ gespeichert.</translation>
     </message>
 </context>
 <context>
@@ -13840,28 +13846,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2075"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2078"/>
         <source>All objects selected</source>
         <translation>Alle Objekte ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2136"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2139"/>
         <source>Selected cleared</source>
         <translation>Ausgewählt gelöscht</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2152"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2155"/>
         <source>Removing selected geometry</source>
         <translation>Ausgewählte Geometrie entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2170"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2188"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2173"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2191"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3027"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3030"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
