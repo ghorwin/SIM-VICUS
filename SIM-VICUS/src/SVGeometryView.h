@@ -28,6 +28,7 @@
 
 #include <QWidget>
 
+#include "Vic3DSceneView.h"
 
 namespace Vic3D {
 	class SceneView;
@@ -87,7 +88,7 @@ public:
 		For variants 1..4 the camera is placed at 2x max bounding box dimension apart from the geometry center at top of the geometry
 		looking at the center.
 	*/
-	void resetCamera(int positionID);
+	void resetCamera(Vic3D::SceneView::CameraPosition positionID);
 
 	/*! This function is called from the main application object, when it receives a keypress event.
 		It is the central handling function for all scene-related/view-state related global shortcuts

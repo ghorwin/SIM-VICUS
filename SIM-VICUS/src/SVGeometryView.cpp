@@ -43,15 +43,12 @@
 
 #include <VICUS_Project.h>
 
-#include "Vic3DSceneView.h"
-#include "SVPropertyWidget.h"
 #include "SVPropVertexListWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
-#include "SVPropNetworkGeometryWidget.h"
 
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
@@ -130,7 +127,7 @@ void SVGeometryView::refreshSceneView() {
 	m_sceneView->renderLater();
 }
 
-void SVGeometryView::resetCamera(int positionID) {
+void SVGeometryView::resetCamera(Vic3D::SceneView::CameraPosition positionID) {
 	m_sceneView->resetCamera(positionID);
 }
 

@@ -66,6 +66,7 @@ class SVDBDuplicatesDialog;
 
 class SVPluginLoader;
 
+
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -442,7 +443,7 @@ private:
 	/*! The thread pool managed by the main window. */
 	QList<SVThreadBase*>		m_threadPool;
 	/*! The plugin-loader. */
-	SVPluginLoader				*m_pluginLoader											= nullptr;
+	SVPluginLoader				*m_pluginLoader;
 
 	QAction *					m_undoAction;
 	QAction *					m_redoAction;
@@ -481,7 +482,7 @@ private:
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
 	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
 
-	/*! Shading calculation dialog. */
+	/*! FMI Export dialog. */
 	SVSimulationShadingOptions	*m_shadingCalculationDialog								= nullptr;
 
 
