@@ -90,26 +90,26 @@
 	<addaction name="actionHelpAboutQt"/>
    </widget>
    <widget class="QMenu" name="menuView">
-	<property name="title">
-	 <string>&amp;View</string>
-	</property>
-	<addaction name="separator"/>
-	<addaction name="actionViewFindSelectedGeometry"/>
-	<addaction name="separator"/>
-	<addaction name="actionViewResetView"/>
-	<addaction name="actionViewFromSouth"/>
-	<addaction name="actionViewFromWest"/>
-	<addaction name="actionViewFromNorth"/>
-	<addaction name="actionViewFromEast"/>
-	<addaction name="actionBirdsEyeViewSouthEast"/>
-	<addaction name="actionBirdsEyeViewSouthWest"/>
-	<addaction name="actionBirdsEyeViewNorthEast"/>
-	<addaction name="actionBirdsEyeViewNorthWest"/>
-	<addaction name="actionViewFromAbove"/>
-	<addaction name="separator"/>
-	<addaction name="actionViewShowGrid"/>
-	<addaction name="actionViewShowSurfaceNormals"/>
-	<addaction name="separator"/>
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionViewFindSelectedGeometry"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewResetView"/>
+    <addaction name="actionViewFromNorth"/>
+    <addaction name="actionViewFromEast"/>
+    <addaction name="actionViewFromSouth"/>
+    <addaction name="actionViewFromWest"/>
+    <addaction name="actionBirdsEyeViewNorthEast"/>
+    <addaction name="actionBirdsEyeViewNorthWest"/>
+    <addaction name="actionBirdsEyeViewSouthEast"/>
+    <addaction name="actionBirdsEyeViewSouthWest"/>
+    <addaction name="actionViewFromAbove"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewShowGrid"/>
+    <addaction name="actionViewShowSurfaceNormals"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuTools">
 	<property name="title">
@@ -713,7 +713,7 @@
   </action>
   <action name="actionViewFromSouth">
    <property name="text">
-	<string>View from south</string>
+    <string>View from south</string>
    </property>
    <property name="toolTip">
 	<string>Positions camera to view geometry from north</string>
@@ -724,7 +724,7 @@
   </action>
   <action name="actionViewFromWest">
    <property name="text">
-	<string>View from west</string>
+    <string>View from west</string>
    </property>
    <property name="toolTip">
 	<string>Positions camera to view geometry from east</string>
@@ -735,7 +735,7 @@
   </action>
   <action name="actionViewFromNorth">
    <property name="text">
-	<string>View from north</string>
+    <string>View from north</string>
    </property>
    <property name="toolTip">
 	<string>Positions camera to view geometry from south</string>
@@ -746,7 +746,7 @@
   </action>
   <action name="actionViewFromEast">
    <property name="text">
-	<string>View from east</string>
+    <string>View from east</string>
    </property>
    <property name="toolTip">
 	<string>Positions camera to view geometry from west</string>
@@ -823,31 +823,39 @@
 	<string>Ctrl+3</string>
    </property>
   </action>
-  <action name="actionBirdsEyeViewSouthWest">
+  <action name="actionBirdsEyeViewSouthEast">
    <property name="text">
-	<string>Bird's eye view south west</string>
+    <string>Bird's eye view south east</string>
    </property>
    <property name="shortcut">
-	<string>Ctrl+1</string>
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionBirdsEyeViewSouthWest">
+   <property name="text">
+    <string>Bird's eye view south west</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="actionBirdsEyeViewNorthEast">
    <property name="text">
-	<string>Bird's eye view north east</string>
+    <string>Bird's eye view north east</string>
    </property>
    <property name="shortcut">
-	<string>Ctrl+9</string>
+    <string>Ctrl+9</string>
    </property>
   </action>
   <action name="actionBirdsEyeViewNorthWest">
    <property name="text">
-	<string>Bird's eye view north west</string>
+    <string>Bird's eye view north west</string>
    </property>
    <property name="shortcut">
-	<string>Ctrl+7</string>
-	</property>
-   </action>
-  <action name="actionExportNetworkAsGeoJson">
+    <string>Ctrl+7</string>
+   </property>
+  </action>
+  <action name="actionaa">
    <property name="text">
 	<string>Export Network as GeoJson...</string>
    </property>
