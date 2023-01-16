@@ -339,27 +339,28 @@ void SceneView::resetCamera(int position) {
 				return; // nothing selected/visible, do nothing
 
 			// extract the current camera direction vector
-			QMatrix3x3 rot = SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion().toRotationMatrix();
-			IBKMK::Vector3D direction = IBKMK::Vector3D((double) rot(0,2),(double) rot(1,2), (double) rot(2,2)) ;
+			IBKMK::Vector3D direction = QVector2IBKVector(-1*m_mainScene.camera().forward());
 
+			const double &x = direction.m_x;
+			const double &y = direction.m_y;
+			const double &z = direction.m_z;
 			// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
 			// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
 			double percentageZ = 0;
-			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_y,2)))){
-				percentageZ = direction.m_x * direction.m_x + direction.m_y * direction.m_y / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_y,2)));
-			}
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
+				percentageZ = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
+
 			double percentageY = 0;
-			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_z,2)))){
-				percentageY = direction.m_x * direction.m_x + direction.m_z * direction.m_z / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_x,2) + std::pow(direction.m_z,2)));
-			}
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
+				percentageY = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
+
 			double percentageX = 0;
-			if(!IBK::near_zero(std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_y,2) + std::pow(direction.m_z,2)))){
-				percentageX = direction.m_y * direction.m_y + direction.m_z * direction.m_z / (std::sqrt( std::pow(direction.m_x,2) + std::pow(direction.m_y,2) + std::pow(direction.m_z,2)) * std::sqrt(std::pow(direction.m_y,2) + std::pow(direction.m_z,2)));
-			}
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z)))
+				percentageX = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
+
 
 			double offset = logarithmicDistance(std::max(bDim.m_x * percentageX + bDim.m_y * percentageY, bDim.m_z * percentageZ));
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
-
 
 		} break;
 
