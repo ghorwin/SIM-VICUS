@@ -208,9 +208,10 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "ConvectiveHeatFactor";
-				case 6 : return "LatentHeatFactor";
-				case 7 : return "LossHeatFactor";
+				case 5 : return "MoistureProductionRatePerArea";
+				case 6 : return "ConvectiveHeatFactor";
+				case 7 : return "LatentHeatFactor";
+				case 8 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -508,6 +509,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -703,9 +705,10 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "ConvectiveHeatFactor";
-				case 6 : return "LatentHeatFactor";
-				case 7 : return "LossHeatFactor";
+				case 5 : return "MoistureProductionRatePerArea";
+				case 6 : return "ConvectiveHeatFactor";
+				case 7 : return "LatentHeatFactor";
+				case 8 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -1003,6 +1006,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -1199,9 +1203,10 @@ namespace VICUS {
 				case 2 : return "Area per person";
 				case 3 : return "Power";
 				case 4 : return "Power per area";
-				case 5 : return "Convective heat factor";
-				case 6 : return "Latent heat factor";
-				case 7 : return "Loss heat factor";
+				case 5 : return "Moisture production rate per area";
+				case 6 : return "Convective heat factor";
+				case 7 : return "Latent heat factor";
+				case 8 : return "Loss heat factor";
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -1499,6 +1504,7 @@ namespace VICUS {
 				case 1 : return "Frame area fraction of the window";
 				case 2 : return "Divider width of the window";
 				case 3 : return "Divider area fraction of the window";
+				case 4 : return "Reduction factor for dynamic shading";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -1694,9 +1700,10 @@ namespace VICUS {
 				case 2 : return "m2/Person";
 				case 3 : return "W";
 				case 4 : return "W/m2";
-				case 5 : return "---";
+				case 5 : return "kg/m2s";
 				case 6 : return "---";
 				case 7 : return "---";
+				case 8 : return "---";
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -1994,6 +2001,7 @@ namespace VICUS {
 				case 1 : return "---";
 				case 2 : return "m";
 				case 3 : return "---";
+				case 4 : return "---";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -2192,6 +2200,7 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -2489,6 +2498,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -2687,6 +2697,7 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// InternalLoad::Category
 			case 11 :
@@ -2984,6 +2995,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowDivider::para_t
 			case 45 :
@@ -3101,7 +3113,7 @@ namespace VICUS {
 			// InterfaceHeatConduction::para_t
 			case 9 : return 2;
 			// InternalLoad::para_t
-			case 10 : return 8;
+			case 10 : return 9;
 			// InternalLoad::Category
 			case 11 : return 4;
 			// InternalLoad::PersonCountMethod
@@ -3169,7 +3181,7 @@ namespace VICUS {
 			// Window::Method
 			case 43 : return 3;
 			// Window::para_t
-			case 44 : return 4;
+			case 44 : return 5;
 			// WindowDivider::para_t
 			case 45 : return 1;
 			// WindowFrame::para_t
@@ -3225,7 +3237,7 @@ namespace VICUS {
 			// InterfaceHeatConduction::para_t
 			case 9 : return 1;
 			// InternalLoad::para_t
-			case 10 : return 7;
+			case 10 : return 8;
 			// InternalLoad::Category
 			case 11 : return 3;
 			// InternalLoad::PersonCountMethod
@@ -3293,7 +3305,7 @@ namespace VICUS {
 			// Window::Method
 			case 43 : return 2;
 			// Window::para_t
-			case 44 : return 3;
+			case 44 : return 4;
 			// WindowDivider::para_t
 			case 45 : return 0;
 			// WindowFrame::para_t

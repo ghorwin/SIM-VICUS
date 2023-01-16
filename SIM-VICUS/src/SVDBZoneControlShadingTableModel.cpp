@@ -152,7 +152,7 @@ QModelIndex SVDBZoneControlShadingTableModel::addNewItem() {
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalNorth, 150);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalSouth, 150);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalHorizontal, 150);
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_DeadBand, 0);
+	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_DeadBand, 50);
 
 	ctrl.m_color = SVStyle::randomColor();
 

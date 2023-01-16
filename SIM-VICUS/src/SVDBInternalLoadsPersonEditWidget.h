@@ -67,6 +67,8 @@ private slots:
 
 	void on_toolButtonRemoveActivitySchedule_clicked();
 
+	void on_toolButtonSelectMoistureRate_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

@@ -57,6 +57,8 @@
 #include "SVMainWindow.h"
 #include "SVGeometryView.h"
 #include "SVPropertyWidget.h"
+#include "SVLocalCoordinateView.h"
+
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -212,17 +214,16 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		// If we have a selection, switch scene operation mode to OM_SelectedGeometry.
 		// If we no longer have a selection, and we are in geometry mode+edit mode -> switch back to default operation mode NUM_OP
 		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (!vs.inPropertyEditingMode()) {
-			if (selectedObjects.empty()) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				// vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-			else {
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-				// Do not modify property widget mode
-			}
-			SVViewStateHandler::instance().setViewState(vs);
+		if (selectedObjects.empty()) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+
+			// vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		}
+		else {
+			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			// Do not modify property widget mode
+		}
+		SVViewStateHandler::instance().setViewState(vs);
 
 	} break;
 
@@ -1182,12 +1183,12 @@ void Scene::render() {
 
 	// *** movable coordinate system  ***
 
-	bool drawLocalCoordinateSystem = vs.m_propertyWidgetMode != SVViewState::PM_BuildingProperties &&
-			(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+	bool drawLocalCoordinateSystem =
+			 vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 			 vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
 			 vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
 			 vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
-			 vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
+			 vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance ;
 
 	// do not draw LCS if we are in sub-surface mode
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
@@ -1217,6 +1218,9 @@ void Scene::render() {
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
 		m_coordinateSystemObject.renderOpaque();
 		m_coordinateSystemShader->release();
+	}
+	else {
+		SVViewStateHandler::instance().m_localCoordinateViewWidget->clearCoordinates();
 	}
 
 	// in measurement mode we always draw the line, except for the initial state where we are waiting for the first click
@@ -1268,7 +1272,6 @@ void Scene::setViewState(const SVViewState & vs) {
 	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
 	if (vs.inPropertyEditingMode()) {
-		leaveMeasurementMode(false);
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||

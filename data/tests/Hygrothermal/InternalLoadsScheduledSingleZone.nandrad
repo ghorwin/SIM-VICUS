@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Internal loads test: single zone, scheduled internal moisture load</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Flag name="EnableMoistureBalance">true</IBK:Flag>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">50</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.01</IBK:Parameter>
+		</SolverParameter>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Models>
+			<InternalMoistureLoadsModels>
+				<InternalMoistureLoadsModel id="401" displayName="Zone moisture loads" modelType="Scheduled">
+					<ZoneObjectList>All zones</ZoneObjectList>
+				</InternalMoistureLoadsModel>
+			</InternalMoistureLoadsModels>
+		</Models>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 6 10</TimePoints>
+								<Values>MoistureLoadPerAreaSchedule [kg/m2s]:0 1.667e-07 0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="Tuesday">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 14 16</TimePoints>
+								<Values>MoistureLoadPerAreaSchedule [kg/m2s]:0 6.667e-08 0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>MoistureDensity</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="10 mins">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Internal load models">
+				<FilterID>401</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Wall">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

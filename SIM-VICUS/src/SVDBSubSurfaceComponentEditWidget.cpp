@@ -59,6 +59,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 
 	// construction group box
 	m_ui->lineEditWindowName->setReadOnly(true);
+	m_ui->lineEditReductionFactor->setup(0, 1, "Reduction factor for dynamic shading", true, true);
 
 	updateInput(-1);
 }
@@ -185,6 +186,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 			}
 		}
 
+        m_ui->lineEditReductionFactor->setValue(win->m_para[VICUS::Window::P_ReductionFactor].get_value());
+
 	}
 	else {
 		m_ui->lineEditWindowName->setText("");
@@ -203,6 +206,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 
 	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
 	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
+
+    m_ui->lineEditReductionFactor->setEnabled(isEditable);
 }
 
 
@@ -297,3 +302,17 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditionSide
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+
+void SVDBSubSurfaceComponentEditWidget::on_lineEditReductionFactor_editingFinishedSuccessfully() {
+	if(m_current->m_idWindow == VICUS::INVALID_ID)
+		return;
+
+	double val = m_ui->lineEditReductionFactor->value();
+
+	VICUS::Window *win = const_cast<VICUS::Window*>(m_db->m_windows[m_current->m_idWindow]);
+
+	Q_ASSERT(win != nullptr);
+
+	VICUS::KeywordList::setParameter(win->m_para, "Window::para_t", VICUS::Window::P_ReductionFactor, val);
+}
+

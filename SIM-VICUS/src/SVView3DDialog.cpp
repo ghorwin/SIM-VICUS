@@ -36,7 +36,6 @@
 #include "VICUS_BoundaryCondition.h"
 #include "VICUS_PlaneTriangulationData.h"
 
-#include "IBK_FileUtils.h"
 #include "IBK_FileReader.h"
 
 #include <QString>
@@ -46,7 +45,7 @@
 #include <fstream>
 
 void SVView3DDialog::exportView3d() {
-#ifdef POLYGON2D
+
 	FUNCID(SVView3DDialog::exportView3d);
 
 	// TODO : Stephan, revise error handling concept any error occurring in this function should result
@@ -71,7 +70,7 @@ void SVView3DDialog::exportView3d() {
 
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
-		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon().vertexes();
+        const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon3D().vertexes();
 		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
 		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
 
@@ -379,5 +378,4 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 			}
 		}
 	}
-#endif
 }

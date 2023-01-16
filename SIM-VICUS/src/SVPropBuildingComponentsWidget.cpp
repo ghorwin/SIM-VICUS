@@ -262,7 +262,13 @@ void SVPropBuildingComponentsWidget::on_tableWidgetComponents_cellDoubleClicked(
 
 void SVPropBuildingComponentsWidget::openEditComponentDialog() {
 	const VICUS::Component * comp = currentlySelectedComponent();
-	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+
+	// when we have an invalid component we assign a new component instead of editing
+	if(comp == nullptr){
+		on_pushButtonAssignComponent_clicked();
+		return;
+	}
+
 	int currentRow = m_ui->tableWidgetComponents->currentRow();
 	SVMainWindow::instance().dbComponentEditDialog()->edit(comp->m_id);
 	// Note: project data isn't modified, since only user DB data was changed.

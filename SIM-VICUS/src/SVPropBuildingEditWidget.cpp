@@ -150,6 +150,10 @@ void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 	SVViewStateHandler::instance().setViewState(vs);
 }
 
+unsigned int SVPropBuildingEditWidget::currentPropertyType() {
+	return m_ui->toolBox->currentIndex();
+}
+
 
 // *** PRIVATE FUNCTIONS ***
 

@@ -73,7 +73,6 @@ public:
 		GO_TEST_INIT,
 		GO_OUTPUT_DIR,
 		GO_PARALLEL_THREADS,
-		GO_RESTART_REALTIME_DT,
 		NUM_GenericOptions
 	};
 
@@ -179,9 +178,6 @@ public:
 
 	/*! Time point in [s] to restart the simulation from if m_restartFrom is true. */
 	double			m_restartTime = -1;
-
-	/*! Time period in [s] for writing restart file.*/
-	double			m_restartRealtimeDt = 5*60;
 
 	/*! Parallel thread count. */
 	int				m_numParallelThreads = 1;

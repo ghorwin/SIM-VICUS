@@ -196,3 +196,9 @@ void SVPropNetworkSubStationWidget::on_pushButtonAssignSubNetwork_clicked() {
 	m_pa->modifyNodeProperty(&VICUS::NetworkNode::m_idSubNetwork, newId);
 }
 
+
+void SVPropNetworkSubStationWidget::on_tableWidgetSubNetworks_itemDoubleClicked(QTableWidgetItem */*item*/)
+{
+	on_pushButtonEditSubNetworks_clicked();
+}
+

@@ -59,3 +59,4 @@ object_script.*
 /build/cmake/out/
 /bin/debug_x64/ifc_convert.log
 moc_*
+/bin/debug_x64/ResultsGenVICUS

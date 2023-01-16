@@ -73,28 +73,31 @@ public:
 
 		const AbstractDBElement * subTemplate = nullptr;
 		switch (subType) {
-		case VICUS::ZoneTemplate::ST_IntLoadPerson:
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-		case VICUS::ZoneTemplate::ST_IntLoadLighting:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
 			break;
 
-		case VICUS::ZoneTemplate::ST_IntLoadOther:
+			case VICUS::ZoneTemplate::ST_IntLoadOther:
 			break;
-		case VICUS::ZoneTemplate::ST_ControlThermostat:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_ControlThermostat:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_Infiltration:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_Infiltration:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_VentilationNatural:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_VentilationNatural:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
-			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
+			break;
+		case VICUS::ZoneTemplate::ST_ControlShading:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, zoneTemplate->m_idReferences[subType]);
 			break;
 		case VICUS::ZoneTemplate::NUM_ST:
 			break;
@@ -123,19 +126,26 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, bool enableMoisture, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 	// i.e. m_internalLoadObjects[3] references m_objLists[3] and
 	//      m_schedules[3] corresponds also to m_objLists[3]
 
 	std::vector<NANDRAD::InternalLoadsModel>		m_internalLoadObjects;
-	std::vector<NANDRAD::ObjectList>				m_objLists;
-	std::vector<std::string>						m_objListNames;
+	std::vector<NANDRAD::InternalMoistureLoadsModel>
+													m_internalMoistLoadObjects;
+	std::vector<NANDRAD::ObjectList>				m_intLoadObjLists;
+	std::vector<std::string>						m_intLoadObjListNames;
+	std::vector<NANDRAD::ObjectList>				m_intMoistLoadObjLists;
+	std::vector<std::string>						m_intMoistLoadObjListNames;
 
 	// Object list name = schedule group name is not stored, since it matches the respective object list
-	// name in m_objLists
-	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+	// name in m_intLoadObjLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_intLoadSchedules;
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_intMoistLoadObjLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_intMoistLoadSchedules;
 };
 
 class VentilationModelGenerator : public ModelGeneratorBase {
@@ -189,6 +199,43 @@ public:
 	std::vector< std::vector<NANDRAD::LinearSplineParameter>>	m_schedGroupSplines;
 
 	std::map< std::string, IBK::Path>						m_placeholders;
+
+};
+
+class ControlledShadingModelGenerator : public ModelGeneratorBase{
+public:
+
+
+	ControlledShadingModelGenerator(const VICUS::Project * pro) :
+		ModelGeneratorBase(pro)
+	{}
+
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
+
+	/*! identifies the orientation of the corresponding sensor. */
+	enum SensorOrientation {
+		S_Horizontal,
+		S_North,
+		S_East,
+		S_South,
+		S_West,
+		NUM_S
+	};
+
+	struct ZoneShadingModel {
+
+		ZoneShadingModel() {}
+
+		std::map<SensorOrientation, NANDRAD::ShadingControlModel>			m_shadingControlModels;
+	};
+
+	static SensorOrientation calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category);
+
+	/*! Stores all the models.
+		\param key - is zone control model id
+		\param entry - SensorShadingModel
+	*/
+	std::map<unsigned int, ZoneShadingModel>								m_shadingModels;
 
 };
 
@@ -418,12 +465,15 @@ public:
 	std::vector<NANDRAD::ConstructionType>			m_constructions;
 	std::vector<NANDRAD::WindowGlazingSystem>		m_windowGlazingSystems;
 
+	std::map<unsigned int, ControlledShadingModelGenerator::ZoneShadingModel> * m_shadingModels = nullptr;
+
 	// all ground zone exports: schedules (periods or spline), zones, object lists
 	std::map<std::string,std::vector<NANDRAD::Schedule>>				m_schedsMap;
 	std::map<std::string,std::vector<NANDRAD::LinearSplineParameter>>	m_splinesMap;
 	std::vector<NANDRAD::Zone>											m_zones;
 	std::vector<NANDRAD::ObjectList>									m_objectLists;
 	std::set<QString>													m_objectListNames;
+	std::map< std::string, IBK::Path>									m_placeholders;
 
 	/*! Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
 		These ids are kept in the header of the shading file for later replacement of the ids.
@@ -714,7 +764,7 @@ bool Project::exportAreaAndVolume() {
 }
 
 
-void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
+void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 											 std::vector<MappingElement> &mappings) const{
 
@@ -745,18 +795,28 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	std::set<unsigned int> idSet;
 	std::vector<const VICUS::Room *> zones;
 
-	idSet.insert(2000000); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
+	// add all the sensors in the ids
+	for(unsigned int i = 0; i < ControlledShadingModelGenerator::NUM_S; i++){
+		idSet.insert(2000000 + i); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
+	}
+
 
 	generateNandradZones(zones, idSet, p, errorStack, mappings);
 
 	if (!errorStack.isEmpty())	return;
 
-	// *** read Shading File ***
+	// *** Generate controlled shadings ***
+	ControlledShadingModelGenerator controlledShading(this);
+	for (const VICUS::Room * r : zones)
+		controlledShading.generate(r, usedModelIds, errorStack);
 
 
 	// *** Create Construction Instances, Constructions (opak & tranparent) and materials ***
 
 	ConstructionInstanceModelGenerator constrInstaModelGenerator(this);
+	// init with shadingModels
+	constrInstaModelGenerator.m_shadingModels = & controlledShading.m_shadingModels;
+	constrInstaModelGenerator.m_placeholders = p.m_placeholders;
 	constrInstaModelGenerator.addInputData(p.m_objectLists);
 	constrInstaModelGenerator.generate(m_componentInstances, errorStack, idSet);
 	constrInstaModelGenerator.generateMaterials();
@@ -821,8 +881,10 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
 	ThermostatModelGenerator thermostats(this);
 	thermostats.m_placeholders = p.m_placeholders;
+
+	bool enableMoist = p.m_simulationParameter.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
 	for (const VICUS::Room * r : zones) {
-		internalLoads.generate(r, usedModelIds, errorStack);
+		internalLoads.generate(r, usedModelIds, enableMoist, errorStack);
 		ventilation.generate(r, usedModelIds, errorStack);
 		idealHeatCool.generate(r, usedModelIds, errorStack);
 		thermostats.generate(r, usedModelIds, errorStack);
@@ -833,9 +895,13 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 
 	// *** InternalLoads ***
 	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
-	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_objLists.begin(), internalLoads.m_objLists.end());
-	for (unsigned int i=0; i<internalLoads.m_schedules.size(); ++i)
-		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
+	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intLoadObjLists.begin(), internalLoads.m_intLoadObjLists.end());
+	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intMoistLoadObjLists.begin(), internalLoads.m_intMoistLoadObjLists.end());
+	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
+	// Note: if moisture is not enabled, m_intMoistLoadSchedules will be empty
+	for (unsigned int i=0; i<internalLoads.m_intMoistLoadSchedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[internalLoads.m_intMoistLoadObjLists[i].m_name] =  internalLoads.m_intMoistLoadSchedules[i];
 
 	// *** Ventilation ***
 	p.m_models.m_naturalVentilationModels = ventilation.m_natVentObjects;
@@ -853,6 +919,12 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 		if(!thermostats.m_schedGroupSplines[i].empty())
 			p.m_schedules.m_annualSchedules[thermostats.m_objLists[i].m_name] = thermostats.m_schedGroupSplines[i];
 
+	// *** Controlled Shading ***
+	for(std::pair<unsigned int, ControlledShadingModelGenerator::ZoneShadingModel> shadingModels : controlledShading.m_shadingModels){
+		for(auto shadingModel : shadingModels.second.m_shadingControlModels){
+			p.m_models.m_shadingControlModels.push_back(shadingModel.second);
+		}
+	}
 
 	// *** Ideal heating cooling ***
 	p.m_models.m_idealHeatingCoolingModels = idealHeatCool.m_idealHeatingCoolings;
@@ -929,7 +1001,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 			QString buildingLevelName = bl.m_displayName;
 			for (const VICUS::Room & r : bl.m_rooms){
 				zones.push_back(&r);
-				QString name = QString("%2.%3.%4(%1)").arg(r.m_id).arg(buildingName).arg(buildingLevelName).arg(r.m_displayName);
+				QString name = QString("%2.%3.%4(ID=%1)").arg(r.m_id).arg(buildingName, buildingLevelName, r.m_displayName);
 
 				MappingElement mapEle;
 				mapEle.m_idRoomVicus = r.m_id;
@@ -939,9 +1011,9 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				mapEle.m_nameRoomVicus = r.m_displayName.toStdString();
 
 				if(!r.m_para[VICUS::Room::P_Area].empty())
-					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].get_value("m2");
+					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].value; // in m2
 				if(!r.m_para[VICUS::Room::P_Volume].empty())
-					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].get_value("m3");
+					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].value; // in m3
 
 				roomIdsToRoomNames[r.m_id] = name.toStdString();
 
@@ -982,13 +1054,13 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		bool isZoneOk = true;
 		try {
-			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0.1, true, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid area defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
 		}
 		try {
-			r->m_para[VICUS::Room::P_Volume].checkedValue("Volume", "m3", "m3", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+			r->m_para[VICUS::Room::P_Volume].checkedValue("Volume", "m3", "m3", 0.1, true, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid volume defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
@@ -1142,7 +1214,7 @@ void Project::addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, 
 
 
 
-void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack) {
+void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, bool enableMoisture, QStringList & errorStack) {
 	// check if we have a zone template with id to internal loads
 
 	// InternalLoad holds data for sub templates ST_IntLoadPerson, ST_IntLoadEquipment or ST_IntLoadLighting
@@ -1167,13 +1239,15 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// generate schedules
 
 	std::string personSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea) + "Schedule [W/m2]";
+	std::string personMoistSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalMoistureLoadsModel::para_t", NANDRAD::InternalMoistureLoadsModel::P_MoistureLoadPerArea) + "Schedule [kg/m2s]";
 	std::string equipmentSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea) + "Schedule [W/m2]";
 	std::string lightingSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea) + "Schedule [W/m2]";
 
 	// schedule generation:
 	//
 	// 1. create basic schedule (name?)
-	std::vector<NANDRAD::Schedule> scheds; // contains all schedules for this internal loads parametrization
+	std::vector<NANDRAD::Schedule> loadScheds; // contains all schedules for this internal loads parametrization
+	std::vector<NANDRAD::Schedule> moistScheds; // contains all schedules for this internal moisture loads parametrization
 
 	// 2. initialize with "AllDays" DailyCycle
 	NANDRAD::Schedule allDays;
@@ -1184,11 +1258,15 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	if (intLoadPerson == nullptr)		dc.m_values.m_values[personSchedName].push_back(0);
 	if (intLoadEquipment == nullptr)	dc.m_values.m_values[equipmentSchedName].push_back(0);
 	if (intLoadLighting == nullptr)		dc.m_values.m_values[lightingSchedName].push_back(0);
+
 	allDays.m_dailyCycles.push_back( dc );
 
-	// we only need an all day schedule if we miss at least on of the schedules
-	if (!dc.m_values.m_values.empty())
-		scheds.push_back(allDays);
+	// we only need an all day schedule if we miss at least one of the schedules
+	if (!dc.m_values.m_values.empty()) {
+		loadScheds.push_back(allDays);
+		moistScheds.push_back(allDays);
+	}
+
 
 	// initialize load fractions with 0
 	double personRadiationFraction = 0;
@@ -1198,6 +1276,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// for each given VICUS schedule, generate a set of schedules and insert them in vector scheds (unless already existing, in which case these are extended)
 
 	// *** Person loads (category = IC_Person)***
+	bool moistRateScheduleExists = false;
 
 	if (intLoadPerson != nullptr) {
 		if (!intLoadPerson->isValid(m_scheduleDB)) {
@@ -1234,7 +1313,24 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			combinedSchedule = combinedSchedule.multiply(personPerArea);
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, loadScheds);
+
+			// create schedule for moisture load
+			if (enableMoisture) {
+				const Schedule * moistRateSchedule = m_scheduleDB[intLoadPerson->m_idMoistureProductionRatePerAreaSchedule];
+				// we allow missing moisture rate
+				if (moistRateSchedule != nullptr) {
+					// TODO : check if this is correct - why multiply a m2-based load with an occupancy? This is likely wrong.
+					VICUS::Schedule combinedMoistSchedule = moistRateSchedule->multiply(*occupancySchedule);
+					combinedMoistSchedule = combinedMoistSchedule.multiply(personPerArea);
+
+					// - convert and insert VICUS::Schedule to NANDRAD schedule group
+					combinedMoistSchedule.insertIntoNandradSchedulegroup(personMoistSchedName, moistScheds);
+
+					// register a moisture rate schedule
+					moistRateScheduleExists = true;
+				}
+			}
 		}
 	}
 
@@ -1271,7 +1367,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, loadScheds);
 		}
 	}
 
@@ -1307,7 +1403,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
-			combinedSchedule.insertIntoNandradSchedulegroup(lightingSchedName, scheds);
+			combinedSchedule.insertIntoNandradSchedulegroup(lightingSchedName, loadScheds);
 		}
 	}
 
@@ -1337,9 +1433,9 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
 		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
-				NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
+			NANDRAD::Schedules::equalSchedules(m_intLoadSchedules[i], loadScheds) ) {
 			// insert our zone ID in object list
-			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+			m_intLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
 			break;
 		}
@@ -1347,7 +1443,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	if(!foundModel) {
 		// append definitions and create new object list
 		NANDRAD::ObjectList ol;
-		ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_intLoadObjListNames.begin(), m_intLoadObjListNames.end());
 		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		ol.m_filterID.m_ids.insert(r->m_id);
 
@@ -1356,9 +1452,51 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 		// add all definitions
 		m_internalLoadObjects.push_back(internalLoadsModel);
-		m_schedules.push_back(scheds);
-		m_objLists.push_back(ol);
-		m_objListNames.push_back(ol.m_name);
+		m_intLoadSchedules.push_back(loadScheds);
+		m_intLoadObjLists.push_back(ol);
+		m_intLoadObjListNames.push_back(ol.m_name);
+	}
+
+
+	if (enableMoisture && moistRateScheduleExists) {
+		// generate NANDRAD::InternalMoistureLoads object
+		NANDRAD::InternalMoistureLoadsModel internalMoistLoadsModel;
+		internalMoistLoadsModel.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);  /*VICUS::uniqueId(m_internalLoadObjects)*/;
+		const VICUS::ZoneTemplate * zt = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+		internalMoistLoadsModel.m_displayName = zt->m_displayName.string();
+		internalMoistLoadsModel.m_modelType = NANDRAD::InternalMoistureLoadsModel::MT_Scheduled;
+
+		// Now we check if we have already an internal moisture loads model object with exactly the same schedule
+		// (the internal moisture loads model object and corresponding schedule have same ID).
+		// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
+		// otherwise we add load and schedule definitions and generate a new object list.
+
+		bool foundModel = false;
+		for (unsigned int i=0; i<m_internalMoistLoadObjects.size(); ++i) {
+			if (m_internalMoistLoadObjects[i].equal(internalMoistLoadsModel) &&
+				NANDRAD::Schedules::equalSchedules(m_intMoistLoadSchedules[i], moistScheds) ) {
+				// insert our zone ID in object list
+				m_intMoistLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
+				foundModel = true;
+				break;
+			}
+		}
+		if (!foundModel) {
+			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("InternalMoistureLoads-" + zt->m_displayName.string(), m_intMoistLoadObjListNames.begin(), m_intMoistLoadObjListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			internalMoistLoadsModel.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_internalMoistLoadObjects.push_back(internalMoistLoadsModel);
+			m_intMoistLoadSchedules.push_back(moistScheds);
+			m_intMoistLoadObjLists.push_back(ol);
+			m_intMoistLoadObjListNames.push_back(ol.m_name);
+		}
 	}
 }
 
@@ -1680,6 +1818,112 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	}
 }
 
+
+void ControlledShadingModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
+	const ZoneControlShading* zoneControlShading = nullptr;
+
+	try {
+		zoneControlShading = dynamic_cast<const ZoneControlShading*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlShading));
+	}  catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	if(zoneControlShading == nullptr)
+		return;		// No shading control is defined in zone
+
+	// iterate other all surfaces of the room
+	for(const Surface & surface : r->m_surfaces){
+		if(surface.subSurfaces().size() == 0){
+			// skip if there are no windows
+			continue;
+		}
+		IBKMK::Vector3D normal = surface.geometry().normal();
+		SensorOrientation orientation = calculateSensorOrientation(normal, zoneControlShading->m_category);
+		if(m_shadingModels.find(zoneControlShading->m_id) != m_shadingModels.end()){
+			if(m_shadingModels[zoneControlShading->m_id].m_shadingControlModels.find(orientation) != m_shadingModels[zoneControlShading->m_id].m_shadingControlModels.end())
+				// shading model already exists for this surface
+				continue;
+		} else {
+			// create map, since it is the first entry
+			m_shadingModels[zoneControlShading->m_id] = ZoneShadingModel();
+		}
+		//create a new shadingModel and save it in the map
+		NANDRAD::ShadingControlModel shadingModel = NANDRAD::ShadingControlModel();
+		shadingModel.m_id = VICUS::uniqueId(usedModelIds);
+		usedModelIds.push_back(shadingModel.m_id);
+		// calc the max and min intensity based on the sensor category
+		double maxIntensity = 0;
+		// TODO fullfill contraint in UI that maxI needs to be greater than minI -> deadband cannot be 0
+		double minIntensity = 0;
+		switch(orientation){
+		case ControlledShadingModelGenerator::S_Horizontal: {
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalHorizontal].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			break;
+		}
+		case ControlledShadingModelGenerator::S_North: {
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalNorth].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalNorth].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			break;
+		}
+		case ControlledShadingModelGenerator::S_East: {
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalEast].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalEast].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			break;
+		}
+		case ControlledShadingModelGenerator::S_South: {
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalSouth].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalSouth].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			break;
+		}
+		case ControlledShadingModelGenerator::S_West: {
+			maxIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalWest].get_value();
+			minIntensity = zoneControlShading->m_para[ZoneControlShading::P_GlobalWest].get_value() - zoneControlShading->m_para[ZoneControlShading::P_DeadBand].get_value();
+			break;
+		}
+		case ControlledShadingModelGenerator::NUM_S:
+			break;
+
+		}
+		// set the calculated intensities
+		NANDRAD::KeywordList::setParameter(shadingModel.m_para, "ShadingControlModel::para_t",
+										   NANDRAD::ShadingControlModel::P_MaxIntensity, maxIntensity);
+		NANDRAD::KeywordList::setParameter(shadingModel.m_para, "ShadingControlModel::para_t",
+										   NANDRAD::ShadingControlModel::P_MinIntensity, minIntensity);
+
+		// set the sensor id, based on the orientation
+		shadingModel.m_sensorId = 2000000 + orientation;
+
+		m_shadingModels.at(zoneControlShading->m_id).m_shadingControlModels[orientation] = shadingModel;
+
+	}
+
+}
+
+
+ControlledShadingModelGenerator::SensorOrientation ControlledShadingModelGenerator::calculateSensorOrientation(const IBKMK::Vector3D & normal, ZoneControlShading::Category category){
+	double altitude = std::asin(normal.m_z) / IBK::DEG2RAD;
+	if (altitude < 0){
+		altitude += 360;
+	}
+	double azimut = std::atan2(normal.m_x, ( normal.m_y == 0. ? 1E-8 :normal.m_y ) ) / IBK::DEG2RAD;
+	if (azimut < 0)
+		azimut += 360;
+
+	if((altitude > 45 && altitude < 135) || category == ZoneControlShading::C_GlobalHorizontalSensor)
+		return SensorOrientation::S_Horizontal;
+	if(azimut > 45 && azimut <= 135)
+		return SensorOrientation::S_East;
+	if(azimut > 135 && azimut <= 225)
+		return SensorOrientation::S_South;
+	if(azimut > 225 && azimut <= 315)
+		return SensorOrientation::S_West;
+	//else return south
+	return SensorOrientation::S_North;
+
+}
+
 void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
 														   const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet,
 														   std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const{
@@ -1845,8 +2089,37 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 									continue;
 								}
 							}
+							// check if zone has shading
+							Q_ASSERT(ss.m_parent != nullptr && ss.m_parent->m_parent != nullptr);
+							unsigned int idZoneTemplate = dynamic_cast<VICUS::Room *>(ss.m_parent->m_parent)->m_idZoneTemplate;
+							if(idZoneTemplate != VICUS::INVALID_ID){
+								const VICUS::ZoneTemplate * zt = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, idZoneTemplate);
+								unsigned int idZoneControlShading = zt->m_idReferences[ZoneTemplate::ST_ControlShading];
+								if(idZoneControlShading != VICUS::INVALID_ID){
+									//sub surface has controlled shading
+									Q_ASSERT(VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, idZoneControlShading) != nullptr);
+									const VICUS::ZoneControlShading * zcs = VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, idZoneControlShading);
+									NANDRAD::WindowShading shading;
+									shading.m_modelType = NANDRAD::WindowShading::MT_Controlled;
+									//TODO give user possibility to set Reductionfactor in UI, right now its set default to 0.6
+									NANDRAD::KeywordList::setParameter(shading.m_para, "WindowShading::para_t",
+																	   NANDRAD::WindowShading::P_ReductionFactor, winV.m_para[Window::P_ReductionFactor].get_value());
+									//calc the sensor orientation
+									const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(ss.m_parent);
+									ControlledShadingModelGenerator::SensorOrientation ori = ControlledShadingModelGenerator::calculateSensorOrientation(s->geometry().normal(), zcs->m_category);
+									//check if shading model already exists for this ZoneControlShading
+									Q_ASSERT(m_shadingModels != nullptr);
+									if(m_shadingModels->find(zcs->m_id) == m_shadingModels->end()){
+										errorStack.push_back(QString("Error during model generation, no zone control shading found with id %1").arg(zcs->m_id));
+									}
 
-
+									if(m_shadingModels->at(zcs->m_id).m_shadingControlModels.find(ori) == m_shadingModels->at(zcs->m_id).m_shadingControlModels.end()){
+										errorStack.push_back(QString("Error during model generation, no model for the orientation %1").arg(ori));
+									}
+									shading.m_controlModelId = m_shadingModels->at(zcs->m_id).m_shadingControlModels[ori].m_id;
+									emb.m_window.m_shading = shading;
+								}
+							}
 							break;
 						}
 					}
@@ -1975,8 +2248,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 			// only take first digit after comma into account
 			unsigned int schedId = bc->m_heatConduction.m_idSchedule;
 			const VICUS::Schedule *sched = m_scheduleDB[schedId];
-
-			if(sched != nullptr && sched->isValid()){
+			std::string err;
+			if(sched != nullptr && sched->isValid(err, true, m_placeholders)){
 				if(gze.m_tempSchedIdToZoneId.find(schedId) != gze.m_tempSchedIdToZoneId.end())
 					iface.m_zoneId = gze.m_tempSchedIdToZoneId[schedId];
 				else{

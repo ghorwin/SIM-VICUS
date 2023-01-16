@@ -353,6 +353,7 @@ private slots:
 
 	void on_actionPluginsManager_triggered();
 
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

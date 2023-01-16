@@ -87,6 +87,12 @@ public:
 		return true;
 	}
 
+	/*! Returns current property type (index of toolbox) */
+	unsigned int currentPropertyType();
+
+	/*! Switches property type to selected mode */
+	void setPropertyType(int propertyType);
+
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
 	const VICUS::Network					*m_currentNetwork = nullptr;
 

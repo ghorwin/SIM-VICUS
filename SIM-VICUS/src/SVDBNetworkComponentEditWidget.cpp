@@ -427,6 +427,7 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 	m_ui->widgetPlot1->setAxisTitle(QwtPlot::xBottom, "");
 	m_ui->widgetPlot1->setAxisTitle(QwtPlot::yLeft, "");
 	m_ui->widgetPlot1->replot();
+
 #if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 	m_ui->tabWidgetPlots->setTabVisible(0, false);
 #else
@@ -439,6 +440,7 @@ void SVDBNetworkComponentEditWidget::updatePolynomPlot() {
 	m_ui->widgetPlot2->setAxisTitle(QwtPlot::xBottom, "");
 	m_ui->widgetPlot2->setAxisTitle(QwtPlot::yLeft, "");
 	m_ui->widgetPlot2->replot();
+
 #if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
 	m_ui->tabWidgetPlots->setTabVisible(1, false);
 #else

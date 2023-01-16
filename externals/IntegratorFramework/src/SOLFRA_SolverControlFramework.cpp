@@ -77,8 +77,6 @@ std::string format_time_difference(double delta_t) {
 
 SolverControlFramework::SolverControlFramework(ModelInterface * model) :
 	m_restartMode(RestartFromLast),
-	m_simTimeDt(3600*24),	// every 1 d simtime
-	m_realTimeDt(5*60),	// every 5 min real time
 	m_stopAfterSolverInit(false),
 	m_useStepStatistics(false),
 	m_model(model),
@@ -193,13 +191,6 @@ void SolverControlFramework::setOutputScheduler(OutputScheduler	* outputSchedule
 void SolverControlFramework::setRestartFile(const std::string & fname, RestartFileMode restartMode) {
 	m_restartFilename = fname;
 	m_restartMode = restartMode;
-}
-
-
-void SolverControlFramework::setRestartInfoInterval(double simTimeDt, double realTimeDt) {
-	// TODO : check for valid values
-	m_simTimeDt = simTimeDt;
-	m_realTimeDt = realTimeDt;
 }
 
 
@@ -403,8 +394,6 @@ void SolverControlFramework::run(double t) {
 
 	try {
 
-		clock_t restartRealTime = clock();
-
 		// write initial output, only if we start from begin
 		bool restarting =  (t != m_model->t0());
 
@@ -420,9 +409,6 @@ void SolverControlFramework::run(double t) {
 		if (!restarting) {
 			m_model->writeOutputs( m_model->t0(), m_model->y0());
 		}
-
-//		double restartSimTime = t;
-//		clock_t restartRealTime = clock();
 
 		// write statistics files
 		m_integrator->writeStatisticsHeader(m_logDirectory, restarting);
@@ -507,7 +493,6 @@ void SolverControlFramework::run(double t) {
 			} // while (t_out <= t)
 #endif
 
-
 			// write statistics if we had an output, or if we had step-by-step statistics enabled
 			if (had_output || m_useStepStatistics) {
 				m_integrator->writeStatistics();
@@ -520,21 +505,20 @@ void SolverControlFramework::run(double t) {
 			// write restart info after completed step
 			writeProgress(t, false);
 
-			// store restart information whenever restart time difference has been exceeded
-			double realTimeDt = double(clock())/CLOCKS_PER_SEC - double(restartRealTime)/CLOCKS_PER_SEC;
-			// check if we have passed the output time, but guard against overwriting the
-			// restart data when it had been already written
-			if (!hadRestartAtFinalOutput && (realTimeDt > m_realTimeDt || t >= t_end)) {
+			// Check if we have have written outputs (in which case we also must write restart info).
+			// However, we do not want to write restart info at end twice, so we check for hadRestartAtFinalOutput also
+			if (!hadRestartAtFinalOutput && (had_output || t >= t_end)) {
 				if (t >= t_end) {
 					const double * y_out = m_integrator->yOut(t_end);
 					appendRestartInfo(t_end, y_out);
 				}
 				else {
-					// within the first 5 minutes of the simulation, we do not want outputs to slow down fast simulations
+					// if user only wants restart info at end of simulation (i.e. WRM optimization scenario)
+					// and the flag RestartInfoOnlyAtSimulationEnd has been set via command line, do not write
+					// restart info
 					if (m_restartMode != RestartInfoOnlyAtSimulationEnd)
 						appendRestartInfo(t, y_current);
 				}
-				restartRealTime = clock(); // restart real-time counter
 			}
 
 		} // while (t < t_end)
@@ -564,22 +548,35 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 	// do nothing if no filename is set
 	if (m_restartFilename.str().empty()) return;
 
+	// if restart file exists, rename it to bak, but only once every 10 minutes - this is
+	// for really long simulations, where we accept potentially duplicate output steps
+	// in output files (when we restart to a time point past that we had already several
+	// outputs written), in order to save a lot of simulation time
+	if (m_restartFileRenameWatch.difference() > 600*1000) {
+		if (m_restartFilename.isFile()) {
+			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
+			const_cast<SolverControlFramework*>(this)->m_restartFileRenameWatch.start(); // reset timer
+		}
+	}
+
 	// try to open file for writing
 	std::ofstream out;
-	if (m_restartMode == RestartFromAll)
+	if (m_restartMode == RestartFromAll) {
+		// append to existing file
 #if defined(_MSC_VER)
 		out.open(m_restartFilename.wstr().c_str(), std::ios_base::app | std::ios_base::binary);
-	else
-		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
 #else
 		out.open(m_restartFilename.c_str(), std::ios_base::app | std::ios_base::binary);
-	else {
-		// if restart file exists, rename it to bak
-		if (m_restartFilename.isFile())
-			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
-		out.open(m_restartFilename.c_str(), std::ios_base::binary);
-	}
 #endif
+	}
+	else {
+		// create new file
+#if defined(_MSC_VER)
+		out.open(m_restartFilename.wstr().c_str(), std::ios_base::binary);
+#else
+		out.open(m_restartFilename.c_str(), std::ios_base::binary);
+#endif
+	}
 	if (!out)
 		throw IBK::Exception( IBK::FormatString("Cannot open restart file '%1' for writing.").arg(m_restartFilename), FUNC_ID);
 	// write in binary mode unless debug option is set

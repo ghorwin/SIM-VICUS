@@ -26,6 +26,7 @@
 
 #include "NANDRAD_NaturalVentilationModel.h"
 #include "NANDRAD_InternalLoadsModel.h"
+#include "NANDRAD_InternalMoistureLoadsModel.h"
 #include "NANDRAD_ShadingControlModel.h"
 #include "NANDRAD_Thermostat.h"
 #include "NANDRAD_HeatLoadSummationModel.h"
@@ -54,6 +55,8 @@ public:
 	std::vector<NaturalVentilationModel>			m_naturalVentilationModels;			// XML:E
 	/*! Container for all internal loads models. */
 	std::vector<InternalLoadsModel>					m_internalLoadsModels;				// XML:E
+	/*! Container for all internal moisture loads models. */
+	std::vector<InternalMoistureLoadsModel>			m_internalMoistureLoadsModels;				// XML:E
 	/*! Container for all shading control models. */
 	std::vector<ShadingControlModel>				m_shadingControlModels;				// XML:E
 	/*! Container for all thermostat control models. */

@@ -972,10 +972,17 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	{
 		// TODO Dirk das ist erstmal nur vorübergehend
 		// es muss dafür ein Dialog im SV... erstellt werden und später die Werte übergeben werden
-		NANDRAD::Sensor sensor;
-		sensor.createSensor(2000000, 0,0);
 
-		p.m_location.m_sensors.push_back(sensor);
+		//create sensors for all the 5 orientations
+		for(unsigned int i = 0; i < NUM_ST; i++){
+			NANDRAD::Sensor s;
+			if(i == ST_Horizontal)
+				s.createSensor(2000000 + i, 0, 0);
+			else
+				s.createSensor(2000000 + i, 90 * (i - 1),90);
+
+			p.m_location.m_sensors.push_back(s);
+		}
 	}
 
 	// do we have a climate path?
@@ -990,9 +997,13 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// These ids are kept in the header of the shading file for later replacement of the ids.
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
-
-	generateBuildingProjectDataNeu(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
+	try {
+		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
 								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("%1\nCould not export NANDRAD project.").arg(ex.what()), FUNC_ID);
+	}
 
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);

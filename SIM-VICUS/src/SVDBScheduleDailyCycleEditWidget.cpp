@@ -54,7 +54,7 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 
 		QTableWidgetItem * item = new QTableWidgetItem(time);
 		m_ui->tableWidgetDayCycle->setItem(i,0, item);
-		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setTextAlignment(Qt::AlignCenter);
 
 		item = new QTableWidgetItem();
@@ -86,6 +86,7 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	m_dailyCycle = dc;
 	m_db = db;
 	m_isEditable = isEditable;
+	m_ui->tableWidgetDayCycle->clearSelection();
 
 	// if dc == nullptr, clear inputs and return
 	if (dc == nullptr) {
@@ -106,6 +107,10 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 
 	// fill in table and widget
 	updateTable(true);
+
+	m_ui->tableWidgetDayCycle->setEnabled(m_isEditable);
+	m_ui->dailyCycleInputWidget->setEnabled(m_isEditable);
+	m_ui->labelEditInfo->setEnabled(m_isEditable);
 }
 
 

@@ -74,6 +74,15 @@ public:
 		NUM_SG
 	};
 
+	/*! Sensor types for dynamic shading control. */
+	enum SenorType {
+		ST_Horizontal,
+		ST_North,
+		ST_East,
+		ST_South,
+		ST_West,
+		NUM_ST
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -325,10 +334,10 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(const QString &modelName,
-										NANDRAD::Project & p, QStringList & errorStack,
-										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										std::vector<MappingElement> &mappings)const;
+	void generateBuildingProjectData(const QString &modelName,
+									 NANDRAD::Project & p, QStringList & errorStack,
+									 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+									 std::vector<MappingElement> &mappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,

@@ -133,13 +133,14 @@ void ToolBox::setCurrentIndex(unsigned int index) {
 	m_pages[index]->m_widget->setVisible(true);
 	m_pages[index]->m_arrowIcon->setPixmap(m_arrowDown);
 	m_pages[index]->m_label->setActive(true);
+
+	emit indexChanged(index);
 }
 
 
 void ToolBox::onLabelClicked() {
-	int index = qobject_cast<ClickableLabel*>(sender())->id();
+	unsigned int index = qobject_cast<ClickableLabel*>(sender())->id();
 	setCurrentIndex(index);
-	emit indexChanged(index);
 }
 
 

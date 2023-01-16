@@ -70,6 +70,8 @@ private slots:
 
 	void on_spinBoxSolarRadiationToWalls_valueChanged(int arg1);
 
+	void on_checkBoxUsePerez_toggled(bool checked);
+
 private:
 
 	/*! UI pointer. */

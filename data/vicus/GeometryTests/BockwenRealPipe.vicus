@@ -2,8 +2,12 @@
 <VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Mo. Juli 19 14:39:08 2021</Created>
-		<LastEdited>Do. Dez. 15 18:10:34 2022</LastEdited>
+		<LastEdited>Di. Jan. 3 17:21:24 2023</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/_IBK-Apps/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -20,6 +24,9 @@
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
 				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Location>
@@ -27,7 +34,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.7</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/dirk/ownCloud/projekte/Bockwen/climate/DWD2020GarsebachBeiMeißen.epw</ClimateFilePath>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -43,12 +50,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>0.538469 34.7621 27.9017</CameraTranslation>
+			<CameraTranslation>-21.1275 27.5885 17.2047</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.0787149</Wp>
-				<X>-0.0397348</X>
-				<Y>0.421698</Y>
-				<Z>0.902321</Z>
+				<Wp>-0.346348</Wp>
+				<X>-0.254102</X>
+				<Y>0.532313</Y>
+				<Z>0.729317</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -877,72 +884,72 @@
 			<ComponentInstance id="76" idComponent="50044" idSideASurface="168" idSideBSurface="199" />
 			<ComponentInstance id="77" idComponent="50044" idSideASurface="180" idSideBSurface="198" />
 			<ComponentInstance id="78" idComponent="50018" idSideASurface="112" idSideBSurface="50">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>17</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="79" idComponent="50018" idSideASurface="124" idSideBSurface="49">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>18</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="80" idComponent="50018" idSideASurface="123" idSideBSurface="57">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>18</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="81" idComponent="50018" idSideASurface="139" idSideBSurface="41">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="82" idComponent="50018" idSideASurface="113" idSideBSurface="42">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>17</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="83" idComponent="50018" idSideASurface="140" idSideBSurface="28">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="84" idComponent="50018" idSideASurface="137" idSideBSurface="68">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="85" idComponent="50018" idSideASurface="91" idSideBSurface="69">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="86" idComponent="50018" idSideASurface="92" idSideBSurface="29">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="87" idComponent="50018" idSideASurface="165" idSideBSurface="84">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>20</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="88" idComponent="50018" idSideASurface="166" idSideBSurface="67">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>20</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="89" idComponent="50018" idSideASurface="178" idSideBSurface="83">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>21</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="90" idComponent="50054" idSideASurface="52">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>13</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="91" idComponent="50054" idSideASurface="74">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>15</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="92" idComponent="50014" idSideASurface="30" />
 			<ComponentInstance id="93" idComponent="50054" idSideASurface="32">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>11</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="94" idComponent="50054" idSideASurface="60">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>14</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="95" idComponent="50054" idSideASurface="45">
-				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>12</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
 			<ComponentInstance id="96" idComponent="50015" idSideASurface="54" idSideBSurface="47" />
@@ -1247,7 +1254,7 @@
 				</WindowGlazingSystem>
 			</WindowGlazingSystems>
 			<BoundaryConditions>
-				<BoundaryCondition id="40004" displayName="DE: Randbedingung außen |EN: &lt;new boundary condition&gt;">
+				<BoundaryCondition id="40004" displayName="DE: Randbedingung außen |EN: &lt;new boundary condition&gt;" color="#205ab8">
 					<InterfaceHeatConduction modelType="Constant">
 						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">25</IBK:Parameter>
@@ -1259,7 +1266,7 @@
 						<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 					</InterfaceLongWaveEmission>
 				</BoundaryCondition>
-				<BoundaryCondition id="40008" displayName="DE: Randbedingung innen |EN: &lt;new boundary condition&gt;">
+				<BoundaryCondition id="40008" displayName="DE: Randbedingung innen |EN: &lt;new boundary condition&gt;" color="#d2b836">
 					<InterfaceHeatConduction modelType="Constant">
 						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">7.6923</IBK:Parameter>
@@ -1357,6 +1364,17 @@
 					<IdSideBBoundaryCondition>40004</IdSideBBoundaryCondition>
 				</SubSurfaceComponent>
 			</SubSurfaceComponents>
+			<SurfaceHeatings>
+				<SurfaceHeating id="1050001" displayName="DE: Fußbodenheizung |EN: &lt;new surface heating model&gt;" color="#b6ff3e" type="Ideal">
+					<HeatingCoolingCurvePoints>Tout:-14,20,23,30;Tsupply:35,20,23,18;</HeatingCoolingCurvePoints>
+					<IdPipe>1260809728</IdPipe>
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+					<IBK:Parameter name="PipeSpacing" unit="m">0.1</IBK:Parameter>
+					<IBK:Parameter name="MaxFluidVelocity" unit="m/s">1</IBK:Parameter>
+					<IBK:Parameter name="TemperatureDifferenceSupplyReturn" unit="K">7</IBK:Parameter>
+				</SurfaceHeating>
+			</SurfaceHeatings>
 			<Pipes>
 				<NetworkPipe id="1000001" displayName=" 20 x 2">
 					<IBK:Parameter name="DiameterOutside" unit="mm">20</IBK:Parameter>
@@ -1367,10 +1385,43 @@
 					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
 				</NetworkPipe>
 			</Pipes>
+			<Schedules>
+				<Schedule id="6005" displayName="DE: TF08.3 |EN: TF08.3;">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+									<TimePoints>0,6,7,8,11,13,16,17,18</TimePoints>
+									<Values>0,0.25,0.58,0.83,0.67,0.83,0.58,0.25,0</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="1060001" displayName="DE: Konstant |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,18,20,21</TimePoints>
+									<Values>0,0.02,0.94,1</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
 			<InternalLoads>
 				<InternalLoad id="70004" displayName="DE: Internal Load -&gt; 2 W/m2 |EN: &lt;new internal load model&gt;" color="#5ac5ff">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
+					<IdPowerManagementSchedule>1060001</IdPowerManagementSchedule>
 					<ActivateCO2Production>false</ActivateCO2Production>
 					<IBK:Parameter name="Power" unit="W">2</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">2</IBK:Parameter>
@@ -1383,9 +1434,16 @@
 				<ZoneControlThermostat id="110001" displayName="DE: Thermostat Bockwen Wohnen |EN: &lt;new zone control thermostat model&gt;" color="#8aff5a">
 					<ControlValue>AirTemperature</ControlValue>
 					<ControllerType>Analog</ControllerType>
+					<IdHeatingSetpointSchedule>6005</IdHeatingSetpointSchedule>
 					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
 				</ZoneControlThermostat>
 			</ZoneControlThermostats>
+			<ZoneIdealHeatingCooling>
+				<ZoneIdealHeatingCooling id="1075001" displayName="DE: Ideale Heizung |EN: &lt;new zone ideal heating cooling model&gt;" color="#02ff05">
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+				</ZoneIdealHeatingCooling>
+			</ZoneIdealHeatingCooling>
 			<Infiltration>
 				<Infiltration id="140003" displayName="DE: Bockwen Infiltration |EN: &lt;new zone control infiltration model&gt;" color="#5a6eff">
 					<AirChangeType>normal</AirChangeType>
@@ -1397,10 +1455,12 @@
 					<IntLoadEquipment>70004</IntLoadEquipment>
 					<ControlThermostat>110001</ControlThermostat>
 					<Infiltration>140003</Infiltration>
+					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
 				<ZoneTemplate id="80005" displayName="DE: Bockwen Bad |EN: &lt;new zone template&gt;" color="#fe5aff">
 					<ControlThermostat>110001</ControlThermostat>
 					<Infiltration>140003</Infiltration>
+					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
 				<ZoneTemplate id="80021" displayName="DE: Bockwen unbeheizt |EN: &lt;new zone template&gt;" color="#e9b96e">
 					<Infiltration>140003</Infiltration>

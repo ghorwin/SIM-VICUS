@@ -54,7 +54,7 @@ void SVPluginLoader::loadPlugins() {
 	pluginsDir = QDir(QtExt::Directories::userDataDir() + "/plugins");
 #if defined(Q_OS_WIN32)
 	// Mind: we need a variable for the converted wstring here!!!
-	std::wstring plugDir = pluginsDir.absolutePath().toStdWString();
+	plugDir = pluginsDir.absolutePath().toStdWString();
 	SetDllDirectoryW(plugDir.c_str());
 #endif
 	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );

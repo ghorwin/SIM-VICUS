@@ -267,7 +267,13 @@ void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_cellD
 
 void SVPropBuildingSubComponentsWidget::openEditSubSurfaceComponentsDialog() {
 	const VICUS::SubSurfaceComponent * comp = currentlySelectedSubSurfaceComponent();
-	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+
+	// when we have an invalid sub surface component we assign a new sub surface component instead of editing
+	if(comp == nullptr){
+		on_pushButtonAssignSubSurfaceComponent_clicked();
+		return;
+	}
+
 	int currentRow = m_ui->tableWidgetSubSurfaceComponents->currentRow();
 	SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->edit(comp->m_id);
 	// Note: project data isn't modified, since only user DB data was changed.

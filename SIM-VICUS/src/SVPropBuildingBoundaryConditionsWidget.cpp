@@ -127,6 +127,13 @@ void SVPropBuildingBoundaryConditionsWidget::openEditBoundaryConditionsDialog() 
 	std::map<const VICUS::BoundaryCondition*, std::set<const VICUS::Surface *> >::const_iterator it = m_bcSurfacesMap.begin();
 	std::advance(it, currentRow);
 	const VICUS::BoundaryCondition* bc = it->first;
+
+	// when we have an invalid bc we assign a new bc instead of editing
+	if(bc == nullptr){
+		on_pushButtonSelectBoundaryConditions_clicked();
+		return;
+	}
+
 	// start DB editor for selected boundary condition
 	SVMainWindow::instance().dbBoundaryConditionEditDialog()->edit(bc->m_id);
 	// Note: project data isn't modified, since only user DB data was changed.

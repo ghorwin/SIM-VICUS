@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2.0">
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/anton/git/SIM-VICUS-Fork/data</Placeholder>
+		<Placeholder name="User Database">/home/anton/.local/share/SIM-VICUS</Placeholder>
+	</DirectoryPlaceholders>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<Project>
+		<ProjectInfo>
+			<Comment>Project file: /home/anton/Documents/Vicus-Files/examples/shadingTest.vicus&#x0A;</Comment>
+			<Created>Di. Jan. 3 17:54:50 2023</Created>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+			<Sensors>
+				<Sensor id="2000000">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+				<Sensor id="2000001">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<Sensor id="2000002">
+					<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<Sensor id="2000003">
+					<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+				<Sensor id="2000004">
+					<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				</Sensor>
+			</Sensors>
+		</Location>
+		<SimulationParameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="s">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<Zones>
+			<Zone id="3" displayName="Building.Ground floor.Room(3)" type="Active">
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">135</IBK:Parameter>
+			</Zone>
+			<Zone id="27" displayName="Building.Ground floor.Room(27)" type="Active">
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">135</IBK:Parameter>
+			</Zone>
+			<Zone id="37" displayName="Building.Ground floor.Roof(37)" type="Active">
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">50</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="2" displayName="Floor">
+				<ConstructionTypeId>1</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="4" displayName="Ceiling">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="5" displayName="Wall 1">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">27</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="6" displayName="Window #48">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="2">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="7" displayName="Wall 2">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">13.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="8" displayName="Window #50">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="3">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="9" displayName="Wall 3">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">27</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="10" displayName="Window #52">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="4">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="11" displayName="Wall 4">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">13.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Building.Ground floor.Room(3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="12" displayName="Window #54">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="5">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="13" displayName="Floor">
+				<ConstructionTypeId>1</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="14" displayName="Ceiling">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="15" displayName="Wall 1">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">27</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="16" displayName="Wall 2">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">13.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="17" displayName="Wall 3">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">27</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="18" displayName="Window #43">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="6">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="19" displayName="Wall 4">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">13.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="27">
+					<!--Interface to 'Building.Ground floor.Room(27)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="20" displayName="Window #45">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="6">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="21" displayName="Roof surface 1">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">11.3</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">51</IBK:Parameter>
+				<InterfaceA id="1" zoneId="37">
+					<!--Interface to 'Building.Ground floor.Roof(37)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="22" displayName="Window #47">
+						<IBK:Parameter name="Area" unit="m2">1.8</IBK:Parameter>
+						<Window glazingSystemId="3004">
+							<Shading modelType="Controlled" controlModelId="7">
+								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+							</Shading>
+						</Window>
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+			<ConstructionInstance id="23" displayName="Wall surface 1">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="37">
+					<!--Interface to 'Building.Ground floor.Roof(37)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="24" displayName="Wall surface 2">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="37">
+					<!--Interface to 'Building.Ground floor.Roof(37)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="25" displayName="Wall surface 3">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="37">
+					<!--Interface to 'Building.Ground floor.Roof(37)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="26" displayName="Floor">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">50</IBK:Parameter>
+				<InterfaceA id="1" zoneId="37">
+					<!--Interface to 'Building.Ground floor.Roof(37)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="3" displayName="[SimQuality] TF03 Construction 1 (concrete wall)">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="10000" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="1" displayName="[SimQuality] TF03 Construction 2 (insulation)">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.1" matId="10002" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="2" displayName="[SimQuality] TF12 Construction 3 (CeilingConstruction)">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.01" matId="10007" />
+					<MaterialLayer thickness="0.2" matId="10009" />
+					<MaterialLayer thickness="0.04" matId="10003" />
+					<MaterialLayer thickness="0.06" matId="10010" />
+					<MaterialLayer thickness="0.01" matId="10012" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="10000" displayName="[SimQuality] Concrete">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="10002" displayName="[SimQuality] Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="10003" displayName="[SimQuality] PUR">
+				<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="10007" displayName="[SimQuality] Gypsum plaster">
+				<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
+			</Material>
+			<Material id="10009" displayName="[SimQuality] reinforced concrete">
+				<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
+			</Material>
+			<Material id="10010" displayName="[SimQuality] flowing screed">
+				<IBK:Parameter name="Density" unit="kg/m3">2060</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
+			</Material>
+			<Material id="10012" displayName="[SimQuality] Carpeting">
+				<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+			</Material>
+			<Material id="5500000" displayName="Dummy material">
+				<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+			</Material>
+		</Materials>
+		<WindowGlazingSystems>
+			<WindowGlazingSystem id="3004" displayName="[SimQuality] TF07.3 MIG angle-dependent" modelType="Simple">
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
+				<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+					<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+					<Y unit="---">0.6 0.6 0.6 0.6 0.588 0.564 0.516 0.414 0.222 0 </Y>
+				</LinearSplineParameter>
+			</WindowGlazingSystem>
+		</WindowGlazingSystems>
+		<Schedules />
+		<Models>
+			<ShadingControlModels>
+				<ShadingControlModel id="7" sensorId="2000000">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">150</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">100</IBK:Parameter>
+				</ShadingControlModel>
+				<ShadingControlModel id="5" sensorId="2000001">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">151</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">101</IBK:Parameter>
+				</ShadingControlModel>
+				<ShadingControlModel id="2" sensorId="2000002">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">152</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">102</IBK:Parameter>
+				</ShadingControlModel>
+				<ShadingControlModel id="3" sensorId="2000003">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">153</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">103</IBK:Parameter>
+				</ShadingControlModel>
+				<ShadingControlModel id="4" sensorId="2000004">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">154</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">104</IBK:Parameter>
+				</ShadingControlModel>
+				<ShadingControlModel id="6" sensorId="2000000">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">120</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">70</IBK:Parameter>
+				</ShadingControlModel>
+			</ShadingControlModels>
+		</Models>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>IdealHeatingLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>IdealCoolingLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ConvectiveEquipmentHeatLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ConvectiveLightingHeatLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ConvectivePersonHeatLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>objListCI</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>Temperature</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SWRadDirectNormal</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SWRadDiffuseHorizontal</Quantity>
+					<TimeType>Mean</TimeType>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="objListCI">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		<FMIDescription />
+	</Project>
+</NandradProject>
