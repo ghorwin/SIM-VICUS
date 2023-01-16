@@ -33,8 +33,6 @@
 #include "Vic3DOpenGLWindow.h"
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
-#include "Vic3DGridObject.h"
-#include "Vic3DCamera.h"
 #include "Vic3DScene.h"
 
 class QOpenGLFramebufferObject;
@@ -50,6 +48,22 @@ namespace Vic3D {
 class SceneView : public OpenGLWindow {
 	Q_OBJECT
 public:
+
+	enum CameraPosition {
+		CP_Reset,
+		CP_FindSelection,
+		CP_North,
+		CP_East,
+		CP_South,
+		CP_West,
+		CP_Above,
+		CP_BirdEyeNorthEast,
+		CP_BirdEyeNorthWest,
+		CP_BirdEyeSouthEast,
+		CP_BirdEyeSouthWest,
+		NUM_CP
+	};
+
 	SceneView();
 	virtual ~SceneView() override;
 
@@ -73,7 +87,7 @@ public:
 	/*! Resets the camera position to be looking nicely onto the scene.
 		See SVGeometryView::resetCamera().
 	*/
-	void resetCamera(int position);
+	void resetCamera(CameraPosition position);
 
 	/*! Calculate Camera Offset. */
 	double calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension,
