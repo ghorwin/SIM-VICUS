@@ -18,7 +18,7 @@ public:
 	/*! This is the central import function, that is executed when the user
 		selects the respective menu action.
 		\param parent Parent widget pointer, to be used as parent for modal dialogs.
-		\param p The VICUS project data as text.
+		\param projectText The VICUS project data as xml text to be populated.
 
 		\return Returns true if the import was succcessful and SIM-VICUS shall use the populated VICUS-project
 			data (either as new project or merged into/added to the existing project). If false is returned,
@@ -28,7 +28,7 @@ public:
 
 		\note Do not allow exceptions to leave this function, so wrap everything into a try-catch clause!
 	*/
-	virtual bool import(QWidget * parent, QString & p) = 0;
+	virtual bool import(QWidget * parent, QString& projectText) = 0;
 };
 
 
