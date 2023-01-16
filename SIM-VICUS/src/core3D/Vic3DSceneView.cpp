@@ -252,7 +252,7 @@ double logarithmicDistance(double max){
 }
 
 
-void SceneView::resetCamera(CameraPostion cameraPosition) {
+void SceneView::resetCamera(CameraPosition cameraPosition) {
 
 	std::vector<const VICUS::Surface*> surfaces;
 	std::vector<const VICUS::SubSurface*> subsurfaces;
