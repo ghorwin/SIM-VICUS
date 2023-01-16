@@ -245,10 +245,10 @@ double logarithmicDistance(double max){
 	double a = 4.3;
 	double b = 0.97;
 	double c = 1.12;
-	double d =0.9;
+	double d = 0.9;
 	double e = 2;
-	return pow(a * log10(b * max + c) + d, e);
 
+	return pow(a * log10(b * max + c) + d, e);
 }
 
 
@@ -272,7 +272,7 @@ void SceneView::resetCamera(int position) {
 	// center and bDim will be overriden
 	IBKMK::Vector3D center(0,0,0);
 	// compute bounding box of selected geometry
-	IBKMK::Vector3D bDim(0,0,0);
+	IBKMK::Vector3D bbDim(0,0,0);
 
 	if (selectedObjects.empty()){
 		// take all surfsaces into account
@@ -289,7 +289,7 @@ void SceneView::resetCamera(int position) {
 			}
 		}
 	}
-	bDim = project().boundingBox(surfaces, subsurfaces, center);
+	bbDim = project().boundingBox(surfaces, subsurfaces, center);
 
 
 	switch (position) {
@@ -301,35 +301,35 @@ void SceneView::resetCamera(int position) {
 			}
 		case 1 : // from south
 			{
-				double offset =  logarithmicDistance(std::max(bDim.m_x, bDim.m_z))+ bDim.m_y/2;
+				double offset =  logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
 				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, offset,0);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
 				break;
 			}
 		case 2 : // from west
 			{
-				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_z)) +bDim.m_x/2;
+				double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
 				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(offset, 0, 0);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
 				break;
 			}
 		case 3 : // from north
 			{
-				double offset = logarithmicDistance(std::max(bDim.m_x, bDim.m_z))+ bDim.m_y/2;
+				double offset = logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
 				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, offset,0);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
 				break;
 			}
 		case 4 : // from east
 			{
-				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_z)) +bDim.m_x/2;
+				double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
 				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(offset , 0, 0);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
 				break;
 			}
 		case 5 : // from above
 			{
-				double offset = logarithmicDistance(std::max(bDim.m_y, bDim.m_x)) + bDim.m_z/2;
+				double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_x)) + bbDim.m_z/2;
 				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, offset);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
 				break;
@@ -344,22 +344,20 @@ void SceneView::resetCamera(int position) {
 			const double &x = direction.m_x;
 			const double &y = direction.m_y;
 			const double &z = direction.m_z;
+
+			IBKMK::Vector3D scalingFactors(0,0,0);
 			// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
 			// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
-			double percentageZ = 0;
-			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
-				percentageZ = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
-
-			double percentageY = 0;
-			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
-				percentageY = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
-
-			double percentageX = 0;
 			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z)))
-				percentageX = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
+				scalingFactors.m_x = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
 
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
+				scalingFactors.m_y = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
 
-			double offset = logarithmicDistance(std::max(bDim.m_x * percentageX + bDim.m_y * percentageY, bDim.m_z * percentageZ));
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
+				scalingFactors.m_z = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
+
+			double offset = calculateCameraOffset(bbDim, scalingFactors);
 			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
 
 		} break;
@@ -367,32 +365,32 @@ void SceneView::resetCamera(int position) {
 		case 7: // birds eye view from south east
 			{
 				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
-				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x / 2 + offset, -(bDim.m_y / 2 + offset), bDim.m_z / 2 + offset);
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
 				break;
 			}
 		case 8: // birds eye view from south west
 			{
 				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
-				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x / 2 + offset), -(bDim.m_y / 2 + offset), bDim.m_z / 2 + offset);
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
 				break;
 			}
 		case 9: // birds eye view from north east
 			{
 				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
-				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x / 2 + offset, bDim.m_y / 2 + offset, bDim.m_z / 2 + offset);
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
 				break;
 			}
 		case 10: // birds eye view from north west
 			{
 				// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bDim.m_x + bDim.m_y) * 0.707106781,  bDim.m_z * 0.816500508)), 2)/3);
-				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x / 2 + offset), bDim.m_y / 2 + offset, bDim.m_z / 2 + offset);
+				double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+				SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
 				SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
 				break;
 			}
@@ -400,6 +398,14 @@ void SceneView::resetCamera(int position) {
 	}
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
+}
+
+double SceneView::calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension, const IBKMK::Vector3D &scalingFactors) {
+
+	double factor1 = boundingBoxDimension.m_x * scalingFactors.m_x + boundingBoxDimension.m_y * scalingFactors.m_y;
+	double factor2 = boundingBoxDimension.m_z * scalingFactors.m_z;
+
+	return logarithmicDistance(std::max(factor1, factor2));
 }
 
 

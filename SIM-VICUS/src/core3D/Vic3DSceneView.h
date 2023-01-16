@@ -75,6 +75,10 @@ public:
 	*/
 	void resetCamera(int position);
 
+	/*! Calculate Camera Offset. */
+	double calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension,
+							   const IBKMK::Vector3D &scalingFactors);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
