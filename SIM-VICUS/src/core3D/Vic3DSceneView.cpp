@@ -395,27 +395,6 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 
 	} break;
 
-		case 7: // birds eye view from south east
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x + factor, -(bDim.m_y + factor), bDim.m_z + factor);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
-			break;
-
-		case 8: // birds eye view from south west
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x + factor), -(bDim.m_y + factor), bDim.m_z + factor);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
-			break;
-
-		case 9: // birds eye view from north east
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bDim.m_x + factor, +(bDim.m_y + factor), bDim.m_z + factor);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
-			break;
-
-		case 10: // birds eye view from north west
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bDim.m_x + factor), +(bDim.m_y + factor), bDim.m_z + factor);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
-			break;
-
-
 	}
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
