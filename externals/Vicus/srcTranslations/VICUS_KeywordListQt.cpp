@@ -129,7 +129,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Time period for consideration [a].");
 	tr("Yearly price increase [%].");
 	tr("Calculation factor for simple mode calculation (BNB). [-]");
-	tr("Net usage area [-].");
+	tr("Net usage area [m2].");
 	tr("Raw material procurement (A1)");
 	tr("Transport (A2)");
 	tr("Production (A3)");
@@ -173,6 +173,8 @@ KeywordListQt::KeywordListQt() {
 	tr("CladdingSystems");
 	tr("Foils");
 	tr("Miscellaneous");
+	tr("Thickness of the material layer.");
+	tr("Lifetime of the material layer.");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Only Hydraulic calculation with constant temperature");
