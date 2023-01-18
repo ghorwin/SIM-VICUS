@@ -240,7 +240,7 @@ void SVDBConstructionEditWidget::updateTable() {
 			}
 			m_ui->tableWidget->setItem(i+1,0,item);
 
-			item = new QTableWidgetItem(QString("%L1").arg(layer.m_thickness.value*100, 0, 'f', 1)); // thickness in cm
+			item = new QTableWidgetItem(QString("%L1").arg(layer.m_para[VICUS::MaterialLayer::P_Thickness].value*100, 0, 'f', 1)); // thickness in cm
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			if (m_current->m_builtIn) {
 				item->setFlags(Qt::ItemIsEnabled);
@@ -268,10 +268,10 @@ void SVDBConstructionEditWidget::updateTable() {
 			m_ui->tableWidget->setItem(i+1,4,item);
 
 			QString string;
-			if (layer.m_lifetime.empty())
+			if (layer.m_para[VICUS::MaterialLayer::P_LifeTime].empty())
 				string = "-"; // if no value has been set, we show just '-'
 			else
-				string = QString("%L1").arg(layer.m_lifetime.get_value("a")/100, 0, 'f', 1); // MIND: We store all cost in EuroCent ergo /100
+				string = QString("%L1").arg(layer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a"), 0, 'f', 1); // MIND: We store all cost in EuroCent ergo /100
 			item = new QTableWidgetItem(string);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,5,item);
@@ -284,10 +284,10 @@ void SVDBConstructionEditWidget::updateTable() {
 				item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			}
 
-			if (layer.m_lifetime.empty())
+			if (layer.m_cost.empty())
 				string = "-";
 			else
-				string = QString("%L1").arg(layer.m_lifetime.get_value("a"), 0, 'f', 1);
+				string = QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 1);
 			item = new QTableWidgetItem(string);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,6,item);
@@ -304,7 +304,7 @@ void SVDBConstructionEditWidget::updateTable() {
 			QTableWidgetItem * item = new QTableWidgetItem(tr("<select material>"));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,0,item);
-			item = new QTableWidgetItem(QString("%L1").arg(layer.m_thickness.value*100, 0, 'f', 1));
+			item = new QTableWidgetItem(QString("%L1").arg(layer.m_para[VICUS::MaterialLayer::P_Thickness].value*100, 0, 'f', 1));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,1,item);
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -328,10 +328,10 @@ void SVDBConstructionEditWidget::updateTable() {
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 			QString string;
-			if (layer.m_lifetime.empty())
+			if (layer.m_para[VICUS::MaterialLayer::P_LifeTime].empty())
 				string = "";
 			else
-				string = QString("%L1").arg(layer.m_lifetime.get_value("a"), 0, 'f', 1);
+				string = QString("%L1").arg(layer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a"), 0, 'f', 1);
 			item = new QTableWidgetItem(string);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,6,item);
@@ -376,7 +376,7 @@ void SVDBConstructionEditWidget::updateConstructionView() {
 			layer.m_name = tr("<select material>");
 		}
 
-		layer.m_width = m_current->m_materialLayers[i].m_thickness.value;
+		layer.m_width = m_current->m_materialLayers[i].m_para[VICUS::MaterialLayer::P_Thickness].value;
 //		if (!layer.m_color.isValid())
 			layer.m_color = QtExt::ConstructionView::ColorList[i % 12];
 		layer.m_id = (int)matID;
@@ -492,8 +492,8 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 		}
 		double valM = val / 100.0; // internal thickness in m
 		// we only accept changes up to 0.1 mm as different
-		if (!IBK::nearly_equal<4>(m_current->m_materialLayers[materialLayerIdx].m_thickness.value, valM)) {
-			m_current->m_materialLayers[materialLayerIdx].m_thickness.value = valM;
+		if (!IBK::nearly_equal<4>(m_current->m_materialLayers[materialLayerIdx].m_para[VICUS::MaterialLayer::P_Thickness].value, valM)) {
+			m_current->m_materialLayers[materialLayerIdx].m_para[VICUS::MaterialLayer::P_Thickness].value = valM;
 			modelModify();
 		}
 		updateUValue();
@@ -518,7 +518,7 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 			QTableWidgetItem * item2 = m_ui->tableWidget->item(row, col);
 			item2->setBackground(QBrush());
 		}
-		m_current->m_materialLayers[materialLayerIdx].m_lifetime.set("Lifetime", val);
+		m_current->m_materialLayers[materialLayerIdx].m_para[VICUS::MaterialLayer::P_LifeTime].set("Lifetime", val, "a");
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
