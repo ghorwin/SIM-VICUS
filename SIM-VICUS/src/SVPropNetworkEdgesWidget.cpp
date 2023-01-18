@@ -43,7 +43,6 @@ SVPropNetworkEdgesWidget::~SVPropNetworkEdgesWidget()
 
 
 void SVPropNetworkEdgesWidget::updateUi() {
-	Q_ASSERT(!m_pa->m_currentEdges.empty());
 
 	// enable / disable wiudgets
 	bool uniformEdge = m_pa->uniformProperty(m_pa->m_currentEdges, &VICUS::NetworkEdge::m_idPipe) && m_pa->m_currentNodes.empty();
