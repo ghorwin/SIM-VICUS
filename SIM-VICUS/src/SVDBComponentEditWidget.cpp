@@ -204,7 +204,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 				layer.m_name = tr("<select material>");
 			}
 
-			layer.m_width = con->m_materialLayers[i].m_thickness.value;
+			layer.m_width = con->m_materialLayers[i].m_para[VICUS::MaterialLayer::P_Thickness].value;
 	//		if (!layer.m_color.isValid())
 				layer.m_color = QtExt::ConstructionView::ColorList[i % 12];
 			layer.m_id = (int)matID;
