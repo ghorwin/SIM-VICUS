@@ -8,6 +8,7 @@
 #include <SVSettings.h>
 
 #include <VICUS_LcaSettings.h>
+#include <VICUS_LccSettings.h>
 #include <VICUS_Project.h>
 
 namespace Ui {
@@ -187,6 +188,9 @@ private:
 
 	/*! Pointer to LCA Settings. */
 	VICUS::LcaSettings									*m_lcaSettings = nullptr;
+
+	/*! Pointer to LCC Settings. */
+	VICUS::LccSettings									*m_lccSettings = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;

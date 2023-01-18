@@ -110,7 +110,8 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettin
 		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::CertificationSytem", i), i);
 
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
-	m_ui->lineEditPriceIncrease->setup(0, 100, "Price increase", true, true);
+	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "Energy Price increase", true, true);
+	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "General Price increase", true, true);
 	m_ui->lineEditTimePeriod->setup(0, 1e10, "Time period for evaluation", false, true);
 
 	updateUi();
@@ -879,7 +880,9 @@ void SVSimulationLCAOptions::updateUi() {
 	m_ui->lineEditArea->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
 	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
-	m_ui->lineEditPriceIncrease->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_PriceIncrease].get_value("%")));
+	m_ui->lineEditInterestRate->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LccSettings::P_CalculationInterestRate].get_value("%")));
+	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
+	m_ui->lineEditPriceIncreaseGeneral->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].get_value("%")));
 
 	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
 									SVSettings::instance().m_dontUseNativeDialogs);
@@ -1149,9 +1152,9 @@ void SVSimulationLCAOptions::on_lineEditTimePeriod_editingFinishedSuccessfully()
 
 void SVSimulationLCAOptions::on_lineEditPriceIncrease_editingFinishedSuccessfully() {
 	if(m_ui->lineEditArea->isValid()) {
-		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_PriceIncrease, m_ui->lineEditArea->value());
+		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditArea->value());
 	}
 	else
-		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_PriceIncrease].value);
+		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
 }
 

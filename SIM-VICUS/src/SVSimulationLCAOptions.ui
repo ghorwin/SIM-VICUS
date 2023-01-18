@@ -46,16 +46,6 @@
       <string>General</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,1,0,0,0,0">
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>m&lt;sup&gt;2&lt;/sup&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditArea"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
@@ -63,27 +53,37 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="5">
-       <widget class="QLabel" name="label_3">
+      <item row="0" column="5">
+       <widget class="QPushButton" name="pushButtonAreaDetection">
         <property name="text">
-         <string>a</string>
+         <string>auto-detect</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>m&lt;sup&gt;2&lt;/sup&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="3">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditArea"/>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Evaluation time period:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="4">
+      <item row="1" column="1" colspan="3">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditTimePeriod"/>
       </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="pushButtonAreaDetection">
+      <item row="1" column="4" colspan="2">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>auto-detect</string>
+         <string>a</string>
         </property>
        </widget>
       </item>
@@ -95,25 +95,39 @@
      <property name="title">
       <string>LCC-Settings</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Price increase:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditPriceIncrease"/>
-      </item>
-      <item row="0" column="2">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0">
+      <item row="0" column="3">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>%</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>%</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Price increase energy:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Calculation interest rate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditPriceIncreaseEnergy"/>
+      </item>
+      <item row="3" column="0" colspan="4">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <spacer name="horizontalSpacer_7">
@@ -136,6 +150,26 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Price increase general:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditPriceIncreaseGeneral"/>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>%</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditInterestRate"/>
       </item>
      </layout>
     </widget>
