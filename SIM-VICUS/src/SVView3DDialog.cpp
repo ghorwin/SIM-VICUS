@@ -28,6 +28,7 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVDatabase.h"
+#include "SVProjectHandler.h"
 
 #include "VICUS_Project.h"
 #include "VICUS_Surface.h"
@@ -60,7 +61,7 @@ void SVView3DDialog::exportView3d() {
 	unsigned int surfaceId = 0;
 	unsigned int offset = 1;
 
-	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFacorMap;
+	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFactorMap;
 
 	for (const VICUS::Surface *surf : m_selSurfaces) {
 
@@ -70,7 +71,7 @@ void SVView3DDialog::exportView3d() {
 
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
-        const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon3D().vertexes();
+		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon3D().vertexes();
 		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
 		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
 
@@ -88,8 +89,9 @@ void SVView3DDialog::exportView3d() {
 
 		view3dExtendedSurfaces extendedSurf ( surf->m_id );
 		v3dRoom.m_extendedSurfaces.push_back( extendedSurf );
-
+		m_exportedObjects.push_back(surf);
 		for (const VICUS::SubSurface &subSurf : s.subSurfaces() ) {
+			m_exportedObjects.push_back(&subSurf);
 			view3dExtendedSurfaces extendedSubSurf ( subSurf.m_id, true );
 			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
 		}
@@ -126,8 +128,8 @@ void SVView3DDialog::exportView3d() {
 
 			v3dRoom.m_surfaces.push_back(sView3d);
 
-			surfToViewFacorMap[&v3dRoom] = std::map<const VICUS::Surface*,double> ();
-			surfToViewFacorMap[&v3dRoom][surf] = 0.0;
+			surfToViewFactorMap[&v3dRoom] = std::map<const VICUS::Surface*,double> ();
+			surfToViewFactorMap[&v3dRoom][surf] = 0.0;
 
 			counter == 0 ? counter = surfaceId : 0; // we combine all triangles
 		}
@@ -171,8 +173,8 @@ void SVView3DDialog::exportView3d() {
 
 				v3dRoom.m_surfaces.push_back(sView3d);
 
-				surfToViewFacorMap[&v3dRoom] = std::map<const VICUS::Surface*,double> ();
-				surfToViewFacorMap[&v3dRoom][surf] = 0.0;
+				surfToViewFactorMap[&v3dRoom] = std::map<const VICUS::Surface*,double> ();
+				surfToViewFactorMap[&v3dRoom][surf] = 0.0;
 
 				counter == 0 ? counter = surfaceId : 0; // we combine all triangles
 			}
@@ -337,10 +339,24 @@ void SVView3DDialog::exportView3d() {
 			return; // abort export
 		}
 
-		//readView3dResults(IBK::Path(result.toStdString() ), room );
+		readView3dResults(IBK::Path(result.toStdString() ), room );
 	}
 	QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
 
+}
+
+// return the object area depending if its a surface or subsurface
+double areaFromVicusObject(const VICUS::Object * obj){
+	const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(obj);
+	if(surf != nullptr) {
+		return surf->areaWithoutSubsurfaces();
+	} else {
+		const VICUS::SubSurface * subSurf = dynamic_cast< const VICUS::SubSurface *>(obj);
+		if (subSurf != nullptr) {
+			return subSurf->m_polygon2D.area();
+		}
+	}
+	return -1;
 }
 
 void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
@@ -361,8 +377,8 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 
 	// extract vector of string-xy-pairs
 	std::vector<std::string> tokens;
-	for ( unsigned int i=0; i<cont.size()-1; ++i ) { // we do not want to read the last line
-		if ( i == 0 )
+	for ( unsigned int i=0; i< cont.size(); ++i ) {
+		if ( i == 0 || i+1 == cont.size())	// skip first and last line
 			continue;
 
 		std::string &line = cont[i];
@@ -371,11 +387,38 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 		for ( unsigned int j=0; j<tokens.size(); ++j ) {
 			std::string &token = tokens[j];
 			if ( i == 1 ) {
-				area[j] = IBK::string2val<double>(token); // we take this to check our surface
+				// store all the areas from the first line of the result file
+				area[j] = IBK::string2val<double>(token);
+				continue;
+			}
+			// check if the area is almost matching
+			auto a = areaFromVicusObject(m_exportedObjects[j]);
+			if(areaFromVicusObject(m_exportedObjects[j])- area[j] < 0.1){
+
+				// check if the current object is a surface or a subsurface
+				const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(m_exportedObjects[i-2]);
+				if (surf != nullptr) {
+					// is a surface
+					// store the viewFactor
+					const_cast<VICUS::Surface *>(surf)->m_viewFactors[m_exportedObjects[j]->m_id] = IBK::string2val<double>(token);
+				}
+				else {
+					// then the object should be a subsurface
+					const VICUS::SubSurface * subSurf = dynamic_cast< const VICUS::SubSurface *>(m_exportedObjects[i-2]);
+					if (subSurf != nullptr) {
+						// is a surface
+						// store the viewFactor
+						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors[m_exportedObjects[j]->m_id] = IBK::string2val<double>(token);
+					}
+					else {
+						throw IBK::Exception(IBK::FormatString("Exported Object is wether a surface nor a subsurface"), FUNC_ID);
+					}
+				}
 			}
 			else {
-				v3dRoom.m_extendedSurfaces[i-2].m_vicSurfIdToViewFactor[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
+				throw IBK::Exception(IBK::FormatString("Area of subsurface does not match!"), FUNC_ID);
 			}
+
 		}
 	}
 }

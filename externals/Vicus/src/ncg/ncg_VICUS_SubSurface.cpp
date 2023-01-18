@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void SubSurface::readXML(const TiXmlElement * element) {
-	FUNCID(SubSurface::readXML);
+void SubSurface::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(SubSurface::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -77,7 +77,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
+TiXmlElement * SubSurface::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("SubSurface");
 	parent->LinkEndChild(e);

@@ -49,8 +49,11 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE
+	VICUS_READWRITE_PRIVATE
 	VICUS_COMPARE_WITH_ID
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Sets color based on sub-surface type. */
 	void updateColor();
@@ -83,6 +86,9 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
+
+	/*! Map that stores the id of a (sub)surface and the viewFactor onte that (subSurface) */
+	std::map<unsigned int, double>		m_viewFactors;
 };
 
 } // namespace VICUS
