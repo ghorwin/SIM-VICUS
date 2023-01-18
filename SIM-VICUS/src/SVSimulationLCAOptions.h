@@ -155,13 +155,6 @@ private:
 	*/
 	void aggregateAggregatedComponentsByType();
 
-	/*! Converts the material to the referenced reference quantity from the epd.
-		\param layerThickness Thickness of layer in m
-		\param layerArea Area of layer in m
-	*/
-	double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
-											double layerThickness, double layerArea);
-
 	/*! Writes calculated LCA data to a specified path. */
 	void writeLcaDataToTxtFile(const IBK::Path & resultPath);
 

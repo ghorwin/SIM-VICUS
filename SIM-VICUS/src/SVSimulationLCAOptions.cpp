@@ -30,6 +30,7 @@
 // std
 #include <fstream>
 
+
 SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings & settings) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationLCAOptions),
@@ -740,7 +741,7 @@ void SVSimulationLCAOptions::aggregateProjectComponents() {
 
 		for(const VICUS::MaterialLayer &matLayer : con->m_materialLayers) {
 			// Check Cost & lifetime of used Materials
-			bool isLifetimeDefined = !matLayer.m_lifetime.empty();
+			bool isLifetimeDefined = !matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].empty();
 			bool isCostDefined = !matLayer.m_cost.empty();
 			// Check EPDs of used Materials
 			const VICUS::Material *mat = m_db->m_materials[matLayer.m_idMaterial];
@@ -786,29 +787,6 @@ void SVSimulationLCAOptions::aggregateAggregatedComponentsByType() {
 	}
 }
 
-double SVSimulationLCAOptions::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
-																double layerThickness, double layerArea){
-	if(refUnit.name() == "kg")
-		return layerArea * layerThickness * layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); // area * thickness * density --> layer mass
-
-	if(refUnit.name() == "m2")
-		return layerArea;
-
-	if(refUnit.name() == "m3")
-		return layerArea * layerThickness;
-
-	if(refUnit.name() == "-")
-		return 1; // Pieces are always set to 1 for now
-
-	if(refUnit.name() == "MJ")
-		return 1; // Also not implemented yet
-
-	if(refUnit.name() == "kg/m3")
-		return layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3");
-
-	if(refUnit.name() == "a")
-		return 50; // Also not implemented yet
-}
 
 void SVSimulationLCAOptions::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
 											   const VICUS::EpdDataset::Category &category) {
@@ -897,6 +875,8 @@ void SVSimulationLCAOptions::updateUi() {
 	m_ui->groupBoxLcaCalc->blockSignals(true);
 	m_ui->groupBoxLccSettings->blockSignals(true);
 	m_ui->groupBoxGeneral->blockSignals(true);
+
+	m_ui->lineEditArea->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
 	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
 	m_ui->lineEditPriceIncrease->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_PriceIncrease].get_value("%")));
@@ -1019,33 +999,35 @@ void SVSimulationLCAOptions::calculateTotalLcaDataForComponents() {
 			// We have to think about renewing our materials as well
 			// If no lifetime is defined, we take for now 50 years
 			double lifeTime;
-			if(matLayer.m_lifetime.empty())
+			if(matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].empty())
 				lifeTime = 50;
 			else
-				lifeTime = matLayer.m_lifetime.get_value();
+				lifeTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value();
 
-			double renewingFactor = (lifeTime / m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value());
+			double renewingFactor = m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / lifeTime;
+
+
 			// We do the unit conversion and handling to get all our reference units correctly managed
 			if(epdCatA != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryA]
 						= epdCatA->scaleByFactor( renewingFactor *
-							conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
-															 mat, matLayer.m_thickness.get_value("m"), area));
+							SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
+															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatB != nullptr) // no renewing period scaling since it is already normated for 1 a
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryB]
 						= epdCatB->scaleByFactor(
-							conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
-															 mat, matLayer.m_thickness.get_value("m"), area));
+							SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
+															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatC != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryC]
 						= epdCatC->scaleByFactor( renewingFactor *
-							conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
-															 mat, matLayer.m_thickness.get_value("m"), area));
+							SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
+															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatD != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryD]
 						= epdCatD->scaleByFactor( renewingFactor *
-							conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
-															 mat, matLayer.m_thickness.get_value("m"), area));
+							SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
+															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 
 		}
 	}
@@ -1135,6 +1117,7 @@ void SVSimulationLCAOptions::on_pushButtonLcc_clicked() {
 void SVSimulationLCAOptions::on_pushButtonLca_clicked() {
 	try {
 		calculateLCA();
+		lcaResultsDialog()->setup();
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings);
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings);
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings);
