@@ -58,10 +58,19 @@ EpdCategoryDataset EpdCategoryDataset::scaleByFactor(const double & factor) cons
 }
 
 void EpdCategoryDataset::operator+=(const EpdCategoryDataset &otherEpd) {
-	for(unsigned int i=0; i<NUM_P; ++i)
-		m_para[i].value += otherEpd.m_para[i].value; // no testing needed so straight forward
+	FUNCID("EpdCategoryDataset::operator+=");
+	for(unsigned int i=0; i<NUM_P; ++i) {
+		if(m_para[i].empty())
+			m_para[i] = otherEpd.m_para[i];
+		else {
+			if(m_para[i].name != otherEpd.m_para[i].name)
+				throw IBK::Exception(IBK::FormatString("IBK::Parameter Displayname '%1' does not match '%2'")
+									 .arg(m_para[i].name)
+									 .arg(otherEpd.m_para[i].name), FUNC_ID);
+			m_para[i].value += otherEpd.m_para[i].value; // no testing needed so straight forward
+		}
+	}
 }
-
 
 void EpdCategoryDataset::readXML(const TiXmlElement * element) {
 	FUNCID(EpdCategoryDataset::readXML);

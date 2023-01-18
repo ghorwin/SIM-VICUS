@@ -107,6 +107,8 @@ public:
 	/*! Defines Operator += .*/
 	void operator+=(const EpdCategoryDataset& otherEpd);
 
+	void operator/(const EpdCategoryDataset& otherEpd);
+
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
