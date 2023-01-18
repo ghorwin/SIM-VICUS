@@ -5,8 +5,36 @@
 #include "ui_SVSimulationLCAResultsDialog.h"
 
 #include <QTreeWidgetItem>
-
 #include <VICUS_KeywordList.h>
+
+/*! Converts the material to the referenced reference quantity from the epd.
+	\param layerThickness Thickness of layer in m
+	\param layerArea Area of layer in m
+*/
+double SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
+																double layerThickness, double layerArea){
+	if(refUnit.name() == "kg")
+		return layerArea * layerThickness * layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); // area * thickness * density --> layer mass
+
+	if(refUnit.name() == "m2")
+		return layerArea;
+
+	if(refUnit.name() == "m3")
+		return layerArea * layerThickness;
+
+	if(refUnit.name() == "-")
+		return 1; // Pieces are always set to 1 for now
+
+	if(refUnit.name() == "MJ")
+		return 1; // Also not implemented yet
+
+	if(refUnit.name() == "kg/m3")
+		return layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3");
+
+	if(refUnit.name() == "a")
+		return 50; // Also not implemented yet
+}
+
 
 SVSimulationLCAResultsDialog::SVSimulationLCAResultsDialog(QWidget *parent) :
 	QDialog(parent),
@@ -39,6 +67,8 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 	rootItem->setFont(ColCategory, font);
 
 	VICUS::EpdCategoryDataset epdDataset;
+
+	const SVDatabase &db = SVSettings::instance().m_db;
 
 	for(std::map<VICUS::Component::ComponentType, AggregatedComponentData>::const_iterator itAggregatedComp = lcaResultMap.begin();
 		itAggregatedComp != lcaResultMap.end(); ++itAggregatedComp)
@@ -99,6 +129,43 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 
 			item->addChild(itemChild);
 
+
+
+			// Hopefully will work
+			const VICUS::Construction &con = *db.m_constructions[comp->m_idConstruction];
+			for(unsigned int i=0; i<con.m_materialLayers.size(); ++i) {
+				const VICUS::Material &mat = *db.m_materials[con.m_materialLayers[i].m_idMaterial];
+				const VICUS::MaterialLayer &matLayer = con.m_materialLayers[i];
+
+				const VICUS::EpdDataset *epdMat = db.m_epdDatasets[mat.m_epdCategorySet.m_idCategory[category]];
+
+				if(epdMat == nullptr)
+					continue; // no epd defined
+
+				double renewingFactor = category == VICUS::EpdDataset::C_CategoryB ?
+							1 :  // Usage is already normated
+							settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value();
+
+				VICUS::EpdCategoryDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
+				VICUS::EpdCategoryDataset scaledEpdCatData = epdCatData.scaleByFactor( renewingFactor * conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
+																							matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value(),
+																							aggregatedCompData.m_area) );
+
+				QTreeWidgetItem *itemMatChild = new QTreeWidgetItem();
+				itemMatChild->setText(ColConstructionName, QtExt::MultiLangString2QString(mat.m_displayName));
+				itemMatChild->setText(ColEpdName, QtExt::MultiLangString2QString(epdMat->m_displayName));
+				itemMatChild->setText(ColArea, QString::number(aggregatedCompData.m_area));
+				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
+
+				itemMatChild->setText(ColGWP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_GWP].get_value()));
+				itemMatChild->setText(ColAP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_AP].get_value()));
+				itemMatChild->setText(ColEP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_EP].get_value()));
+				itemMatChild->setText(ColODP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_ODP].get_value()));
+				itemMatChild->setText(ColPOCP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+
+				itemChild->addChild(itemMatChild);
+
+			}
 		}
 	}
 
@@ -120,7 +187,7 @@ void SVSimulationLCAResultsDialog::setup() {
 	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
 	QStringList headers;
-	headers << "Category" << "" << "Component type" << "Component name" << "Area [m2]" << "GWP (CO2-Äqu.) [kg/(m2a)";
+	headers << "Category" << "" << "Component type" << "Component name" << "Component name" << "EPD name" << "Area [m2]" << "GWP (CO2-Äqu.) [kg/(m2a)";
 	headers << "ODP (R11-Äqu.) [kg/(m2a)]" << "POCP (C2H4-Äqu.) [kg/(m2a)]" << "AP (SO2-Äqu.) [kg/(m2a)]" << "EP (PO4-Äqu.) [kg/(m2a)]";
 
 	m_ui->treeWidgetLcaResults->setHeaderLabels(headers);

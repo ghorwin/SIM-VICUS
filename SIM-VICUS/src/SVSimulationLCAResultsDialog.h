@@ -70,6 +70,9 @@ struct AggregatedComponentData {
 	/*! Area of all components used in VICUS project. */
 	double									m_area;
 
+	/*! Pointer to Database. */
+	SVDatabase								*m_db;
+
 	/*! Global EPD of used Component. */
 	VICUS::EpdDataset						m_totalEpdData[VICUS::EpdDataset::NUM_C];
 
@@ -93,6 +96,8 @@ class SVSimulationLCAResultsDialog : public QDialog
 		ColColor,
 		ColComponentType,
 		ColComponentName,
+		ColConstructionName,
+		ColEpdName,
 		ColArea,
 		ColGWP,
 		ColODP,
@@ -106,11 +111,20 @@ public:
 	explicit SVSimulationLCAResultsDialog(QWidget *parent = nullptr);
 	~SVSimulationLCAResultsDialog();
 
+	/*! Sets up Dialog with LCA Data. Needs to be called once before Dialog is beeing used. */
+	void setup();
+
+	/*! Sets category specific results in the TreeWidget. */
 	void setLcaResults(const std::map<VICUS::Component::ComponentType, AggregatedComponentData> &lcaResultMap,
 					   const std::map<unsigned int, AggregatedComponentData> compIdToAggregatedData,
 					   const VICUS::EpdDataset::Category &category, const VICUS::LcaSettings &settings) const;
 
-
+	/*! Converts the material to the referenced reference quantity from the epd.
+		\param layerThickness Thickness of layer in m
+		\param layerArea Area of layer in m
+	*/
+	static double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
+																double layerThickness, double layerArea);
 private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
 
@@ -118,8 +132,6 @@ private slots:
 
 private:
 
-	/*! Sets up Dialog with LCA Data. Needs to be called once before Dialog is beeing used. */
-	void setup();
 
 	/*! Set with ids of components with undefined data, that we have to skip.
 	*/
