@@ -55,6 +55,7 @@ HEADERS += \
 	../../src/VICUS_InternalLoad.h \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_LcaSettings.h \
+	../../src/VICUS_LccSettings.h \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
 	../../src/VICUS_Network.h \
@@ -118,6 +119,7 @@ SOURCES += \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_LcaSettings.cpp \
+  ../../src/VICUS_LccSettings.cpp \
 	../../src/VICUS_Material.cpp \
 	../../src/VICUS_MaterialLayer.cpp \
 	../../src/VICUS_Network.cpp \
