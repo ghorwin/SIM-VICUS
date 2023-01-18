@@ -347,12 +347,10 @@ private slots:
 	void on_actionHelpLinuxDesktopIntegration_triggered();
 
 	void on_actionFileImportNetworkGISData_triggered();
-
 	void on_actionEditProjectNotes_triggered();
-	void on_actionExportNetworkAsGeoJson_triggered();
-
 	void on_actionPluginsManager_triggered();
 
+	void on_actionExportNetworkAsGeoJSON_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

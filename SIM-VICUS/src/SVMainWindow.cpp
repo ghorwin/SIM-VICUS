@@ -1503,19 +1503,18 @@ void SVMainWindow::on_actionEditProjectNotes_triggered() {
 }
 
 
+void SVMainWindow::on_actionPluginsManager_triggered() {
+	// show plugin view
 
-void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered() {
-	// opens import network dialog
+}
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJSON_triggered() {
+	// opens export network dialog
 	if (m_networkExportDialog == nullptr)
 		m_networkExportDialog = new SVNetworkExportDialog(this);
 
 	m_networkExportDialog->edit();
-}
-
-
-void SVMainWindow::on_actionPluginsManager_triggered() {
-	// show plugin view
-
 }
 
 
@@ -1535,7 +1534,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
-	m_ui->actionExportNetworkAsGeoJson->setEnabled(have_project);
+	m_ui->actionExportNetworkAsGeoJSON->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
@@ -2171,6 +2170,4 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-
 
