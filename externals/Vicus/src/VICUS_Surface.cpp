@@ -72,9 +72,9 @@ void Surface::readXML(const TiXmlElement * element) {
 			break;
 		}
 		if(cName == "ViewFactors") {
-			const TiXmlElement * cc = element->FirstChildElement();
+			const TiXmlElement * cc = c->FirstChildElement();
 			while (cc) {
-				const std::string & ccName = c->ValueStr();
+				const std::string & ccName = cc->ValueStr();
 				if(ccName == "ViewFactor"){
 					const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(cc, "id");
 					if(attrib == nullptr){
@@ -88,7 +88,8 @@ void Surface::readXML(const TiXmlElement * element) {
 				}
 				cc = cc->NextSiblingElement();
 			}
-
+			// remove ViewFactors element from parent, to avoid getting spammed with "unknown ViewFactors" warning
+			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 		}
 		c = c->NextSiblingElement();
 	}
@@ -113,7 +114,7 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 		for(const std::pair<unsigned int, double> entry : m_viewFactors){
 			TiXmlElement * viewFactor = new TiXmlElement("ViewFactor");
 			viewFactor->SetAttribute("id",std::to_string(entry.first));
-			viewFactor->SetValue(std::to_string(entry.second));
+			viewFactor->LinkEndChild(new TiXmlText(std::to_string(entry.second)));
 			viewFactors->LinkEndChild(viewFactor);
 		}
 		e->LinkEndChild(viewFactors);
@@ -148,9 +149,9 @@ void Surface::changeOrigin(unsigned int idx) {
 }
 
 double Surface::areaWithoutSubsurfaces() const {
-	double area = m_geometry.area();
+	double area = m_geometry.area(3);
 	for(const VICUS::SubSurface & ss : m_subSurfaces){
-		area -= ss.m_polygon2D.area();
+		area -= ss.m_polygon2D.area(3);
 	}
 	return area;
 }

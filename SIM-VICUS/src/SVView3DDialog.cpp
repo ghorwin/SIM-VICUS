@@ -89,9 +89,7 @@ void SVView3DDialog::exportView3d() {
 
 		view3dExtendedSurfaces extendedSurf ( surf->m_id );
 		v3dRoom.m_extendedSurfaces.push_back( extendedSurf );
-		m_exportedObjects.push_back(surf);
 		for (const VICUS::SubSurface &subSurf : s.subSurfaces() ) {
-			m_exportedObjects.push_back(&subSurf);
 			view3dExtendedSurfaces extendedSubSurf ( subSurf.m_id, true );
 			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
 		}
@@ -346,14 +344,15 @@ void SVView3DDialog::exportView3d() {
 }
 
 // return the object area depending if its a surface or subsurface
-double areaFromVicusObject(const VICUS::Object * obj){
+double areaFromVicusObjectId(unsigned int id) {
+	const VICUS::Object * obj = SVProjectHandler::instance().project().objectById(id);
 	const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(obj);
 	if(surf != nullptr) {
 		return surf->areaWithoutSubsurfaces();
 	} else {
 		const VICUS::SubSurface * subSurf = dynamic_cast< const VICUS::SubSurface *>(obj);
 		if (subSurf != nullptr) {
-			return subSurf->m_polygon2D.area();
+			return subSurf->m_polygon2D.area(3);
 		}
 	}
 	return -1;
@@ -392,23 +391,25 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				continue;
 			}
 			// check if the area is almost matching
-			auto a = areaFromVicusObject(m_exportedObjects[j]);
-			if(areaFromVicusObject(m_exportedObjects[j])- area[j] < 0.1){
-
+			auto a = areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface);
+			const VICUS::Object * o = SVProjectHandler::instance().project().objectById(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface);
+			if(areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface)- area[j] < 0.1){
+				// get the sub(surface) from the v3dRoom
+				const VICUS::Object * obj = SVProjectHandler::instance().project().objectById(v3dRoom.m_extendedSurfaces[i-2].m_idVicusSurface);
 				// check if the current object is a surface or a subsurface
-				const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(m_exportedObjects[i-2]);
+				const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(obj);
 				if (surf != nullptr) {
 					// is a surface
 					// store the viewFactor
-					const_cast<VICUS::Surface *>(surf)->m_viewFactors[m_exportedObjects[j]->m_id] = IBK::string2val<double>(token);
+					const_cast<VICUS::Surface *>(surf)->m_viewFactors[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
 				}
 				else {
 					// then the object should be a subsurface
-					const VICUS::SubSurface * subSurf = dynamic_cast< const VICUS::SubSurface *>(m_exportedObjects[i-2]);
+					const VICUS::SubSurface * subSurf = dynamic_cast< const VICUS::SubSurface *>(obj);
 					if (subSurf != nullptr) {
-						// is a surface
+						// is a subsurface
 						// store the viewFactor
-						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors[m_exportedObjects[j]->m_id] = IBK::string2val<double>(token);
+						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
 					}
 					else {
 						throw IBK::Exception(IBK::FormatString("Exported Object is wether a surface nor a subsurface"), FUNC_ID);
@@ -416,7 +417,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				}
 			}
 			else {
-				throw IBK::Exception(IBK::FormatString("Area of subsurface does not match!"), FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("Area of (sub)surface does not match, should be: %1 but was: %2!").arg(area[j]).arg(areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface)), FUNC_ID);
 			}
 
 		}

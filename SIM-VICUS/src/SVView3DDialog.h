@@ -154,10 +154,6 @@ public:
 
 	std::vector<const VICUS::Surface*>						m_selSurfaces;					///> Vector with all selected surfaces in project
 
-	std::vector<const VICUS::Object*>						m_exportedObjects;					///> Vector with all the exported objects
-
-
-
 
 	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
 

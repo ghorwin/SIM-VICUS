@@ -46,9 +46,9 @@ void SubSurface::readXML(const TiXmlElement * element) {
 	while (c) {
 		const std::string & cName = c->ValueStr();
 		if(cName == "ViewFactors") {
-			const TiXmlElement * cc = element->FirstChildElement();
+			const TiXmlElement * cc = c->FirstChildElement();
 			while (cc) {
-				const std::string & ccName = c->ValueStr();
+				const std::string & ccName = cc->ValueStr();
 				if(ccName == "ViewFactor"){
 					const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(cc, "id");
 					if(attrib == nullptr){
@@ -62,6 +62,8 @@ void SubSurface::readXML(const TiXmlElement * element) {
 				}
 				cc = cc->NextSiblingElement();
 			}
+			// remove ViewFactor element from parent, to avoid getting spammed with "unknown ViewFactor" warning
+			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 		}
 		c = c->NextSiblingElement();
 	}
@@ -75,7 +77,7 @@ TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
 		for(const std::pair<unsigned int, double> entry : m_viewFactors){
 			TiXmlElement * viewFactor = new TiXmlElement("ViewFactor");
 			viewFactor->SetAttribute("id",std::to_string(entry.first));
-			viewFactor->SetValue(std::to_string(entry.second));
+			viewFactor->LinkEndChild(new TiXmlText(std::to_string(entry.second)));
 			viewFactors->LinkEndChild(viewFactor);
 		}
 		e->LinkEndChild(viewFactors);
