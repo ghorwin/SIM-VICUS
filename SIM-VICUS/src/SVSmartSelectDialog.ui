@@ -219,7 +219,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>filter for boundary condition</string>
+        <string>boundary condition filter</string>
        </property>
       </widget>
      </item>
@@ -229,7 +229,7 @@
      <item row="0" column="0">
       <widget class="QCheckBox" name="checkBoxFilterName">
        <property name="text">
-        <string>filter for name</string>
+        <string>name filter</string>
        </property>
       </widget>
      </item>

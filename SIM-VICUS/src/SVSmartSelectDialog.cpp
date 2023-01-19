@@ -86,6 +86,8 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->checkBoxNodeDisplayName->setChecked(false);
 	m_ui->checkBoxMaxHeatingDemandEqualTo->setChecked(false);
 
+	m_ui->lineEditFilterName->setPlaceholderText(tr("Use wildcard '*' or filter for multiple names separated with ';' "));
+
 
 	// populate static options
 	m_allOptions = FilterOption();
@@ -331,7 +333,7 @@ void SVSmartSelectDialog::selectBuildingComponents() {
 	std::set<const VICUS::Object*> tmpSelectedObjects;
 	if (!namesList.empty()) {
 		for (const VICUS::Object *obj: selectedObjects) {
-			for (QString filterName: namesList) {
+			for (QString filterName: namesList) { // copy is on purpose
 				// if there is a "*" wildcard, we check wether the filterString is part of diaplayName
 				if (filterName.startsWith("*")) {
 					if (obj->m_displayName.endsWith(filterName.replace("*", "")))
