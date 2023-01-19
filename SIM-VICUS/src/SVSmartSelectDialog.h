@@ -89,6 +89,8 @@ private slots:
 
 	void on_toolButtonReset_clicked();
 
+	void on_checkBoxFilterName_clicked(bool checked);
+
 private:
 
 	struct FilterOption {

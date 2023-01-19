@@ -114,6 +114,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	geometry.m_name = tr("Geometry");
 	geometry.m_options.push_back(FilterOption(tr("Surfaces"), nullptr));
 	geometry.m_options.push_back(FilterOption(tr("Sub-Surfaces"), nullptr));
+	geometry.m_options.push_back(FilterOption(tr("Rooms"), nullptr));
 
 
 	// configure list widget
@@ -123,6 +124,9 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	// check box & combobox boundary condition
 	m_ui->checkBoxFilterBoundaryCondition->setChecked(false);
 	m_ui->comboBoxBoundaryCondition->setEnabled(false);
+
+	m_ui->checkBoxFilterName->setChecked(false);
+	m_ui->lineEditFilterName->setEnabled(false);
 }
 
 
@@ -313,6 +317,54 @@ void SVSmartSelectDialog::selectBuildingComponents() {
 			collectSelectedObjects(&option, selectedObjects, boundaryConditionFilterId);
 	}
 
+	// read filter name
+	QStringList namesList;
+	if (m_ui->checkBoxFilterName->isChecked()) {
+		QString str = m_ui->lineEditFilterName->text();
+		if (str.contains(";"))
+			namesList = str.split(";");
+		else
+			namesList.push_back(str);
+	}
+
+	// filter for names
+	std::set<const VICUS::Object*> tmpSelectedObjects;
+	if (!namesList.empty()) {
+		for (const VICUS::Object *obj: selectedObjects) {
+			for (QString filterName: namesList) {
+				// if there is a "*" wildcard, we check wether the filterString is part of diaplayName
+				if (filterName.startsWith("*")) {
+					if (obj->m_displayName.endsWith(filterName.replace("*", "")))
+						tmpSelectedObjects.insert(obj);
+				}
+				else if (filterName.endsWith("*")) {
+					if (obj->m_displayName.startsWith(filterName.replace("*", "")))
+						tmpSelectedObjects.insert(obj);
+				}
+				// otherwise displayName must be identical
+				else if (obj->m_displayName == filterName){
+					tmpSelectedObjects.insert(obj);
+				}
+			}
+		}
+		// finally overwrite selected objects
+		selectedObjects = tmpSelectedObjects;
+	}
+
+	// if a room is selected, also select its subsurfaces
+	for (const VICUS::Object *obj: selectedObjects) {
+		const VICUS::Room *r = dynamic_cast<const VICUS::Room*>(obj);
+		if (r==nullptr)
+			continue;
+		for (const VICUS::Surface & s : r->m_surfaces) {
+			selectedObjects.insert(&s);
+			for (const VICUS::SubSurface & sub : s.subSurfaces() ) {
+				selectedObjects.insert(&sub);
+			}
+		}
+	}
+
+
 	if (selectedObjects.empty())
 		QMessageBox::information(this, QString(), tr("No objects found with given properties."));
 
@@ -407,6 +459,15 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 						for (const VICUS::Surface & s : r.m_surfaces)
 							for (const VICUS::SubSurface & sub : s.subSurfaces() )
 								objs.insert(&sub);
+		}
+
+		// rooms
+		if (option == &m_allOptions.m_options[ET_Geometry].m_options[2]) {
+			// get list of all subsurfaces
+			for (const VICUS::Building & b : project().m_buildings)
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+					for (const VICUS::Room & r : bl.m_rooms)
+						objs.insert(&r);
 		}
 	}
 }
@@ -684,5 +745,10 @@ void SVSmartSelectDialog::on_toolButtonReset_clicked() {
 	// reset current hierarchy level to 0
 	m_selectionIndex.clear();
 	updateButtonsAndListWidget();
+}
+
+
+void SVSmartSelectDialog::on_checkBoxFilterName_clicked(bool checked) {
+	m_ui->lineEditFilterName->setEnabled(checked);
 }
 
