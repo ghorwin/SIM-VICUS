@@ -183,6 +183,7 @@ if (NOT DISABLE_QT)
 	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
 	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )
 	add_subdirectory( ../../externals/QuaZIP/projects/cmake_local QuaZIP )
+	add_subdirectory( ../../externals/RoomClipper/projects/cmake_local RoomClipper )
 
 endif (NOT DISABLE_QT)
 
