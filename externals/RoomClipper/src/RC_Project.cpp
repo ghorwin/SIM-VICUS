@@ -111,6 +111,7 @@ void Project::clipSurfaces() {
 		// look for clipping surface
 		ClippingSurface &cs = getClippingSurfaceById(it->first);
 		VICUS::Surface s1 = cs.m_vicusSurface;
+		unsigned int surfOriginId = s1.m_id;
 
 		IBKMK::Vector3D localX = s1.geometry().localX();
 		IBKMK::Vector3D localY = s1.geometry().localY();
@@ -174,6 +175,7 @@ void Project::clipSurfaces() {
 				// do clipping with clipper lib
 				doClipperClipping(clippingPolygons.back(), extPolygon(vertexes), mainDiffsTemp, mainIntersectionsTemp);
 				clippingPolygons.pop_back();
+				// include new diff to already existing diff for possible later clipping
 				mainDiffs.insert(mainDiffs.end(), mainDiffsTemp.begin(), mainDiffsTemp.end());
 
 				qDebug() << "MainDiffs";
@@ -183,11 +185,12 @@ void Project::clipSurfaces() {
 					for(const IBKMK::Vector2D pPrint : polyPrint.m_polygon.vertexes())
 						qDebug() << pPrint.m_x << " " << pPrint.m_y;
 				}
-
+				// save all intersections
 				mainIntersections.insert(mainIntersections.end(), mainIntersectionsTemp.begin(), mainIntersectionsTemp.end());
 
 				qDebug() << "Intersections";
 
+				// only printing for debugging
 				for(const extPolygon &polyPrint : mainIntersections){
 					qDebug() << "Intersection";
 					for(const IBKMK::Vector2D pPrint : polyPrint.m_polygon.vertexes())
@@ -196,12 +199,11 @@ void Project::clipSurfaces() {
 				qDebug() << "cutting finished";
 			}
 
+			// main intersection saving
 			for(extPolygon &poly : mainIntersections) {
 
 				if(!poly.m_polygon.isValid())
 					continue;
-
-
 
 				s1.m_id = ++id;
 				s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
@@ -223,6 +225,11 @@ void Project::clipSurfaces() {
 				s1.setPolygon3D(poly3D);		// now marked dirty = true
 				// ToDo Stephan: Fenster einfügen auf neuen Ursprung
 				r->m_surfaces.push_back(s1);
+
+				// save id origin
+				if(surfOriginId != VICUS::INVALID_ID && s1.m_componentInstance != nullptr)
+					m_surfaceCIOriginId[s1.m_id] = s1.m_componentInstance->m_id;
+
 				r->updateParents();
 			}
 
@@ -310,9 +317,121 @@ void Project::clipSurfaces() {
 
 			// Add back holes to data structure
 			r->m_surfaces.push_back(s1);
+
+			// save id origin
+			if(surfOriginId != VICUS::INVALID_ID && s1.m_componentInstance != nullptr)
+				m_surfaceCIOriginId[s1.m_id] = s1.m_componentInstance->m_id;
+
 			r->updateParents();
 		}
 	}
+}
+
+unsigned int Project::findComponentInstanceForSurface(unsigned int id){
+	for(unsigned int i=0; i<m_newPrjVicus.m_componentInstances.size(); ++i){
+		VICUS::ComponentInstance& ci = m_newPrjVicus.m_componentInstances[i];
+		if(ci.m_id == id){
+			return ci.m_idComponent;
+		}
+	}
+
+	return VICUS::INVALID_ID;
+}
+
+void Project::createComponentInstances() {
+
+	std::set<const VICUS::Surface *>	surfaces;
+
+	for(const VICUS::Building &b : m_newPrjVicus.m_buildings){
+		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels){
+			for(const VICUS::Room &r : bl.m_rooms){
+				for(const VICUS::Surface &s : r.m_surfaces){
+					surfaces.insert(&s);
+				}
+			}
+		}
+	}
+
+	std::set<unsigned int>					handledSurfaces;
+	std::vector<VICUS::ComponentInstance>	cis;
+
+	for(const VICUS::Surface * surfA : surfaces){
+
+		unsigned int compId = findComponentInstanceForSurface(m_surfaceCIOriginId[surfA->m_id]);
+		VICUS::ComponentInstance ci(m_newPrjVicus.nextUnusedID(), compId, surfA->m_id, VICUS::INVALID_ID);
+
+		for(const VICUS::Surface * surfB : surfaces){
+
+			if(surfA == surfB || surfA == nullptr || surfB == nullptr)
+				continue;
+			if(surfA->m_parent == nullptr || surfB->m_parent == nullptr)
+				continue;
+			if(surfA->m_parent == surfB->m_parent)
+				continue;
+
+			if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end() ||
+					handledSurfaces.find(surfB->m_id) != handledSurfaces.end())
+				continue;
+
+			// convert 3D points of surface B into 2D plane of surface A
+			VICUS::Surface * s1 = const_cast<VICUS::Surface*>(surfA);
+			VICUS::Surface * s2 = const_cast<VICUS::Surface*>(surfB);
+			IBKMK::Vector3D localX = s1->geometry().localX();
+			IBKMK::Vector3D localY = s1->geometry().localY();
+			IBKMK::Vector3D offset = s1->geometry().offset();
+			double distance = 0;
+			// calculate distance of these two surfaces
+			// clipping object is for normalized directional vectors equal the distance of the two points
+			IBKMK::Vector3D rayEndPoint;
+			IBKMK::lineToPointDistance( s1->geometry().offset(), s1->geometry().normal().normalized(),
+										s2->geometry().offset(), distance, rayEndPoint);
+			if(distance > m_maxDistanceOfSurfaces || distance < 0)
+				continue;
+
+			std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
+			for(unsigned int i=0; i<vertexes.size(); ++i){
+
+				if(s2->geometry().polygon3D().vertexes().empty())
+					continue;
+
+				const IBKMK::Vector3D &p = s2->geometry().polygon3D().vertexes()[i];
+				qDebug() << "Point outside plane x: " << p.m_x << "y: " << p.m_y << "z: " << p.m_z;
+				IBKMK::Vector3D pNew = p-distance*s1->geometry().normal();
+				qDebug() << "Point inside plane x: " << pNew.m_x << "y: " << pNew.m_y << "z: " << pNew.m_z;
+				// project points onto the plane
+				try {
+					IBKMK::planeCoordinates(offset, localX, localY,
+											pNew, vertexes[i].m_x, vertexes[i].m_y);
+
+				}  catch (...) {
+					continue;
+				}
+			}
+
+			std::vector<extPolygon> diffs, intersections;
+
+			doClipperClipping(extPolygon(s1->geometry().polygon2D().vertexes()),
+							  extPolygon(vertexes), diffs, intersections);
+			if(intersections.size() == 1 && diffs.empty()){
+
+				unsigned int compIdB = findComponentInstanceForSurface(m_surfaceCIOriginId[s2->m_id]);
+				// find old components
+				if(compId == VICUS::INVALID_ID)
+					compId = compIdB;
+
+				// if both ids are invalid take invalid
+
+				// build new component
+				ci = VICUS::ComponentInstance(m_newPrjVicus.nextUnusedID(), compId, s1->m_id, s2->m_id);
+				//handledSurfaces.insert(s1->m_id);
+				handledSurfaces.insert(s2->m_id);
+				break;
+			}
+		}
+		if(handledSurfaces.find(surfA->m_id) == handledSurfaces.end())
+			cis.push_back(ci);
+	}
+	m_newPrjVicus.m_componentInstances.swap(cis);
 }
 
 ClippingSurface& RC::Project::getClippingSurfaceById(unsigned int id) {
@@ -437,7 +556,7 @@ ClipperLib::Path Project::convertVec2DToClipperPath(const std::vector<IBKMK::Vec
 	for(const IBKMK::Vector2D &p : vertexes){
 		qDebug() << "Point x: " << p.m_x << " | y: " << p.m_y;
 		path << ClipperLib::IntPoint(static_cast<long long>(p.m_x * SCALE_FACTOR),
-										static_cast<long long>(p.m_y * SCALE_FACTOR));
+									 static_cast<long long>(p.m_y * SCALE_FACTOR));
 	}
 
 	return path;
@@ -636,8 +755,8 @@ void Project::testProjectClipping(){
 
 	// Convert back PolyTree
 	for(unsigned int i=0; i<polyTreeResultsIntersection.Childs.size(); ++i) {
-	// convert all interscetion polygons
-	// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
+		// convert all interscetion polygons
+		// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
 		ClipperLib::PolyNode *childNode = polyTreeResultsIntersection.Childs[i];
 		const ClipperLib::Path &path = childNode->Contour;
 
@@ -821,8 +940,8 @@ void Project::doClipperClipping(const extPolygon &surf,
 
 	// Convert back PolyTree
 	for(unsigned int i=0; i<polyTreeResultsIntersection.Childs.size(); ++i) {
-	// convert all interscetion polygons
-	// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
+		// convert all interscetion polygons
+		// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
 		ClipperLib::PolyNode *childNode = polyTreeResultsIntersection.Childs[i];
 		const ClipperLib::Path &path = childNode->Contour;
 
@@ -843,8 +962,8 @@ void Project::doClipperClipping(const extPolygon &surf,
 
 	// Convert back PolyTree
 	for(unsigned int i=0; i<polyTreeResultsDiffs.Childs.size(); ++i) {
-	// convert all interscetion polygons
-	// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
+		// convert all interscetion polygons
+		// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
 		ClipperLib::PolyNode *childNode = polyTreeResultsDiffs.Childs[i];
 		const ClipperLib::Path &path = childNode->Contour;
 

@@ -9,7 +9,7 @@
 
 namespace RC {
 
-const unsigned int SCALE_FACTOR = 1E8;
+const unsigned int SCALE_FACTOR = 1E6;
 const double MIN_AREA = 1e-4;
 
 
@@ -57,6 +57,10 @@ public:
 	/*! Surfaces are clipped by their corresponding surfaces sorted by distance. */
 	void clipSurfaces();
 
+	void createComponentInstances();
+
+	unsigned int findComponentInstanceForSurface(unsigned int id);
+
 	const VICUS::Project &newPrjVicus() const;
 
 	void generatePolyWithHole(const IBKMK::Polygon2D &polygon, const std::vector<IBKMK::Polygon2D> &holes,
@@ -92,10 +96,15 @@ private:
 	/*! holds all parallel surfaces by id; second element in pair is the distance in m. */
 	std::vector<ClippingSurface>					m_clippingSurfaces;
 
-	/*! Clipping connections */
+	/*! Clipping connections
+		key is vicus surface id
+		values ids of all other possible vicus surfaces for clipping
+	*/
 	std::map<unsigned int, std::set<unsigned int>>	m_connections;
 
 	unsigned int									m_lastUnusedVicusID;		///< last unused id in vicus project
+
+	std::map<unsigned int, unsigned int>			m_surfaceCIOriginId;		///< key is new created surface id, value is old surface ci id
 
 };
 }
