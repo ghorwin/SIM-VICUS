@@ -25,12 +25,39 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QTreeWidget" name="treeWidgetLcaResults">
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::North</enum>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="LCA">
+      <attribute name="title">
+       <string>LCA</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QTreeWidget" name="treeWidgetLcaResults">
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="LCC">
+      <attribute name="title">
+       <string>LCC</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="tableWidgetLccResults"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
