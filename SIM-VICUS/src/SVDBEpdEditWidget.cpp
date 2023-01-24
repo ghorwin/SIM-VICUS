@@ -114,20 +114,20 @@ void SVDBEpdEditWidget::updateInput(int id) {
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 
-	std::vector<VICUS::EpdCategoryDataset> datasets = m_current->expandCategoryDatasets();
+	std::vector<VICUS::EpdModuleDataset> datasets = m_current->expandCategoryDatasets();
 	for(unsigned int j=0; j<datasets.size(); ++j) {
 
 		QString moduleString = "";
 		for (unsigned int i=0; i<datasets[j].m_modules.size(); ++i) {
-			const VICUS::EpdCategoryDataset::Module &module = datasets[j].m_modules[i];
-			moduleString += QString(i > 0 ? ", " : "") + VICUS::KeywordList::Description("EpdCategoryDataset::Module", module); // add ", " in between beginning from the second module
+			const VICUS::EpdModuleDataset::Module &module = datasets[j].m_modules[i];
+			moduleString += QString(i > 0 ? ", " : "") + VICUS::KeywordList::Description("EpdModuleDataset::Module", module); // add ", " in between beginning from the second module
 		}
 
 		QTableWidgetItem *item = new QTableWidgetItem(moduleString);
 		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 		m_ui->tableWidgetEpdData->setItem((int)j, 0, item);
 
-		for(unsigned int i=0; i<VICUS::EpdCategoryDataset::NUM_P; ++i) {
+		for(unsigned int i=0; i<VICUS::EpdModuleDataset::NUM_P; ++i) {
 			IBK::Parameter &para = datasets[j].m_para[i];
 
 			int row = 1;
