@@ -26,10 +26,11 @@
 #ifndef VICUS_LccSettingsH
 #define VICUS_LccSettingsH
 
-#include <IBK_Flag.h>
-
 #include <IBKMK_Vector3D.h>
+
+#include <IBK_Flag.h>
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_EpdCategoryDataset.h"
@@ -47,8 +48,18 @@ public:
 	enum para_t {
         P_PriceIncreaseGeneral,				// Keyword: PriceIncreaseGeneral			[%]		'Yearly general price increase [%].'
         P_PriceIncreaseEnergy,				// Keyword: PriceIncreaseEnergy             [%]		'Yearly energy price increase [%].'
-        P_CalculationInterestRate,			// Keyword: CalculationInterestRate         [%]		'Interest rate for calculation [%].'
+		P_DiscountingInterestRate,			// Keyword: DiscountingInterestRate         [%]		'Interest rate for discounting [%].'
+		P_CoalConsumption,					// Keyword: CoalConsumption					[kWh/a]	'Coal consumption [kWh/a].'
+		P_GasConsumption,					// Keyword: GasConsumption					[kWh/a]	'Gas consumption [kWh/a].'
+		P_ElectricityConsumption,			// Keyword: ElectricityConsumption			[kWh/a]	'Electricity consumption [kWh/a].'
         NUM_P
+	};
+
+	enum intPara_t {
+		IP_CoalPrice,					// Keyword: CoalPrice					'Price of Coal in ct per kWh.'
+		IP_GasPrice,					// Keyword: GasPrice					'Price of Gas in ct per kWh.'
+		IP_ElectricityPrice,			// Keyword: ElectricityPrice			'Price of Electricity in ct per kWh.'
+		NUM_IP
 	};
 
     VICUS_READWRITE_IFNOTEMPTY(LccSettings)
@@ -68,15 +79,17 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Time Period for LCA/LCC consideration. */
+	/*! IBK::Parameters. */
 	IBK::Parameter						m_para[NUM_P];								// XML:E
 
-
-
+	/*! IBK::IntParas. */
+	IBK::IntPara						m_intPara[NUM_IP];							// XML:E
 };
 
 inline bool LccSettings::operator!=(const LccSettings & other) const {
-
+	for(unsigned int i=0; i<NUM_P; ++i)
+		if (m_para[i] != other.m_para[i])
+			return true;
 
 	return false;
 }
