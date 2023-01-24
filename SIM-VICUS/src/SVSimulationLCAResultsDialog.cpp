@@ -340,22 +340,40 @@ void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccS
 
 	for(unsigned int i=0; i<rowCount; ++i) {
 
+		unsigned int index = i == 0 ? 0 : i-1;
+
+		double priceEnergyIncreaseBefore = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value, index);
+		double priceMaterialIncreaseBefore = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value, index);
+
 		double priceEnergyIncrease = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value, i);
 		double priceMaterialIncrease = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value, i);
 
+		double discountingRate = 1/std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_DiscountingInterestRate].value, i);
+
 
 		tab.setItem(i, ColYear, new QTableWidgetItem(QString::number(i+1)));
+
+		tab.setItem(i, ColDiscountingRate, new QTableWidgetItem( QString( "%1 %" ).arg( discountingRate, 7, 'f', 2 ) ));
+
 		tab.setItem(i, ColPriceIncreaseEnergy, new QTableWidgetItem( QString( "%1 %" ).arg( priceEnergyIncrease, 7, 'f', 2 ) ));
 		tab.setItem(i, ColPriceIncreaseGeneral, new QTableWidgetItem(QString( "%1 %" ).arg( priceMaterialIncrease, 7, 'f', 2 )));
 
-		tab.setItem(i, ColPriceInvestMaterial, new QTableWidgetItem( QString( "%1 €" ).arg( priceMaterialIncrease * totalMaterialCost[i], 7, 'f', 2 )));
-		tab.setItem(i, ColPriceInvestEnergy,   new QTableWidgetItem( QString( "%1 €" ).arg( priceEnergyIncrease   * totalEnergyCost  , 7, 'f', 2 )));
+		tab.setItem(i, ColPriceInvestMaterial, new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceMaterialIncreaseBefore * totalMaterialCost[i], 7, 'f', 2 )));
+		tab.setItem(i, ColPriceInvestEnergy,   new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceEnergyIncreaseBefore   * totalEnergyCost  , 7, 'f', 2 )));
 
 		tab.item(i, ColPriceInvestMaterial)->setTextAlignment(Qt::AlignRight);
 		tab.item(i, ColPriceInvestEnergy)->setTextAlignment(Qt::AlignRight);
+
+		for(unsigned int j=0; j<NumColLcc; ++j) {
+			QTableWidgetItem &item = *tab.item(i, j);
+			item.setFlags(item.flags() & ~Qt::ItemIsEditable);
+			item.setTextAlignment(Qt::AlignRight);
+		}
 	}
 
+
 	m_ui->tableWidgetLccResults->resizeColumnsToContents();
+	m_ui->tableWidgetLccResults->resizeRowsToContents();
 }
 
 
@@ -376,7 +394,7 @@ void SVSimulationLCAResultsDialog::setup() {
 	m_ui->tableWidgetLccResults->setColumnCount(NumColLcc);
 
 	QStringList header;
-	header << "Year [a]" << "Price increase general [%]" << "Price increase energy [%]" << "Energy - net present value  [€]" << "Material - net present value  [€]";
+	header << "Year [a]" << "Discounting rate [%]"  << "Price increase general [%]" << "Price increase energy [%]" << "Energy - net present value  [€]" << "Material - net present value  [€]";
 	m_ui->tableWidgetLccResults->setHorizontalHeaderLabels(header);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLccResults);

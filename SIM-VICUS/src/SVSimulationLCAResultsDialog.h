@@ -126,6 +126,7 @@ class SVSimulationLCAResultsDialog : public QDialog
 
 	enum ColsLcc {
 		ColYear,
+		ColDiscountingRate,
 		ColPriceIncreaseGeneral,
 		ColPriceIncreaseEnergy,
 		ColPriceInvestEnergy,
