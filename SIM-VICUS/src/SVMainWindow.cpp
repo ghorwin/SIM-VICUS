@@ -1202,7 +1202,7 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 			return;
 	}
 	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
+		m_simulationStartNandrad = new SVSimulationStartNandrad(this);
 	// open simulation start dialog, with settings for climate location, simulation and
 	// solver settings and simulation start button
 	int res = m_simulationStartNandrad->edit();
