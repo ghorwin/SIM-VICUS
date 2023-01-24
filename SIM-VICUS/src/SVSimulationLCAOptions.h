@@ -237,7 +237,7 @@ private:
 	const VICUS::Project								&m_prj;
 
 	/*! Store checked data. */
-	std::vector<IBK::Flag>								m_intParas[VICUS::EpdCategoryDataset::NUM_M];
+	std::vector<IBK::Flag>								m_intParas[VICUS::EpdModuleDataset::NUM_M];
 
 };
 

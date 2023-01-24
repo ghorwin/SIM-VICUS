@@ -19,7 +19,7 @@
 #include <VICUS_KeywordList.h>
 #include <VICUS_Project.h>
 #include <VICUS_EpdDataset.h>
-#include <VICUS_EpdCategoryDataset.h>
+#include <VICUS_EpdModuleDataset.h>
 
 // Qt-Ext
 #include <QtExt_Conversions.h>
@@ -47,45 +47,45 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent,
 
 	m_db = &SVSettings::instance().m_db;
 
-	m_ui->checkBoxA1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A1);
-	m_ui->checkBoxA2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A2);
-	m_ui->checkBoxA3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A3);
-	m_ui->checkBoxA4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A4);
-	m_ui->checkBoxA5->setProperty("category", (int)VICUS::EpdCategoryDataset::M_A5);
-	m_ui->checkBoxB1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B1);
-	m_ui->checkBoxB2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B2);
-	m_ui->checkBoxB3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B3);
-	m_ui->checkBoxB4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B4);
-	m_ui->checkBoxB5->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B5);
-	m_ui->checkBoxB6->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B6);
-	m_ui->checkBoxB7->setProperty("category", (int)VICUS::EpdCategoryDataset::M_B7);
-	m_ui->checkBoxC1->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C1);
-	m_ui->checkBoxC2->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C2);
-	m_ui->checkBoxC3->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C3);
-	m_ui->checkBoxC4->setProperty("category", (int)VICUS::EpdCategoryDataset::M_C4);
-	m_ui->checkBoxD ->setProperty("category", (int)VICUS::EpdCategoryDataset::M_D);
+	m_ui->checkBoxA1->setProperty("category", (int)VICUS::EpdModuleDataset::M_A1);
+	m_ui->checkBoxA2->setProperty("category", (int)VICUS::EpdModuleDataset::M_A2);
+	m_ui->checkBoxA3->setProperty("category", (int)VICUS::EpdModuleDataset::M_A3);
+	m_ui->checkBoxA4->setProperty("category", (int)VICUS::EpdModuleDataset::M_A4);
+	m_ui->checkBoxA5->setProperty("category", (int)VICUS::EpdModuleDataset::M_A5);
+	m_ui->checkBoxB1->setProperty("category", (int)VICUS::EpdModuleDataset::M_B1);
+	m_ui->checkBoxB2->setProperty("category", (int)VICUS::EpdModuleDataset::M_B2);
+	m_ui->checkBoxB3->setProperty("category", (int)VICUS::EpdModuleDataset::M_B3);
+	m_ui->checkBoxB4->setProperty("category", (int)VICUS::EpdModuleDataset::M_B4);
+	m_ui->checkBoxB5->setProperty("category", (int)VICUS::EpdModuleDataset::M_B5);
+	m_ui->checkBoxB6->setProperty("category", (int)VICUS::EpdModuleDataset::M_B6);
+	m_ui->checkBoxB7->setProperty("category", (int)VICUS::EpdModuleDataset::M_B7);
+	m_ui->checkBoxC1->setProperty("category", (int)VICUS::EpdModuleDataset::M_C1);
+	m_ui->checkBoxC2->setProperty("category", (int)VICUS::EpdModuleDataset::M_C2);
+	m_ui->checkBoxC3->setProperty("category", (int)VICUS::EpdModuleDataset::M_C3);
+	m_ui->checkBoxC4->setProperty("category", (int)VICUS::EpdModuleDataset::M_C4);
+	m_ui->checkBoxD ->setProperty("category", (int)VICUS::EpdModuleDataset::M_D);
 
 
-	m_ui->checkBoxA1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A1));
-	m_ui->checkBoxA2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A2));
-	m_ui->checkBoxA3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A3));
-	m_ui->checkBoxA4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A4));
-	m_ui->checkBoxA5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_A5));
+	m_ui->checkBoxA1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A1));
+	m_ui->checkBoxA2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A2));
+	m_ui->checkBoxA3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A3));
+	m_ui->checkBoxA4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A4));
+	m_ui->checkBoxA5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A5));
 
-	m_ui->checkBoxB1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B1));
-	m_ui->checkBoxB2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B2));
-	m_ui->checkBoxB3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B3));
-	m_ui->checkBoxB4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B4));
-	m_ui->checkBoxB5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B5));
-	m_ui->checkBoxB6->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B6));
-	m_ui->checkBoxB7->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_B7));
+	m_ui->checkBoxB1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B1));
+	m_ui->checkBoxB2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B2));
+	m_ui->checkBoxB3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B3));
+	m_ui->checkBoxB4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B4));
+	m_ui->checkBoxB5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B5));
+	m_ui->checkBoxB6->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B6));
+	m_ui->checkBoxB7->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B7));
 
-	m_ui->checkBoxC1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C1));
-	m_ui->checkBoxC2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C2));
-	m_ui->checkBoxC3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C3));
-	m_ui->checkBoxC4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_C4));
+	m_ui->checkBoxC1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C1));
+	m_ui->checkBoxC2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C2));
+	m_ui->checkBoxC3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C3));
+	m_ui->checkBoxC4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C4));
 
-	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdCategoryDataset::M_D));
+	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_D));
 
 	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
 	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
@@ -442,7 +442,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 		IBK::explode(line, tokens, ";", IBK::EF_KeepEmptyTokens);
 
 		VICUS::EpdDataset *epd = nullptr;
-		VICUS::EpdCategoryDataset *epdCategoryDataSet = new VICUS::EpdCategoryDataset;
+		VICUS::EpdModuleDataset *epdCategoryDataSet = new VICUS::EpdModuleDataset;
 
 		// convert this vector to double and add it as a graph
 		std::vector<std::vector<double> > polyLine;
@@ -596,7 +596,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				if(t == "")
 					continue;
 
-				std::vector<VICUS::EpdCategoryDataset::Module> modules;
+				std::vector<VICUS::EpdModuleDataset::Module> modules;
 				std::string moduleType = t.substr(0, 1);
 
 				if(!epd->m_modules.isEmpty()) {
@@ -607,61 +607,61 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 					epd->m_modules = QString::fromStdString(moduleType);
 
 				if (t == "A1")
-					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
+					modules.push_back(VICUS::EpdModuleDataset::M_A1);
 				else if (t == "A2")
-					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+					modules.push_back(VICUS::EpdModuleDataset::M_A2);
 				else if (t == "A3")
-					modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+					modules.push_back(VICUS::EpdModuleDataset::M_A3);
 				else if (t == "A1-A2") {
-					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
-					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
+					modules.push_back(VICUS::EpdModuleDataset::M_A1);
+					modules.push_back(VICUS::EpdModuleDataset::M_A2);
 				}
 				else if (t == "A1-A3") {
-					modules.push_back(VICUS::EpdCategoryDataset::M_A1);
-					modules.push_back(VICUS::EpdCategoryDataset::M_A2);
-					modules.push_back(VICUS::EpdCategoryDataset::M_A3);
+					modules.push_back(VICUS::EpdModuleDataset::M_A1);
+					modules.push_back(VICUS::EpdModuleDataset::M_A2);
+					modules.push_back(VICUS::EpdModuleDataset::M_A3);
 				}
 				else if (t == "A4")
-					modules.push_back(VICUS::EpdCategoryDataset::M_A4);
+					modules.push_back(VICUS::EpdModuleDataset::M_A4);
 				else if (t == "A5")
-					modules.push_back(VICUS::EpdCategoryDataset::M_A5);
+					modules.push_back(VICUS::EpdModuleDataset::M_A5);
 				else if (t == "B1")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B1);
+					modules.push_back(VICUS::EpdModuleDataset::M_B1);
 				else if (t == "B2")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B2);
+					modules.push_back(VICUS::EpdModuleDataset::M_B2);
 				else if (t == "B3")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B3);
+					modules.push_back(VICUS::EpdModuleDataset::M_B3);
 				else if (t == "B4")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B4);
+					modules.push_back(VICUS::EpdModuleDataset::M_B4);
 				else if (t == "B5")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B5);
+					modules.push_back(VICUS::EpdModuleDataset::M_B5);
 				else if (t == "B6")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B6);
+					modules.push_back(VICUS::EpdModuleDataset::M_B6);
 				else if (t == "B7")
-					modules.push_back(VICUS::EpdCategoryDataset::M_B7);
+					modules.push_back(VICUS::EpdModuleDataset::M_B7);
 				else if (t == "C1")
-					modules.push_back(VICUS::EpdCategoryDataset::M_C1);
+					modules.push_back(VICUS::EpdModuleDataset::M_C1);
 				else if (t == "C2")
-					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
+					modules.push_back(VICUS::EpdModuleDataset::M_C2);
 				else if (t == "C2-C3") {
-					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
-					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					modules.push_back(VICUS::EpdModuleDataset::M_C2);
+					modules.push_back(VICUS::EpdModuleDataset::M_C3);
 				}
 				else if (t == "C2-C4") {
-					modules.push_back(VICUS::EpdCategoryDataset::M_C2);
-					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+					modules.push_back(VICUS::EpdModuleDataset::M_C2);
+					modules.push_back(VICUS::EpdModuleDataset::M_C3);
+					modules.push_back(VICUS::EpdModuleDataset::M_C4);
 				}
 				else if (t == "C3")
-					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
+					modules.push_back(VICUS::EpdModuleDataset::M_C3);
 				else if (t == "C3-C4") {
-					modules.push_back(VICUS::EpdCategoryDataset::M_C3);
-					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+					modules.push_back(VICUS::EpdModuleDataset::M_C3);
+					modules.push_back(VICUS::EpdModuleDataset::M_C4);
 				}
 				else if (t == "C4")
-					modules.push_back(VICUS::EpdCategoryDataset::M_C4);
+					modules.push_back(VICUS::EpdModuleDataset::M_C4);
 				else if (t == "D")
-					modules.push_back(VICUS::EpdCategoryDataset::M_D);
+					modules.push_back(VICUS::EpdModuleDataset::M_D);
 
 				epdCategoryDataSet->m_modules = modules;
 
@@ -673,57 +673,57 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 				if(!convertString2Val(val, t, row, col))
 					continue;
 
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_AreaDensity].set("AreaDensity", val, IBK::Unit("kg/m2"));
 			} break;
 			case ColBulkDensity: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_DryDensity].set("DryDensity", val, IBK::Unit("kg/m3"));
 			} break;
 			case ColGWP: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
 
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_GWP].set("GWP", val, IBK::Unit("kg"));
 			} break;
 			case ColODP: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_ODP].set("ODP", val, IBK::Unit("kg"));
 			} break;
 			case ColPOCP: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_POCP].set("POCP", val, IBK::Unit("kg"));
 
 			} break;
 			case ColAP: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_AP].set("AP", val, IBK::Unit("kg"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_AP].set("AP", val, IBK::Unit("kg"));
 			} break;
 			case ColEP: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_EP].set("EP", val, IBK::Unit("kg"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_EP].set("EP", val, IBK::Unit("kg"));
 			} break;
 			case ColPENRT: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_PENRT].set("PENRT", val, IBK::Unit("W/mK"));
 			} break;
 			case ColPERT: {
 				double val;
 				if(!convertString2Val(val, t, row, col))
 					continue;
-				epdCategoryDataSet->m_para[VICUS::EpdCategoryDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
+				epdCategoryDataSet->m_para[VICUS::EpdModuleDataset::P_PERT].set("PERT", val, IBK::Unit("W/mK"));
 			} break;
 			}
 		}
@@ -881,7 +881,7 @@ void SVSimulationLCAOptions::setModuleState(int state) {
 
 	Q_ASSERT(cb != nullptr);
 
-	VICUS::EpdCategoryDataset::Module mod = static_cast<VICUS::EpdCategoryDataset::Module>(cb->property("category").toInt());
+	VICUS::EpdModuleDataset::Module mod = static_cast<VICUS::EpdModuleDataset::Module>(cb->property("category").toInt());
 	m_lcaSettings->m_flags[mod].set(m_lcaSettings->m_flags[mod].name(), state == Qt::Checked);
 
 }
