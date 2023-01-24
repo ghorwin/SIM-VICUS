@@ -100,7 +100,7 @@ public:
 		ColA2WDP,
 	};
 
-	SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings &settings);
+	SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings & lcaSettings, VICUS::LccSettings & lccSettings);
 	~SVSimulationLCAOptions();
 
 	void calculateLCA();
@@ -120,8 +120,6 @@ private slots:
 	void setModuleState(int state);
 
 
-
-
 	void on_comboBoxCalculationMode_currentIndexChanged(int index);
 
 	void on_comboBoxCertificationSystem_currentIndexChanged(int index);
@@ -138,7 +136,27 @@ private slots:
 
 	void on_lineEditTimePeriod_editingFinishedSuccessfully();
 
-	void on_lineEditPriceIncrease_editingFinishedSuccessfully();
+	void on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully();
+
+	void on_lineEditGasConsumption_editingFinishedSuccessfully();
+
+	void on_lineEditElectricityConsumption_editingFinishedSuccessfully();
+
+	void on_lineEditCoalConsumption_editingFinishedSuccessfully();
+
+	void on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully();
+
+	void on_toolButtonSelectGas_clicked();
+
+	void on_toolButtonSelectElectricity_clicked();
+
+	void on_toolButtonSelectCoal_clicked();
+
+	void on_lineEditCoalPrice_editingFinishedSuccessfully();
+
+	void on_lineEditGasPrice_editingFinishedSuccessfully();
+
+	void on_lineEditElectricityPrice_editingFinishedSuccessfully();
 
 private:
 	/*! Import ÖKOBAUDAT as csv from
