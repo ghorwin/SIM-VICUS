@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_EpdCategoryDatasetH
-#define VICUS_EpdCategoryDatasetH
+#ifndef VICUS_EpdModuleDatasetH
+#define VICUS_EpdModuleDatasetH
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_AbstractDBElement.h"
@@ -37,9 +37,9 @@ namespace VICUS {
 	An EPD Category Set defines a material EPD, that needs to be combined by severel different
 	sub-EPDs for each Category (A,B,C,D).
 */
-class EpdCategoryDataset {
+class EpdModuleDataset {
 public:
-	VICUS_COMP(EpdCategoryDataset)
+	VICUS_COMP(EpdModuleDataset)
 
 	/*! Basic parameters. */
 	enum para_t {
@@ -90,24 +90,24 @@ public:
 		NUM_M
 	};
 
-	EpdCategoryDataset() {}
+	EpdModuleDataset() {}
 
-	EpdCategoryDataset(const std::vector<Module> &modules) :
+	EpdModuleDataset(const std::vector<Module> &modules) :
 		m_modules(modules)
 	{}
 
-	~EpdCategoryDataset();
+	~EpdModuleDataset();
 
 	/*! Checks if all parameters of Category dataset. */
 	bool isValid() const;
 
 	/*! Returns an EPD with all Parameters scaled by the defined factor. */
-	EpdCategoryDataset scaleByFactor(const double &factor) const;
+	EpdModuleDataset scaleByFactor(const double &factor) const;
 
 	/*! Defines Operator += .*/
-	void operator+=(const EpdCategoryDataset& otherEpd);
+	const EpdModuleDataset& operator +=(const EpdModuleDataset& otherEpd);
 
-	void operator/(const EpdCategoryDataset& otherEpd);
+	void operator/(const EpdModuleDataset& otherEpd);
 
 
 	void readXML(const TiXmlElement * element);
@@ -123,4 +123,4 @@ public:
 };
 
 }
-#endif // VICUS_EpdCategoryDatasetH
+#endif // VICUS_EpdModuleDatasetH

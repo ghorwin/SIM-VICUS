@@ -23,7 +23,7 @@
 	GNU General Public License for more details.
 */
 
-#include "VICUS_EpdCategoryDataset.h"
+#include "VICUS_EpdModuleDataset.h"
 
 #include <IBK_MessageHandler.h>
 #include <IBK_messages.h>
@@ -38,11 +38,11 @@
 
 namespace VICUS {
 
-EpdCategoryDataset::~EpdCategoryDataset() {
+EpdModuleDataset::~EpdModuleDataset() {
 
 }
 
-bool EpdCategoryDataset::isValid() const {
+bool EpdModuleDataset::isValid() const {
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (m_para[i].empty())
 			return false;
@@ -50,14 +50,14 @@ bool EpdCategoryDataset::isValid() const {
 	return true;
 }
 
-EpdCategoryDataset EpdCategoryDataset::scaleByFactor(const double & factor) const {
-	EpdCategoryDataset epd = *this;
+EpdModuleDataset EpdModuleDataset::scaleByFactor(const double & factor) const {
+	EpdModuleDataset epd = *this;
 	for(unsigned int i=0; i<NUM_P; ++i)
 		epd.m_para[i].value = factor * m_para[i].value; // no testing needed so straight forward
 	return epd;
 }
 
-void EpdCategoryDataset::operator+=(const EpdCategoryDataset &otherEpd) {
+const EpdModuleDataset& EpdModuleDataset::operator+=(const EpdModuleDataset &otherEpd) {
 	FUNCID("EpdCategoryDataset::operator+=");
 	for(unsigned int i=0; i<NUM_P; ++i) {
 		if(m_para[i].empty())
@@ -70,9 +70,10 @@ void EpdCategoryDataset::operator+=(const EpdCategoryDataset &otherEpd) {
 			m_para[i].value += otherEpd.m_para[i].value; // no testing needed so straight forward
 		}
 	}
+	return *this;
 }
 
-void EpdCategoryDataset::readXML(const TiXmlElement * element) {
+void EpdModuleDataset::readXML(const TiXmlElement * element) {
 	FUNCID(EpdCategoryDataset::readXML);
 
 	try {
@@ -90,7 +91,7 @@ void EpdCategoryDataset::readXML(const TiXmlElement * element) {
 				for(std::string &str : strs) {
 					IBK::trim(str);
 					try {
-						m_modules.push_back(static_cast<EpdCategoryDataset::Module>(KeywordList::Enumeration("EpdCategoryDataset::Module", str)));
+						m_modules.push_back(static_cast<EpdModuleDataset::Module>(KeywordList::Enumeration("EpdCategoryDataset::Module", str)));
 					}
 					catch (IBK::Exception &ex) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -134,7 +135,7 @@ void EpdCategoryDataset::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * EpdCategoryDataset::writeXML(TiXmlElement * parent) const {
+TiXmlElement * EpdModuleDataset::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("EpdCategoryDataset");
 	parent->LinkEndChild(e);
 
