@@ -72,10 +72,7 @@ QVariant SVDBEpdTableModel::data ( const QModelIndex & index, int role) const {
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
                 case ColModules				: return it->second.m_modules;
                 case ColManufacturer		: return it->second.m_manufacturer;
-				case ColType				: {
-					std::string keyword = VICUS::KeywordList::Keyword("EpdDataset::Type", it->second.m_type);
-					return QString::fromStdString(keyword);
-				}
+				case ColUnit				: return QString::fromStdString(it->second.m_referenceUnit.name());
 			}
 		} break;
 
@@ -134,7 +131,7 @@ QVariant SVDBEpdTableModel::headerData(int section, Qt::Orientation orientation,
 				case ColName				: return tr("Name");
                 case ColManufacturer        : return tr("Manufacturer");
                 case ColModules             : return tr("Modules");
-				case ColType				: return tr("Type");
+				case ColUnit				: return tr("Unit");
 				default: ;
 			}
 		} break;
@@ -200,7 +197,7 @@ void SVDBEpdTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColName, QHeaderView::Stretch);
     tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColManufacturer, QHeaderView::Fixed);
     tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColModules, QHeaderView::Fixed);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColType, QHeaderView::ResizeToContents);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBEpdTableModel::ColUnit, QHeaderView::ResizeToContents);
 }
 
 

@@ -45,7 +45,7 @@ public:
 		ColName,
         ColManufacturer,
         ColModules,
-		ColType,
+		ColUnit,
 		NumColumns
 	};
 
