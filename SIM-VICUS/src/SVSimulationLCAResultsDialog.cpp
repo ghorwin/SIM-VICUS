@@ -69,7 +69,7 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 
 	double totalArea = 0.0;
 
-	VICUS::EpdCategoryDataset epdDataset;
+	VICUS::EpdModuleDataset epdDataset;
 
 	const SVDatabase &db = SVSettings::instance().m_db;
 
@@ -101,7 +101,7 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 		item->setText(ColInvestCost, QString( "%1 €" ).arg( aggregatedTypeData.m_area * aggregatedTypeData.m_totalCost.value / 100, 7, 'f', 2 ));
 		item->setBackgroundColor(ColColor, aggregatedTypeData.m_component->m_color);
 
-		VICUS::EpdCategoryDataset epd;
+		VICUS::EpdModuleDataset epd;
 
 		item->setExpanded(false);
 
@@ -116,7 +116,7 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 
 			QStringList lcaData;
 			QTreeWidgetItem *itemChild = new QTreeWidgetItem();
-			VICUS::EpdCategoryDataset epdChild;
+			VICUS::EpdModuleDataset epdChild;
 
 
 			itemChild->setText(ColComponentName, QtExt::MultiLangString2QString(comp->m_displayName));
@@ -146,11 +146,11 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 							1 :  // Usage is already normated
 							settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value();
 
-				VICUS::EpdCategoryDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
+				VICUS::EpdModuleDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
 				double conversionFactor = conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
 																		   matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value(),
 																		   aggregatedCompData.m_area);
-				VICUS::EpdCategoryDataset scaledEpdCatData = epdCatData.scaleByFactor( renewingFactor * conversionFactor );
+				VICUS::EpdModuleDataset scaledEpdCatData = epdCatData.scaleByFactor( renewingFactor * conversionFactor );
 				epdChild += scaledEpdCatData;
 
 				QTreeWidgetItem *itemMatChild = new QTreeWidgetItem();
@@ -166,11 +166,11 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 				itemMatChild->setText(ColInvestCost, QString( "%1 €" ).arg( totalCost, 7, 'f', 2 ) );
 				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
 
-				itemMatChild->setText(ColGWP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-				itemMatChild->setText(ColAP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-				itemMatChild->setText(ColEP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-				itemMatChild->setText(ColODP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-				itemMatChild->setText(ColPOCP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+				itemMatChild->setText(ColGWP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+				itemMatChild->setText(ColAP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+				itemMatChild->setText(ColEP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+				itemMatChild->setText(ColODP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+				itemMatChild->setText(ColPOCP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 				itemChild->addChild(itemMatChild);
 
@@ -185,29 +185,29 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 			}
 
 
-			itemChild->setText(ColGWP,  QString::number(scaleFactor * epdChild.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-			itemChild->setText(ColAP,   QString::number(scaleFactor * epdChild.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-			itemChild->setText(ColEP,   QString::number(scaleFactor * epdChild.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-			itemChild->setText(ColODP,  QString::number(scaleFactor * epdChild.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-			itemChild->setText(ColPOCP, QString::number(scaleFactor * epdChild.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+			itemChild->setText(ColGWP,  QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+			itemChild->setText(ColAP,   QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+			itemChild->setText(ColEP,   QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+			itemChild->setText(ColODP,  QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+			itemChild->setText(ColPOCP, QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 			epd += epdChild;
 		}
 
-		item->setText(ColGWP,  QString::number(scaleFactor * epd.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-		item->setText(ColAP,   QString::number(scaleFactor * epd.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-		item->setText(ColEP,   QString::number(scaleFactor * epd.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-		item->setText(ColODP,  QString::number(scaleFactor * epd.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-		item->setText(ColPOCP, QString::number(scaleFactor * epd.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+		item->setText(ColGWP,  QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+		item->setText(ColAP,   QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+		item->setText(ColEP,   QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+		item->setText(ColODP,  QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+		item->setText(ColPOCP, QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 		epdDataset += epd;
 	}
 
-	rootItem->setText(ColGWP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-	rootItem->setText(ColAP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+	rootItem->setText(ColGWP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+	rootItem->setText(ColAP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 
 
@@ -249,13 +249,13 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 	scaleFactor /= settings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value();
 	scaleFactor *= settings.m_para[VICUS::LcaSettings::P_FactorBnbSimpleMode].get_value();
 
-	VICUS::EpdCategoryDataset epdDataset;
+	VICUS::EpdModuleDataset epdDataset;
 
 	if(epdCoal != nullptr) {
 
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 
-		VICUS::EpdCategoryDataset epdCatDataset = epdCoal->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
+		VICUS::EpdModuleDataset epdCatDataset = epdCoal->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
 		epdCatDataset = epdCatDataset.scaleByFactor(paraCoal.get_value(epdCoal->m_referenceUnit));
 
 		epdDataset += epdCatDataset;
@@ -264,11 +264,11 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 		item->setTextAlignment(ColArea, Qt::AlignRight);
 		item->setText(ColArea, QString( "%1 kWh" ).arg( coalConsumption, 7, 'f', 2 ));
 
-		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 		rootItem->addChild(item);
 	}
@@ -277,7 +277,7 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 
-		VICUS::EpdCategoryDataset epdCatDataset = epdElectricity->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
+		VICUS::EpdModuleDataset epdCatDataset = epdElectricity->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
 		epdCatDataset = epdCatDataset.scaleByFactor(paraCoal.get_value(epdElectricity->m_referenceUnit));
 
 		epdDataset += epdCatDataset;
@@ -286,11 +286,11 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 		item->setTextAlignment(ColArea, Qt::AlignRight);
 		item->setText(ColArea, QString( "%1 kWh" ).arg( electricityConsumption, 7, 'f', 2 ));
 
-		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 		rootItem->addChild(item);
 	}
@@ -299,7 +299,7 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 
-		VICUS::EpdCategoryDataset epdCatDataset = epdGas->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
+		VICUS::EpdModuleDataset epdCatDataset = epdGas->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
 		epdCatDataset = epdCatDataset.scaleByFactor(paraCoal.get_value(epdGas->m_referenceUnit));
 
 		epdDataset += epdCatDataset;
@@ -308,20 +308,20 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 		item->setTextAlignment(ColArea, Qt::AlignRight);
 		item->setText(ColArea, QString( "%1 kWh" ).arg( coalConsumption, 7, 'f', 2 ));
 
-		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 		rootItem->addChild(item);
 	}
 
-	rootItem->setText(ColGWP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_GWP ].get_value()));
-	rootItem->setText(ColAP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_AP  ].get_value()));
-	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_EP  ].get_value()));
-	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_ODP ].get_value()));
-	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdCategoryDataset::P_POCP].get_value()));
+	rootItem->setText(ColGWP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
+	rootItem->setText(ColAP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
+	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
+	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
+	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 	// Not useful
 	m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
