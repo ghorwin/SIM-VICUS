@@ -41,14 +41,12 @@
 #include <NANDRAD_Schedules.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_SupplySystem.h"
 #include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
-#include "VICUS_NetworkFluid.h"
-#include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
 #include "VICUS_LcaSettings.h"
+#include "VICUS_LccSettings.h"
 #include "VICUS_ComponentInstance.h"
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
@@ -266,6 +264,8 @@ public:
 	ViewSettings										m_viewSettings;				// XML:E
 
 	LcaSettings											m_lcaSettings;				// XML:E
+
+	LccSettings											m_lccSettings;				// XML:E
 
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 

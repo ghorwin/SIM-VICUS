@@ -45,10 +45,10 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
-	../../src/VICUS_EpdCategoryDataset.h \
 	../../src/VICUS_EpdCategorySet.h \
 	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
+	../../src/VICUS_EpdModuleDataset.h \
 	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InterfaceHeatConduction.h \
@@ -110,9 +110,9 @@ SOURCES += \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
-	../../src/VICUS_EpdCategoryDataset.cpp \
   ../../src/VICUS_EpdCategorySet.cpp \
 	../../src/VICUS_EpdDataset.cpp \
+    ../../src/VICUS_EpdModuleDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
@@ -172,8 +172,8 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
-  ../../src/ncg/ncg_VICUS_LcaSettings.cpp \
 	../../src/ncg/ncg_VICUS_LcaSettings.cpp \
+    ../../src/ncg/ncg_VICUS_LccSettings.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
