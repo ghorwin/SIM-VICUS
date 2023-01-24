@@ -14,7 +14,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidgetThermal">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Thermal">
       <attribute name="title">
@@ -348,18 +348,18 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>

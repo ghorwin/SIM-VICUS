@@ -150,7 +150,7 @@ private:
 
 	/*! Map with all table widget items. Key is module enum.
 	*/
-	std::map<VICUS::EpdCategoryDataset::Module, QTableWidgetItem*> m_moduleToTableItem;
+	std::map<VICUS::EpdModuleDataset::Module, QTableWidgetItem*> m_moduleToTableItem;
 
 	QWidgetList					m_catACheckboxes;
 	QWidgetList					m_catBCheckboxes;
