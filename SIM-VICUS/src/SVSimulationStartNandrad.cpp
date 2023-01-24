@@ -131,7 +131,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		m_ui->tabNetworkSettings->setLayout(h);
 	}
 	{
-		m_simulationLcaOptions = new SVSimulationLCAOptions(this, m_localProject.m_lcaSettings);
+		m_simulationLcaOptions = new SVSimulationLCAOptions(this, m_localProject.m_lcaSettings, m_localProject.m_lccSettings);
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationLcaOptions);
 		m_ui->tabLCASettings->setLayout(h);
