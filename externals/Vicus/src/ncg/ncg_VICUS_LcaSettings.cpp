@@ -86,7 +86,16 @@ void LcaSettings::readXMLPrivate(const TiXmlElement * element) {
 				}
 			}
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_UT; ++i) {
+					if (cName == KeywordList::Keyword("LcaSettings::UsageType",i)) {
+						m_idUsage[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -121,6 +130,11 @@ TiXmlElement * LcaSettings::writeXMLPrivate(TiXmlElement * parent) const {
 
 	if (m_certificationSystem != NUM_CS)
 		TiXmlElement::appendSingleAttributeElement(e, "CertificationSystem", nullptr, std::string(), KeywordList::Keyword("LcaSettings::CertificationSytem",  m_certificationSystem));
+
+	for (int i=0; i<NUM_UT; ++i) {
+		if (m_idUsage[i] != VICUS::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("LcaSettings::UsageType",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idUsage[i]));
+	}
 	return e;
 }
 

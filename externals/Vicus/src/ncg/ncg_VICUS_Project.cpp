@@ -102,6 +102,8 @@ void Project::readXML(const TiXmlElement * element) {
 				m_viewSettings.readXML(c);
 			else if (cName == "LcaSettings")
 				m_lcaSettings.readXML(c);
+			else if (cName == "LccSettings")
+				m_lccSettings.readXML(c);
 			else if (cName == "PlainGeometry")
 				m_plainGeometry.readXML(c);
 			else if (cName == "EmbeddedDatabase")
@@ -138,6 +140,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	m_viewSettings.writeXML(e);
 
 	m_lcaSettings.writeXML(e);
+
+	m_lccSettings.writeXML(e);
 
 	if (!m_geometricNetworks.empty()) {
 		TiXmlElement * child = new TiXmlElement("GeometricNetworks");
