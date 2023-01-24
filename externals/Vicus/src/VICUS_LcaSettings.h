@@ -81,6 +81,13 @@ public:
 		NUM_L
 	};
 
+	enum UsageType {
+		UT_Gas,				// Keyword: Gas
+		UT_Electricity,		// Keyword: Electricity
+		UT_Coal,			// Keyword: Coal
+		NUM_UT
+	};
+
 	/*! LCA Caluclation modes. */
 	enum CalculationMode {
 		CM_Simple,							// Keyword: Simple					'Use predefined certification system settings.'
@@ -130,6 +137,9 @@ public:
 
 	/*! Filter for checking, which modules are selected by certification system. */
 	CertificationModules				m_certificationModules;
+
+	/*! IDs of EPDs for Usage. */
+	IDType								m_idUsage[NUM_UT];							// XML:E
 
 };
 

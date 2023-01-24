@@ -15,6 +15,10 @@ void VICUS::LcaSettings::initDefaults() {
 	m_certificationSystem = CertificationSytem::CS_BNB;
 
 	m_certificationModules = CertificationModules::CT_BNB;
+
+	m_idUsage[UT_Coal] = INVALID_ID;
+	m_idUsage[UT_Electricity] = INVALID_ID;
+	m_idUsage[UT_Gas] = INVALID_ID;
 }
 
 bool VICUS::LcaSettings::isLcaCategoryDefined(EpdCategoryDataset::Module mod) const {
