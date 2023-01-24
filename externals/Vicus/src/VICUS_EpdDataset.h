@@ -28,7 +28,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_EpdCategoryDataset.h"
+#include "VICUS_EpdModuleDataset.h"
 #include "VICUS_LcaSettings.h"
 
 #include <QString>
@@ -73,7 +73,7 @@ public:
 	bool behavesLike(const EpdDataset &other) const;
 
 	/*! Return summed total Epd Data by Category. */
-	EpdCategoryDataset calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const;
+	EpdModuleDataset calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
@@ -93,7 +93,7 @@ public:
 									A2 -> Data
 									A3 -> Data
 	*/
-	std::vector<EpdCategoryDataset> expandCategoryDatasets() const;
+	std::vector<EpdModuleDataset> expandCategoryDatasets() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -132,7 +132,7 @@ public:
 	QString							m_modules;								// XML:E:required
 
 	/*! Vector with all category specific datasats. */
-	std::vector<EpdCategoryDataset> m_epdCategoryDataset;					// XML:E
+	std::vector<EpdModuleDataset> m_epdCategoryDataset;					// XML:E
 };
 
 }

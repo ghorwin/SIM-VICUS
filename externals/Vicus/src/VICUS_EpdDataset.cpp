@@ -49,11 +49,11 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const {
 		return false;
 
 	for(unsigned int i = 0; i<m_epdCategoryDataset.size(); ++i) {
-		const EpdCategoryDataset &ds      = m_epdCategoryDataset[i];
-		const EpdCategoryDataset &dsOther = other.m_epdCategoryDataset[i];
+		const EpdModuleDataset &ds      = m_epdCategoryDataset[i];
+		const EpdModuleDataset &dsOther = other.m_epdCategoryDataset[i];
 
-		for (unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i) {
-			EpdCategoryDataset::para_t t = static_cast<EpdCategoryDataset::para_t>(i);
+		for (unsigned int i=0; i<EpdModuleDataset::NUM_P; ++i) {
+			EpdModuleDataset::para_t t = static_cast<EpdModuleDataset::para_t>(i);
 			if(ds.m_para[t].empty() && dsOther.m_para[t].empty())
 				continue;
 			if(ds.m_para[t] != dsOther.m_para[t])
@@ -65,16 +65,17 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const {
 
 }
 
-EpdCategoryDataset EpdDataset::calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const {
-	EpdCategoryDataset dataSet;
+EpdModuleDataset EpdDataset::calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const {
+	EpdModuleDataset dataSet;
 	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i) {
 		for(unsigned int j=0; j<m_epdCategoryDataset[i].m_modules.size(); ++j) {
-			const EpdCategoryDataset::Module &mod = m_epdCategoryDataset[i].m_modules[j];
+			const EpdModuleDataset::Module &mod = m_epdCategoryDataset[i].m_modules[j];
 			QString modString = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", mod);
 			if(settings.isLcaCategoryDefined(mod) && modString.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat))) {
 				dataSet += m_epdCategoryDataset[i];
 			}
 		}
+		dataSet = dataSet.scaleByFactor(1.0/(double)m_epdCategoryDataset[i].m_modules.size());
 	}
 	return dataSet;
 }
@@ -90,7 +91,7 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 
 	//check parameters
 	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i){
-		for(unsigned int j=0; j<EpdCategoryDataset::NUM_P; ++j){
+		for(unsigned int j=0; j<EpdModuleDataset::NUM_P; ++j){
 			if(m_epdCategoryDataset[i].m_para[j] != otherEPD->m_epdCategoryDataset[i].m_para[j])
 				return Different;
 		}
@@ -118,13 +119,13 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 EpdDataset EpdDataset::operator+(const EpdDataset & epd) {
 	VICUS::EpdDataset addedEpd = *this; // Copy of element
 
-	std::vector<EpdCategoryDataset> expandedCatsA = addedEpd.expandCategoryDatasets();
+	std::vector<EpdModuleDataset> expandedCatsA = addedEpd.expandCategoryDatasets();
 	for(unsigned int k=0; k<expandedCatsA.size(); ++k) {
-		std::vector<EpdCategoryDataset> expandedCatsB = epd.expandCategoryDatasets();
+		std::vector<EpdModuleDataset> expandedCatsB = epd.expandCategoryDatasets();
 		for(unsigned int j=0; j<expandedCatsB.size(); ++j) {
 			// We can assume, that we have always only 1 element in the vector
 			if(expandedCatsA[k].m_modules[0] == expandedCatsB[j].m_modules[0]) {
-				for(unsigned int i=0; i<EpdCategoryDataset::NUM_P; ++i)
+				for(unsigned int i=0; i<EpdModuleDataset::NUM_P; ++i)
 					expandedCatsA[k].m_para[i].value += expandedCatsB[j].m_para[i].value;
 			}
 		}
@@ -137,33 +138,33 @@ void EpdDataset::operator+=(const EpdDataset & epd) {
 }
 
 bool EpdDataset::isCategoryDefined(const LcaSettings &settings, const Category &cat) const {
-	std::vector<EpdCategoryDataset> expEpds = expandCategoryDatasets();
-	std::set<EpdCategoryDataset::Module> definedModules;
+	std::vector<EpdModuleDataset> expEpds = expandCategoryDatasets();
+	std::set<EpdModuleDataset::Module> definedModules;
 
 	for(unsigned int i=0; i<expEpds.size(); ++i) {
-		EpdCategoryDataset::Module &mod = expEpds[i].m_modules[0]; // SHOULD ALWAYS BE 1 ENTRY ONLY WHEN EXPANDED
+		EpdModuleDataset::Module &mod = expEpds[i].m_modules[0]; // SHOULD ALWAYS BE 1 ENTRY ONLY WHEN EXPANDED
 		definedModules.insert(mod);
 	}
 
-	for(unsigned int j=0; j<EpdCategoryDataset::NUM_M; ++j) {
+	for(unsigned int j=0; j<EpdModuleDataset::NUM_M; ++j) {
 		QString key = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", j);
 		if(!key.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat)))
 			continue;
 
-		if(definedModules.find((EpdCategoryDataset::Module)j) == definedModules.end())
+		if(definedModules.find((EpdModuleDataset::Module)j) == definedModules.end())
 			return false;
 	}
 
 	return true;
 }
 
-std::vector<EpdCategoryDataset> EpdDataset::expandCategoryDatasets() const {
-	std::vector<EpdCategoryDataset> expandedCats;
+std::vector<EpdModuleDataset> EpdDataset::expandCategoryDatasets() const {
+	std::vector<EpdModuleDataset> expandedCats;
 
-	for(const VICUS::EpdCategoryDataset &cat : m_epdCategoryDataset) {
-		for(const VICUS::EpdCategoryDataset::Module &mod : cat.m_modules) {
-			VICUS::EpdCategoryDataset catData = cat;
-			catData.m_modules = std::vector<VICUS::EpdCategoryDataset::Module>(1, mod);
+	for(const VICUS::EpdModuleDataset &cat : m_epdCategoryDataset) {
+		for(const VICUS::EpdModuleDataset::Module &mod : cat.m_modules) {
+			VICUS::EpdModuleDataset catData = cat;
+			catData.m_modules = std::vector<VICUS::EpdModuleDataset::Module>(1, mod);
 			expandedCats.push_back(catData);
 		}
 	}
