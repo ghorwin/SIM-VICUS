@@ -94,7 +94,7 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "EpdCategoryDataset")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					EpdCategoryDataset obj;
+					EpdModuleDataset obj;
 					obj.readXML(c2);
 					m_epdCategoryDataset.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -159,7 +159,7 @@ TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("EpdCategoryDataset");
 		e->LinkEndChild(child);
 
-		for (std::vector<EpdCategoryDataset>::const_iterator it = m_epdCategoryDataset.begin();
+		for (std::vector<EpdModuleDataset>::const_iterator it = m_epdCategoryDataset.begin();
 			it != m_epdCategoryDataset.end(); ++it)
 		{
 			it->writeXML(child);
