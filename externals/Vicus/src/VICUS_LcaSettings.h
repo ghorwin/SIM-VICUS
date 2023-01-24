@@ -32,7 +32,7 @@
 #include <IBK_Parameter.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_EpdCategoryDataset.h"
+#include "VICUS_EpdModuleDataset.h"
 
 
 namespace VICUS {
@@ -119,7 +119,7 @@ public:
 	void initDefaults();
 
 	/*! Returns whether a Category is defined in LCA Settings. */
-	bool isLcaCategoryDefined(EpdCategoryDataset::Module mod) const;
+	bool isLcaCategoryDefined(EpdModuleDataset::Module mod) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
