@@ -337,6 +337,9 @@ void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccS
 	m_ui->tableWidgetLccResults->setRowCount(rowCount);
 	m_ui->tableWidgetLccResults->setSortingEnabled(false);
 
+	double sumMaterialCost = 0.0;
+	double sumEnergyCost = 0.0;
+	double totalArea = lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2");
 
 	for(unsigned int i=0; i<rowCount; ++i) {
 
@@ -358,6 +361,9 @@ void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccS
 		tab.setItem(i, ColPriceIncreaseEnergy, new QTableWidgetItem( QString( "%1 %" ).arg( priceEnergyIncrease, 7, 'f', 2 ) ));
 		tab.setItem(i, ColPriceIncreaseGeneral, new QTableWidgetItem(QString( "%1 %" ).arg( priceMaterialIncrease, 7, 'f', 2 )));
 
+		sumMaterialCost += discountingRate * priceMaterialIncreaseBefore * totalMaterialCost[i];
+		sumEnergyCost   += discountingRate * priceEnergyIncreaseBefore   * totalEnergyCost ;
+
 		tab.setItem(i, ColPriceInvestMaterial, new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceMaterialIncreaseBefore * totalMaterialCost[i], 7, 'f', 2 )));
 		tab.setItem(i, ColPriceInvestEnergy,   new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceEnergyIncreaseBefore   * totalEnergyCost  , 7, 'f', 2 )));
 
@@ -371,9 +377,99 @@ void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccS
 		}
 	}
 
+	double totalCost = sumEnergyCost+sumMaterialCost;
+
+	m_ui->tableWidgetLccOverview->setRowCount(3);
+
+	QTableWidgetItem *item = new QTableWidgetItem();
+	item->setText(tr("Present value building"));
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	m_ui->tableWidgetLccOverview->setItem(0, ColTitle, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setText("Normated net present value");
+	m_ui->tableWidgetLccOverview->setItem(1, ColTitle, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setText(tr("Net present value part"));
+	m_ui->tableWidgetLccOverview->setItem(2, ColTitle, item);
+
+	item = new QTableWidgetItem();
+	item->setText(tr("€"));
+	item->setTextAlignment(Qt::AlignRight);
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	m_ui->tableWidgetLccOverview->setItem(0, ColUnit, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText("€/m2");
+	m_ui->tableWidgetLccOverview->setItem(1, ColUnit, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(tr("%"));
+	m_ui->tableWidgetLccOverview->setItem(2, ColUnit, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( sumMaterialCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(0, ColsProduction, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( sumEnergyCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(0, ColsEnergy, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( sumEnergyCost+sumMaterialCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(0, ColsTotal, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( sumMaterialCost/totalArea, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(1, ColsProduction, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( sumEnergyCost/totalArea, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(1, ColsEnergy, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( totalCost/totalArea, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(1, ColsTotal, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( 100.0*sumMaterialCost/totalCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(2, ColsProduction, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( 100.0*sumEnergyCost/totalCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(2, ColsEnergy, item);
+
+	item = new QTableWidgetItem();
+	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+	item->setTextAlignment(Qt::AlignRight);
+	item->setText(QString( "%1" ).arg( 100.0*totalCost/totalCost, 7, 'f', 2 ));
+	m_ui->tableWidgetLccOverview->setItem(2, ColsTotal, item);
 
 	m_ui->tableWidgetLccResults->resizeColumnsToContents();
-	m_ui->tableWidgetLccResults->resizeRowsToContents();
+	m_ui->tableWidgetLccOverview->resizeColumnsToContents();
 }
 
 
@@ -381,11 +477,11 @@ void SVSimulationLCAResultsDialog::setup() {
 	// Add data to treeWidget
 	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
-	QStringList headers;
-	headers << "Category" << "" << "Type" << "Name" << "Name" << "EPD" << "Amount" << "Invest-Cost [€]" << "GWP (CO2-Äqu.) [kg/(m2a)";
-	headers << "ODP (R11-Äqu.) [kg/(m2a)]" << "POCP (C2H4-Äqu.) [kg/(m2a)]" << "AP (SO2-Äqu.) [kg/(m2a)]" << "EP (PO4-Äqu.) [kg/(m2a)]";
+	QStringList headersLca;
+	headersLca << tr("Category") << "" << tr("Type") << tr("Name") << tr("Name") << tr("EPD") << tr("Amount") << tr("Invest-Cost [€]") << tr("GWP (CO2-Äqu.) [kg/(m2a)");
+	headersLca << tr("ODP (R11-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("POCP (C2H4-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("AP (SO2-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("EP (PO4-Äqu.) [kg/(m<SUP>2</SUP>a)]");
 
-	m_ui->treeWidgetLcaResults->setHeaderLabels(headers);
+	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);
 	m_ui->treeWidgetLcaResults->setAlternatingRowColors(true);
 
 	//SVStyle::formatDatabaseTreeView(m_ui->treeWidgetLcaResults);
@@ -393,11 +489,20 @@ void SVSimulationLCAResultsDialog::setup() {
 	m_ui->treeWidgetLcaResults->setItemsExpandable(true);
 	m_ui->tableWidgetLccResults->setColumnCount(NumColLcc);
 
-	QStringList header;
-	header << "Year [a]" << "Discounting rate [%]"  << "Price increase general [%]" << "Price increase energy [%]" << "Energy - net present value  [€]" << "Material - net present value  [€]";
-	m_ui->tableWidgetLccResults->setHorizontalHeaderLabels(header);
+	QStringList headersLcc;
+	headersLcc << tr("Year [a]") << tr("Discounting rate [%]")  << tr("Price increase general [%]")
+			   << tr("Price increase energy [%]") << tr("Energy - net present value  [€]") << tr("Material - net present value  [€]");
+	m_ui->tableWidgetLccResults->setHorizontalHeaderLabels(headersLcc);
+
+	m_ui->tableWidgetLccOverview->setColumnCount(NumColLccOverview);
+	QStringList headerLccOverview;
+	headerLccOverview << tr("Name") << tr("Unit") << tr("Production") << tr("Energy")	<< tr("Total");
+	m_ui->tableWidgetLccOverview->setHorizontalHeaderLabels(headerLccOverview);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLccResults);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLccOverview);
+
+	m_ui->tableWidgetLccOverview->setSortingEnabled(false);
 }
 
 void SVSimulationLCAResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item) {

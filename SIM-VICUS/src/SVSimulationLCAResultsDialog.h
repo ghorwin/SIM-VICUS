@@ -134,6 +134,15 @@ class SVSimulationLCAResultsDialog : public QDialog
 		NumColLcc
 	};
 
+	enum ColsLccOverview {
+		ColTitle,
+		ColUnit,
+		ColsProduction,
+		ColsEnergy,
+		ColsTotal,
+		NumColLccOverview
+	};
+
 public:
 	explicit SVSimulationLCAResultsDialog(QWidget *parent = nullptr);
 	~SVSimulationLCAResultsDialog();
