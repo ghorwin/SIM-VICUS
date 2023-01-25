@@ -58,7 +58,7 @@ EpdModuleDataset EpdModuleDataset::scaleByFactor(const double & factor) const {
 }
 
 const EpdModuleDataset& EpdModuleDataset::operator+=(const EpdModuleDataset &otherEpd) {
-	FUNCID("EpdCategoryDataset::operator+=");
+	FUNCID("EpdModuleDataset::operator+=");
 	for(unsigned int i=0; i<NUM_P; ++i) {
 		if(m_para[i].empty())
 			m_para[i] = otherEpd.m_para[i];
@@ -91,7 +91,7 @@ void EpdModuleDataset::readXML(const TiXmlElement * element) {
 				for(std::string &str : strs) {
 					IBK::trim(str);
 					try {
-						m_modules.push_back(static_cast<EpdModuleDataset::Module>(KeywordList::Enumeration("EpdCategoryDataset::Module", str)));
+						m_modules.push_back(static_cast<EpdModuleDataset::Module>(KeywordList::Enumeration("EpdModuleDataset::Module", str)));
 					}
 					catch (IBK::Exception &ex) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -114,7 +114,7 @@ void EpdModuleDataset::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("EpdCategoryDataset::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("EpdModuleDataset::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -128,15 +128,15 @@ void EpdModuleDataset::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EpdCategoryDataset' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EpdModuleDataset' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EpdCategoryDataset' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EpdModuleDataset' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
 TiXmlElement * EpdModuleDataset::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("EpdCategoryDataset");
+	TiXmlElement * e = new TiXmlElement("EpdModuleDataset");
 	parent->LinkEndChild(e);
 
 
@@ -146,7 +146,7 @@ TiXmlElement * EpdModuleDataset::writeXML(TiXmlElement * parent) const {
 		for (std::vector<Module>::const_iterator it = m_modules.begin();
 			it != m_modules.end(); ++it)
 		{
-			moduleString += std::string(count > 0 ? "," : "") + VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", *it); // add "," in between beginning from the second module
+			moduleString += std::string(count > 0 ? "," : "") + VICUS::KeywordList::Keyword("EpdModuleDataset::Module", *it); // add "," in between beginning from the second module
 			++count;
 		}
 
