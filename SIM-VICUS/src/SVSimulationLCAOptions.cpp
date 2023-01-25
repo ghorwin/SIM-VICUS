@@ -66,26 +66,26 @@ SVSimulationLCAOptions::SVSimulationLCAOptions(QWidget *parent,
 	m_ui->checkBoxD ->setProperty("category", (int)VICUS::EpdModuleDataset::M_D);
 
 
-	m_ui->checkBoxA1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A1));
-	m_ui->checkBoxA2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A2));
-	m_ui->checkBoxA3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A3));
-	m_ui->checkBoxA4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A4));
-	m_ui->checkBoxA5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_A5));
+	m_ui->checkBoxA1->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_A1));
+	m_ui->checkBoxA2->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_A2));
+	m_ui->checkBoxA3->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_A3));
+	m_ui->checkBoxA4->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_A4));
+	m_ui->checkBoxA5->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_A5));
 
-	m_ui->checkBoxB1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B1));
-	m_ui->checkBoxB2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B2));
-	m_ui->checkBoxB3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B3));
-	m_ui->checkBoxB4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B4));
-	m_ui->checkBoxB5->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B5));
-	m_ui->checkBoxB6->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B6));
-	m_ui->checkBoxB7->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_B7));
+	m_ui->checkBoxB1->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B1));
+	m_ui->checkBoxB2->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B2));
+	m_ui->checkBoxB3->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B3));
+	m_ui->checkBoxB4->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B4));
+	m_ui->checkBoxB5->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B5));
+	m_ui->checkBoxB6->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B6));
+	m_ui->checkBoxB7->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_B7));
 
-	m_ui->checkBoxC1->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C1));
-	m_ui->checkBoxC2->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C2));
-	m_ui->checkBoxC3->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C3));
-	m_ui->checkBoxC4->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_C4));
+	m_ui->checkBoxC1->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_C1));
+	m_ui->checkBoxC2->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_C2));
+	m_ui->checkBoxC3->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_C3));
+	m_ui->checkBoxC4->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_C4));
 
-	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdCategoryDataset::Module", VICUS::EpdModuleDataset::M_D));
+	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_D));
 
 	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
 	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVSimulationLCAOptions::setModuleState);
@@ -727,7 +727,7 @@ void SVSimulationLCAOptions::importOkoebauDat(const IBK::Path & csvPath) {
 			} break;
 			}
 		}
-		epd->m_epdCategoryDataset.push_back(*epdCategoryDataSet);
+		epd->m_epdModuleDataset.push_back(*epdCategoryDataSet);
 
 		if(epd->m_manufacturer.isEmpty())
 			qDebug() << "Found emtpty epd: " << epd->m_uuid;
@@ -794,12 +794,12 @@ void SVSimulationLCAOptions::aggregateProjectComponents() {
 	epd.removeDuplicates();
 
 
-	QString messageText(tr("Lifetime:\t%1\nCost:\t%2\nEPD:\t%3\n\nProceed and skip all components without needed Data?")
-						.arg(lifetime.join("\n\t\t"))
-						.arg(cost.join("\n\t\t"))
-						.arg(epd.join("\n\t\t")));
-	if(QMessageBox::warning(this, "LCA/LCC Information is missing", messageText) == QMessageBox::Cancel)
-		return;
+//	QString messageText(tr("Lifetime:\t%1\nCost:\t%2\nEPD:\t%3\n\nProceed and skip all components without needed Data?")
+//						.arg(lifetime.join("\n\t\t"))
+//						.arg(cost.join("\n\t\t"))
+//						.arg(epd.join("\n\t\t")));
+//	if(QMessageBox::warning(this, "LCA/LCC Information is missing", messageText) == QMessageBox::Cancel)
+//		return;
 }
 
 void SVSimulationLCAOptions::aggregateAggregatedComponentsByType() {
