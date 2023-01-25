@@ -88,15 +88,15 @@ void EpdDataset::readXML(const TiXmlElement * element) {
 				m_referenceQuantity = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "Modules")
 				m_modules = QString::fromStdString(c->GetText());
-			else if (cName == "EpdCategoryDataset") {
+			else if (cName == "EpdModuleDataset") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "EpdCategoryDataset")
+					if (c2Name != "EpdModuleDataset")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					EpdModuleDataset obj;
 					obj.readXML(c2);
-					m_epdCategoryDataset.push_back(obj);
+					m_epdModuleDataset.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -155,12 +155,12 @@ TiXmlElement * EpdDataset::writeXML(TiXmlElement * parent) const {
 	if (!m_modules.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Modules", nullptr, std::string(), m_modules.toStdString());
 
-	if (!m_epdCategoryDataset.empty()) {
-		TiXmlElement * child = new TiXmlElement("EpdCategoryDataset");
+	if (!m_epdModuleDataset.empty()) {
+		TiXmlElement * child = new TiXmlElement("EpdModuleDataset");
 		e->LinkEndChild(child);
 
-		for (std::vector<EpdModuleDataset>::const_iterator it = m_epdCategoryDataset.begin();
-			it != m_epdCategoryDataset.end(); ++it)
+		for (std::vector<EpdModuleDataset>::const_iterator it = m_epdModuleDataset.begin();
+			it != m_epdModuleDataset.end(); ++it)
 		{
 			it->writeXML(child);
 		}

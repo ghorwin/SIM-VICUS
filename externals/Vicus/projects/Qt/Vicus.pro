@@ -165,7 +165,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Component.cpp \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
-	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
+        ../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
@@ -173,7 +173,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
 	../../src/ncg/ncg_VICUS_LcaSettings.cpp \
-    ../../src/ncg/ncg_VICUS_LccSettings.cpp \
+        ../../src/ncg/ncg_VICUS_LccSettings.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
