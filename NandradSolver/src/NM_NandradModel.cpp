@@ -2355,7 +2355,7 @@ void NandradModel::initOutputReferenceList() {
 	}
 
 
-	// *** append variable name substitutions for zones ***
+	// *** append variable name substitutions for zones, construction instances, ... ***
 
 	for (const NANDRAD::Zone & zone : m_project->m_zones) {
 		// skip zones without display name
@@ -2364,6 +2364,23 @@ void NandradModel::initOutputReferenceList() {
 		std::string zoneObjectRef = IBK::FormatString("Zone(id=%1)").arg(zone.m_id).str();
 		m_varSubstitutionMap[zoneObjectRef] = zone.m_displayName;
 	}
+
+	for (const NANDRAD::ConstructionInstance &ci: m_project->m_constructionInstances) {
+		for (const NANDRAD::EmbeddedObject &eo: ci.m_embeddedObjects) {
+			// skip eos without display name
+			if (!eo.m_displayName.empty()) {
+				std::string eoObjectRef = IBK::FormatString("EmbeddedObject(id=%1)").arg(eo.m_id).str();
+				m_varSubstitutionMap[eoObjectRef] = eo.m_displayName;
+			}
+
+		}
+		// skip cis without display name
+		if (!ci.m_displayName.empty()) {
+			std::string ciObjectRef = IBK::FormatString("ConstructionInstance(id=%1)").arg(ci.m_id).str();
+			m_varSubstitutionMap[ciObjectRef] = ci.m_displayName;
+		}
+	}
+
 
 	// *** replace any "[" and "]" in the display names to avoid problems in post proc
 	for (std::map<std::string, std::string>::iterator it = m_varSubstitutionMap.begin(); it != m_varSubstitutionMap.end(); ++it ){
