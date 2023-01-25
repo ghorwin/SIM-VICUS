@@ -132,7 +132,7 @@ public:
 	QString							m_modules;								// XML:E:required
 
 	/*! Vector with all category specific datasats. */
-	std::vector<EpdModuleDataset> m_epdCategoryDataset;					// XML:E
+	std::vector<EpdModuleDataset> m_epdModuleDataset;					// XML:E
 };
 
 }

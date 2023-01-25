@@ -30,8 +30,8 @@ namespace VICUS {
 
 VICUS::EpdDataset VICUS::EpdDataset::scaleByFactor(const double & factor) const {
 	VICUS::EpdDataset epd = *this;
-	for(unsigned int i=0; i<epd.m_epdCategoryDataset.size(); ++i) {
-		epd.m_epdCategoryDataset[i] = epd.m_epdCategoryDataset[i].scaleByFactor(factor);
+	for(unsigned int i=0; i<epd.m_epdModuleDataset.size(); ++i) {
+		epd.m_epdModuleDataset[i] = epd.m_epdModuleDataset[i].scaleByFactor(factor);
 	}
 	return epd;
 }
@@ -45,12 +45,12 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const {
 	if(m_category != other.m_category)
 		return false;
 
-	if(m_epdCategoryDataset.size() != other.m_epdCategoryDataset.size())
+	if(m_epdModuleDataset.size() != other.m_epdModuleDataset.size())
 		return false;
 
-	for(unsigned int i = 0; i<m_epdCategoryDataset.size(); ++i) {
-		const EpdModuleDataset &ds      = m_epdCategoryDataset[i];
-		const EpdModuleDataset &dsOther = other.m_epdCategoryDataset[i];
+	for(unsigned int i = 0; i<m_epdModuleDataset.size(); ++i) {
+		const EpdModuleDataset &ds      = m_epdModuleDataset[i];
+		const EpdModuleDataset &dsOther = other.m_epdModuleDataset[i];
 
 		for (unsigned int i=0; i<EpdModuleDataset::NUM_P; ++i) {
 			EpdModuleDataset::para_t t = static_cast<EpdModuleDataset::para_t>(i);
@@ -67,15 +67,15 @@ bool EpdDataset::behavesLike(const EpdDataset & other) const {
 
 EpdModuleDataset EpdDataset::calcTotalEpdByCategory(const Category &cat, const LcaSettings &settings) const {
 	EpdModuleDataset dataSet;
-	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i) {
-		for(unsigned int j=0; j<m_epdCategoryDataset[i].m_modules.size(); ++j) {
-			const EpdModuleDataset::Module &mod = m_epdCategoryDataset[i].m_modules[j];
-			QString modString = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", mod);
+	for(unsigned int i=0; i<m_epdModuleDataset.size(); ++i) {
+		for(unsigned int j=0; j<m_epdModuleDataset[i].m_modules.size(); ++j) {
+			const EpdModuleDataset::Module &mod = m_epdModuleDataset[i].m_modules[j];
+			QString modString = VICUS::KeywordList::Keyword("EpdModuleDataset::Module", mod);
 			if(settings.isLcaCategoryDefined(mod) && modString.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat))) {
-				dataSet += m_epdCategoryDataset[i];
+				dataSet += m_epdModuleDataset[i];
 			}
 		}
-		dataSet = dataSet.scaleByFactor(1.0/(double)m_epdCategoryDataset[i].m_modules.size());
+		dataSet = dataSet.scaleByFactor(1.0/(double)m_epdModuleDataset[i].m_modules.size());
 	}
 	return dataSet;
 }
@@ -86,13 +86,13 @@ AbstractDBElement::ComparisonResult EpdDataset::equal(const AbstractDBElement *o
 		return Different;
 
 	//first check critical data
-	if(m_epdCategoryDataset.size() != otherEPD->m_epdCategoryDataset.size())
+	if(m_epdModuleDataset.size() != otherEPD->m_epdModuleDataset.size())
 		return Different;
 
 	//check parameters
-	for(unsigned int i=0; i<m_epdCategoryDataset.size(); ++i){
+	for(unsigned int i=0; i<m_epdModuleDataset.size(); ++i){
 		for(unsigned int j=0; j<EpdModuleDataset::NUM_P; ++j){
-			if(m_epdCategoryDataset[i].m_para[j] != otherEPD->m_epdCategoryDataset[i].m_para[j])
+			if(m_epdModuleDataset[i].m_para[j] != otherEPD->m_epdModuleDataset[i].m_para[j])
 				return Different;
 		}
 	}
@@ -161,7 +161,7 @@ bool EpdDataset::isCategoryDefined(const LcaSettings &settings, const Category &
 std::vector<EpdModuleDataset> EpdDataset::expandCategoryDatasets() const {
 	std::vector<EpdModuleDataset> expandedCats;
 
-	for(const VICUS::EpdModuleDataset &cat : m_epdCategoryDataset) {
+	for(const VICUS::EpdModuleDataset &cat : m_epdModuleDataset) {
 		for(const VICUS::EpdModuleDataset::Module &mod : cat.m_modules) {
 			VICUS::EpdModuleDataset catData = cat;
 			catData.m_modules = std::vector<VICUS::EpdModuleDataset::Module>(1, mod);
