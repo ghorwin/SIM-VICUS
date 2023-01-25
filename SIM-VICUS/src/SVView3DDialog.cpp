@@ -42,6 +42,7 @@
 #include <QString>
 #include <QTranslator>
 #include <QProcess>
+#include <QProgressDialog>
 
 #include <fstream>
 
@@ -55,6 +56,36 @@ void SVView3DDialog::exportView3d() {
 	// We take all our selected surfaces
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_All);
 
+	//exit if no surfaces were selected
+	if(m_selSurfaces.size() == 0){
+		QMessageBox::information(this, QString(), tr("There is nothing to compute, since no surfaces were selected!"));
+		return;
+	}
+
+	// calculate the number of rooms that will be processed
+	std::set<unsigned int> roomIds;
+	for (const VICUS::Surface *surf : m_selSurfaces) {
+		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(surf->m_parent);
+		if (r != nullptr){
+			roomIds.insert(r->m_id);
+		}
+	}
+	int numberOfRooms = roomIds.size();
+
+
+	//TODO ANTON vielleicht nur bei einer mindest anzahl an räumen
+	//TODO ANTON viewfactors stehen in der Datenstruktur, die vor dem abort eingelesen wurden
+	// sollen diese gelöscht werden oder bleiben sie erhalten
+
+	//show a progressDialog
+	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, this);
+	dlg.setWindowModality(Qt::WindowModal);
+	dlg.setMinimumDuration(0);
+
+	// this value will be changed and set to the dialog
+	int progressCount = 0;
+	dlg.setValue(progressCount);
+
 	SVDatabase &db = SVSettings::instance().m_db;
 
 	unsigned int vertexId = 0;
@@ -64,6 +95,7 @@ void SVView3DDialog::exportView3d() {
 	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFactorMap;
 
 	for (const VICUS::Surface *surf : m_selSurfaces) {
+		//TODO ANTON Was soll passieren wenn nur ein teil eines raumes selektiert ist (Werte sind minimal unterschiedlich)kopf
 
 		// We iterate through all selected surfaces
 		// then we triangulate them and compose our View3D Objects
@@ -71,9 +103,10 @@ void SVView3DDialog::exportView3d() {
 
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
-		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon3D().vertexes();
+		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().triangulationData().m_vertexes;
 		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
 		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
+
 
 		// we skip all dump geometries
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
@@ -94,7 +127,7 @@ void SVView3DDialog::exportView3d() {
 			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
 		}
 
-		// we compose our view 3D Surface
+		// save the outline vertexes of the polygon
 		for ( const IBKMK::Vector3D &v : vertexes ) {
 
 			if ( !v3dRoom.m_vertexes.empty() )
@@ -154,6 +187,7 @@ void SVView3DDialog::exportView3d() {
 
 				view3dVertex vView3d (++vertexId, vHole);
 				v3dRoom.m_vertexes.push_back(vView3d);
+
 			}
 
 			// we take all triangles from triangulation and combine them in view3D
@@ -338,8 +372,20 @@ void SVView3DDialog::exportView3d() {
 		}
 
 		readView3dResults(IBK::Path(result.toStdString() ), room );
+
+		dlg.setValue(++progressCount);
+		//check if it was cancelled, if so exit the loop
+		if(dlg.wasCanceled()) {
+			break;
+		}
 	}
-	QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
+
+	dlg.hide();
+	if(!dlg.wasCanceled()){
+		QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
+	} else {
+		QMessageBox::critical(this, QString(), tr("Calculation of View factors was canceled."));
+	}
 
 }
 
