@@ -39,11 +39,11 @@ namespace VICUS {
 		"Construction::UsageType",
 		"Construction::InsulationKind",
 		"Construction::MaterialKind",
-		"EpdCategoryDataset::para_t",
-		"EpdCategoryDataset::Module",
 		"EpdCategorySet::Category",
 		"EpdDataset::Type",
 		"EpdDataset::Category",
+		"EpdModuleDataset::para_t",
+		"EpdModuleDataset::Module",
 		"Infiltration::para_t",
 		"Infiltration::AirChangeType",
 		"InterfaceHeatConduction::modelType_t",
@@ -170,8 +170,33 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "---";
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return "IDCategoryA";
+				case 1 : return "IDCategoryB";
+				case 2 : return "IDCategoryC";
+				case 3 : return "IDCategoryD";
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : return "Generic";
+				case 1 : return "Specific";
+				case 2 : return "Average";
+				case 3 : return "Representative";
+				case 4 : return "Template";
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return "A";
+				case 1 : return "B";
+				case 2 : return "C";
+				case 3 : return "D";
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return "AreaDensity";
 				case 1 : return "DryDensity";
@@ -183,8 +208,8 @@ namespace VICUS {
 				case 7 : return "PENRT";
 				case 8 : return "PERT";
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return "A1";
 				case 1 : return "A2";
@@ -203,31 +228,6 @@ namespace VICUS {
 				case 14 : return "C3";
 				case 15 : return "C4";
 				case 16 : return "D";
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return "IDCategoryA";
-				case 1 : return "IDCategoryB";
-				case 2 : return "IDCategoryC";
-				case 3 : return "IDCategoryD";
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : return "Generic";
-				case 1 : return "Specific";
-				case 2 : return "Average";
-				case 3 : return "Representative";
-				case 4 : return "Template";
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return "A";
-				case 1 : return "B";
-				case 2 : return "C";
-				case 3 : return "D";
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -358,7 +358,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PriceIncreaseGeneral";
 				case 1 : return "PriceIncreaseEnergy";
-				case 2 : return "CalculationInterestRate";
+				case 2 : return "DiscountingInterestRate";
 				case 3 : return "CoalConsumption";
 				case 4 : return "GasConsumption";
 				case 5 : return "ElectricityConsumption";
@@ -788,8 +788,33 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "---";
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return "IDCategoryA";
+				case 1 : return "IDCategoryB";
+				case 2 : return "IDCategoryC";
+				case 3 : return "IDCategoryD";
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : return "Generic";
+				case 1 : return "Specific";
+				case 2 : return "Average";
+				case 3 : return "Representative";
+				case 4 : return "Template";
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return "A";
+				case 1 : return "B";
+				case 2 : return "C";
+				case 3 : return "D";
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return "AreaDensity";
 				case 1 : return "DryDensity";
@@ -801,8 +826,8 @@ namespace VICUS {
 				case 7 : return "PENRT";
 				case 8 : return "PERT";
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return "A1";
 				case 1 : return "A2";
@@ -821,31 +846,6 @@ namespace VICUS {
 				case 14 : return "C3";
 				case 15 : return "C4";
 				case 16 : return "D";
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return "IDCategoryA";
-				case 1 : return "IDCategoryB";
-				case 2 : return "IDCategoryC";
-				case 3 : return "IDCategoryD";
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : return "Generic";
-				case 1 : return "Specific";
-				case 2 : return "Average";
-				case 3 : return "Representative";
-				case 4 : return "Template";
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return "A";
-				case 1 : return "B";
-				case 2 : return "C";
-				case 3 : return "D";
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -976,7 +976,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PriceIncreaseGeneral";
 				case 1 : return "PriceIncreaseEnergy";
-				case 2 : return "CalculationInterestRate";
+				case 2 : return "DiscountingInterestRate";
 				case 3 : return "CoalConsumption";
 				case 4 : return "GasConsumption";
 				case 5 : return "ElectricityConsumption";
@@ -1407,8 +1407,33 @@ namespace VICUS {
 				case 5 : return "Loam";
 				case 6 : return "Not selected";
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return "ID of Catefory A";
+				case 1 : return "ID of Catefory B";
+				case 2 : return "ID of Catefory C";
+				case 3 : return "ID of Catefory D";
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "Generic";
+				case 1 : if (no_description != nullptr) *no_description = true; return "Specific";
+				case 2 : if (no_description != nullptr) *no_description = true; return "Average";
+				case 3 : if (no_description != nullptr) *no_description = true; return "Representative";
+				case 4 : if (no_description != nullptr) *no_description = true; return "Template";
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return "Production";
+				case 1 : return "Usage";
+				case 2 : return "Disposal";
+				case 3 : return "Deposit";
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return "mass of material in dependence of the area.";
 				case 1 : return "Dry density of the material.";
@@ -1420,8 +1445,8 @@ namespace VICUS {
 				case 7 : return "Total use of non-renewable primary energy resources.";
 				case 8 : return "Total use of renewable primary energy resources .";
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return "A1: Raw material procurement";
 				case 1 : return "A2: Transport";
@@ -1440,31 +1465,6 @@ namespace VICUS {
 				case 14 : return "C3: Waste recycling";
 				case 15 : return "C4: Disposal";
 				case 16 : return "D: Potential for reuse, recovery and recycling";
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return "ID of Catefory A";
-				case 1 : return "ID of Catefory B";
-				case 2 : return "ID of Catefory C";
-				case 3 : return "ID of Catefory D";
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "Generic";
-				case 1 : if (no_description != nullptr) *no_description = true; return "Specific";
-				case 2 : if (no_description != nullptr) *no_description = true; return "Average";
-				case 3 : if (no_description != nullptr) *no_description = true; return "Representative";
-				case 4 : if (no_description != nullptr) *no_description = true; return "Template";
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return "Production";
-				case 1 : return "Usage";
-				case 2 : return "Disposal";
-				case 3 : return "Deposit";
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -1595,7 +1595,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Yearly general price increase [%].";
 				case 1 : return "Yearly energy price increase [%].";
-				case 2 : return "Interest rate for calculation [%].";
+				case 2 : return "Interest rate for discounting [%].";
 				case 3 : return "Coal consumption [kWh/a].";
 				case 4 : return "Gas consumption [kWh/a].";
 				case 5 : return "Electricity consumption [kWh/a].";
@@ -2025,8 +2025,33 @@ namespace VICUS {
 				case 5 : return "";
 				case 6 : return "";
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return "-";
+				case 1 : return "-";
+				case 2 : return "-";
+				case 3 : return "-";
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return "kg/m2";
 				case 1 : return "kg/m3";
@@ -2038,8 +2063,8 @@ namespace VICUS {
 				case 7 : return "W/mK";
 				case 8 : return "W/mK";
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -2058,31 +2083,6 @@ namespace VICUS {
 				case 14 : return "";
 				case 15 : return "";
 				case 16 : return "";
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return "-";
-				case 1 : return "-";
-				case 2 : return "-";
-				case 3 : return "-";
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
-				case 4 : return "";
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -2643,8 +2643,33 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2656,8 +2681,8 @@ namespace VICUS {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2676,31 +2701,6 @@ namespace VICUS {
 				case 14 : return "#FFFFFF";
 				case 15 : return "#FFFFFF";
 				case 16 : return "#FFFFFF";
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -3261,8 +3261,33 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EpdCategoryDataset::para_t
+			// EpdCategorySet::Category
 			case 4 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// EpdDataset::Type
+			case 5 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// EpdDataset::Category
+			case 6 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// EpdModuleDataset::para_t
+			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3274,8 +3299,8 @@ namespace VICUS {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EpdCategoryDataset::Module
-			case 5 :
+			// EpdModuleDataset::Module
+			case 8 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3294,31 +3319,6 @@ namespace VICUS {
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
 				case 15 : return std::numeric_limits<double>::quiet_NaN();
 				case 16 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// EpdCategorySet::Category
-			case 6 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// EpdDataset::Type
-			case 7 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// EpdDataset::Category
-			case 8 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Infiltration::para_t
 			case 9 :
@@ -3839,16 +3839,16 @@ namespace VICUS {
 			case 2 : return 5;
 			// Construction::MaterialKind
 			case 3 : return 7;
-			// EpdCategoryDataset::para_t
-			case 4 : return 9;
-			// EpdCategoryDataset::Module
-			case 5 : return 17;
 			// EpdCategorySet::Category
-			case 6 : return 4;
+			case 4 : return 4;
 			// EpdDataset::Type
-			case 7 : return 5;
+			case 5 : return 5;
 			// EpdDataset::Category
-			case 8 : return 4;
+			case 6 : return 4;
+			// EpdModuleDataset::para_t
+			case 7 : return 9;
+			// EpdModuleDataset::Module
+			case 8 : return 17;
 			// Infiltration::para_t
 			case 9 : return 2;
 			// Infiltration::AirChangeType
@@ -3989,16 +3989,16 @@ namespace VICUS {
 			case 2 : return 4;
 			// Construction::MaterialKind
 			case 3 : return 6;
-			// EpdCategoryDataset::para_t
-			case 4 : return 8;
-			// EpdCategoryDataset::Module
-			case 5 : return 16;
 			// EpdCategorySet::Category
-			case 6 : return 3;
+			case 4 : return 3;
 			// EpdDataset::Type
-			case 7 : return 4;
+			case 5 : return 4;
 			// EpdDataset::Category
-			case 8 : return 3;
+			case 6 : return 3;
+			// EpdModuleDataset::para_t
+			case 7 : return 8;
+			// EpdModuleDataset::Module
+			case 8 : return 16;
 			// Infiltration::para_t
 			case 9 : return 1;
 			// Infiltration::AirChangeType
