@@ -110,7 +110,7 @@ void SVDBEpdEditWidget::updateInput(int id) {
 	m_ui->lineEditRefUnit->setText(QString::fromStdString(m_current->m_referenceUnit.name()));
 
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
-	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdCategoryDataset.size());
+	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdModuleDataset.size());
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 
