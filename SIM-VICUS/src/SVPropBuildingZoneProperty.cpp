@@ -418,7 +418,7 @@ void SVPropBuildingZoneProperty::on_pushButtonClipping_clicked() {
 	clippingPrj.findParallelSurfaces();
 	clippingPrj.findSurfacesInRange();
 	clippingPrj.clipSurfaces();
-	// clippingPrj.createComponentInstances();
+	clippingPrj.createComponentInstances();
 
 
 	SVUndoModifyProject *undo = new SVUndoModifyProject("Update vicus project", clippingPrj.newPrjVicus());
