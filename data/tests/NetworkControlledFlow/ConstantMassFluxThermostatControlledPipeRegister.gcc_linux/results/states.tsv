@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	dummy.AirTemperature [C]
+Time [h]	Floor.ActiveLayerTemperature [C]	dummy.AirTemperature [C]
 0	17.9	17.9
 0.01666666667	18.7397	17.6861
 0.03333333333	18.7386	17.5047

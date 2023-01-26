@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=2001).FluxHeatConductionA [W]	ConstructionInstance(id=2002).FluxHeatConductionA [W]	ConstructionInstance(id=3001).FluxHeatConductionA [W]	ConstructionInstance(id=3002).FluxHeatConductionA [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]	ConstructionInstance(id=3002).ActiveLayerThermalLoad [W]	Model(id=701).ActiveLayerThermalLoad(id=3001)-average [W]	Model(id=702).ActiveLayerThermalLoad(id=3002)-average [W]
+Time [h]	South.FluxHeatConductionA [W]	South.FluxHeatConductionA [W]	Ground Floor.FluxHeatConductionA [W]	Upper Floor.FluxHeatConductionA [W]	Ground Floor.ActiveLayerThermalLoad [W]	Upper Floor.ActiveLayerThermalLoad [W]	Model(id=701).ActiveLayerThermalLoad(id=3001)-average [W]	Model(id=702).ActiveLayerThermalLoad(id=3002)-average [W]
 0	0	0	0	0	1500	750	1500	750
 1	64.2548	40.0214	-116.928	-74.8959	1500	750	1500	750
 2	107.07	90.0333	-92.4714	-113.866	0	750	662.857	750
