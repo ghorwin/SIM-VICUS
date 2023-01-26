@@ -111,6 +111,7 @@ void Project::clipSurfaces() {
 		// look for clipping surface
 		ClippingSurface &cs = getClippingSurfaceById(it->first);
 		VICUS::Surface s1 = cs.m_vicusSurface;
+		VICUS::Surface s1Copy = s1;
 		unsigned int surfOriginId = s1.m_id;
 
 		IBKMK::Vector3D localX = s1.geometry().localX();
@@ -125,8 +126,11 @@ void Project::clipSurfaces() {
 		std::vector<extPolygon> mainDiffs, mainIntersections, clippingPolygons;
 		clippingPolygons.push_back(s1.geometry().polygon2D());
 
-		if(cs.m_clippingObjects.empty())
+		// we need the connection to the construction instance, save it!
+		if(cs.m_clippingObjects.empty()){
+			m_surfaceCIOriginId[s1Copy.m_id] = s1.m_componentInstance->m_id;
 			continue;
+		}
 
 		// delete original surfaces
 		unsigned int eraseIdx = 0;
@@ -136,6 +140,7 @@ void Project::clipSurfaces() {
 		}
 		r->m_surfaces.erase(r->m_surfaces.begin()+eraseIdx);
 		r->updateParents();
+		unsigned int roomSurfaceNumber = r->m_surfaces.size();
 
 		for(ClippingObject &co : cs.m_clippingObjects){
 			const VICUS::Surface &s2 = co.m_vicusSurface;
@@ -263,6 +268,14 @@ void Project::clipSurfaces() {
 			if(!poly.m_polygon.isValid())
 				continue;
 
+			// now we have an polygon, which is identical to the new clipping polygon -> so we take the old one
+			if(clippingPolygons.size() == 1 && r->m_surfaces.size() == roomSurfaceNumber){
+				r->m_surfaces.push_back(s1Copy);
+				r->updateParents();
+				m_surfaceCIOriginId[s1Copy.m_id] = s1.m_componentInstance->m_id;
+				continue;
+			}
+
 			s1.m_id = ++id;
 			s1.m_displayName = QString("%2 [%1]").arg(++surfIdx).arg(displayName);
 
@@ -342,6 +355,7 @@ void Project::createComponentInstances() {
 
 	std::set<const VICUS::Surface *>	surfaces;
 
+	// list all surfaces in a set
 	for(const VICUS::Building &b : m_newPrjVicus.m_buildings){
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels){
 			for(const VICUS::Room &r : bl.m_rooms){
@@ -352,16 +366,35 @@ void Project::createComponentInstances() {
 		}
 	}
 
+	// set for already handled surfaces
 	std::set<unsigned int>					handledSurfaces;
+	// vector of new construction instances
 	std::vector<VICUS::ComponentInstance>	cis;
+
+	qDebug() << "Suchen der Component Instances";
+	qDebug() << "##############################";
+
 
 	for(const VICUS::Surface * surfA : surfaces){
 
+		// get old construction instance properties -> component id
+		qDebug() << "Es wird Fläche A '" << surfA->m_displayName << "' gesetzt.";
+
+		if(m_surfaceCIOriginId.find(surfA->m_id) == m_surfaceCIOriginId.end()){
+			for(const VICUS::ComponentInstance &ciObj : m_newPrjVicus.m_componentInstances){
+				if(ciObj.m_idSideASurface == surfA->m_id || ciObj.m_idSideBSurface == surfA->m_id){
+					cis.push_back(ciObj);
+					break;
+				}
+			}
+			continue;
+		}
+
 		unsigned int compId = findComponentInstanceForSurface(m_surfaceCIOriginId[surfA->m_id]);
 		VICUS::ComponentInstance ci(m_newPrjVicus.nextUnusedID(), compId, surfA->m_id, VICUS::INVALID_ID);
-
 		for(const VICUS::Surface * surfB : surfaces){
 
+			// do some checks so that we have no nullptr, already handled, adiabatic surfaces, etc...
 			if(surfA == surfB || surfA == nullptr || surfB == nullptr)
 				continue;
 			if(surfA->m_parent == nullptr || surfB->m_parent == nullptr)
@@ -372,6 +405,12 @@ void Project::createComponentInstances() {
 			if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end() ||
 					handledSurfaces.find(surfB->m_id) != handledSurfaces.end())
 				continue;
+
+			// check area of both surfaces
+			if(!IBK::near_equal(surfA->geometry().area(2), surfB->geometry().area(2)))
+				continue;
+
+			qDebug() << "Es wird Fläche A '" << surfA->m_displayName << "' wird mit Fläche B '" << surfB->m_displayName<< "' geschnitten.";
 
 			// convert 3D points of surface B into 2D plane of surface A
 			VICUS::Surface * s1 = const_cast<VICUS::Surface*>(surfA);
@@ -956,6 +995,10 @@ void Project::doClipperClipping(const extPolygon &surf,
 		// Convert back polygon points
 		poly.setVertexes(convertClipperPathToVec2D(path));
 
+		if(poly.vertexes().empty()){
+			int x=0;
+		}
+
 		// Should not be an hole
 		Q_ASSERT(!childNode->IsHole());
 	}
@@ -973,6 +1016,14 @@ void Project::doClipperClipping(const extPolygon &surf,
 
 		// Convert back points
 		poly.setVertexes(convertClipperPathToVec2D(path));
+
+		// ToDo Stephan ist das richtig wenn das aktuelle diff-poly keine punkte hat dann einfach dieses zu überspringen
+		// kann dann das nächste polygon ein loch von diesem sein?
+		if(poly.vertexes().empty()){
+			mainDiffs.pop_back();
+			continue;
+		}
+
 
 		for(ClipperLib::PolyNode *secondChild : childNode->Childs){
 			if(!secondChild->IsHole())
