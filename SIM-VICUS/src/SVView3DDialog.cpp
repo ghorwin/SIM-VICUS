@@ -72,8 +72,6 @@ void SVView3DDialog::exportView3d() {
 	}
 	int numberOfRooms = roomIds.size();
 
-
-	//TODO ANTON vielleicht nur bei einer mindest anzahl an räumen
 	//TODO ANTON viewfactors stehen in der Datenstruktur, die vor dem abort eingelesen wurden
 	// sollen diese gelöscht werden oder bleiben sie erhalten
 
@@ -437,8 +435,6 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				continue;
 			}
 			// check if the area is almost matching
-			auto a = areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface);
-			const VICUS::Object * o = SVProjectHandler::instance().project().objectById(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface);
 			if(areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface)- area[j] < 0.1){
 				// get the sub(surface) from the v3dRoom
 				const VICUS::Object * obj = SVProjectHandler::instance().project().objectById(v3dRoom.m_extendedSurfaces[i-2].m_idVicusSurface);
@@ -447,7 +443,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				if (surf != nullptr) {
 					// is a surface
 					// store the viewFactor
-					const_cast<VICUS::Surface *>(surf)->m_viewFactors[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
+					const_cast<VICUS::Surface *>(surf)->m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
 				}
 				else {
 					// then the object should be a subsurface
@@ -455,7 +451,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 					if (subSurf != nullptr) {
 						// is a subsurface
 						// store the viewFactor
-						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
+						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
 					}
 					else {
 						throw IBK::Exception(IBK::FormatString("Exported Object is wether a surface nor a subsurface"), FUNC_ID);

@@ -822,6 +822,11 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
+	// TODO Anton
+	// now the comp instances are created, so the viewFactors can be saved
+	// save a map of vicus constId to nandrad constId, where the nandrad consts are created
+	// create a new function in project, that does the same as wrongly implemented (or just normal function)
+
 	if (!errorStack.isEmpty())	return;
 
 	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
@@ -1034,6 +1039,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 		}
 	}
 
+	// TODO Anton: Könnte das nicht passieren?
 	// check for unqiue zone IDs
 	try {
 		checkForUniqueIDs(zones, idSet);
@@ -1076,6 +1082,25 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		// for now, zones are always active
 		z.m_type = NANDRAD::Zone::ZT_Active;
+
+		// save view factors in zone
+		std::vector<VICUS::Surface> surfaces = r->m_surfaces;
+		for(unsigned int i = 0; i < surfaces.size(); i++){
+			for(unsigned int ii = 0; ii < surfaces.size(); ii++){
+				if(i == ii){
+					// skip the if they are the same surfaces
+					continue;
+				}
+				// the view factor from surface[i] to surface[ii]
+				double vF = surfaces[i].m_viewFactors.m_values[surfaces[ii].m_id][0];
+				unsigned int cId1 = surfaces[i].m_componentInstance->m_id;
+				unsigned int cId2 = surfaces[ii].m_componentInstance->m_id;
+				NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cId1, cId2);
+				z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vF));
+			}
+		}
+
+
 		// finally append zone
 		p.m_zones.push_back(z);
 	}

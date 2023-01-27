@@ -45,7 +45,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 	const TiXmlElement * c = element->FirstChildElement();
 	while (c) {
 		const std::string & cName = c->ValueStr();
-		if(cName == "ViewFactors") {
+		/*if(cName == "ViewFactors") {
 			const TiXmlElement * cc = c->FirstChildElement();
 			while (cc) {
 				const std::string & ccName = cc->ValueStr();
@@ -64,7 +64,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 			}
 			// remove ViewFactor element from parent, to avoid getting spammed with "unknown ViewFactor" warning
 			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
-		}
+		}*/
 		c = c->NextSiblingElement();
 	}
 	readXMLPrivate(element);
@@ -72,7 +72,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 
 TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = writeXMLPrivate(parent);
-	if(m_viewFactors.size() > 0){
+	/*if(m_viewFactors.size() > 0){
 		TiXmlElement * viewFactors = new TiXmlElement("ViewFactors");
 		for(const std::pair<unsigned int, double> entry : m_viewFactors){
 			TiXmlElement * viewFactor = new TiXmlElement("ViewFactor");
@@ -81,7 +81,7 @@ TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
 			viewFactors->LinkEndChild(viewFactor);
 		}
 		e->LinkEndChild(viewFactors);
-	}
+	}*/
 	return e;
 }
 
