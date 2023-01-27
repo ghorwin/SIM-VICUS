@@ -35,6 +35,8 @@
 
 #include <IBK_LinearSpline.h>
 
+#include "NANDRAD_IDVectorMap.h"
+
 #include <QString>
 #include <QColor>
 
@@ -110,8 +112,8 @@ public:
 	*/
 	ComponentInstance					*m_componentInstance = nullptr;
 
-	/*! Map that stores the id of a (sub)surface and the viewFactor onte that (subSurface) */
-	std::map<unsigned int, double>		m_viewFactors;
+	/*! Map that stores the id of a (sub)surface and the viewFactor onto that (subSurface) */
+	NANDRAD::IDVectorMap<double>		m_viewFactors;				// XML:E
 
 private:
 	/*! Subsurfaces of the surface. */
