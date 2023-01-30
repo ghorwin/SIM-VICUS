@@ -157,6 +157,9 @@ public:
 
 	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
 
+
+	std::vector<VICUS::Surface>								m_modifiedSurfaces;				///>modified surfaces for the Undo Action
+
 };
 
 #endif // SVView3DDialogH

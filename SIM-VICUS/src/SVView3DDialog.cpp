@@ -37,6 +37,8 @@
 #include "VICUS_BoundaryCondition.h"
 #include "VICUS_PlaneTriangulationData.h"
 
+#include "SVUndoModifySurfaceGeometry.h"
+
 #include "IBK_FileReader.h"
 
 #include <QString>
@@ -61,6 +63,7 @@ void SVView3DDialog::exportView3d() {
 		QMessageBox::information(this, QString(), tr("There is nothing to compute, since no surfaces were selected!"));
 		return;
 	}
+
 
 	// calculate the number of rooms that will be processed
 	std::set<unsigned int> roomIds;
@@ -381,6 +384,9 @@ void SVView3DDialog::exportView3d() {
 	dlg.hide();
 	if(!dlg.wasCanceled()){
 		QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
+		// trigger the undo action with the modified surfaces
+		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), m_modifiedSurfaces );
+		undo->push();
 	} else {
 		QMessageBox::critical(this, QString(), tr("Calculation of View factors was canceled."));
 	}
@@ -441,9 +447,24 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				// check if the current object is a surface or a subsurface
 				const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(obj);
 				if (surf != nullptr) {
-					// is a surface
-					// store the viewFactor
-					const_cast<VICUS::Surface *>(surf)->m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
+					//check if the surface is already in the modified list
+					bool foundSurface = false;
+					for(VICUS::Surface & modS : m_modifiedSurfaces){
+						if(modS.m_id == surf->m_id){
+							// already exists, add the value and go to next
+							modS.m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
+							foundSurface = true;
+							break;
+						}
+					}
+					if(!foundSurface){
+						// does not exist already, create a copy and append to the modified surfaces
+						VICUS::Surface modS(*surf);
+						// is a surface
+						// store the viewFactor
+						modS.m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
+						m_modifiedSurfaces.push_back(modS);
+					}
 				}
 				else {
 					// then the object should be a subsurface
@@ -451,7 +472,27 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 					if (subSurf != nullptr) {
 						// is a subsurface
 						// store the viewFactor
-						const_cast<VICUS::SubSurface *>(subSurf)->m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
+
+						//check if parent is already in list
+						const VICUS::Surface * surf = dynamic_cast< const VICUS::Surface *>(subSurf->m_parent);
+						bool foundSurface = false;
+						for(VICUS::Surface & modS : m_modifiedSurfaces){
+							if(modS.m_id == surf->m_id){
+								//modified surface is already there
+								//get the subsurface with the mathcing id and change its view factors
+								for(const VICUS::SubSurface & modSs : modS.subSurfaces()){
+									if(modSs.m_id == subSurf->m_id){
+										const_cast<VICUS::SubSurface *>(&modSs)->m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
+										foundSurface = true;
+										break;
+									}
+								}
+							}
+						}
+						if(!foundSurface){
+							// parent is not in list yet
+							throw IBK::Exception(IBK::FormatString("SubSurface was selected for view factor calculation, but not its parent surface!"), FUNC_ID);
+						}
 					}
 					else {
 						throw IBK::Exception(IBK::FormatString("Exported Object is wether a surface nor a subsurface"), FUNC_ID);

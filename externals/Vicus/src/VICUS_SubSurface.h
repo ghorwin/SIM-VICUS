@@ -90,7 +90,7 @@ public:
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
 
 	/*! Map that stores the id of a (sub)surface and the viewFactor onto that (subSurface) */
-	NANDRAD::IDVectorMap<double>		m_viewFactors;				// XML:E;
+	NANDRAD::IDVectorMap<double>		m_viewFactors;				// XML:E
 };
 
 } // namespace VICUS
