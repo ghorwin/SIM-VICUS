@@ -39,6 +39,8 @@
 
 #include "SVUndoModifySurfaceGeometry.h"
 
+#include "SVMainWindow.h"
+
 #include "IBK_FileReader.h"
 
 #include <QString>
@@ -59,8 +61,9 @@ void SVView3DDialog::exportView3d() {
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_All);
 
 	//exit if no surfaces were selected
+
 	if(m_selSurfaces.size() == 0){
-		QMessageBox::information(this, QString(), tr("There is nothing to compute, since no surfaces were selected!"));
+		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("There is nothing to compute, since no rooms were selected!"));
 		return;
 	}
 
@@ -75,11 +78,29 @@ void SVView3DDialog::exportView3d() {
 	}
 	int numberOfRooms = roomIds.size();
 
-	//TODO ANTON viewfactors stehen in der Datenstruktur, die vor dem abort eingelesen wurden
-	// sollen diese gelöscht werden oder bleiben sie erhalten
+
+	//exit if the whole room wasn't selected
+	for(unsigned int roomId : roomIds){
+		// for each room
+		const VICUS::Room * r = SVProjectHandler::instance().project().roomByID(roomId);
+		for(const VICUS::Surface & s : r->m_surfaces){
+			// check if the surface was selected
+			bool found = false;
+			for(const VICUS::Surface * selS : m_selSurfaces){
+				if(s.m_id == selS->m_id){
+					found = true;
+				}
+			}
+			if(!found){
+				QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("All surfaces of a room must be selected for view factor calculation! Surface \"%1\" of the room \"%2\"  is not selected").arg(s.m_displayName).arg(r->m_displayName));
+				return;
+			}
+		}
+	}
+
 
 	//show a progressDialog
-	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, this);
+	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, &SVMainWindow::instance());
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setMinimumDuration(0);
 
@@ -95,8 +116,8 @@ void SVView3DDialog::exportView3d() {
 
 	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFactorMap;
 
+
 	for (const VICUS::Surface *surf : m_selSurfaces) {
-		//TODO ANTON Was soll passieren wenn nur ein teil eines raumes selektiert ist (Werte sind minimal unterschiedlich)kopf
 
 		// We iterate through all selected surfaces
 		// then we triangulate them and compose our View3D Objects
@@ -383,12 +404,12 @@ void SVView3DDialog::exportView3d() {
 
 	dlg.hide();
 	if(!dlg.wasCanceled()){
-		QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
+		QMessageBox::information(&SVMainWindow::instance(), QString(), tr("View factors have been calculated for all selected rooms."));
 		// trigger the undo action with the modified surfaces
 		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), m_modifiedSurfaces );
 		undo->push();
 	} else {
-		QMessageBox::critical(this, QString(), tr("Calculation of View factors was canceled."));
+		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("Calculation of View factors was canceled."));
 	}
 
 }

@@ -1127,12 +1127,6 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 }
 
 
-void SVMainWindow::on_actionFileExportView3D_triggered() {
-	SVView3DDialog v3d;
-	v3d.exportView3d();
-}
-
-
 void SVMainWindow::on_actionFileQuit_triggered() {
 	close();
 }
@@ -2171,5 +2165,10 @@ static bool copyRecursively(const QString &srcFilePath,
 			return false;
 	}
 	return true;
+}
+
+void SVMainWindow::on_actionCalculateViewFactors_triggered() {
+	SVView3DDialog v3d;
+	v3d.exportView3d();
 }
 
