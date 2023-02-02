@@ -35,6 +35,8 @@
 
 #include <IBK_LinearSpline.h>
 
+#include "NANDRAD_IDVectorMap.h"
+
 #include <QString>
 #include <QColor>
 
@@ -71,6 +73,9 @@ public:
 	/*! Gives read-access to the surface's geometry. */
 	const PlaneGeometry &				geometry() const { return m_geometry; }
 
+	/*! Subtracts the subsurface are from the surface area */
+	double areaWithoutSubsurfaces() const ;
+
 	/*! Flips the normal vector of polygon.
 		This also swaps local X and localY axes, so the x and y coordinates of our sub-surface
 		polygons are swapped as well.
@@ -106,6 +111,9 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	ComponentInstance					*m_componentInstance = nullptr;
+
+	/*! Map that stores the id of a (sub)surface and the viewFactor onto that (subSurface) */
+	NANDRAD::IDVectorMap<double>		m_viewFactors;				// XML:E
 
 private:
 	/*! Subsurfaces of the surface. */

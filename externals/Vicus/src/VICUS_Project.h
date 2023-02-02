@@ -317,10 +317,8 @@ public:
 	IBK::Path											m_ifcFilePath;				// XML:E
 
 
-private:
-
-	/*! Mapping element holds the data for later export. */
-	struct MappingElement {
+	/*! Mapping element holds the room data for later export. */
+	struct RoomMapping {
 		unsigned int							m_idRoomVicus;
 		unsigned int							m_idRoomNandrad;
 		unsigned int							m_idZoneTemplateVicus;
@@ -332,16 +330,27 @@ private:
 	};
 
 
+
+	/*! Mapping element holds the component instace data for later export. */
+	struct ComponentInstanceMapping {
+		unsigned int							m_idComponentInstanceVicus;
+		unsigned int							m_idComponentInstanceNandrad;
+		// TODO Dirk
+	};
+
+private:
+
+
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
 	void generateBuildingProjectData(const QString &modelName,
 									 NANDRAD::Project & p, QStringList & errorStack,
 									 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-									 std::vector<MappingElement> &mappings)const;
+									 std::vector<RoomMapping> &roomMappings,  std::vector<ComponentInstanceMapping>	componentInstanceMappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
-							  std::vector<MappingElement> &mappings)const;
+							  std::vector<RoomMapping> &mappings)const;
 
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
@@ -359,7 +368,7 @@ private:
 	/*! Export mapping table for VICUS and NANDRAD room ids and names.
 		Also export zone template ids and names.
 	*/
-	bool exportMappingTable(const IBK::Path & filepath, const std::vector<MappingElement> &mappings,
+	bool exportMappingTable(const IBK::Path & filepath, const std::vector<RoomMapping> &mappings,
 							bool addFloorAreaAndVolume = false) const;
 
 	/*! Export for each room VICUS and NANDRAD name, floor area [m2] and volume [m3] */
@@ -369,6 +378,8 @@ private:
 		If there is an ID conflict, the function throws an IBK::Exception.
 	*/
 	void addAndCheckForUniqueness(VICUS::Object* o);
+
+	void addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, QStringList & errorStack) const;
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().

@@ -52,8 +52,8 @@ HEADERS += \
 	../../src/NANDRAD_IdealPipeRegisterModel.h \
 	../../src/NANDRAD_IdealSurfaceHeatingCoolingModel.h \
 	../../src/NANDRAD_IDGroup.h \
-	../../src/NANDRAD_InterfaceAirFlow.h \
 	../../src/NANDRAD_Interface.h \
+	../../src/NANDRAD_InterfaceAirFlow.h \
 	../../src/NANDRAD_InterfaceHeatConduction.h \
 	../../src/NANDRAD_InterfaceLongWaveEmission.h \
 	../../src/NANDRAD_InterfaceSolarAbsorption.h \
@@ -114,13 +114,12 @@ SOURCES += \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/NANDRAD_HydraulicNetworkNode.cpp \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
-	../../src/NANDRAD_IDVectorMap.cpp \
 	../../src/NANDRAD_IdealHeatingCoolingModel.cpp \
 	../../src/NANDRAD_IdealPipeRegisterModel.cpp \
 	../../src/NANDRAD_IdealSurfaceHeatingCoolingModel.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
-	../../src/NANDRAD_InterfaceAirFlow.cpp \
 	../../src/NANDRAD_Interface.cpp \
+	../../src/NANDRAD_InterfaceAirFlow.cpp \
 	../../src/NANDRAD_InterfaceHeatConduction.cpp \
 	../../src/NANDRAD_InterfaceLongWaveEmission.cpp \
 	../../src/NANDRAD_InterfaceSolarAbsorption.cpp \
@@ -207,6 +206,121 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp \
 	../../src/NANDRAD_Location.cpp
+
+DISTFILES += \
+    debug_x64/NANDRAD_ArgsParser.o \
+    debug_x64/NANDRAD_Constants.o \
+    debug_x64/NANDRAD_ConstructionInstance.o \
+    debug_x64/NANDRAD_ConstructionType.o \
+    debug_x64/NANDRAD_DailyCycle.o \
+    debug_x64/NANDRAD_DataTable.o \
+    debug_x64/NANDRAD_EmbeddedObject.o \
+    debug_x64/NANDRAD_EmbeddedObjectWindow.o \
+    debug_x64/NANDRAD_FMIDescription.o \
+    debug_x64/NANDRAD_FMIVariableDefinition.o \
+    debug_x64/NANDRAD_HVACControlModel.o \
+    debug_x64/NANDRAD_HeatLoadSummationModel.o \
+    debug_x64/NANDRAD_HydraulicFluid.o \
+    debug_x64/NANDRAD_HydraulicNetwork.o \
+    debug_x64/NANDRAD_HydraulicNetworkComponent.o \
+    debug_x64/NANDRAD_HydraulicNetworkControlElement.o \
+    debug_x64/NANDRAD_HydraulicNetworkElement.o \
+    debug_x64/NANDRAD_HydraulicNetworkHeatExchange.o \
+    debug_x64/NANDRAD_HydraulicNetworkNode.o \
+    debug_x64/NANDRAD_HydraulicNetworkPipeProperties.o \
+    debug_x64/NANDRAD_IDGroup.o \
+    debug_x64/NANDRAD_IDVectorMap.o \
+    debug_x64/NANDRAD_IdealHeatingCoolingModel.o \
+    debug_x64/NANDRAD_IdealPipeRegisterModel.o \
+    debug_x64/NANDRAD_IdealSurfaceHeatingCoolingModel.o \
+    debug_x64/NANDRAD_Interface.o \
+    debug_x64/NANDRAD_InterfaceAirFlow.o \
+    debug_x64/NANDRAD_InterfaceHeatConduction.o \
+    debug_x64/NANDRAD_InterfaceLongWaveEmission.o \
+    debug_x64/NANDRAD_InterfaceSolarAbsorption.o \
+    debug_x64/NANDRAD_InterfaceVaporDiffusion.o \
+    debug_x64/NANDRAD_InternalLoadsModel.o \
+    debug_x64/NANDRAD_InternalMoistureLoadsModel.o \
+    debug_x64/NANDRAD_Interval.o \
+    debug_x64/NANDRAD_KeywordList.o \
+    debug_x64/NANDRAD_LinearSplineParameter.o \
+    debug_x64/NANDRAD_Location.o \
+    debug_x64/NANDRAD_Material.o \
+    debug_x64/NANDRAD_Models.o \
+    debug_x64/NANDRAD_NaturalVentilationModel.o \
+    debug_x64/NANDRAD_NetworkInterfaceAdapterModel.o \
+    debug_x64/NANDRAD_ObjectList.o \
+    debug_x64/NANDRAD_OutputDefinition.o \
+    debug_x64/NANDRAD_OutputGrid.o \
+    debug_x64/NANDRAD_Outputs.o \
+    debug_x64/NANDRAD_Project.o \
+    debug_x64/NANDRAD_Schedule.o \
+    debug_x64/NANDRAD_Schedules.o \
+    debug_x64/NANDRAD_Sensor.o \
+    debug_x64/NANDRAD_ShadingControlModel.o \
+    debug_x64/NANDRAD_SimulationParameter.o \
+    debug_x64/NANDRAD_SolarLoadsDistributionModel.o \
+    debug_x64/NANDRAD_SolverParameter.o \
+    debug_x64/NANDRAD_Thermostat.o \
+    debug_x64/NANDRAD_Utilities.o \
+    debug_x64/NANDRAD_WindowGlazingSystem.o \
+    debug_x64/NANDRAD_WindowShading.o \
+    debug_x64/NANDRAD_Zone.o \
+    debug_x64/ncg_NANDRAD_ConstructionInstance.o \
+    debug_x64/ncg_NANDRAD_ConstructionType.o \
+    debug_x64/ncg_NANDRAD_DailyCycle.o \
+    debug_x64/ncg_NANDRAD_EmbeddedObject.o \
+    debug_x64/ncg_NANDRAD_EmbeddedObjectWindow.o \
+    debug_x64/ncg_NANDRAD_FMIDescription.o \
+    debug_x64/ncg_NANDRAD_FMIVariableDefinition.o \
+    debug_x64/ncg_NANDRAD_HVACControlModel.o \
+    debug_x64/ncg_NANDRAD_HeatLoadSummationModel.o \
+    debug_x64/ncg_NANDRAD_HydraulicFluid.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetwork.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkComponent.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkControlElement.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkElement.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkHeatExchange.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkNode.o \
+    debug_x64/ncg_NANDRAD_HydraulicNetworkPipeProperties.o \
+    debug_x64/ncg_NANDRAD_IdealHeatingCoolingModel.o \
+    debug_x64/ncg_NANDRAD_IdealPipeRegisterModel.o \
+    debug_x64/ncg_NANDRAD_IdealSurfaceHeatingCoolingModel.o \
+    debug_x64/ncg_NANDRAD_Interface.o \
+    debug_x64/ncg_NANDRAD_InterfaceAirFlow.o \
+    debug_x64/ncg_NANDRAD_InterfaceHeatConduction.o \
+    debug_x64/ncg_NANDRAD_InterfaceLongWaveEmission.o \
+    debug_x64/ncg_NANDRAD_InterfaceSolarAbsorption.o \
+    debug_x64/ncg_NANDRAD_InterfaceVaporDiffusion.o \
+    debug_x64/ncg_NANDRAD_InternalLoadsModel.o \
+    debug_x64/ncg_NANDRAD_InternalMoistureLoadsModel.o \
+    debug_x64/ncg_NANDRAD_Interval.o \
+    debug_x64/ncg_NANDRAD_Location.o \
+    debug_x64/ncg_NANDRAD_Material.o \
+    debug_x64/ncg_NANDRAD_MaterialLayer.o \
+    debug_x64/ncg_NANDRAD_Models.o \
+    debug_x64/ncg_NANDRAD_NaturalVentilationModel.o \
+    debug_x64/ncg_NANDRAD_NetworkInterfaceAdapterModel.o \
+    debug_x64/ncg_NANDRAD_ObjectList.o \
+    debug_x64/ncg_NANDRAD_OutputDefinition.o \
+    debug_x64/ncg_NANDRAD_OutputGrid.o \
+    debug_x64/ncg_NANDRAD_Outputs.o \
+    debug_x64/ncg_NANDRAD_Project.o \
+    debug_x64/ncg_NANDRAD_ProjectInfo.o \
+    debug_x64/ncg_NANDRAD_Schedule.o \
+    debug_x64/ncg_NANDRAD_Sensor.o \
+    debug_x64/ncg_NANDRAD_SerializationTest.o \
+    debug_x64/ncg_NANDRAD_ShadingControlModel.o \
+    debug_x64/ncg_NANDRAD_SimulationParameter.o \
+    debug_x64/ncg_NANDRAD_SolarLoadsDistributionModel.o \
+    debug_x64/ncg_NANDRAD_SolverParameter.o \
+    debug_x64/ncg_NANDRAD_Thermostat.o \
+    debug_x64/ncg_NANDRAD_WindowDivider.o \
+    debug_x64/ncg_NANDRAD_WindowFrame.o \
+    debug_x64/ncg_NANDRAD_WindowGlazingLayer.o \
+    debug_x64/ncg_NANDRAD_WindowGlazingSystem.o \
+    debug_x64/ncg_NANDRAD_WindowShading.o \
+    debug_x64/ncg_NANDRAD_Zone.o
 
 
 

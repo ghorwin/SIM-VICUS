@@ -124,7 +124,7 @@ public:
 
 	/*! Stores ids of hydraulic network elements that shall be observed for worst-point controller
 	 *  (only used if controlElement has option CP_PressureDifferenceWorstpoint) */
-	IDVectorMap						m_observedPressureDiffElementIds;				// XML:E
+	IDVectorMap<unsigned int>		m_observedPressureDiffElementIds;				// XML:E
 
 
 	// *** Variables used only during simulation ***

@@ -75,6 +75,26 @@ void Surface::readXML(const TiXmlElement * element) {
 			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 			break;
 		}
+		/*if(cName == "ViewFactors") {
+			const TiXmlElement * cc = c->FirstChildElement();
+			while (cc) {
+				const std::string & ccName = cc->ValueStr();
+				if(ccName == "ViewFactor"){
+					const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(cc, "id");
+					if(attrib == nullptr){
+						throw IBK::Exception("Error reading ViewFactor tag. Has no id attribute!", FUNC_ID);
+					}
+					unsigned int id = IBK::string2val<unsigned int>(attrib->ValueStr());
+					double viewFactor = IBK::string2val<double>(cc->FirstChild()->ValueStr());
+					m_viewFactors[id] = viewFactor;
+				} else {
+					throw IBK::Exception("Error reading ViewFactors tag. Should only contain ViewFactor Tags", FUNC_ID);
+				}
+				cc = cc->NextSiblingElement();
+			}
+			// remove ViewFactors element from parent, to avoid getting spammed with "unknown ViewFactors" warning
+			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
+		}*/
 		c = c->NextSiblingElement();
 	}
 
@@ -93,6 +113,16 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = writeXMLPrivate(parent);
 	// now add Polygon3D
 	m_geometry.polygon3D().writeXML(e);
+	/*if(m_viewFactors.size() > 0){
+		TiXmlElement * viewFactors = new TiXmlElement("ViewFactors");
+		for(const std::pair<unsigned int, double> entry : m_viewFactors){
+			TiXmlElement * viewFactor = new TiXmlElement("ViewFactor");
+			viewFactor->SetAttribute("id",std::to_string(entry.first));
+			viewFactor->LinkEndChild(new TiXmlText(std::to_string(entry.second)));
+			viewFactors->LinkEndChild(viewFactor);
+		}
+		e->LinkEndChild(viewFactors);
+	}*/
 	return e;
 }
 
@@ -120,6 +150,14 @@ void Surface::flip() {
 
 void Surface::changeOrigin(unsigned int idx) {
 	m_geometry.changeOrigin(idx);
+}
+
+double Surface::areaWithoutSubsurfaces() const {
+	double area = m_geometry.area(3);
+	for(const VICUS::SubSurface & ss : m_subSurfaces){
+		area -= ss.m_polygon2D.area(3);
+	}
+	return area;
 }
 
 

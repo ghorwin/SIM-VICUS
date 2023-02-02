@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Mi. Dez. 14 09:37:28 2022</Created>
-		<LastEdited>Di. Jan. 3 18:01:04 2023</LastEdited>
+		<LastEdited>Do. Jan. 19 16:30:00 2023</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -159,23 +159,71 @@
 								<Surfaces>
 									<Surface id="38" displayName="Floor" displayColor="#566094">
 										<Polygon3D offset="0 -10 5.4" normal="-0 0 -1" localX="-1 0 0">0 0, 0 10, -5 10, -5 0</Polygon3D>
+										<ViewFactors>
+											<0.000000 id="38" />
+											<0.738406 id="39" />
+											<0.079407 id="40" />
+											<0.067568 id="41" />
+											<0.079407 id="42" />
+											<0.035211 id="47" />
+										</ViewFactors>
 									</Surface>
 									<Surface id="39" displayName="Roof surface 1" displayColor="#963214">
 										<SubSurfaces>
 											<SubSurface id="47" displayName="Window #47">
 												<Polygon2D>0.5 0.8, 1.7 0.8, 1.7 2.3, 0.5 2.3</Polygon2D>
+												<ViewFactors>
+													<0.978068 id="38" />
+													<0.000000 id="39" />
+													<0.012821 id="40" />
+													<0.004079 id="41" />
+													<0.005033 id="42" />
+													<0.000000 id="47" />
+												</ViewFactors>
 											</SubSurface>
 										</SubSurfaces>
 										<Polygon3D offset="5 -10 5.4" normal="0 -0.196116 0.980581" localX="0 0.980581 0.196116">0 0, 10.198 0, 10.198 5, 0 5</Polygon3D>
+										<ViewFactors>
+											<0.750565 id="38" />
+											<0.000000 id="39" />
+											<0.081676 id="40" />
+											<0.085796 id="41" />
+											<0.081961 id="42" />
+											<0.000000 id="47" />
+										</ViewFactors>
 									</Surface>
 									<Surface id="40" displayName="Wall surface 1" displayColor="#c8c88c">
 										<Polygon3D offset="5 -10 5.4" normal="1 0 0" localX="0 1 0">0 0, 10 0, 10 2</Polygon3D>
+										<ViewFactors>
+											<0.397037 id="38" />
+											<0.401765 id="39" />
+											<0.000000 id="40" />
+											<0.119687 id="41" />
+											<0.079202 id="42" />
+											<0.002308 id="47" />
+										</ViewFactors>
 									</Surface>
 									<Surface id="41" displayName="Wall surface 2" displayColor="#c8c88c">
 										<Polygon3D offset="5 0 5.4" normal="0 1 -0" localX="-1 0 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
+										<ViewFactors>
+											<0.337840 id="38" />
+											<0.422032 id="39" />
+											<0.119687 id="40" />
+											<0.000000 id="41" />
+											<0.119687 id="42" />
+											<0.000734 id="47" />
+										</ViewFactors>
 									</Surface>
 									<Surface id="42" displayName="Wall surface 3" displayColor="#c8c88c">
 										<Polygon3D offset="0 0 5.4" normal="-1 0 0" localX="0 -1 0">0 0, 10 0, 0 2</Polygon3D>
+										<ViewFactors>
+											<0.397037 id="38" />
+											<0.403168 id="39" />
+											<0.079202 id="40" />
+											<0.119687 id="41" />
+											<0.000000 id="42" />
+											<0.000906 id="47" />
+										</ViewFactors>
 									</Surface>
 								</Surfaces>
 							</Room>

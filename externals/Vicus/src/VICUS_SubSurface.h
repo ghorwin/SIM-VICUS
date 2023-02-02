@@ -31,6 +31,8 @@
 #include "VICUS_Polygon2D.h"
 #include "VICUS_Object.h"
 
+#include "NANDRAD_IDVectorMap.h"
+
 #include <IBK_LinearSpline.h>
 #include <IBK_point.h>
 
@@ -49,8 +51,11 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE
+	VICUS_READWRITE_PRIVATE
 	VICUS_COMPARE_WITH_ID
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Sets color based on sub-surface type. */
 	void updateColor();
@@ -83,6 +88,9 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
+
+	/*! Map that stores the id of a (sub)surface and the viewFactor onto that (subSurface) */
+	NANDRAD::IDVectorMap<double>		m_viewFactors;				// XML:E
 };
 
 } // namespace VICUS

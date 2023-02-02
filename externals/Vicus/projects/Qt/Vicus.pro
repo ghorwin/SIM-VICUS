@@ -170,7 +170,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
-	../../src/ncg/ncg_VICUS_NetworkController.cpp \
+        ../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
 	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \

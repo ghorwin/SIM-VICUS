@@ -154,7 +154,11 @@ public:
 
 	std::vector<const VICUS::Surface*>						m_selSurfaces;					///> Vector with all selected surfaces in project
 
+
 	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
+
+
+	std::vector<VICUS::Surface>								m_modifiedSurfaces;				///>modified surfaces for the Undo Action
 
 };
 
