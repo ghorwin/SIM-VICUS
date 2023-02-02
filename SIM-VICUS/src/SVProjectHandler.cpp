@@ -105,16 +105,34 @@ bool SVProjectHandler::newProject(VICUS::Project * project) {
 		b.m_buildingLevels.push_back(bl);
 		m_project->m_buildings.push_back(b);
 	}
+
 	// update all internal pointers
 	m_project->updatePointers();
+
+	// once the project has been read, perform "post-read" actions
+	bool have_modified_project = false;
+
+	// import embedded DB into our user DB
+	have_modified_project = importEmbeddedDB(*m_project); // Note: project may be modified in case IDs were adjusted
+
+	// fix problems in the project; will set have_modified_project to true if fixes were applied
+	fixProject(*m_project, have_modified_project);
+
 	// initialize viewstate
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	SVViewStateHandler::instance().setViewState(vs);
 
 	setModified(AllModified);
 
+	// this will clear the modified flag again (since we just read the project) except if we had made some automatic
+	// fixes above
+	m_modified = have_modified_project;
+
 	// signal UI that we now have a project
 	emit updateActions();
+
+	// issue a call to user-dialog fixes/adjustments
+	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 
 	return true;
 }

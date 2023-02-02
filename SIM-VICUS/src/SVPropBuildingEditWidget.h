@@ -73,6 +73,10 @@ public slots:
 	/*! Connects to the ToolBox and changes the color view according to the currently selectd page */
 	void onCurrentBuildingPropertyTypeChanged(int propertyType);
 
+	/*! Returns current property type (index of toolbox) */
+	unsigned int currentPropertyType();
+
+
 private:
 	/*! Updates all edit widgets to current project state.
 		This function gathers data needed by multiple edit widgets and then

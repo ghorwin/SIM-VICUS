@@ -59,6 +59,12 @@ void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
 	m_ui->lineEditZValue->setText( QString("%L1").arg( (double)t.translation().z(), 0, 'f', 3 ) );
 }
 
+void SVLocalCoordinateView::clearCoordinates() {
+	m_ui->lineEditXValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
+}
+
 void SVLocalCoordinateView::setBoundingBoxDimension(const IBKMK::Vector3D& bb) {
 	// is being call from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)

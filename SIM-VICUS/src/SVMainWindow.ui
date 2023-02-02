@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -35,9 +35,9 @@
      <property name="title">
       <string>Export</string>
      </property>
-     <addaction name="actionExportNetworkAsGeoJson"/>
      <addaction name="actionFileExportView3D"/>
      <addaction name="actionFileExportProjectPackage"/>
+     <addaction name="actionExportNetworkAsGeoJSON"/>
     </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
@@ -97,14 +97,14 @@
     <addaction name="actionViewFindSelectedGeometry"/>
     <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
-    <addaction name="actionViewFromSouth"/>
-    <addaction name="actionViewFromWest"/>
     <addaction name="actionViewFromNorth"/>
     <addaction name="actionViewFromEast"/>
-    <addaction name="actionBirdsEyeViewSouthEast"/>
-    <addaction name="actionBirdsEyeViewSouthWest"/>
+    <addaction name="actionViewFromSouth"/>
+    <addaction name="actionViewFromWest"/>
     <addaction name="actionBirdsEyeViewNorthEast"/>
     <addaction name="actionBirdsEyeViewNorthWest"/>
+    <addaction name="actionBirdsEyeViewSouthEast"/>
+    <addaction name="actionBirdsEyeViewSouthWest"/>
     <addaction name="actionViewFromAbove"/>
     <addaction name="separator"/>
     <addaction name="actionViewShowGrid"/>
@@ -824,6 +824,14 @@
     <string>Ctrl+3</string>
    </property>
   </action>
+  <action name="actionBirdsEyeViewSouthEast">
+   <property name="text">
+    <string>Bird's eye view south east</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
   <action name="actionBirdsEyeViewSouthWest">
    <property name="text">
     <string>Bird's eye view south west</string>
@@ -848,7 +856,7 @@
     <string>Ctrl+7</string>
    </property>
   </action>
-  <action name="actionExportNetworkAsGeoJson">
+  <action name="actionaa">
    <property name="text">
     <string>Export Network as GeoJson...</string>
    </property>
@@ -860,6 +868,11 @@
    <property name="toolTip">
     <string>Opens the plugin manager.</string>
    </property>
+  </action>
+  <action name="actionExportNetworkAsGeoJSON">
+   <property name="text">
+    <string>Export network as geoJSON...</string>
+      </property>
   </action>
   <action name="actionCalculateViewFactors">
    <property name="text">

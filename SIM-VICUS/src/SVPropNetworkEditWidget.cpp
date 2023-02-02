@@ -78,16 +78,9 @@ void SVPropNetworkEditWidget::onModified(int modificationType) {
 			m_hxWidget->updateTableWidget();
 
 			m_hxWidget->updateUi();
-
-			// node(s) selected
-			if (!m_currentNodes.empty()){
-				m_nodesWidget->updateUi();
-				m_subStationWidget->updateUi();
-			}
-			// edge(s) selected
-			if(!m_currentEdges.empty()){
-				m_edgesWidget->updateUi();
-			}
+			m_nodesWidget->updateUi();
+			m_subStationWidget->updateUi();
+			m_edgesWidget->updateUi();
 
 			// update network geometry widget
 			m_geometryWidget->updateComboBoxNetworks();
@@ -112,6 +105,15 @@ void SVPropNetworkEditWidget::onPropertyTypeChanged(int propertyType) {
 		case NT_HeatExchange	: vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange ; break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+unsigned int SVPropNetworkEditWidget::currentPropertyType() {
+	return m_ui->toolBox->currentIndex();
+}
+
+
+void SVPropNetworkEditWidget::setPropertyType(int propertyType) {
+	m_ui->toolBox->setCurrentIndex((unsigned int)propertyType);
 }
 
 

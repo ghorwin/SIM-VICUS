@@ -180,7 +180,6 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 SVMainWindow::~SVMainWindow() {
 	delete m_ui;
 	delete m_undoStack;
-	delete m_pluginLoader;
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
 
@@ -1251,57 +1250,58 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 
 
 void SVMainWindow::on_actionViewFindSelectedGeometry_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(6);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_FindSelection);
 }
 
 
 void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Reset);
 }
 
 
 void SVMainWindow::on_actionViewFromNorth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_North);
 }
 
 
+
 void SVMainWindow::on_actionViewFromEast_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_East);
 }
 
 
 void SVMainWindow::on_actionViewFromSouth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_South);
 }
 
 
 void SVMainWindow::on_actionViewFromWest_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_West);
 }
 
 
 void SVMainWindow::on_actionViewFromAbove_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Above);
 }
 
 void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
-	SVViewStateHandler::instance().m_geometryView->resetCamera(8);
-}
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthWest);
 
+}
 
 void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
-	SVViewStateHandler::instance().m_geometryView->resetCamera(10);
-}
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthWest);
 
+}
 
 void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
-	SVViewStateHandler::instance().m_geometryView->resetCamera(7);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthEast);
+
 }
 
-
 void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
-	SVViewStateHandler::instance().m_geometryView->resetCamera(9);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthEast);
 }
 
 
@@ -1497,19 +1497,18 @@ void SVMainWindow::on_actionEditProjectNotes_triggered() {
 }
 
 
+void SVMainWindow::on_actionPluginsManager_triggered() {
+	// show plugin view
 
-void SVMainWindow::on_actionExportNetworkAsGeoJson_triggered() {
-	// opens import network dialog
+}
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJSON_triggered() {
+	// opens export network dialog
 	if (m_networkExportDialog == nullptr)
 		m_networkExportDialog = new SVNetworkExportDialog(this);
 
 	m_networkExportDialog->edit();
-}
-
-
-void SVMainWindow::on_actionPluginsManager_triggered() {
-	// show plugin view
-
 }
 
 
@@ -1529,7 +1528,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
-	m_ui->actionExportNetworkAsGeoJson->setEnabled(have_project);
+	m_ui->actionExportNetworkAsGeoJSON->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
@@ -1855,7 +1854,6 @@ void SVMainWindow::setupDockWidgets() {
 
 void SVMainWindow::setupPlugins() {
 	m_pluginLoader->loadPlugins();
-
 }
 
 

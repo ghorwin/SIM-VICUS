@@ -39,18 +39,26 @@ SVPropNetworkNodesWidget::~SVPropNetworkNodesWidget()
 }
 
 void SVPropNetworkNodesWidget::updateUi() {
-	Q_ASSERT(!m_pa->m_currentNodes.empty());
 
 	// enable / disable widgets
 	bool uniformNodeType = m_pa->uniformProperty(m_pa->m_currentNodes, &VICUS::NetworkNode::m_type);
 	m_ui->groupBoxEditNode->setEnabled(uniformNodeType && m_pa->m_currentEdges.empty());
 
+	m_ui->groupBoxPosition->setEnabled(m_pa->m_currentNodes.size() == 1 && m_pa->m_currentEdges.empty());
+
+	m_ui->labelNodeId->clear();
+	m_ui->lineEditNodeName->clear();
+	m_ui->lineEditNodeXPosition->clear();
+	m_ui->lineEditNodeYPosition->clear();
+	m_ui->lineEditNodeZPosition->clear();
+	m_ui->lineEditNodeMaximumHeatingDemand->clear();
+
+	if (m_pa->m_currentNodes.empty())
+		return;
+
 	// if node type is not uniform, no editing will be allowed
 	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_pa->m_currentNodes[0]->m_type));
 	m_ui->lineEditNodeMaximumHeatingDemand->setEnabled(m_pa->m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_SubStation);
-	m_ui->lineEditNodeXPosition->setEnabled(m_pa->m_currentNodes.size() == 1);
-	m_ui->lineEditNodeYPosition->setEnabled(m_pa->m_currentNodes.size() == 1);
-	m_ui->lineEditNodeZPosition->setEnabled(m_pa->m_currentNodes.size() == 1);
 
 	if (m_pa->m_currentNodes.size() == 1){
 		m_ui->labelNodeId->setText(QString("%1").arg(m_pa->m_currentNodes[0]->m_id));
@@ -59,18 +67,9 @@ void SVPropNetworkNodesWidget::updateUi() {
 		m_ui->lineEditNodeYPosition->setValue(m_pa->m_currentNodes[0]->m_position.m_y);
 		m_ui->lineEditNodeZPosition->setValue(m_pa->m_currentNodes[0]->m_position.m_z);
 	}
-	else{
-		m_ui->labelNodeId->clear();
-		m_ui->lineEditNodeName->clear();
-		m_ui->lineEditNodeXPosition->clear();
-		m_ui->lineEditNodeYPosition->clear();
-		m_ui->lineEditNodeZPosition->clear();
-	}
 
 	if (m_pa->uniformProperty(m_pa->m_currentNodes, &VICUS::NetworkNode::m_maxHeatingDemand))
 		m_ui->lineEditNodeMaximumHeatingDemand->setValue(m_pa->m_currentNodes[0]->m_maxHeatingDemand.value);
-	else
-		m_ui->lineEditNodeMaximumHeatingDemand->clear();
 }
 
 

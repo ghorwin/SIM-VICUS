@@ -27,6 +27,8 @@
 
 #include <IBKMK_3DCalculations.h>
 
+#include <IBK_messages.h>
+
 #include <tinyxml.h>
 
 namespace VICUS {
@@ -63,9 +65,11 @@ void Surface::readXML(const TiXmlElement * element) {
 		if (cName == "Polygon3D") {
 			try {
 				poly3D.readXML(c);
-			} catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Error reading Polygon3D tag.") ), FUNC_ID);
+			} catch (...) {
+				// invalid polygons are just skipped, we don't want to raise an error here!
+				IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Error reading Polygon3D tag.") ), IBK::MSG_WARNING, FUNC_ID);
+				return;
 			}
 			// remove Polygon3D element from parent, to avoid getting spammed with "unknown Polygon3D" warning
 			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
