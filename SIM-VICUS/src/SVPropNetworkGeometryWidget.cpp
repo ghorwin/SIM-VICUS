@@ -43,6 +43,7 @@ void SVPropNetworkGeometryWidget::updateUi() {
 
 	m_ui->labelEdgeCount->clear();
 	m_ui->labelNodeCount->clear();
+	m_ui->labelSubStationCount->clear();
 	m_ui->labelTotalLength->clear();
 	m_ui->lineEditFluidName->clear();
 
@@ -61,6 +62,14 @@ void SVPropNetworkGeometryWidget::updateUi() {
 
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentNetwork->m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentNetwork->m_nodes.size()));
+	// count sub stations
+	unsigned int subStationCount = 0;
+	for (const VICUS::NetworkNode &n: m_currentNetwork->m_nodes) {
+		if (n.m_type == VICUS::NetworkNode::NT_SubStation)
+			subStationCount++;
+	}
+	m_ui->labelSubStationCount->setText(QString("%1").arg(subStationCount));
+
 
 	const SVDatabase & db = SVSettings::instance().m_db;
 	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork->m_idFluid];

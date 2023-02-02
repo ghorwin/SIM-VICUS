@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>311</width>
-    <height>682</height>
+    <height>778</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,14 +61,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>Total length</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLabel" name="labelTotalLength">
         <property name="text">
          <string/>
@@ -82,17 +82,31 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="labelConnectedSymbol">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Network connected</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Sub Stations</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="labelSubStationCount">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
