@@ -402,7 +402,7 @@ public:
 	/*! Add all object lists for adding new list later.*/
 	void addInputData(const std::vector<NANDRAD::ObjectList> &objLists);
 
-	void generate(const std::vector<ComponentInstance> &componentInstances, QStringList &errorStack, std::set<unsigned int> &idSet);
+	void generate(const std::vector<ComponentInstance> &componentInstances, std::vector<Project::ComponentInstanceMapping> &	componentInstanceMappings, QStringList &errorStack, std::set<unsigned int> &idSet);
 
 	void generateMaterials();
 	void generateConstructions(QStringList &errorStack);
@@ -715,7 +715,7 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	return true;
 }
 
-bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<MappingElement> &mappings,
+bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<RoomMapping> &mappings,
 								 bool addFloorAreaAndVolume) const {
 	FUNCID(Project::exportMappingTable);
 	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
@@ -763,10 +763,55 @@ bool Project::exportAreaAndVolume() {
 	return true;
 }
 
+void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, QStringList & errorStack) const {
+	for(NANDRAD::Zone & z : p.m_zones){
+		RoomMapping rM;
+		// select the correct mapping
+		for(RoomMapping & m : roomMappings){
+			if(m.m_idRoomNandrad == z.m_id){
+				rM = m;
+			}
+		}
+		const VICUS::Room * room = roomByID(rM.m_idRoomVicus);
+
+		// save view factors in zone
+		std::vector<VICUS::Surface> surfaces = room->m_surfaces;
+		for(unsigned int i = 0; i < surfaces.size(); i++){
+			for(unsigned int ii = 0; ii < surfaces.size(); ii++){
+
+				// the view factor from surface[i] to surface[ii]
+				if(surfaces[i].m_componentInstance == nullptr || surfaces[ii].m_componentInstance == nullptr){
+					QString name = (surfaces[i].m_componentInstance == nullptr) ? surfaces[i].m_displayName : surfaces[ii].m_displayName;
+					errorStack.append(tr("Invalid Surface (%1)! Has no component instace!").arg(name));
+					return;
+				}
+				unsigned int cId1 = surfaces[i].m_componentInstance->m_id;
+				unsigned int cId2 = surfaces[ii].m_componentInstance->m_id;
+				double vF = surfaces[i].m_viewFactors.m_values[surfaces[ii].m_id][0];
+
+				// get the nandrad ids
+				ComponentInstanceMapping cM1;
+				ComponentInstanceMapping cM2;
+				// select the correct mapping
+				for(ComponentInstanceMapping & m : componentInstanceMappings){
+					if(m.m_idComponentInstanceVicus == cId1){
+						cM1 = m;
+					}
+					if(m.m_idComponentInstanceVicus == cId2){
+						cM2 = m;
+					}
+				}
+				NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, cM2.m_idComponentInstanceNandrad);
+				z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vF));
+			}
+		}
+	}
+}
+
 
 void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-											 std::vector<MappingElement> &mappings) const{
+											 std::vector<RoomMapping> &roomMappings, std::vector<ComponentInstanceMapping>	componentInstanceMappings) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -801,7 +846,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	}
 
 
-	generateNandradZones(zones, idSet, p, errorStack, mappings);
+	generateNandradZones(zones, idSet, p, errorStack, roomMappings);
 
 	if (!errorStack.isEmpty())	return;
 
@@ -818,19 +863,14 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	constrInstaModelGenerator.m_shadingModels = & controlledShading.m_shadingModels;
 	constrInstaModelGenerator.m_placeholders = p.m_placeholders;
 	constrInstaModelGenerator.addInputData(p.m_objectLists);
-	constrInstaModelGenerator.generate(m_componentInstances, errorStack, idSet);
+	constrInstaModelGenerator.generate(m_componentInstances, componentInstanceMappings, errorStack, idSet);
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
-	// TODO Anton
-	// now the comp instances are created, so the viewFactors can be saved
-	// save a map of vicus constId to nandrad constId, where the nandrad consts are created
-	// create a new function in project, that does the same as wrongly implemented (or just normal function)
-
-	if (!errorStack.isEmpty())	return;
 
 	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
 
+	addViewFactorsToNandradZones(p, roomMappings, componentInstanceMappings, errorStack);
 
 	// *** Ideal Surface Heating Systems ***
 
@@ -995,7 +1035,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 								   std::set<unsigned int> & idSet,
 								   NANDRAD::Project & p, QStringList & errorStack,
-								   std::vector<MappingElement> &mappings)const
+								   std::vector<RoomMapping> &mappings)const
 {
 	// collect a list of zone references for further processing
 	// also create a new zone name 'buildingName'.'buildingLevelName'.'roomName'
@@ -1008,7 +1048,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				zones.push_back(&r);
 				QString name = QString("%2.%3.%4(ID=%1)").arg(r.m_id).arg(buildingName, buildingLevelName, r.m_displayName);
 
-				MappingElement mapEle;
+				RoomMapping mapEle;
 				mapEle.m_idRoomVicus = r.m_id;
 				mapEle.m_idRoomNandrad = r.m_id;		// attention NANDRAD id is set in next loop but is the same
 				mapEle.m_idZoneTemplateVicus = INVALID_ID;
@@ -1082,24 +1122,6 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		// for now, zones are always active
 		z.m_type = NANDRAD::Zone::ZT_Active;
-
-		// save view factors in zone
-		std::vector<VICUS::Surface> surfaces = r->m_surfaces;
-		for(unsigned int i = 0; i < surfaces.size(); i++){
-			for(unsigned int ii = 0; ii < surfaces.size(); ii++){
-				if(i == ii){
-					// skip the if they are the same surfaces
-					continue;
-				}
-				// the view factor from surface[i] to surface[ii]
-				double vF = surfaces[i].m_viewFactors.m_values[surfaces[ii].m_id][0];
-				unsigned int cId1 = surfaces[i].m_componentInstance->m_id;
-				unsigned int cId2 = surfaces[ii].m_componentInstance->m_id;
-				NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cId1, cId2);
-				z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vF));
-			}
-		}
-
 
 		// finally append zone
 		p.m_zones.push_back(z);
@@ -2328,7 +2350,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	}
 }
 
-void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentInstance> &componentInstances,
+void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentInstance> &componentInstances, std::vector<Project::ComponentInstanceMapping>	& componentInstanceMappings,
 												  QStringList &errorStack, std::set<unsigned int> &idSet)
 {
 	FUNCID(ConstructionInstanceModelGenerator::generate);
@@ -2350,6 +2372,12 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		constrInstNandrad.m_id = VICUS::uniqueId(idSet);//compInstaVicus.m_id;
 		//now add id to Set
 		idSet.insert(constrInstNandrad.m_id);
+
+		// save both ids in the componentInstanceMapping
+		Project::ComponentInstanceMapping mapping;
+		mapping.m_idComponentInstanceVicus = compInstaVicus.m_id;
+		mapping.m_idComponentInstanceNandrad = constrInstNandrad.m_id;
+		componentInstanceMappings.push_back(mapping);
 
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
