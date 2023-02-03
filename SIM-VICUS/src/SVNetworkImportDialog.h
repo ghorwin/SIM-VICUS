@@ -55,12 +55,6 @@ private slots:
 
 	void on_radioButtonAddToExistingNetwork_clicked(bool checked);
 
-	/*! Imports the pipeline with the selected inputs*/
-	void on_pushButtonImportPipeline_clicked();
-
-	/*! Imports the substation with the selected inputs*/
-	void on_pushButtonImportSubStation_clicked();
-
 	/*! Opens a dialog to select the available pipes and saves the ids in m_availablePipes*/
 	void on_pushButtonSelectAvailablePipes_clicked();
 
@@ -79,6 +73,12 @@ private slots:
 	void on_comboBoxNetworkSelectionBox_currentIndexChanged(int index);
 
 private:
+
+	/*! Imports the pipeline with the selected inputs*/
+	void importPipeline();
+
+	/*! Imports the substation with the selected inputs*/
+	void importSubStations();
 
 	//stores the selected default pipe for pipe network import
 	unsigned int m_defaultPipeId = VICUS::INVALID_ID;

@@ -80,6 +80,8 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui->comboBoxUTMZone->clear();
 	m_ui->comboBoxUTMZone->addItems(texts);
 	m_ui->comboBoxUTMZone->setCurrentIndex(32);
+
+	m_ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
 }
 
 
@@ -98,7 +100,14 @@ bool SVNetworkImportDialog::edit() {
 
 	updateUi();
 
-	return exec();
+	int res = exec();
+	if (res) {
+		if (m_ui->tabWidget->currentIndex()==0)
+			importPipeline();
+		else
+			importSubStations();
+	}
+	return res;
 }
 
 
@@ -109,8 +118,11 @@ void SVNetworkImportDialog::updateUi() {
 	m_ui->radioButtonNewNetwork->setChecked(p.m_geometricNetworks.empty());
 	toggleExistingOrNewNetwork(m_ui->radioButtonAddToExistingNetwork->isChecked());
 
-	checkIfPipelineImportIsEnabled();
-	checkIfSubStationImportIsEnabled();
+	if (m_ui->tabImportPipes->isActiveWindow())
+		checkIfPipelineImportIsEnabled();
+	else
+		checkIfSubStationImportIsEnabled();
+
 
 	// update existing networks combobox
 	m_ui->comboBoxNetworkSelectionBox->clear();
@@ -126,7 +138,7 @@ void SVNetworkImportDialog::updateUi() {
 
 
 
-void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
+void SVNetworkImportDialog::importPipeline() {
 	// get the file name from the line edit
 	QString fname = m_ui->lineEditPipelineFileName->filename();
 
@@ -144,7 +156,7 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 
 			m_network.m_availablePipes = m_availablePipes;
 
-			readNetworkData(networkFile, m_network, ++m_network.m_id, IT_Pipeline);
+			readNetworkData(networkFile, m_network, p.nextUnusedID(), IT_Pipeline);
 
 			double xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
 			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
@@ -189,7 +201,7 @@ void SVNetworkImportDialog::on_pushButtonImportPipeline_clicked() {
 }
 
 
-void SVNetworkImportDialog::on_pushButtonImportSubStation_clicked() {
+void SVNetworkImportDialog::importSubStations() {
 	// get the file name from the line edit
 	QString fname = m_ui->lineEditSubStationFileName->filename();
 
@@ -346,13 +358,22 @@ void SVNetworkImportDialog::readGridFromCSV(VICUS::Network & network,const IBK::
 		for (std::string str: tokens){
 			std::vector<std::string> xyStr;
 			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
-			double x = IBK::string2val<double>(xyStr[0]);
-			double y = IBK::string2val<double>(xyStr[1]);
-			polyLine.push_back({x, y});
+			double x,y;
+			double z = 0;
+			if (xyStr.size()>=2) {
+				x = IBK::string2val<double>(xyStr[0]);
+				y = IBK::string2val<double>(xyStr[1]);
+			}
+			else
+				continue; // not a valid line
+			if (xyStr.size()==3)
+				z = IBK::string2val<double>(xyStr[2]);
+
+			polyLine.push_back({x, y, z});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-			unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+			unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+			unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
 			network.addEdge(++nextId, n1, n2, true, m_defaultPipeId);
 		}
 	}
@@ -365,7 +386,7 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 
 	const VICUS::Database<VICUS::NetworkPipe> &pipeDB = SVSettings::instance().m_db.m_pipes;
 
-	for(const QJsonValue & feature :  features){
+	for(const QJsonValue & feature :  features) {
 
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
 		if(geometry["type"].toString()  !=  "LineString")
@@ -391,19 +412,29 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 
 		for(const QJsonValue  coordinates : geometry["coordinates"].toArray()){
 			double x,y;
-			double lon = coordinates.toArray()[0].toDouble();
-			double lat = coordinates.toArray()[1].toDouble();
-			//covert the LatLon Coordiantes to metric ones
+			double z = 0;
+			if (m_ui->groupBoxUTM->isChecked()) {
+				double lon = coordinates.toArray()[0].toDouble();
+				double lat = coordinates.toArray()[1].toDouble();
+				//covert the LatLon Coordiantes to metric ones
+				int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+				IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+			}
+			else {
+				x = coordinates.toArray()[0].toDouble();
+				y = coordinates.toArray()[1].toDouble();
+			}
+			if (coordinates.toArray().size()==3)
+				z = coordinates.toArray()[2].toDouble();
 
-			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
-			IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
-			polyLine.push_back({x, y});
+			polyLine.push_back({x, y, z});
 		}
 
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-			unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-			network.addEdge(++nextId, n1, n2, false, pipeId);		}
+			unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+			unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+			network.addEdge(++nextId, n1, n2, false, pipeId);
+		}
 	}
 }
 
@@ -423,17 +454,27 @@ void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const
 		IBK::trim(lineSepStr[0], "POINT ((");
 		IBK::trim(lineSepStr[0], "))");
 		IBK::explode(lineSepStr[0], xyStr, " ", IBK::EF_NoFlags);
-		if (xyStr.size()!=2)
-			continue;
+		double x,y;
+		double z = 0;
+		if (xyStr.size()>=2) {
+			x = IBK::string2val<double>(xyStr[0]);
+			y = IBK::string2val<double>(xyStr[1]);
+		}
+		else
+			continue; // not a valid point
+		if (xyStr.size()==3)
+			z = IBK::string2val<double>(xyStr[2]);
+
+
 		// add node
-		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - network.m_origin,
+		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
 				VICUS::NetworkNode::NT_SubStation);
 		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
 
 
-void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &heatDemand, unsigned int nextId) const {
+void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &defaultHeatingDemand, unsigned int nextId) const {
 
 	const QJsonArray features = jsonObj["features"].toArray();
 
@@ -443,17 +484,34 @@ void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, c
 			continue;
 		QJsonValue coordinates = geometry["coordinates"];
 		double x,y;
-		double lon = coordinates.toArray()[0].toDouble();
-		double lat = coordinates.toArray()[1].toDouble();
-		//covert the LatLon Coordiantes to metric ones
-		int utmZone = m_ui->comboBoxUTMZone->currentIndex();
-		IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+		double z = 0;
+		if (m_ui->groupBoxUTM->isChecked()) {
+			double lon = coordinates.toArray()[0].toDouble();
+			double lat = coordinates.toArray()[1].toDouble();
+			//covert the LatLon Coordiantes to metric ones
+			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+			IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+		}
+		else {
+			x = coordinates.toArray()[0].toDouble();
+			y = coordinates.toArray()[1].toDouble();
+		}
 
+		if (coordinates.toArray().size()==3)
+			z = coordinates.toArray()[2].toDouble();
+
+		double heatingDemand = defaultHeatingDemand;
+		const QJsonObject &props = feature.toObject()["properties"].toObject();
+		double val = props["MaxHeatingDemand"].toDouble();
+		if (val>0)
+			heatingDemand = val * 1000; // expected in kW
+		QString name = props["Name"].toString();
 
 		// add node
-		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, 0) - network.m_origin,
+		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
 				VICUS::NetworkNode::NT_SubStation);
-		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
+		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatingDemand, "W");
+		network.nodeById(id)->m_displayName = name;
 	}
 }
 
@@ -487,42 +545,38 @@ void SVNetworkImportDialog::on_pushButtonSelectDefaultPipe_clicked() {
 
 	// get the id of the selected default pipe
 	m_defaultPipeId = SVMainWindow::instance().dbPipeEditDialog()->select(m_defaultPipeId);
-	if(m_defaultPipeId == VICUS::INVALID_ID){
-		m_ui->pushButtonImportPipeline->setEnabled(false);
-		return;
-	}
-
 	const VICUS::Database<VICUS::NetworkPipe> &pipesDB = SVSettings::instance().m_db.m_pipes;
 	// set name in the ui
 	m_ui->labelDefaulPipeName->setText(QtExt::MultiLangString2QString(pipesDB[m_defaultPipeId]->m_displayName));
-	// enable import button
-	m_ui->pushButtonImportPipeline->setEnabled(true);
+
 	//check if the import is ready
 	checkIfPipelineImportIsEnabled();
 }
 
+
 void SVNetworkImportDialog::checkIfPipelineImportIsEnabled(){
+	bool buttonEnabled = false;
 	// check if a filename is specified
 	if(!m_ui->lineEditPipelineFileName->filename().isEmpty()){
 		// check if a valid default pipe is selected
 		if(m_defaultPipeId != VICUS::INVALID_ID){
-			m_ui->pushButtonImportPipeline->setEnabled(true);
-			return;
+			buttonEnabled = true;
 		}
 	}
-	m_ui->pushButtonImportPipeline->setEnabled(false);
+	m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(buttonEnabled);
 }
 
+
 void SVNetworkImportDialog::checkIfSubStationImportIsEnabled(){
+	bool buttonEnabled = false;
 	// check if a filename is specified
 	if(!m_ui->lineEditSubStationFileName->filename().isEmpty()){
 		// check if the max Heating Demand is greater than 0
 		if(m_ui->lineEditMaxHeatingDemand->text().toInt() > 0){
-			m_ui->pushButtonImportSubStation->setEnabled(true);
-			return;
+			buttonEnabled = true;
 		}
 	}
-	m_ui->pushButtonImportSubStation->setEnabled(false);
+	m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(buttonEnabled);
 }
 
 
