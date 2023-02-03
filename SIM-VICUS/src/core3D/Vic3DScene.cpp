@@ -3021,6 +3021,9 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 				uniqueID = obj->m_id;
 			}
 		}
+		else if (keyboardHandler.keyDown(Qt::Key_Alt)) {
+					selectChildren = false;
+				}
 
 		// create undo-action that toggles the selection
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),

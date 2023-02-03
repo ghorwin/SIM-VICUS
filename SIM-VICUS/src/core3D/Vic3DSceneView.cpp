@@ -58,6 +58,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_E);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Alt);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
