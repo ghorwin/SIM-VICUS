@@ -837,6 +837,48 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 }
 
 
+IBKMK::Vector3D Project::boundingBox(const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
+
+	if (nodes.empty() && edges.empty())
+		return IBKMK::Vector3D ( 0,0,0 );
+
+	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	IBKMK::Vector3D upperValues(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
+
+	for (const VICUS::NetworkNode *node: nodes) {
+		upperValues.m_x = std::max(upperValues.m_x, node->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, node->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, node->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, node->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, node->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, node->m_position.m_z);
+	}
+
+	for (const VICUS::NetworkEdge *edge: edges) {
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node1->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node1->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node1->m_position.m_z);
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node2->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node2->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node2->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node1->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node1->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node1->m_position.m_z);
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node2->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node2->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node2->m_position.m_z);
+	}
+
+	// center point of bounding box
+	center = 0.5*(lowerValues+upperValues);
+
+	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
+	return (upperValues-lowerValues);
+}
+
+
 IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 									 std::vector<const SubSurface *> & subsurfaces,
 									 IBKMK::Vector3D & center,

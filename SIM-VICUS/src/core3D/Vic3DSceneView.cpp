@@ -256,6 +256,8 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 
 	std::vector<const VICUS::Surface*> surfaces;
 	std::vector<const VICUS::SubSurface*> subsurfaces;
+	std::vector<const VICUS::NetworkNode*> nodes;
+	std::vector<const VICUS::NetworkEdge*> edges;
 	std::set<const VICUS::Object *> selectedObjects;
 	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 	for (const VICUS::Object * o : selectedObjects) {
@@ -267,6 +269,12 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 			if (sub != nullptr)
 				subsurfaces.push_back(sub);
 		}
+		const VICUS::NetworkNode *n = dynamic_cast<const VICUS::NetworkNode*>(o);
+		if (n != nullptr)
+			nodes.push_back(n);
+		const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
+		if (e != nullptr)
+			edges.push_back(e);
 	}
 
 	// center and bDim will be overriden
@@ -288,8 +296,18 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 				}
 			}
 		}
+		for (const VICUS::Network & n : project().m_geometricNetworks) {
+			for (const VICUS::NetworkEdge &e: n.m_edges)
+				edges.push_back(&e);
+			for (const VICUS::NetworkNode &n: n.m_nodes)
+				nodes.push_back(&n);
+		}
 	}
-	bbDim = project().boundingBox(surfaces, subsurfaces, center);
+
+	if (!edges.empty() || !nodes.empty())
+		bbDim = project().boundingBox(edges, nodes, center);
+	else
+		bbDim = project().boundingBox(surfaces, subsurfaces, center);
 
 
 	switch (cameraPosition) {
@@ -395,7 +413,9 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 
 	} break;
 
+	case NUM_CP: break;
 	}
+
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
 }

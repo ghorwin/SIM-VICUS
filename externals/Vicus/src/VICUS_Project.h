@@ -237,6 +237,13 @@ public:
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
 
+	/*! This function computes the global bounding box of all selected surfaces and the center point in global coordinates.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
+	*/
+	static IBKMK::Vector3D boundingBox(const std::vector<const NetworkEdge*> &edges,
+									   const std::vector<const NetworkNode*> &nodes,
+									   IBKMK::Vector3D &center);
+
 	/*! This function computes the bounding box of all selected surfaces and the center point in LOCAL coordinates of
 		the provided local coordinate system.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in local coordinates.
