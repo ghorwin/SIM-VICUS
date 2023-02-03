@@ -475,7 +475,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// left mouse button starts orbit controller (or interactive transformation), or performs a left-click
 	if (keyboardHandler.buttonDown(Qt::LeftButton)) {
 
-		if(keyboardHandler.keyDown(Qt::Key_Alt)) {
+		if(keyboardHandler.keyDown(Qt::Key_Control)) {
 			if(SVViewStateHandler::instance().viewState().m_sceneOperationMode != SVViewState::OM_RubberbandSelection) {
 				enterRubberbandMode();
 				m_rubberbandObject.setStartPoint(QVector3D(localMousePos.x(), localMousePos.y(), 0));
@@ -3020,10 +3020,6 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 				obj = obj->m_parent;
 				uniqueID = obj->m_id;
 			}
-		}
-
-		else if (keyboardHandler.keyDown(Qt::Key_Alt)) {
-			selectChildren = false;
 		}
 
 		// create undo-action that toggles the selection

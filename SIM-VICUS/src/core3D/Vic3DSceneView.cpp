@@ -59,7 +59,6 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Alt);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
@@ -745,7 +744,7 @@ void SceneView::focusOutEvent(QFocusEvent * event) {
 	// leave Rubberband mode when during selection window loses focus
 	if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
 		m_mainScene.leaveRubberbandMode();
-		m_keyboardMouseHandler.releaseKey(Qt::Key_Alt);
+		m_keyboardMouseHandler.releaseKey(Qt::Key_Control);
 	}
 }
 
