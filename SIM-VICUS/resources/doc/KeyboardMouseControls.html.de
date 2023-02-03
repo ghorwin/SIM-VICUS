@@ -28,6 +28,8 @@
 
 		<tr> <td> <p>Linke Maustaste klicken</p> </td> <td> <p>Wählt Flächen und darin befindliche Fenster/Türen aus 
 		(<b>Umschalt-Taste halten:</b>: Wähle auch Eltern und Geschwister (also Raum und Nachbarflächen im Raum), <b>Alt-Taste halten</b>: wähle nur die Fläche selbst aus, aber nicht die darin befindlichen Teilflächen)</p> </td> </tr>
+		<tr> <td> <p>Linke Maustaste + Strg halten</p> </td> <td> <p> Rubberband Selection (Zieht Auswahlrechteck auf): <b>nach unten ziehen:</b> zur Auswahl hinzufügen, <b>nach oben ziehen:</b> von Auswahl entfernen, 
+		<b>nach rechts ziehen:</b> hinzufügen/entfernen aller berührten Objekte, <b>nach links ziehen:</b> hinzufügen/entfernen aller eingeschlossenen Objekte </p> </td> </tr>
 		<tr><td><p>Escape</p></td> <td><p>Wählt alle gewählten Objekte ab</p> </td>
 		<tr><td><p>Ctrl+F</p></td> <td><p>Sucht ach der ausgewählten Geometrie und positioniert die Kamera in der Nähe. Nützlich, wenn man ein Objekt im Baum auswählt und dieses im Modell finden möchte.</p> </td> </tr>
 		<tr><td><p>Ctrl+.</p></td> <td><p>Öffnet den "Intelligente-Auswahl"-Dialog.</p> </td> </tr>
