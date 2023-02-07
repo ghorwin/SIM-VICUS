@@ -221,14 +221,22 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 		std::pair<unsigned int, unsigned int>  viewFactorPair = it->first;
 		unsigned int sourceId = viewFactorPair.first;
 		unsigned int targetId = viewFactorPair.second;
-		if (m_id == sourceId)
+		if (m_id == sourceId && sourceId != targetId) // view factor from ourself to other construction instance
 			ourInterface.m_viewFactors[targetId] = it->second;
 	}
-	// and check if we have all of them
+
+	// check if we have a view factor for each connected ci
 	for (const ConstructionInstance *ci: connectedConstructionInstances) {
 		if (ourInterface.m_viewFactors.find(ci->m_id) == ourInterface.m_viewFactors.end())
 			throw IBK::Exception( IBK::FormatString("Construction instance #%1 exchanges long wave radiation with construction instance #%2, "
 													"but no view factor is defined between both.").arg(m_id).arg(ci->m_id), FUNC_ID );
+	}
+	// check if we have a connected ci for each view factor
+	for (auto it = ourInterface.m_viewFactors.begin(); it!=ourInterface.m_viewFactors.end(); ++it) {
+		unsigned int targetId = it->first;
+		if (ourInterface.m_connectedInterfaces.find(targetId) == ourInterface.m_connectedInterfaces.end())
+			throw IBK::Exception( IBK::FormatString("View factor is given from construction instance #%1 to construction instance #%2, "
+													"but construction instance #%2 does not seem to exist or is not connected to construction instance #%1").arg(m_id).arg(targetId), FUNC_ID );
 	}
 
 }
