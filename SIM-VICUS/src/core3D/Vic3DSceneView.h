@@ -122,6 +122,8 @@ public slots:
 	/*! Connected to SVViewStateHandler::refreshColors(). */
 	void onColorRefreshNeeded();
 
+	void onUpdateResultColors();
+
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

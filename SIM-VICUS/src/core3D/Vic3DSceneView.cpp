@@ -127,6 +127,9 @@ SceneView::SceneView() :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
 			this, &SceneView::onColorRefreshNeeded);
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::resultColorRefreshNeeded,
+			this, &SceneView::onUpdateResultColors);
 }
 
 
@@ -499,6 +502,12 @@ void SceneView::onColorRefreshNeeded() {
 	if (!SVProjectHandler::instance().isValid())
 		return;
 	m_mainScene.refreshColors();
+	renderLater();
+}
+
+
+void SceneView::onUpdateResultColors() {
+	m_mainScene.updateResultColors();
 	renderLater();
 }
 

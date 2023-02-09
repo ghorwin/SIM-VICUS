@@ -131,6 +131,7 @@
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
+         <addaction name="actionShowResults"/>
         </widget>
        </item>
       </layout>
@@ -329,6 +330,21 @@
    </property>
    <property name="toolTip">
     <string>Edit Site Parametrization</string>
+   </property>
+  </action>
+  <action name="actionShowResults">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/info.png</normaloff>:/gfx/actions/24x24/info.png</iconset>
+   </property>
+   <property name="text">
+    <string>show results</string>
+   </property>
+   <property name="toolTip">
+    <string>show results</string>
    </property>
   </action>
  </widget>

@@ -1343,6 +1343,14 @@ void Scene::refreshColors() {
 }
 
 
+void Scene::updateResultColors() {
+	generateNetworkGeometry();
+	m_networkGeometryObject.updateBuffers();
+	generateBuildingGeometry();
+	m_buildingGeometryObject.updateColorBuffer();
+}
+
+
 void Scene::generateBuildingGeometry() {
 	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	//	// when we show transparent building, we do not need to update the building geometry

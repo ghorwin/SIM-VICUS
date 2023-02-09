@@ -112,6 +112,8 @@ public:
 	*/
 	void refreshColors();
 
+	void updateResultColors();
+
 	/*! Select all objects like surfaces, rooms, buildings, etc. */
 	void selectAll();
 	/*! When Escape was pressed, all selected objects become un-selected again. */

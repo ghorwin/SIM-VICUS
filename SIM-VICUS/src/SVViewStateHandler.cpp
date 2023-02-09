@@ -63,3 +63,9 @@ void SVViewStateHandler::refreshColors() {
 		emit colorRefreshNeeded();
 }
 
+
+void SVViewStateHandler::updateResultColors() {
+	if (SVProjectHandler::instance().isValid())
+		emit resultColorRefreshNeeded();
+}
+
