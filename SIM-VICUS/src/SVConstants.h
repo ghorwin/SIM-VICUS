@@ -101,7 +101,9 @@ enum BuildingPropertyType {
 	/*! Zone property */
 	BT_ZoneProperty,
 	/*! Floor manager. */
-	BT_FloorManager
+	BT_FloorManager,
+	/*! Acoustic templates. */
+	BT_AcousticTemplates
 };
 
 /*! Different edit/coloring modes. */

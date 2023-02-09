@@ -42,6 +42,7 @@
 #include "SVPropBuildingZoneProperty.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropSupplySystemsWidget.h"
+#include "SVPropBuildingAcousticTemplatesWidget.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -63,6 +64,8 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->toolBox->addPage(tr("Supply Systems"), new SVPropSupplySystemsWidget(this));
 	m_ui->toolBox->addPage(tr("Room properties"), new SVPropBuildingZoneProperty(this));
 	m_ui->toolBox->addPage(tr("Building levels"), new SVPropFloorManagerWidget(this));
+	m_ui->toolBox->addPage(tr("Acoustic Templates"), new SVPropBuildingAcousticTemplatesWidget(this));
+
 	m_ui->toolBox->blockSignals(false);
 	m_ui->toolBox->setCurrentIndex(BT_Components);
 
@@ -146,6 +149,7 @@ void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 		case BT_SupplySystems			: vs.m_objectColorMode = SVViewState::OCM_SupplySystems; break;
 		case BT_ZoneProperty			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 		case BT_FloorManager			: vs.m_objectColorMode = SVViewState::OCM_None; break;
+		// TODO Anton: handle Acoustic Templates
 	}
 	SVViewStateHandler::instance().setViewState(vs);
 }
@@ -173,6 +177,7 @@ void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->toolBox->widget(BT_SupplySystems))->updateUi();
 	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
+	dynamic_cast<SVPropBuildingAcousticTemplatesWidget*>(m_ui->toolBox->widget(BT_AcousticTemplates))->updateUi();
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 

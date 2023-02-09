@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<AcousticTemplates>
+	<AcousticTemplate id="400100" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a29f2f">
+		<Notes>en:Contrete/Acoustic Template One|de:Akkustic Eins</Notes>
+	</AcousticTemplate>
+	<AcousticTemplate id="400101" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#abbf2f">
+		<Notes>en:Contrete/Acoustic Template Two|de:Akkustic Zwei</Notes>
+	</AcousticTemplate>
+	<AcousticTemplate id="400102" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a296ff">
+		<Notes>en:Contrete/Acoustic Template Three|de:Akkustic Drei</Notes>
+	</AcousticTemplate>
+</AcousticTemplates>
