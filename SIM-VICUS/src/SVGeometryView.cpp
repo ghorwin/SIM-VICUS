@@ -699,7 +699,7 @@ void SVGeometryView::on_actionShowResults_triggered() {
 	vs.m_propertyWidgetMode = SVViewState::PM_ResultsProperties;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_objectColorMode = SVViewState::OCM_ShowResults;
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs);
 }
 

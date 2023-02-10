@@ -122,7 +122,9 @@ public slots:
 	/*! Connected to SVViewStateHandler::refreshColors(). */
 	void onColorRefreshNeeded();
 
-	void onUpdateResultColors();
+	/*! Connected to SVViewStateHandler::repaintGeometry().
+	 *  Just generates entire geometry again without changing colors, needed when colors have been set from outside. */
+	void onRepaintGeometry();
 
 protected:
 	void initializeGL() override;

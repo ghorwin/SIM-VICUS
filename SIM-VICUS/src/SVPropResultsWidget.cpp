@@ -8,6 +8,7 @@
 
 #include <QFileInfo>
 #include <QTextStream>
+#include <QProgressDialog>
 
 #include <IBK_CSVReader.h>
 
@@ -23,7 +24,7 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->tableWidgetAvailableResults->setColumnCount(3);
 	m_ui->tableWidgetAvailableResults->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Unit") );
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetAvailableResults);
-	m_ui->tableWidgetAvailableResults->setSortingEnabled(true);
+	m_ui->tableWidgetAvailableResults->setSortingEnabled(false);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(0,10);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(1,300);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(2,30);
@@ -52,6 +53,11 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropResultsWidget::onModified);
+
+	// for the very first start: project handler has just been connected and we have missed the modified signal,
+	// but still want to update our UI
+	if (SVProjectHandler::instance().isValid())
+		clearAll();
 }
 
 
@@ -60,7 +66,7 @@ SVPropResultsWidget::~SVPropResultsWidget() {
 }
 
 
-void SVPropResultsWidget::onModified(int modificationType) {
+void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
@@ -79,7 +85,6 @@ void SVPropResultsWidget::clearAll() {
 	m_ui->tableWidgetAvailableResults->setRowCount(0);
 	m_ui->doubleSpinBoxMaxValue->setValue(0);
 	m_ui->doubleSpinBoxMinValue->setValue(0);
-	m_currentResults.clear();
 	m_allResults.clear();
 	m_availableOutputUnits.clear();
 
@@ -87,25 +92,22 @@ void SVPropResultsWidget::clearAll() {
 
 	// sets all object colors grey
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_objectColorMode = SVViewState::OCM_ShowResults;
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->groupBoxNetworkOptions->setEnabled(!project().m_geometricNetworks.empty());
+
+	on_toolButtonSetDefaultDirectory_clicked();
 }
 
 
-void SVPropResultsWidget::on_pushButtonSetDefaultDirectory_clicked() {
-	QFileInfo finfo(SVProjectHandler::instance().projectFile());
-	m_resultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
-	m_ui->resultsDir->setFilename(m_resultsDir.absolutePath());
+void SVPropResultsWidget::readResultsDir() {
+	FUNCID(SVPropResultsWidget::readResultsDir());
 
-	updateTableWidgetAvailableOutputs();
-}
-
-
-void SVPropResultsWidget::updateTableWidgetAvailableOutputs() {
-	FUNCID(SVPropResultsWidget::updateTableWidgetAvailableOutputs());
 	m_availableOutputs.clear();
 	m_availableOutputUnits.clear();
 	m_outputFile.clear();
+	m_allResults.clear();
 
 	if (m_resultsDir.absolutePath().endsWith("/results"))
 		m_resultsDir.cdUp();
@@ -148,13 +150,13 @@ void SVPropResultsWidget::updateTableWidgetAvailableOutputs() {
 		for (unsigned int i=0; i<captions.size(); ++i) {
 			QString caption = QString::fromStdString(captions[i]);
 			QString unit = QString::fromStdString(units[i]);
-			QString outputProperty;
+			QString outputName;
 			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
 				if (caption.contains(it->first)){
-					outputProperty = caption.remove(it->first + ".");
-					m_availableOutputs[outputProperty].push_back(it->second); // store output name to ids
-					m_availableOutputUnits[outputProperty] = unit;
-					m_outputFile[outputProperty] = m_resultsDir.absoluteFilePath(fileName);
+					outputName = caption.remove(it->first + ".");
+					m_availableOutputs[outputName].push_back(it->second); // store output name to ids
+					m_availableOutputUnits[outputName] = unit;
+					m_outputFile[outputName] = m_resultsDir.absoluteFilePath(fileName);
 				}
 			}
 		}
@@ -182,16 +184,7 @@ void SVPropResultsWidget::updateTableWidgetAvailableOutputs() {
 }
 
 
-void SVPropResultsWidget::on_pushButtonUpdateAvailableOutputs_clicked() {
-	updateTableWidgetAvailableOutputs();
-}
-
-
-void SVPropResultsWidget::on_pushButtonReadResults_clicked() {
-
-	m_currentResults.clear();
-
-	QString pipeType = m_ui->comboBoxPipeType->currentData().toString();
+void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 
 	// set current row bold
 	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
@@ -207,48 +200,73 @@ void SVPropResultsWidget::on_pushButtonReadResults_clicked() {
 		m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), col)->setFont(font);
 	}
 
-	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
-	QString outputName = item->text();
+	m_currentOutput = item->text();
 
-	// read entire file
-	IBK::CSVReader reader;
-	reader.read(IBK::Path(m_outputFile[outputName].toStdString()), false, true);
-	if (reader.m_nColumns < 2 || reader.m_nRows < 5)
-		return;
+	QString filter;
+	if (!project().m_geometricNetworks.empty())
+	filter = m_ui->comboBoxPipeType->currentData().toString();
 
-	std::vector<double> time = reader.colData(0);
-	IBK::Unit timeUnit = IBK::Unit(reader.m_units[0]);
+	// we only read results which have not yet been read and stored
+	if (forceToRead || m_allResults.find(m_currentOutput) == m_allResults.end()) {
 
-	if (timeUnit.base_unit() != IBK::Unit("s"))
-		return;
+		QProgressDialog progDiag(tr("Read results..."), tr("Cancel"), 0, 100, this);
+		progDiag.setValue(1);
 
-	for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
-		const std::string &caption = reader.m_captions[i];
-		for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
+		// read entire file
+		IBK::CSVReader reader;
+		reader.read(IBK::Path(m_outputFile[m_currentOutput].toStdString()), false, true);
+		if (reader.m_nColumns < 2 || reader.m_nRows < 5)
+			return;
 
-			std::string objectName = it->first.toStdString();
-			// find columns
-			if (caption.find(objectName) != std::string::npos && caption.find(outputName.toStdString()) != std::string::npos){
-				QString header = QString::fromStdString(caption);
-				int start = header.indexOf("ID=")+3;
-				int end = header.lastIndexOf(")");
-				unsigned int id = header.mid(start, end-start).toUInt();
-				m_currentResults[id] = NANDRAD::LinearSplineParameter(caption, NANDRAD::LinearSplineParameter::I_LINEAR,
-																	  time, reader.colData(i), timeUnit, IBK::Unit(reader.m_units[i]));
+		progDiag.setMaximum((int)reader.m_nColumns-1);
+
+		// we convert time to seconds so its in accordance with time slider
+		std::vector<double> time = reader.colData(0);
+		IBK::Unit timeUnit = IBK::Unit(reader.m_units[0]);
+		if (timeUnit.base_unit() != IBK::Unit("s"))
+			return;
+		IBK::UnitVector timeSeconds(time.begin(), time.end(), timeUnit);
+		timeSeconds.convert(IBK::Unit("s"));
+
+		for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
+
+			progDiag.setValue((int)i);
+
+			// go through all objects
+			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
+				std::string objectName = it->first.toStdString();
+				// look if object name is in this caption
+				if (reader.m_captions[i].find(objectName) != std::string::npos){
+					// additional filter
+					if (filter.isEmpty() || reader.m_captions[i].find(filter.toStdString()) != std::string::npos) {
+						QString qCaption = QString::fromStdString(reader.m_captions[i]);
+						int start = qCaption.indexOf("ID=")+3;
+						int end = qCaption.lastIndexOf(")");
+						unsigned int id = qCaption.mid(start, end-start).toUInt();
+						QString outputName = qCaption.remove(it->first + ".");
+						m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+																				   timeSeconds.m_data, reader.colData(i), timeUnit, IBK::Unit("s"));
+					}
+				}
 			}
 		}
+
+		// set slider
+		m_ui->widgetTimeSlider->setValues(timeSeconds);
+		m_ui->widgetTimeSlider->setCurrentValue(timeSeconds.m_data.back());
 	}
 
-	qDebug() << "number current results: " << m_currentResults.size();
-	if (m_currentResults.size()>0)
-		qDebug() << "current 1st result size: " << m_currentResults.begin()->second.m_values.size();
-
-	// set slider
-	m_ui->widgetTimeSlider->setValues(IBK::UnitVector(time.begin(), time.end(), timeUnit));
+	for (int row=0; row<m_ui->tableWidgetAvailableResults->rowCount(); ++row) {
+		const QString &property = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+		QTableWidgetItem *item = new QTableWidgetItem();
+		if (m_allResults.find(property) != m_allResults.end())
+			item->setIcon(QIcon(":/gfx/actions/16x16/ok.png"));
+		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
+	}
 
 	// sets all object colors grey
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_objectColorMode = SVViewState::OCM_ShowResults;
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs);
 
 	// determine max/min values, also updates colors
@@ -269,7 +287,7 @@ void SVPropResultsWidget::setCurrentMinMaxValues(bool localMinMax) {
 	double currentTime = m_ui->widgetTimeSlider->currentCutValue();
 	double max, min;
 
-	for (auto it=m_currentResults.begin(); it!=m_currentResults.end(); ++it) {
+	for (auto it=m_allResults[m_currentOutput].begin(); it!=m_allResults[m_currentOutput].end(); ++it) {
 		const IBK::LinearSpline &vals = it->second.m_values;
 		if (localMinMax) {
 			max = vals.value(currentTime);
@@ -291,7 +309,7 @@ void SVPropResultsWidget::setCurrentMinMaxValues(bool localMinMax) {
 }
 
 
-void SVPropResultsWidget::calculateColor(const double & yint, QColor & col) {
+void SVPropResultsWidget::interpolateColor(const double & yint, QColor & col) {
 	double ys = (yint - m_currentMin) / (m_currentMax - m_currentMin);
 	if (ys>1)
 		ys=1;
@@ -312,9 +330,9 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	const VICUS::Project &p = project();
 	for (const VICUS::Network &net: p.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge &e: net.m_edges) {
-			if (m_currentResults.find(e.m_id) != m_currentResults.end()) {
-				double yint = m_currentResults[e.m_id].m_values.value(currentTime);
-				calculateColor(yint, col);
+			if (m_allResults[m_currentOutput].find(e.m_id) != m_allResults[m_currentOutput].end()) {
+				double yint = m_allResults[m_currentOutput][e.m_id].m_values.value(currentTime);
+				interpolateColor(yint, col);
 				e.m_color = col;
 			}
 		}
@@ -324,18 +342,18 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// a room related property (e.g. AirTemperature)
-				if ( m_currentResults.find(r.m_id) != m_currentResults.end() ) {
-					double yint = m_currentResults[r.m_id].m_values.value(currentTime);
-					calculateColor(yint, col);
+				if ( m_allResults[m_currentOutput].find(r.m_id) != m_allResults[m_currentOutput].end() ) {
+					double yint = m_allResults[m_currentOutput][r.m_id].m_values.value(currentTime);
+					interpolateColor(yint, col);
 					for (const VICUS::Surface & s : r.m_surfaces)
 						s.m_color = col;
 				}
 				// a wall related property (e.g. SurfaceTemperature)
 				else {
 					for (const VICUS::Surface & s : r.m_surfaces) {
-						if (m_currentResults.find(s.m_id) != m_currentResults.end()) {
-							double yint = m_currentResults[s.m_id].m_values.value(currentTime);
-							calculateColor(yint, col);
+						if (m_allResults[m_currentOutput].find(s.m_id) != m_allResults[m_currentOutput].end()) {
+							double yint = m_allResults[m_currentOutput][s.m_id].m_values.value(currentTime);
+							interpolateColor(yint, col);
 							s.m_color = col;
 						}
 					}
@@ -344,7 +362,7 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 		}
 	}
 
-	SVViewStateHandler::instance().updateResultColors();
+	SVViewStateHandler::instance().repaintGeometry();
 }
 
 
@@ -396,7 +414,25 @@ void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
 }
 
 
-void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int row, int column) {
-	on_pushButtonReadResults_clicked();
+void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int /*row*/, int /*column*/) {
+	readCurrentResult(false);
+}
+
+
+void SVPropResultsWidget::on_toolButtonSetDefaultDirectory_clicked() {
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	m_resultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
+	m_ui->resultsDir->setFilename(m_resultsDir.absolutePath());
+	readResultsDir();
+}
+
+
+void SVPropResultsWidget::on_toolButtonUpdateAvailableOutputs_clicked() {
+	readResultsDir();
+}
+
+
+void SVPropResultsWidget::on_pushButton_clicked() {
+	readCurrentResult(true);
 }
 

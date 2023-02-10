@@ -16,6 +16,21 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <widget class="QToolButton" name="toolButtonSetDefaultDirectory">
+       <property name="toolTip">
+        <string>set default directory</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/gfx/actions/24x24/arrow-source-grey.png</normalon>
+        </iconset>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -26,10 +41,18 @@
      <item row="0" column="1">
       <widget class="QtExt::BrowseFilenameWidget" name="resultsDir" native="true"/>
      </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushButtonSetDefaultDirectory">
+     <item row="0" column="3">
+      <widget class="QToolButton" name="toolButtonUpdateAvailableOutputs">
+       <property name="toolTip">
+        <string>reload results directory</string>
+       </property>
        <property name="text">
-        <string>set default directory</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/gfx/actions/24x24/reload.png</normalon>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -38,37 +61,42 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>available outputs</string>
+      <string>Available outputs</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="pushButtonUpdateAvailableOutputs">
-        <property name="text">
-         <string>update</string>
+      <item row="0" column="0" colspan="2">
+       <widget class="QTableWidget" name="tableWidgetAvailableResults">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>reload output</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="icon">
+         <iconset>
+          <normalon>:/gfx/actions/24x24/reload.png</normalon>
+         </iconset>
         </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QTableWidget" name="tableWidgetAvailableResults"/>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="groupBoxNetworkOptions">
      <property name="title">
       <string>Network options</string>
      </property>
@@ -76,7 +104,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Pipe</string>
+         <string>Network Pipe</string>
         </property>
        </widget>
       </item>
@@ -87,16 +115,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButtonReadResults">
-     <property name="text">
-      <string>read</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>GroupBox</string>
+      <string>Colormap settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="0">
@@ -186,7 +207,32 @@
     </widget>
    </item>
    <item>
-    <widget class="SVTimeSliderWidget" name="widgetTimeSlider" native="true"/>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Current time</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="SVTimeSliderWidget" name="widgetTimeSlider" native="true"/>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

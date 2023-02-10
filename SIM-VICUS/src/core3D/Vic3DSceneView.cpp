@@ -128,8 +128,8 @@ SceneView::SceneView() :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
 			this, &SceneView::onColorRefreshNeeded);
 
-	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::resultColorRefreshNeeded,
-			this, &SceneView::onUpdateResultColors);
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::repaintGeometryNeeded,
+			this, &SceneView::onRepaintGeometry);
 }
 
 
@@ -506,8 +506,8 @@ void SceneView::onColorRefreshNeeded() {
 }
 
 
-void SceneView::onUpdateResultColors() {
-	m_mainScene.updateResultColors();
+void SceneView::onRepaintGeometry() {
+	m_mainScene.repaintGeometry();
 	renderLater();
 }
 

@@ -1957,7 +1957,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 						  .arg(surf->m_displayName);
 			continue;
 		}
-		emb.m_displayName = ss.m_displayName.toStdString();
+		emb.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(ss.m_displayName.toStdString()).arg(ss.m_id).str();
 
 		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
 		//find sub surface component instance

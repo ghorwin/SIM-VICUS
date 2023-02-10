@@ -1275,7 +1275,7 @@ void Scene::setViewState(const SVViewState & vs) {
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
-				m_lastColorObjectID != vs.m_colorModePropertyID)
+			m_lastColorObjectID != vs.m_colorModePropertyID)
 		{
 			colorUpdateNeeded = true;
 		}
@@ -1286,6 +1286,11 @@ void Scene::setViewState(const SVViewState & vs) {
 			colorUpdateNeeded = true;
 		}
 	}
+
+	// for results color view we need an update here in any case
+	if (vs.m_objectColorMode == SVViewState::OCM_ResultColorView)
+		colorUpdateNeeded = true;
+
 	if (colorUpdateNeeded) {
 
 		// different update handling
@@ -1295,9 +1300,13 @@ void Scene::setViewState(const SVViewState & vs) {
 			updateBuilding = true;
 		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_Network)
 			updateBuilding = true;
+		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
+			updateBuilding = true;
 		if (m_lastColorMode >= SVViewState::OCM_Network)
 			updateNetwork = true;
 		if (vs.m_objectColorMode >= SVViewState::OCM_Network)
+			updateNetwork = true;
+		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
 			updateNetwork = true;
 
 		// update the color properties in the data objects (does not update GPU memory!)
@@ -1343,7 +1352,7 @@ void Scene::refreshColors() {
 }
 
 
-void Scene::updateResultColors() {
+void Scene::repaintGeometry() {
 	generateNetworkGeometry();
 	m_networkGeometryObject.updateBuffers();
 	generateBuildingGeometry();
@@ -1917,7 +1926,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_NetworkHeatExchange:
 			case SVViewState::OCM_SelectedSurfacesHighlighted:
 			case SVViewState::OCM_InterlinkedSurfaces:
-			case SVViewState::OCM_ShowResults:
+			case SVViewState::OCM_ResultColorView:
 				break;
 			}
 		}
@@ -1985,7 +1994,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_SurfaceHeating:
 			case SVViewState::OCM_InterlinkedSurfaces:
 			case SVViewState::OCM_SupplySystems:
-			case SVViewState::OCM_ShowResults:
+			case SVViewState::OCM_ResultColorView:
 				break;
 			} // switch
 		}
@@ -2021,7 +2030,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	case SVViewState::OCM_NetworkEdge:
 	case SVViewState::OCM_NetworkHeatExchange:
 	case SVViewState::OCM_NetworkSubNetworks:
-	case SVViewState::OCM_ShowResults:
+	case SVViewState::OCM_ResultColorView:
 		for (const VICUS::Network & net: p.m_geometricNetworks){
 
 			switch (ocm) {
@@ -2029,7 +2038,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				net.setDefaultColors();
 			} break;
 			// all in dark gray
-			case SVViewState::OCM_ShowResults: {
+			case SVViewState::OCM_ResultColorView: {
 				for (const VICUS::NetworkNode & node: net.m_nodes)
 					node.m_color = QColor(64,64,64,255); // dark opaque gray
 				for (const VICUS::NetworkEdge & edge: net.m_edges)

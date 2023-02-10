@@ -10,6 +10,8 @@ namespace Ui {
 class SVPropResultsWidget;
 }
 
+class ModificationInfo;
+
 class SVPropResultsWidget : public QWidget
 {
 	Q_OBJECT
@@ -22,15 +24,9 @@ public:
 
 private slots:
 
-	void onModified(int modificationType);
+	void onModified(int modificationType, ModificationInfo *data);
 
-	void on_pushButtonSetDefaultDirectory_clicked();
-
-	void updateTableWidgetAvailableOutputs();
-
-	void on_pushButtonUpdateAvailableOutputs_clicked();
-
-	void on_pushButtonReadResults_clicked();
+	void readResultsDir();
 
 	void onTimeSliderCutValueChanged(double currentTime);
 
@@ -48,11 +44,19 @@ private slots:
 
 	void on_tableWidgetAvailableResults_cellDoubleClicked(int row, int column);
 
+	void on_toolButtonSetDefaultDirectory_clicked();
+
+	void on_toolButtonUpdateAvailableOutputs_clicked();
+
+	void on_pushButton_clicked();
+
 private:
+
+	void readCurrentResult(bool forceToRead);
 
 	void setCurrentMinMaxValues(bool localMinMax=false);
 
-	void calculateColor(const double &val, QColor &col);
+	void interpolateColor(const double &val, QColor &col);
 
 	void updateColors(const double & currentTime);
 
@@ -66,9 +70,9 @@ private:
 
 	std::map<QString, unsigned int>					m_objectName2Id;
 
-	std::map<std::string, std::map<unsigned int, NANDRAD::LinearSplineParameter> >	m_allResults;
+	std::map<QString, std::map<unsigned int, NANDRAD::LinearSplineParameter> >	m_allResults;
 
-	std::map<unsigned int, NANDRAD::LinearSplineParameter> 	m_currentResults;
+	QString											m_currentOutput;
 
 	double											m_currentMin;
 	double											m_currentMax;
