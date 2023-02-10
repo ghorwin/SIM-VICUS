@@ -179,6 +179,7 @@ public:
 		OCM_NetworkEdge,
 		OCM_NetworkHeatExchange,
 		OCM_NetworkSubNetworks,
+		OCM_ShowResults
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the

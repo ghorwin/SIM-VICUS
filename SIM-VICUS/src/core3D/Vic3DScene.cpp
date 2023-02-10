@@ -1785,7 +1785,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 	switch (ocm) {
 	case SVViewState::OCM_InterlinkedSurfaces:
-	case SVViewState::OCM_None: break;
+	case SVViewState::OCM_None:
+		break;
 
 	case SVViewState::OCM_SelectedSurfacesHighlighted: {
 		for (const VICUS::Building & b : p.m_buildings) {
@@ -1916,6 +1917,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_NetworkHeatExchange:
 			case SVViewState::OCM_SelectedSurfacesHighlighted:
 			case SVViewState::OCM_InterlinkedSurfaces:
+			case SVViewState::OCM_ShowResults:
 				break;
 			}
 		}
@@ -1983,6 +1985,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_SurfaceHeating:
 			case SVViewState::OCM_InterlinkedSurfaces:
 			case SVViewState::OCM_SupplySystems:
+			case SVViewState::OCM_ShowResults:
 				break;
 			} // switch
 		}
@@ -2018,11 +2021,19 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	case SVViewState::OCM_NetworkEdge:
 	case SVViewState::OCM_NetworkHeatExchange:
 	case SVViewState::OCM_NetworkSubNetworks:
+	case SVViewState::OCM_ShowResults:
 		for (const VICUS::Network & net: p.m_geometricNetworks){
 
 			switch (ocm) {
 			case SVViewState::OCM_NetworkNode: {
 				net.setDefaultColors();
+			} break;
+			// all in dark gray
+			case SVViewState::OCM_ShowResults: {
+				for (const VICUS::NetworkNode & node: net.m_nodes)
+					node.m_color = QColor(64,64,64,255); // dark opaque gray
+				for (const VICUS::NetworkEdge & edge: net.m_edges)
+					edge.m_color = QColor(64,64,64,255); // dark opaque gray
 			} break;
 			case SVViewState::OCM_NetworkEdge: {
 				for (const VICUS::NetworkNode & node: net.m_nodes)

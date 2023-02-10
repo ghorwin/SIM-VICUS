@@ -2370,7 +2370,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				///				We could also name internal walls automatically using zone names, such as
 				///				"Wall between 'Bath' and 'Kitchen'".
 				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2' (ID=%3)")
-						.arg(compInstaVicus.m_sideASurface->m_displayName, compInstaVicus.m_sideBSurface->m_displayName).arg(constrInstNandrad.m_id).toStdString();
+						.arg(compInstaVicus.m_sideASurface->m_displayName, compInstaVicus.m_sideBSurface->m_displayName).arg(compInstaVicus.m_idSideASurface).toStdString();
 			}
 			else {
 
@@ -2384,7 +2384,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 				constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideASurface->m_displayName.toStdString())
-																				.arg(constrInstNandrad.m_id).str();
+																				.arg(compInstaVicus.m_idSideASurface).str();
 			}
 
 			if(area<MIN_AREA_FOR_EXPORTED_SURFACES){
@@ -2437,7 +2437,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideBSurface->m_displayName.toStdString())
-																		.arg(constrInstNandrad.m_id).str();
+																		.arg(compInstaVicus.m_idSideBSurface).str();
 
 			// sub surface
 			const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideBSurface->subSurfaces();

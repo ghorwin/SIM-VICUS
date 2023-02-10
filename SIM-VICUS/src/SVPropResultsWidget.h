@@ -18,7 +18,11 @@ public:
 	explicit SVPropResultsWidget(QWidget *parent = nullptr);
 	~SVPropResultsWidget();
 
+	void clearAll();
+
 private slots:
+
+	void onModified(int modificationType);
 
 	void on_pushButtonSetDefaultDirectory_clicked();
 
@@ -42,6 +46,8 @@ private slots:
 
 	void on_pushButtonSetLocalMinMax_clicked();
 
+	void on_tableWidgetAvailableResults_cellDoubleClicked(int row, int column);
+
 private:
 
 	void setCurrentMinMaxValues(bool localMinMax=false);
@@ -58,14 +64,11 @@ private:
 	std::map<QString, QString>						m_availableOutputUnits;
 	std::map<QString, QString>						m_outputFile;
 
-
-	std::map<QString, unsigned int>					m_substitutionName2Id;
+	std::map<QString, unsigned int>					m_objectName2Id;
 
 	std::map<std::string, std::map<unsigned int, NANDRAD::LinearSplineParameter> >	m_allResults;
 
 	std::map<unsigned int, NANDRAD::LinearSplineParameter> 	m_currentResults;
-
-	std::map<unsigned int, QColor>					m_resultColors;
 
 	double											m_currentMin;
 	double											m_currentMax;
