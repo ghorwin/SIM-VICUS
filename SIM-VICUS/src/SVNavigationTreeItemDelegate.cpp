@@ -109,11 +109,23 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 		switch (SVSettings::instance().m_theme) {
 			case SVSettings::NUM_TT:
 			case SVSettings::TT_White:
+				if (index.data(ItemType) == 1) {
+					painter->setPen(QColor(78, 87, 135));
+				} else if (index.data(ItemType) == 2) {
+					painter->setPen(QColor(219, 108, 0));
+				} else {
 				painter->setPen(Qt::black);
+				}
 			break;
 
 			case SVSettings::TT_Dark:
+				if (index.data(ItemType) == 1) {
+					painter->setPen(QColor(120,130,190));
+				} else if (index.data(ItemType) == 2) {
+					painter->setPen(QColor(255, 191, 20));
+				} else {
 				painter->setPen(QColor(240,240,240));
+				}
 			break;
 		}
 	}

@@ -178,6 +178,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		building->setData(0, SVNavigationTreeItemDelegate::NodeID, b.m_id);
 		building->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, b.m_visible);
 		building->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, b.m_selected);
+		building->setData(0, SVNavigationTreeItemDelegate::ItemType, 1);
 		root->addChild(building);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QTreeWidgetItem * buildingLevel = new QTreeWidgetItem(QStringList() << bl.m_displayName, QTreeWidgetItem::Type);
@@ -186,6 +187,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::NodeID, bl.m_id);
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, bl.m_visible);
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, bl.m_selected);
+			buildingLevel->setData(0, SVNavigationTreeItemDelegate::ItemType, 2);
 			building->addChild(buildingLevel);
 			for (const VICUS::Room & r : bl.m_rooms) {
 				QTreeWidgetItem * rooms = new QTreeWidgetItem(QStringList() << r.m_displayName, QTreeWidgetItem::Type);
@@ -195,6 +197,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, r.m_visible);
 				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, r.m_selected);
 				rooms->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, false);
+				rooms->setData(0, SVNavigationTreeItemDelegate::ItemType, 3);
 				if (rooms->text(0).isEmpty())
 					rooms->setText(0, tr("unnamed"));
 				buildingLevel->addChild(rooms);
@@ -206,6 +209,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.m_id);
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+					surface->setData(0, SVNavigationTreeItemDelegate::ItemType, 4);
 					if (!s.geometry().isValid()) {
 						surface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
 						surface->setData(0, Qt::ToolTipRole, tr("Invalid polygon/hole geometry"));
