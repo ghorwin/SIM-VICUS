@@ -256,6 +256,11 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 }
 
 
+SVColorLegend * SVGeometryView::colorLegend() {
+	return m_ui->colorLegend;
+}
+
+
 void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 
@@ -391,6 +396,8 @@ void SVGeometryView::onViewStateChanged() {
 	// hide measurement widget when no longer needed
 	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
 		hideMeasurementWidget();
+
+	m_ui->colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
 }
 
 

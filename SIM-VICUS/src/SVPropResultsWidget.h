@@ -74,8 +74,8 @@ private:
 
 	QString											m_currentOutput;
 
-	double											m_currentMin;
-	double											m_currentMax;
+	double											m_currentMin = 0;
+	double											m_currentMax = 1;
 	QColor											m_minColor;
 	QColor											m_maxColor;
 };

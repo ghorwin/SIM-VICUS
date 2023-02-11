@@ -37,6 +37,7 @@ namespace Vic3D {
 class SVPropertyWidget;
 class SVLocalCoordinateView;
 class SVMeasurementWidget;
+class SVColorLegend;
 class QSplitter;
 class QToolBar;
 class QAction;
@@ -114,6 +115,8 @@ public:
 
 	/*! Sets all actions in button bar to unchecked state */
 	void uncheckAllActionsInButtonBar();
+
+	SVColorLegend * colorLegend();
 
 public slots:
 	/*! Handles selection changes and enables/disables button states. */

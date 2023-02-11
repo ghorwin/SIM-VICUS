@@ -79,6 +79,7 @@ SOURCES += \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVCoSimSupplySystemDialog.cpp \
+	../../src/SVColorLegend.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
@@ -276,6 +277,7 @@ SOURCES += \
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
 	../../src/SVCoSimSupplySystemDialog.h \
+	../../src/SVColorLegend.h \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \

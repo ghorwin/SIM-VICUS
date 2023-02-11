@@ -5,6 +5,8 @@
 #include "SVSettings.h"
 #include "SVStyle.h"
 #include "SVViewStateHandler.h"
+#include "SVGeometryView.h"
+#include "SVColorLegend.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -42,7 +44,7 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->doubleSpinBoxMinValue->setMinimum(std::numeric_limits<double>::lowest());
 
 	m_ui->pushButtonMaxColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
-	m_ui->pushButtonMaxColor->setColor("#780000");
+	m_ui->pushButtonMaxColor->setColor("#6f1d1b");
 	m_maxColor = m_ui->pushButtonMaxColor->color();
 	m_ui->pushButtonMinColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMinColor->setColor("#669bbc");
@@ -58,6 +60,9 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	// but still want to update our UI
 	if (SVProjectHandler::instance().isValid())
 		clearAll();
+
+	// set pointer for color legend
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->init(&m_currentMin, &m_currentMax, &m_minColor, &m_maxColor);
 }
 
 
@@ -264,13 +269,18 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
 	}
 
-	// sets all object colors grey
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs);
 
 	// determine max/min values, also updates colors
 	setCurrentMinMaxValues(false);
+
+	// set legend title
+	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 2);
+	Q_ASSERT(item!=nullptr);
+	QString currentUnit = item->text();
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutput).arg(currentUnit));
 }
 
 
@@ -363,6 +373,7 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	}
 
 	SVViewStateHandler::instance().repaintGeometry();
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->update();
 }
 
 
