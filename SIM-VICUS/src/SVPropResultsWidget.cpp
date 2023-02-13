@@ -38,10 +38,8 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->comboBoxPipeType->addItem(tr("SupplyPipe"), "SupplyPipe");
 	m_ui->comboBoxPipeType->addItem(tr("ReturnPipe"), "ReturnPipe");
 
-	m_ui->doubleSpinBoxMaxValue->setMaximum(std::numeric_limits<double>::max());
-	m_ui->doubleSpinBoxMaxValue->setMinimum(std::numeric_limits<double>::lowest());
-	m_ui->doubleSpinBoxMinValue->setMaximum(std::numeric_limits<double>::max());
-	m_ui->doubleSpinBoxMinValue->setMinimum(std::numeric_limits<double>::lowest());
+	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
+	m_ui->lineEditMaxValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
 
 	m_ui->pushButtonMaxColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMaxColor->setColor("#6f1d1b");
@@ -88,8 +86,8 @@ void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*
 void SVPropResultsWidget::clearAll() {
 	m_ui->resultsDir->setFilename("");
 	m_ui->tableWidgetAvailableResults->setRowCount(0);
-	m_ui->doubleSpinBoxMaxValue->setValue(0);
-	m_ui->doubleSpinBoxMinValue->setValue(0);
+	m_ui->lineEditMaxValue->setValue(1);
+	m_ui->lineEditMinValue->setValue(0);
 	m_allResults.clear();
 	m_availableOutputUnits.clear();
 
@@ -205,6 +203,12 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), col)->setFont(font);
 	}
 
+	// reset view state to paint all in grey
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
+	SVViewStateHandler::instance().setViewState(vs);
+
+	// now set current output
 	m_currentOutput = item->text();
 
 	QString filter;
@@ -269,10 +273,6 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
 	}
 
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
-	SVViewStateHandler::instance().setViewState(vs);
-
 	// determine max/min values, also updates colors
 	setCurrentMinMaxValues(false);
 
@@ -281,6 +281,8 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	Q_ASSERT(item!=nullptr);
 	QString currentUnit = item->text();
 	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutput).arg(currentUnit));
+
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 
 
@@ -314,8 +316,8 @@ void SVPropResultsWidget::setCurrentMinMaxValues(bool localMinMax) {
 			m_currentMin = min;
 	}
 
-	m_ui->doubleSpinBoxMaxValue->setValue(m_currentMax);
-	m_ui->doubleSpinBoxMinValue->setValue(m_currentMin);
+	m_ui->lineEditMaxValue->setValue(m_currentMax);
+	m_ui->lineEditMinValue->setValue(m_currentMin);
 }
 
 
@@ -377,30 +379,6 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 }
 
 
-void SVPropResultsWidget::on_doubleSpinBoxMaxValue_valueChanged(double arg1) {
-	if (arg1*0.95 < m_currentMin) {
-		m_ui->doubleSpinBoxMaxValue->blockSignals(true);
-		m_ui->doubleSpinBoxMaxValue->setValue(m_currentMax);
-		m_ui->doubleSpinBoxMaxValue->blockSignals(false);
-		return;
-	}
-	m_currentMax = arg1;
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_doubleSpinBoxMinValue_valueChanged(double arg1) {
-	if (arg1*1.05 > m_currentMax) {
-		m_ui->doubleSpinBoxMinValue->blockSignals(true);
-		m_ui->doubleSpinBoxMinValue->setValue(m_currentMin);
-		m_ui->doubleSpinBoxMinValue->blockSignals(false);
-		return;
-	}
-	m_currentMin = arg1;
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
 void SVPropResultsWidget::on_pushButtonMaxColor_clicked() {
 	m_maxColor = m_ui->pushButtonMaxColor->color();
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
@@ -445,5 +423,27 @@ void SVPropResultsWidget::on_toolButtonUpdateAvailableOutputs_clicked() {
 
 void SVPropResultsWidget::on_pushButton_clicked() {
 	readCurrentResult(true);
+}
+
+
+void SVPropResultsWidget::on_lineEditMaxValue_editingFinishedSuccessfully() {
+	double val = m_ui->lineEditMaxValue->value();
+	if (val*0.95 < m_currentMin) {
+		m_ui->lineEditMaxValue->setValue(m_currentMax);
+		return;
+	}
+	m_currentMax = val;
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
+	double val = m_ui->lineEditMinValue->value();
+	if (val*1.05 > m_currentMax) {
+		m_ui->lineEditMinValue->setValue(m_currentMin);
+		return;
+	}
+	m_currentMin = val;
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 

@@ -30,10 +30,6 @@ private slots:
 
 	void onTimeSliderCutValueChanged(double currentTime);
 
-	void on_doubleSpinBoxMaxValue_valueChanged(double arg1);
-
-	void on_doubleSpinBoxMinValue_valueChanged(double arg1);
-
 	void on_pushButtonMaxColor_clicked();
 
 	void on_pushButtonMinColor_clicked();
@@ -49,6 +45,10 @@ private slots:
 	void on_toolButtonUpdateAvailableOutputs_clicked();
 
 	void on_pushButton_clicked();
+
+	void on_lineEditMaxValue_editingFinishedSuccessfully();
+
+	void on_lineEditMinValue_editingFinishedSuccessfully();
 
 private:
 
