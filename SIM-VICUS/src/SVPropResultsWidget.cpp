@@ -57,10 +57,10 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	// for the very first start: project handler has just been connected and we have missed the modified signal,
 	// but still want to update our UI
 	if (SVProjectHandler::instance().isValid())
-		clearAll();
+		clearUi();
 
 	// set pointer for color legend
-	SVViewStateHandler::instance().m_geometryView->colorLegend()->init(&m_currentMin, &m_currentMax, &m_minColor, &m_maxColor);
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->initialize(&m_currentMin, &m_currentMax, &m_minColor, &m_maxColor);
 }
 
 
@@ -76,20 +76,19 @@ void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::NetworkGeometryChanged:
 		case SVProjectHandler::BuildingGeometryChanged: {
-			clearAll();
+			clearUi();
 		} break;
 		default: ; // just to make compiler happy
 	}
 }
 
 
-void SVPropResultsWidget::clearAll() {
+void SVPropResultsWidget::clearUi() {
 	m_ui->resultsDir->setFilename("");
 	m_ui->tableWidgetAvailableResults->setRowCount(0);
 	m_ui->lineEditMaxValue->setValue(1);
 	m_ui->lineEditMinValue->setValue(0);
 	m_allResults.clear();
-	m_availableOutputUnits.clear();
 
 	m_ui->widgetTimeSlider->clear();
 
@@ -98,18 +97,15 @@ void SVPropResultsWidget::clearAll() {
 	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs);
 
-	m_ui->groupBoxNetworkOptions->setEnabled(!project().m_geometricNetworks.empty());
-
 	on_toolButtonSetDefaultDirectory_clicked();
 }
 
 
 void SVPropResultsWidget::readResultsDir() {
-	FUNCID(SVPropResultsWidget::readResultsDir());
 
-	m_availableOutputs.clear();
-	m_availableOutputUnits.clear();
-	m_outputFile.clear();
+	std::map<QString, std::vector<unsigned int>>	availableOutputs;
+	std::map<QString, QString>						availableOutputUnits;
+	m_outputFiles.clear();
 	m_allResults.clear();
 
 	if (m_resultsDir.absolutePath().endsWith("/results"))
@@ -125,6 +121,9 @@ void SVPropResultsWidget::readResultsDir() {
 		while (in.readLineInto(&line)) {
 			QStringList fields = line.split("\t");
 			if (fields.size()==2) {
+				// for network elements, we read only pipe elements currently
+				if (fields[0].contains("NetworkElement") && !(fields[1].contains("SupplyPipe") || fields[1].contains("ReturnPipe")))
+					continue;
 				// extract the id
 				int start = fields[1].indexOf("ID=")+3;
 				int end = fields[1].lastIndexOf(")");
@@ -132,9 +131,6 @@ void SVPropResultsWidget::readResultsDir() {
 				m_objectName2Id[fields[1]] = id;
 			}
 		}
-	}
-	else {
-		throw IBK::Exception(IBK::FormatString("Substitution file '%1' not found!").arg(subsFile.fileName().toStdString()), FUNC_ID);
 	}
 
 	// now read result tsv files
@@ -157,19 +153,29 @@ void SVPropResultsWidget::readResultsDir() {
 			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
 				if (caption.contains(it->first)){
 					outputName = caption.remove(it->first + ".");
-					m_availableOutputs[outputName].push_back(it->second); // store output name to ids
-					m_availableOutputUnits[outputName] = unit;
-					m_outputFile[outputName] = m_resultsDir.absoluteFilePath(fileName);
+					availableOutputs[outputName].push_back(it->second); // store output name to ids
+					availableOutputUnits[outputName] = unit;
+					m_outputFiles[outputName] = m_resultsDir.absoluteFilePath(fileName);
 				}
 			}
 		}
 	}
 
+	// if we have found an output of a minimum size: enable Ui
+	bool validOutputFound = !availableOutputs.empty() && availableOutputs.begin()->second.size() > 0;
+	m_ui->groupBoxAvailableOutputs->setEnabled(validOutputFound);
+	m_ui->groupBoxColormap->setEnabled(validOutputFound);
+	m_ui->groupBoxNetworkOptions->setEnabled(validOutputFound && !project().m_geometricNetworks.empty());
+	m_ui->groupBoxTime->setEnabled(validOutputFound);
+
+	if (!validOutputFound)
+		return;
+
 	// update table widget
 	m_ui->tableWidgetAvailableResults->clearContents();
-	m_ui->tableWidgetAvailableResults->setRowCount(m_availableOutputs.size());
+	m_ui->tableWidgetAvailableResults->setRowCount(availableOutputs.size());
 	int row=0;
-	for (auto it=m_availableOutputUnits.begin(); it!=m_availableOutputUnits.end(); ++it) {
+	for (auto it=availableOutputUnits.begin(); it!=availableOutputUnits.end(); ++it) {
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -189,19 +195,12 @@ void SVPropResultsWidget::readResultsDir() {
 
 void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 
-	// set current row bold
-	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
-	Q_ASSERT(item!=nullptr);
-	QFont font = item->font();
-	font.setBold(false);
-	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
-		for (int row=0; row < m_ui->tableWidgetAvailableResults->rowCount(); ++row)
-			m_ui->tableWidgetAvailableResults->item(row, col)->setFont(font);
-	}
-	font.setBold(true);
-	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
-		m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), col)->setFont(font);
-	}
+	QProgressDialog progDiag(tr("Reading file"), tr("Cancel"), 0, 100, this);
+	progDiag.setWindowTitle(tr("Read results"));
+	progDiag.setValue(0);
+	progDiag.setAutoClose(true);
+	progDiag.setMinimumDuration(0);
+	qApp->processEvents();
 
 	// reset view state to paint all in grey
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -209,25 +208,31 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	SVViewStateHandler::instance().setViewState(vs);
 
 	// now set current output
+	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
 	m_currentOutput = item->text();
 
 	QString filter;
 	if (!project().m_geometricNetworks.empty())
-	filter = m_ui->comboBoxPipeType->currentData().toString();
+		filter = m_ui->comboBoxPipeType->currentData().toString();
+
+	if (filter != m_currentFilter)
+		forceToRead = true;
+	m_currentFilter = filter;
 
 	// we only read results which have not yet been read and stored
 	if (forceToRead || m_allResults.find(m_currentOutput) == m_allResults.end()) {
 
-		QProgressDialog progDiag(tr("Read results..."), tr("Cancel"), 0, 100, this);
 		progDiag.setValue(1);
+		qApp->processEvents();
 
 		// read entire file
 		IBK::CSVReader reader;
-		reader.read(IBK::Path(m_outputFile[m_currentOutput].toStdString()), false, true);
+		reader.read(IBK::Path(m_outputFiles[m_currentOutput].toStdString()), false, true);
 		if (reader.m_nColumns < 2 || reader.m_nRows < 5)
 			return;
 
-		progDiag.setMaximum((int)reader.m_nColumns-1);
+		progDiag.setLabelText(tr("Processing results"));
+		progDiag.setMaximum((int)reader.m_captions.size()-1);
 
 		// we convert time to seconds so its in accordance with time slider
 		std::vector<double> time = reader.colData(0);
@@ -240,6 +245,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
 
 			progDiag.setValue((int)i);
+			qApp->processEvents();
 
 			// go through all objects
 			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
@@ -248,6 +254,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 				if (reader.m_captions[i].find(objectName) != std::string::npos){
 					// additional filter
 					if (filter.isEmpty() || reader.m_captions[i].find(filter.toStdString()) != std::string::npos) {
+						qDebug() << "found" << QString::fromStdString( reader.m_captions[i] );
 						QString qCaption = QString::fromStdString(reader.m_captions[i]);
 						int start = qCaption.indexOf("ID=")+3;
 						int end = qCaption.lastIndexOf(")");
@@ -265,6 +272,21 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->widgetTimeSlider->setCurrentValue(timeSeconds.m_data.back());
 	}
 
+	// set current row bold
+	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
+	Q_ASSERT(item!=nullptr);
+	QFont font = item->font();
+	font.setBold(false);
+	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
+		for (int row=0; row < m_ui->tableWidgetAvailableResults->rowCount(); ++row)
+			m_ui->tableWidgetAvailableResults->item(row, col)->setFont(font);
+	}
+	font.setBold(true);
+	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
+		m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), col)->setFont(font);
+	}
+
+	// set icon
 	for (int row=0; row<m_ui->tableWidgetAvailableResults->rowCount(); ++row) {
 		const QString &property = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
 		QTableWidgetItem *item = new QTableWidgetItem();
@@ -273,7 +295,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
 	}
 
-	// determine max/min values, also updates colors
+	// determine max/min values
 	setCurrentMinMaxValues(false);
 
 	// set legend title
@@ -325,7 +347,7 @@ void SVPropResultsWidget::interpolateColor(const double & yint, QColor & col) {
 	double ys = (yint - m_currentMin) / (m_currentMax - m_currentMin);
 	if (ys>1)
 		ys=1;
-	if (ys<0)
+	else if (ys<0)
 		ys=0;
 	double hMax, sMax, vMax, hMin, sMin, vMin;
 	m_maxColor.getHsvF(&hMax, &sMax, &vMax);
@@ -357,10 +379,13 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 				if ( m_allResults[m_currentOutput].find(r.m_id) != m_allResults[m_currentOutput].end() ) {
 					double yint = m_allResults[m_currentOutput][r.m_id].m_values.value(currentTime);
 					interpolateColor(yint, col);
-					for (const VICUS::Surface & s : r.m_surfaces)
+					for (const VICUS::Surface & s : r.m_surfaces) {
 						s.m_color = col;
+						for (const VICUS::SubSurface &ss: s.subSurfaces())
+							ss.m_color = col;
+					}
 				}
-				// a wall related property (e.g. SurfaceTemperature)
+				// a surface related property (e.g. SurfaceTemperature)
 				else {
 					for (const VICUS::Surface & s : r.m_surfaces) {
 						if (m_allResults[m_currentOutput].find(s.m_id) != m_allResults[m_currentOutput].end()) {
@@ -368,13 +393,20 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 							interpolateColor(yint, col);
 							s.m_color = col;
 						}
+						for (const VICUS::SubSurface &ss: s.subSurfaces()) {
+							if (m_allResults[m_currentOutput].find(ss.m_id) != m_allResults[m_currentOutput].end()) {
+								double yint = m_allResults[m_currentOutput][ss.m_id].m_values.value(currentTime);
+								interpolateColor(yint, col);
+								ss.m_color = col;
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
-	SVViewStateHandler::instance().repaintGeometry();
+	SVViewStateHandler::instance().m_geometryView->repaintSceneView();
 	SVViewStateHandler::instance().m_geometryView->colorLegend()->update();
 }
 
@@ -445,5 +477,10 @@ void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
 	}
 	m_currentMin = val;
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_comboBoxPipeType_activated(int index) {
+	clearUi();
 }
 

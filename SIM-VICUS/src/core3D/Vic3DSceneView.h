@@ -93,6 +93,9 @@ public:
 	double calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension,
 							   const IBKMK::Vector3D &scalingFactors);
 
+	/*! Re-generates entire geometry without changing colors, needed when colors have been updated from outside. */
+	void repaintGeometry();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
@@ -121,10 +124,6 @@ public slots:
 
 	/*! Connected to SVViewStateHandler::refreshColors(). */
 	void onColorRefreshNeeded();
-
-	/*! Connected to SVViewStateHandler::repaintGeometry().
-	 *  Just generates entire geometry again without changing colors, needed when colors have been set from outside. */
-	void onRepaintGeometry();
 
 protected:
 	void initializeGL() override;

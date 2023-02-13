@@ -59,7 +59,26 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBoxNetworkOptions">
+     <property name="title">
+      <string>Options</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Network Pipe</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxPipeType"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxAvailableOutputs">
      <property name="title">
       <string>Available outputs</string>
      </property>
@@ -96,26 +115,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBoxNetworkOptions">
-     <property name="title">
-      <string>Options</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Network Pipe</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxPipeType"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBoxColormap">
      <property name="title">
       <string>Colormap</string>
      </property>
@@ -200,7 +200,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QGroupBox" name="groupBoxTime">
      <property name="title">
       <string>Time</string>
      </property>

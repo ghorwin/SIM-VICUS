@@ -141,8 +141,6 @@ public slots:
 	*/
 	void refreshColors();
 
-	void repaintGeometry();
-
 signals:
 	/*! Emitted, when the state has changed. */
 	void viewStateChanged();
@@ -151,8 +149,6 @@ signals:
 		properties, also because of geometry changes).
 	*/
 	void colorRefreshNeeded();
-
-	void repaintGeometryNeeded();
 
 private:
 	/*! The global pointer to the SVViewStateHandler object.

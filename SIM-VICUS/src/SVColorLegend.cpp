@@ -12,7 +12,7 @@ SVColorLegend::SVColorLegend(QWidget *parent)
 }
 
 
-void SVColorLegend::init(double * minVal, double * maxVal, QColor * minColor, QColor * maxColor){
+void SVColorLegend::initialize(double * minVal, double * maxVal, QColor * minColor, QColor * maxColor){
 	m_minValue = minVal;
 	m_maxValue = maxVal;
 	m_minColor = minColor;

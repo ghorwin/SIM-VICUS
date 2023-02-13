@@ -116,6 +116,8 @@ public:
 	/*! Sets all actions in button bar to unchecked state */
 	void uncheckAllActionsInButtonBar();
 
+	void repaintSceneView();
+
 	SVColorLegend * colorLegend();
 
 public slots:

@@ -256,6 +256,11 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 }
 
 
+void SVGeometryView::repaintSceneView() {
+	m_sceneView->repaintGeometry();
+}
+
+
 SVColorLegend * SVGeometryView::colorLegend() {
 	return m_ui->colorLegend;
 }

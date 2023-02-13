@@ -60,10 +60,3 @@ void SVViewStateHandler::refreshColors() {
 	if (SVProjectHandler::instance().isValid())
 		emit colorRefreshNeeded();
 }
-
-
-void SVViewStateHandler::repaintGeometry() {
-	if (SVProjectHandler::instance().isValid())
-		emit repaintGeometryNeeded();
-}
-

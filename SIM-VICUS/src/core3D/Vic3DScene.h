@@ -112,8 +112,7 @@ public:
 	*/
 	void refreshColors();
 
-	/*! Used to just only re-generate the geometry in order to update their colors. Same as refreshColors() but does not recolor
-	 *  the objects as their color has been set already. */
+	/*! Used to just only re-generate the geometry in order to update their colors. Same as refreshColors() but does not call recolorObjects(). */
 	void repaintGeometry();
 
 	/*! Select all objects like surfaces, rooms, buildings, etc. */
