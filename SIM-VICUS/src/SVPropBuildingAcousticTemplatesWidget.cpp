@@ -6,10 +6,11 @@
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyRoomAcousticTemplateAssociation.h"
+#include "SVViewStateHandler.h"
 
 
 SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWidget *parent) :
-    QWidget(parent),
+	QWidget(parent),
 	m_ui(new Ui::SVPropBuildingAcousticTemplatesWidget)
 {
 	m_ui->setupUi(this);
@@ -24,6 +25,11 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	m_ui->tableWidgetAcousticTemplates->horizontalHeader()->resizeSection(1,220);
 	m_ui->tableWidgetAcousticTemplates->horizontalHeader()->setStretchLastSection(true);
 
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropBuildingAcousticTemplatesWidget::onModified);
+
+	// update Ui initiallly
+	onModified(SVProjectHandler::AllModified, nullptr);
 }
 
 SVPropBuildingAcousticTemplatesWidget::~SVPropBuildingAcousticTemplatesWidget()
@@ -31,43 +37,57 @@ SVPropBuildingAcousticTemplatesWidget::~SVPropBuildingAcousticTemplatesWidget()
 	delete m_ui;
 }
 
+
+void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, ModificationInfo */*data*/) {
+	// react on selection changes only, then update properties
+	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (modType) {
+		// This is meant to update all widgets when e.g. a new project has been loaded
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
+		case SVProjectHandler::ComponentInstancesModified:
+		case SVProjectHandler::SubSurfaceComponentInstancesModified:
+		case SVProjectHandler::NodeStateModified:
+			updateUi();
+		break;
+
+		// nothing to do for the remaining modification types
+		case SVProjectHandler::ObjectRenamed:
+		case SVProjectHandler::SolverParametersModified:
+		case SVProjectHandler::ClimateLocationModified:
+		case SVProjectHandler::GridModified:
+		case SVProjectHandler::NetworkGeometryChanged:
+		case SVProjectHandler::NetworkDataChanged:
+		break;
+	}
+}
+
+
 void SVPropBuildingAcousticTemplatesWidget::updateUi() {
+
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, false); // we always show all in table
 
 
-	const VICUS::Database<VICUS::AcousticTemplate> & db_at = SVSettings::instance().m_db.m_acousticTemplates;
-
-	// is not used at the moment
-//	m_acousticTemplateAssignments.clear();
-//	for (const VICUS::Object * o : objs) {
-//		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
-//		if (room == nullptr) continue; // skip all but rooms
-//		// skip rooms without zone template
-//		if (room->m_idAcousticTemplate == VICUS::INVALID_ID)
-//			continue;
-//		// lookup zone template in DB
-//		const VICUS::AcousticTemplate * at = db_at[room->m_idAcousticTemplate];
-//		// Note: might be a nullptr if id is invalid
-//		m_acousticTemplateAssignments[at].push_back(room);
-//	}
-
+	const VICUS::Database<VICUS::AcousticTemplate> & dbAt = SVSettings::instance().m_db.m_acousticTemplates;
 
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetAcousticTemplates->currentRow();
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
-	m_ui->tableWidgetAcousticTemplates->clearContents();
+	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
 	int row=0;
 
 	// loads all the templates from db and put them in the table
 	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
-		 it = db_at.begin(); it != db_at.end(); ++it, ++row)
-	{
+		 it = dbAt.begin(); it != dbAt.end(); ++it, ++row) {
+
 		m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
+
 		QTableWidgetItem * item = new QTableWidgetItem();
 		item->setBackground(it->second.m_color);
-		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
@@ -77,7 +97,7 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 
 		item = new QTableWidgetItem();
 		item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
-		item->setFlags(Qt::ItemIsEnabled);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
 	}
 	m_ui->tableWidgetAcousticTemplates->blockSignals(false);
@@ -131,6 +151,7 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	on_tableWidgetAcousticTemplates_itemSelectionChanged();
 }
 
+
 void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
 	// the assign-from-table button is only available when there is at least one surface selected
 	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedAcousticTemplate() != nullptr);
@@ -149,8 +170,6 @@ const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currently
 }
 
 
-
-
 void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_clicked() {
 
 	// find out which component is selected in table
@@ -162,20 +181,37 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_
 		return;
 
 	// get all visible _and_ selected "building" type objects in the scene
-	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
+	std::vector<const VICUS::Room*> rooms;
+	project().selectedRooms(rooms);
 
 	std::vector<unsigned int> modifiedRoomIDs; // unique IDs!!!
 	// loop over all rooms and store acoustic template associations
-	for (const VICUS::Object * o : objs) {
-		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
-		if (room == nullptr) continue; // skip all but rooms
-		modifiedRoomIDs.push_back(room->m_id);
-	}
+	for (const VICUS::Room * ro : rooms)
+		modifiedRoomIDs.push_back(ro->m_id);
+
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
 				tr("Assigned acoustic template"),
 				modifiedRoomIDs, at->m_id);
+	undo->push();
+}
+
+
+
+void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked() {
+	// get all visible _and_ selected "building" type objects in the scene
+	std::vector<const VICUS::Room*> rooms;
+	project().selectedRooms(rooms);
+
+	std::vector<unsigned int> modifiedRoomIDs; // unique IDs!!!
+	// loop over all rooms and store acoustic template associations
+	for (const VICUS::Room * ro : rooms)
+		modifiedRoomIDs.push_back(ro->m_id);
+
+	// now create an undo action for modifying zone template assignments
+	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
+				tr("Assigned acoustic template"),
+				modifiedRoomIDs, VICUS::INVALID_ID);
 	undo->push();
 }
 

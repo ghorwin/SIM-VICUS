@@ -62,6 +62,7 @@ public:
 		M_SiteProperties,
 		M_NetworkProperties,
 		M_BuildingProperties,
+		M_BuildingAcousticProperties,
 		M_AddWindowWidget,
 		NUM_M
 	};

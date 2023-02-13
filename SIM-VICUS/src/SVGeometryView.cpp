@@ -253,6 +253,7 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionScaleGeometry->setChecked(false);
 	m_ui->actionSiteParametrization->setChecked(false);
 	m_ui->actionTranslateGeometry->setChecked(false);
+	m_ui->actionAcousticParametrization->setChecked(false);
 }
 
 
@@ -661,6 +662,23 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 }
 
 
+void SVGeometryView::on_actionAcousticParametrization_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionAcousticParametrization->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingAcousticProperties;
+	vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+//	// we need to manually update the color mode, since above we reset it to OCM_None.
+//	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+//	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
+}
+
+
 void SVGeometryView::on_actionNetworkParametrization_triggered() {
 	uncheckAllActionsInButtonBar();
 	m_ui->actionNetworkParametrization->setChecked(true);
@@ -810,5 +828,4 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
-
 

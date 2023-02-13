@@ -12,26 +12,32 @@ namespace VICUS {
 	class Room;
 }
 
+class ModificationInfo;
+
 class SVPropBuildingAcousticTemplatesWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit SVPropBuildingAcousticTemplatesWidget(QWidget *parent = nullptr);
-    ~SVPropBuildingAcousticTemplatesWidget();
+	explicit SVPropBuildingAcousticTemplatesWidget(QWidget *parent = nullptr);
+	~SVPropBuildingAcousticTemplatesWidget();
 
 /*! Updates user interface. */
 void updateUi();
 
 private slots:
-void on_tableWidgetAcousticTemplates_itemSelectionChanged();
+	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
 
-void on_pushButtonAssignAcousticTemplate_clicked();
+	void on_pushButtonAssignAcousticTemplate_clicked();
+
+	void onModified(int modificationType, ModificationInfo * /*data*/);
+
+	void on_pushButtonDeleteTemplate_clicked();
 
 private:
 
-/*! Returns a pointer to the currently selected acoustic template in the zone template table. */
-const VICUS::AcousticTemplate * currentlySelectedAcousticTemplate() const;
+	/*! Returns a pointer to the currently selected acoustic template in the zone template table. */
+	const VICUS::AcousticTemplate * currentlySelectedAcousticTemplate() const;
 
 
 	Ui::SVPropBuildingAcousticTemplatesWidget *m_ui;

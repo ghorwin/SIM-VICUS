@@ -42,6 +42,7 @@
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
+#include "SVPropBuildingAcousticTemplatesWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -135,6 +136,10 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 
 		case SVViewState::PM_BuildingProperties : {
 			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
+		} break;
+
+		case SVViewState::PM_BuildingAcousticProperties : {
+			showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
 		} break;
 
 		case SVViewState::PM_NetworkProperties : {
