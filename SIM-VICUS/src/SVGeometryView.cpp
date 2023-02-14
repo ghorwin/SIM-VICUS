@@ -253,6 +253,7 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionScaleGeometry->setChecked(false);
 	m_ui->actionSiteParametrization->setChecked(false);
 	m_ui->actionTranslateGeometry->setChecked(false);
+	m_ui->actionShowResults->setChecked(false);
 }
 
 
