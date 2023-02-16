@@ -86,6 +86,10 @@ void SVPropResultsWidget::refreshDirectory() {
 }
 
 
+
+// *** Private Slots ***
+
+
 void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo * /*data*/) {
 	// Output data and VICUS project on file and current VICUS data model are unrelated.
 	// We could check for consistency of vicus, nandrad and output files,
@@ -106,6 +110,151 @@ void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo 
 //		default: ; // just to make compiler happy
 //	}
 }
+
+
+void SVPropResultsWidget::onTimeSliderCutValueChanged(double currentTime) {
+	updateColors(currentTime);
+}
+
+
+void SVPropResultsWidget::on_pushButtonMaxColor_clicked() {
+	m_maxColor = m_ui->pushButtonMaxColor->color();
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_pushButtonMinColor_clicked() {
+	m_minColor = m_ui->pushButtonMinColor->color();
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_pushButtonSetGlobalMinMax_clicked() {
+	setCurrentMinMaxValues();
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
+	setCurrentMinMaxValues(true);
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() {
+	// find out the selected row
+	int row = m_ui->tableWidgetAvailableResults->currentRow();
+	if (row == -1) {
+		// selection cleared, disable false coloring
+		m_currentOutputQuantity.clear();
+	}
+	else {
+		// make quantity the current quantity
+		m_currentOutputQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+		// check if the respective file is in cache
+		Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
+		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
+		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread)
+			m_currentOutputQuantity.clear(); // not cached yet, cannot display
+		else {
+			// set slider
+			Q_ASSERT(!m_allResults[m_currentOutputQuantity].empty());
+			// get time points from first data set for this quantity
+			IBK::UnitVector timePointVec;
+			timePointVec.m_data = m_allResults[m_currentOutputQuantity].begin()->second.m_values.x();
+			timePointVec.m_unit = m_allResults[m_currentOutputQuantity].begin()->second.m_xUnit;
+			m_ui->widgetTimeSlider->setValues(timePointVec);
+			m_ui->widgetTimeSlider->setCurrentValue(timePointVec.m_data.back());
+			// determine max/min values
+			setCurrentMinMaxValues(false);
+		}
+	}
+
+	// update bold font in table - row with current output quantity is set in bold font, the rest without bold font
+	for (int i=0; i<m_ui->tableWidgetAvailableResults->rowCount(); ++i) {
+		bool makeBold = (m_ui->tableWidgetAvailableResults->item(row, 1)->text() == m_currentOutputQuantity);
+		for (int j=0; j<m_ui->tableWidgetAvailableResults->columnCount(); ++j) {
+			QFont f = m_ui->tableWidgetAvailableResults->item(i,j)->font();
+			f.setBold(makeBold);
+			m_ui->tableWidgetAvailableResults->item(i,j)->font();
+		}
+	}
+
+	// trigger recoloring (or if no data - make all grey)
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int row, int /*column*/) {
+	// get selected quantity
+	QString requestedQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+	// find respective filename
+	Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
+	unsigned int outputFileIndex = m_outputVariable2FileIndexMap[requestedQuantity];
+	// read data file
+	readDataFile(m_outputFiles[outputFileIndex].m_filename);
+	// and finally trigger recoloring
+	on_tableWidgetAvailableResults_itemSelectionChanged();
+}
+
+
+void SVPropResultsWidget::on_toolButtonSetDefaultDirectory_clicked() {
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QDir defaultResultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
+	m_ui->resultsDir->setFilename(defaultResultsDir.absolutePath());
+	on_pushButtonRefreshDirectory_clicked(); // transfers new directory to m_resultsDir
+}
+
+
+void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
+	QString resultsDirPath = m_ui->resultsDir->filename();
+	if (resultsDirPath.endsWith("/results"))
+		resultsDirPath = resultsDirPath.left(resultsDirPath.count()-8);
+	QDir resultsDir(resultsDirPath);
+	// if user has selected a different directory, clear our cached results
+	if (resultsDir != m_resultsDir) {
+		// clear cached results
+		m_outputFiles.clear();
+		m_outputVariable2FileIndexMap.clear();
+		m_objectName2Id.clear();
+		m_allResults.clear();
+		m_currentOutputQuantity.clear(); // = nothing selected, yet
+		m_resultsDir = resultsDir;
+
+	}
+	readResultsDir();
+}
+
+
+void SVPropResultsWidget::on_lineEditMaxValue_editingFinishedSuccessfully() {
+	double val = m_ui->lineEditMaxValue->value();
+	if (val*0.95 < m_currentMin) {
+		m_ui->lineEditMaxValue->setValue(m_currentMax);
+		return;
+	}
+	m_currentMax = val;
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
+	double val = m_ui->lineEditMinValue->value();
+	if (val*1.05 > m_currentMax) {
+		m_ui->lineEditMinValue->setValue(m_currentMin);
+		return;
+	}
+	m_currentMin = val;
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
+	// TODO : clarify what should happen here... just update the colors using a different filter? Or refresh entire directory?
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+// *** Private Functions ***
 
 
 void SVPropResultsWidget::readResultsDir() {
@@ -230,12 +379,58 @@ void SVPropResultsWidget::readResultsDir() {
 	if (!validOutputFound)
 		return;
 
-	// update table widget
+	// update table widget - we only create the table widget items and fill in the quantities - formatting and icons
+	// is done in updateTableWidget()
+	m_ui->tableWidgetAvailableResults->blockSignals(true);
 	m_ui->tableWidgetAvailableResults->clearContents();
 	m_ui->tableWidgetAvailableResults->setRowCount(availableOutputs.size());
 	int row=0;
-	for (auto it=availableOutputUnits.begin(); it!=availableOutputUnits.end(); ++it) {
+	int selectedRow = -1;
+	for (auto it=availableOutputUnits.begin(); it!=availableOutputUnits.end(); ++it, ++row) {
 		QString outputVariable = it->first;
+		if (m_currentOutputQuantity == outputVariable)
+			selectedRow = row;
+
+		QTableWidgetItem * item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(outputVariable);
+		m_ui->tableWidgetAvailableResults->setItem(row, 1, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(it->second);
+		m_ui->tableWidgetAvailableResults->setItem(row, 2, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetAvailableResults->setItem(row, 3, item);
+	}
+	// apply font styles, colors and icons
+	updateTableWidgetFormatting();
+	// now that the table was populated, reselect the row of the current quantity
+	if (selectedRow != -1)
+		m_ui->tableWidgetAvailableResults->selectRow(selectedRow); // signals blocked, no side effect here
+
+	m_ui->tableWidgetAvailableResults->blockSignals(false);
+
+	// Now trigger the recoloring based on the selected quantity.
+	// If this is the first time this function was called than there won't be a selection in the table and
+	// all geometry will be greyed out.
+	on_tableWidgetAvailableResults_itemSelectionChanged();
+}
+
+
+void SVPropResultsWidget::updateTableWidgetFormatting() {
+	int selectedRow = -1;
+	for (int row=0; row<m_ui->tableWidgetAvailableResults->rowCount(); ++row) {
+		QString outputVariable = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+		if (m_currentOutputQuantity == outputVariable) {
+			selectedRow = row;
+		}
 		// check state of output file
 		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[outputVariable];
 
@@ -265,139 +460,101 @@ void SVPropResultsWidget::readResultsDir() {
 			break;
 		}
 
-		QTableWidgetItem * item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setIcon(availableIcon);
-		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
+		// selected row gets bold font, unless unread
+		if (rds.m_status != SVPropResultsWidget::ResultDataSet::FS_Unread && row == selectedRow)
+			f.setBold(true);
 
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(outputVariable);
-		item->setFont(f);
-		item->setForeground(textColor);
-		m_ui->tableWidgetAvailableResults->setItem(row, 1, item);
+		m_ui->tableWidgetAvailableResults->item(row, 0)->setIcon(availableIcon);
 
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(it->second);
-		item->setFont(f);
-		item->setForeground(textColor);
-		m_ui->tableWidgetAvailableResults->setItem(row, 2, item);
+		m_ui->tableWidgetAvailableResults->item(row, 1)->setFont(f);
+		m_ui->tableWidgetAvailableResults->item(row, 1)->setForeground(textColor);
 
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(statusLabel);
-		item->setFont(f);
-		item->setForeground(textColor);
-		m_ui->tableWidgetAvailableResults->setItem(row, 3, item);
+		m_ui->tableWidgetAvailableResults->item(row, 2)->setFont(f);
+		m_ui->tableWidgetAvailableResults->item(row, 2)->setForeground(textColor);
 
-		++row;
+		m_ui->tableWidgetAvailableResults->item(row, 3)->setFont(f);
+		m_ui->tableWidgetAvailableResults->item(row, 3)->setForeground(textColor);
+		m_ui->tableWidgetAvailableResults->item(row, 3)->setText(statusLabel);
 	}
-	// now that the table was populated, we initialize our coloring using the first quantity
-	m_ui->tableWidgetAvailableResults->selectRow(0);
-	// and we color our geometry - if this is the first time this function was called and
-	// we have no data read from file, yet, all geometry will be grey
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 
 
 void SVPropResultsWidget::readDataFile(const QString & filename) {
+	FUNCID("SVPropResultsWidget::readDataFile");
 
-	QProgressDialog progDiag(tr("Reading file"), tr("Cancel"), 0, 100, this);
-	progDiag.setWindowTitle(tr("Read results"));
+	QString fullFilePath = m_resultsDir.absoluteFilePath("results/" + filename);
+	QProgressDialog progDiag(tr("Reading file '%1'").arg(filename), tr("Cancel"), 0, 100, this);
+	progDiag.setWindowTitle(tr("Reading results file"));
 	progDiag.setValue(0);
 	progDiag.setAutoClose(true);
 	progDiag.setMinimumDuration(0);
 	qApp->processEvents();
 
 
-
-#if 0
-	// now set current output
-	m_currentOutputQuantity = item->text();
-
-	QString filter;
-	if (!project().m_geometricNetworks.empty())
-		filter = m_ui->comboBoxPipeType->currentData().toString();
-
-	if (filter != m_currentFilter)
-		forceToRead = true;
-	m_currentFilter = filter;
-	// we only read results which have not yet been read and stored
-	if (forceToRead || m_allResults.find(m_currentOutput) == m_allResults.end()) {
-
-		progDiag.setValue(1);
-		qApp->processEvents();
-
+	IBK::CSVReader reader;
+	IBK::Unit timeUnit;
+	try {
 		// read entire file
-		IBK::CSVReader reader;
-		reader.read(IBK::Path(m_outputFiles[m_currentOutput].toStdString()), false, true);
+		reader.read(IBK::Path(fullFilePath.toStdString()), false, true);
 		if (reader.m_nColumns < 2 || reader.m_nRows < 5)
-			return;
+			throw IBK::Exception("Missing data in file.", FUNC_ID);
 
-		progDiag.setLabelText(tr("Processing results"));
-		progDiag.setMaximum((int)reader.m_captions.size()-1);
-
-		// we convert time to seconds so its in accordance with time slider
-		std::vector<double> time = reader.colData(0);
-		IBK::Unit timeUnit = IBK::Unit(reader.m_units[0]);
+		// check time unit
+		timeUnit = IBK::Unit(reader.m_units[0]); // may throw an exception
 		if (timeUnit.base_unit() != IBK::Unit("s"))
-			return;
-		IBK::UnitVector timeSeconds(time.begin(), time.end(), timeUnit);
-		timeSeconds.convert(IBK::Unit("s"));
-
-		for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
-
-			progDiag.setValue((int)i);
-			qApp->processEvents();
-
-			// go through all objects
-			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
-				std::string objectName = it->first.toStdString();
-				// look if object name is in this caption
-				if (reader.m_captions[i].find(objectName) != std::string::npos){
-					// additional filter
-					if (filter.isEmpty() || reader.m_captions[i].find(filter.toStdString()) != std::string::npos) {
-						qDebug() << "found" << QString::fromStdString( reader.m_captions[i] );
-						QString qCaption = QString::fromStdString(reader.m_captions[i]);
-						int start = qCaption.indexOf("ID=")+3;
-						int end = qCaption.lastIndexOf(")");
-						unsigned int id = qCaption.mid(start, end-start).toUInt();
-						QString outputName = qCaption.remove(it->first + ".");
-						m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
-																				   timeSeconds.m_data, reader.colData(i), timeUnit, IBK::Unit("s"));
-					}
-				}
+			throw IBK::Exception("Invalid time unit.", FUNC_ID);
+	}
+	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		progDiag.close();
+		QMessageBox::critical(this, QString(), tr("Invalid/missing content in result file '%1'.").arg(filename));
+		for (ResultDataSet & rds : m_outputFiles) {
+			if (rds.m_filename == filename) {
+				rds.m_status = ResultDataSet::FS_Missing;
+				refreshDirectory();
+				break;
 			}
 		}
-
-		// set slider
-		m_ui->widgetTimeSlider->setValues(timeSeconds);
-		m_ui->widgetTimeSlider->setCurrentValue(timeSeconds.m_data.back());
-	}
-
-	// set icon
-	for (int row=0; row<m_ui->tableWidgetAvailableResults->rowCount(); ++row) {
-		const QString &property = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
-		QTableWidgetItem *item = new QTableWidgetItem();
-		if (m_allResults.find(property) != m_allResults.end())
-			item->setIcon(QIcon(":/gfx/actions/16x16/ok.png"));
-		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
+		return;
 	}
 
 
-	// set legend title
-	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 2);
-	Q_ASSERT(item!=nullptr);
-	QString currentUnit = item->text();
-	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutput).arg(currentUnit));
-#endif
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
+	// the rest of the parsing may not throw, except for value unit conversion handled invidiually
 
+	progDiag.setLabelText(tr("Processing results"));
+	progDiag.setMaximum((int)reader.m_captions.size()-1);
 
-void SVPropResultsWidget::onTimeSliderCutValueChanged(double currentTime) {
-	updateColors(currentTime);
+	// we convert time to seconds so its in accordance with time slider
+	std::vector<double> time = reader.colData(0);
+
+	IBK::UnitVector timeSeconds(time.begin(), time.end(), timeUnit);
+	timeSeconds.convert(IBK::Unit("s"));
+
+	for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
+
+		progDiag.setValue((int)i);
+//		qApp->processEvents();
+
+		// go through all objects
+		for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
+			std::string objectName = it->first.toStdString();
+			// look if object name is in this caption
+			if (reader.m_captions[i].find(objectName) != std::string::npos){
+				QString qCaption = QString::fromStdString(reader.m_captions[i]);
+				int start = qCaption.indexOf("ID=")+3;
+				int end = qCaption.lastIndexOf(")");
+				unsigned int id = qCaption.midRef(start, end-start).toUInt();
+				QString outputName = qCaption.remove(it->first + ".");
+				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+																			   timeSeconds.m_data, reader.colData(i), timeUnit, IBK::Unit("s"));
+			}
+		} // for known quantities
+	} // for captions in file
+
+	progDiag.setValue((int)reader.m_captions.size()-1); // fill and closes the dialog
+
+	// now cache was updated, update table widget status
+	updateTableWidgetFormatting(); // this does not cause any recoloring or selection change, just updates fonts and icons
 }
 
 
@@ -512,135 +669,6 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
 	SVViewStateHandler::instance().setViewState(vs); // this will inform all widgets that monitor the coloring mode and redraw the scene
-}
-
-
-void SVPropResultsWidget::on_pushButtonMaxColor_clicked() {
-	m_maxColor = m_ui->pushButtonMaxColor->color();
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_pushButtonMinColor_clicked() {
-	m_minColor = m_ui->pushButtonMinColor->color();
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_pushButtonSetGlobalMinMax_clicked() {
-	setCurrentMinMaxValues();
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
-	setCurrentMinMaxValues(true);
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() {
-	// find out the selected row
-	int row = m_ui->tableWidgetAvailableResults->currentRow();
-	if (row == -1) {
-		// selection cleared, disable false coloring
-		m_currentOutputQuantity.clear();
-	}
-	else {
-		// make quantity the current quantity
-		m_currentOutputQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
-		// check if the respective file is in cache
-		Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
-		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
-		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread)
-			m_currentOutputQuantity.clear(); // not cached yet, cannot display
-		else {
-			// determine max/min values
-			setCurrentMinMaxValues(false);
-		}
-	}
-
-	// update bold font in table - row with current output quantity is set in bold font, the rest without bold font
-	for (int i=0; i<m_ui->tableWidgetAvailableResults->rowCount(); ++i) {
-		bool makeBold = (m_ui->tableWidgetAvailableResults->item(row, 1)->text() == m_currentOutputQuantity);
-		for (int j=0; j<m_ui->tableWidgetAvailableResults->columnCount(); ++j) {
-			QFont f = m_ui->tableWidgetAvailableResults->item(i,j)->font();
-			f.setBold(makeBold);
-			m_ui->tableWidgetAvailableResults->item(i,j)->font();
-		}
-	}
-
-	// trigger recoloring (or if no data - make all grey)
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int row, int /*column*/) {
-	// get selected quantity
-	QString requestedQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
-	// find respective filename
-	Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
-	unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
-	// read data file
-	readDataFile(m_outputFiles[outputFileIndex].m_filename);
-	// and finally trigger recoloring
-	on_tableWidgetAvailableResults_itemSelectionChanged();
-}
-
-
-void SVPropResultsWidget::on_toolButtonSetDefaultDirectory_clicked() {
-	QFileInfo finfo(SVProjectHandler::instance().projectFile());
-	QDir defaultResultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
-	m_ui->resultsDir->setFilename(defaultResultsDir.absolutePath());
-	on_pushButtonRefreshDirectory_clicked(); // transfers new directory to m_resultsDir
-}
-
-
-void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
-	QString resultsDirPath = m_ui->resultsDir->filename();
-	if (resultsDirPath.endsWith("/results"))
-		resultsDirPath = resultsDirPath.left(resultsDirPath.count()-8);
-	QDir resultsDir(resultsDirPath);
-	// if user has selected a different directory, clear our cached results
-	if (resultsDir != m_resultsDir) {
-		// clear cached results
-		m_outputFiles.clear();
-		m_outputVariable2FileIndexMap.clear();
-		m_objectName2Id.clear();
-		m_allResults.clear();
-		m_currentOutputQuantity.clear(); // = nothing selected, yet
-		m_resultsDir = resultsDir;
-
-	}
-	readResultsDir();
-}
-
-
-void SVPropResultsWidget::on_lineEditMaxValue_editingFinishedSuccessfully() {
-	double val = m_ui->lineEditMaxValue->value();
-	if (val*0.95 < m_currentMin) {
-		m_ui->lineEditMaxValue->setValue(m_currentMax);
-		return;
-	}
-	m_currentMax = val;
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
-	double val = m_ui->lineEditMinValue->value();
-	if (val*1.05 > m_currentMax) {
-		m_ui->lineEditMinValue->setValue(m_currentMin);
-		return;
-	}
-	m_currentMin = val;
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
-	// TODO : clarify what should happen here... just update the colors using a different filter? Or refresh entire directory?
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 
 

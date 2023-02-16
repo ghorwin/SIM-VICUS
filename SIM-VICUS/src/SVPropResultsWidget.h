@@ -52,11 +52,8 @@ private slots:
 	void onTimeSliderCutValueChanged(double currentTime);
 
 	void on_pushButtonMaxColor_clicked();
-
 	void on_pushButtonMinColor_clicked();
-
 	void on_pushButtonSetGlobalMinMax_clicked();
-
 	void on_pushButtonSetLocalMinMax_clicked();
 
 	/*! Activates the currently selected quantity if in cache. If not in cache, does nothing. */
@@ -68,11 +65,9 @@ private slots:
 	void on_tableWidgetAvailableResults_cellDoubleClicked(int row, int column);
 
 	void on_toolButtonSetDefaultDirectory_clicked();
-
 	void on_pushButtonRefreshDirectory_clicked();
 
 	void on_lineEditMaxValue_editingFinishedSuccessfully();
-
 	void on_lineEditMinValue_editingFinishedSuccessfully();
 
 	void on_comboBoxPipeType_activated(int index);
@@ -108,8 +103,13 @@ private:
 		Updates the table widget if results have been found */
 	void readResultsDir();
 
+	/*! Updates fonts, text colors and icons in table based on current cache state.
+		\note Does not change selection and does not trigger any side effects.
+	*/
+	void updateTableWidgetFormatting();
+
 	/*! Parses the entire tsv file. Stores all outputs that have been found in this tsv file.
-		Also indicates those outputs through green flag in the table widget.
+		If successful indicates newly cached data through green flag in the table widget.
 	*/
 	void readDataFile(const QString & filename);
 
