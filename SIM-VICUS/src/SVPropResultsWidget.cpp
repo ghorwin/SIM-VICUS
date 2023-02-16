@@ -110,10 +110,14 @@ void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo 
 
 void SVPropResultsWidget::readResultsDir() {
 
+	// key = quantity name without ID suffix, for example: "IdealHeatingLoad-average" or "AirTemperature"
+	// value = vector of object IDs that we have outputs for
 	std::map<QString, std::vector<unsigned int> >	availableOutputs;
+	// key = quantity name (same as above)
+	// value = unit string
 	std::map<QString, QString>						availableOutputUnits;
-	m_outputFiles.clear();
-	m_allResults.clear();
+
+	// NOTE: we do not clear cached data here!
 
 	// make sure we have a proper path
 	Q_ASSERT(!m_resultsDir.absolutePath().endsWith("/results"));
@@ -193,7 +197,8 @@ void SVPropResultsWidget::readResultsDir() {
 		}
 
 		// we go through the tsv header and look for our object names
-		for (unsigned int i=0; i<captions.size(); ++i) {
+		// Note: we always skip the first time column
+		for (unsigned int i=1; i<captions.size(); ++i) {
 			QString caption = QString::fromStdString(captions[i]);
 			QString unit = QString::fromStdString(units[i]);
 			QString outputName;
@@ -203,14 +208,14 @@ void SVPropResultsWidget::readResultsDir() {
 					availableOutputs[outputName].push_back(it->second); // store output name to ids
 					availableOutputUnits[outputName] = unit;
 					// remember output quantity to file association
-					m_outputVariables[outputName] = outputFileIdx;
+					m_outputVariable2FileIndexMap[outputName] = outputFileIdx;
 				}
 			}
 		}
 	}
 
 	// if we have found an output of a minimum size: enable Ui
-	bool validOutputFound = !availableOutputs.empty() && availableOutputs.begin()->second.size() > 0;
+	bool validOutputFound = !availableOutputs.empty();
 	m_ui->groupBoxAvailableOutputs->setEnabled(validOutputFound);
 	m_ui->groupBoxColormap->setEnabled(validOutputFound);
 	m_ui->groupBoxNetworkOptions->setEnabled(validOutputFound && !project().m_geometricNetworks.empty());
@@ -224,20 +229,37 @@ void SVPropResultsWidget::readResultsDir() {
 	m_ui->tableWidgetAvailableResults->setRowCount(availableOutputs.size());
 	int row=0;
 	for (auto it=availableOutputUnits.begin(); it!=availableOutputUnits.end(); ++it) {
+		QString outputVariable = it->first;
+		// check state of output file
+		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[outputVariable];
+
+		const ResultDataSet & rds = m_outputFiles[outputFileIndex];
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(it->first);
+		item->setText(outputVariable);
+		// TODO: color text based on rds.m_status
 		m_ui->tableWidgetAvailableResults->setItem(row, 1, item);
 
 		QTableWidgetItem * itemUnit = new QTableWidgetItem;
 		itemUnit->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		itemUnit->setText(it->second);
+		// TODO: color text based on rds.m_status
 		m_ui->tableWidgetAvailableResults->setItem(row, 2, itemUnit);
+
+		QTableWidgetItem * itemStatus = new QTableWidgetItem;
+		itemStatus->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		itemStatus->setText("TODO");
+		// TODO: color text based on rds.m_status
+		m_ui->tableWidgetAvailableResults->setItem(row, 3, itemStatus);
 
 		++row;
 	}
+	// now that the table was populated, we initialize our coloring using the first quantity
 	m_ui->tableWidgetAvailableResults->selectRow(0);
+	// and we color our geometry - if this is the first time this function was called and
+	// we have no data read from file, yet, all geometry will be grey
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 
 
@@ -252,7 +274,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 
 	// now set current output
 	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
-	m_currentOutput = item->text();
+	m_currentOutputQuantity = item->text();
 
 	QString filter;
 	if (!project().m_geometricNetworks.empty())
@@ -364,7 +386,7 @@ void SVPropResultsWidget::setCurrentMinMaxValues(bool localMinMax) {
 	double currentTime = m_ui->widgetTimeSlider->currentCutValue();
 	double max, min;
 
-	for (auto it=m_allResults[m_currentOutput].begin(); it!=m_allResults[m_currentOutput].end(); ++it) {
+	for (auto it=m_allResults[m_currentOutputQuantity].begin(); it!=m_allResults[m_currentOutputQuantity].end(); ++it) {
 		const IBK::LinearSpline &vals = it->second.m_values;
 		if (localMinMax) {
 			max = vals.value(currentTime);
@@ -403,12 +425,17 @@ void SVPropResultsWidget::interpolateColor(const double & yint, QColor & col) {
 
 void SVPropResultsWidget::updateColors(const double &currentTime) {
 
+	bool haveData = !m_currentOutputQuantity.isEmpty();
+
+	const QColor GREY(64,64,64);
+
 	QColor col;
 	const VICUS::Project &p = project();
 	for (const VICUS::Network &net: p.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge &e: net.m_edges) {
-			if (m_allResults[m_currentOutput].find(e.m_id) != m_allResults[m_currentOutput].end()) {
-				double yint = m_allResults[m_currentOutput][e.m_id].m_values.value(currentTime);
+			e.m_color = GREY; // initialize with grey
+			if (haveData && m_allResults[m_currentOutputQuantity].find(e.m_id) != m_allResults[m_currentOutputQuantity].end()) {
+				double yint = m_allResults[m_currentOutputQuantity][e.m_id].m_values.value(currentTime);
 				interpolateColor(yint, col);
 				e.m_color = col;
 			}
@@ -418,9 +445,15 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	for (const VICUS::Building & b : p.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
+				// initialize with grey
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					s.m_color = GREY;
+					for (const VICUS::SubSurface &ss: s.subSurfaces())
+						ss.m_color = GREY;
+				}
 				// a room related property (e.g. AirTemperature)
-				if ( m_allResults[m_currentOutput].find(r.m_id) != m_allResults[m_currentOutput].end() ) {
-					double yint = m_allResults[m_currentOutput][r.m_id].m_values.value(currentTime);
+				if (haveData && m_allResults[m_currentOutputQuantity].find(r.m_id) != m_allResults[m_currentOutputQuantity].end() ) {
+					double yint = m_allResults[m_currentOutputQuantity][r.m_id].m_values.value(currentTime);
 					interpolateColor(yint, col);
 					for (const VICUS::Surface & s : r.m_surfaces) {
 						s.m_color = col;
@@ -429,16 +462,16 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 					}
 				}
 				// a surface related property (e.g. SurfaceTemperature)
-				else {
+				else if (haveData) {
 					for (const VICUS::Surface & s : r.m_surfaces) {
-						if (m_allResults[m_currentOutput].find(s.m_id) != m_allResults[m_currentOutput].end()) {
-							double yint = m_allResults[m_currentOutput][s.m_id].m_values.value(currentTime);
+						if (m_allResults[m_currentOutputQuantity].find(s.m_id) != m_allResults[m_currentOutputQuantity].end()) {
+							double yint = m_allResults[m_currentOutputQuantity][s.m_id].m_values.value(currentTime);
 							interpolateColor(yint, col);
 							s.m_color = col;
 						}
 						for (const VICUS::SubSurface &ss: s.subSurfaces()) {
-							if (m_allResults[m_currentOutput].find(ss.m_id) != m_allResults[m_currentOutput].end()) {
-								double yint = m_allResults[m_currentOutput][ss.m_id].m_values.value(currentTime);
+							if (m_allResults[m_currentOutputQuantity].find(ss.m_id) != m_allResults[m_currentOutputQuantity].end()) {
+								double yint = m_allResults[m_currentOutputQuantity][ss.m_id].m_values.value(currentTime);
 								interpolateColor(yint, col);
 								ss.m_color = col;
 							}
@@ -455,7 +488,7 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	// signal main scene to regenerate color buffers and render view
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
-	SVViewStateHandler::instance().setViewState(vs); // this will inform all widgets that monitor the coloring mode
+	SVViewStateHandler::instance().setViewState(vs); // this will inform all widgets that monitor the coloring mode and redraw the scene
 }
 
 
@@ -490,14 +523,14 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int /
 
 void SVPropResultsWidget::on_toolButtonSetDefaultDirectory_clicked() {
 	QFileInfo finfo(SVProjectHandler::instance().projectFile());
-	m_resultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
-	m_ui->resultsDir->setFilename(m_resultsDir.absolutePath());
-	on_pushButtonRefreshDirectory_clicked();
+	QDir defaultResultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
+	m_ui->resultsDir->setFilename(defaultResultsDir.absolutePath());
+	on_pushButtonRefreshDirectory_clicked(); // transfers new directory to m_resultsDir
 }
 
 
 void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
-	QString resultsDirPath = QFileInfo(m_ui->resultsDir->filename()).absolutePath();
+	QString resultsDirPath = m_ui->resultsDir->filename();
 	if (resultsDirPath.endsWith("/results"))
 		resultsDirPath = resultsDirPath.left(resultsDirPath.count()-8);
 	QDir resultsDir(resultsDirPath);
@@ -505,9 +538,12 @@ void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
 	if (resultsDir != m_resultsDir) {
 		// clear cached results
 		m_outputFiles.clear();
-		m_outputVariables.clear();
+		m_outputVariable2FileIndexMap.clear();
 		m_objectName2Id.clear();
 		m_allResults.clear();
+		m_currentOutputQuantity.clear(); // = nothing selected, yet
+		m_resultsDir = resultsDir;
+
 	}
 	readResultsDir();
 }

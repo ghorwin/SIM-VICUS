@@ -105,8 +105,8 @@ private:
 	/*! List of all output files that are in resultsDir, updated in readResultsDir(). */
 	QList<ResultDataSet>							m_outputFiles;
 
-	/*! Maps an output variable (caption from tsv-file) to the file index in vector m_outputFiles. */
-	std::map<QString, unsigned int>					m_outputVariables;
+	/*! Maps an output variable (extracted from caption in tsv-file) to the file index in vector m_outputFiles. */
+	std::map<QString, unsigned int>					m_outputVariable2FileIndexMap;
 
 	/*! Stores VICUS Object Ids for each output property (effectively the content of the objectref_substitutions.txt file). */
 	std::map<QString, unsigned int>					m_objectName2Id;
@@ -114,8 +114,8 @@ private:
 	/*! Holds map for each output property with key being VICUS Object Id and value being the according results values as linear spline. */
 	std::map<QString, std::map<unsigned int, NANDRAD::LinearSplineParameter> >	m_allResults;
 
-	/*! The currently selected output property. */
-	QString											m_currentOutput;
+	/*! The currently selected output property/quantity (extracted from caption in TSV files). */
+	QString											m_currentOutputQuantity;
 
 	/*! The currently selected filter. */
 	QString											m_currentFilter;
