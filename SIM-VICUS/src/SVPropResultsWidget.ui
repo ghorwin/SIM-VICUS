@@ -48,6 +48,24 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
+       <widget class="QPushButton" name="pushButtonRefreshDirectory">
+        <property name="text">
+         <string>Refresh list of available outputs</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/gfx/actions/24x24/reload.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QTableWidget" name="tableWidgetAvailableResults">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -64,20 +82,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButtonReload">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
         <property name="text">
-         <string>Refresh list of available outputs</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/gfx/actions/24x24/reload.png</normalon>
-         </iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
+         <string>Double-click output quantity to read/update data set!</string>
         </property>
        </widget>
       </item>

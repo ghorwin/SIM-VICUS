@@ -59,10 +59,11 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropResultsWidget::onModified);
 
-	// for the very first start: project handler has just been connected and we have missed the modified signal,
-	// but still want to update our UI
-	if (SVProjectHandler::instance().isValid())
-		clearUi();
+	m_ui->resultsDir->setFilename("");
+	m_ui->tableWidgetAvailableResults->setRowCount(0);
+	m_ui->lineEditMaxValue->setValue(1);
+	m_ui->lineEditMinValue->setValue(0);
+	m_ui->widgetTimeSlider->clear();
 
 	// set pointer for color legend
 	SVViewStateHandler::instance().m_geometryView->colorLegend()->initialize(&m_currentMin, &m_currentMax, &m_minColor, &m_maxColor);
@@ -74,51 +75,56 @@ SVPropResultsWidget::~SVPropResultsWidget() {
 }
 
 
-void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+void SVPropResultsWidget::refreshDirectory() {
+	Q_ASSERT(SVProjectHandler::instance().isValid());
+	Q_ASSERT(SVViewStateHandler::instance().viewState().m_objectColorMode == SVViewState::OCM_ResultColorView);
 
-	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
-	switch (modType) {
-		case SVProjectHandler::AllModified:
-		case SVProjectHandler::NetworkGeometryChanged:
-		case SVProjectHandler::BuildingGeometryChanged: {
-			clearUi();
-		} break;
-		default: ; // just to make compiler happy
-	}
+	if (m_ui->resultsDir->filename().isEmpty())
+		on_toolButtonSetDefaultDirectory_clicked();
+	else
+		on_pushButtonRefreshDirectory_clicked();
 }
 
 
-void SVPropResultsWidget::clearUi() {
-	m_ui->resultsDir->setFilename("");
-	m_ui->tableWidgetAvailableResults->setRowCount(0);
-	m_ui->lineEditMaxValue->setValue(1);
-	m_ui->lineEditMinValue->setValue(0);
-	m_allResults.clear();
+void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo * /*data*/) {
+	// Output data and VICUS project on file and current VICUS data model are unrelated.
+	// We could check for consistency of vicus, nandrad and output files,
+	// i.e. time stamps must be vicus <= nandrad <= outputs.
+	// Also, we could set a flag if user has modified anything - however, we never know
+	// if those changes affect outputs or not.
 
-	m_ui->widgetTimeSlider->clear();
+	// Hence, in the result view we must always assume that we show mismatching data from
+	// outdated files. But, as long as the UI doesn't crash, we can just keep it simple.
 
-	// sets all object colors grey
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
-	SVViewStateHandler::instance().setViewState(vs);
-
-	on_toolButtonSetDefaultDirectory_clicked();
+//	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
+//	switch (modType) {
+//		case SVProjectHandler::AllModified:
+//		case SVProjectHandler::NetworkGeometryChanged:
+//		case SVProjectHandler::BuildingGeometryChanged: {
+//			clearUi();
+//		} break;
+//		default: ; // just to make compiler happy
+//	}
 }
 
 
 void SVPropResultsWidget::readResultsDir() {
 
-	std::map<QString, std::vector<unsigned int>>	availableOutputs;
+	std::map<QString, std::vector<unsigned int> >	availableOutputs;
 	std::map<QString, QString>						availableOutputUnits;
 	m_outputFiles.clear();
 	m_allResults.clear();
 
-	if (m_resultsDir.absolutePath().endsWith("/results"))
-		m_resultsDir.cdUp();
+	// make sure we have a proper path
+	Q_ASSERT(!m_resultsDir.absolutePath().endsWith("/results"));
 
 	// read substitution file to get object name and VICUS ID
 	m_objectName2Id.clear();
 	QFile subsFile(m_resultsDir.absolutePath() + "/var/objectref_substitutions.txt");
+	// File contains tab-separated ID names - first is native object name of SIM-VICUS object,
+	// second is name appearing in tsv files:
+	//			ConstructionInstance(id=9)	WE0.0_Floor_1 (ID=1)
+	//			Zone(id=100)	BuildingName.E0.WE0.0_Bath(ID=100)
 	if (subsFile.open(QFile::ReadOnly)){
 		QTextStream in(&subsFile);
 		in.setCodec("UTF-8");
@@ -130,25 +136,61 @@ void SVPropResultsWidget::readResultsDir() {
 				if (fields[0].contains("NetworkElement") && !(fields[1].contains("SupplyPipe") || fields[1].contains("ReturnPipe")))
 					continue;
 				// extract the id
+				// TODO : protected against invalid naming and invalid IDs
 				int start = fields[1].indexOf("ID=")+3;
 				int end = fields[1].lastIndexOf(")");
-				unsigned int id = fields[1].mid(start, end-start).toUInt();
+				unsigned int id = fields[1].mid(start, end-start).toUInt(); // TODO : invalid ID numbers?
 				m_objectName2Id[fields[1]] = id;
 			}
 		}
 	}
 
 	// now read result tsv files
-	m_resultsDir = QDir(m_resultsDir.absolutePath() + "/results");
-	QStringList tsvFiles = m_resultsDir.entryList(QStringList() << "*.tsv", QDir::Files);
-	for (const QString &fileName: tsvFiles) {
+	QDir resultFilesDir = QDir(m_resultsDir.absolutePath() + "/results");
+	QStringList tsvFiles = resultFilesDir.entryList(QStringList() << "*.tsv", QDir::Files);
+	QSet<QString> filesFound;
+	for (const QString &fileName: qAsConst(tsvFiles)) {
 		// read tsv header
 		IBK::CSVReader reader;
-		reader.read(IBK::Path(m_resultsDir.absoluteFilePath(fileName).toStdString()), true, true);
+		QString absoluteTsvFilePath = resultFilesDir.absoluteFilePath(fileName);
+		IBK::Path tsvFilePath(absoluteTsvFilePath.toStdString());
+		try {
+			reader.read(tsvFilePath, true, true);
+		}
+		catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			IBK::IBK_Message(IBK::FormatString("Error parsing file '%1").arg(tsvFilePath), IBK::MSG_ERROR);
+			continue; // skip this file
+		}
+
 		std::vector<std::string> captions = reader.m_captions;
 		std::vector<std::string> units = reader.m_units;
 		if (captions.size() != units.size() || captions.empty())
 			continue;
+
+		// remember this file so that we can find missing files later
+		filesFound.insert(fileName);
+		// update file status
+		int outputFileIdx=0;
+		for (; outputFileIdx<m_outputFiles.count(); ++outputFileIdx) {
+			if (m_outputFiles[outputFileIdx].m_filename == fileName) {
+				// previously read?
+				if (m_outputFiles[outputFileIdx].m_status != ResultDataSet::FS_Unread) {
+					// check time stamp on file
+					if (QFileInfo(absoluteTsvFilePath).lastModified() > m_outputFiles[outputFileIdx].m_timeStampLastUpdated)
+						m_outputFiles[outputFileIdx].m_status = ResultDataSet::FS_Outdated;
+					else
+						m_outputFiles[outputFileIdx].m_status = ResultDataSet::FS_Current;
+				}
+				break;
+			}
+		}
+		// check if this is a new file
+		if (outputFileIdx == m_outputFiles.count()) {
+			ResultDataSet ds;
+			ds.m_filename = fileName;
+			m_outputFiles.append(ds);
+		}
 
 		// we go through the tsv header and look for our object names
 		for (unsigned int i=0; i<captions.size(); ++i) {
@@ -160,7 +202,8 @@ void SVPropResultsWidget::readResultsDir() {
 					outputName = caption.remove(it->first + ".");
 					availableOutputs[outputName].push_back(it->second); // store output name to ids
 					availableOutputUnits[outputName] = unit;
-					m_outputFiles[outputName] = m_resultsDir.absoluteFilePath(fileName);
+					// remember output quantity to file association
+					m_outputVariables[outputName] = outputFileIdx;
 				}
 			}
 		}
@@ -207,11 +250,6 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	progDiag.setMinimumDuration(0);
 	qApp->processEvents();
 
-	// reset view state to paint all in grey
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
-	SVViewStateHandler::instance().setViewState(vs);
-
 	// now set current output
 	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
 	m_currentOutput = item->text();
@@ -223,7 +261,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	if (filter != m_currentFilter)
 		forceToRead = true;
 	m_currentFilter = filter;
-
+#if 0
 	// we only read results which have not yet been read and stored
 	if (forceToRead || m_allResults.find(m_currentOutput) == m_allResults.end()) {
 
@@ -308,7 +346,7 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	Q_ASSERT(item!=nullptr);
 	QString currentUnit = item->text();
 	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutput).arg(currentUnit));
-
+#endif
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
 
@@ -454,17 +492,24 @@ void SVPropResultsWidget::on_toolButtonSetDefaultDirectory_clicked() {
 	QFileInfo finfo(SVProjectHandler::instance().projectFile());
 	m_resultsDir = QDir(finfo.dir().absoluteFilePath(finfo.completeBaseName()));
 	m_ui->resultsDir->setFilename(m_resultsDir.absolutePath());
-	readResultsDir();
+	on_pushButtonRefreshDirectory_clicked();
 }
 
 
-void SVPropResultsWidget::on_toolButtonUpdateAvailableOutputs_clicked() {
+void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
+	QString resultsDirPath = QFileInfo(m_ui->resultsDir->filename()).absolutePath();
+	if (resultsDirPath.endsWith("/results"))
+		resultsDirPath = resultsDirPath.left(resultsDirPath.count()-8);
+	QDir resultsDir(resultsDirPath);
+	// if user has selected a different directory, clear our cached results
+	if (resultsDir != m_resultsDir) {
+		// clear cached results
+		m_outputFiles.clear();
+		m_outputVariables.clear();
+		m_objectName2Id.clear();
+		m_allResults.clear();
+	}
 	readResultsDir();
-}
-
-
-void SVPropResultsWidget::on_pushButton_clicked() {
-	readCurrentResult(true);
 }
 
 
@@ -491,6 +536,8 @@ void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
 
 
 void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
-	clearUi();
+	// TODO : clarify what should happen here... just update the colors using a different filter? Or refresh entire directory?
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
+
 

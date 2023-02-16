@@ -1274,10 +1274,10 @@ void Scene::render() {
 
 
 void Scene::setViewState(const SVViewState & vs) {
-	// if we are currently constructing geometry, and we switch the view mode to
-	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
 	if (vs.inPropertyEditingMode()) {
+		// if we are currently constructing geometry, and we switch the view mode to
+		// "Parameter edit" mode, reset the new polygon/geometry object
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
@@ -1293,7 +1293,8 @@ void Scene::setViewState(const SVViewState & vs) {
 		}
 	}
 
-	// for results color view we need an update here in any case
+	// for results color view we need to update the color buffers _always_ as the colors have been
+	// changed directly in the results property widget in SVPropResultsWidget::updateColors()
 	if (vs.m_objectColorMode == SVViewState::OCM_ResultColorView)
 		colorUpdateNeeded = true;
 
@@ -1731,6 +1732,13 @@ void Scene::generateNetworkGeometry() {
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
 
+	// In ResultColorView the colors of nodes, edges, surfaces etc. are exclusively controlled
+	// by the property widget SVPropResultsWidget. Hence we just return here.
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_objectColorMode == SVViewState::OCM_ResultColorView)
+		return;
+
+
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -2035,13 +2043,6 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkNode: {
 						net.setDefaultColors();
 					} break;
-					// all in dark gray
-					case SVViewState::OCM_ResultColorView: {
-						for (const VICUS::NetworkNode & node: net.m_nodes)
-							node.m_color = QColor(64,64,64,255); // dark opaque gray
-						for (const VICUS::NetworkEdge & edge: net.m_edges)
-							edge.m_color = QColor(64,64,64,255); // dark opaque gray
-					} break;
 					case SVViewState::OCM_NetworkEdge: {
 						for (const VICUS::NetworkNode & node: net.m_nodes)
 							node.m_color = Qt::lightGray;
@@ -2079,6 +2080,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_InterlinkedSurfaces:
 					case SVViewState::OCM_SupplySystems:
+					case SVViewState::OCM_ResultColorView:
 						break;
 				} // switch
 			} // for

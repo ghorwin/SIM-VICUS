@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDir>
+#include <QDateTime>
 
 #include "NANDRAD_LinearSplineParameter.h"
 
@@ -18,10 +19,14 @@ class SVPropResultsWidget : public QWidget {
 
 public:
 	explicit SVPropResultsWidget(QWidget *parent = nullptr);
-	~SVPropResultsWidget();
+	~SVPropResultsWidget() override;
 
-	/*! Clears the all widgets and reads the default result directory */
-	void clearUi();
+	/*! This function is called whenever the property widget is shown.
+		It initializes the default results directory on first call,
+		and afterwards re-reads the output directory as if user would
+		have pressed "Refresh" button manually.
+	*/
+	void refreshDirectory();
 
 private slots:
 
@@ -41,9 +46,7 @@ private slots:
 
 	void on_toolButtonSetDefaultDirectory_clicked();
 
-	void on_toolButtonUpdateAvailableOutputs_clicked();
-
-	void on_pushButton_clicked();
+	void on_pushButtonRefreshDirectory_clicked();
 
 	void on_lineEditMaxValue_editingFinishedSuccessfully();
 
@@ -52,6 +55,30 @@ private slots:
 	void on_comboBoxPipeType_activated(int index);
 
 private:
+
+	/*! Caches the content of a single output file. */
+	struct ResultDataSet {
+		enum FileStatus {
+			/*! File hasn't been read, yet. */
+			FS_Unread,
+			/*! File on disk is older/same age as m_timeStampLastUpdated */
+			FS_Current,
+			/*! File on disk is newer than read data set, update needed. */
+			FS_Outdated,
+			/*! When file cannot be read (again) or file is missing. */
+			FS_Missing
+		};
+
+		/*! File name, relative to 'results/' directory. */
+		QString		m_filename;
+		/*! Stores date/time when data from this file was read last.
+			Time stamp is invalid, if data hasn't been read, yet.
+		*/
+		QDateTime	m_timeStampLastUpdated;
+
+		/*! The file status. */
+		FileStatus	m_status = FS_Unread;
+	};
 
 	/*! Parses the substitution file ('objectref_substitutions.txt') and the header of all tsv files in the currently selected results directory.
 		Updates the table widget if results have been found */
@@ -70,15 +97,18 @@ private:
 	/*! Sets colors to all VICUS objects, based on previously found ids */
 	void updateColors(const double & currentTime);
 
-	Ui::SVPropResultsWidget		*m_ui;
+	Ui::SVPropResultsWidget							*m_ui;
 
-	/*! Currently selected results directory */
+	/*! Currently selected results directory, updated in readResultsDir(), does not contain trailing 'results/' subdirectory. */
 	QDir											m_resultsDir;
 
-	/*! Stores file path for each output property */
-	std::map<QString, QString>						m_outputFiles;
+	/*! List of all output files that are in resultsDir, updated in readResultsDir(). */
+	QList<ResultDataSet>							m_outputFiles;
 
-	/*! Stores VICUS Object Ids for each output property. */
+	/*! Maps an output variable (caption from tsv-file) to the file index in vector m_outputFiles. */
+	std::map<QString, unsigned int>					m_outputVariables;
+
+	/*! Stores VICUS Object Ids for each output property (effectively the content of the objectref_substitutions.txt file). */
 	std::map<QString, unsigned int>					m_objectName2Id;
 
 	/*! Holds map for each output property with key being VICUS Object Id and value being the according results values as linear spline. */

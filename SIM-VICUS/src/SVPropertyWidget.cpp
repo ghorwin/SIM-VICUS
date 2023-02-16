@@ -144,6 +144,7 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 
 		case SVViewState::PM_ResultsProperties : {
 			showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
+			qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
 		} break;
 	}
 }
