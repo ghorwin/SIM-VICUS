@@ -12,8 +12,8 @@ class SVPropResultsWidget;
 
 class ModificationInfo;
 
-class SVPropResultsWidget : public QWidget
-{
+/*! Widget showing options to highlight results in false color mode in UI. */
+class SVPropResultsWidget : public QWidget {
 	Q_OBJECT
 
 public:

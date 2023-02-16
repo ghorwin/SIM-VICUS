@@ -23,14 +23,16 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 
 	m_ui->resultsDir->setup("", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
 
-	m_ui->tableWidgetAvailableResults->setColumnCount(3);
-	m_ui->tableWidgetAvailableResults->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Unit") );
+	m_ui->tableWidgetAvailableResults->setColumnCount(4);
+	m_ui->tableWidgetAvailableResults->setHorizontalHeaderLabels(QStringList() << tr("") << tr("Name") << tr("Unit") << tr("Status"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetAvailableResults);
 	m_ui->tableWidgetAvailableResults->setSortingEnabled(false);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(0,10);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(1,300);
+	m_ui->tableWidgetAvailableResults->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(2,30);
-	m_ui->tableWidgetAvailableResults->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetAvailableResults->horizontalHeader()->resizeSection(3,70);
+	m_ui->tableWidgetAvailableResults->horizontalHeader()->setStretchLastSection(false);
 	m_ui->tableWidgetAvailableResults->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_ui->tableWidgetAvailableResults->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -38,11 +40,14 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->comboBoxPipeType->addItem(tr("SupplyPipe"), "SupplyPipe");
 	m_ui->comboBoxPipeType->addItem(tr("ReturnPipe"), "ReturnPipe");
 
-	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
+	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Minimum value for coloring"), false, false);
 	m_ui->lineEditMaxValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
 
 	m_ui->pushButtonMaxColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
-	m_ui->pushButtonMaxColor->setColor("#6f1d1b");
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		m_ui->pushButtonMaxColor->setColor("#ff1d1b"); // on dark mode use a bit more vibrant colors
+	else
+		m_ui->pushButtonMaxColor->setColor("#8f1d1b");
 	m_maxColor = m_ui->pushButtonMaxColor->color();
 	m_ui->pushButtonMinColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMinColor->setColor("#669bbc");
@@ -485,7 +490,7 @@ void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
 }
 
 
-void SVPropResultsWidget::on_comboBoxPipeType_activated(int index) {
+void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
 	clearUi();
 }
 
