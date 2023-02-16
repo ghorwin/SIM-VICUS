@@ -301,110 +301,110 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 
 
 	switch (cameraPosition) {
-	case CP_Reset : { // reset camera position -> go to point (0,0,100) and camera faces down
+		case CP_Reset : { // reset camera position -> go to point (0,0,100) and camera faces down
 
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0,0,100);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0,0,100);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
 
-	} break;
-	case CP_South : { // from south
+		} break;
+		case CP_South : { // from south
 
-		double offset =  logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, offset,0);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
+			double offset =  logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, offset,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
 
-	} break;
-	case CP_West : { // from west
+		} break;
+		case CP_West : { // from west
 
-		double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(offset, 0, 0);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(offset, 0, 0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
 
-	} break;
-	case CP_North : { // from north
+		} break;
+		case CP_North : { // from north
 
-		double offset = logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, offset,0);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
+			double offset = logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, offset,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
 
-	} break;
-	case CP_East : { // from east
+		} break;
+		case CP_East : { // from east
 
-		double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(offset , 0, 0);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(offset , 0, 0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
 
-	} break;
-	case CP_Above : { // from above
+		} break;
+		case CP_Above : { // from above
 
-		double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_x)) + bbDim.m_z/2;
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, offset);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_x)) + bbDim.m_z/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
 
-	} break;
-	case CP_FindSelection : { // STRG + F, find the selected object
-		if (selectedObjects.empty())
-			return; // nothing selected/visible, do nothing
+		} break;
+		case CP_FindSelection : { // STRG + F, find the selected object
+			if (selectedObjects.empty())
+				return; // nothing selected/visible, do nothing
 
-		// extract the current camera direction vector
-		IBKMK::Vector3D direction = QVector2IBKVector(-1*m_mainScene.camera().forward());
+			// extract the current camera direction vector
+			IBKMK::Vector3D direction = QVector2IBKVector(-1*m_mainScene.camera().forward());
 
-		const double &x = direction.m_x;
-		const double &y = direction.m_y;
-		const double &z = direction.m_z;
+			const double &x = direction.m_x;
+			const double &y = direction.m_y;
+			const double &z = direction.m_z;
 
-		IBKMK::Vector3D scalingFactors(0,0,0);
-		// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
-		// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
-		if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z)))
-			scalingFactors.m_x = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
+			IBKMK::Vector3D scalingFactors(0,0,0);
+			// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
+			// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z)))
+				scalingFactors.m_x = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
 
-		if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
-			scalingFactors.m_y = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
+				scalingFactors.m_y = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
 
-		if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
-			scalingFactors.m_z = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
+				scalingFactors.m_z = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
 
-		double offset = calculateCameraOffset(bbDim, scalingFactors);
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
+			double offset = calculateCameraOffset(bbDim, scalingFactors);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
 
-	} break;
+		} break;
 
-	case CP_BirdEyeSouthEast: { // birds eye view from south east
+		case CP_BirdEyeSouthEast: { // birds eye view from south east
 
-		// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-		double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
 
-	} break;
-	case CP_BirdEyeSouthWest: { // birds eye view from south west
+		} break;
+		case CP_BirdEyeSouthWest: { // birds eye view from south west
 
-		// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-		double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
 
-	} break;
-	case CP_BirdEyeNorthEast: { // birds eye view from north east
+		} break;
+		case CP_BirdEyeNorthEast: { // birds eye view from north east
 
-		// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-		double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
 
-	} break;
-	case CP_BirdEyeNorthWest: { // birds eye view from north west
+		} break;
+		case CP_BirdEyeNorthWest: { // birds eye view from north west
 
-		// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
-		double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
-		SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
 
-	} break;
+		} break;
 
-	case NUM_CP: break;
-	}
+		case NUM_CP: break;
+	} // switch
 
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
@@ -434,85 +434,85 @@ void SceneView::handleKeyReleaseEvent(QKeyEvent *event) {
 	Qt::Key k = static_cast<Qt::Key>(event->key());
 	switch (k) {
 
-	// *** Escape ***
-	case Qt::Key_Escape : {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+		// *** Escape ***
+		case Qt::Key_Escape : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
-			// *** place a vertex ***
-			case SVViewState::OM_PlaceVertex : {
-				// abort "place vertex" operation
-				// reset new polygon object, so that it won't be drawn anylonger
-				SVViewStateHandler::instance().m_newGeometryObject->clear();
-				// signal, that we are no longer in "add vertex" mode
-				SVViewState vs = SVViewStateHandler::instance().viewState();
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
-			} break;
+				// *** place a vertex ***
+				case SVViewState::OM_PlaceVertex : {
+					// abort "place vertex" operation
+					// reset new polygon object, so that it won't be drawn anylonger
+					SVViewStateHandler::instance().m_newGeometryObject->clear();
+					// signal, that we are no longer in "add vertex" mode
+					SVViewState vs = SVViewStateHandler::instance().viewState();
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+					// now tell all UI components to toggle their view state
+					SVViewStateHandler::instance().setViewState(vs);
+				} break;
 
-			case SVViewState::OM_AlignLocalCoordinateSystem :
-				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				case SVViewState::OM_AlignLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+					break;
+				case SVViewState::OM_MoveLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+					break;
+				case SVViewState::OM_MeasureDistance :
+					m_mainScene.leaveMeasurementMode();
+					break;
+
+				case SVViewState::OM_SelectedGeometry:
+					// TODO : should we clear the selection here?
 				break;
-			case SVViewState::OM_MoveLocalCoordinateSystem :
-				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-				break;
-			case SVViewState::OM_MeasureDistance :
-				m_mainScene.leaveMeasurementMode();
+
+				case SVViewState::OM_ThreePointRotation:
+					// TODO : handle OM_ThreePointRotation
 				break;
 
-			case SVViewState::OM_SelectedGeometry:
-				// TODO : should we clear the selection here?
-			break;
-
-			case SVViewState::OM_ThreePointRotation:
-				// TODO : handle OM_ThreePointRotation
-			break;
-
-			case SVViewState::NUM_OM:
-			break;
-		}
-	} break;
-
-
-		// *** Enter/Return ***
-	case Qt::Key_Return : {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-		// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
-		//       geometry view's toolbar - either with coordinates, or without, there the polygon
-		//       is finished (if possible, otherwise an error message pops up)
-
-		// *** align coordinate system ***
-		case SVViewState::OM_AlignLocalCoordinateSystem : {
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-		} break;
-		case SVViewState::OM_MoveLocalCoordinateSystem : {
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				case SVViewState::NUM_OM:
+				break;
+			}
 		} break;
 
-		default:; // in all other modes, Enter has no effect (for now)
-		}
-	} break;
+
+			// *** Enter/Return ***
+		case Qt::Key_Return : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+				// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
+				//       geometry view's toolbar - either with coordinates, or without, there the polygon
+				//       is finished (if possible, otherwise an error message pops up)
+
+				// *** align coordinate system ***
+				case SVViewState::OM_AlignLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+				case SVViewState::OM_MoveLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+
+				default:; // in all other modes, Enter has no effect (for now)
+			}
+		} break;
 
 
-		// *** Delete selected geometry ***
-		// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
-		// when the user had just selected objects)
-	case Qt::Key_Delete : {
-		m_mainScene.deleteSelected();
-	} break;
+			// *** Delete selected geometry ***
+			// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
+			// when the user had just selected objects)
+		case Qt::Key_Delete : {
+			m_mainScene.deleteSelected();
+		} break;
 
 
-		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
-	case Qt::Key_A : {
-		if (event->modifiers() & Qt::ControlModifier)
-			m_mainScene.selectAll();
-	} break;
+			// *** Selected all selectable objects (i.e. objects shown in the scene) ***
+		case Qt::Key_A : {
+			if (event->modifiers() & Qt::ControlModifier)
+				m_mainScene.selectAll();
+		} break;
 
-	default :; // ignore the rest
+		default :; // ignore the rest
 	} // switch
 
 }
@@ -524,13 +524,13 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
-	case SVProjectHandler::AllModified :
-		m_mainScene.updateWorld2ViewMatrix(); // reposition camera
-		break;
-	case SVProjectHandler::GridModified :
-		resizeGL(width(), height());
-		break;
-	default:; // nothing to do for other modification events
+		case SVProjectHandler::AllModified :
+			m_mainScene.updateWorld2ViewMatrix(); // reposition camera
+			break;
+		case SVProjectHandler::GridModified :
+			resizeGL(width(), height());
+			break;
+		default:; // nothing to do for other modification events
 
 	}
 	// finally render
