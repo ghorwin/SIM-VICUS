@@ -77,14 +77,17 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 	painter.setFont(fnt);
 	painter.setPen(penText);
 	painter.setBrush(QBrush());
+	QFontMetrics fm(fnt);
+	int labelHeight = fm.lineSpacing();
 	int maxLabelWidth = -1;
+	// we draw 5 labels
 	for (unsigned int i=0; i<=100; i+=20) {
 		double y = *m_maxValue - double(i)/100 * (*m_maxValue - *m_minValue);
-		QString label = QString::number(y, 'g', 2);
+		QString label = QString::number(y, 'f', 2);
 		if (i<99)
-			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight, labelWidth, 1.5*rectHeight), label );
+			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight, labelWidth, labelHeight), label );
 		else
-			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight - 1.5*rectHeight, labelWidth, 1.5*rectHeight), label );
+			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight - 1.5*rectHeight, labelWidth, labelHeight), label );
 		// determine max width of number label
 		QRect bounds = painter.boundingRect(0, 0, labelWidth, int(1.5*rectHeight), 0, label);
 		if (bounds.width() > maxLabelWidth)
