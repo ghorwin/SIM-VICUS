@@ -214,6 +214,12 @@ void SVPropResultsWidget::readResultsDir() {
 		}
 	}
 
+	// finally update the state of files that have been lost, i.e. are no longer in the directory
+	for (ResultDataSet & rds : m_outputFiles) {
+		if (!filesFound.contains(rds.m_filename))
+			rds.m_status = ResultDataSet::FS_Missing;
+	}
+
 	// if we have found an output of a minimum size: enable Ui
 	bool validOutputFound = !availableOutputs.empty();
 	m_ui->groupBoxAvailableOutputs->setEnabled(validOutputFound);
@@ -234,24 +240,56 @@ void SVPropResultsWidget::readResultsDir() {
 		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[outputVariable];
 
 		const ResultDataSet & rds = m_outputFiles[outputFileIndex];
+		QFont f;
+		QColor textColor;
+		QString statusLabel;
+		QIcon availableIcon;
+		switch (rds.m_status) {
+			case SVPropResultsWidget::ResultDataSet::FS_Unread:
+				statusLabel = tr("unread");
+			break;
+			case SVPropResultsWidget::ResultDataSet::FS_Current:
+				availableIcon = QIcon(":/gfx/actions/16x16/ok.png");
+				statusLabel = tr("current");
+			break;
+			case SVPropResultsWidget::ResultDataSet::FS_Outdated:
+				f.setItalic(true);
+				availableIcon = QIcon(":/gfx/actions/16x16/ok.png");
+				textColor = QColor(196,128,0);
+				statusLabel = tr("outdated");
+			break;
+			case SVPropResultsWidget::ResultDataSet::FS_Missing:
+				f.setItalic(true);
+				textColor = QColor(192,32,32);
+				statusLabel = tr("missing");
+			break;
+		}
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setIcon(availableIcon);
+		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setText(outputVariable);
-		// TODO: color text based on rds.m_status
+		item->setFont(f);
+		item->setForeground(textColor);
 		m_ui->tableWidgetAvailableResults->setItem(row, 1, item);
 
-		QTableWidgetItem * itemUnit = new QTableWidgetItem;
-		itemUnit->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		itemUnit->setText(it->second);
-		// TODO: color text based on rds.m_status
-		m_ui->tableWidgetAvailableResults->setItem(row, 2, itemUnit);
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(it->second);
+		item->setFont(f);
+		item->setForeground(textColor);
+		m_ui->tableWidgetAvailableResults->setItem(row, 2, item);
 
-		QTableWidgetItem * itemStatus = new QTableWidgetItem;
-		itemStatus->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		itemStatus->setText("TODO");
-		// TODO: color text based on rds.m_status
-		m_ui->tableWidgetAvailableResults->setItem(row, 3, itemStatus);
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(statusLabel);
+		item->setFont(f);
+		item->setForeground(textColor);
+		m_ui->tableWidgetAvailableResults->setItem(row, 3, item);
 
 		++row;
 	}
@@ -263,7 +301,7 @@ void SVPropResultsWidget::readResultsDir() {
 }
 
 
-void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
+void SVPropResultsWidget::readDataFile(const QString & filename) {
 
 	QProgressDialog progDiag(tr("Reading file"), tr("Cancel"), 0, 100, this);
 	progDiag.setWindowTitle(tr("Read results"));
@@ -272,8 +310,10 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	progDiag.setMinimumDuration(0);
 	qApp->processEvents();
 
+
+
+#if 0
 	// now set current output
-	QTableWidgetItem *item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
 	m_currentOutputQuantity = item->text();
 
 	QString filter;
@@ -283,7 +323,6 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 	if (filter != m_currentFilter)
 		forceToRead = true;
 	m_currentFilter = filter;
-#if 0
 	// we only read results which have not yet been read and stored
 	if (forceToRead || m_allResults.find(m_currentOutput) == m_allResults.end()) {
 
@@ -337,20 +376,6 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->widgetTimeSlider->setCurrentValue(timeSeconds.m_data.back());
 	}
 
-	// set current row bold
-	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 1);
-	Q_ASSERT(item!=nullptr);
-	QFont font = item->font();
-	font.setBold(false);
-	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
-		for (int row=0; row < m_ui->tableWidgetAvailableResults->rowCount(); ++row)
-			m_ui->tableWidgetAvailableResults->item(row, col)->setFont(font);
-	}
-	font.setBold(true);
-	for (int col=1; col<m_ui->tableWidgetAvailableResults->columnCount(); ++col) {
-		m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), col)->setFont(font);
-	}
-
 	// set icon
 	for (int row=0; row<m_ui->tableWidgetAvailableResults->rowCount(); ++row) {
 		const QString &property = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
@@ -360,8 +385,6 @@ void SVPropResultsWidget::readCurrentResult(bool forceToRead) {
 		m_ui->tableWidgetAvailableResults->setItem(row, 0, item);
 	}
 
-	// determine max/min values
-	setCurrentMinMaxValues(false);
 
 	// set legend title
 	item = m_ui->tableWidgetAvailableResults->item(m_ui->tableWidgetAvailableResults->currentRow(), 2);
@@ -516,8 +539,52 @@ void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
 }
 
 
-void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int /*row*/, int /*column*/) {
-	readCurrentResult(false);
+void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() {
+	// find out the selected row
+	int row = m_ui->tableWidgetAvailableResults->currentRow();
+	if (row == -1) {
+		// selection cleared, disable false coloring
+		m_currentOutputQuantity.clear();
+	}
+	else {
+		// make quantity the current quantity
+		m_currentOutputQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+		// check if the respective file is in cache
+		Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
+		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
+		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread)
+			m_currentOutputQuantity.clear(); // not cached yet, cannot display
+		else {
+			// determine max/min values
+			setCurrentMinMaxValues(false);
+		}
+	}
+
+	// update bold font in table - row with current output quantity is set in bold font, the rest without bold font
+	for (int i=0; i<m_ui->tableWidgetAvailableResults->rowCount(); ++i) {
+		bool makeBold = (m_ui->tableWidgetAvailableResults->item(row, 1)->text() == m_currentOutputQuantity);
+		for (int j=0; j<m_ui->tableWidgetAvailableResults->columnCount(); ++j) {
+			QFont f = m_ui->tableWidgetAvailableResults->item(i,j)->font();
+			f.setBold(makeBold);
+			m_ui->tableWidgetAvailableResults->item(i,j)->font();
+		}
+	}
+
+	// trigger recoloring (or if no data - make all grey)
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int row, int /*column*/) {
+	// get selected quantity
+	QString requestedQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+	// find respective filename
+	Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
+	unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
+	// read data file
+	readDataFile(m_outputFiles[outputFileIndex].m_filename);
+	// and finally trigger recoloring
+	on_tableWidgetAvailableResults_itemSelectionChanged();
 }
 
 
@@ -575,5 +642,6 @@ void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
 	// TODO : clarify what should happen here... just update the colors using a different filter? Or refresh entire directory?
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
+
 
 
