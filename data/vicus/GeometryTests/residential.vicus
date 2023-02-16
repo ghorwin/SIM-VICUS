@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:15:10 2020</Created>
-		<LastEdited>Mo. Feb. 13 19:05:40 2023</LastEdited>
+		<LastEdited>Do. Feb. 16 14:37:39 2023</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -24,6 +24,9 @@
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
 				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Location>
@@ -47,12 +50,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>-16.9549 -16.2153 14.5083</CameraTranslation>
+			<CameraTranslation>-15.59 -19.0976 13.1799</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.763217</Wp>
-				<X>0.483288</X>
-				<Y>-0.229402</Y>
-				<Z>-0.362293</Z>
+				<Wp>0.768686</Wp>
+				<X>0.510053</X>
+				<Y>-0.213356</Y>
+				<Z>-0.32155</Z>
 			</RotationMatrix>
 			<FarDistance>1000</FarDistance>
 			<GridPlanes>
@@ -71,6 +74,8 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="100" displayName="WE0.0_Bath">
+								<IBK:Parameter name="Area" unit="m2">5.58</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">12.276</IBK:Parameter>
 								<Surfaces>
 									<Surface id="6" displayName="WE0.0_Roof_1" displayColor="#963214">
 										<Polygon3D offset="1.8 0 2.2" normal="0 -0 1" localX="0 1 0">0 0, 3.1 0, 3.1 1.8, 0 1.8</Polygon3D>
@@ -93,6 +98,8 @@
 								</Surfaces>
 							</Room>
 							<Room id="200" displayName="WE0.0_Kitchen">
+								<IBK:Parameter name="Area" unit="m2">5.4</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">11.88</IBK:Parameter>
 								<Surfaces>
 									<Surface id="12" displayName="WE0.0_Roof_2" displayColor="#963214">
 										<Polygon3D offset="1.8 3.25 2.2" normal="0 -0 1" localX="0 1 0">0 0, 3 0, 3 1.8, 0 1.8</Polygon3D>
@@ -115,6 +122,8 @@
 								</Surfaces>
 							</Room>
 							<Room id="300" displayName="WE0.0_Living">
+								<IBK:Parameter name="Area" unit="m2">12.45</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">27.39</IBK:Parameter>
 								<Surfaces>
 									<Surface id="18" displayName="WE0.0_Roof_3" displayColor="#963214">
 										<Polygon3D offset="6.1 3.25 2.2" normal="0 -0 1" localX="0 1 0">0 0, 3 0, 3 4.15, 0 4.15</Polygon3D>
@@ -137,6 +146,8 @@
 								</Surfaces>
 							</Room>
 							<Room id="400" displayName="WE0.0_Corridor">
+								<IBK:Parameter name="Area" unit="m2">3.72</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">8.184</IBK:Parameter>
 								<Surfaces>
 									<Surface id="24" displayName="WE0.0_Roof_4" displayColor="#963214">
 										<Polygon3D offset="3.15 0 2.2" normal="0 -0 1" localX="0 1 0">0 0, 3.1 0, 3.1 1.2, 0 1.2</Polygon3D>
@@ -159,6 +170,8 @@
 								</Surfaces>
 							</Room>
 							<Room id="500" displayName="WE0.0_Sleeping">
+								<IBK:Parameter name="Area" unit="m2">8.68</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">19.096</IBK:Parameter>
 								<Surfaces>
 									<Surface id="30" displayName="WE0.0_Roof_5" displayColor="#963214">
 										<Polygon3D offset="6.1 0 2.2" normal="0 -0 1" localX="0 1 0">0 0, 3.1 0, 3.1 2.8, 0 2.8</Polygon3D>

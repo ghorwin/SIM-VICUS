@@ -120,7 +120,9 @@ public:
 		/*! Shows the widget with building properties. */
 		PM_BuildingProperties,
 		/*! Shows the widget with network properties. */
-		PM_NetworkProperties
+		PM_NetworkProperties,
+		/*! Shows the widget with results visualisation. */
+		PM_ResultsProperties
 	};
 
 	/*! These enum values indicate what kind of coloring/highlighting shall be applied
@@ -177,6 +179,7 @@ public:
 		OCM_NetworkEdge,
 		OCM_NetworkHeatExchange,
 		OCM_NetworkSubNetworks,
+		OCM_ResultColorView =	0x2000
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the

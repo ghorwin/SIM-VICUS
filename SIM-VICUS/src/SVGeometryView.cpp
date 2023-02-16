@@ -288,6 +288,12 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionScaleGeometry->setChecked(false);
 	m_ui->actionSiteParametrization->setChecked(false);
 	m_ui->actionTranslateGeometry->setChecked(false);
+	m_ui->actionShowResults->setChecked(false);
+}
+
+
+SVColorLegend * SVGeometryView::colorLegend() {
+	return m_ui->colorLegend;
 }
 
 
@@ -426,6 +432,8 @@ void SVGeometryView::onViewStateChanged() {
 	// hide measurement widget when no longer needed
 	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
 		hideMeasurementWidget();
+
+	m_ui->colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
 }
 
 
@@ -725,6 +733,21 @@ void SVGeometryView::on_actionSiteParametrization_triggered() {
 }
 
 
+void SVGeometryView::on_actionShowResults_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionShowResults->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_ResultsProperties;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+
 // *** Protected Functions ***
 
 
@@ -827,5 +850,6 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
+
 
 

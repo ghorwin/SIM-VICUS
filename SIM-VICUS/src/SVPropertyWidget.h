@@ -63,6 +63,7 @@ public:
 		M_NetworkProperties,
 		M_BuildingProperties,
 		M_AddWindowWidget,
+		M_ResultsWidget,
 		NUM_M
 	};
 

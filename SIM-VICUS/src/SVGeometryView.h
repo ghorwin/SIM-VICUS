@@ -37,6 +37,7 @@ namespace Vic3D {
 class SVPropertyWidget;
 class SVLocalCoordinateView;
 class SVMeasurementWidget;
+class SVColorLegend;
 class QSplitter;
 class QToolBar;
 class QAction;
@@ -117,7 +118,9 @@ public:
 	/*! Sets all actions in button bar to unchecked state */
 	void uncheckAllActionsInButtonBar();
 
-	/*! This set stores all parent widgets that may have focus themselves or their children in order to
+	SVColorLegend * colorLegend();
+
+		/*! This set stores all parent widgets that may have focus themselves or their children in order to
 		receive navigation key events for the scene.
 		Usually this is the geometryview itself, and the log dock widget and the navigation panel.
 		Pointers are in inserted by the individual classes in their constructors.
@@ -162,6 +165,8 @@ private slots:
 	void on_actionNetworkParametrization_triggered();
 
 	void on_actionSiteParametrization_triggered();
+
+	void on_actionShowResults_triggered();
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized

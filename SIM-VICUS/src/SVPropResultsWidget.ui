@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVPropResultsWidget</class>
+ <widget class="QWidget" name="SVPropResultsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>443</width>
+    <height>662</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <widget class="QToolButton" name="toolButtonSetDefaultDirectory">
+       <property name="toolTip">
+        <string>set default directory</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/gfx/actions/24x24/arrow-source-grey.png</normalon>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Results directory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QtExt::BrowseFilenameWidget" name="resultsDir" native="true"/>
+     </item>
+     <item row="0" column="3">
+      <widget class="QToolButton" name="toolButtonUpdateAvailableOutputs">
+       <property name="toolTip">
+        <string>reload results directory</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/gfx/actions/24x24/reload.png</normalon>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxNetworkOptions">
+     <property name="title">
+      <string>Options</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Network Pipe</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxPipeType"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxAvailableOutputs">
+     <property name="title">
+      <string>Available outputs</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="2">
+       <widget class="QTableWidget" name="tableWidgetAvailableResults">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>reload output</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/gfx/actions/24x24/reload.png</normalon>
+         </iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxColormap">
+     <property name="title">
+      <string>Colormap</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Minimum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QtExt::ColorButton" name="pushButtonMinColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Maximum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMinValue"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QtExt::ColorButton" name="pushButtonMaxColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxValue"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="pushButtonSetGlobalMinMax">
+        <property name="text">
+         <string>set global min/max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="pushButtonSetLocalMinMax">
+        <property name="text">
+         <string>set  current min/max</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxTime">
+     <property name="title">
+      <string>Time</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="SVTimeSliderWidget" name="widgetTimeSlider" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SVTimeSliderWidget</class>
+   <extends>QWidget</extends>
+   <header>SVTimeSliderWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -127,6 +127,7 @@ SceneView::SceneView() :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
 			this, &SceneView::onColorRefreshNeeded);
+
 }
 
 
@@ -226,17 +227,6 @@ void SceneView::toggleMeasurementMode() {
 		m_mainScene.enterMeasurementMode();
 	}
 }
-
-//void SceneView::toggleRubberbandMode() {
-//	SVViewState vs = SVViewStateHandler::instance().viewState();
-
-//	if (vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection)
-//		m_mainScene.leaveRubberbandMode(); // leave measurement mode
-//	else {
-//		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
-//		m_mainScene.enterRubberbandMode();
-//	}
-//}
 
 // calculates the distance needed from the selected surface to completly see in on the screen
 // max is defined as the longest length of the rendered bounding box (e.g. for zenith view is would be max(x,y) / from north would be max(x,z) ...)

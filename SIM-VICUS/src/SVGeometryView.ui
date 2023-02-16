@@ -84,6 +84,28 @@
         </layout>
        </item>
        <item>
+        <widget class="SVColorLegend" name="colorLegend" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QToolBar" name="modeSelectionToolBar">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -131,6 +153,7 @@
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
+         <addaction name="actionShowResults"/>
         </widget>
        </item>
       </layout>
@@ -331,12 +354,33 @@
     <string>Edit Site Parametrization</string>
    </property>
   </action>
+  <action name="actionShowResults">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/info.png</normaloff>:/gfx/actions/24x24/info.png</iconset>
+   </property>
+   <property name="text">
+    <string>show results</string>
+   </property>
+   <property name="toolTip">
+    <string>show results</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>SVPropertyWidget</class>
    <extends>QWidget</extends>
    <header>SVPropertyWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SVColorLegend</class>
+   <extends>QWidget</extends>
+   <header>SVColorLegend.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
