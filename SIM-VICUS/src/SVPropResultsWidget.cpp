@@ -170,16 +170,6 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 		}
 	}
 
-	// update bold font in table - row with current output quantity is set in bold font, the rest without bold font
-	for (int i=0; i<m_ui->tableWidgetAvailableResults->rowCount(); ++i) {
-		bool makeBold = (m_ui->tableWidgetAvailableResults->item(i, 1)->text() == m_currentOutputQuantity);
-		for (int j=0; j<m_ui->tableWidgetAvailableResults->columnCount(); ++j) {
-			QFont f = m_ui->tableWidgetAvailableResults->item(i,j)->font();
-			f.setBold(makeBold);
-			m_ui->tableWidgetAvailableResults->item(i,j)->font();
-		}
-	}
-
 	// trigger recoloring (or if no data - make all grey)
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
@@ -370,7 +360,7 @@ void SVPropResultsWidget::readResultsDir() {
 					availableOutputs[outputName].push_back(it->second); // store output name to ids
 					availableOutputUnits[outputName] = unit;
 					// remember output quantity to file association
-					m_outputVariable2FileIndexMap[outputName] = outputFileIdx;
+					m_outputVariable2FileIndexMap[outputName] = (unsigned int)outputFileIdx;
 				}
 			}
 		}
@@ -447,7 +437,7 @@ void SVPropResultsWidget::updateTableWidgetFormatting() {
 		// check state of output file
 		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[outputVariable];
 
-		const ResultDataSet & rds = m_outputFiles[outputFileIndex];
+		const ResultDataSet & rds = m_outputFiles[(int)outputFileIndex];
 		QFont f;
 		QColor textColor;
 		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
@@ -477,10 +467,6 @@ void SVPropResultsWidget::updateTableWidgetFormatting() {
 				statusLabel = tr("missing");
 			break;
 		}
-
-		// selected row gets bold font, unless unread
-		if (rds.m_status != SVPropResultsWidget::ResultDataSet::FS_Unread && row == selectedRow)
-			f.setBold(true);
 
 		m_ui->tableWidgetAvailableResults->item(row, 0)->setIcon(availableIcon);
 
