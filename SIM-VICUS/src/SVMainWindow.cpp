@@ -703,6 +703,7 @@ void SVMainWindow::setup() {
 	// *** Geometry view ***
 
 	m_geometryView = new SVGeometryView(this);
+	m_geometryView->m_focusRootWidgets.insert(m_navigationTreeWidget); // remember as possible focus widget for events
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
@@ -1847,6 +1848,7 @@ void SVMainWindow::setupDockWidgets() {
 
 	// *** Log widget ***
 	m_logDockWidget = new QDockWidget(this);
+	m_geometryView->m_focusRootWidgets.insert(m_logDockWidget); // remember as possible focus widget for events
 	m_logDockWidget->setObjectName("LogDockWidget");
 	m_logDockWidget->setContentsMargins(0,0,0,0);
 	m_logDockWidget->setWindowTitle(tr("Application Log"));

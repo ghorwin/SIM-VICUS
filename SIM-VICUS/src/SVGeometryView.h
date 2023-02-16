@@ -99,7 +99,9 @@ public:
 			  that legitimately accepts all character inputs.
 		\return Returns true, if the key was accepted and handled.
 	*/
-	bool handleGlobalKeyPress(Qt::Key k);
+	bool handleGlobalKeyPressEvent(QKeyEvent * ke);
+
+	bool handleGlobalKeyRelease(QKeyEvent * ke);
 
 	/*! Moves the measurement Widget to the bottom right of the scene view. */
 	void moveMeasurementWidget();
@@ -114,6 +116,13 @@ public:
 
 	/*! Sets all actions in button bar to unchecked state */
 	void uncheckAllActionsInButtonBar();
+
+	/*! This set stores all parent widgets that may have focus themselves or their children in order to
+		receive navigation key events for the scene.
+		Usually this is the geometryview itself, and the log dock widget and the navigation panel.
+		Pointers are in inserted by the individual classes in their constructors.
+	*/
+	QSet<const QWidget*>	m_focusRootWidgets;
 
 public slots:
 	/*! Handles selection changes and enables/disables button states. */
@@ -159,8 +168,6 @@ protected:
 		without changing scene size (by moving left splitter).
 	*/
 	void resizeEvent(QResizeEvent *event);
-
-	bool eventFilter(QObject *obj, QEvent *event);
 
 private:
 	Ui::SVGeometryView			*m_ui;

@@ -269,6 +269,7 @@ int main(int argc, char *argv[]) {
 	try { // open scope to control lifetime of main window, ensure that main window instance dies before settings or project handler
 
 		SVMainWindow w;
+		a.m_mainWindow = &w; // set main window pointer for event filtering
 
 		// start event loop
 		res = a.exec();

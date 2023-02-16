@@ -30,7 +30,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
-//#include <QDebug>
+#include <QDebug>
 
 namespace Vic3D {
 
@@ -142,12 +142,6 @@ void KeyboardMouseHandler::clearWasPressedKeyStates() {
 	for (unsigned int i=0; i<m_keyStates.size(); ++i)
 		m_keyStates[i] = static_cast<KeyStates>(m_keyStates[i] & 1); // toggle "WasPressed" bit -> NotPressed
 }
-
-std::vector<Qt::Key> KeyboardMouseHandler::keys() const
-{
-	return m_keys;
-}
-
 
 
 bool KeyboardMouseHandler::pressKey(Qt::Key k) {

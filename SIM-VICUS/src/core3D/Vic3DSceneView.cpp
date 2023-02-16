@@ -227,16 +227,16 @@ void SceneView::toggleMeasurementMode() {
 	}
 }
 
-void SceneView::toggleRubberbandMode() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
+//void SceneView::toggleRubberbandMode() {
+//	SVViewState vs = SVViewStateHandler::instance().viewState();
 
-	if (vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection)
-		m_mainScene.leaveRubberbandMode(); // leave measurement mode
-	else {
-		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
-		m_mainScene.enterRubberbandMode();
-	}
-}
+//	if (vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection)
+//		m_mainScene.leaveRubberbandMode(); // leave measurement mode
+//	else {
+//		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
+//		m_mainScene.enterRubberbandMode();
+//	}
+//}
 
 // calculates the distance needed from the selected surface to completly see in on the screen
 // max is defined as the longest length of the rendered bounding box (e.g. for zenith view is would be max(x,y) / from north would be max(x,z) ...)
@@ -426,6 +426,105 @@ double SceneView::calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimens
 	double factor2 = boundingBoxDimension.m_z * scalingFactors.m_z;
 
 	return logarithmicDistance(std::max(factor1, factor2));
+}
+
+
+
+void SceneView::handleKeyPressEvent(QKeyEvent *event) {
+	m_keyboardMouseHandler.keyPressEvent(event);
+	checkInput();
+}
+
+
+void SceneView::handleKeyReleaseEvent(QKeyEvent *event) {
+	m_keyboardMouseHandler.keyReleaseEvent(event);
+	checkInput();
+
+	// handle everything that are not scene navigation keys
+	Qt::Key k = static_cast<Qt::Key>(event->key());
+	switch (k) {
+
+	// *** Escape ***
+	case Qt::Key_Escape : {
+		// different operation depending on scene's operation mode
+		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+			// *** place a vertex ***
+			case SVViewState::OM_PlaceVertex : {
+				// abort "place vertex" operation
+				// reset new polygon object, so that it won't be drawn anylonger
+				SVViewStateHandler::instance().m_newGeometryObject->clear();
+				// signal, that we are no longer in "add vertex" mode
+				SVViewState vs = SVViewStateHandler::instance().viewState();
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+				// now tell all UI components to toggle their view state
+				SVViewStateHandler::instance().setViewState(vs);
+			} break;
+
+			case SVViewState::OM_AlignLocalCoordinateSystem :
+				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				break;
+			case SVViewState::OM_MoveLocalCoordinateSystem :
+				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				break;
+			case SVViewState::OM_MeasureDistance :
+				m_mainScene.leaveMeasurementMode();
+				break;
+
+			case SVViewState::OM_SelectedGeometry:
+				// TODO : should we clear the selection here?
+			break;
+
+			case SVViewState::OM_ThreePointRotation:
+				// TODO : handle OM_ThreePointRotation
+			break;
+
+			case SVViewState::NUM_OM:
+			break;
+		}
+	} break;
+
+
+		// *** Enter/Return ***
+	case Qt::Key_Return : {
+		// different operation depending on scene's operation mode
+		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+		// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
+		//       geometry view's toolbar - either with coordinates, or without, there the polygon
+		//       is finished (if possible, otherwise an error message pops up)
+
+		// *** align coordinate system ***
+		case SVViewState::OM_AlignLocalCoordinateSystem : {
+			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+		} break;
+		case SVViewState::OM_MoveLocalCoordinateSystem : {
+			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+		} break;
+
+		default:; // in all other modes, Enter has no effect (for now)
+		}
+	} break;
+
+
+		// *** Delete selected geometry ***
+		// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
+		// when the user had just selected objects)
+	case Qt::Key_Delete : {
+		m_mainScene.deleteSelected();
+	} break;
+
+
+		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
+	case Qt::Key_A : {
+		if (event->modifiers() & Qt::ControlModifier)
+			m_mainScene.selectAll();
+	} break;
+
+	default :; // ignore the rest
+	} // switch
+
 }
 
 
@@ -635,92 +734,6 @@ void SceneView::paintGL() {
 }
 
 
-void SceneView::keyPressEvent(QKeyEvent *event) {
-	m_keyboardMouseHandler.keyPressEvent(event);
-	checkInput();
-}
-
-void SceneView::keyReleaseEvent(QKeyEvent *event) {
-	m_keyboardMouseHandler.keyReleaseEvent(event);
-	checkInput();
-
-	// handle everything that are not scene navigation keys
-	Qt::Key k = static_cast<Qt::Key>(event->key());
-	switch (k) {
-
-	// *** Escape ***
-	case Qt::Key_Escape : {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-		// *** place a vertex ***
-		case SVViewState::OM_PlaceVertex : {
-			// abort "place vertex" operation
-			// reset new polygon object, so that it won't be drawn anylonger
-			SVViewStateHandler::instance().m_newGeometryObject->clear();
-			// signal, that we are no longer in "add vertex" mode
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			// now tell all UI components to toggle their view state
-			SVViewStateHandler::instance().setViewState(vs);
-		} break;
-
-		case SVViewState::OM_AlignLocalCoordinateSystem :
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-			break;
-		case SVViewState::OM_MoveLocalCoordinateSystem :
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-			break;
-		case SVViewState::OM_MeasureDistance :
-			m_mainScene.leaveMeasurementMode();
-			break;
-
-			// TODO : handle other special modes like OM_ThreePointRotation
-		}
-	} break;
-
-
-		// *** Enter/Return ***
-	case Qt::Key_Return : {
-		// different operation depending on scene's operation mode
-		switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-		// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
-		//       geometry view's toolbar - either with coordinates, or without, there the polygon
-		//       is finished (if possible, otherwise an error message pops up)
-
-		// *** align coordinate system ***
-		case SVViewState::OM_AlignLocalCoordinateSystem : {
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-		} break;
-		case SVViewState::OM_MoveLocalCoordinateSystem : {
-			m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-		} break;
-
-		default:; // in all other modes, Enter has no effect (for now)
-		}
-	} break;
-
-
-		// *** Delete selected geometry ***
-		// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
-		// when the user had just selected objects)
-	case Qt::Key_Delete : {
-		m_mainScene.deleteSelected();
-	} break;
-
-
-		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
-	case Qt::Key_A : {
-		if (event->modifiers() & Qt::ControlModifier)
-			m_mainScene.selectAll();
-	} break;
-
-	default :; // ignore the rest
-	} // switch
-
-}
 
 void SceneView::mousePressEvent(QMouseEvent *event) {
 	m_keyboardMouseHandler.mousePressEvent(event);
@@ -741,14 +754,6 @@ void SceneView::wheelEvent(QWheelEvent *event) {
 	checkInput();
 }
 
-void SceneView::focusOutEvent(QFocusEvent * event) {
-	// leave Rubberband mode when during selection window loses focus
-	if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-		m_mainScene.leaveRubberbandMode();
-		m_keyboardMouseHandler.releaseKey(Qt::Key_Control);
-	}
-}
-
 
 void SceneView::checkInput() {
 	// this function is called from the Qt event look whenever _any_ key/mouse event was issued
@@ -757,9 +762,9 @@ void SceneView::checkInput() {
 	// special handling for moving coordinate system (only during place vertex mode, since this will
 	// cause the scene to update at monitor refresh rate)
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance ||
-			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 	{
 		m_inputEventReceived = true;
 		renderLater();
@@ -776,7 +781,7 @@ void SceneView::checkInput() {
 
 	// has the mouse been moved while the right button was held (first-person controller)?
 	if (m_keyboardMouseHandler.buttonDown(Qt::RightButton) ||
-			m_keyboardMouseHandler.buttonReleased(Qt::RightButton))
+		m_keyboardMouseHandler.buttonReleased(Qt::RightButton))
 	{
 		m_inputEventReceived = true;
 		//			qDebug() << "SceneView::checkInput() inputEventReceived: " << QCursor::pos() << m_keyboardMouseHandler.mouseDownPos();
@@ -786,7 +791,7 @@ void SceneView::checkInput() {
 
 	// is the left mouse butten been held (orbit controller) or has it been released (left-mouse-button click)?
 	if (m_keyboardMouseHandler.buttonDown(Qt::LeftButton) ||
-			m_keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+		m_keyboardMouseHandler.buttonReleased(Qt::LeftButton))
 	{
 		m_inputEventReceived = true;
 		renderLater();
@@ -795,7 +800,7 @@ void SceneView::checkInput() {
 
 	// is the middle mouse butten been held (translate camera)?
 	if (m_keyboardMouseHandler.buttonDown(Qt::MidButton) ||
-			m_keyboardMouseHandler.buttonReleased(Qt::MidButton))
+		m_keyboardMouseHandler.buttonReleased(Qt::MidButton))
 	{
 		m_inputEventReceived = true;
 		renderLater();

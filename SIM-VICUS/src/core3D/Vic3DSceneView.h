@@ -82,7 +82,7 @@ public:
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
 	void toggleMeasurementMode();
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
-	void toggleRubberbandMode();
+//	void toggleRubberbandMode();
 
 	/*! Resets the camera position to be looking nicely onto the scene.
 		See SVGeometryView::resetCamera().
@@ -92,6 +92,11 @@ public:
 	/*! Calculate Camera Offset. */
 	double calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension,
 							   const IBKMK::Vector3D &scalingFactors);
+
+	/*! Called from geometry view whenever a key was pressed (only if scene view is visible). */
+	void handleKeyPressEvent(QKeyEvent *event);
+	/*! Called from geometry view whenever a key was released (only if scene view is visible). */
+	void handleKeyReleaseEvent(QKeyEvent *event);
 
 public slots:
 
@@ -128,13 +133,10 @@ protected:
 	void paintGL() override;
 
 	// Functions to handle key press and mouse press events, all the work is done in class KeyboardMouseHandler
-	void keyPressEvent(QKeyEvent *event) override;
-	void keyReleaseEvent(QKeyEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void wheelEvent(QWheelEvent *event) override;
-	void focusOutEvent(QFocusEvent* event) override;
 
 private:
 	/*! Tests, if any relevant input was received and registers a state change. */

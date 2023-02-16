@@ -57,7 +57,10 @@ public:
 
 
 	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
-		navigation.
+		navigation and selection operations.
+
+		The scene modes indicate, which operations are generally possible to the user and what kind
+		of widgets are visible. Also, some modes are linked to certain property widgets that are visible.
 	*/
 	enum SceneOperationMode {
 		/*! The scene is in passive geometry edit mode and has at least one selected surface/element.
@@ -90,9 +93,6 @@ public:
 			a line between starting point and current coordinate system's location is drawn and the distance is displayed.
 		*/
 		OM_MeasureDistance,
-		/*! In this mode, surfaces can be selected via an interactive rubberband inside the scene.
-		*/
-		OM_RubberbandSelection,
 		/*! In this mode, the user can place three points after another (by snapping the local coordinate system
 			to the points). When the third point was placed, all selected objects are rotated accordingly.
 		*/

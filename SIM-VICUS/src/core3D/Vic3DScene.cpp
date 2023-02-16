@@ -386,6 +386,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// *** Keyboard navigation ***
 
 	// translation and rotation works always (no trigger key) unless the Ctrl-key is held at the same time
+	// (to avoid the scene moving when pressing Ctrl+S
 	if (!keyboardHandler.keyDown(Qt::Key_Control)) {
 
 		// Handle translations
@@ -405,8 +406,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			transSpeed = 0.1f;
 		m_camera.translate(transSpeed * translation);
 		m_camera.rotate(transSpeed, rotationAxis);
-	}
 
+	}
 
 
 	// To avoid duplicate picking operation, we create the pick object here.
@@ -475,10 +476,13 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// left mouse button starts orbit controller (or interactive transformation), or performs a left-click
 	if (keyboardHandler.buttonDown(Qt::LeftButton)) {
 
-		if(keyboardHandler.keyDown(Qt::Key_Control)) {
-			if(SVViewStateHandler::instance().viewState().m_sceneOperationMode != SVViewState::OM_RubberbandSelection) {
-				enterRubberbandMode();
+		// enter rubberBandMode only if not in any other mode
+		if (keyboardHandler.keyDown(Qt::Key_Control)) {
+			if (m_navigationMode == NUM_NM) {
+				qDebug() << "Entering rubberband selection mode";
+				m_navigationMode = NM_RubberbandSelection;
 				m_rubberbandObject.setStartPoint(QVector3D(localMousePos.x(), localMousePos.y(), 0));
+				return true;
 			}
 		}
 
@@ -580,10 +584,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// ** left mouse button held and mouse dragged **
 			if (mouseDelta != QPoint(0,0)) {
 
-				if( SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+				if (m_navigationMode == NM_RubberbandSelection) {
 					// update rubberband
 					m_rubberbandObject.setRubberband(m_viewPort, QVector3D(localMousePos.x(), localMousePos.y(), 0));
-
 					return true;
 				}
 
@@ -593,6 +596,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				switch (m_navigationMode) {
 				case Vic3D::Scene::NM_Panning:
 				case Vic3D::Scene::NM_FirstPerson:
+				case Vic3D::Scene::NM_RubberbandSelection: // just to make compiler happy
 				case Vic3D::Scene::NUM_NM:
 					break; // for these modes, do nothing (can happen for multi-mouse-button-press and dragging)
 
@@ -800,12 +804,14 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				SVViewStateHandler::instance().m_propEditGeometryWidget->finishTransformation();
 			needRepaint = true;
 		}
+		if (m_navigationMode == NM_RubberbandSelection) {
+			qDebug() << "Leaving rubberband selection mode";
+			m_rubberbandObject.selectObjectsBasedOnRubberband();
+			m_rubberbandObject.reset();
+		}
 		// clear orbit controller flag
 		m_navigationMode = NUM_NM;
 
-		if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-			leaveRubberbandMode();
-		}
 
 	} // left button released
 
@@ -1245,7 +1251,7 @@ void Scene::render() {
 		m_smallCoordinateSystemObject.render();
 	}
 
-	if(vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
+	if (m_navigationMode == NM_RubberbandSelection) {
 		glViewport(m_viewPort.x(), m_viewPort.y(), m_viewPort.width(), m_viewPort.height());
 
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -2201,18 +2207,21 @@ void Scene::leaveAnySpecialMode() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// leave any mode we are currently in and restore previous state
 	switch (vs.m_sceneOperationMode) {
-	case SVViewState::OM_AlignLocalCoordinateSystem :
-		leaveCoordinateSystemAdjustmentMode(true);
-		break;
-	case SVViewState::OM_MoveLocalCoordinateSystem :
-		leaveCoordinateSystemTranslationMode(true);
-		break;
-	case SVViewState::OM_MeasureDistance:
-		leaveMeasurementMode();
-		break;
-	case SVViewState::OM_RubberbandSelection:
-		leaveRubberbandMode();
-		break;
+		case SVViewState::OM_AlignLocalCoordinateSystem :
+			leaveCoordinateSystemAdjustmentMode(true);
+			break;
+		case SVViewState::OM_MoveLocalCoordinateSystem :
+			leaveCoordinateSystemTranslationMode(true);
+			break;
+		case SVViewState::OM_MeasureDistance:
+			leaveMeasurementMode();
+			break;
+
+		case SVViewState::OM_SelectedGeometry:
+		case SVViewState::OM_PlaceVertex:
+		case SVViewState::OM_ThreePointRotation:
+		case SVViewState::NUM_OM:
+			break; // nothing to do when we leave these modes
 	}
 }
 
@@ -2272,24 +2281,6 @@ void Scene::leaveCoordinateSystemTranslationMode(bool abort) {
 }
 
 
-void Scene::enterRubberbandMode() {
-	// begin rubberband
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_RubberbandSelection;
-	SVViewStateHandler::instance().setViewState(vs);
-
-	qDebug() << "Start rubberband selection.";
-}
-
-
-void Scene::leaveRubberbandMode() {
-	qDebug() << "Finishing rubberband selection.";
-	m_rubberbandObject.selectObjectsBasedOnRubberband();
-	m_rubberbandObject.reset();
-	setDefaultViewState();
-}
-
-
 void Scene::enterMeasurementMode() {
 	// store current transformation of local coordinate system object
 	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
@@ -2306,7 +2297,7 @@ void Scene::enterMeasurementMode() {
 }
 
 
-void Scene::leaveMeasurementMode(bool setViewState) {
+void Scene::leaveMeasurementMode() {
 	// restore original local coordinate system
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 	m_measurementObject.reset();
@@ -2925,71 +2916,77 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 
 	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
-	// *** place a vertex ***
-	case SVViewState::NUM_OM :
-	case SVViewState::OM_SelectedGeometry : {
-		// selection handling
-		handleSelection(keyboardHandler, o);
-		return;
-	}
+		// *** place a vertex ***
+		case SVViewState::NUM_OM :
+		case SVViewState::OM_SelectedGeometry : {
+			// selection handling
+			handleSelection(keyboardHandler, o);
+			return;
+		}
 
-	case SVViewState::OM_MeasureDistance : {
-		// we start a new measurement when:
-		// a) no start and no end point have been set yet (i.e. mode has just started)
-		// b) last measurement is complete, i.e. both start and end point are set
+		case SVViewState::OM_MeasureDistance : {
+			// we start a new measurement when:
+			// a) no start and no end point have been set yet (i.e. mode has just started)
+			// b) last measurement is complete, i.e. both start and end point are set
 
-		// new starting point for measurement selected
-		if (m_measurementObject.m_startPoint == INVALID_POINT)
-		{
-			// if we start from "initial mode", show the distance widget
-			// store new start point
-			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
-			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
-			m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
+			// new starting point for measurement selected
+			if (m_measurementObject.m_startPoint == INVALID_POINT)
+			{
+				// if we start from "initial mode", show the distance widget
+				// store new start point
+				m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+				m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
+				m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
+			}
+			else if (m_measurementObject.m_startPoint != INVALID_POINT && m_measurementObject.m_endPoint != INVALID_POINT) {
+				// first reset object and widget
+				m_measurementObject.reset();
+				m_measurementWidget->reset();
+				// then start next measurement from current LCS position
+				m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+				m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
+				m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
+			}
+			else {
+				// finish measurement mode by fixing the end point
+				m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+			}
+			return;
 		}
-		else if (m_measurementObject.m_startPoint != INVALID_POINT && m_measurementObject.m_endPoint != INVALID_POINT) {
-			// first reset object and widget
-			m_measurementObject.reset();
-			m_measurementWidget->reset();
-			// then start next measurement from current LCS position
-			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
-			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
-			m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
-		}
-		else {
-			// finish measurement mode by fixing the end point
-			m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
-		}
-		return;
-	}
 
 		// *** place a vertex ***
-	case SVViewState::OM_PlaceVertex : {
-		// get current coordinate system's position
-		IBKMK::Vector3D p = QVector2IBKVector(m_coordinateSystemObject.translation());
-		// append a vertex (this will automatically update the draw buffer) and also
-		// modify the vertexListWidget.
-		m_newGeometryObject.appendVertex(p);
-		return;
-	}
+		case SVViewState::OM_PlaceVertex : {
+			// get current coordinate system's position
+			IBKMK::Vector3D p = QVector2IBKVector(m_coordinateSystemObject.translation());
+			// append a vertex (this will automatically update the draw buffer) and also
+			// modify the vertexListWidget.
+			m_newGeometryObject.appendVertex(p);
+			return;
+		}
 
 		// *** align coordinate system ***
-	case SVViewState::OM_AlignLocalCoordinateSystem : {
-		// finish aligning coordinate system and keep selected rotation in coordinate system
-		// but restore origin of local coordinate system object
-		m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
-		// switch back to previous view state
-		leaveCoordinateSystemAdjustmentMode(false);
-		return;
-	}
+		case SVViewState::OM_AlignLocalCoordinateSystem : {
+			// finish aligning coordinate system and keep selected rotation in coordinate system
+			// but restore origin of local coordinate system object
+			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+			// switch back to previous view state
+			leaveCoordinateSystemAdjustmentMode(false);
+			return;
+		}
 
 		// *** move coordinate system ***
-	case SVViewState::OM_MoveLocalCoordinateSystem : {
-		// finish moving coordinate system and current local coordinate system location
-		leaveCoordinateSystemTranslationMode(false);
-		return;
-	}
-	}
+		case SVViewState::OM_MoveLocalCoordinateSystem : {
+			// finish moving coordinate system and current local coordinate system location
+			leaveCoordinateSystemTranslationMode(false);
+			return;
+		}
+
+		// *** three point rotation
+		case SVViewState::OM_ThreePointRotation:
+			// TODO
+			break;
+
+	} // switch
 
 }
 
