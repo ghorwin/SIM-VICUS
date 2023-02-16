@@ -357,42 +357,16 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 	if (polygon.size() < 3)
 		return IBKMK::Vector3D(1,0,0);
 
-	// center point calculation
-	IBKMK::Vector3D centerPoint;
-	for(const IBKMK::Vector3D& vert : polygon)
-		centerPoint += vert;
-	centerPoint = centerPoint * (1.0/polygon.size());
+	IBKMK::Vector3D n(0,0,0);
 
+	for(unsigned int i=2; i<polygon.size(); ++i) {
+		IBKMK::Vector3D v1 = polygon[i-1] - polygon[0];
+		IBKMK::Vector3D v2 = polygon[i  ] - polygon[0];
 
-	IBKMK::Vector3D n;
-	if (polygon.size() == 3)
-		n = (polygon[1] - polygon[0]).crossProduct(polygon[2] - polygon[0]);
-	else {
-		size_t count = polygon.size();
-
-		n = (polygon[count - 1] - centerPoint).crossProduct(polygon[0] - centerPoint);
-
-		if (smallerVectZero(n))
-			n = n * -1;
-
-		for (size_t i = 1; i < polygon.size(); ++i) {
-			IBKMK::Vector3D v = (polygon[i] - centerPoint).crossProduct(polygon[i - 1] - centerPoint);
-			if (smallerVectZero(v))
-				v = v * -1.0;
-
-			n += v;
-		}
+		n += v1.crossProduct(v2);
 	}
 
-	double l = n.magnitude();
-
-	// if we have a zero vector for normal we set up a x-Normal
-	if (l == 0.0)
-		n = IBKMK::Vector3D(1,0,0);
-	else
-		n.normalize();
-
-	return n;
+	return n.normalized();
 }
 
 void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts) {
@@ -414,15 +388,27 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 	// calculate normal with first 3 points
 	m_localX = verts[1] - verts[0];
 	IBKMK::Vector3D y = verts.back() - verts[0];
-	IBKMK::Vector3D n;
-	m_localX.crossProduct(y, n);
+	IBKMK::Vector3D n1 = getNormal(verts);
+//	IBKMK::Vector3D n2;
+
+//	m_localX.crossProduct(y, n2);
+
+
+//	if(n1 != n2) {
+//		IBK::IBK_Message(IBK::FormatString("Normal 1 - X: %1 Y: %2 Z: %3")
+//						 .arg(n1.m_x).arg(n1.m_y).arg(n1.m_z), IBK::MSG_WARNING);
+
+//		IBK::IBK_Message(IBK::FormatString("Normal 2 - X: %1 Y: %2 Z: %3")
+//						 .arg(n2.m_x).arg(n2.m_y).arg(n2.m_z), IBK::MSG_WARNING);
+//	}
+
 	// if we interpret n as area between y and localX vectors, this should
 	// be reasonably large (> 1 mm2). If we, however, have a very small magnitude
 	// the vectors y and localX are (nearly) collinear, which should have been prevented by
 	// eliminateColliniarPoints() before.
-	if (n.magnitude() < 1e-9)
+	if (n1.magnitude() < 1e-9)
 		return; // invalid vertex input
-	n.normalize();
+	//n2.normalize();
 
 	/* das ist alt und kann weg da die richtung der normalen nicht immer richtig ist.
 	 * das wird an anderer stelle entschieden
@@ -456,9 +442,9 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 	// save-guard against degenerate polygons (i.e. all points close to each other or whatever error may cause
 	// the normal vector to have near zero magnitude... this may happen for extremely small polygons, when
 	// the x and y vector lengths are less than 1 mm in length).
-	m_normal = n;
+	m_normal = n1;
 	// now compute local Y axis
-	n.crossProduct(m_localX, m_localY);
+	n1.crossProduct(m_localX, m_localY);
 	// normalize localX and localY
 	m_localX.normalize();
 	m_localY.normalize();
