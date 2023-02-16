@@ -278,6 +278,7 @@ int main(int argc, char *argv[]) {
 		ex.writeMsgStackToError();
 		return EXIT_FAILURE;
 	}
+	a.m_mainWindow = nullptr; // no more main window
 
 	// return exit code to environment
 	return res;
