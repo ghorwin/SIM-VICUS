@@ -360,7 +360,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/info.png</normaloff>:/gfx/actions/24x24/info.png</iconset>
+     <normaloff>:/gfx/actions/32x32/resultsView_32x32.png</normaloff>:/gfx/actions/32x32/resultsView_32x32.png</iconset>
    </property>
    <property name="text">
     <string>show results</string>

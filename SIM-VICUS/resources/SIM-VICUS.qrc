@@ -181,5 +181,7 @@
         <file>gfx/simulation/stop_24x24/04_Stop_hover_24x24.png</file>
         <file>gfx/simulation/stop_24x24/05_Stop_enabled_checked_24x24.png</file>
         <file>gfx/simulation/stop_24x24/06_Stop_hover_checked_24x24.png</file>
+        <file>gfx/actions/32x32/resultsView_32x32.png</file>
+        <file>gfx/actions/64x64/resultsView.png</file>
     </qresource>
 </RCC>
