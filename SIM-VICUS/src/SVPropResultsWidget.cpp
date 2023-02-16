@@ -172,7 +172,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 
 	// update bold font in table - row with current output quantity is set in bold font, the rest without bold font
 	for (int i=0; i<m_ui->tableWidgetAvailableResults->rowCount(); ++i) {
-		bool makeBold = (m_ui->tableWidgetAvailableResults->item(row, 1)->text() == m_currentOutputQuantity);
+		bool makeBold = (m_ui->tableWidgetAvailableResults->item(i, 1)->text() == m_currentOutputQuantity);
 		for (int j=0; j<m_ui->tableWidgetAvailableResults->columnCount(); ++j) {
 			QFont f = m_ui->tableWidgetAvailableResults->item(i,j)->font();
 			f.setBold(makeBold);
@@ -189,7 +189,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int r
 	// get selected quantity
 	QString requestedQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
 	// find respective filename
-	Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
+	Q_ASSERT(m_outputVariable2FileIndexMap.find(requestedQuantity) != m_outputVariable2FileIndexMap.end());
 	unsigned int outputFileIndex = m_outputVariable2FileIndexMap[requestedQuantity];
 	// read data file
 	readDataFile(m_outputFiles[outputFileIndex].m_filename);
@@ -256,6 +256,19 @@ void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
 
 // *** Private Functions ***
 
+bool extractID(const QString & objectName, unsigned int & id) {
+	// extract the id
+	int start = objectName.indexOf("ID=")+3;
+	int end = objectName.lastIndexOf(")");
+	if (start == -1 || end == -1 || end < start)
+		return false; // invalid format of caption; maybe missing name substitution in NANDRAD project generator?
+	bool ok;
+	unsigned int idval = objectName.midRef(start, end-start).toUInt(&ok);
+	if (ok)
+		id = idval;
+	return ok;
+}
+
 
 void SVPropResultsWidget::readResultsDir() {
 
@@ -284,17 +297,17 @@ void SVPropResultsWidget::readResultsDir() {
 		QString line;
 		while (in.readLineInto(&line)) {
 			QStringList fields = line.split("\t");
-			if (fields.size()==2) {
-				// for network elements, we read only pipe elements currently
-				if (fields[0].contains("NetworkElement") && !(fields[1].contains("SupplyPipe") || fields[1].contains("ReturnPipe")))
-					continue;
-				// extract the id
-				// TODO : protected against invalid naming and invalid IDs
-				int start = fields[1].indexOf("ID=")+3;
-				int end = fields[1].lastIndexOf(")");
-				unsigned int id = fields[1].mid(start, end-start).toUInt(); // TODO : invalid ID numbers?
-				m_objectName2Id[fields[1]] = id;
-			}
+			if (fields.size()!=2)
+				continue; // invalid format of line/empty line?
+			// for network elements, currently we only recognize pipe elements
+			if (fields[0].contains("NetworkElement") && !(fields[1].contains("SupplyPipe") || fields[1].contains("ReturnPipe")))
+				continue;
+			// extract the id
+			unsigned int id;
+			if (!extractID(fields[1], id))
+				continue;
+			// remember association of mapped quantity (as it appears in the caption of a tsv file) and the unique object ID
+			m_objectName2Id[fields[1]] = id;
 		}
 	}
 
@@ -437,11 +450,16 @@ void SVPropResultsWidget::updateTableWidgetFormatting() {
 		const ResultDataSet & rds = m_outputFiles[outputFileIndex];
 		QFont f;
 		QColor textColor;
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+			textColor = Qt::white;
+		else
+			textColor = Qt::black;
 		QString statusLabel;
 		QIcon availableIcon;
 		switch (rds.m_status) {
 			case SVPropResultsWidget::ResultDataSet::FS_Unread:
 				statusLabel = tr("unread");
+				textColor = Qt::gray;
 			break;
 			case SVPropResultsWidget::ResultDataSet::FS_Current:
 				availableIcon = QIcon(":/gfx/actions/16x16/ok.png");
@@ -530,28 +548,45 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 	IBK::UnitVector timeSeconds(time.begin(), time.end(), timeUnit);
 	timeSeconds.convert(IBK::Unit("s"));
 
-	for (unsigned int i=0; i<reader.m_captions.size(); ++i) {
+	// process all columns of the tsv file, except time column
+	for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
 
 		progDiag.setValue((int)i);
 //		qApp->processEvents();
 
-		// go through all objects
-		for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
-			std::string objectName = it->first.toStdString();
-			// look if object name is in this caption
-			if (reader.m_captions[i].find(objectName) != std::string::npos){
-				QString qCaption = QString::fromStdString(reader.m_captions[i]);
-				int start = qCaption.indexOf("ID=")+3;
-				int end = qCaption.lastIndexOf(")");
-				unsigned int id = qCaption.midRef(start, end-start).toUInt();
-				QString outputName = qCaption.remove(it->first + ".");
-				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+		// check if this caption is among our recognized captions
+		QString qCaption = QString::fromStdString(reader.m_captions[i]);
+		// extract output name - everything past the last .
+		int dotpos = qCaption.lastIndexOf('.');
+		if (dotpos == -1)
+			continue;
+		QString objectName = qCaption.left(dotpos);
+		std::map<QString, unsigned int>::const_iterator it = m_objectName2Id.find(objectName);
+		if (it == m_objectName2Id.end())
+			continue; // not recognized, skip
+		// extract the id
+		unsigned int id;
+		if (!extractID(qCaption, id))
+			continue;
+		// remove the object reference, for example
+		// "BuildingName.E0.WE0.0_Bath(ID=100)" from
+		// caption "BuildingName.E0.WE0.0_Bath(ID=100).AirTemperature"
+		QString outputName = qCaption.mid(dotpos+1); // -> AirTemperature
+		// and store in map with all outputs
+		m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
 																			   timeSeconds.m_data, reader.colData(i), timeUnit, IBK::Unit("s"));
-			}
-		} // for known quantities
 	} // for captions in file
 
 	progDiag.setValue((int)reader.m_captions.size()-1); // fill and closes the dialog
+
+	// update status in filelist
+	for (ResultDataSet & rds : m_outputFiles) {
+		if (rds.m_filename == filename) {
+			rds.m_status = ResultDataSet::FS_Current;
+			rds.m_timeStampLastUpdated = QFileInfo(fullFilePath).lastModified();
+			break;
+		}
+	}
 
 	// now cache was updated, update table widget status
 	updateTableWidgetFormatting(); // this does not cause any recoloring or selection change, just updates fonts and icons

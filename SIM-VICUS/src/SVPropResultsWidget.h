@@ -133,7 +133,10 @@ private:
 	/*! Maps an output variable (extracted from caption in tsv-file) to the file index in vector m_outputFiles. */
 	std::map<QString, unsigned int>					m_outputVariable2FileIndexMap;
 
-	/*! Stores VICUS Object Ids for each output property (effectively the content of the objectref_substitutions.txt file). */
+	/*! Stores VICUS Object Ids for each output property (effectively the content of the objectref_substitutions.txt file).
+		Key is the name that appears in the beginning of a caption of a tsv-file, for example: "BuildingName.E0.WE0.0_Bath(ID=100)" where
+		the caption is "BuildingName.E0.WE0.0_Bath(ID=100).AirTemperature"
+	*/
 	std::map<QString, unsigned int>					m_objectName2Id;
 
 	/*! Holds map for each output property with key being VICUS Object Id and value being the according results values as linear spline. */
