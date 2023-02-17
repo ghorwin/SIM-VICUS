@@ -389,10 +389,10 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 	for(const QJsonValue & feature :  features) {
 
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
-		if(geometry["type"].toString()  !=  "LineString")
+		bool validObject = geometry["type"].toString() ==  "LineString" || geometry["type"].toString() ==  "MultiLineString";
+		if(!validObject)
 			continue;
 
-		std::vector<std::vector<double> > polyLine;
 		unsigned int pipeId = m_defaultPipeId;
 
 		QJsonObject properties = feature.toObject()["properties"].toObject();
@@ -410,31 +410,50 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 			}
 		}
 
-		for(const QJsonValue  coordinates : geometry["coordinates"].toArray()){
-			double x,y;
-			double z = 0;
-			if (m_ui->groupBoxUTM->isChecked()) {
-				double lon = coordinates.toArray()[0].toDouble();
-				double lat = coordinates.toArray()[1].toDouble();
-				//covert the LatLon Coordiantes to metric ones
-				int utmZone = m_ui->comboBoxUTMZone->currentIndex();
-				IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+		// MultiLineString
+		if (geometry["type"].toString() ==  "MultiLineString") {
+			for (const QJsonValue &val: geometry["coordinates"].toArray()) {
+				importLineString(network, val.toArray(), pipeId, nextId);
 			}
-			else {
-				x = coordinates.toArray()[0].toDouble();
-				y = coordinates.toArray()[1].toDouble();
-			}
-			if (coordinates.toArray().size()==3)
-				z = coordinates.toArray()[2].toDouble();
-
-			polyLine.push_back({x, y, z});
 		}
-
-		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-			unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-			network.addEdge(++nextId, n1, n2, false, pipeId);
+		// LineString
+		else {
+			const QJsonArray &lineString = geometry["coordinates"].toArray();
+			importLineString(network, lineString, pipeId, nextId);
 		}
+	}
+
+}
+
+
+void SVNetworkImportDialog::importLineString(VICUS::Network &network, const QJsonArray &lineString, unsigned int pipeId, unsigned int &nextId) const {
+
+	std::vector<std::vector<double> > polyLine;
+
+	for(const QJsonValue coordinates : lineString){
+		double x,y;
+		double z = 0;
+		if (m_ui->groupBoxUTM->isChecked()) {
+			double lon = coordinates.toArray()[0].toDouble();
+			double lat = coordinates.toArray()[1].toDouble();
+			//convert the LatLon Coordiantes to metric ones
+			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+			IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+		}
+		else {
+			x = coordinates.toArray()[0].toDouble();
+			y = coordinates.toArray()[1].toDouble();
+		}
+		if (coordinates.toArray().size()==3)
+			z = coordinates.toArray()[2].toDouble();
+
+		polyLine.push_back({x, y, z});
+	}
+
+	for (unsigned i=0; i<polyLine.size()-1; ++i){
+		unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+		unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+		network.addEdge(++nextId, n1, n2, false, pipeId);
 	}
 }
 
@@ -479,42 +498,56 @@ void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, c
 	const QJsonArray features = jsonObj["features"].toArray();
 
 	for(const QJsonValue & feature :  features){
+
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
-		if(geometry["type"].toString()  !=  "Point")
-			continue;
-		QJsonValue coordinates = geometry["coordinates"];
-		double x,y;
-		double z = 0;
-		if (m_ui->groupBoxUTM->isChecked()) {
-			double lon = coordinates.toArray()[0].toDouble();
-			double lat = coordinates.toArray()[1].toDouble();
-			//covert the LatLon Coordiantes to metric ones
-			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
-			IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
-		}
-		else {
-			x = coordinates.toArray()[0].toDouble();
-			y = coordinates.toArray()[1].toDouble();
-		}
-
-		if (coordinates.toArray().size()==3)
-			z = coordinates.toArray()[2].toDouble();
-
-		double heatingDemand = defaultHeatingDemand;
 		const QJsonObject &props = feature.toObject()["properties"].toObject();
-		double val = props["MaxHeatingDemand"].toDouble();
-		if (val>0)
-			heatingDemand = val * 1000; // expected in kW
-		QString name = props["Name"].toString();
 
-		// add node
-		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
-				VICUS::NetworkNode::NT_SubStation);
-		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatingDemand, "W");
-		network.nodeById(id)->m_displayName = name;
+		if(geometry["type"].toString() ==  "Point") {
+			QJsonArray coordinates = geometry["coordinates"].toArray();
+			importPoints(network, coordinates, props, defaultHeatingDemand, nextId);
+		}
+		else if(geometry["type"].toString() == "MultiPoint") {
+			for (QJsonValue val: geometry["coordinates"].toArray()) {
+				QJsonArray coordinates = val.toArray();
+				importPoints(network, coordinates, props, defaultHeatingDemand, nextId);
+			}
+		}
 	}
 }
 
+
+void SVNetworkImportDialog::importPoints(VICUS::Network & network, const QJsonArray & coordinates, const QJsonObject &properties, const double &defaultHeatingDemand, unsigned int & nextId) const {
+
+	double x,y;
+	double z = 0;
+	if (m_ui->groupBoxUTM->isChecked()) {
+		double lon = coordinates[0].toDouble();
+		double lat = coordinates[1].toDouble();
+		//covert the LatLon Coordiantes to metric ones
+		int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+		IBKMK::LatLonToUTMXY(lat, lon, utmZone, x, y);
+	}
+	else {
+		x = coordinates[0].toDouble();
+		y = coordinates[1].toDouble();
+	}
+
+	if (coordinates.size()==3)
+		z = coordinates[2].toDouble();
+
+	double heatingDemand = defaultHeatingDemand;
+
+	double val = properties["MaxHeatingDemand"].toDouble();
+	if (val>0)
+		heatingDemand = val * 1000; // expected in kW
+	QString name = properties["Name"].toString();
+
+	// add node
+	unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
+			VICUS::NetworkNode::NT_SubStation);
+	network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatingDemand, "W");
+	network.nodeById(id)->m_displayName = name;
+}
 
 
 void SVNetworkImportDialog::on_radioButtonNewNetwork_clicked(bool checked) {
