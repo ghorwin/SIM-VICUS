@@ -90,7 +90,7 @@ void SVPropResultsWidget::refreshDirectory() {
 // *** Private Slots ***
 
 
-void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo * /*data*/) {
+void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// Output data and VICUS project on file and current VICUS data model are unrelated.
 	// We could check for consistency of vicus, nandrad and output files,
 	// i.e. time stamps must be vicus <= nandrad <= outputs.
@@ -100,15 +100,17 @@ void SVPropResultsWidget::onModified(int /*modificationType*/, ModificationInfo 
 	// Hence, in the result view we must always assume that we show mismatching data from
 	// outdated files. But, as long as the UI doesn't crash, we can just keep it simple.
 
-//	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
-//	switch (modType) {
-//		case SVProjectHandler::AllModified:
+	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (modType) {
+		case SVProjectHandler::AllModified: {
+			on_toolButtonSetDefaultDirectory_clicked();
+		} break;
 //		case SVProjectHandler::NetworkGeometryChanged:
 //		case SVProjectHandler::BuildingGeometryChanged: {
-//			clearUi();
+//			refreshDirectory();
 //		} break;
-//		default: ; // just to make compiler happy
-//	}
+		default: ; // just to make compiler happy
+	}
 }
 
 
@@ -142,6 +144,7 @@ void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
 
 
 void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() {
+	QString currentOutputUnit;
 	// find out the selected row
 	int row = m_ui->tableWidgetAvailableResults->currentRow();
 	if (row == -1) {
@@ -151,11 +154,14 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 	else {
 		// make quantity the current quantity
 		m_currentOutputQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
+		currentOutputUnit = m_ui->tableWidgetAvailableResults->item(row, 2)->text();
 		// check if the respective file is in cache
 		Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
 		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
-		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread)
+		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread) {
 			m_currentOutputQuantity.clear(); // not cached yet, cannot display
+			currentOutputUnit.clear();
+		}
 		else {
 			// set slider
 			Q_ASSERT(!m_allResults[m_currentOutputQuantity].empty());
@@ -163,6 +169,8 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 			IBK::UnitVector timePointVec;
 			timePointVec.m_data = m_allResults[m_currentOutputQuantity].begin()->second.m_values.x();
 			timePointVec.m_unit = m_allResults[m_currentOutputQuantity].begin()->second.m_xUnit;
+			if (timePointVec.m_unit.base_unit() == IBK::Unit("s"))
+				timePointVec.convert(IBK::Unit("s"));
 			m_ui->widgetTimeSlider->setValues(timePointVec);
 			m_ui->widgetTimeSlider->setCurrentValue(timePointVec.m_data.back());
 			// determine max/min values
@@ -170,6 +178,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 		}
 	}
 
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle( QString("%1 [%2]").arg(m_currentOutputQuantity, currentOutputUnit));
 	// trigger recoloring (or if no data - make all grey)
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
@@ -633,6 +642,8 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 	QColor col;
 	const VICUS::Project &p = project();
 	for (const VICUS::Network &net: p.m_geometricNetworks) {
+		for (const VICUS::NetworkNode &no: net.m_nodes)
+			no.m_color = GREY;
 		for (const VICUS::NetworkEdge &e: net.m_edges) {
 			e.m_color = GREY; // initialize with grey
 			if (haveData && m_allResults[m_currentOutputQuantity].find(e.m_id) != m_allResults[m_currentOutputQuantity].end()) {

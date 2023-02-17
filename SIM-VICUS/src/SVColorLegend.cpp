@@ -83,7 +83,8 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 	// we draw 5 labels
 	for (unsigned int i=0; i<=100; i+=20) {
 		double y = *m_maxValue - double(i)/100 * (*m_maxValue - *m_minValue);
-		QString label = QString::number(y, 'f', 2);
+		// we use option 'g', as otherwise the string may becomes verly large and cannot be shown properly
+		QString label = QString::number(y, 'g', 2);
 		if (i<99)
 			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight, labelWidth, labelHeight), label );
 		else
