@@ -83,8 +83,13 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 	// we draw 5 labels
 	for (unsigned int i=0; i<=100; i+=20) {
 		double y = *m_maxValue - double(i)/100 * (*m_maxValue - *m_minValue);
-		// we use option 'g', as otherwise the string may becomes verly large and cannot be shown properly
-		QString label = QString::number(y, 'g', 2);
+		// use floating point for numbers with more than 4 digits
+		QString label;
+		if (y>9999)
+			label = QString::number(y, 'e', 2);
+		else
+			label = QString::number(y, 'f', 1);
+
 		if (i<99)
 			painter.drawText( QRectF(offsetH + barWidth + 2, offsetV + double(i)*rectHeight, labelWidth, labelHeight), label );
 		else

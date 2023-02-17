@@ -169,8 +169,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 			IBK::UnitVector timePointVec;
 			timePointVec.m_data = m_allResults[m_currentOutputQuantity].begin()->second.m_values.x();
 			timePointVec.m_unit = m_allResults[m_currentOutputQuantity].begin()->second.m_xUnit;
-			if (timePointVec.m_unit.base_unit() == IBK::Unit("s"))
-				timePointVec.convert(IBK::Unit("s"));
+			currentOutputUnit = QString::fromStdString( m_allResults[m_currentOutputQuantity].begin()->second.m_yUnit.name() );
 			m_ui->widgetTimeSlider->setValues(timePointVec);
 			m_ui->widgetTimeSlider->setCurrentValue(timePointVec.m_data.back());
 			// determine max/min values
@@ -178,7 +177,11 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 		}
 	}
 
-	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle( QString("%1 [%2]").arg(m_currentOutputQuantity, currentOutputUnit));
+	if (m_currentOutputQuantity.isEmpty())
+		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle("");
+	else
+		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutputQuantity, currentOutputUnit));
+
 	// trigger recoloring (or if no data - make all grey)
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
 }
@@ -539,7 +542,6 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 
 	// we convert time to seconds so its in accordance with time slider
 	std::vector<double> time = reader.colData(0);
-
 	IBK::UnitVector timeSeconds(time.begin(), time.end(), timeUnit);
 	timeSeconds.convert(IBK::Unit("s"));
 
@@ -569,7 +571,7 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 		QString outputName = qCaption.mid(dotpos+1); // -> AirTemperature
 		// and store in map with all outputs
 		m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
-																			   timeSeconds.m_data, reader.colData(i), timeUnit, IBK::Unit("s"));
+																			   timeSeconds.m_data, reader.colData(i), IBK::Unit("s"), IBK::Unit(reader.m_units[i]));
 	} // for captions in file
 
 	progDiag.setValue((int)reader.m_captions.size()-1); // fill and closes the dialog
