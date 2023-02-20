@@ -115,5 +115,6 @@
         <file>gfx/actions/SmartSelect.png</file>
         <file>gfx/actions/24x24/arrow-right-grey.png</file>
         <file>gfx/actions/24x24/arrow-source-grey.png</file>
+        <file>gfx/actions/acoustic.png</file>
     </qresource>
 </RCC>

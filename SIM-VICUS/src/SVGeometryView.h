@@ -154,6 +154,8 @@ private slots:
 
 	void on_actionSiteParametrization_triggered();
 
+	void on_actionAcousticParametrization_triggered();
+
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
 		without changing scene size (by moving left splitter).

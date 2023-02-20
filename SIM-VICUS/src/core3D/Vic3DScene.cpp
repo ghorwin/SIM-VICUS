@@ -1908,6 +1908,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_NetworkHeatExchange:
 			case SVViewState::OCM_SelectedSurfacesHighlighted:
 			case SVViewState::OCM_InterlinkedSurfaces:
+			case SVViewState::OCM_AcousticRoomType:
 				break;
 			}
 		}
@@ -1975,6 +1976,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			case SVViewState::OCM_SurfaceHeating:
 			case SVViewState::OCM_InterlinkedSurfaces:
 			case SVViewState::OCM_SupplySystems:
+			case SVViewState::OCM_AcousticRoomType:
 				break;
 			} // switch
 		}
@@ -1996,6 +1998,29 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						// color all surfaces of room based on zone template color
 						for (const VICUS::Surface & s : r.m_surfaces)
 							s.m_color = zt->m_color;
+						// TODO : subsurfaces
+
+					}
+				}
+			}
+		}
+	} break;
+
+	case SVViewState::OCM_AcousticRoomType: {
+		for (const VICUS::Building & b : p.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					// skip all without zone template
+					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+						continue; // they keep the default gray
+					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+						// lookup zone template
+						const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
+						if (at == nullptr)
+							continue; // no definition - keep default (gray) color
+						// color all surfaces of room based on zone template color
+						for (const VICUS::Surface & s : r.m_surfaces)
+							s.m_color = at->m_color;
 						// TODO : subsurfaces
 
 					}

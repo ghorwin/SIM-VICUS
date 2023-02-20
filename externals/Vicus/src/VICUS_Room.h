@@ -86,6 +86,10 @@ public:
 	/*! Reference to assigned zone template (optional). */
 	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
 
+	/*! Reference to assigned acoustic template (optional). */
+	IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
+
+
 	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
 

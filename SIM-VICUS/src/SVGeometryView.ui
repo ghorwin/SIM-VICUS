@@ -128,6 +128,7 @@
          <addaction name="actionCopyGeometry"/>
          <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
+         <addaction name="actionAcousticParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
@@ -329,6 +330,21 @@
    </property>
    <property name="toolTip">
     <string>Edit Site Parametrization</string>
+   </property>
+  </action>
+  <action name="actionAcousticParametrization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/acoustic.png</normaloff>:/gfx/actions/acoustic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Acoustic parametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Acoustic parametrization</string>
    </property>
   </action>
  </widget>

@@ -28,6 +28,9 @@
 
 #include <VICUS_Project.h>
 
+#include "VICUS_AcousticTemplate.h"
+//TODO Anton Why the include?
+
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
 	Initialize the database once in your program using the init() function and use it
@@ -62,6 +65,7 @@ public:
 		DT_VentilationNatural,
 		DT_Infiltration,
 		DT_ZoneTemplates,
+		DT_AcousticTemplates,
 		NUM_DT // used for "all"
 	};
 
@@ -209,6 +213,10 @@ public:
 
 	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
+
+	/*! Map of all database Acoustic templates. */
+	VICUS::Database<VICUS::AcousticTemplate>			m_acousticTemplates;
+
 };
 
 
