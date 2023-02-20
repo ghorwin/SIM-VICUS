@@ -36,18 +36,14 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->tableWidgetAvailableResults->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_ui->tableWidgetAvailableResults->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	m_ui->comboBoxPipeType->clear();
-	m_ui->comboBoxPipeType->addItem(tr("SupplyPipe"), "SupplyPipe");
-	m_ui->comboBoxPipeType->addItem(tr("ReturnPipe"), "ReturnPipe");
-
 	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Minimum value for coloring"), false, false);
 	m_ui->lineEditMaxValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
 
 	m_ui->pushButtonMaxColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
-		m_ui->pushButtonMaxColor->setColor("#ff1d1b"); // on dark mode use a bit more vibrant colors
+		m_ui->pushButtonMaxColor->setColor("#cb1b16"); // on dark mode use a bit more vibrant colors
 	else
-		m_ui->pushButtonMaxColor->setColor("#8f1d1b");
+		m_ui->pushButtonMaxColor->setColor("#cb1b16");
 	m_maxColor = m_ui->pushButtonMaxColor->color();
 	m_ui->pushButtonMinColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMinColor->setColor("#669bbc");
@@ -250,11 +246,6 @@ void SVPropResultsWidget::on_lineEditMinValue_editingFinishedSuccessfully() {
 }
 
 
-void SVPropResultsWidget::on_comboBoxPipeType_activated(int) {
-	// TODO : clarify what should happen here... just update the colors using a different filter? Or refresh entire directory?
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
 
 // *** Private Functions ***
 
@@ -368,7 +359,13 @@ void SVPropResultsWidget::readResultsDir() {
 			QString outputName;
 			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
 				if (caption.contains(it->first)){
-					outputName = caption.remove(it->first + ".");
+					// In case of network pipes: If we have "SupplyPipe" or "ReturnPipe" in the caption, we want to store that in our output name
+					QString addOutputName;
+					if (caption.contains("SupplyPipe"))
+						addOutputName = "SupplyPipe-";
+					else if (caption.contains("ReturnPipe"))
+						addOutputName = "ReturnPipe-";
+					outputName = addOutputName + caption.remove(it->first + ".");
 					availableOutputs[outputName].push_back(it->second); // store output name to ids
 					availableOutputUnits[outputName] = unit;
 					// remember output quantity to file association
@@ -388,7 +385,6 @@ void SVPropResultsWidget::readResultsDir() {
 	bool validOutputFound = !availableOutputs.empty();
 	m_ui->groupBoxAvailableOutputs->setEnabled(validOutputFound);
 	m_ui->groupBoxColormap->setEnabled(validOutputFound);
-	m_ui->groupBoxNetworkOptions->setEnabled(validOutputFound && !project().m_geometricNetworks.empty());
 	m_ui->groupBoxTime->setEnabled(validOutputFound);
 
 	if (!validOutputFound)
@@ -549,7 +545,6 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 	for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
 
 		progDiag.setValue((int)i);
-//		qApp->processEvents();
 
 		// check if this caption is among our recognized captions
 		QString qCaption = QString::fromStdString(reader.m_captions[i]);
@@ -565,10 +560,20 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 		unsigned int id;
 		if (!extractID(qCaption, id))
 			continue;
+
+		// In case of network pipes: If we have "SupplyPipe" or "ReturnPipe" in the caption, we want to store that in our output name
+		QString addOutputName;
+		if (qCaption.contains("SupplyPipe"))
+			addOutputName = "SupplyPipe-";
+		else if (qCaption.contains("ReturnPipe"))
+			addOutputName = "ReturnPipe-";
+
 		// remove the object reference, for example
 		// "BuildingName.E0.WE0.0_Bath(ID=100)" from
-		// caption "BuildingName.E0.WE0.0_Bath(ID=100).AirTemperature"
-		QString outputName = qCaption.mid(dotpos+1); // -> AirTemperature
+		// caption "BuildingName.E0.WE0.0_Bath(ID=100).AirTemperature"  -> "AirTemperature"
+		// caption "SupplyPipe(ID=100).FluidMassflux"					-> "SupplyPipe-FluidMassflux"
+		QString outputName = addOutputName + qCaption.mid(dotpos+1);
+
 		// and store in map with all outputs
 		m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(reader.m_captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
 																			   timeSeconds.m_data, reader.colData(i), IBK::Unit("s"), IBK::Unit(reader.m_units[i]));
