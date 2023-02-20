@@ -166,6 +166,8 @@ private slots:
 
 	void on_actionSiteParametrization_triggered();
 
+	void on_actionAcousticParametrization_triggered();
+	
 	void on_actionShowResults_triggered();
 
 protected:

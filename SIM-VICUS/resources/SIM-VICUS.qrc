@@ -115,6 +115,7 @@
         <file>gfx/actions/SmartSelect.png</file>
         <file>gfx/actions/24x24/arrow-right-grey.png</file>
         <file>gfx/actions/24x24/arrow-source-grey.png</file>
+        <file>gfx/actions/acoustic.png</file>
         <file>gfx/simulation/delete_24x24/01_Delete_P_disabled_24x24.png</file>
         <file>gfx/simulation/delete_24x24/02_Delete_P_disabled_checked_24x24.png</file>
         <file>gfx/simulation/delete_24x24/03_Delete_P_enabled_24x24.png</file>

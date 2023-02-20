@@ -63,6 +63,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->toolBox->addPage(tr("Supply Systems"), new SVPropSupplySystemsWidget(this));
 	m_ui->toolBox->addPage(tr("Room properties"), new SVPropBuildingZoneProperty(this));
 	m_ui->toolBox->addPage(tr("Building levels"), new SVPropFloorManagerWidget(this));
+
 	m_ui->toolBox->blockSignals(false);
 	m_ui->toolBox->setCurrentIndex(BT_Components);
 
@@ -173,6 +174,7 @@ void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->toolBox->widget(BT_SupplySystems))->updateUi();
 	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
+
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 

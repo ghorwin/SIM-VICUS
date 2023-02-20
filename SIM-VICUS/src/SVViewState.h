@@ -119,6 +119,8 @@ public:
 		PM_AddSubSurfaceGeometry,
 		/*! Shows the widget with building properties. */
 		PM_BuildingProperties,
+		/*! Shows the widget with building acoustic properties. */
+		PM_BuildingAcousticProperties,
 		/*! Shows the widget with network properties. */
 		PM_NetworkProperties,
 		/*! Shows the widget with results visualisation. */
@@ -174,6 +176,7 @@ public:
 			are shown in orange.
 		*/
 		OCM_SelectedSurfacesHighlighted,
+		OCM_AcousticRoomType,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,

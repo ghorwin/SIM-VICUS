@@ -150,6 +150,7 @@
          <addaction name="actionCopyGeometry"/>
          <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
+         <addaction name="actionAcousticParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
@@ -339,6 +340,7 @@
     <string>Edit Network Parametrization</string>
    </property>
   </action>
+
   <action name="actionSiteParametrization">
    <property name="checkable">
     <bool>true</bool>
@@ -354,11 +356,29 @@
     <string>Edit Site Parametrization</string>
    </property>
   </action>
-  <action name="actionShowResults">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+
+  <action name="actionAcousticParametrization">
+     <property name="checkable">
+		<bool>true</bool>
+	</property>
    <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/acoustic.png</normaloff>:/gfx/actions/acoustic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Acoustic parametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Acoustic parametrization</string>
+	</property>
+</action>
+    
+
+  <action name="actionShowResults">
+	<property name="checkable">
+		<bool>true</bool>
+	</property>
+	<property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/32x32/resultsView_32x32.png</normaloff>:/gfx/actions/32x32/resultsView_32x32.png</iconset>
    </property>
@@ -369,6 +389,7 @@
     <string>show results</string>
    </property>
   </action>
+
  </widget>
  <customwidgets>
   <customwidget>
