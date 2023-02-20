@@ -340,7 +340,6 @@
     <string>Edit Network Parametrization</string>
    </property>
   </action>
-
   <action name="actionSiteParametrization">
    <property name="checkable">
     <bool>true</bool>
@@ -356,11 +355,10 @@
     <string>Edit Site Parametrization</string>
    </property>
   </action>
-
   <action name="actionAcousticParametrization">
-     <property name="checkable">
-		<bool>true</bool>
-	</property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/acoustic.png</normaloff>:/gfx/actions/acoustic.png</iconset>
@@ -370,17 +368,15 @@
    </property>
    <property name="toolTip">
     <string>Acoustic parametrization</string>
-	</property>
-</action>
-    
-
+   </property>
+  </action>
   <action name="actionShowResults">
-	<property name="checkable">
-		<bool>true</bool>
-	</property>
-	<property name="icon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/resultsView_32x32.png</normaloff>:/gfx/actions/32x32/resultsView_32x32.png</iconset>
+     <normaloff>:/gfx/actions/64x64/resultsView.png</normaloff>:/gfx/actions/64x64/resultsView.png</iconset>
    </property>
    <property name="text">
     <string>show results</string>
@@ -389,7 +385,6 @@
     <string>show results</string>
    </property>
   </action>
-
  </widget>
  <customwidgets>
   <customwidget>
