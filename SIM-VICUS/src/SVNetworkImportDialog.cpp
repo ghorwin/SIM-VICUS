@@ -82,6 +82,8 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui->comboBoxUTMZone->setCurrentIndex(32);
 
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
+
+	m_ui->groupBoxUTM->setChecked(false);
 }
 
 
@@ -169,7 +171,8 @@ void SVNetworkImportDialog::importPipeline() {
 				networkNames.insert(m_ui->comboBoxNetworkSelectionBox->itemText(i));
 			m_network.m_displayName = VICUS::uniqueName(m_ui->lineEditNetworkName->text(), networkNames);
 
-			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
+			m_network.updateExtends();
+			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network, true);
 			undo->push(); // modifies project and updates views
 		}
 
@@ -232,7 +235,8 @@ void SVNetworkImportDialog::importSubStations() {
 				networkNames.insert(m_ui->comboBoxNetworkSelectionBox->itemText(i));
 			m_network.m_displayName = VICUS::uniqueName(m_ui->lineEditNetworkName->text(), networkNames);
 
-			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
+			m_network.updateExtends();
+			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network, true);
 			undo->push(); // modifies project and updates views
 		}
 

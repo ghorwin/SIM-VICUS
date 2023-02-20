@@ -70,8 +70,6 @@ private slots:
 	void on_lineEditMaxValue_editingFinishedSuccessfully();
 	void on_lineEditMinValue_editingFinishedSuccessfully();
 
-	void on_comboBoxPipeType_activated(int index);
-
 
 private:
 

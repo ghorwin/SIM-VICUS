@@ -33,8 +33,9 @@ SVUndoAddNetwork::SVUndoAddNetwork(const QString & label, const VICUS::Network &
 	m_modifyFarDist(modifyFarDist)
 {
 	setText( label );
-	double gridWidth = std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
-	m_farDistance = std::max(1000.0,2*gridWidth);
+	m_gridWidth = 1.2 * std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
+	m_gridSpacing = std::round( m_gridWidth / 100.) ;
+	m_farDistance = std::max(1000.0, 2*m_gridWidth);
 }
 
 
@@ -52,6 +53,10 @@ void SVUndoAddNetwork::undo() {
 
 	if (m_modifyFarDist) {
 		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+		if (theProject().m_viewSettings.m_gridPlanes.size() > 0) {
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_width, m_gridWidth);
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_spacing, m_gridSpacing);
+		}
 		SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
 	}
 
@@ -72,6 +77,10 @@ void SVUndoAddNetwork::redo() {
 
 	if (m_modifyFarDist) {
 		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+		if (theProject().m_viewSettings.m_gridPlanes.size() > 0) {
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_width, m_gridWidth);
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_spacing, m_gridSpacing);
+		}
 		SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
 	}
 
