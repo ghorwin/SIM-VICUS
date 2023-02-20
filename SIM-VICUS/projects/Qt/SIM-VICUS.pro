@@ -79,6 +79,7 @@ SOURCES += \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVCoSimSupplySystemDialog.cpp \
+	../../src/SVColorLegend.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
@@ -88,6 +89,7 @@ SOURCES += \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
 	../../src/SVNetworkExportDialog.cpp \
+	../../src/SVNonEquidistantSlider.cpp \
 	../../src/SVPluginLoader.cpp \
 	../../src/SVPluginManager.cpp \
 	../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
@@ -97,6 +99,7 @@ SOURCES += \
 	../../src/SVPropNetworkHeatExchangeWidget.cpp \
 	../../src/SVPropNetworkNodesWidget.cpp \
 	../../src/SVPropNetworkSubStationWidget.cpp \
+	../../src/SVPropResultsWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -121,6 +124,7 @@ SOURCES += \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
+	../../src/SVTimeSliderWidget.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
@@ -275,6 +279,7 @@ SOURCES += \
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
 	../../src/SVCoSimSupplySystemDialog.h \
+	../../src/SVColorLegend.h \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
@@ -285,6 +290,7 @@ HEADERS  += \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
 	../../src/SVNetworkExportDialog.h \
+	../../src/SVNonEquidistantSlider.h \
 	../../src/SVPluginLoader.h \
 	../../src/SVPluginManager.h \
 	../../src/SVPropBuildingAcousticTemplatesWidget.h \
@@ -294,6 +300,7 @@ HEADERS  += \
 	../../src/SVPropNetworkHeatExchangeWidget.h \
 	../../src/SVPropNetworkNodesWidget.h \
 	../../src/SVPropNetworkSubStationWidget.h \
+	../../src/SVPropResultsWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -318,6 +325,7 @@ HEADERS  += \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
+	../../src/SVTimeSliderWidget.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
@@ -522,6 +530,7 @@ FORMS    += \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkExportDialog.ui \
 	../../src/SVNetworkImportDialog.ui \
+	../../src/SVNonEquidistantSlider.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPluginManager.ui \
@@ -549,6 +558,7 @@ FORMS    += \
 	../../src/SVPropNetworkHeatExchangeWidget.ui \
 	../../src/SVPropNetworkNodesWidget.ui \
 	../../src/SVPropNetworkSubStationWidget.ui \
+	../../src/SVPropResultsWidget.ui \
 	../../src/SVPropSiteWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
@@ -563,6 +573,7 @@ FORMS    += \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
+	../../src/SVTimeSliderWidget.ui \
 	../../src/SVWelcomeScreen.ui \
 	../../src/SVZoneSelectionDialog.ui
 

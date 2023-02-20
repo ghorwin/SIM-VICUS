@@ -27,6 +27,7 @@
 #include "ui_SVLocalCoordinateView.h"
 
 #include <QDebug>
+#include <QKeyEvent>
 
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
@@ -85,17 +86,22 @@ void SVLocalCoordinateView::setMoveCoordinateSystemButtonChecked(bool checked) {
 
 void SVLocalCoordinateView::on_toolButtonAlignCoordinateSystem_clicked() {
 	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
-	geoView->handleGlobalKeyPress(Qt::Key_F4);
+	QKeyEvent e(QKeyEvent::KeyPress, Qt::Key_F4, Qt::NoModifier);
+	geoView->handleGlobalKeyPressEvent(&e);
 }
+
 
 void SVLocalCoordinateView::on_toolButtonMoveCoordinateSystem_clicked() {
 	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
-	geoView->handleGlobalKeyPress(Qt::Key_F5);
+	QKeyEvent e(QKeyEvent::KeyPress, Qt::Key_F5, Qt::NoModifier);
+	geoView->handleGlobalKeyPressEvent(&e);
 }
+
 
 void SVLocalCoordinateView::on_toolButtonInformation_clicked() {
 	showInformation();
 }
+
 
 void SVLocalCoordinateView::showInformation() {
 	// update our selection lists

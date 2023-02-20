@@ -42,32 +42,41 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 	FUNCID(SVDebugApplication::notify);
 
 	try {
-		if (e->type() == QEvent::KeyPress) {
-			// if we get a key event, and the currently focused widget is not a line edit, call the global key handler
-			// function in GeometryView
-			QWidget * w = focusWidget();
-			if (qobject_cast<QLineEdit*>(w) == nullptr) {
-	//				qDebug () << "GlobalKeypressEvent - handled";
-				// are we in "place vertex mode" and have the vertex list property widget open?
-				// if so, execute "complete polygon" if possible
-				SVViewState vs = SVViewStateHandler::instance().viewState();
+		QWindow  * windowHandle = nullptr;
+		if (m_mainWindow != nullptr)
+			windowHandle = m_mainWindow->windowHandle();
+		// ignore events send to the outer window (from window manager)
+		if (recv != windowHandle) {
+			if (e->type() == QEvent::KeyPress) {
+//				qDebug() << "KeyPressEvent from " << recv->objectName();
 				QKeyEvent * ke = dynamic_cast<QKeyEvent *>(e);
-				if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
-					if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
-						if (SVViewStateHandler::instance().m_propVertexListWidget->completePolygonIfPossible())
+				// if we get a key event, and the currently focused widget is NOT a line edit, call the global key handler
+				// function in GeometryView
+				QWidget * w = focusWidget();
+				if (qobject_cast<QLineEdit*>(w) == nullptr) {
+					// are we in "place vertex mode" and have the vertex list property widget open?
+					// if so, execute "complete polygon" if possible
+					SVViewState vs = SVViewStateHandler::instance().viewState();
+					if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
+						if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter) {
+							if (SVViewStateHandler::instance().m_propVertexListWidget->completePolygonIfPossible())
+								return true;
+						}
+					}
+					// maybe a key for the tool bar or snap/lock buttons? Or a scene navigation key?
+					if (SVViewStateHandler::instance().m_geometryView != nullptr) {
+						if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPressEvent(ke))
 							return true;
 					}
 				}
-				// maybe a key for the tool bar or snap/lock buttons? Or a scene navigation key?
+			}
+			if (e->type() == QEvent::KeyRelease) {
+		//			qDebug() << "KeyReleaseEvent from " << recv->objectName();
+				QKeyEvent * ke = dynamic_cast<QKeyEvent *>(e);
 				if (SVViewStateHandler::instance().m_geometryView != nullptr) {
-					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPress((Qt::Key)ke->key()))
+					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyRelease(ke))
 						return true;
 				}
-	//				if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
-	//					qDebug () << "GlobalKeypressEvent - not handled";
-			}
-			else {
-	//				qDebug () << "GlobalKeypressEvent - focus in line edit - ignored";
 			}
 		}
 		return QApplication::notify( recv, e );

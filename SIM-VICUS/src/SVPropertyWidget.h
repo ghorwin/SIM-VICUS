@@ -64,6 +64,7 @@ public:
 		M_BuildingProperties,
 		M_BuildingAcousticProperties,
 		M_AddWindowWidget,
+		M_ResultsWidget,
 		NUM_M
 	};
 

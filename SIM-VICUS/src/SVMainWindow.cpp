@@ -703,6 +703,7 @@ void SVMainWindow::setup() {
 	// *** Geometry view ***
 
 	m_geometryView = new SVGeometryView(this);
+	m_geometryView->m_focusRootWidgets.insert(m_navigationTreeWidget); // remember as possible focus widget for events
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
@@ -843,11 +844,11 @@ void SVMainWindow::onImportPluginTriggered() {
 	bool success = importPlugin->import(this, projectText);
 	try {
 		p.readXML(projectText);
+		std::ofstream out("g:\\temp\\VicusImport.txt");
+		out << projectText.toStdString();
 	}
 	catch(IBK::Exception& e) {
 		success = false;
-		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
-						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
 
 	if (success) {
@@ -855,6 +856,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		if (!m_projectHandler.isValid()) {
 			// create new project
 			m_projectHandler.newProject(&p); // emits updateActions()
+			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
 			// ask user about preference
@@ -878,13 +880,16 @@ void SVMainWindow::onImportPluginTriggered() {
 				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
 
 				m_projectHandler.importProject(p);
+				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 			}
 		}
 	}
 	// call of import plugin not successful
 	else {
-		///< \todo Error handling in case of import error
+		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
+						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
+//	m_geometryView->refreshSceneView();
 }
 
 
@@ -1843,6 +1848,7 @@ void SVMainWindow::setupDockWidgets() {
 
 	// *** Log widget ***
 	m_logDockWidget = new QDockWidget(this);
+	m_geometryView->m_focusRootWidgets.insert(m_logDockWidget); // remember as possible focus widget for events
 	m_logDockWidget->setObjectName("LogDockWidget");
 	m_logDockWidget->setContentsMargins(0,0,0,0);
 	m_logDockWidget->setWindowTitle(tr("Application Log"));

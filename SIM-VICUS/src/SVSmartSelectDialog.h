@@ -81,8 +81,6 @@ private slots:
 
 	void on_checkBoxMaxHeatingDemandEqualTo_stateChanged(int arg1);
 
-	void on_checkBoxNodeDisplayName_stateChanged(int arg1);
-
 	void on_listWidgetOptions_itemDoubleClicked(QListWidgetItem *item);
 
 	void on_checkBoxFilterBoundaryCondition_stateChanged(int arg1);
@@ -90,6 +88,8 @@ private slots:
 	void on_toolButtonReset_clicked();
 
 	void on_checkBoxFilterName_clicked(bool checked);
+
+	void on_checkBoxNodeId_stateChanged(int arg1);
 
 private:
 

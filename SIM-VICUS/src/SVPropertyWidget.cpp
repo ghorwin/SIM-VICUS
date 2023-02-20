@@ -43,6 +43,7 @@
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropBuildingAcousticTemplatesWidget.h"
+#include "SVPropResultsWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -144,6 +145,11 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 
 		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+		} break;
+
+		case SVViewState::PM_ResultsProperties : {
+			showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
+			qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
 		} break;
 	}
 }

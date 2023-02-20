@@ -137,15 +137,10 @@ public:
 	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemTranslationMode(bool abort);
 
-	/*! Enter Rubberband Mode. */
-	void enterRubberbandMode();
-	/*! Leaves Rubberband Mode. .*/
-	void leaveRubberbandMode();
-
 	/*! Toggles "measurement" mode on. */
 	void enterMeasurementMode();
 	/*! Leaves the "measurement" mode and returns to previous mode. */
-	void leaveMeasurementMode(bool setViewState = true);
+	void leaveMeasurementMode();
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
@@ -301,6 +296,7 @@ private:
 		NM_InteractiveTranslation,
 		NM_InteractiveRotation, // this is set for any axis rotation - which rotation is rotated about is set in the local coordinate system TM_xx bit
 		NM_InteractiveScaling, // this is set for any axis - which axis is scaled is set in the local coordinate system TM_xx bit
+		NM_RubberbandSelection, // not really a navigation mode, but here the user drags a visible rectangle, hence other navigation operations are disabled
 		NUM_NM
 	};
 

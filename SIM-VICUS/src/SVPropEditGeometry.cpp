@@ -312,7 +312,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 
 			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
 			// offset are changed in 0.01 steps
-			double offset = (wheelEvent->delta()>0) ? delta : -delta;
+			double offset = (wheelEvent->angleDelta().y()>0) ? delta : -delta;
 			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
 		}
 	}

@@ -111,11 +111,16 @@ private:
 	*/
 	void readGridFromGeoJson(VICUS::Network & network, const QJsonObject & jsonObj, unsigned int nextId) const;
 
+	/*! Helper function */
+	void importLineString(VICUS::Network &network, const QJsonArray &lineString, unsigned int pipeId, unsigned int & nextId) const;
+
 	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.*/
 	void readBuildingsFromCSV(VICUS::Network & network, const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) const;
 
 	/*! reads geoJson-file and adds according nodes of type NT_BUILDING to the network*/
 	void readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &heatDemand, unsigned int nextId) const;
+
+	void importPoints(VICUS::Network &network, const QJsonArray &coordinates, const QJsonObject & properties, const double & defaultHeatingDemand, unsigned int & nextId) const;
 
 	/*! checks if the file name is set and a default pipe is selected and enables/disables the import button*/
 	void checkIfPipelineImportIsEnabled();
