@@ -1803,6 +1803,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		case SVViewState::OCM_None:
 			break;
 
+
+		// *** OCM_SelectedSurfacesHighlighted
 		case SVViewState::OCM_SelectedSurfacesHighlighted: {
 			for (const VICUS::Building & b : p.m_buildings) {
 				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -1818,6 +1820,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 		} break;
 
+
+		// *** OCM_Components
 		case SVViewState::OCM_Components: {
 			// now color all surfaces that appear somewhere in a ComponentInstance
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
@@ -1839,102 +1843,25 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 		} break;
 
-		case SVViewState::OCM_SubSurfaceComponents:
-		case SVViewState::OCM_ComponentOrientation:
-		case SVViewState::OCM_SurfaceHeating:
-		case SVViewState::OCM_BoundaryConditions:
-		case SVViewState::OCM_SupplySystems: {
+
+		// *** OCM_ComponentOrientation
+		case SVViewState::OCM_ComponentOrientation: {
 			// now color all surfaces, this works by first looking up the components, associated with each surface
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 				// lookup component definition
 				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 				if (comp == nullptr)
 					continue; // no component definition - keep default (gray) color
-				switch (ocm) {
-				case SVViewState::OCM_ComponentOrientation:
-					// color surfaces when either filtering is off (id == 0)
-					// or when component ID matches selected id
-					if (id == VICUS::INVALID_ID || ci.m_idComponent == id) {
-						// color side A surfaces with blue,
-						// side B surfaces with orange
-						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = QColor(47,125,212);
-						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = QColor(255, 206, 48);
-					}
-					break;
-				case SVViewState::OCM_BoundaryConditions:
-					if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-						if (bc != nullptr)
-							ci.m_sideASurface->m_color = bc->m_color;
-					}
-					if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-						if (bc != nullptr)
-							ci.m_sideBSurface->m_color = bc->m_color;
-					}
-					break;
 
-				case SVViewState::OCM_SurfaceHeating: {
-					// lookup surface heating definition
-					const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
-					if (surfHeat != nullptr) {
-						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = surfHeat->m_color;
-						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = surfHeat->m_color;
-					}
-					else {
-						if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
-							if (ci.m_sideASurface != nullptr)
-								ci.m_sideASurface->m_color = QColor("#758eb3");
-							if (ci.m_sideBSurface != nullptr)
-								ci.m_sideBSurface->m_color = QColor("#758eb3");
-						}
-
-					}
-				}
-					break;
-
-				case SVViewState::OCM_SupplySystems: {
-					// lookup surface heating definition
-					const VICUS::SupplySystem * supplySys = db.m_supplySystems[ci.m_idSupplySystem];
-					if (supplySys != nullptr) {
-						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = supplySys->m_color;
-						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = supplySys->m_color;
-					}
-					else {
-						if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
-							if (ci.m_sideASurface != nullptr)
-								ci.m_sideASurface->m_color = QColor("#758eb3");
-							if (ci.m_sideBSurface != nullptr)
-								ci.m_sideBSurface->m_color = QColor("#758eb3");
-						}
-
-					}
-				}
-					break;
-
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
-				case SVViewState::OCM_Components:
-				case SVViewState::OCM_ZoneTemplates:
-				case SVViewState::OCM_SubSurfaceComponents:
-				case SVViewState::OCM_None:
-				case SVViewState::OCM_Network:
-				case SVViewState::OCM_NetworkEdge:
-				case SVViewState::OCM_NetworkNode:
-				case SVViewState::OCM_NetworkSubNetworks:
-				case SVViewState::OCM_NetworkHeatExchange:
-				case SVViewState::OCM_SelectedSurfacesHighlighted:
-				case SVViewState::OCM_InterlinkedSurfaces:
-				case SVViewState::OCM_ResultColorView:
-				case SVViewState::OCM_AcousticRoomType:
-					break;
+				// color surfaces when either filtering is off (id == 0)
+				// or when component ID matches selected id
+				if (id == VICUS::INVALID_ID || ci.m_idComponent == id) {
+					// color side A surfaces with blue,
+					// side B surfaces with orange
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = QColor(47,125,212);
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = QColor(255, 206, 48);
 				}
 			}
 
@@ -1944,70 +1871,148 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
 				if (comp == nullptr)
 					continue; // no component definition - keep default (uninterested) color
-				switch (ocm) {
-				case SVViewState::OCM_SubSurfaceComponents:
-					if (ci.m_sideASubSurface != nullptr) {
-						ci.m_sideASubSurface->m_color = comp->m_color;
-						// TODO : decide upon alpha value based on component type
-						ci.m_sideASubSurface->m_color.setAlpha(128);
-					}
-					if (ci.m_sideBSubSurface != nullptr) {
-						ci.m_sideBSubSurface->m_color = comp->m_color;
-						ci.m_sideBSubSurface->m_color.setAlpha(128);
-					}
-					break;
-				case SVViewState::OCM_ComponentOrientation:
-					// color surfaces when either filtering is off (id == 0)
-					// or when component ID matches selected id
-					if (id == VICUS::INVALID_ID || ci.m_idSubSurfaceComponent == id) {
-						// color side A surfaces with blue,
-						// side B surfaces with orange
-						// colors slightly brighter than components, to allow differntiation
-						if (ci.m_sideASubSurface != nullptr)
-							ci.m_sideASubSurface->m_color = QColor(92,149,212, 128); // set slightly transparent to have effect on windows
-						if (ci.m_sideBSubSurface != nullptr)
-							ci.m_sideBSubSurface->m_color = QColor(255, 223, 119, 128); // set slightly transparent to have effect on windows
-					}
-					break;
-				case SVViewState::OCM_BoundaryConditions :
-					if (ci.m_sideASubSurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-						if (bc != nullptr) {
-							ci.m_sideASubSurface->m_color = bc->m_color.lighter(50);
-							ci.m_sideASubSurface->m_color.setAlpha(128);
-						}
-					}
-					if (ci.m_sideBSubSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-						if (bc != nullptr) {
-							ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
-							ci.m_sideBSubSurface->m_color.setAlpha(128);
-						}
-					}
-					break;
-				// the color modes below are not handled here and are only added to get rid of compiler warnins
-			case SVViewState::OCM_ZoneTemplates:
-			case SVViewState::OCM_Components:
-			case SVViewState::OCM_None:
-			case SVViewState::OCM_SelectedSurfacesHighlighted:
-			case SVViewState::OCM_Network:
-			case SVViewState::OCM_NetworkEdge:
-			case SVViewState::OCM_NetworkNode:
-			case SVViewState::OCM_NetworkSubNetworks:
-			case SVViewState::OCM_NetworkHeatExchange:
-			case SVViewState::OCM_SurfaceHeating:
-			case SVViewState::OCM_InterlinkedSurfaces:
-			case SVViewState::OCM_SupplySystems:
-			case SVViewState::OCM_AcousticRoomType:
-			case SVViewState::OCM_ResultColorView:
-				break;
-			} // switch
-		}
 
+				// color surfaces when either filtering is off (id == 0)
+				// or when component ID matches selected id
+				if (id == VICUS::INVALID_ID || ci.m_idSubSurfaceComponent == id) {
+					// color side A surfaces with blue,
+					// side B surfaces with orange
+					// colors slightly brighter than components, to allow differntiation
+					if (ci.m_sideASubSurface != nullptr)
+						ci.m_sideASubSurface->m_color = QColor(92,149,212, 128); // set slightly transparent to have effect on windows
+					if (ci.m_sideBSubSurface != nullptr)
+						ci.m_sideBSubSurface->m_color = QColor(255, 223, 119, 128); // set slightly transparent to have effect on windows
+				}
+			}
 		} break;
 
+
+		// *** OCM_SubSurfaceComponents
+		case SVViewState::OCM_SubSurfaceComponents: {
+			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+				// lookup component definition
+				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (uninterested) color
+				if (ci.m_sideASubSurface != nullptr) {
+					ci.m_sideASubSurface->m_color = comp->m_color;
+					// TODO : decide upon alpha value based on component type
+					ci.m_sideASubSurface->m_color.setAlpha(128);
+				}
+				if (ci.m_sideBSubSurface != nullptr) {
+					ci.m_sideBSubSurface->m_color = comp->m_color;
+					ci.m_sideBSubSurface->m_color.setAlpha(128);
+				}
+			}
+		} break;
+
+
+		// *** OCM_SurfaceHeating
+		case SVViewState::OCM_SurfaceHeating: {
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				// lookup component definition
+				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (gray) color
+				// lookup surface heating definition
+				const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
+				if (surfHeat != nullptr) {
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = surfHeat->m_color;
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = surfHeat->m_color;
+				}
+				else {
+					if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
+						if (ci.m_sideASurface != nullptr)
+							ci.m_sideASurface->m_color = QColor("#758eb3");
+						if (ci.m_sideBSurface != nullptr)
+							ci.m_sideBSurface->m_color = QColor("#758eb3");
+					}
+
+				}
+			}
+		} break;
+
+
+		// *** OCM_BoundaryConditions
+		case SVViewState::OCM_BoundaryConditions: {
+			// now color all surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				// lookup component definition
+				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (gray) color
+				if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+					if (bc != nullptr)
+						ci.m_sideASurface->m_color = bc->m_color;
+				}
+				if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+					if (bc != nullptr)
+						ci.m_sideBSurface->m_color = bc->m_color;
+				}
+			}
+			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+				// lookup component definition
+				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (uninterested) color
+				if (ci.m_sideASubSurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+					if (bc != nullptr) {
+						ci.m_sideASubSurface->m_color = bc->m_color.lighter(50);
+						ci.m_sideASubSurface->m_color.setAlpha(128);
+					}
+				}
+				if (ci.m_sideBSubSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+					if (bc != nullptr) {
+						ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
+						ci.m_sideBSubSurface->m_color.setAlpha(128);
+					}
+				}
+			}
+		} break;
+
+
+		// *** OCM_SupplySystems
+		case SVViewState::OCM_SupplySystems: {
+			// now color all surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				// lookup component definition
+				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (gray) color
+				// lookup surface heating definition
+				const VICUS::SupplySystem * supplySys = db.m_supplySystems[ci.m_idSupplySystem];
+				if (supplySys != nullptr) {
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = supplySys->m_color;
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = supplySys->m_color;
+				}
+				else {
+					if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
+						if (ci.m_sideASurface != nullptr)
+							ci.m_sideASurface->m_color = QColor("#758eb3");
+						if (ci.m_sideBSurface != nullptr)
+							ci.m_sideBSurface->m_color = QColor("#758eb3");
+					}
+
+				}
+			}
+		} break;
+
+
+		// *** OCM_ZoneTemplates
 		case SVViewState::OCM_ZoneTemplates: {
 			for (const VICUS::Building & b : p.m_buildings) {
 				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -2031,42 +2036,44 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 		} break;
 
-	case SVViewState::OCM_AcousticRoomType: {
-		for (const VICUS::Building & b : p.m_buildings) {
-			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-				for (const VICUS::Room & r : bl.m_rooms) {
-					// skip all without zone template
-					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
-						continue; // they keep the default gray
-					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
-						// lookup zone template
-						const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
-						if (at == nullptr)
-							continue; // no definition - keep default (gray) color
-						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces)
-							s.m_color = at->m_color;
-						// TODO : subsurfaces
 
+		// *** OCM_AcousticRoomType
+		case SVViewState::OCM_AcousticRoomType: {
+			for (const VICUS::Building & b : p.m_buildings) {
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+					for (const VICUS::Room & r : bl.m_rooms) {
+						// skip all without zone template
+						if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+							continue; // they keep the default gray
+						if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+							// lookup zone template
+							const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
+							if (at == nullptr)
+								continue; // no definition - keep default (gray) color
+							// color all surfaces of room based on zone template color
+							for (const VICUS::Surface & s : r.m_surfaces)
+								s.m_color = at->m_color;
+							// TODO : subsurfaces
+
+						}
 					}
 				}
 			}
-		}
-	} break;
+		} break;
 
 
+		// *** Networks
 		case SVViewState::OCM_Network:
 		case SVViewState::OCM_NetworkNode:
 		case SVViewState::OCM_NetworkEdge:
 		case SVViewState::OCM_NetworkHeatExchange:
-		case SVViewState::OCM_NetworkSubNetworks:
-		case SVViewState::OCM_ResultColorView: {
+		case SVViewState::OCM_NetworkSubNetworks: {
 			for (const VICUS::Network & net: p.m_geometricNetworks){
 
 				switch (ocm) {
-					case SVViewState::OCM_NetworkNode: {
+					case SVViewState::OCM_NetworkNode:
 						net.setDefaultColors();
-					} break;
+					break;
 					case SVViewState::OCM_NetworkEdge: {
 						for (const VICUS::NetworkNode & node: net.m_nodes)
 							node.m_color = Qt::lightGray;
@@ -2092,24 +2099,17 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					} break;
 
-					// rest only to avoid compiler warnings
-					case SVViewState::OCM_None:
-					case SVViewState::OCM_SelectedSurfacesHighlighted:
-					case SVViewState::OCM_Components:
-					case SVViewState::OCM_SubSurfaceComponents:
-					case SVViewState::OCM_ComponentOrientation:
-					case SVViewState::OCM_BoundaryConditions:
-					case SVViewState::OCM_ZoneTemplates:
-					case SVViewState::OCM_SurfaceHeating:
-					case SVViewState::OCM_Network:
-					case SVViewState::OCM_InterlinkedSurfaces:
-					case SVViewState::OCM_SupplySystems:
-					case SVViewState::OCM_ResultColorView:
+					default:
 						break;
 				} // switch
 			} // for
 		} break;
-	} // switch
+
+		case SVViewState::OCM_ResultColorView:
+			break;
+
+
+	} // end of endless switch
 
 }
 
