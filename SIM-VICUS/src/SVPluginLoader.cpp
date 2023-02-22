@@ -28,11 +28,6 @@ SVPluginLoader::SVPluginLoader()
 void SVPluginLoader::loadPlugins() {
 	IBK::IBK_Message("Loading plugins...\n");
 
-//	const auto staticInstances = QPluginLoader::staticInstances();
-//	for (QObject *plugin : staticInstances) {
-//		setupPluginMenuEntries(plugin);
-//	}
-
 	// first load built-in (installed) plugins
 	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
 #if defined(Q_OS_WIN32)
@@ -65,6 +60,11 @@ void SVPluginLoader::loadPlugins() {
 		PluginData pd;
 		loadPlugin(pluginsDir.filePath(dirName), pd);
 	}
+
+//	const auto staticInstances = QPluginLoader::staticInstances();
+//	for (QObject *plugin : staticInstances) {
+//		setupPluginMenuEntries(plugin);
+//	}
 
 }
 

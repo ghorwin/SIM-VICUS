@@ -837,6 +837,7 @@ void SVMainWindow::onImportPluginTriggered() {
 	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
 	Q_ASSERT(plugin != nullptr);
 	SVImportPluginInterface * importPlugin = dynamic_cast<SVImportPluginInterface *>(plugin);
+	importPlugin->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
 	Q_ASSERT(importPlugin != nullptr);
 
 	VICUS::Project p;
@@ -1866,6 +1867,12 @@ void SVMainWindow::setupDockWidgets() {
 
 void SVMainWindow::setupPlugins() {
 	m_pluginLoader->loadPlugins();
+
+//	const auto staticInstances = QPluginLoader::staticInstances();
+	for (auto pldata = m_pluginLoader->m_plugins.begin(); pldata != m_pluginLoader->m_plugins.end(); ++pldata) {
+		QObject* pl = pldata->m_loader.instance();
+		setupPluginMenuEntries(pl);
+	}
 }
 
 
