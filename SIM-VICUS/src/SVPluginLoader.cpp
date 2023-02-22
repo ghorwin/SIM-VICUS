@@ -86,9 +86,9 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 		libFiles.append(fileName);
 		// do we have a plugin file?
 		if (fileName.contains("plugin", Qt::CaseInsensitive)) {
-			++count;
 			if (count == 0)
 				pluginFile = fileName;
+			++count;
 		}
 	}
 
@@ -121,9 +121,9 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 
 	// try to load plugin
 	QString pluginFilePath = pluginDir.absoluteFilePath(pluginFile);
-	pd.m_loader.setFileName(pluginFilePath);
-	pd.m_loader.setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
-	pd.m_metadata = pd.m_loader.metaData().value("MetaData").toObject();
+	pd.m_loader->setFileName(pluginFilePath);
+	pd.m_loader->setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
+	pd.m_metadata = pd.m_loader->metaData().value("MetaData").toObject();
 	pd.decodeMetadata(); // to have some fallback data
 	// check for matching versions before attempting to load the plugin
 	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
@@ -133,7 +133,7 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 		return;
 	}
 
-	QObject *plugin = pd.m_loader.instance();
+	QObject *plugin = pd.m_loader->instance();
 	if (plugin != nullptr) {
 		IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(pluginFilePath.toStdString()) );
 		// ok, we have a plugin, check for valid interfaces
@@ -142,17 +142,19 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 		if (dbIface != nullptr) {
 			pd.m_interfaceType = IT_Database;
 			IBK::IBK_Message(IBK::FormatString("    Database interface\n") );
+			m_plugins[pluginFile] = pd;
 		}
 		else {
 			SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
 			if (iface != nullptr) {
 				pd.m_interfaceType = IT_Import;
 				IBK::IBK_Message(IBK::FormatString("    Import interface\n") );
+				m_plugins[pluginFile] = pd;
 			}
 		}
 	}
 	else {
-		QString errtxt = pd.m_loader.errorString();
+		QString errtxt = pd.m_loader->errorString();
 		IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1': %2\n")
 						 .arg(pluginFilePath.toStdString()).arg(errtxt.toStdString()),
 						 IBK::MSG_ERROR);

@@ -1870,7 +1870,7 @@ void SVMainWindow::setupPlugins() {
 
 //	const auto staticInstances = QPluginLoader::staticInstances();
 	for (auto pldata = m_pluginLoader->m_plugins.begin(); pldata != m_pluginLoader->m_plugins.end(); ++pldata) {
-		QObject* pl = pldata->m_loader.instance();
+		QObject* pl = pldata->m_loader->instance();
 		setupPluginMenuEntries(pl);
 	}
 }
