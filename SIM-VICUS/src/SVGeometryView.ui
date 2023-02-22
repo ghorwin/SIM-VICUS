@@ -379,10 +379,10 @@
      <normaloff>:/gfx/actions/64x64/resultsView.png</normaloff>:/gfx/actions/64x64/resultsView.png</iconset>
    </property>
    <property name="text">
-    <string>show results</string>
+    <string>Show Results</string>
    </property>
    <property name="toolTip">
-    <string>show results</string>
+    <string>Show Results</string>
    </property>
   </action>
  </widget>
