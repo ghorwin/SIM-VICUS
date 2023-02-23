@@ -479,7 +479,7 @@ void selectChildSurfaces(std::vector<const VICUS::Surface*>	&selSurfaces, const 
 	}
 }
 
-void SVPropEditGeometry::updateUi() {
+void SVPropEditGeometry::updateUi(bool resetLCS) {
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	Q_ASSERT(cso != nullptr);
 
