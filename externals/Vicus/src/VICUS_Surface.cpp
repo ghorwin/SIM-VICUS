@@ -24,7 +24,6 @@
 */
 
 #include "VICUS_Surface.h"
-#include "VICUS_ChildSurface.h"
 
 #include <IBKMK_3DCalculations.h>
 
