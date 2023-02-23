@@ -33,13 +33,13 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 SOURCES += \
-	../../src/RC_ClippingSurface.cpp \
-	../../src/RC_Project.cpp
-	../../src/RC_ClippingSurface.cpp
+    ../../src/RC_Constants.cpp \
+    ../../src/RC_VicusClipping.cpp
 
 HEADERS += \
+	../../src/RC_ClippingPolygon.h \
 	../../src/RC_ClippingSurface.h \
-	../../src/RC_Project.h
-	../../src/RC_ClippingSurface.h
+	../../src/RC_Constants.h \
+	../../src/RC_VicusClipping.h
 
 
