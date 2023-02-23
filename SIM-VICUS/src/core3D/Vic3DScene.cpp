@@ -31,11 +31,13 @@
 #include <QPalette>
 #include <QApplication>
 
-#include <VICUS_Project.h>
 #include <SV_Conversions.h>
+#include <SV_Conversions.h>
+#include <SVProjectHandler.h>
+
+#include <VICUS_Project.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
-#include <SV_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -453,7 +455,15 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			IBKMK::Vector3D newFarPoint = calculateFarPoint(localMousePos*SVSettings::instance().m_ratio, m_panOriginalTransformMatrix);
 
 			IBKMK::Vector3D BBDashVec = m_panFarPointStart-newFarPoint;
-			IBKMK::Vector3D cameraTrans = m_panCABARatio*BBDashVec;
+
+			const IBKMK::Vector3D &lineOfSight = m_panObjectStart - m_panCameraStart;
+			double dampening = std::min(1.0, (80.0 / lineOfSight.magnitude()));
+			qDebug() << "Dampening factor: " << dampening;
+
+			if (keyboardHandler.keyDown(Qt::Key_Space))
+				dampening = 1;
+
+			IBKMK::Vector3D cameraTrans = dampening * m_panCABARatio*BBDashVec;
 
 			// translate camera
 			// qDebug() << "Camera translation";
@@ -583,23 +593,30 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 					// mouse x translation = rotation around rotation axis
 
+					double dampening = std::min(1.0, (80.0 / lineOfSight.length()));
+
+					if (keyboardHandler.keyDown(Qt::Key_Space))
+						dampening = 1;
+
+					qDebug() << "Dampening factor: " << dampening;
+
 					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
 					// set rotation around z axis for x-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * dampening * mouse_dx, GlobalUpwardsVector);
 
 					// mouse y translation = rotation around "right" axis
 					int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
 
 					QVector3D LocalRight = m_camera.right().normalized();
 					// set rotation around "right" axis for y-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * 0.5 * dampening * mouse_dy * mouseInversionFactor, LocalRight);
 
 					// rotate vector to camera
 					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
 					// rotate the camera around the same angles
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
-					m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+					m_camera.rotate(MOUSE_ROTATION_SPEED * dampening * mouse_dx, GlobalUpwardsVector);
+					m_camera.rotate(MOUSE_ROTATION_SPEED * 0.5 * dampening * mouse_dy * mouseInversionFactor, LocalRight);
 
 #if 1
 					// fix "roll" error due to rounding
@@ -816,9 +833,17 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed *= 0.1;
 
+		if (keyboardHandler.keyDown(Qt::Key_Space))
+			transSpeed *= 10;
+
 		IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
+
+		const IBKMK::Vector3D &lineOfSight = pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
+		double dampening = std::min(1.0, (80.0 / (lineOfSight.magnitude())));
+		qDebug() << "Dampening factor: " << dampening;
+
 		// move camera along line of sight towards selected object
-		m_camera.translate(IBKVector2QVector(wheelDelta*moveDist));
+		m_camera.translate(IBKVector2QVector(dampening*wheelDelta*moveDist));
 	}
 
 	// store camera position in view settings, but only if we have a project
@@ -2032,6 +2057,13 @@ void Scene::selectAll() {
 	undo->push();
 }
 
+void deselectChildSurfaces(std::set<unsigned int> &objIDs, const VICUS::Surface &s) {
+    for(const VICUS::Surface &cs : s.childSurfaces()) {
+        if(cs.m_selected)
+            objIDs.insert(cs.m_id);
+        deselectChildSurfaces(objIDs, cs);
+    }
+}
 
 void Scene::deselectAll() {
 	std::set<unsigned int> objIDs;
@@ -2055,6 +2087,7 @@ void Scene::deselectAll() {
 						if (sub.m_selected)
 							objIDs.insert(sub.m_id);
 					}
+                    deselectChildSurfaces(objIDs, s);
 				}
 			}
 		}
@@ -2358,7 +2391,12 @@ void Scene::pick(PickObject & pickObject) {
 					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
 						// if a hole was clicked on, that is invisible, ignore this click
 						bool cond1 = holeIndex == -1 && s.m_visible;
-						bool cond2 = holeIndex != -1 && s.subSurfaces()[(unsigned int)holeIndex].m_visible;
+
+                        const VICUS::Object *obj;
+                        if(holeIndex!=-1)
+                            obj = SVProjectHandler::instance().project().objectById(s.geometry().holes()[(unsigned int)holeIndex].m_idObject);
+
+                        bool cond2 = holeIndex != -1 && obj->m_visible;
 						if ( cond1 || cond2 ) {
 							PickObject::PickResult r;
 							r.m_resultType = PickObject::RT_Object;
@@ -2367,7 +2405,7 @@ void Scene::pick(PickObject & pickObject) {
 							r.m_holeIdx = holeIndex;
 							if (holeIndex != -1) {
 								// store ID of window/embedded surface
-								r.m_objectID = s.subSurfaces()[(unsigned int)holeIndex].m_id;
+                                r.m_objectID = obj->m_id;
 							}
 							else
 								r.m_objectID = s.m_id;
@@ -2494,6 +2532,10 @@ void Scene::pick(PickObject & pickObject) {
 #endif
 
 	pickObject.m_pickPerformed = true;
+}
+
+void Scene::pickChildSurfaces() {
+
 }
 
 
