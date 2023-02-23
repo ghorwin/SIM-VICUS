@@ -49,6 +49,8 @@ public:
 	enum Results {
 		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction)'
 		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
+		R_FluxHeatConductionAreaSpecificA,	// Keyword: FluxHeatConductionAreaSpecificA			[W/m2]		'Heat conduction flux across interface A (into construction) normated per area'
+		R_FluxHeatConductionAreaSpecificB,	// Keyword: FluxHeatConductionAreaSpecificB			[W/m2]		'Heat conduction flux across interface B (into construction) normated per area'
 		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
 		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
 		R_FluxLongWaveradiationA,			// Keyword: FluxLongWaveradiationA		[W]			'Long wave radiation flux across interface A (into construction)'
