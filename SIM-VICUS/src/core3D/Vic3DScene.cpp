@@ -617,30 +617,31 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 					// mouse x translation = rotation around rotation axis
 
-					double dampening = std::min(1.0, (80.0 / lineOfSight.length()));
+                    double dampening = std::min(1.0, (80.0 / lineOfSight.length()));
 
-					if (keyboardHandler.keyDown(Qt::Key_Space))
-						dampening = 1;
+                    if (keyboardHandler.keyDown(Qt::Key_Space))
+                        dampening = 1;
 
-					qDebug() << "Dampening factor: " << dampening;
+                    qDebug() << "Dampening factor: " << dampening;
 
-					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
-					// set rotation around z axis for x-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * dampening * mouse_dx, GlobalUpwardsVector);
+                    const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
+                    // set rotation around z axis for x-mouse-delta
+                    orbitTrans.rotate(MOUSE_ROTATION_SPEED * dampening * mouse_dx, GlobalUpwardsVector);
 
-					// mouse y translation = rotation around "right" axis
-					int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
+                    // mouse y translation = rotation around "right" axis
+                    int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
 
-					QVector3D LocalRight = m_camera.right().normalized();
-					// set rotation around "right" axis for y-mouse-delta
-					orbitTrans.rotate(MOUSE_ROTATION_SPEED * 0.5 * dampening * mouse_dy * mouseInversionFactor, LocalRight);
+                    QVector3D LocalRight = m_camera.right().normalized();
+                    // set rotation around "right" axis for y-mouse-delta
+                    orbitTrans.rotate(MOUSE_ROTATION_SPEED * 0.5 * dampening * mouse_dy * mouseInversionFactor, LocalRight);
 
-					// rotate vector to camera
-					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+                    // rotate vector to camera
+                    lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
-					// rotate the camera around the same angles
-                    m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
-                    m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+                    // rotate the camera around the same angles
+                    m_camera.rotate(MOUSE_ROTATION_SPEED * dampening * mouse_dx, GlobalUpwardsVector);
+                    m_camera.rotate(MOUSE_ROTATION_SPEED * 0.5 * dampening * mouse_dy * mouseInversionFactor, LocalRight);
+
 
 
 	#if 1
