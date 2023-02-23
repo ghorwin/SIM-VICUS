@@ -112,6 +112,9 @@ public:
 	*/
 	void updatePointers();
 
+    /*! Adds child surfaces to pointers of project. */
+    void addChildSurface(const VICUS::Surface &s);
+
 	/*! Searches through all objects and determines the largest object ID (not unique ID!) used for buildings, buildingLevels, rooms, surface,
 		subsurfaces, networks, etc and returns the next ID to be used for new data elements. For example, if IDs 10, 11, 14 have been used already,
 		the function returns 15.
@@ -173,6 +176,10 @@ public:
 	void selectObjects(std::set<const Object *> &selectedObjs, SelectionGroups sg,
 					   bool takeSelected,
 					   bool takeVisible) const;
+
+    /*! Select all child surfaces of surface. */
+    void selectChildSurfaces(std::set<const Object*> &selectedObjs, const VICUS::Surface & s,
+                             bool takeSelected, bool takeVisible) const;
 
 	/*! This function collects the pointers to all selected sub surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
