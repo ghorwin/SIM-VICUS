@@ -24,6 +24,7 @@
 */
 
 #include "SVUndoTreeNodeState.h"
+#include "SVProjectHandler.h"
 
 #include <VICUS_Project.h>
 
@@ -76,6 +77,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 						if (exclusive || nodeIDs.find(sub.m_id) != nodeIDs.end())
 							storeState(sub, m_nodeStates[sub.m_id]);
 					}
+                    storeStateChildSurface(s, nodeIDs, exclusive);
 				}
 			}
 		}
@@ -184,6 +186,25 @@ void SVUndoTreeNodeState::undo() {
 	redo(); // same stuff as for redos
 }
 
+void SVUndoTreeNodeState::setStateChildSurface(std::vector<unsigned int> & modifiedIDs,
+                                               std::map<unsigned int, int >::const_iterator it, VICUS::Surface &s) {
+    for(const VICUS::Surface &cs : s.childSurfaces()) {
+        VICUS::Surface &childSurf = const_cast<VICUS::Surface&>(cs);
+        if ((it = m_nodeStates.find(childSurf.m_id)) != m_nodeStates.end()) {
+            setState(childSurf, it->second);
+            modifiedIDs.push_back(it->first);
+        }
+        setStateChildSurface(modifiedIDs, it, childSurf);
+    }
+}
+
+void SVUndoTreeNodeState::storeStateChildSurface(const VICUS::Surface &s, const std::set<unsigned int> &nodeIDs, bool exclusive) {
+    for (const VICUS::Surface &childSurf : s.childSurfaces()) {
+        if (exclusive || nodeIDs.find(childSurf.m_id) != nodeIDs.end())
+            storeState(childSurf, m_nodeStates[childSurf.m_id]);
+        storeStateChildSurface(childSurf, nodeIDs, exclusive);
+    }
+}
 
 void SVUndoTreeNodeState::redo() {
 	// get a copy of the project
@@ -227,6 +248,8 @@ void SVUndoTreeNodeState::redo() {
 							modifiedIDs.push_back(it->first);
 						}
 					}
+
+                    setStateChildSurface(modifiedIDs, it, s);
 				}
 			}
 		}
