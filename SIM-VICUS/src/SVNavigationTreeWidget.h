@@ -28,6 +28,8 @@
 
 #include <QWidget>
 
+#include <VICUS_Surface.h>
+
 namespace Ui {
 class SVNavigationTreeWidget;
 }
@@ -77,6 +79,8 @@ private slots:
 private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
+
+    void addChildSurface(QTreeWidgetItem *item, const VICUS::Surface &s);
 
 	/*! Relates unique object ID to tree widget item.
 		This map is updated whenever the tree data is modified entirely in onModified().
