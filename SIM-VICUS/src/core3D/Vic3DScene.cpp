@@ -639,6 +639,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
 					// rotate the camera around the same angles
+                    m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+                    m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+
 
 	#if 1
 						// fix "roll" error due to rounding
