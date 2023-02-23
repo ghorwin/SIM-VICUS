@@ -235,6 +235,10 @@ const std::vector<Vector3D> & Polygon3D::vertexes() const {
 	return m_vertexes;
 }
 
+const std::vector<Vector3D> &Polygon3D::rawVertexes() const {
+	return m_vertexes;
+}
+
 
 // *** Transformation Functions ***
 
@@ -363,7 +367,7 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 		IBKMK::Vector3D v1 = polygon[i-1] - polygon[0];
 		IBKMK::Vector3D v2 = polygon[i  ] - polygon[0];
 
-		n += v1.crossProduct(v2);
+		n += v1.crossProduct(v2).normalized();
 	}
 
 	return n.normalized();

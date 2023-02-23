@@ -106,6 +106,7 @@ public:
 
 	/*! Returns 3D vertex coordinates. */
 	const std::vector<IBKMK::Vector3D> & vertexes() const;
+	const std::vector<IBKMK::Vector3D> & rawVertexes() const;
 
 	const IBKMK::Vector3D & offset() const { return m_offset; }
 	const IBKMK::Vector3D & normal() const { return m_normal; }
