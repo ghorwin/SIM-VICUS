@@ -59,8 +59,6 @@ private slots:
 
 	void on_lineEditNameFilter_textChanged(const QString &arg1);
 
-	void on_pushButtonClipping_clicked();
-
 private:
 
 	Ui::SVPropBuildingZoneProperty				*m_ui;

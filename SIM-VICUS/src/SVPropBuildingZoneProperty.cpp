@@ -19,7 +19,7 @@
 #include <QSortFilterProxyModel>
 #include <QProgressDialog>
 
-#include <RC_Project.h>
+#include <RC_VicusClipping.h>
 #include <RC_ClippingSurface.h>
 
 class CalculationProgress : public Notification {
@@ -405,23 +405,5 @@ void SVPropBuildingZoneProperty::updateTableView() {
 
 void SVPropBuildingZoneProperty::on_lineEditNameFilter_textChanged(const QString &name) {
 	m_zonePropertiesProxyModel->setNameFilter(name);
-}
-
-void SVPropBuildingZoneProperty::on_pushButtonClipping_clicked() {
-	VICUS::Project newProject (project());
-	RC::Project clippingPrj(newProject, 2, 0.5, project().nextUnusedID());
-
-	// ToDo Dirk: hier muss eine funktion rein damit die Test geprüft werden können
-//	clippingPrj.testProjectClipping();
-//	return;
-
-	clippingPrj.findParallelSurfaces();
-	clippingPrj.findSurfacesInRange();
-	clippingPrj.clipSurfaces();
-	clippingPrj.createComponentInstances();
-
-
-	SVUndoModifyProject *undo = new SVUndoModifyProject("Update vicus project", clippingPrj.newPrjVicus());
-	undo->push();
 }
 

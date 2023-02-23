@@ -19,7 +19,7 @@
      <property name="title">
       <string>Room Properties</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+     <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0">
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -27,18 +27,11 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Building:</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="comboBoxBuildingFilter"/>
       </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxBuildingLevelFilter"/>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditNameFilter"/>
       </item>
       <item row="6" column="0" colspan="2">
        <widget class="QGroupBox" name="groupBox">
@@ -60,19 +53,6 @@
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>Building level:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEditNameFilter"/>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QTableView" name="tableViewZones">
-        <property name="selectionMode">
-         <enum>QAbstractItemView::ExtendedSelection</enum>
-        </property>
-        <property name="sortingEnabled">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -174,27 +154,31 @@
         </layout>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Building:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBoxBuildingLevelFilter"/>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QTableView" name="tableViewZones">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string>Rooms/Zones:</string>
         </property>
-       </widget>
-      </item>
-      <item row="7" column="0" colspan="2">
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>Clipping</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QPushButton" name="pushButtonClipping">
-           <property name="text">
-            <string>Start Surface clipping</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>
