@@ -57,9 +57,10 @@
 #include "SVClimateDataTableModel.h"
 #include "SVSettings.h"
 
-std::vector<IBKMK::Polygon2D> convertVicus2IBKMKPolyVector(const std::vector<VICUS::Polygon2D> holePolys) {
+std::vector<IBKMK::Polygon2D> convertVicus2IBKMKPolyVector(const std::vector<VICUS::PlaneGeometry::Hole> holePolys) {
 	std::vector<IBKMK::Polygon2D> ibkmkHolePolys;
-	for(const VICUS::Polygon2D &poly2D : holePolys) {
+    for(const VICUS::PlaneGeometry::Hole &h : holePolys) {
+        const VICUS::Polygon2D &poly2D = h.m_holeGeometry;
 		poly2D.vertexes();
 		ibkmkHolePolys.push_back(poly2D);
 	}
