@@ -26,6 +26,8 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
+	${PROJECT_SOURCE_DIR}/../../../externals/RoomClipper/src
+	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Shading/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IDFReader/src
 	${Qt5Widgets_INCLUDE_DIRS}
@@ -144,12 +146,15 @@ target_link_libraries( ${PROJECT_NAME}
 	QtExt
 	QuaZIP
 	Nandrad
+	clipper
 	Shading
 	DataIO
 	CCM
 	QtExt
 	IDFReader
 	IBKMK
+	RoomClipper
+	clipper
 	IBK
 	TiCPP
 	QuaZIP
