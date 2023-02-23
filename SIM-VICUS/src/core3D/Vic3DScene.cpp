@@ -622,10 +622,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					if (keyboardHandler.keyDown(Qt::Key_Space))
 						dampening = 1;
 
-
-						// mouse y translation = rotation around "right" axis
-						int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
-
 					qDebug() << "Dampening factor: " << dampening;
 
 					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
