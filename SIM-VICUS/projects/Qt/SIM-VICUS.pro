@@ -129,6 +129,7 @@ SOURCES += \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
+	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
@@ -314,6 +315,7 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
+	../../src/SVSmartIntersectionDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
@@ -550,6 +552,7 @@ FORMS    += \
 	../../src/SVSimulationRunRequestDialog.ui \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
+	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVWelcomeScreen.ui \
 	../../src/SVZoneSelectionDialog.ui
