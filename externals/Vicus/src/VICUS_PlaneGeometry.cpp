@@ -79,6 +79,7 @@ bool PlaneGeometry::isValid() const {
 		return false;
 	if (m_dirty)
 		triangulate();
+
 	return !m_triangulationData.m_triangles.empty();
 }
 
@@ -99,7 +100,16 @@ double PlaneGeometry::orientation(int digits) const {
 	// round value to n digits
 	val = std::round(val*IBK::f_pow10(digits))/IBK::f_pow10(digits);
 
-	return  val;
+    return  val;
+}
+
+double PlaneGeometry::area(int digits) const {
+    double area = 0.0;
+    for(const VICUS::PlaneGeometry::Hole &h : m_holes) {
+        if(h.m_isChildSurface)
+            area -= h.m_holeGeometry.area(digits);
+    }
+    return area + m_polygon.polyline().area(digits);
 }
 
 
@@ -153,7 +163,7 @@ void PlaneGeometry::triangulate() const {
 	// polygons with status 1 are drawn but not used in triangulation of polygon3D
 	std::vector<unsigned int> polygonStatus(m_holes.size(), 0);
 	for (unsigned int i=0; i<m_holes.size(); ++i) {
-		const Polygon2D & p2 = m_holes[i];
+        const Polygon2D & p2 = m_holes[i].m_holeGeometry;
 		const std::vector<IBKMK::Vector2D> &subSurfacePoly = p2.vertexes();
 
 		// check if any of the holes are invalid
@@ -248,7 +258,7 @@ void PlaneGeometry::triangulate() const {
 		if (polygonStatus[holeIdx] == 0)
 			continue;
 
-		const Polygon2D & p2 = m_holes[holeIdx]; // polygon of currently processed hole
+        const Polygon2D & p2 = m_holes[holeIdx].m_holeGeometry; // polygon of currently processed hole
 
 		std::vector<unsigned int> vertexIndexes; // mapping table, relates hole index to global index in 'points' vector
 		// process all vertexes and compose vector with 2D and 3D coordinates of the hole polygon
@@ -431,9 +441,9 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	// first check if we hit a hole
 	for (unsigned int j=0; j<m_holes.size(); ++j) {
 		// - if hole is valid, check if we are inside the polygon
-		if (m_holes[j].isValid()) {
+        if (m_holes[j].m_holeGeometry.isValid()) {
 			// run point in polygon algorithm
-			if (IBKMK::pointInPolygon(m_holes[j].vertexes(), intersectionPoint2D) != -1) {
+            if (IBKMK::pointInPolygon(m_holes[j].m_holeGeometry.vertexes(), intersectionPoint2D) != -1) {
 				holeIndex = (int)j;
 				intersectionPoint = x0;
 				dist = t;
@@ -459,7 +469,7 @@ void PlaneGeometry::setPolygon(const Polygon3D & polygon3D) {
 }
 
 
-void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
+void PlaneGeometry::setHoles(const std::vector<Hole> & holes) {
 	if (m_holes.empty() && holes.empty())
 		return;
 	m_holes = holes;
@@ -467,7 +477,7 @@ void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
 }
 
 
-void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes) {
+void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<Hole> & holes) {
 	m_holes = holes;
 	m_polygon = polygon3D;
 	m_dirty = true;
@@ -478,11 +488,11 @@ void PlaneGeometry::flip() {
 	// flip the polygon first
 	m_polygon.flip();
 	// since localX and localY axes have been swapped, we need to swap all hole coordinates as well
-	for (Polygon2D & p : m_holes) {
-		std::vector<IBKMK::Vector2D>		vertexes2D = p.vertexes();
+    for (PlaneGeometry::Hole & h : m_holes) {
+        std::vector<IBKMK::Vector2D>		vertexes2D = h.m_holeGeometry.vertexes();
 		for (IBKMK::Vector2D & v : vertexes2D)
 			std::swap(v.m_x, v.m_y);
-		p.setVertexes(vertexes2D);
+        h.m_holeGeometry.setVertexes(vertexes2D);
 	}
 }
 
