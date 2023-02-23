@@ -613,6 +613,11 @@ void addSurface(const VICUS::Surface & s,
 	addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	// then add the plane again inverted
 	addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
+
+    for(const VICUS::Surface &s : s.childSurfaces()) {
+        addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+        addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+    }
 }
 
 
