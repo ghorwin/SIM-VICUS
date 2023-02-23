@@ -2148,6 +2148,17 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 	}
 }
 
+const VICUS::Room* checkForSurfaceParent(const VICUS::Object *obj) {
+    if(obj->m_parent == nullptr)
+        return nullptr;
+
+    VICUS::Room *r = dynamic_cast<VICUS::Room*>(obj->m_parent);
+    if(r != nullptr)
+        return r;
+    else
+        return checkForSurfaceParent(obj->m_parent);
+}
+
 NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 																		 unsigned int interfaceID,
 																		 QStringList &errorStack,
@@ -2186,7 +2197,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	if (s != nullptr) {
 		// get the zone that this interface is connected to
 		const VICUS::Object * obj = s->m_parent;
-		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+        const VICUS::Room * room = checkForSurfaceParent(s);
+
 		if (room == nullptr){
 			errorStack.append(qApp->tr("Component instance #%1 references surface #%2 '%3', which is not associated to a zone.")
 							  .arg(ci.m_id).arg(s->m_id).arg(s->m_displayName));

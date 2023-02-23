@@ -26,6 +26,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
+	${PROJECT_SOURCE_DIR}/../../../externals/RoomClipper/src
 	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Shading/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IDFReader/src
@@ -153,6 +154,7 @@ target_link_libraries( ${PROJECT_NAME}
 	QtExt
 	IDFReader
 	IBKMK
+	RoomClipper
 	clipper
 	IBK
 	TiCPP

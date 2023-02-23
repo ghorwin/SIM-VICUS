@@ -38,6 +38,8 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lIBKMK \
 	-lsundials \
 	-lSuiteSparse \
+	-lRoomClipper \
+	-lclipper \
 	-lqwt6
 
 win32 {
@@ -69,6 +71,8 @@ INCLUDEPATH = \
 	../../../externals/QuaZIP/src \
 	../../../externals/QuaZIP/src/zlib \
 	../../../externals/IDFReader/src \
+	../../../externals/clipper/src \
+	../../../externals/RoomClipper/src \
 	../../../externals/QtExt/src
 
 DEPENDPATH = $${INCLUDEPATH}
@@ -116,6 +120,8 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
+	../../src/SVPropEditNetwork.cpp \
+	../../src/SVPropNetworkPropertiesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -125,6 +131,8 @@ SOURCES += \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVSmartIntersectionDialog.cpp \
+	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
@@ -317,6 +325,8 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
+	../../src/SVPropEditNetwork.h \
+	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
@@ -326,6 +336,8 @@ HEADERS  += \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
+	../../src/SVSmartIntersectionDialog.h \
+	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
@@ -571,6 +583,7 @@ FORMS    += \
 	../../src/SVSimulationRunRequestDialog.ui \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
+	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \

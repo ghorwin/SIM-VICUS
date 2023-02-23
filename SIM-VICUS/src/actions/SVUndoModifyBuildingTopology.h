@@ -38,7 +38,8 @@ class SVUndoModifyBuildingTopology : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyBuildingTopology)
 public:
 	/*! Replaces building entity at given index in buildings vector. */
-	SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings);
+    SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings,
+                                 const std::vector<VICUS::ComponentInstance> *surfaceComponentInstances = nullptr);
 
 	virtual void undo();
 	virtual void redo();
@@ -46,6 +47,11 @@ public:
 private:
 	/*! Data member to hold modified buildings vector. */
 	std::vector<VICUS::Building> m_buildings;
+
+    /*! Copies of modified surface component instances. */
+    std::vector<VICUS::ComponentInstance>			m_surfaceComponentInstances;
+
+    bool                                            m_modifySurfaceComponentInstances = false;
 };
 
 #endif // SVUndoModifyBuildingTopologyH

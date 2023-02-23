@@ -1121,8 +1121,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 			continue;
 		}
 		std::vector<VICUS::SubSurface> subs = surf->subSurfaces();
-		subs.push_back(subSurf);
-		surf->setSubSurfaces(subs);
+        std::vector<VICUS::Surface> childs = surf->childSurfaces();
+
+        subs.push_back(subSurf);
+        surf->setChildAndSubSurfaces(subs, childs);
 
 		IBK::IBK_Message( IBK::FormatString("  %1.%2 [#%3]\n")
 						  .arg(surf->m_displayName.toStdString())

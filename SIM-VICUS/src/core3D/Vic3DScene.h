@@ -165,6 +165,9 @@ private:
 	*/
 	void pick(PickObject & pickObject);
 
+    /*! Pick all child surfaces. */
+    void pickChildSurfaces();
+
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
 

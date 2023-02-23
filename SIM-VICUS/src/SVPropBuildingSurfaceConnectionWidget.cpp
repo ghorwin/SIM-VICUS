@@ -8,6 +8,10 @@
 #include "SVStyle.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyComponentInstances.h"
+#include "SVUndoModifyBuildingTopology.h"
+#include "SVProjectHandler.h"
+#include "SVSmartIntersectionDialog.h"
+
 
 SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWidget *parent) :
 	QWidget(parent),
@@ -32,12 +36,7 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	m_ui->lineEditConnectSurfacesMaxDistance->setup(0, 10000, tr("Maximum distances between surfaces to enable connection in [m]."),
-												 false, true);
-	m_ui->lineEditConnectSurfacesMaxDistance->setValue(0.8);
-	m_ui->lineEditConnectSurfacesMaxAngle->setup(0, 45, tr("Maximum angle between surfaces to enable connection in [Deg]."),
-												 false, true);
-	m_ui->lineEditConnectSurfacesMaxAngle->setValue(5);
+
 }
 
 
@@ -221,7 +220,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi(bool /*onlySelectionModifie
 
 	// enable/disable button based on available selections
 	m_ui->pushButtonRemoveComponentInstance->setEnabled(!selectedRows.empty());
-	m_ui->groupBoxConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
+    //m_ui->groupBoxConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
 }
 
 
@@ -242,41 +241,6 @@ void SVPropBuildingSurfaceConnectionWidget::on_tableWidgetInterlinkedSurfaces_it
 	undo->push();
 }
 
-
-
-
-void SVPropBuildingSurfaceConnectionWidget::on_pushButtonConnectSurfaces_clicked() {
-	// check input
-	if (!m_ui->lineEditConnectSurfacesMaxDistance->isValid()) {
-		QMessageBox::critical(this, QString(), tr("Please enter valid parameters!"));
-		m_ui->lineEditConnectSurfacesMaxDistance->selectAll();
-		m_ui->lineEditConnectSurfacesMaxDistance->setFocus();
-		return;
-	}
-	// check input
-	if (!m_ui->lineEditConnectSurfacesMaxAngle->isValid()) {
-		QMessageBox::critical(this, QString(), tr("Please enter valid parameters!"));
-		m_ui->lineEditConnectSurfacesMaxAngle->selectAll();
-		m_ui->lineEditConnectSurfacesMaxAngle->setFocus();
-		return;
-	}
-	double maxDist = m_ui->lineEditConnectSurfacesMaxDistance->value();
-	double maxAngle = m_ui->lineEditConnectSurfacesMaxAngle->value();
-
-	// the actual work is implemented in the project class, because it is needed elsewhere as well
-	std::vector<VICUS::ComponentInstance> newInstances;
-
-	if (project().connectSurfaces(maxDist, maxAngle, m_selectedSurfaces, newInstances)) {
-
-		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Created surface-surface connection"),
-																				   newInstances);
-		undo->push();
-	}
-	else {
-		QMessageBox::information(this, QString(), tr("With the given selection and algorithm parameters, no new "
-													 "connections could be created."));
-	}
-}
 
 
 void SVPropBuildingSurfaceConnectionWidget::on_pushButtonRemoveComponentInstance_clicked() {
@@ -322,3 +286,22 @@ void SVPropBuildingSurfaceConnectionWidget::on_pushButtonRemoveComponentInstance
 																			   newInstances);
 	undo->push();
 }
+
+void SVPropBuildingSurfaceConnectionWidget::on_pushButtonSmartClipping_clicked() {
+
+    if(m_smartClippingDialog == nullptr)
+        m_smartClippingDialog = new SVSmartIntersectionDialog(this);
+
+    SVSmartIntersectionDialog::ClippingResults res = m_smartClippingDialog->clipProject();
+    if(res == SVSmartIntersectionDialog::AcceptClipping) {
+		const std::vector<VICUS::ComponentInstance> *cis = nullptr;
+		if(!m_smartClippingDialog->componentInstances().empty())
+			cis = &m_smartClippingDialog->componentInstances();
+		SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology("Smart-clipping applied to project.", m_smartClippingDialog->buildings(), cis);
+        undo->push();
+    }
+    else if (res == SVSmartIntersectionDialog::CancelledClipping) {
+        return;
+    }
+}
+

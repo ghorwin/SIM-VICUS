@@ -569,11 +569,13 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 				// store results
 				if (sideA) {
 					m_fluxDensityHeatConductionA = fluxDensity;
-					m_results[R_FluxHeatConductionA] = fluxDensity*m_area; // total flux [W]
+					m_results[R_FluxHeatConductionAreaSpecificA] = fluxDensity; // area specific flux [W]
+					m_results[R_FluxHeatConductionA] = fluxDensity*m_area;		// total flux [W]
 				}
 				else {
 					m_fluxDensityHeatConductionB = -fluxDensity;
-					m_results[R_FluxHeatConductionB] = fluxDensity*m_area; // total flux [W], mind sign convention
+					m_results[R_FluxHeatConductionAreaSpecificB] = fluxDensity; // area specific flux [W], mind sign convention
+					m_results[R_FluxHeatConductionB] = fluxDensity*m_area;		// total flux [W], mind sign convention
 				}
 			} break;
 

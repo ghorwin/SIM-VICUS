@@ -45,7 +45,7 @@ void SVUndoCopySubSurfaces::undo() {
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(ss.m_parent);
 		if (s != nullptr) {
 			const_cast<std::vector<VICUS::SubSurface> &>(s->subSurfaces()).pop_back();
-			std::vector<VICUS::Polygon2D> holes = s->geometry().holes();
+            std::vector<VICUS::PlaneGeometry::Hole> holes = s->geometry().holes();
 			holes.pop_back();
 			const_cast<VICUS::PlaneGeometry &>(s->geometry()).setHoles(holes);
 		}
@@ -76,8 +76,8 @@ void SVUndoCopySubSurfaces::redo() {
 		VICUS::Surface *s = dynamic_cast<VICUS::Surface *>(ss.m_parent);
 		if (s != nullptr) {
 			const_cast<std::vector<VICUS::SubSurface> &>(s->subSurfaces()).push_back(ss);
-			std::vector<VICUS::Polygon2D> holes = s->geometry().holes();
-			holes.push_back(ss.m_polygon2D);
+            std::vector<VICUS::PlaneGeometry::Hole> holes = s->geometry().holes();
+            holes.push_back(VICUS::PlaneGeometry::Hole(ss.m_id, ss.m_polygon2D, false));
 			const_cast<VICUS::PlaneGeometry &>(s->geometry()).setHoles(holes);
 		}
 	}

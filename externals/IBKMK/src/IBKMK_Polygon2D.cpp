@@ -91,6 +91,23 @@ void Polygon2D::boundingBox(Vector2D & lowerValues, Vector2D & upperValues) cons
 }
 
 
+double Polygon2D::areaSigned(int digits) const{
+	FUNCID(Polygon2D::area);
+	if(!m_valid)
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+	double area = 0;
+	unsigned int size = m_vertexes.size();
+	for(unsigned int i=0, j = size-1; i<size; ++i){
+		area += (m_vertexes[j].m_x + m_vertexes[i].m_x) * (m_vertexes[j].m_y - m_vertexes[i].m_y);
+		j=i;
+	}
+
+	area *= -0.5;
+	area = std::round(area*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+
+	return area;
+}
+
 double Polygon2D::area(int digits) const {
 	FUNCID(Polygon2D::area);
 	if (!m_valid)

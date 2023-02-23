@@ -11,12 +11,16 @@
 #include "SVUndoModifyBuildingLevel.h"
 #include "SVUndoModifyRoom.h"
 #include "SVUndoModifyBuildingTopology.h"
+#include "SVUndoModifyProject.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVZoneSelectionDialog.h"
 
 #include <QSortFilterProxyModel>
 #include <QProgressDialog>
+
+#include <RC_VicusClipping.h>
+#include <RC_ClippingSurface.h>
 
 class CalculationProgress : public Notification {
 public:
@@ -401,3 +405,4 @@ void SVPropBuildingZoneProperty::updateTableView() {
 void SVPropBuildingZoneProperty::on_lineEditNameFilter_textChanged(const QString &name) {
 	m_zonePropertiesProxyModel->setNameFilter(name);
 }
+

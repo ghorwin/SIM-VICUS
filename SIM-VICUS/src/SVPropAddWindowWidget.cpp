@@ -274,7 +274,9 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 
 		// now add subsurface objects for each hole in the polygon
 		std::vector<VICUS::SubSurface> subs;
-		for (const VICUS::Polygon2D & p : geometries[i].holes()) {
+        for (const VICUS::PlaneGeometry::Hole & h : geometries[i].holes()) {
+            const VICUS::Polygon2D &p = h.m_holeGeometry;
+
 			VICUS::SubSurface subsurf;
 			subsurf.m_id = lastFreeId++;
 
@@ -304,7 +306,10 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
 		}
-		newSurf.setSubSurfaces(subs);
+
+        std::vector<VICUS::Surface> childs = newSurf.childSurfaces();
+
+        newSurf.setChildAndSubSurfaces(subs, childs);
 		modSurfaces.push_back(newSurf);
 	}
 
