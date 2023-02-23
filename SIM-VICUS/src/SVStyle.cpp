@@ -264,6 +264,9 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		QtExt::Style::AlternativeBackgroundBright = "#73580e";
 		QtExt::Style::AlternativeBackgroundDark = "#57430b";
 		QtExt::Style::AlternativeBackgroundText = "#ffedce";
+
+		QtExt::Style::ToolBoxPageBackground		= "#212124";
+		QtExt::Style::ToolBoxPageEdge			= "#3a3b3f";
 	}
 	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
 
@@ -296,6 +299,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		QtExt::Style::AlternativeBackgroundDark					= "#ffe49d";
 		QtExt::Style::AlternativeBackgroundText					= "#760000";
 
+		QtExt::Style::ToolBoxPageBackground						= "#ffffff";
+		QtExt::Style::ToolBoxPageEdge							= "#f0f0f0";
 	}
 	else {
 		// clear style sheet for default style.

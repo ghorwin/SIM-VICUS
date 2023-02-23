@@ -13,6 +13,9 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVViewStateHandler.h"
 #include "SVConstants.h"
+#include "SVMainWindow.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -40,6 +43,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropNetworkEditWidget::onModified);
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVPropNetworkEditWidget::onStyleChanged);
 
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified);
@@ -105,6 +111,11 @@ void SVPropNetworkEditWidget::onPropertyTypeChanged(int propertyType) {
 		case NT_HeatExchange	: vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange ; break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropNetworkEditWidget::onStyleChanged() {
+	m_ui->toolBox->updatePageBackgroundColorFromStyle();
 }
 
 unsigned int SVPropNetworkEditWidget::currentPropertyType() {

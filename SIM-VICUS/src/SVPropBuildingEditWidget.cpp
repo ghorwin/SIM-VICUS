@@ -31,7 +31,6 @@
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
 #include "SVConstants.h"
-
 #include "SVPropBuildingComponentsWidget.h"
 #include "SVPropBuildingSubComponentsWidget.h"
 #include "SVPropBuildingComponentOrientationWidget.h"
@@ -42,6 +41,9 @@
 #include "SVPropBuildingZoneProperty.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropSupplySystemsWidget.h"
+#include "SVMainWindow.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -75,6 +77,9 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 
 	connect(m_ui->toolBox, &QtExt::ToolBox::indexChanged,
 			this, &SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged);
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVPropBuildingEditWidget::onStyleChanged);
 
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified, nullptr);
@@ -153,6 +158,11 @@ void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 
 unsigned int SVPropBuildingEditWidget::currentPropertyType() {
 	return m_ui->toolBox->currentIndex();
+}
+
+
+void SVPropBuildingEditWidget::onStyleChanged() {
+	m_ui->toolBox->updatePageBackgroundColorFromStyle();
 }
 
 

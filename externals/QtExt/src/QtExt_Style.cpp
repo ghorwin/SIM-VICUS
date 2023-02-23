@@ -51,6 +51,9 @@ QString Style::AlternativeBackgroundBright				= "#fff4b8";
 QString Style::AlternativeBackgroundDark				= "#ffe49d";
 QString Style::AlternativeBackgroundText				= "#760000";
 
+QString Style::ToolBoxPageBackground					= "#212124";
+QString Style::ToolBoxPageEdge							= "#3a3b3f";
+
 void Style::adjustContentWidget(QWidget * widget) {
 	QLayout * lay = dynamic_cast<QLayout *>(widget->layout());
 	if (lay != NULL) {

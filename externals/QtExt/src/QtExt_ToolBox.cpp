@@ -1,5 +1,7 @@
 #include "QtExt_ToolBox.h"
 
+#include "QtExt_Style.h"
+
 #include <QVBoxLayout>
 #include <QIcon>
 #include <QtDebug>
@@ -42,7 +44,7 @@ ToolBox::ToolBox(QWidget *parent):
 {
 	setLayout(m_layout);
 	m_layout->setContentsMargins(0,0,0,0);
-	m_layout->setSpacing(1);
+	m_layout->setSpacing(3);
 	m_arrowDown = QPixmap(":/gfx/master/arrow_down.png");
 	m_arrowRight = QPixmap(":/gfx/master/arrow_right.png");
 }
@@ -96,7 +98,9 @@ void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon
 	QFrame *vFrame = new QFrame(this);
 	vFrame->setObjectName(QString("vFrame%1").arg(m_pages.size()));
 	vFrame->setFrameShape(QFrame::Box);
-	vFrame->setStyleSheet(QString("QFrame#%1 {border-radius: 5px}").arg(vFrame->objectName()));
+	vFrame->setStyleSheet(QString("QFrame#%1 {border-radius: 5px; background-color: %2; border: 2px %3}")
+						  .arg(vFrame->objectName()).arg(Style::ToolBoxPageBackground).arg(Style::ToolBoxPageEdge));
+
 	vFrame->setLayout(vLay);
 	m_layout->addWidget(vFrame);
 
@@ -150,6 +154,14 @@ unsigned int ToolBox::currentIndex(){
 			return i;
 	}
 	return 0; // for compiler
+}
+
+
+void ToolBox::updatePageBackgroundColorFromStyle() {
+	for (Page *page: m_pages) {
+		page->m_frame->setStyleSheet(QString("QFrame#%1 {border-radius: 5px; background-color: %2; border: 2px %3}")
+									 .arg(page->m_frame->objectName()).arg(Style::ToolBoxPageBackground).arg(Style::ToolBoxPageEdge));
+	}
 }
 
 
