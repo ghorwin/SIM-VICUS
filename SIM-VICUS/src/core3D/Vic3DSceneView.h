@@ -125,6 +125,9 @@ public slots:
 	/*! Connected to SVViewStateHandler::refreshColors(). */
 	void onColorRefreshNeeded();
 
+    /*! Connected to SVPropBuildingSurfaceConnectionWidget. */
+    void onTransparentBuildingModeChanged(Scene::HighlightingMode m);
+
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

@@ -589,7 +589,11 @@ void SceneView::onColorRefreshNeeded() {
 	if (!SVProjectHandler::instance().isValid())
 		return;
 	m_mainScene.refreshColors();
-	renderLater();
+    renderLater();
+}
+
+void SceneView::onTransparentBuildingModeChanged(Scene::HighlightingMode m) {
+    m_mainScene.updatedHighlightingMode(m);
 }
 
 
