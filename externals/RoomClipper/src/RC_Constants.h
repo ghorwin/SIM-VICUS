@@ -35,6 +35,8 @@ extern const char * const RELEASE_DATE;
 extern const unsigned int SCALE_FACTOR;
 /*! Minimum area definition for export */
 extern const double MIN_AREA;
+/*! Epsilon for distance clipping. */
+extern const double EPSILON;
 
 
 } // namespace RC

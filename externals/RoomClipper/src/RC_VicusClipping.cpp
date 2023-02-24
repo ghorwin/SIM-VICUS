@@ -220,7 +220,7 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 			IBKMK::Vector3D rayEndPoint;
 			IBKMK::lineToPointDistance( s1.geometry().offset(), s1.geometry().normal().normalized(),
 										s2.geometry().offset(), co.m_distance, rayEndPoint);
-			if(co.m_distance > m_maxDistanceOfSurfaces || co.m_distance < 0)
+            if(co.m_distance > m_maxDistanceOfSurfaces + EPSILON || co.m_distance < 0)
 				continue;
 
 			newClippingObjects.push_back(co);
@@ -788,7 +788,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 				IBKMK::Vector3D rayEndPoint;
 				IBKMK::lineToPointDistance( s1->geometry().offset(), s1->geometry().normal().normalized(),
 											s2->geometry().offset(), distance, rayEndPoint);
-				if(distance > m_maxDistanceOfSurfaces || distance < 0)
+                if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0)
 					continue;
 
 				std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
