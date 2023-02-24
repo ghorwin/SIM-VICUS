@@ -44,6 +44,7 @@ class SVNavigationTreeWidget : public QWidget {
 	Q_OBJECT
 
 public:
+
 	explicit SVNavigationTreeWidget(QWidget *parent);
 	~SVNavigationTreeWidget();
 

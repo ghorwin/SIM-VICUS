@@ -40,6 +40,14 @@ public:
 		InvalidGeometryFlag = Qt::UserRole + 4
 	};
 
+	enum TopologyType {
+		TT_Building,
+		TT_BuildingLevel,
+		TT_Room,
+		TT_Surface,
+		NUM_TT
+	};
+
 	SVNavigationTreeItemDelegate(QWidget * parent = nullptr);
 
 	// QAbstractItemDelegate interface

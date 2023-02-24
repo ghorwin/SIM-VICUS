@@ -106,23 +106,28 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	if (isInvalid)
 		painter->setPen(QColor(196,0,0));
 	else {
+		TopologyType t = static_cast<TopologyType>(index.data(ItemType).toInt());
 		switch (SVSettings::instance().m_theme) {
 			case SVSettings::NUM_TT:
 			case SVSettings::TT_White:
-				if (index.data(ItemType) == 1) {
+				if (t == TT_Building) {
 					painter->setPen(QColor(78, 87, 135));
-				} else if (index.data(ItemType) == 2) {
+				} else if (index.data(ItemType) == TT_BuildingLevel) {
 					painter->setPen(QColor(219, 108, 0));
+				} else if (index.data(ItemType) == TT_Room) {
+					painter->setPen(QColor(150, 20, 20));
 				} else {
 				painter->setPen(Qt::black);
 				}
 			break;
 
 			case SVSettings::TT_Dark:
-				if (index.data(ItemType) == 1) {
-					painter->setPen(QColor(120,130,190));
-				} else if (index.data(ItemType) == 2) {
-					painter->setPen(QColor(255, 191, 20));
+				if (index.data(ItemType) == TT_Building) {
+					painter->setPen(QColor(150,140,190));
+				} else if (index.data(ItemType) == TT_BuildingLevel) {
+					painter->setPen(QColor(255, 200, 120));
+				} else if (index.data(ItemType) == TT_Room) {
+					painter->setPen(QColor(250, 140, 140));
 				} else {
 				painter->setPen(QColor(240,240,240));
 				}
