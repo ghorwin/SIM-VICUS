@@ -3,6 +3,8 @@
 
 #include <SVConversions.h>
 
+#include <QComboBox>
+
 #include <VICUS_utilities.h>
 
 #include "SVStyle.h"
@@ -11,6 +13,9 @@
 #include "SVUndoModifyBuildingTopology.h"
 #include "SVProjectHandler.h"
 #include "SVSmartIntersectionDialog.h"
+#include "SVViewStateHandler.h"
+#include "SVGeometryView.h"
+#include "Vic3DSceneView.h"
 
 
 SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWidget *parent) :
@@ -36,7 +41,12 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+    m_ui->comboBoxHighlightingMode->addItem(tr("Colored surfaces"), Vic3D::Scene::HM_ColoredSurfaces);
+    m_ui->comboBoxHighlightingMode->addItem(tr("Transparent surfaces"), Vic3D::Scene::HM_TransparentWithBoxes);
 
+    const Vic3D::SceneView *sc = SVViewStateHandler::instance().m_geometryView->sceneView();
+    connect(this, &SVPropBuildingSurfaceConnectionWidget::updatedHighlightingMode, sc, &Vic3D::SceneView::onTransparentBuildingModeChanged);
+    emit updatedHighlightingMode(Vic3D::Scene::HM_ColoredSurfaces);
 }
 
 
@@ -303,5 +313,11 @@ void SVPropBuildingSurfaceConnectionWidget::on_pushButtonSmartClipping_clicked()
     else if (res == SVSmartIntersectionDialog::CancelledClipping) {
         return;
     }
+}
+
+
+void SVPropBuildingSurfaceConnectionWidget::on_comboBoxHighlightingMode_currentIndexChanged(int /*index*/) {
+    Vic3D::Scene::HighlightingMode m = static_cast<Vic3D::Scene::HighlightingMode>(m_ui->comboBoxHighlightingMode->currentData(Qt::UserRole).toInt());
+    emit updatedHighlightingMode(m);
 }
 

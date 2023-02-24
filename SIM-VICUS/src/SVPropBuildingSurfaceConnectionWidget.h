@@ -5,6 +5,7 @@
 #include <set>
 
 #include "SVSmartIntersectionDialog.h"
+#include "Vic3DSceneView.h"
 
 namespace Ui {
 	class SVPropBuildingSurfaceConnectionWidget;
@@ -19,6 +20,7 @@ class SVPropBuildingSurfaceConnectionWidget : public QWidget {
 	Q_OBJECT
 
 public:
+
 	explicit SVPropBuildingSurfaceConnectionWidget(QWidget *parent = nullptr);
 	~SVPropBuildingSurfaceConnectionWidget();
 
@@ -30,6 +32,11 @@ private slots:
 	void on_tableWidgetInterlinkedSurfaces_itemSelectionChanged();
 
     void on_pushButtonSmartClipping_clicked();
+
+    void on_comboBoxHighlightingMode_currentIndexChanged(int);
+
+signals:
+    void updatedHighlightingMode(Vic3D::Scene::HighlightingMode mode);
 
 private:
 	Ui::SVPropBuildingSurfaceConnectionWidget			*m_ui;
