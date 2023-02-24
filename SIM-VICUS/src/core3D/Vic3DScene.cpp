@@ -1166,12 +1166,16 @@ void Scene::render() {
     // *** transparent geometry ***
 
     glEnable(GL_BLEND);
+    // For now disabled!
+    //glDepthMask(GL_FALSE); //disable z-testing
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glAlphaFunc(GL_GREATER, 0.1);
+    glEnable(GL_ALPHA_TEST);
 
     // tell OpenGL to show all planes
     glDisable(GL_CULL_FACE);
     // disable update of depth test but still use it
-    glDepthMask (GL_TRUE);
 
     if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces) {
 
