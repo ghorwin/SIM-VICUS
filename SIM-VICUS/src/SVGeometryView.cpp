@@ -248,7 +248,11 @@ bool SVGeometryView::handleGlobalKeyRelease(QKeyEvent * ke) {
 //	Qt::Key k = (Qt::Key)ke->key();
 //	qDebug() << "SVGeometryView::handleGlobalKeyRelease" << k;
 	// key release events are sent always, as these "do nothing" normally unless the scene was in a special state before
-	if (m_sceneView->isVisible())
+
+    if(!this->hasFocus() && ke->key() == Qt::Key_Delete)
+        return true;
+
+    if (m_sceneView->isVisible())
 		m_sceneView->handleKeyReleaseEvent(ke);
 	return true;
 }
