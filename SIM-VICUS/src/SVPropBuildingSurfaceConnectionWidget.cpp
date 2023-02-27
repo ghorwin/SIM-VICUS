@@ -41,12 +41,12 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    m_ui->comboBoxHighlightingMode->addItem(tr("Colored surfaces"), Vic3D::Scene::HM_ColoredSurfaces);
-    m_ui->comboBoxHighlightingMode->addItem(tr("Transparent surfaces"), Vic3D::Scene::HM_TransparentWithBoxes);
+	m_ui->comboBoxHighlightingMode->addItem(tr("Colored surfaces"), Vic3D::Scene::HM_ColoredSurfaces);
+	m_ui->comboBoxHighlightingMode->addItem(tr("Transparent surfaces"), Vic3D::Scene::HM_TransparentWithBoxes);
 
-    const Vic3D::SceneView *sc = SVViewStateHandler::instance().m_geometryView->sceneView();
-    connect(this, &SVPropBuildingSurfaceConnectionWidget::updatedHighlightingMode, sc, &Vic3D::SceneView::onTransparentBuildingModeChanged);
-    emit updatedHighlightingMode(Vic3D::Scene::HM_ColoredSurfaces);
+	const Vic3D::SceneView *sc = SVViewStateHandler::instance().m_geometryView->sceneView();
+	connect(this, &SVPropBuildingSurfaceConnectionWidget::updatedHighlightingMode, sc, &Vic3D::SceneView::onTransparentBuildingModeChanged);
+	emit updatedHighlightingMode(Vic3D::Scene::HM_TransparentWithBoxes);
 }
 
 
@@ -230,7 +230,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi(bool /*onlySelectionModifie
 
 	// enable/disable button based on available selections
 	m_ui->pushButtonRemoveComponentInstance->setEnabled(!selectedRows.empty());
-    //m_ui->groupBoxConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
+	//m_ui->groupBoxConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
 }
 
 
@@ -299,25 +299,25 @@ void SVPropBuildingSurfaceConnectionWidget::on_pushButtonRemoveComponentInstance
 
 void SVPropBuildingSurfaceConnectionWidget::on_pushButtonSmartClipping_clicked() {
 
-    if(m_smartClippingDialog == nullptr)
-        m_smartClippingDialog = new SVSmartIntersectionDialog(this);
+	if(m_smartClippingDialog == nullptr)
+		m_smartClippingDialog = new SVSmartIntersectionDialog(this);
 
-    SVSmartIntersectionDialog::ClippingResults res = m_smartClippingDialog->clipProject();
-    if(res == SVSmartIntersectionDialog::AcceptClipping) {
+	SVSmartIntersectionDialog::ClippingResults res = m_smartClippingDialog->clipProject();
+	if(res == SVSmartIntersectionDialog::AcceptClipping) {
 		const std::vector<VICUS::ComponentInstance> *cis = nullptr;
 		if(!m_smartClippingDialog->componentInstances().empty())
 			cis = &m_smartClippingDialog->componentInstances();
 		SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology("Smart-clipping applied to project.", m_smartClippingDialog->buildings(), cis);
-        undo->push();
-    }
-    else if (res == SVSmartIntersectionDialog::CancelledClipping) {
-        return;
-    }
+		undo->push();
+	}
+	else if (res == SVSmartIntersectionDialog::CancelledClipping) {
+		return;
+	}
 }
 
 
 void SVPropBuildingSurfaceConnectionWidget::on_comboBoxHighlightingMode_currentIndexChanged(int /*index*/) {
-    Vic3D::Scene::HighlightingMode m = static_cast<Vic3D::Scene::HighlightingMode>(m_ui->comboBoxHighlightingMode->currentData(Qt::UserRole).toInt());
-    emit updatedHighlightingMode(m);
+	Vic3D::Scene::HighlightingMode m = static_cast<Vic3D::Scene::HighlightingMode>(m_ui->comboBoxHighlightingMode->currentData(Qt::UserRole).toInt());
+	emit updatedHighlightingMode(m);
 }
 
