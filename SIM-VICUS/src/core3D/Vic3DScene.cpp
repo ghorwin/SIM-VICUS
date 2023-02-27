@@ -1168,7 +1168,7 @@ void Scene::render() {
 
 	glEnable(GL_BLEND);
 	// For now disabled!
-	//glDepthMask(GL_FALSE); //disable z-testing
+	glDepthMask(GL_FALSE); //disable z-testing
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glAlphaFunc(GL_GREATER, 0.1);
