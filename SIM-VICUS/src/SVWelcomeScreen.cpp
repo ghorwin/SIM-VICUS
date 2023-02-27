@@ -140,7 +140,9 @@ void SVWelcomeScreen::updateWelcomePage() {
 				SVStyle::formatWelcomePage(description);
 			}
 
-			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + finfo.fileName() + ".png";
+			// thumb name is <filename>_<parent directory>
+			QString thumbName = finfo.fileName() + "_" + finfo.dir().dirName();
+			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 
 			QFileInfo thumbFileInfo(thumbPath);
 			// check if file exists

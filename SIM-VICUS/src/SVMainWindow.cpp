@@ -1987,7 +1987,10 @@ QString SVMainWindow::saveThumbNail() {
 	if (!QDir(thumbNailPath).exists())
 		QDir().mkpath(thumbNailPath);
 	// compose temporary file path
-	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + QFileInfo(m_projectHandler.projectFile() + ".png").fileName();
+	// thumb name is <filename>_<parent directory>
+	QFileInfo prjFinfo(m_projectHandler.projectFile());
+	QString thumbName = prjFinfo.fileName() + "_" + prjFinfo.dir().dirName();
+	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 	QFileInfo finfo(thumbPath);
 	if (finfo.exists()) {
 		// only update thumbnail if project file is newer than thumbnail file
