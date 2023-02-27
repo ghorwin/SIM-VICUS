@@ -2411,22 +2411,22 @@
 <context>
     <name>NewSubSurfaceObject</name>
     <message>
-        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="152"/>
+        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="153"/>
         <source>Percentage value is out of range!</source>
         <translation>Prozentwert ist außerhalb des Gültigkeitsbereichs!</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="159"/>
+        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="160"/>
         <source>Only positive values for parameters allowed!</source>
         <translation>Nur positive Parameterwerte sind erlaubt!</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="163"/>
+        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="164"/>
         <source>Height and width must be both &gt; 0.01 m!</source>
         <translation>Höhe und Breite müssen jeweils größer als 0,01 m sein!</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="196"/>
+        <location filename="../../src/core3D/Vic3DNewSubSurfaceObject.cpp" line="197"/>
         <source>Polygon object is not valid!</source>
         <translation>Polygon Objekt ist nicht valide!</translation>
     </message>
@@ -6724,18 +6724,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVGeometryView</name>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="483"/>
-        <location filename="../../src/SVGeometryView.cpp" line="486"/>
+        <location filename="../../src/SVGeometryView.cpp" line="488"/>
+        <location filename="../../src/SVGeometryView.cpp" line="491"/>
         <source>Invalid polygon (must be planar and not winding).</source>
         <translation>Ungültiges Polygon (muss planar und nicht gewunden sein).</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="503"/>
+        <location filename="../../src/SVGeometryView.cpp" line="508"/>
         <source>Invalid number format. Cannot parse coordinate inputs.</source>
         <translation>Ungültiges Zahlenformat. Koordinateneingaben können nicht geparst werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="514"/>
+        <location filename="../../src/SVGeometryView.cpp" line="519"/>
         <source>Invalid coordinate input, expected only one coordinate for the locked axis.</source>
         <translation>Ungültige Koordinateneingabe, nur eine Koordinate für die gesperrte Achse erwartet.</translation>
     </message>
@@ -6879,7 +6879,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Netzwerkgeometrie bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="786"/>
+        <location filename="../../src/SVGeometryView.cpp" line="791"/>
         <source>Without axis lock, enter coordinates in format &lt;x&gt; &lt;y&gt; &lt;z&gt;. With axis lock enter only the offset in the respective axis direction.</source>
         <translation>Geben Sie ohne Achsensperre die Koordinaten im Format &lt;x&gt; &lt;y&gt; &lt;z&gt; ein. Bei Achssperre geben Sie nur den Offset in der jeweiligen Achsrichtung ein.</translation>
     </message>
@@ -6974,18 +6974,18 @@ p, li { white-space: pre-wrap; }
         <translation>Äußere Oberfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1448"/>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1455"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1450"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1457"/>
         <source>IDF Import</source>
         <translation>IDF-Import</translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1449"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1451"/>
         <source>IDF data imported, successfully. Please review the import log for warnings!</source>
         <translation>IDF-Daten erfolgreich importiert. Bitte überprüfen Sie das Importprotokoll auf Warnungen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1455"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1457"/>
         <source>There were critical errors during the import (invalid IDF file), see log for details.</source>
         <translation>Beim Import sind kritische Fehler aufgetreten (ungültige IDF-Datei), siehe Protokoll für Details.</translation>
     </message>
@@ -7847,8 +7847,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.cpp" line="958"/>
         <location filename="../../src/SVMainWindow.cpp" line="1042"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1687"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1706"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1688"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1707"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
@@ -7963,59 +7963,59 @@ p, li { white-space: pre-wrap; }
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1831"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1832"/>
         <source>Remove/merge duplicates in database</source>
         <translation>Entferne/Verknüpfe Duplikate in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1832"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1833"/>
         <source>The database contains now some duplicate definitions. Do you want to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?</source>
         <translation>Die Datenbank enthält nun doppelte Definitionen. Möchten Sie diese nun durchsehen und unnötige Duplikate entfernen (dies kann man später auch in Datenbanken|Duplikate entfernen... machen)?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1897"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1928"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1898"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1929"/>
         <source>Configure %1</source>
         <translation>Konfiguriere %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1944"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1945"/>
         <source>unnamed%1</source>
         <translation>unbenannt %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2063"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2067"/>
         <source>Specify SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2065"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2069"/>
         <source>SIM-VICUS project files (%1);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2077"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2081"/>
         <source>Select target directory to extract project package into</source>
         <translation>Wähle das Zielverzeichnis, in das das Projektpaket entpackt werden soll</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2089"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2093"/>
         <source>Project package does not contain a SIM-VICUS project file (%1-file).</source>
         <translation>Projektpaket enthält kein valides SIM-VICUS Projekt (%1-Datei).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2097"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2101"/>
         <source>Cannot remove existing project file (maybe missing permissions?).</source>
         <translation>Kann die existierende Projektdatei nicht löschen (fehlen möglicherweise Zugriffsrechte, oder wird die Datei wird noch benutzt?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2104"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2108"/>
         <source>Cannot rename project file to target file (invalid file name?).</source>
         <translation>Kann die Projektdatei nicht in den Zieldateinamen umbenennen (ungültiger Dateiname?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1962"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2088"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1963"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2092"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
@@ -8080,13 +8080,13 @@ p, li { white-space: pre-wrap; }
         <translation>Bitte starten Sie die Software neu, um die neue Sprache zu aktivieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1855"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1856"/>
         <source>Application Log</source>
         <translation>Anwendungsmeldungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1687"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1706"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1688"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1707"/>
         <source>The file &apos;%1&apos; cannot be found or does not exist.</source>
         <translation>Die Datei &apos;%1&apos; kann nicht gefunden werden oder existiert nicht.</translation>
     </message>
@@ -8134,24 +8134,24 @@ p, li { white-space: pre-wrap; }
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1714"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1715"/>
         <source>Select directory to copy example project into</source>
         <translation>Wähle Zielverzeichnis für das Beispielprojekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1726"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2097"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2104"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1727"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2101"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2108"/>
         <source>Write error</source>
         <translation>Schreibfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1726"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1727"/>
         <source>Cannot copy example, maybe missing permissions?</source>
         <translation>Kann das Beispiel nicht kopieren, eventuell fehlen Zugriffsrechte?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1963"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1964"/>
         <source>Cannot extract project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket &apos;%1&apos; nicht extrahieren.</translation>
     </message>
@@ -8197,12 +8197,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVNavigationTreeItemDelegate</name>
     <message>
-        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="156"/>
+        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="161"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="172"/>
+        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="177"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
@@ -8320,52 +8320,58 @@ p, li { white-space: pre-wrap; }
         <translation>Strg+I</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="202"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="266"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="215"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="279"/>
         <source>Invalid polygon/hole geometry</source>
         <translation>Ungültige Polygon-/Lochgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="228"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="95"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="120"/>
         <source>Invalid polygon data</source>
         <translation>Ungültige Polygondaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="237"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="104"/>
         <source>Invalid sub-surface polygon</source>
         <translation>Ungültiges Teilflächen-Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="256"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="129"/>
+        <source>Invalid child-surface polygon</source>
+        <translation>Ungültiges Polygon in Unterfläche</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="298"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="275"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="317"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="294"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="336"/>
         <source>Obstacles/Shading Geometry</source>
         <translation>Hindernisse/Verschattungsgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="410"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="452"/>
         <source>Renamed object to &apos;%1&apos;</source>
         <translation>Objekt in „%1“ umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="430"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="472"/>
         <source>Selecting objects</source>
         <translation>Auswählen von Objekten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="432"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="474"/>
         <source>De-selecting objects</source>
         <translation>Objekte abwählen</translation>
     </message>
@@ -9360,22 +9366,22 @@ p, li { white-space: pre-wrap; }
         <translation>Der Fensterflächenanteil muss zwischen 0 .. 100 % liegen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="283"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="285"/>
         <source>Window #%1</source>
         <translation>Fenster #%1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="287"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="289"/>
         <source>Door #%1</source>
         <translation>Tür #%1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="311"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="316"/>
         <source>Added sub-surfaces/windows</source>
         <translation>Teilflächen/Fenster hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="333"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="338"/>
         <source>New polygon origin.</source>
         <translation>Neuer Polygonursprung.</translation>
     </message>
@@ -9759,52 +9765,52 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Auswahl</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="56"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="58"/>
         <source>Component</source>
         <translation>Komponente</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="57"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="59"/>
         <source>Sub-Surfaces</source>
         <translation>Teilflächenkomponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="58"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="60"/>
         <source>Construction orientation</source>
         <translation>Bauteilorientierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="59"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="61"/>
         <source>Boundary conditions</source>
         <translation>Randbedingungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="60"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="62"/>
         <source>Surface connections/component instances</source>
         <translation>Oberflächenverbindungen/Komponenteninstanzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="61"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="63"/>
         <source>Zone templates</source>
         <translation>Zonenvorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="62"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="64"/>
         <source>Surface heating</source>
         <translation>Flächenheizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="65"/>
         <source>Supply Systems</source>
         <translation>Versorgungssysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="64"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="66"/>
         <source>Room properties</source>
         <translation>Raumeigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="65"/>
+        <location filename="../../src/SVPropBuildingEditWidget.cpp" line="67"/>
         <source>Building levels</source>
         <translation>Geschossmanager</translation>
     </message>
@@ -10000,83 +10006,98 @@ p, li { white-space: pre-wrap; }
         <translation>Vernetzte Oberflächen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="29"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="42"/>
         <source>Remove connection</source>
         <translation>Verbindung entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="58"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="55"/>
+        <source>Highlighting mode:</source>
+        <translation>Anzeigemodus:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="68"/>
+        <source>Smart Surface Connections</source>
+        <translation>Automatische Oberflächenverbindungen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="74"/>
+        <source>Open smart-clipping</source>
+        <translation>Öffne smart clipping</translation>
+    </message>
+    <message>
         <source>Connect surfaces</source>
-        <translation>Flächen verbinden</translation>
+        <translation type="vanished">Flächen verbinden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="66"/>
         <source>Maximum distances [m]:</source>
-        <translation>Maximale Entfernungen [m]:</translation>
+        <translation type="vanished">Maximale Entfernungen [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="76"/>
         <source>Maximum angle [Deg]:</source>
-        <translation>Maximaler Winkel [Grad]:</translation>
+        <translation type="vanished">Maximaler Winkel [Grad]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="90"/>
         <source>Create connections</source>
-        <translation>Verbindungen erzeugen</translation>
+        <translation type="vanished">Verbindungen erzeugen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="20"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
         <source>CI id</source>
         <translation>CI-ID</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="20"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
         <source>Surface Side A</source>
         <translation>Oberflächenseite A</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="20"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
         <source>Surface Side B</source>
         <translation>Oberfläche Seite B</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="20"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
         <source>Component</source>
         <translation>Komponente</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="35"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="44"/>
+        <source>Colored surfaces</source>
+        <translation>Farbige Oberflächen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="45"/>
+        <source>Transparent surfaces</source>
+        <translation>Transparente Oberflächen</translation>
+    </message>
+    <message>
         <source>Maximum distances between surfaces to enable connection in [m].</source>
-        <translation>Maximale Abstände zwischen den Oberflächen, um eine Verbindung zu ermöglichen, in [m].</translation>
+        <translation type="vanished">Maximale Abstände zwischen den Oberflächen, um eine Verbindung zu ermöglichen, in [m].</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="38"/>
         <source>Maximum angle between surfaces to enable connection in [Deg].</source>
-        <translation>Maximaler Winkel zwischen Flächen, um eine Verbindung in [Grad] zu ermöglichen.</translation>
+        <translation type="vanished">Maximaler Winkel zwischen Flächen, um eine Verbindung in [Grad] zu ermöglichen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="239"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="248"/>
         <source>Selected connected surfaces</source>
         <translation>Ausgewählte verbundene Flächen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="251"/>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="258"/>
         <source>Please enter valid parameters!</source>
-        <translation>Bitte gültige Parameter eingeben!</translation>
+        <translation type="vanished">Bitte gültige Parameter eingeben!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="271"/>
         <source>Created surface-surface connection</source>
-        <translation>Oberfläche-Oberflächen-Verbindung erstellt</translation>
+        <translation type="vanished">Oberfläche-Oberflächen-Verbindung erstellt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="276"/>
         <source>With the given selection and algorithm parameters, no new connections could be created.</source>
-        <translation>Mit den gegebenen Auswahl- und Algorithmusparametern konnten keine neuen Verbindungen erstellt werden.</translation>
+        <translation type="vanished">Mit den gegebenen Auswahl- und Algorithmusparametern konnten keine neuen Verbindungen erstellt werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="321"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="295"/>
         <source>Removed surface-surface connection</source>
         <translation>Oberfläche-Oberflächen-Verbindung entfernt</translation>
     </message>
@@ -10213,39 +10234,39 @@ p, li { white-space: pre-wrap; }
         <translation>Raumeigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="42"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="160"/>
         <source>Building:</source>
         <translation>Gebäude:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="79"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="62"/>
         <source>Update Floor Areas / Volumes</source>
         <translation>Grundflächen/Volumen aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="94"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="77"/>
         <source>Only selected rooms:</source>
         <translation>Nur ausgewählte Zimmer:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="120"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="158"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="103"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="141"/>
         <source>Floor area</source>
         <translation>Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="127"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="165"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="110"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="148"/>
         <source>Volume</source>
         <translation>Volumen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="138"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="121"/>
         <source>All rooms:</source>
         <translation>Alle Räume:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="177"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="26"/>
         <source>Room Name:</source>
         <translation>Raumname:</translation>
     </message>
@@ -10255,17 +10276,17 @@ p, li { white-space: pre-wrap; }
         <translation>Gebäudeebene:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="26"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="39"/>
         <source>Other</source>
         <translation>Sonstiges</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="32"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="45"/>
         <source>Assign selected surfaces to room</source>
         <translation>Ausgewählte Flächen dem Raum zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="72"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="180"/>
         <source>Rooms/Zones:</source>
         <translation>Räume/Zonen:</translation>
     </message>
@@ -10278,52 +10299,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="107"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="111"/>
         <source>All buildings</source>
         <translation>Alle Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="124"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="128"/>
         <source>All building levels</source>
         <translation>Alle Gebäudeebenen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="219"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="223"/>
         <source>Calculate floor area of selected rooms.</source>
         <translation>Berechnen Sie die Grundfläche der ausgewählten Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="219"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="253"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="287"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="321"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="223"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="257"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="291"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="325"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="232"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="300"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="236"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="304"/>
         <source>Calculation of floor areas was aborted.</source>
         <translation>Die Berechnung der Geschossflächen wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="253"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="257"/>
         <source>Calculate volumes of selected rooms.</source>
         <translation>Berechnen Sie die Volumina ausgewählter Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="266"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="334"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="270"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="338"/>
         <source>Calculation of volumes was aborted.</source>
         <translation>Die Volumenberechnung wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="287"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="291"/>
         <source>Calculate floor area of all rooms.</source>
         <translation>Berechnen Sie die Grundfläche aller Räume.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="321"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="325"/>
         <source>Calculate volumes of all rooms.</source>
         <translation>Volumen aller Räume berechnen.</translation>
     </message>
@@ -10495,7 +10516,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="194"/>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="371"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="374"/>
         <source>Assigned zone template</source>
         <translation>Zugewiesene Zonenvorlage</translation>
     </message>
@@ -10521,12 +10542,12 @@ p, li { white-space: pre-wrap; }
         <translation>Zonenvorlage austauschen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="311"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="314"/>
         <source>Select objects with zone template &apos;%1&apos;</source>
         <translation>Objekte mit Zonenvorlage „%1“ auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="313"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.cpp" line="316"/>
         <source>Select objects with invalid/missing zone template.</source>
         <translation>Wählen Sie Objekte mit ungültiger/fehlender Zonenvorlage aus.</translation>
     </message>
@@ -10737,7 +10758,7 @@ p, li { white-space: pre-wrap; }
         <translation>Oberflächennormale umgedreht</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1202"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1221"/>
         <source>Geometry modified</source>
         <translation>Geometrie geändert</translation>
     </message>
@@ -11214,22 +11235,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="30"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="33"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="31"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="34"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="32"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="35"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="33"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="36"/>
         <source>Sub Stations</source>
         <translation>Übergabestationen</translation>
     </message>
@@ -11334,7 +11355,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Anlage zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="34"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="37"/>
         <source>Heat Exchange</source>
         <translation>Wärmeaustausch</translation>
     </message>
@@ -11756,102 +11777,230 @@ p, li { white-space: pre-wrap; }
         <translation>Doppelklick um Ausgaben zu lesen/aktualisieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="102"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="99"/>
+        <source>convert to absolute values</source>
+        <translation>konvertier in absolute Werte</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="109"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="129"/>
         <source>Colormap</source>
         <translation>Farbskala</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="108"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="115"/>
+        <source>Read from file...</source>
+        <translation>Aus Datei lesen...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="146"/>
+        <source>Save to file...</source>
+        <translation>Speichere in Datei...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="191"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="128"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="139"/>
         <source>Maximum:</source>
         <translation>Maximum:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="154"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="122"/>
         <source>Set min/max from entire data set</source>
         <translation>Setze min/max der gesamten Zeitreihe</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="161"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="233"/>
         <source>Set min/max for current time point</source>
         <translation>Setze min/max für aktuellen Zeitpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="171"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="278"/>
+        <source>Analysis</source>
+        <translation>Analyse</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="284"/>
+        <source>Show object with minimum value at current time point</source>
+        <translation>Zeige Objekt mit minimalem Wert zum aktuellen Zeitpunkt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="287"/>
+        <source>Show object with min value</source>
+        <translation>Zeige Objekt mit minimalem Wert</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="294"/>
+        <source>Jump to time point of the minimum value of entire data set</source>
+        <translation>Springe zu Zeitpunkt des minimalen Wertes der gesamten Zeitreihe</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="297"/>
+        <source>Jump to time of min value</source>
+        <translation>Springe zu Zeitpunkt mit min. Wert</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="304"/>
+        <source>Show object with maximum value at current time point</source>
+        <translation>Zeige Objekt mit maximalem Wert zum aktuellen Zeitpunkt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="307"/>
+        <source>Show object with max value</source>
+        <translation>Zeige Objekt mit maximalem Wert</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="314"/>
+        <source>Jump to time point of the maximum value of entire data set</source>
+        <translation>Springe zu Zeitpunkt des maximalen Wertes der gesamten Zeitreihe</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="317"/>
+        <source>Jump to time of max value</source>
+        <translation>Springe zu Zeitpunkt des max. Wertes</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="327"/>
+        <source>Current selection</source>
+        <translation>Aktuelle Auswahl</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="333"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="123"/>
+        <source>None selected</source>
+        <translation>Nichts gewählt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="353"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="27"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="34"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="27"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="34"/>
         <source>Unit</source>
         <translation>Einheit</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="27"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="34"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="39"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="46"/>
         <source>Minimum value for coloring</source>
         <translation>Minimalwert für Farbskala</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="40"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="47"/>
         <source>Maximum value for coloring</source>
         <translation>Maximalwert für Farbskala</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="459"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="129"/>
+        <source>Multiple objects selected</source>
+        <translation>Mehrere Objekte gewählt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="296"/>
+        <source>Reading results directory</source>
+        <translation>Reading results directory</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="346"/>
+        <source>Reading header of file &apos;%1&apos;</source>
+        <translation>Reading header of file &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="499"/>
         <source>unread</source>
         <translation>ungelesen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="464"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="504"/>
         <source>current</source>
         <translation>aktuell</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="470"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="510"/>
         <source>outdated</source>
         <translation>veraltet</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="475"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="515"/>
         <source>missing</source>
         <translation>fehlend</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="498"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="540"/>
         <source>Reading file &apos;%1&apos;</source>
         <translation>Lese Datei &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="498"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="787"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="816"/>
+        <source>File error</source>
+        <translation>File error</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="787"/>
+        <source>Error in line %1 of file &apos;%2&apos;:
+%3</source>
+        <translation>Fehler in Zeile %1 der Datei &apos;%2&apos;:
+%3</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="816"/>
+        <source>Error reading color map from file. See logfile &apos;%1&apos; for details.</source>
+        <translation>Fehler beim Lesen der Colormap aus der Datei. Siehe Logdatei &apos;%1&apos; für Details.</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="881"/>
+        <source>Select Color Map File</source>
+        <translation>Wähle Colormap Datei</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="881"/>
+        <source>Color map files (*.p2colormap);;All files (*.*)</source>
+        <translation>Color map Dateien (*.p2colormap);;All Dateien (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="932"/>
+        <source>Selection changed</source>
+        <translation>Auswahl geändert</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="957"/>
+        <source>output not available for selected object</source>
+        <translation>Ausgabe nicht verfügbar für ausgewähltes Objekt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="295"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="540"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="499"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="541"/>
         <source>Reading results file</source>
         <translation>Lese Ergebnisdatei</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="522"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="564"/>
         <source>Invalid/missing content in result file &apos;%1&apos;.</source>
         <translation>Ungültiger/fehlender Inhalt in Ergebnisdatei &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="536"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="578"/>
         <source>Processing results</source>
         <translation>Verarbeite Ausgaben</translation>
     </message>
@@ -12372,7 +12521,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.cpp" line="626"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="727"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="730"/>
         <source>Added surface &apos;%1&apos;</source>
         <translation>Oberfläche &apos;%1&apos; hinzugefügt</translation>
     </message>
@@ -12392,76 +12541,76 @@ p, li { white-space: pre-wrap; }
         <translation>Polygon kann nicht auf ausgewählte Fläche projiziert werden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="704"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="707"/>
         <source>Added sub-surface/window</source>
         <translation>Untergrund/Fenster hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="712"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="715"/>
         <source>First select a zone to add the surface to!</source>
         <translation>Wählen Sie zuerst eine Zone aus, der Sie die Oberfläche hinzufügen möchten!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="788"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="791"/>
         <source>First select a building level to add the zone/room to!</source>
         <translation>Wählen Sie zuerst eine Gebäudeebene aus, der Sie die Zone/den Raum hinzufügen möchten!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="828"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="986"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="831"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="989"/>
         <source>Floor</source>
         <translation>Boden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="831"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="834"/>
         <source>Ceiling</source>
         <translation>Decke</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="875"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="878"/>
         <source>Wall %1</source>
         <translation>Wand %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="896"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="899"/>
         <source>Adding new zone &apos;%1&apos;</source>
         <translation>Neue Zone „%1“ wird hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="970"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="973"/>
         <source>First select a building level to add the roof zone to!</source>
         <translation>Wählen Sie zuerst eine Gebäudeebene aus, zu der die Dachzone hinzugefügt werden soll!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1001"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1004"/>
         <source>Wall surface</source>
         <translation>Wandfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1015"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1034"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1053"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1072"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1091"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1018"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1037"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1056"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1075"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1094"/>
         <source>Roof surface %1</source>
         <translation>Dachfläche %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1023"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1042"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1061"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1080"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1026"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1045"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1064"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1083"/>
         <source>Wall surface %1</source>
         <translation>Wandfläche %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1141"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1144"/>
         <source>Adding roof zone &apos;%1&apos;</source>
         <translation>Dachzone &apos;%1&apos; wird hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1668"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="1687"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1671"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1690"/>
         <source>First select a network!</source>
         <translation>Wählen Sie zuerst ein Netzwerk aus!</translation>
     </message>
@@ -13310,30 +13459,30 @@ p, li { white-space: pre-wrap; }
         <translation>Berechnung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="126"/>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="321"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="127"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="322"/>
         <source>Half-angle of sun cone must be &gt; 0 Deg!</source>
         <translation>Halbwinkel des Sonnenkegels muss &gt; 0 Grad sein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="127"/>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="316"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="128"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="317"/>
         <source>Grid size must be &gt; 0 m!</source>
         <translation>Rasterweite muss &gt; 0 m sein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="128"/>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="326"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="129"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="327"/>
         <source>Steps per hour must be between 1 and 60!</source>
         <translation>Schritte pro Stunde müssen zwischen 1 und 60 liegen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="187"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="188"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Simulation time interval is not properly configured. Please set a valid simulation time interval and compute shading afterwards!&lt;/span&gt;</source>
         <translation>&lt;span style=&quot;color:%1&quot;&gt;Simulationszeitintervall ist nicht richtig konfiguriert. Bitte geben Sie ein gültiges Simulationszeitintervall ein und berechnen Sie anschließend die Verschattung!&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="210"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="211"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Location data is not correctly defined. Please open the location data dialog and specify a valid climate data file and/or building location.&lt;/span&gt;</source>
         <translation>&lt;span style=&quot;color:%1&quot;&gt;Standortdaten sind nicht korrekt definiert. Bitte öffnen Sie den Standortdatendialog und geben Sie eine gültige Klimadatendatei und/oder einen Gebäudestandort an.&lt;/span&gt;</translation>
     </message>
@@ -13342,72 +13491,72 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Keine Verschattungsdatei</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="287"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="288"/>
         <source>No shading file, yet!</source>
         <translation>Keine Verschattungsdatei vorhanden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="298"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="299"/>
         <source>The calculation was aborted or an error has occurred during the calculation of shading factors.</source>
         <translation>Die Berechnung wurde abgebrochen oder bei der Berechnung der Verschattungsfaktoren ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="338"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="339"/>
         <source>No (sub-)surfaces have been selected.Note that shading factors won&apos;t be generated for obstacles/annonymous geometry!</source>
         <translation>Es wurden keine (Teil-)Flächen ausgewählt. Beachten Sie, dass für Hindernisse/anonyme Geometrie keine Verschattungsfaktoren erzeugt werden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="368"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="369"/>
         <source>The current project does not contain any surfaces to compute shading factors for. Note that shading factors won&apos;t be generated for obstacles/annonymous geometry!</source>
         <translation>Das aktuelle Projekt enthält keine Flächen, für die Verschattungsfaktoren berechnet werden können. Beachten Sie, dass für Hindernisse/anonyme Geometrie keine Verschattungsfaktoren generiert werden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="373"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="374"/>
         <source>Shading calculation will be done using all surfaces of the project, regardless of whether they are currently visible or not. Currently %1 surfaces, %2 sub-surfaces and %3 obstacles have been selected. For large projects this may lead to large simulation time. Continue?</source>
         <translation>Die Verschattungsberechnung wird mit allen Flächen des Projekts durchgeführt, unabhängig davon, ob sie gerade sichtbar sind oder nicht. Derzeit sind %1 Flächen, %2 Teilflächen und %3 Hindernisse ausgewählt. Bei großen Projekten kann dies zu einer langen Simulationszeit führen. Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="401"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="402"/>
         <source>Error reading climate data file &apos;%1&apos;.</source>
         <translation>Fehler beim Lesen der Klimadatendatei „%1“.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="566"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="567"/>
         <source>%1 surfaces were skipped, because their surface area was below %2 m2.</source>
         <translation>%1 Flächen wurden übersprungen, weil ihre Fläche unter %2 m2 lag.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="572"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="573"/>
         <source>All surfaces have been filtered out because of invalid/missing components or boundary conditions, or because they are not facing the sky. Please check your model!</source>
         <translation>Alle Flächen wurden herausgefiltert, weil Komponenten oder Randbedingungen ungültig sind oder fehlen oder weil sie nicht zum Himmel zeigen. Bitte überprüfen Sie Ihr Modell!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="580"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="581"/>
         <source>%1 surfaces were skipped, because they have no component assignment or have invalid boundary conditions assigned.</source>
         <translation>%1 Flächen wurden übersprungen, weil sie keine Komponentenbelegung haben oder ihnen ungültige Randbedingungen zugewiesen wurden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="616"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="617"/>
         <source>Sub-surfaces are currently moved to the middle of the parent surface component. Later there will be a setting in sub-surface database.</source>
         <translation>Teilflächen werden für die Verschattungsanalyse in die Mitte der Konstruktionsdecke gelegt.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="685"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="686"/>
         <source>Calculate shading factors</source>
         <translation>Verschattungsfaktoren berechnen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="685"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="686"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="699"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="700"/>
         <source>Calculation of shading factors was aborted.</source>
         <translation>Die Berechnung der Verschattungsfaktoren wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="733"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="734"/>
         <source>Calculated shading factors have been saved to &apos;%1&apos;.</source>
         <translation>Berechnete Verschattungsfaktoren wurden in „%1“ gespeichert.</translation>
     </message>
@@ -13701,6 +13850,119 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>SVSmartIntersectionDialog</name>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="14"/>
+        <source>Smart Clipping Settings</source>
+        <translation>Smart Clipping Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="22"/>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="31"/>
+        <source>Maximum distances</source>
+        <translation>Maximaler Abstand</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="38"/>
+        <source>deg</source>
+        <translation>deg</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="48"/>
+        <source>Maximum treshold angle</source>
+        <translation>Maximaler abweichender Winkel</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="55"/>
+        <source>m</source>
+        <translation>m</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="62"/>
+        <source>Create Component Instances</source>
+        <translation>Erstelle Component Instances</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="75"/>
+        <source>Project options</source>
+        <translation>Projektoptionen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="81"/>
+        <source>Clip entire project (all buildings and geometry)</source>
+        <translation>Verknüpfe gesamtes Projekt (alle Gebäude und Geometrien)</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="91"/>
+        <source>Clip selected geometry only</source>
+        <translation>Verknüpfe nur ausgewählte Geometrie</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="119"/>
+        <source>Start smart-clipping</source>
+        <translation>Starte smart-clipping</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="126"/>
+        <source>Smart-clipping log</source>
+        <translation>Smart-clipping log</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="157"/>
+        <source>Apply to project</source>
+        <translation>Auf Projekt anwenden</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="164"/>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="143"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="42"/>
+        <source>Maximum distances between surfaces to enable connection in [m].</source>
+        <translation>Maximale Abstände zwischen den Oberflächen, um eine Verbindung zu finden in [m].</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="45"/>
+        <source>Maximum angle between surfaces to enable connection in [Deg].</source>
+        <translation>Maximaler Winkel zwischen Flächen, um eine Verbindung zu finden in [Grad].</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="122"/>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="129"/>
+        <source>Please enter valid parameters!</source>
+        <translation>Bitte gültige Parameter eingeben!</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="143"/>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="158"/>
+        <source>Smart-Clipping</source>
+        <translation>Smart-Clipping</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="159"/>
+        <source>Smart-Clipping has been performed successfully. Please review the import log for warnings!</source>
+        <translation>Smart-Clipping wurde erfolgreich durchgeführt. Bitte überprüfen Sie das Importprotokoll auf Warnungen!</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="163"/>
+        <source>Smart-Clipping error</source>
+        <translation>Smart-Clipping Fehler</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.cpp" line="163"/>
+        <source>Error during smart-clipping:
+%1</source>
+        <translation>Fehler in smart-clipping:
+%1</translation>
+    </message>
+</context>
+<context>
     <name>SVSmartSelectDialog</name>
     <message>
         <location filename="../../src/SVSmartSelectDialog.ui" line="14"/>
@@ -13812,7 +14074,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSmartSelectDialog.cpp" line="95"/>
         <source>Use wildcard &apos;*&apos; or filter for multiple names separated with &apos;;&apos; </source>
-        <translation>Verwende wildcard &apos;*&apos; oder filtere nach mehreren Namen getrennt durch &apos;;&apos;</translation>
+        <translation>Verwende wildcard &apos;*&apos; oder filtere nach mehreren Namen getrennt durch &apos;;&apos; </translation>
     </message>
     <message>
         <location filename="../../src/SVSmartSelectDialog.cpp" line="103"/>
@@ -14000,17 +14262,17 @@ p, li { white-space: pre-wrap; }
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVTimeSliderWidget.ui" line="20"/>
+        <location filename="../../src/SVTimeSliderWidget.ui" line="255"/>
         <source>Offset</source>
         <translation>Offset</translation>
     </message>
     <message>
-        <location filename="../../src/SVTimeSliderWidget.ui" line="200"/>
+        <location filename="../../src/SVTimeSliderWidget.ui" line="223"/>
         <source>Controls animation speed.</source>
         <translation>Ändert Animationsgeschwindigkeit.</translation>
     </message>
     <message>
-        <location filename="../../src/SVTimeSliderWidget.ui" line="232"/>
+        <location filename="../../src/SVTimeSliderWidget.ui" line="166"/>
         <source>Current </source>
         <translation>Aktuell </translation>
     </message>
@@ -14018,22 +14280,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVUndoCopyZone</name>
     <message>
-        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="145"/>
+        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="146"/>
         <source>Copied subsurfaces</source>
         <translation>Kopierte Teilflächen</translation>
     </message>
     <message>
-        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="279"/>
+        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="280"/>
         <source>Copied surfaces with their subsurfaces</source>
         <translation>Kopierte Flächen mit ihren Teilflächen</translation>
     </message>
     <message>
-        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="392"/>
+        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="393"/>
         <source>Copied entire rooms</source>
         <translation>Kopierte ganze Räume</translation>
     </message>
     <message>
-        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="511"/>
+        <location filename="../../src/actions/SVUndoCopyBuildingGeometry.cpp" line="512"/>
         <source>Copied entire building levels</source>
         <translation>Kopierte ganze Gebäudeebenen</translation>
     </message>
@@ -14081,13 +14343,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVWelcomeScreen.cpp" line="100"/>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="223"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="225"/>
         <source>Examples/Validation cases</source>
         <translation>Beispiele/Validierungsfälle</translation>
     </message>
     <message>
         <location filename="../../src/SVWelcomeScreen.cpp" line="101"/>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="164"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="166"/>
         <source>Project templates</source>
         <translation>Projektvorlagen</translation>
     </message>
@@ -14102,22 +14364,22 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="364"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="366"/>
         <source>unable to download news content.</source>
         <translation>keine Nachrichteninhalte herunterladen können.</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="407"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="409"/>
         <source>&lt;h1&gt;&lt;font style=&quot;color:${STYLE_H1_COLOR}&quot;&gt;An update is available!&lt;/font&gt;&lt;/h1&gt;&lt;p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="408"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="410"/>
         <source>Current version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</source>
         <translation>aktuelle version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="409"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="411"/>
         <source>New Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</source>
         <translation>Neue Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</translation>
     </message>
@@ -14146,28 +14408,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2129"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2190"/>
         <source>All objects selected</source>
         <translation>Alle Objekte ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2190"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2259"/>
         <source>Selected cleared</source>
         <translation>Ausgewählt gelöscht</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2206"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2275"/>
         <source>Removing selected geometry</source>
         <translation>Ausgewählte Geometrie entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2224"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2242"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2293"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2311"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3071"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3149"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
@@ -14180,7 +14442,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ShadingCalculationProgress</name>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="101"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="102"/>
         <source>Calculating Shading factors
 Remaining time: %1 h %2 min</source>
         <translation>Berechne Verschattungsfaktor
