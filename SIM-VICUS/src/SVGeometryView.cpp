@@ -206,7 +206,7 @@ bool SVGeometryView::handleGlobalKeyPressEvent(QKeyEvent * ke) {
 			m_ui->actionZLock->trigger();
 			break;
 
-			// *** F3 - toggle "snap mode" mode ****
+		// *** F3 - toggle "snap mode" mode ****
 		case Qt::Key_F3 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_snapEnabled) {
@@ -223,13 +223,13 @@ bool SVGeometryView::handleGlobalKeyPressEvent(QKeyEvent * ke) {
 			// all view modes that require snapping
 		} break;
 
-			// *** F4 - toggle "align coordinate system" mode ****
+		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleAlignCoordinateSystem();
 			break;
 
-			// *** F5 - toggle "move local coordinate system" mode ****
+		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleTranslateCoordinateSystem();
@@ -247,12 +247,13 @@ bool SVGeometryView::handleGlobalKeyPressEvent(QKeyEvent * ke) {
 bool SVGeometryView::handleGlobalKeyRelease(QKeyEvent * ke) {
 //	Qt::Key k = (Qt::Key)ke->key();
 //	qDebug() << "SVGeometryView::handleGlobalKeyRelease" << k;
+
+	// avoid accidentally deleting anything from the scene
+	if (!this->hasFocus() && ke->key() == Qt::Key_Delete)
+		return true;
+
 	// key release events are sent always, as these "do nothing" normally unless the scene was in a special state before
-
-    if(!this->hasFocus() && ke->key() == Qt::Key_Delete)
-        return true;
-
-    if (m_sceneView->isVisible())
+	if (m_sceneView->isVisible())
 		m_sceneView->handleKeyReleaseEvent(ke);
 	return true;
 }

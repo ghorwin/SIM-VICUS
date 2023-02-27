@@ -1608,6 +1608,7 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
 
 		m_geometryViewSplitter->setVisible(true);
+		m_geometryView->setFocus();
 		m_ui->toolBar->setVisible(true);
 		m_ui->toolBar->toggleViewAction()->setEnabled(true);
 
