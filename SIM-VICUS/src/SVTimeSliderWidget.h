@@ -101,7 +101,6 @@ private:
 	bool						m_spaceCoordinate;	///< Is true if the cut plane is a space otherwise it is time.
 	QTimer						m_moveTimer;		///< Timer, that repeatedly calls onFastForward()
 
-
 };
 
 #endif // SVTIMESLIDERWIDGETH

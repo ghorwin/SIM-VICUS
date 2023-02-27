@@ -5,7 +5,12 @@
 #include <QDir>
 #include <QDateTime>
 
-#include "NANDRAD_LinearSplineParameter.h"
+#include <NANDRAD_LinearSplineParameter.h>
+
+#include <VICUS_Constants.h>
+
+#include "SVColorMap.h"
+
 
 namespace Ui {
 class SVPropResultsWidget;
@@ -51,8 +56,6 @@ private slots:
 
 	void onTimeSliderCutValueChanged(double currentTime);
 
-	void on_pushButtonMaxColor_clicked();
-	void on_pushButtonMinColor_clicked();
 	void on_pushButtonSetGlobalMinMax_clicked();
 	void on_pushButtonSetLocalMinMax_clicked();
 
@@ -70,6 +73,25 @@ private slots:
 	void on_lineEditMaxValue_editingFinishedSuccessfully();
 	void on_lineEditMinValue_editingFinishedSuccessfully();
 
+	void on_pushButtonSetDefaultColormap_clicked();
+
+	void on_pushButtonReadColormap_clicked();
+
+	void on_pushButtonSaveColormap_clicked();
+
+	void on_checkBoxConvertToAbsolute_stateChanged(int arg1);
+
+	void on_pushButtonSetColormapViridis_clicked();
+
+	void on_pushButtonSetColormapSpectral_clicked();
+
+	void on_pushButtonJumpToMax_clicked();
+
+	void on_pushButtonJumpToMin_clicked();
+
+	void on_pushButtonFindMaxObject_clicked();
+
+	void on_pushButtonFindMinObject_clicked();
 
 private:
 
@@ -114,11 +136,22 @@ private:
 	/*! Determine min/max values of current output. If localMinMax==true, the min/max of current time point are determined, otherwise the min/max of entire spline are determined */
 	void setCurrentMinMaxValues(bool localMinMax=false);
 
-	/*! Interpolates given color for given value using the current min/max values and colors. Uses linear HSV interpolation */
-	void interpolateColor(const double &val, QColor &col);
-
 	/*! Sets colors to all VICUS objects, based on previously found ids */
 	void updateColors(const double & currentTime);
+
+	/*! Reads colormap from xml file */
+	bool readColorMap(const QString &filename);
+
+	/*! Interpolates color for y considering m_currentMin, m_currentMax */
+	void interpolateColor(double y, QColor &col) const;
+
+	/*! creates undo action to select object with targetId, also sets the camera to find object */
+	void selectTargetObject(unsigned int targetId);
+
+	/*! Update lineedit with value of currently selected object */
+	void updateLineEditCurrentValue();
+
+	void onSelectionChanged();
 
 	Ui::SVPropResultsWidget							*m_ui;
 
@@ -142,6 +175,7 @@ private:
 
 	/*! The currently selected output property/quantity (extracted from caption in TSV files). */
 	QString											m_currentOutputQuantity;
+	QString											m_currentOutputUnit;
 
 	/*! The currently selected filter. */
 	QString											m_currentFilter;
@@ -149,8 +183,17 @@ private:
 	/*! Min/Max values and colors. */
 	double											m_currentMin = 0;
 	double											m_currentMax = 1;
-	QColor											m_minColor;
-	QColor											m_maxColor;
+	unsigned int									m_currentMinIdx = 0;
+	unsigned int									m_currentMaxIdx = 0;
+
+	/*! Currently used color map */
+	SVColorMap										m_colorMap;
+
+	QString											m_lastOpenFileLocation;
+
+	/*! VICUS Object Id of currently selected object */
+	unsigned int									m_selectedObjectId = VICUS::INVALID_ID;
+
 };
 
 #endif // SVRESULTSVIEWWIDGETH

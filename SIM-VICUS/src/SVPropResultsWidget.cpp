@@ -7,12 +7,19 @@
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 #include "SVColorLegend.h"
+#include "SVUndoTreeNodeState.h"
+#include "SVNavigationTreeWidget.h"
 
 #include <QFileInfo>
 #include <QTextStream>
 #include <QProgressDialog>
+#include <QFileDialog>
 
 #include <IBK_CSVReader.h>
+
+#include <QtExt_Directories.h>
+
+#include <fstream>
 
 
 SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
@@ -39,16 +46,6 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Minimum value for coloring"), false, false);
 	m_ui->lineEditMaxValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
 
-	m_ui->pushButtonMaxColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
-		m_ui->pushButtonMaxColor->setColor("#cb1b16"); // on dark mode use a bit more vibrant colors
-	else
-		m_ui->pushButtonMaxColor->setColor("#cb1b16");
-	m_maxColor = m_ui->pushButtonMaxColor->color();
-	m_ui->pushButtonMinColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
-	m_ui->pushButtonMinColor->setColor("#669bbc");
-	m_minColor = m_ui->pushButtonMinColor->color();
-
 	connect(m_ui->widgetTimeSlider, &SVTimeSliderWidget::cutValueChanged,
 			this, &SVPropResultsWidget::onTimeSliderCutValueChanged);
 
@@ -61,8 +58,10 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->lineEditMinValue->setValue(0);
 	m_ui->widgetTimeSlider->clear();
 
+	on_pushButtonSetDefaultColormap_clicked();
+
 	// set pointer for color legend
-	SVViewStateHandler::instance().m_geometryView->colorLegend()->initialize(&m_currentMin, &m_currentMax, &m_minColor, &m_maxColor);
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->initialize(&m_currentMin, &m_currentMax, &m_colorMap);
 }
 
 
@@ -99,31 +98,51 @@ void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
 		case SVProjectHandler::AllModified: {
+			m_selectedObjectId = VICUS::INVALID_ID;
 			on_toolButtonSetDefaultDirectory_clicked();
+		}
+		[[clang::fallthrough]];
+		case SVProjectHandler::NodeStateModified: {
+			// update current value line edit
+			onSelectionChanged();
+			updateLineEditCurrentValue();
 		} break;
-//		case SVProjectHandler::NetworkGeometryChanged:
-//		case SVProjectHandler::BuildingGeometryChanged: {
-//			refreshDirectory();
-//		} break;
 		default: ; // just to make compiler happy
+	}
+}
+
+
+void SVPropResultsWidget::onSelectionChanged() {
+	std::set<const VICUS::Object *> objs;
+	std::vector<const VICUS::Room *> rooms;
+	project().selectObjects(objs, VICUS::Project::SG_All, true, true);
+	project().selectedRooms(rooms);
+
+	// only if we find a single object or a room, we store the id
+	m_selectedObjectId = VICUS::INVALID_ID;
+	if (objs.empty() && rooms.empty())
+		m_ui->labelCurrentValue->setText(tr("None selected"));
+	else if (rooms.size() == 1)
+		m_selectedObjectId = rooms[0]->m_id;
+	else if (objs.size()==1)
+		m_selectedObjectId = (*objs.begin())->m_id;
+	else
+		m_ui->labelCurrentValue->setText(tr("Multiple objects selected"));
+
+	// If we have a valid selection: update object label
+	const VICUS::Object *obj = project().objectById(m_selectedObjectId);
+	if (obj != nullptr) {
+		if (obj->m_displayName.isEmpty())
+			m_ui->labelCurrentValue->setText(QString("Object with id=%1: ").arg(obj->m_id));
+		else
+			m_ui->labelCurrentValue->setText(QString("%1: ").arg(obj->m_displayName));
 	}
 }
 
 
 void SVPropResultsWidget::onTimeSliderCutValueChanged(double currentTime) {
 	updateColors(currentTime);
-}
-
-
-void SVPropResultsWidget::on_pushButtonMaxColor_clicked() {
-	m_maxColor = m_ui->pushButtonMaxColor->color();
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
-}
-
-
-void SVPropResultsWidget::on_pushButtonMinColor_clicked() {
-	m_minColor = m_ui->pushButtonMinColor->color();
-	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+	updateLineEditCurrentValue();
 }
 
 
@@ -140,7 +159,7 @@ void SVPropResultsWidget::on_pushButtonSetLocalMinMax_clicked() {
 
 
 void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() {
-	QString currentOutputUnit;
+	m_currentOutputUnit.clear();
 	// find out the selected row
 	int row = m_ui->tableWidgetAvailableResults->currentRow();
 	if (row == -1) {
@@ -150,13 +169,13 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 	else {
 		// make quantity the current quantity
 		m_currentOutputQuantity = m_ui->tableWidgetAvailableResults->item(row, 1)->text();
-		currentOutputUnit = m_ui->tableWidgetAvailableResults->item(row, 2)->text();
+		m_currentOutputUnit = m_ui->tableWidgetAvailableResults->item(row, 2)->text();
 		// check if the respective file is in cache
 		Q_ASSERT(m_outputVariable2FileIndexMap.find(m_currentOutputQuantity) != m_outputVariable2FileIndexMap.end());
 		unsigned int outputFileIndex = m_outputVariable2FileIndexMap[m_currentOutputQuantity];
-		if (m_outputFiles[outputFileIndex].m_status == ResultDataSet::FS_Unread) {
+		if (m_outputFiles[(int)outputFileIndex].m_status == ResultDataSet::FS_Unread) {
 			m_currentOutputQuantity.clear(); // not cached yet, cannot display
-			currentOutputUnit.clear();
+			m_currentOutputUnit.clear();
 		}
 		else {
 			// set slider
@@ -165,7 +184,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 			IBK::UnitVector timePointVec;
 			timePointVec.m_data = m_allResults[m_currentOutputQuantity].begin()->second.m_values.x();
 			timePointVec.m_unit = m_allResults[m_currentOutputQuantity].begin()->second.m_xUnit;
-			currentOutputUnit = QString::fromStdString( m_allResults[m_currentOutputQuantity].begin()->second.m_yUnit.name() );
+			m_currentOutputUnit = QString::fromStdString( m_allResults[m_currentOutputQuantity].begin()->second.m_yUnit.name() );
 			m_ui->widgetTimeSlider->setValues(timePointVec);
 			m_ui->widgetTimeSlider->setCurrentValue(timePointVec.m_data.back());
 			// determine max/min values
@@ -173,10 +192,12 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 		}
 	}
 
+	m_ui->groupBoxAnalysis->setEnabled(!m_currentOutputQuantity.isEmpty());
+	m_ui->groupBoxCurrentSelection->setEnabled(!m_currentOutputQuantity.isEmpty());
 	if (m_currentOutputQuantity.isEmpty())
 		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle("");
 	else
-		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutputQuantity, currentOutputUnit));
+		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle(QString("%1 [%2]").arg(m_currentOutputQuantity, m_currentOutputUnit));
 
 	// trigger recoloring (or if no data - make all grey)
 	updateColors(m_ui->widgetTimeSlider->currentCutValue());
@@ -190,7 +211,7 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_cellDoubleClicked(int r
 	Q_ASSERT(m_outputVariable2FileIndexMap.find(requestedQuantity) != m_outputVariable2FileIndexMap.end());
 	unsigned int outputFileIndex = m_outputVariable2FileIndexMap[requestedQuantity];
 	// read data file
-	readDataFile(m_outputFiles[outputFileIndex].m_filename);
+	readDataFile(m_outputFiles[(int)outputFileIndex].m_filename);
 	// and finally trigger recoloring
 	on_tableWidgetAvailableResults_itemSelectionChanged();
 }
@@ -272,6 +293,12 @@ void SVPropResultsWidget::readResultsDir() {
 	// value = unit string
 	std::map<QString, QString>						availableOutputUnits;
 
+	QProgressDialog progDiag("", tr("Cancel"), 0, 100, this);
+	progDiag.setWindowTitle(tr("Reading results directory"));
+	progDiag.setValue(0);
+	progDiag.setMinimumDuration(0);
+	qApp->processEvents();
+
 	// NOTE: we do not clear cached data here!
 
 	// make sure we have a proper path
@@ -284,11 +311,13 @@ void SVPropResultsWidget::readResultsDir() {
 	// second is name appearing in tsv files:
 	//			ConstructionInstance(id=9)	WE0.0_Floor_1 (ID=1)
 	//			Zone(id=100)	BuildingName.E0.WE0.0_Bath(ID=100)
+
 	if (subsFile.open(QFile::ReadOnly)){
 		QTextStream in(&subsFile);
 		in.setCodec("UTF-8");
 		QString line;
 		while (in.readLineInto(&line)) {
+			qApp->processEvents();
 			QStringList fields = line.split("\t");
 			if (fields.size()!=2)
 				continue; // invalid format of line/empty line?
@@ -308,7 +337,17 @@ void SVPropResultsWidget::readResultsDir() {
 	QDir resultFilesDir = QDir(m_resultsDir.absolutePath() + "/results");
 	QStringList tsvFiles = resultFilesDir.entryList(QStringList() << "*.tsv", QDir::Files);
 	QSet<QString> filesFound;
+
+	// update progress dialog
+	progDiag.setMaximum(tsvFiles.size()+1);
+	int nProg = 0;
+
 	for (const QString &fileName: qAsConst(tsvFiles)) {
+
+		progDiag.setLabelText(tr("Reading header of file '%1'").arg(fileName));
+		progDiag.setValue(++nProg);
+		qApp->processEvents();
+
 		// read tsv header
 		IBK::CSVReader reader;
 		QString absoluteTsvFilePath = resultFilesDir.absoluteFilePath(fileName);
@@ -432,6 +471,8 @@ void SVPropResultsWidget::readResultsDir() {
 	// If this is the first time this function was called than there won't be a selection in the table and
 	// all geometry will be greyed out.
 	on_tableWidgetAvailableResults_itemSelectionChanged();
+
+	progDiag.close();
 }
 
 
@@ -488,6 +529,8 @@ void SVPropResultsWidget::updateTableWidgetFormatting() {
 		m_ui->tableWidgetAvailableResults->item(row, 3)->setForeground(textColor);
 		m_ui->tableWidgetAvailableResults->item(row, 3)->setText(statusLabel);
 	}
+
+	m_ui->tableWidgetAvailableResults->selectRow(selectedRow);
 }
 
 
@@ -602,41 +645,63 @@ void SVPropResultsWidget::setCurrentMinMaxValues(bool localMinMax) {
 	m_currentMax = std::numeric_limits<double>::lowest();
 	double currentTime = m_ui->widgetTimeSlider->currentCutValue();
 	double max, min;
+	unsigned int maxIdx=0, minIdx=0;
+
+	bool convertToAbs = m_ui->checkBoxConvertToAbsolute->isChecked();
 
 	for (auto it=m_allResults[m_currentOutputQuantity].begin(); it!=m_allResults[m_currentOutputQuantity].end(); ++it) {
-		const IBK::LinearSpline &vals = it->second.m_values;
+
+		IBK::LinearSpline vals = it->second.m_values;
+
+		// local min/max
 		if (localMinMax) {
-			max = vals.value(currentTime);
+			if (convertToAbs)
+				max = std::abs( vals.value(currentTime) );
+			else
+				max = vals.value(currentTime);
 			min = max;
 		}
+		// global min/max
 		else {
-			max = *std::max_element(vals.y().begin(), vals.y().end());
-			min = *std::min_element(vals.y().begin(), vals.y().end());
+			// the conversion to absolute values is a bit cumbersome, we need to iterate through the vector
+			max = std::numeric_limits<double>::lowest();
+			min = std::numeric_limits<double>::max();
+			for (unsigned int i=0; i<vals.y().size(); ++i) {
+				const double &val = vals.y()[i];
+
+				if (convertToAbs) {
+					if (std::abs(val) > max) {
+						max = std::abs(val);
+						maxIdx = i;
+					}
+					else if (std::abs(val) < min) {
+						min = std::abs(val);
+						minIdx = i;
+					}
+				}
+				else if (val > max) {
+					max = val;
+					maxIdx = i;
+				}
+				else if (val < min) {
+					min = val;
+					minIdx = i;
+				}
+			}
 		}
 
-		if (max > m_currentMax)
+		if (max > m_currentMax) {
 			m_currentMax = max;
-		if (min < m_currentMin)
+			m_currentMaxIdx = maxIdx;
+		}
+		if (min < m_currentMin) {
 			m_currentMin = min;
+			m_currentMinIdx = minIdx;
+		}
 	}
 
 	m_ui->lineEditMaxValue->setValue(m_currentMax);
 	m_ui->lineEditMinValue->setValue(m_currentMin);
-}
-
-
-void SVPropResultsWidget::interpolateColor(const double & yint, QColor & col) {
-	double ys = (yint - m_currentMin) / (m_currentMax - m_currentMin);
-	if (ys>1)
-		ys=1;
-	else if (ys<0)
-		ys=0;
-	double hMax, sMax, vMax, hMin, sMin, vMin;
-	m_maxColor.getHsvF(&hMax, &sMax, &vMax);
-	m_minColor.getHsvF(&hMin, &sMin, &vMin);
-	// only hue is interpolated
-	double hNew = hMin + ys * (hMax - hMin);
-	col.setHsvF(hNew, sMax, vMax);
 }
 
 
@@ -676,8 +741,9 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 					interpolateColor(yint, col);
 					for (const VICUS::Surface & s : r.m_surfaces) {
 						s.m_color = col;
-						for (const VICUS::SubSurface &ss: s.subSurfaces())
-							ss.m_color = col;
+						// we dont color the subsurfaces
+//						for (const VICUS::SubSurface &ss: s.subSurfaces())
+//							ss.m_color = col;
 					}
 				}
 				// a surface related property (e.g. SurfaceTemperature)
@@ -711,4 +777,214 @@ void SVPropResultsWidget::updateColors(const double &currentTime) {
 }
 
 
+bool SVPropResultsWidget::readColorMap(const QString & filename){
+	const char * const FUNC_ID = "[SVPropResultsWidget::readColorMap]";
+
+	if (filename.isEmpty())
+		return false;
+
+	TiXmlDocument doc( filename.toStdString() );
+	if (!doc.LoadFile()) {
+		QMessageBox::critical(this, tr("File error"), tr("Error in line %1 of file '%2':\n%3")
+							  .arg(doc.ErrorRow())
+							  .arg(filename)
+							  .arg(doc.ErrorDesc()));
+		return false;
+	}
+
+	// now we parse the different sections of the color map file
+	try {
+		// we use a handle so that NULL pointer checks are done during the query functions
+		TiXmlHandle xmlHandleDoc(&doc);
+
+		TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+		if (!xmlElem)
+			return false; // empty project, this means we are using only defaults
+		std::string rootnode = xmlElem->Value();
+		if (rootnode != "PostProcColorMap")
+			throw IBK::Exception("Expected PostProcColorMap as root node in XML file.", FUNC_ID);
+
+		TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+
+		xmlElem = xmlRoot.FirstChild( "ColorMap" ).Element();
+		if (!xmlElem)
+			throw IBK::Exception(IBK::FormatString("Expected top-level 'ColorMap' element."), FUNC_ID);
+
+		m_colorMap.readXML(xmlElem);
+	}
+	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("File error"), tr("Error reading color map from file. See logfile '%1' for details."));
+		return false;
+	}
+
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+
+	return true;
+}
+
+
+void SVPropResultsWidget::interpolateColor(double y, QColor & col) const {
+	y = (y-m_currentMin) / (m_currentMax-m_currentMin);
+	if (m_ui->checkBoxConvertToAbsolute->isChecked())
+		m_colorMap.interpolateColor(std::abs(y), col);
+	else
+		m_colorMap.interpolateColor(y, col);
+}
+
+
+void SVPropResultsWidget::on_pushButtonSetDefaultColormap_clicked() {
+	QString dbDir = QtExt::Directories::databasesDir();
+	QString filename = dbDir + "/colormaps/turbo.p2colormap";
+	if (QFileInfo::exists(filename)) {
+		if (readColorMap(filename))
+			return;
+	}
+	// fall back - just use red and blue
+	m_colorMap.m_linearColorStops.push_back(SVColorMap::ColorStop(0,"#669bbc"));
+	m_colorMap.m_linearColorStops.push_back(SVColorMap::ColorStop(1,"#cb1b16"));
+	updateColors(m_ui->widgetTimeSlider->currentCutValue());
+}
+
+
+void SVPropResultsWidget::on_pushButtonSetColormapViridis_clicked() {
+	QString dbDir = QtExt::Directories::databasesDir();
+	QString filename = dbDir + "/colormaps/viridis.p2colormap";
+	if (QFileInfo::exists(filename)) {
+		if (readColorMap(filename))
+			return;
+	}
+	on_pushButtonSetDefaultColormap_clicked();
+}
+
+
+void SVPropResultsWidget::on_pushButtonSetColormapSpectral_clicked() {
+	QString dbDir = QtExt::Directories::databasesDir();
+	QString filename = dbDir + "/colormaps/spectral.p2colormap";
+	if (QFileInfo(filename).exists()) {
+		if (readColorMap(filename))
+			return;
+	}
+	on_pushButtonSetDefaultColormap_clicked();
+}
+
+
+
+void SVPropResultsWidget::on_pushButtonReadColormap_clicked() {
+	QString filename = QFileDialog::getOpenFileName( this,
+			tr("Select Color Map File"), m_lastOpenFileLocation, tr("Color map files (*.p2colormap);;All files (*.*)") );
+	readColorMap(filename);
+}
+
+
+void SVPropResultsWidget::on_pushButtonSaveColormap_clicked() {
+	QString filename = QFileDialog::getSaveFileName( this,
+			tr("Select Color Map File"), m_lastOpenFileLocation, tr("Color map files (*.p2colormap);;All files (*.*)") );
+
+	if (filename.isEmpty()) return;
+
+	// store open file location
+	QFileInfo finfo(filename);
+	m_lastOpenFileLocation = finfo.absoluteDir().absolutePath();
+	if (finfo.suffix() != "p2colormap")
+		filename += ".p2colormap";
+
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "PostProcColorMap" );
+	doc.LinkEndChild(root);
+
+	root->SetAttribute("xmlns", "http://www.bauklimatik-dresden.de");
+	root->SetAttribute("xmlns:IBK", "http://www.bauklimatik-dresden.de/IBK");
+	root->SetAttribute("xsi:schemaLocation", "http://www.bauklimatik-dresden.de PostProcColorMap.xsd");
+	root->SetAttribute("fileVersion", "1.0");
+
+	TiXmlElement * e = new TiXmlElement("ColorMap");
+	root->LinkEndChild(e);
+	m_colorMap.writeXML(e);
+
+	doc.SaveFile( filename.toStdString() );
+}
+
+
+void SVPropResultsWidget::on_checkBoxConvertToAbsolute_stateChanged(int /*arg1*/) {
+	on_pushButtonSetGlobalMinMax_clicked();
+}
+
+
+void SVPropResultsWidget::on_pushButtonJumpToMax_clicked() {
+	setCurrentMinMaxValues();
+	m_ui->widgetTimeSlider->setCurrentIndex(m_currentMaxIdx);
+}
+
+
+void SVPropResultsWidget::on_pushButtonJumpToMin_clicked() {
+	setCurrentMinMaxValues();
+	m_ui->widgetTimeSlider->setCurrentIndex(m_currentMinIdx);
+}
+
+
+void SVPropResultsWidget::selectTargetObject(unsigned int targetId) {
+	const VICUS::Object *obj = project().objectById(targetId);
+	bool selectChildren = dynamic_cast<const VICUS::Room*>(obj) != nullptr;
+	// create undo-action that toggles the selection
+	SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"), SVUndoTreeNodeState::SelectedState,
+																		 targetId, selectChildren, true, true);
+	action->push();
+	// now signal the navigation tree view to scroll
+	SVViewStateHandler::instance().m_navigationTreeWidget->scrollToObject(targetId);
+	// and reset camera to the object
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_FindSelection);
+}
+
+
+void SVPropResultsWidget::updateLineEditCurrentValue() {
+	m_ui->lineEditCurrentValue->clear();
+	if (m_selectedObjectId == VICUS::INVALID_ID)
+		return;
+	auto it = m_allResults.at(m_currentOutputQuantity).find(m_selectedObjectId);
+	if (it != m_allResults.at(m_currentOutputQuantity).end()) {
+		double t = m_ui->widgetTimeSlider->currentCutValue();
+		double val = it->second.m_values.value(t);
+		if (m_ui->checkBoxConvertToAbsolute->isChecked())
+			val = std::abs(val);
+		m_ui->lineEditCurrentValue->setText(QString("%1 %2").arg(val).arg(m_currentOutputUnit));
+	}
+	else
+		m_ui->lineEditCurrentValue->setText(tr("output not available for selected object"));
+}
+
+
+void SVPropResultsWidget::on_pushButtonFindMaxObject_clicked() {
+	double t = m_ui->widgetTimeSlider->currentCutValue();
+	unsigned int targetId = VICUS::INVALID_ID;
+	double maxVal = std::numeric_limits<double>::lowest();
+	for (auto it=m_allResults[m_currentOutputQuantity].begin(); it!=m_allResults[m_currentOutputQuantity].end(); ++it) {
+		const double &val = it->second.m_values.value(t);
+		if (val > maxVal) {
+			maxVal = val;
+			targetId = it->first;
+		}
+	}
+	if (targetId != VICUS::INVALID_ID)
+		findAndSelectTargetObject(targetId);
+}
+
+
+void SVPropResultsWidget::on_pushButtonFindMinObject_clicked() {
+	double t = m_ui->widgetTimeSlider->currentCutValue();
+	unsigned int targetId = VICUS::INVALID_ID;
+	double minVal = std::numeric_limits<double>::max();
+	for (auto it=m_allResults[m_currentOutputQuantity].begin(); it!=m_allResults[m_currentOutputQuantity].end(); ++it) {
+		const double &val = it->second.m_values.value(t);
+		if (val < minVal) {
+			minVal = val;
+			targetId = it->first;
+		}
+	}
+	if (targetId != VICUS::INVALID_ID)
+		findAndSelectTargetObject(targetId);
+}
 

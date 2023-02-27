@@ -12,11 +12,10 @@ SVColorLegend::SVColorLegend(QWidget *parent)
 }
 
 
-void SVColorLegend::initialize(const double * minVal, const double * maxVal, const QColor * minColor, const QColor * maxColor){
+void SVColorLegend::initialize(const double * minVal, const double * maxVal, const SVColorMap *colorMap){
 	m_minValue = minVal;
 	m_maxValue = maxVal;
-	m_minColor = minColor;
-	m_maxColor = maxColor;
+	m_colorMap = colorMap;
 }
 
 
@@ -35,13 +34,9 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 
 	if (m_minValue==nullptr ||
 		m_maxValue==nullptr ||
-		m_minColor==nullptr ||
-		m_maxColor==nullptr)
+		m_colorMap==nullptr)
 		return;
 
-	double hMax, sMax, vMax, hMin, sMin, vMin, hNew;
-	m_maxColor->getHsvF(&hMax, &sMax, &vMax);
-	m_minColor->getHsvF(&hMin, &sMin, &vMin);
 
 	int offsetV = 0;
 	int offsetH = 0;
@@ -64,8 +59,7 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 
 	// draw colormap
 	for (unsigned int i=0; i<100; ++i) {
-		hNew = hMax - double(i)/100 * (hMax - hMin);
-		col.setHsvF(hNew, sMax, vMax);
+		m_colorMap->interpolateColor(1-double(i)/100, col);
 		brush.setColor(col);
 		painter.setBrush(brush);
 		painter.drawRect( QRectF(offsetH, offsetV + double(i)*rectHeight, barWidth, rectHeight) );

@@ -60,19 +60,19 @@ public:
 	SVUndoTreeNodeState(const QString & label, NodeState t, const std::set<unsigned int> & nodeIDs, bool on, bool exclusive=false);
 
 	/*! Factory function, takes single node ID and flag to also change all children and grand-children. */
-	static SVUndoTreeNodeState * createUndoAction(const QString & label, NodeState t, unsigned int nodeID, bool withChildren, bool on);
+	static SVUndoTreeNodeState * createUndoAction(const QString & label, NodeState t, unsigned int nodeID, bool withChildren, bool on, bool exclusive=false);
 
 	virtual void undo();
 	virtual void redo();
 
 private:
 
-    /*! Set states of child surfaces. */
-    void setStateChildSurface(std::vector<unsigned int> & modifiedIDs,
-                              std::map<unsigned int, int >::const_iterator it, VICUS::Surface &s);
+	/*! Set states of child surfaces. */
+	void setStateChildSurface(std::vector<unsigned int> & modifiedIDs,
+							  std::map<unsigned int, int >::const_iterator it, VICUS::Surface &s);
 
-    /*! Set states of child surfaces. */
-    void storeStateChildSurface(const VICUS::Surface &s, const std::set<unsigned int> & nodeIDs, bool exclusive);
+	/*! Set states of child surfaces. */
+	void storeStateChildSurface(const VICUS::Surface &s, const std::set<unsigned int> & nodeIDs, bool exclusive);
 
 	/*! Remembers what state has been changed.
 		This information is passed on along with the modification info, so that clients

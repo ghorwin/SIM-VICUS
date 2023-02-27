@@ -184,5 +184,8 @@
         <file>gfx/simulation/stop_24x24/06_Stop_hover_checked_24x24.png</file>
         <file>gfx/actions/32x32/resultsView_32x32.png</file>
         <file>gfx/actions/64x64/resultsView.png</file>
+        <file>gfx/actions/colormap_turbo.png</file>
+        <file>gfx/actions/colormap_spectral.png</file>
+        <file>gfx/actions/colormap_viridis.png</file>
     </qresource>
 </RCC>

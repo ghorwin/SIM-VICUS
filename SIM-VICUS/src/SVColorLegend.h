@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include <SVColorMap.h>
+
 /*! Class that paints the colorbar legend, the value labels and the property title. */
 class SVColorLegend : public QWidget
 {
@@ -11,7 +13,7 @@ public:
 	explicit SVColorLegend(QWidget *parent = nullptr);
 
 	/*! Sets pointer to min/max values and colors. */
-	void initialize(const double * minVal, const double * maxVal, const QColor * minColor, const QColor * maxColor);
+	void initialize(const double * minVal, const double * maxVal, const SVColorMap *colorMap);
 
 	/*! Used to call update() from outside */
 	void updateUi();
@@ -26,8 +28,7 @@ private:
 	/*! Pointer to min/max values and colors */
 	const double					*m_minValue = nullptr;
 	const double					*m_maxValue = nullptr;
-	const QColor					*m_minColor = nullptr;
-	const QColor					*m_maxColor = nullptr;
+	const SVColorMap				*m_colorMap = nullptr;
 
 	/*! Title string */
 	QString							m_title;
