@@ -129,7 +129,7 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
 		pd.m_result = LR_IncompatibleVersion;
 		IBK::IBK_Message(IBK::FormatString("  Plugin library '%1' does not match installed version '%2', since it requires '%3'.\n")
-						 .arg(pluginPath.toStdString()), IBK::MSG_ERROR);
+						 .arg(pluginPath.toStdString()).arg(VICUS::VERSION).arg(pd.m_abiVersion.toStdString()), IBK::MSG_ERROR);
 		return;
 	}
 
@@ -197,7 +197,7 @@ void SVPluginLoader::PluginData::decodeMetadata() {
 	m_longDesc = retrieveMultilanguageText(m_metadata, "long-description");
 	m_shortDesc = retrieveMultilanguageText(m_metadata, "short-description");
 	m_pluginVersion = m_metadata["version"].toString();
-	m_abiVersion = m_metadata["abi-version"].toString();
+	m_abiVersion = m_metadata["vicus-version"].toString();
 	m_license = m_metadata["license"].toString();
 	m_webpage = m_metadata["webpage"].toString();
 	m_author = m_metadata["author"].toString();
