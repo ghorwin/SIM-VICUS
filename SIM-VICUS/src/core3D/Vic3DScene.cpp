@@ -876,8 +876,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		const IBKMK::Vector3D &lineOfSight = pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 		double dampening = std::min(1.0, (80.0 / (lineOfSight.magnitude())));
 		double moveFactor = std::max(1.0, (1.0 / (5 * moveDist.magnitude())));
-//		qDebug() << "Dampening factor: " << dampening;
-		qDebug() << "Move distance: " << moveDist.magnitude();
+		// qDebug() << "Dampening factor: " << dampening;
+		// qDebug() << "Move distance: " << moveDist.magnitude();
 		// move camera along line of sight towards selected object
 		m_camera.translate(IBKVector2QVector(dampening*wheelDelta*moveFactor*moveDist));
 	}
