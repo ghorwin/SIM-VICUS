@@ -206,8 +206,7 @@ SOURCES += \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropVertexListWidget.cpp \
-	../../src/SVPropZonePropertyDelegate.cpp \
-	../../src/SVPropertyWidget.cpp \
+        ../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
 	../../src/SVSettings.cpp \
 	../../src/SVSimulationLocationOptions.cpp \
