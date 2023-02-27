@@ -394,7 +394,6 @@ HEADERS  += \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropEditGeometry.h \
-	../../src/SVPropEditNetwork.h \
 	../../src/SVPropFloorManagerItemDelegate.h \
 	../../src/SVPropFloorManagerWidget.h \
 	../../src/SVPropNetworkEdgesWidget.h \
