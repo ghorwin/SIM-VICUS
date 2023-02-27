@@ -98,7 +98,6 @@ void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
 		case SVProjectHandler::AllModified: {
-			m_selectedObjectId = VICUS::INVALID_ID;
 			on_toolButtonSetDefaultDirectory_clicked();
 		}
 		[[clang::fallthrough]];
@@ -943,6 +942,8 @@ void SVPropResultsWidget::selectTargetObject(unsigned int targetId) {
 void SVPropResultsWidget::updateLineEditCurrentValue() {
 	m_ui->lineEditCurrentValue->clear();
 	if (m_selectedObjectId == VICUS::INVALID_ID)
+		return;
+	if (m_allResults.find(m_currentOutputQuantity) == m_allResults.end())
 		return;
 	auto it = m_allResults.at(m_currentOutputQuantity).find(m_selectedObjectId);
 	if (it != m_allResults.at(m_currentOutputQuantity).end()) {
