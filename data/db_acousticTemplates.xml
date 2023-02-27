@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <AcousticTemplates>
-	<AcousticTemplate id="400100" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a29f2f">
-		<Notes>en:Contrete/Acoustic Template One|de:Akkustic Eins</Notes>
-	</AcousticTemplate>
-	<AcousticTemplate id="400101" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#abbf2f">
-		<Notes>en:Contrete/Acoustic Template Two|de:Akkustic Zwei</Notes>
-	</AcousticTemplate>
-	<AcousticTemplate id="400102" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a296ff">
-		<Notes>en:Contrete/Acoustic Template Three|de:Akkustic Drei</Notes>
-	</AcousticTemplate>
+
+	<AcousticTemplate id="400100" displayname="de:'Laute' Räume" color="#000032"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400101" displayname="de:Alle" color="#000064"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400102" displayname="de:Arbeits-Pflegeräume" color="#000096"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400103" displayname="de:Arbeitsraum" color="#0000C8"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400104" displayname="de:Aufenthaltsraum" color="#003200"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400105" displayname="de:Aufenthaltsraum(alles über EG)" color="#003232"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400106" displayname="de:Aufenthaltsraum(EG)" color="#006400"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400107" displayname="de:Aufzug" color="#006464"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400108" displayname="de:Außen" color="#008232"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400109" displayname="de:AußenBalkon" color="#009600"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400110" displayname="de:AußenLaubengang" color="#009664"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400111" displayname="de:AußenLoggia" color="#009696"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400112" displayname="de:AußenTerrasse" color="#00AA96"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400113" displayname="de:Behandlungsraum" color="#00BEC8"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400114" displayname="de:Dachraum" color="#00C800"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400115" displayname="de:Durchfahrt/Einfahrt/Garage" color="#00C8C8"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400116" displayname="de:Flur" color="#320000"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400117" displayname="de:Hausflur" color="#320032"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400118" displayname="de:Intensivpflegeraum" color="#323200"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400119" displayname="de:Keller" color="#328200"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400120" displayname="de:Krankenräume" color="#640000"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400121" displayname="de:Operationsraum" color="#640064"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400122" displayname="de:Ruheraum/Diskretion" color="#646400"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400123" displayname="de:Sanitär" color="#649600"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400124" displayname="de:Schlafräume" color="#820032"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400125" displayname="de:Schwimmbäder" color="#960000"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400126" displayname="de:Spiel-/Gemeinschaftsraum" color="#960064"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400127" displayname="de:Sporthalle" color="#960096"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400128" displayname="de:Sprechzimmer" color="#969600"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400129" displayname="de:Treppe" color="#96AA00"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400130" displayname="de:Treppenraum" color="#AA0096"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400131" displayname="de:Unterrichtsraum" color="#BE00C8"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400132" displayname="de:Untersuchungszimmer" color="#C80000"><Notes></Notes></AcousticTemplate>
+	<AcousticTemplate id="400133" displayname="de:Wohnen" color="#C800C8"><Notes></Notes></AcousticTemplate>
+
+	
 </AcousticTemplates>
