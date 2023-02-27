@@ -30,7 +30,10 @@
 
 #include <QtExt_LanguageHandler.h>
 
+#include <QRandomGenerator>
+
 #include "SVStyle.h"
+#include "SVSettings.h"
 
 SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	QDialog(parent),
@@ -40,9 +43,27 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 
 	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 
-	m_ui->label->setPixmap( QPixmap(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen.png"));
+	int imageCount = 6;
+
+	QPixmap pixmap;
+
+#if QT_VERSION >= 0x050A00
+	int pixmapIdx = QRandomGenerator::global()->bounded(0,imageCount);
+#else
+
+	std::srand(std::time(nullptr));
+	int pixmapIdx = std::rand()*imageCount/RAND_MAX;
+#endif
+
+	pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
+
+	// is needed for high dpi screens to prevent bluring
+	pixmap.setDevicePixelRatio(SVSettings::instance().m_ratio);
+
+	// Load custom font
+	m_ui->label->setPixmap(pixmap);
 	QString labelStyle(
-				"font-size:12pt; color: ${STYLE_LINKTEXT_COLOR}; text-decoration:none"
+				"font-size:12pt; color: #3caed0; text-decoration:none"
 				);
 
 	SVStyle::formatWelcomePage(labelStyle);
@@ -53,7 +74,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	linkLabel->setAutoFillBackground(false);
 	linkLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	linkLabel->setOpenExternalLinks(true);
-	linkLabel->move(130,700);
+	linkLabel->move(250,270);
 	linkLabel->setAttribute(Qt::WA_TranslucentBackground);
 
 	layout()->setMargin(0);
