@@ -125,13 +125,13 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 	pd.m_loader->setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
 	pd.m_metadata = pd.m_loader->metaData().value("MetaData").toObject();
 	pd.decodeMetadata(); // to have some fallback data
-	// check for matching versions before attempting to load the plugin
-	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
-		pd.m_result = LR_IncompatibleVersion;
-		IBK::IBK_Message(IBK::FormatString("  Plugin library '%1' does not match installed version '%2', since it requires '%3'.\n")
-						 .arg(pluginPath.toStdString()).arg(VICUS::VERSION).arg(pd.m_abiVersion.toStdString()), IBK::MSG_ERROR);
-		return;
-	}
+//	// check for matching versions before attempting to load the plugin
+//	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
+//		pd.m_result = LR_IncompatibleVersion;
+//		IBK::IBK_Message(IBK::FormatString("  Plugin library '%1' does not match installed version '%2', since it requires '%3'.\n")
+//						 .arg(pluginPath.toStdString()).arg(VICUS::VERSION).arg(pd.m_abiVersion.toStdString()), IBK::MSG_ERROR);
+//		return;
+//	}
 
 	QObject *plugin = pd.m_loader->instance();
 	if (plugin != nullptr) {
