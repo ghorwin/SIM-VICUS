@@ -98,6 +98,7 @@ SOURCES += \
 	../../src/SVDBConstructionEditWidget.cpp \
 	../../src/SVDBConstructionTableModel.cpp \
 	../../src/SVDBDailyCycleInputWidget.cpp \
+	../../src/SVColorMap.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBInfiltrationEditWidget.cpp \
@@ -191,19 +192,9 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropEditGeometry.cpp \
-	../../src/SVPropEditNetwork.cpp \
+	../../src/SVPropertyWidget.cpp \
 	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
-	../../src/SVPropNetworkEdgesWidget.cpp \
-	../../src/SVPropNetworkEditWidget.cpp \
-	../../src/SVPropNetworkGeometryWidget.cpp \
-	../../src/SVPropNetworkHeatExchangeWidget.cpp \
-	../../src/SVPropNetworkNodesWidget.cpp \
-	../../src/SVPropNetworkPropertiesWidget.cpp \
-	../../src/SVPropNetworkSubStationWidget.cpp \
-	../../src/SVPropResultsWidget.cpp \
-	../../src/SVPropSiteWidget.cpp \
-	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropVertexListWidget.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
