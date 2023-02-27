@@ -53,7 +53,7 @@ SVSmartIntersectionDialog::~SVSmartIntersectionDialog()
 }
 
 SVSmartIntersectionDialog::ClippingResults SVSmartIntersectionDialog::clipProject() {
-	m_ui->pushButtonApply->setEnabled(true);
+	m_ui->pushButtonApply->setEnabled(false);
 	m_ui->plainTextEdit->clear();
 
 	int res = exec();
@@ -168,6 +168,7 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 		return;
 	}
 
+	m_ui->pushButtonApply->setEnabled(true);
 	m_ui->groupBoxConnectSurfaces->setEnabled(true);
 	m_ui->groupBoxProjectSelection->setEnabled(true);
 }

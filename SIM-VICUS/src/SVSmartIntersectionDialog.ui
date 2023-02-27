@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Smart Clipping Settings</string>
+   <string>Smart-clipping settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -59,7 +59,7 @@
         <item row="2" column="0">
          <widget class="QCheckBox" name="checkBoxCreateComp">
           <property name="text">
-           <string>Create Component Instances</string>
+           <string>Create surface connections</string>
           </property>
           <property name="checked">
            <bool>true</bool>
