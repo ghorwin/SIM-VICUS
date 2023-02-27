@@ -14,19 +14,19 @@ QT += xml opengl network printsupport widgets svg
 CONFIG += c++11
 
 CONFIG(debug, debug|release) {
-	# during development, show console window with debug messages in addition to on-screen console
-	# (useful for dual-screen setups)
-	CONFIG += console
+# during development, show console window with debug messages in addition to on-screen console
+# (useful for dual-screen setups)
+CONFIG += console
 }
 
 unix {
-	QMAKE_CXXFLAGS += -Wno-deprecated-copy
+QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
-	-lNandrad \
-	-lQtExt \
-	-lQuaZIP \
+-lNandrad \
+-lQtExt \
+-lQuaZIP \
 	-lTiCPP \
 	-lIDFReader \
 	-lVicus \
@@ -43,20 +43,20 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lqwt6
 
 win32 {
-	LIBS += -luser32
-	LIBS += -lopengl32
+LIBS += -luser32
+LIBS += -lopengl32
 }
 linux {
-	LIBS += -lGLU -lGL
+LIBS += -lGLU -lGL
 }
 mac {
-	LIBS += -framework OpenGL
+LIBS += -framework OpenGL
 }
 
 INCLUDEPATH = \
-	../../src \
-	../../src/actions \
-	../../src/core3D \
+../../src \
+../../src/actions \
+../../src/core3D \
 	../../../externals/CCM/src \
 	../../../externals/Shading/src \
 	../../../externals/IBK/src \
@@ -79,9 +79,9 @@ DEPENDPATH = $${INCLUDEPATH}
 
 
 SOURCES += \
-	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
-	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
-	../../src/SVAboutDialog.cpp \
+../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+../../src/SVAboutDialog.cpp \
 	../../src/SVAbstractDatabaseEditWidget.cpp \
 	../../src/SVChartUtils.cpp \
 	../../src/SVClimateDataSortFilterProxyModel.cpp \
@@ -195,6 +195,15 @@ SOURCES += \
 	../../src/SVPropertyWidget.cpp \
 	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
+	../../src/SVPropNetworkEdgesWidget.cpp \
+	../../src/SVPropNetworkEditWidget.cpp \
+	../../src/SVPropNetworkGeometryWidget.cpp \
+	../../src/SVPropNetworkHeatExchangeWidget.cpp \
+	../../src/SVPropNetworkNodesWidget.cpp \
+	../../src/SVPropNetworkSubStationWidget.cpp \
+	../../src/SVPropResultsWidget.cpp \
+	../../src/SVPropSiteWidget.cpp \
+	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropVertexListWidget.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
@@ -275,9 +284,9 @@ SOURCES += \
 	../../src/main.cpp
 
 HEADERS  += \
-	../../src/SVAboutDialog.h \
-	../../src/SVAbstractDatabaseEditWidget.h \
-	../../src/SVChartUtils.h \
+../../src/SVAboutDialog.h \
+../../src/SVAbstractDatabaseEditWidget.h \
+../../src/SVChartUtils.h \
 	../../src/SVClimateDataSortFilterProxyModel.h \
 	../../src/SVClimateDataTableModel.h \
 	../../src/SVClimateFileInfo.h \
@@ -394,7 +403,6 @@ HEADERS  += \
 	../../src/SVPropNetworkGeometryWidget.h \
 	../../src/SVPropNetworkHeatExchangeWidget.h \
 	../../src/SVPropNetworkNodesWidget.h \
-	../../src/SVPropNetworkPropertiesWidget.h \
 	../../src/SVPropNetworkSubStationWidget.h \
 	../../src/SVPropResultsWidget.h \
 	../../src/SVPropSiteWidget.h \
@@ -486,9 +494,9 @@ HEADERS  += \
 	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
-	../../src/SVAboutDialog.ui \
-	../../src/SVCoSimCO2VentilationDialog.ui \
-	../../src/SVCoSimSupplySystemDialog.ui \
+../../src/SVAboutDialog.ui \
+../../src/SVCoSimCO2VentilationDialog.ui \
+../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \
 	../../src/SVDBConstructionEditWidget.ui \
@@ -583,7 +591,7 @@ TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
 
 RESOURCES += \
-	../../resources/SIM-VICUS.qrc \
-	../../resources/qdarkstyle/style.qrc \
-	../../src/shaders/shaders.qrc
+../../resources/SIM-VICUS.qrc \
+../../resources/qdarkstyle/style.qrc \
+../../src/shaders/shaders.qrc
 

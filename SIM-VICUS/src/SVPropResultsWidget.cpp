@@ -969,7 +969,7 @@ void SVPropResultsWidget::on_pushButtonFindMaxObject_clicked() {
 		}
 	}
 	if (targetId != VICUS::INVALID_ID)
-		findAndSelectTargetObject(targetId);
+		selectTargetObject(targetId);
 }
 
 
@@ -985,6 +985,6 @@ void SVPropResultsWidget::on_pushButtonFindMinObject_clicked() {
 		}
 	}
 	if (targetId != VICUS::INVALID_ID)
-		findAndSelectTargetObject(targetId);
+		selectTargetObject(targetId);
 }
 
