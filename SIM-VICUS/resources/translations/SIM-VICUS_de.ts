@@ -11919,88 +11919,88 @@ p, li { white-space: pre-wrap; }
         <translation>Reading header of file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="499"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="501"/>
         <source>unread</source>
         <translation>ungelesen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="504"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="506"/>
         <source>current</source>
         <translation>aktuell</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="510"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="512"/>
         <source>outdated</source>
         <translation>veraltet</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="515"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="517"/>
         <source>missing</source>
         <translation>fehlend</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="540"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="542"/>
         <source>Reading file &apos;%1&apos;</source>
         <translation>Lese Datei &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="787"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="816"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="789"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="818"/>
         <source>File error</source>
         <translation>File error</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="787"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="789"/>
         <source>Error in line %1 of file &apos;%2&apos;:
 %3</source>
         <translation>Fehler in Zeile %1 der Datei &apos;%2&apos;:
 %3</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="816"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="818"/>
         <source>Error reading color map from file. See logfile &apos;%1&apos; for details.</source>
         <translation>Fehler beim Lesen der Colormap aus der Datei. Siehe Logdatei &apos;%1&apos; für Details.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="881"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="876"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="883"/>
         <source>Select Color Map File</source>
         <translation>Wähle Colormap Datei</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="881"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="876"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="883"/>
         <source>Color map files (*.p2colormap);;All files (*.*)</source>
         <translation>Color map Dateien (*.p2colormap);;All Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="932"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="934"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="957"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="959"/>
         <source>output not available for selected object</source>
         <translation>Ausgabe nicht verfügbar für ausgewähltes Objekt</translation>
     </message>
     <message>
         <location filename="../../src/SVPropResultsWidget.cpp" line="295"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="540"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="542"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="541"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="543"/>
         <source>Reading results file</source>
         <translation>Lese Ergebnisdatei</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="564"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="566"/>
         <source>Invalid/missing content in result file &apos;%1&apos;.</source>
         <translation>Ungültiger/fehlender Inhalt in Ergebnisdatei &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="578"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="580"/>
         <source>Processing results</source>
         <translation>Verarbeite Ausgaben</translation>
     </message>
@@ -13852,9 +13852,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVSmartIntersectionDialog</name>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="14"/>
         <source>Smart Clipping Settings</source>
-        <translation>Smart Clipping Einstellungen</translation>
+        <translation type="vanished">Smart Clipping Einstellungen</translation>
     </message>
     <message>
         <location filename="../../src/SVSmartIntersectionDialog.ui" line="22"/>
@@ -13882,9 +13881,18 @@ p, li { white-space: pre-wrap; }
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="62"/>
         <source>Create Component Instances</source>
-        <translation>Erstelle Component Instances</translation>
+        <translation type="vanished">Erstelle Component Instances</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="14"/>
+        <source>Smart-clipping settings</source>
+        <translation>Smart-Clipping Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="62"/>
+        <source>Create surface connections</source>
+        <translation>Erzeuge Flächenverknüpfungen</translation>
     </message>
     <message>
         <location filename="../../src/SVSmartIntersectionDialog.ui" line="75"/>
@@ -14408,28 +14416,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2190"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2191"/>
         <source>All objects selected</source>
         <translation>Alle Objekte ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2259"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2260"/>
         <source>Selected cleared</source>
         <translation>Ausgewählt gelöscht</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2275"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2276"/>
         <source>Removing selected geometry</source>
         <translation>Ausgewählte Geometrie entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2293"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2311"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2294"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2312"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3149"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3150"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
