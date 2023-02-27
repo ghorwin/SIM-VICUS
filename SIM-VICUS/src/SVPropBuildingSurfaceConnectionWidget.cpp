@@ -46,7 +46,9 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 
 	const Vic3D::SceneView *sc = SVViewStateHandler::instance().m_geometryView->sceneView();
 	connect(this, &SVPropBuildingSurfaceConnectionWidget::updatedHighlightingMode, sc, &Vic3D::SceneView::onTransparentBuildingModeChanged);
-	emit updatedHighlightingMode(Vic3D::Scene::HM_TransparentWithBoxes);
+
+	// set default mode
+	m_ui->comboBoxHighlightingMode->setCurrentIndex(m_ui->comboBoxHighlightingMode->findData(Vic3D::Scene::HM_TransparentWithBoxes));
 }
 
 
