@@ -79,9 +79,9 @@ DEPENDPATH = $${INCLUDEPATH}
 
 
 SOURCES += \
-../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
-../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
-../../src/SVAboutDialog.cpp \
+	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+	../../src/SVAboutDialog.cpp \
 	../../src/SVAbstractDatabaseEditWidget.cpp \
 	../../src/SVChartUtils.cpp \
 	../../src/SVClimateDataSortFilterProxyModel.cpp \
@@ -90,6 +90,7 @@ SOURCES += \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVCoSimSupplySystemDialog.cpp \
 	../../src/SVColorLegend.cpp \
+	../../src/SVColorMap.cpp \
 	../../src/SVConstants.cpp \
 	../../src/SVDBBoundaryConditionEditWidget.cpp \
 	../../src/SVDBBoundaryConditionTableModel.cpp \
@@ -98,7 +99,6 @@ SOURCES += \
 	../../src/SVDBConstructionEditWidget.cpp \
 	../../src/SVDBConstructionTableModel.cpp \
 	../../src/SVDBDailyCycleInputWidget.cpp \
-	../../src/SVColorMap.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBInfiltrationEditWidget.cpp \
@@ -192,7 +192,6 @@ SOURCES += \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropEditGeometry.cpp \
-	../../src/SVPropertyWidget.cpp \
 	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
 	../../src/SVPropNetworkEdgesWidget.cpp \
@@ -206,7 +205,8 @@ SOURCES += \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropVertexListWidget.cpp \
-        ../../src/SVPropZonePropertyDelegate.cpp \
+	../../src/SVPropZonePropertyDelegate.cpp \
+	../../src/SVPropertyWidget.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
 	../../src/SVSettings.cpp \
 	../../src/SVSimulationLocationOptions.cpp \
@@ -283,9 +283,9 @@ SOURCES += \
 	../../src/main.cpp
 
 HEADERS  += \
-../../src/SVAboutDialog.h \
-../../src/SVAbstractDatabaseEditWidget.h \
-../../src/SVChartUtils.h \
+	../../src/SVAboutDialog.h \
+	../../src/SVAbstractDatabaseEditWidget.h \
+	../../src/SVChartUtils.h \
 	../../src/SVClimateDataSortFilterProxyModel.h \
 	../../src/SVClimateDataTableModel.h \
 	../../src/SVClimateFileInfo.h \
@@ -493,9 +493,9 @@ HEADERS  += \
 	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
-../../src/SVAboutDialog.ui \
-../../src/SVCoSimCO2VentilationDialog.ui \
-../../src/SVCoSimSupplySystemDialog.ui \
+	../../src/SVAboutDialog.ui \
+	../../src/SVCoSimCO2VentilationDialog.ui \
+	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \
 	../../src/SVDBConstructionEditWidget.ui \
