@@ -424,6 +424,8 @@ void SVPropResultsWidget::readResultsDir() {
 	m_ui->groupBoxAvailableOutputs->setEnabled(validOutputFound);
 	m_ui->groupBoxColormap->setEnabled(validOutputFound);
 	m_ui->groupBoxTime->setEnabled(validOutputFound);
+	m_ui->groupBoxAnalysis->setEnabled(validOutputFound);
+	m_ui->groupBoxCurrentSelection->setEnabled(validOutputFound);
 
 	if (!validOutputFound)
 		return;
