@@ -268,6 +268,7 @@ void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
+	m_ui->toolButtonAdd->setFocus(); // move focus to trigger "leave" events in line edits
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
@@ -288,6 +289,7 @@ void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
+	m_ui->toolButtonCopy->setFocus(); // move focus to trigger "leave" events in line edits
 	// determine current item
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
@@ -305,6 +307,7 @@ void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonRemove_clicked() {
+	m_ui->toolButtonRemove->setFocus(); // move focus to trigger "leave" events in line edits
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
@@ -400,6 +403,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
+	m_ui->toolButtonStoreInUserDB->setFocus(); // move focus to trigger "leave" events in line edits
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
@@ -425,6 +429,7 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 
 
 void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked() {
+	m_ui->toolButtonRemoveFromUserDB->setFocus(); // move focus to trigger "leave" events in line edits
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
