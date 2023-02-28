@@ -60,3 +60,8 @@ object_script.*
 /bin/debug_x64/ifc_convert.log
 moc_*
 /bin/debug_x64/ResultsGenVICUS
+*.debian.tar.xz
+*.dsc
+*source.buildinfo
+*source.changes
+*source.ppa.upload
