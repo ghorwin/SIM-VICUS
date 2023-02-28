@@ -1297,22 +1297,23 @@ void SVMainWindow::on_actionViewFromAbove_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Above);
 }
 
-void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewSouthWest_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthWest);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewNorthWest_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthWest);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewSouthEast_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthEast);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewNorthEast_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthEast);
 }
 
@@ -1562,6 +1563,10 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionViewFromSouth->setEnabled(have_project);
 	m_ui->actionViewFromWest->setEnabled(have_project);
 	m_ui->actionViewFromAbove->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewNorthEast->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewNorthWest->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewSouthEast->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewSouthWest->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
