@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Constructions>
-	<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+	<Construction id="20000" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
@@ -8,7 +8,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
+	<Construction id="20001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10002">
@@ -16,7 +16,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
+	<Construction id="20002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10001">
@@ -27,12 +27,12 @@
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-			</MaterialLayer>
+			</MaterialLayer>	
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
+	<Construction id="20003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 		<UsageType>OutsideWall</UsageType>
-		<MaterialLayers>
+		<MaterialLayers>	
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 			</MaterialLayer>
@@ -41,11 +41,13 @@
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10001">
 				<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-			</MaterialLayer>
+			</MaterialLayer>	
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1005" displayName="DE: [SimQuality] TF08 Betonschicht mit Flächenheizung |EN: [SimQuality] TF08 Concrete layer with surface heating">
+	<Construction id="20004" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
 		<UsageType>OutsideWall</UsageType>
+		<InsulationKind>OutsideInsulation</InsulationKind>
+		<MaterialKind>NaturalStoneMasonry</MaterialKind>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
@@ -64,7 +66,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1006" displayName="DE: [SimQuality] TF05 Gedämmte Betonwand |EN: [SimQuality] TF05 Insulated concrete wall">
+	<Construction id="20005" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10004">
@@ -75,7 +77,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1007" displayName="DE: [SimQuality] TF12 Konstruktionstyp 1 (Fassadenelement) |EN: [SimQuality] TF12 Construction 1 (Facade element)">
+	<Construction id="20006" displayName="DE: [SimQuality] TF12 Konstruktionstyp 1 (Fassadenelement) |EN: [SimQuality] TF12 Construction 1 (Facade element)">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10005">
@@ -89,7 +91,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1008" displayName="DE: [SimQuality] TF12 Konstruktionstyp 2 (Innenwand Gipskarton) |EN: [SimQuality] TF12 Construction 2 (Interior wall plasterboard)">
+	<Construction id="20007" displayName="DE: [SimQuality] TF12 Konstruktionstyp 2 (Innenwand Gipskarton) |EN: [SimQuality] TF12 Construction 2 (Interior wall plasterboard)">
 		<UsageType>InsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10007">
@@ -109,7 +111,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1009" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
+	<Construction id="20008" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
 		<UsageType>Ceiling</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10007">
@@ -129,7 +131,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1010" displayName="DE: [SimQuality] TF04 Konstruktionstyp 1 (Betonwand) halbe Wanddicke |EN: [SimQuality] TF04 Construction 1 (concrete wall) half thickness">
+	<Construction id="20009" displayName="DE: [SimQuality] TF04 Konstruktionstyp 1 (Betonwand) halbe Wanddicke |EN: [SimQuality] TF04 Construction 1 (concrete wall) half thickness">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
@@ -137,4 +139,482 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
+	
+	<Construction id="20100" displayName="DE: [Teaser] Außenwandkonstruktion schwer bis 1948">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10103"><IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20101" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1949 bis 1968">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10110"><IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20102" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1969 bis 1978">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10110"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.08</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20103" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1979 bis 1983">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.08</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20104" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1984 bis 1994">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20105" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1995 bis 2015">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.07</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20106" displayName="DE: [Teaser] Außenwandkonstruktion leicht bis 1948">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10138"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10112"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20107" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1949 bis 1968">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10116"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10135"><IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20108" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1969 bis 1978">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10116"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20109" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1979 bis 1983">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10135"><IBK:Parameter name="Thickness" unit="m">0.07</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20110" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1984 bis 1994">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10135"><IBK:Parameter name="Thickness" unit="m">0.09</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20111" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1995 bis 2005">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10104"><IBK:Parameter name="Thickness" unit="m">0.001</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10118"><IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10104"><IBK:Parameter name="Thickness" unit="m">0.001</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20112" displayName="DE: [Teaser] Dachkonstruktion schwer bis 1948">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20113" displayName="DE: [Teaser] Dachkonstruktion schwer 1949 bis 1968">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20114" displayName="DE: [Teaser] Dachkonstruktion schwer 1969 bis 1978">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10100"><IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20115" displayName="DE: [Teaser] Dachkonstruktion schwer 1979 bis 1983">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10100"><IBK:Parameter name="Thickness" unit="m">0.07</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20116" displayName="DE: [Teaser] Dachkonstruktion schwer 1984 bis 1994">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10100"><IBK:Parameter name="Thickness" unit="m">0.09</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20117" displayName="DE: [Teaser] Dachkonstruktion schwer 1995 bis 2015">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10100"><IBK:Parameter name="Thickness" unit="m">0.12</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20118" displayName="DE: [Teaser] Dachkonstruktion leicht bis 1918">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10114"><IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20119" displayName="DE: [Teaser] Dachkonstruktion leicht 1919 bis 1968">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10141"><IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20120" displayName="DE: [Teaser] Dachkonstruktion leicht 1969 bis 1978">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10145"><IBK:Parameter name="Thickness" unit="m">0.14</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20121" displayName="DE: [Teaser] Dachkonstruktion leicht 1979 bis 1983">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20122" displayName="DE: [Teaser] Dachkonstruktion leicht 1984 bis 1994">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10141"><IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10105"><IBK:Parameter name="Thickness" unit="m">0.14</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20123" displayName="DE: [Teaser] Dachkonstruktion leicht 1995 bis 2015">
+		<UsageType>SlopedRoof</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10135"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20124" displayName="DE: [Teaser] Bodenplatte schwer bis 1948">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20125" displayName="DE: [Teaser] Bodenplatte schwer 1949 bis 1968">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20126" displayName="DE: [Teaser] Bodenplatte schwer 1969 bis 1978">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20127" displayName="DE: [Teaser] Bodenplatte schwer 1979 bis 1983">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20128" displayName="DE: [Teaser] Bodenplatte schwer 1984 bis 2015">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20129" displayName="DE: [Teaser] Bodenplatte leicht bis 1918">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10113"><IBK:Parameter name="Thickness" unit="m">0.16</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20130" displayName="DE: [Teaser] Bodenplatte leicht 1919 bis 1968">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10113"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20131" displayName="DE: [Teaser] Bodenplatte leicht 1969 bis 1983">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20132" displayName="DE: [Teaser] Bodenplatte leicht 1984 bis 2015">
+		<UsageType>FloorToGround</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10140"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10116"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20133" displayName="DE: [Teaser] Innenwand schwer bis 1948">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10103"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20134" displayName="DE: [Teaser] Innenwand schwer 1949 bis 1968">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10110"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20135" displayName="DE: [Teaser] Innenwand schwer 1969 bis 1978">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20136" displayName="DE: [Teaser] Innenwand schwer 1979 bis 2015">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10102"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20137" displayName="DE: [Teaser] Innenwand leicht bis 1948">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10138"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10112"><IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10138"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<!-- Diese Konstruktion ist gleich mit der schweren
+	<Construction id="20100" displayName="DE: [Teaser] Innenwand leicht 1949 bis 1968">
+		<UsageType>OutsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10110"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	-->
+	<Construction id="20138" displayName="DE: [Teaser] Innenwand leicht 1969 bis 1978">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10116"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10117"><IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20139" displayName="DE: [Teaser] Innenwand leicht 1979 bis 2015">
+		<UsageType>InsideWall</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10135"><IBK:Parameter name="Thickness" unit="m">0.07</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20140" displayName="DE: [Teaser] Geschossdecke schwer bis 1948">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20141" displayName="DE: [Teaser] Geschossdecke schwer 1949 bis 1968">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20142" displayName="DE: [Teaser] Geschossdecke schwer 1969 bis 1978">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20143" displayName="DE: [Teaser] Geschossdecke schwer 1979 bis 1983">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20144" displayName="DE: [Teaser] Geschossdecke schwer 1984 bis 1994">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20145" displayName="DE: [Teaser] Geschossdecke schwer 1995 bis 2015">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.16</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10137"><IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+	<Construction id="20146" displayName="DE: [Teaser] Geschossdecke leicht bis 1948">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10113"><IBK:Parameter name="Thickness" unit="m">0.16</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20147" displayName="DE: [Teaser] Geschossdecke leicht 1949 bis 1968">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10113"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20148" displayName="DE: [Teaser] Geschossdecke leicht 1969 bis 1978">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10101"><IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20149" displayName="DE: [Teaser] Geschossdecke leicht 1979 bis 1983">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="20150" displayName="DE: [Teaser] Geschossdecke leicht 1984 bis 2015">
+		<UsageType>Ceiling</UsageType>
+		<DataSource>Teaser</DataSource>
+		<MaterialLayers>
+			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10116"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10140"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
+			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	
+
+
 </Constructions>

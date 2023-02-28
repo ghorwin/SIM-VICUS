@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <BoundaryConditions>
-	<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
+	
+	
+	
+	<BoundaryCondition id="30000" displayName="EN: Outside conditions (only heat conduction) |DE: Außenbedingungen (nur Wärmeleitung)" color="#0055ff"><!--SimQ Testfall 03 ehemals id=1001-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
-	<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
+	<BoundaryCondition id="30001" displayName="EN: Inside conditions (only heat conduction) |DE: Innenbedingungen (nur Wärmeleitung)" color="#ff4000"><!--SimQ Testfall 03 ehemals id=1002-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
-	<BoundaryCondition id="1003" displayName="EN: [SimQuality] TF03 Outside conditions |DE: [SimQuality] TF03 Außenbedingungen" color="#bd7bff">
+	<BoundaryCondition id="30002" displayName="EN: Outside conditions |DE: Außenbedingungen" color="#bd7bff"><!--SimQ Testfall 03 ehemals id=1003-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
@@ -21,7 +24,8 @@
 			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
-	<BoundaryCondition id="1004" displayName="EN: [SimQuality] TF06 Outside conditions (heat conduction and short wave radiation) |DE: [SimQuality] TF03 Außenbedingungen (Wärmeleitung und kurzwellige Strahlung)" color="#3ddfff">
+	
+	<BoundaryCondition id="30003" displayName="EN: Outside conditions (heat conduction and short wave radiation) |DE: Außenbedingungen (Wärmeleitung und kurzwellige Strahlung)" color="#3ddfff"><!--SimQ Testfall 06 ehemals id=1004-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
@@ -29,7 +33,7 @@
 			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 		</InterfaceSolarAbsorption>
 	</BoundaryCondition>
-	<BoundaryCondition id="1005" displayName="DE: [SimQuality] TF08 (innen mit langwelliger Strahlung) |EN: [SimQuality] TF08 with Emissivity;" color="#ffd900">
+	<BoundaryCondition id="30004" displayName="DE: Innenbedingung (Wärmeleitung mit langwelliger Strahlung) |EN: Inside conditions (heat conduction with Emissivity)" color="#ffd900"><!--SimQ Testfall 08 ehemals id=1005-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 		</InterfaceHeatConduction>
@@ -37,6 +41,39 @@
 			<IBK:Parameter name="Emissivity" unit="---">1</IBK:Parameter>
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
+	
+	
+	<BoundaryCondition id="30005" displayName="DE: Innenbedingung EN ISO 6946 (vereinfachtes Verfahren, richtungsunabhängig) |EN: Inside conditions EN ISO 6946 (simplified method, direction-independent)" color="#ff0000">
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	<BoundaryCondition id="30006" displayName="DE: Außenbedingung EN ISO 6946 (vereinfachtes Verfahren) |EN: Outside conditions EN ISO 6946 (simplified method)" color="#ffd300">
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">25</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	<BoundaryCondition id="30007" displayName="DE: Außenbedingung EN ISO 6946 (mit Strahlung) |EN: Outside conditions EN ISO 6946 (with radiation)" color="#deff0a">
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceSolarAbsorption>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceLongWaveEmission>
+	</BoundaryCondition>
+	
+	<BoundaryCondition id="30008" displayName="DE: Innenbedingung (Erdbodenkontakt, konst. 10 °C) |EN: Inside condition (ground contact, const. 10 °C)" color="#603808">
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+			<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
+			<OtherZoneType>Constant</OtherZoneType>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	
+	<!--
 	<BoundaryCondition id="1010" displayName="DE: Innenoberfläche (nur Wärmeleitung, mit effektivem langwelligem Strahlungsaustausch) |EN: Inside surface (only heat conduction, with effective long wave radiation exchange)" color="#ff4000">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Standard</OtherZoneType>
@@ -84,19 +121,31 @@
 			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
+	<BoundaryCondition id="1016" displayName="DE: Randbedingung innen (Wärmestrom horizontal) |EN: Inside boundary condition (horizontal heat flux)">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
 	<BoundaryCondition id="1017" displayName="DE: Randbedingung innen (Wärmestrom aufwärts) |EN: Inside boundary condition (upstream heat flux)">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Standard</OtherZoneType>
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
-	<BoundaryCondition id="1018" displayName="DE: Randbedingung innen (Wärmestrom abwärts, zum Erdreich) |EN: Inside boundary condition (downstream heat flux, to ground)">
+	<BoundaryCondition id="1018" displayName="DE: Randbedingung innen (Wärmestrom abwärts) |EN: Inside boundary condition (downstream heat flux)">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Standard</OtherZoneType>
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
-
+	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	
 	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Constant</OtherZoneType>
@@ -104,4 +153,5 @@
 			<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
+	-->
 </BoundaryConditions>

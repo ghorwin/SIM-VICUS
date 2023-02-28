@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <WindowGlazingSystems>
-	<WindowGlazingSystem id="3001" displayName="DE: Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
+	<WindowGlazingSystem id="31000" displayName="DE: Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.2</IBK:Parameter>
 		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 			<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
 			<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
 		</LinearSplineParameter>
 	</WindowGlazingSystem>
-	<WindowGlazingSystem id="3002" displayName="DE: [SimQuality] TF07.1 Doppelscheibenverglasung|EN: [SimQuality] TF07.1 Double-layer glazing" color="#4FF709" modelType="Simple">
+	<WindowGlazingSystem id="31001" displayName="DE: TF07.1_Doppelscheibenverglasung |EN: Double-layer glazing" color="#4FF709" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 			<X unit="Deg">0 90 </X>
 			<Y unit="---">0 0 </Y>
 		</LinearSplineParameter>
 	</WindowGlazingSystem>
-	<WindowGlazingSystem id="3003" displayName="DE: [SimQuality] TF07.2 MIG winkelunabhängig|EN: [SimQuality] TF07.2 MIG angle-independent" color="#5a6eff" modelType="Simple">
+	<WindowGlazingSystem id="31002" displayName="DE: TF07.2_MIG_winkelunabhängig" color="#5a6eff" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 			<X unit="Deg">0 90 </X>
 			<Y unit="---">0.6 0.6 </Y>
 		</LinearSplineParameter>
 	</WindowGlazingSystem>
-	<WindowGlazingSystem id="3004" displayName="DE: [SimQuality] TF07.3 MIG_winkelabhängig|EN: [SimQuality] TF07.3 MIG angle-dependent" color="#e6ff5a" modelType="Simple">
+	<WindowGlazingSystem id="31003" displayName="DE: TF07.3_MIG_winkelabhängig" color="#e6ff5a" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 			<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>

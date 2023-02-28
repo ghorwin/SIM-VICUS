@@ -1,6 +1,4238 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Schedules>
-	<Schedule id="6001" displayName="DE: TF08.1 ElectricEquipment |EN: TF08.1 ElectricEquipment;">
+	
+	<!-- DIN V 18599 -->
+	<Schedule id="60000" displayName="DE: Büro Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,9,11,13,16,17,18</TimePoints>
+					<Values>0,0.2143,0.5,0.7143,0.5,0.7143,0.5,0.2143,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60001" displayName="DE: Büro Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0.0488,0.4878,0.0488</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60002" displayName="DE: Büro Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60003" displayName="DE: Büro Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60004" displayName="DE: Büro Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60005" displayName="DE: Gruppenbüro Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,9,11,12,13,16,17,18</TimePoints>
+					<Values>0,0.2222,0.5185,0.7407,0.3704,0.4444,0.7407,0.5185,0.2222,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60006" displayName="DE: Gruppenbüro Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,11,13,16,18</TimePoints>
+					<Values>0,0.3448,0.6897,0.4138,0.6897,0.3448,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60007" displayName="DE: Gruppenbüro Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60008" displayName="DE: Gruppenbüro Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60009" displayName="DE: Gruppenbüro Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60010" displayName="DE: Großraumbüro Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,9,11,13,16,17,18</TimePoints>
+					<Values>0,0.3409,0.4773,0.6818,0.4773,0.6818,0.4773,0.3409,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60011" displayName="DE: Großraumbüro Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,5,6,7,17,18</TimePoints>
+					<Values>0,0.1565,0.2609,0.5217,0.3652,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60012" displayName="DE: Großraumbüro Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60013" displayName="DE: Großraumbüro Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60014" displayName="DE: Großraumbüro Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60015" displayName="DE: Besprechung Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,11,13,16</TimePoints>
+					<Values>0,0.4179,0.597,0,0.597,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60016" displayName="DE: Besprechung Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,11,13,16</TimePoints>
+					<Values>0,0.5714,0,0.5714,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60017" displayName="DE: Besprechung Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60018" displayName="DE: Besprechung Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60019" displayName="DE: Besprechung Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60020" displayName="DE: Schalterhalle Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,10,11,13,14,17,18</TimePoints>
+					<Values>0,0.3488,0.6977,0.4884,0.3488,0.4884,0.6977,0.4884,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60021" displayName="DE: Schalterhalle Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,7,17,18</TimePoints>
+					<Values>0,0.3684,0.5263,0.3684,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60022" displayName="DE: Schalterhalle Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60023" displayName="DE: Schalterhalle Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60024" displayName="DE: Schalterhalle Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60025" displayName="DE: Einzelhandel/Kaufhaus Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,8,19,20</TimePoints>
+					<Values>0,0.5085,0.4068,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60026" displayName="DE: Einzelhandel/Kaufhaus Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,7,20,21</TimePoints>
+					<Values>0,0.4286,0.8571,0.4286,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60027" displayName="DE: Einzelhandel/Kaufhaus Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,20</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60028" displayName="DE: Einzelhandel/Kaufhaus Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60029" displayName="DE: Einzelhandel/Kaufhaus Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60030" displayName="DE: Einzelhandel/Kaufhaus mit Kühlung Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,8,19,20</TimePoints>
+					<Values>0,0.5085,0.4068,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60031" displayName="DE: Einzelhandel/Kaufhaus mit Kühlung Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,21</TimePoints>
+					<Values>0.5587,0.7981,0.5587</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60032" displayName="DE: Einzelhandel/Kaufhaus mit Kühlung Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,20</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60033" displayName="DE: Einzelhandel/Kaufhaus mit Kühlung Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60034" displayName="DE: Einzelhandel/Kaufhaus mit Kühlung Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60035" displayName="DE: Klassenzimmer/Gruppenraum Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,8,11,12,15</TimePoints>
+					<Values>0,0.7692,0.3846,0.7692,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60036" displayName="DE: Klassenzimmer/Gruppenraum Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,11,12,15</TimePoints>
+					<Values>0,0.6944,0.1389,0.6944,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60037" displayName="DE: Klassenzimmer/Gruppenraum Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,15</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60038" displayName="DE: Klassenzimmer/Gruppenraum Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,15</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60039" displayName="DE: Klassenzimmer/Gruppenraum Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,15</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60040" displayName="DE: Hörsaal/Auditorium Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,8,12,13,18</TimePoints>
+					<Values>0,0.6452,0.1935,0.6452,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60041" displayName="DE: Hörsaal/Auditorium Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,7,8,11,12,18</TimePoints>
+					<Values>0,0.433,0.6186,0,0.6186,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60042" displayName="DE: Hörsaal/Auditorium Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60043" displayName="DE: Hörsaal/Auditorium Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60044" displayName="DE: Hörsaal/Auditorium Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60045" displayName="DE: Betten-zimmer Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60046" displayName="DE: Betten-zimmer Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,5,7,18,20</TimePoints>
+					<Values>0.1146,0.1911,0.3822,0.1911,0.1146</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60047" displayName="DE: Betten-zimmer Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60048" displayName="DE: Betten-zimmer Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60049" displayName="DE: Betten-zimmer Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60050" displayName="DE: Hotelzimmer Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,8,21</TimePoints>
+					<Values>0.9091,0,0.9091</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60051" displayName="DE: Hotelzimmer Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,5,9,20</TimePoints>
+					<Values>0.4741,0.9483,0.0948,0.9483</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60052" displayName="DE: Hotelzimmer Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,7,21</TimePoints>
+					<Values>1,0,1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60053" displayName="DE: Hotelzimmer Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60054" displayName="DE: Hotelzimmer Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60055" displayName="DE: Kantine Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,8,9,10,11,13,15</TimePoints>
+					<Values>0,0.3125,0.625,0.1875,0.625,0.3125,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60056" displayName="DE: Kantine Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,15</TimePoints>
+					<Values>0,0.625,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60057" displayName="DE: Kantine Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,15</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60058" displayName="DE: Kantine Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,15</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60059" displayName="DE: Kantine Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,15</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60060" displayName="DE: Restaurant Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10,14,17,18,22,23</TimePoints>
+					<Values>0,0.3922,0.1176,0.1961,0.3922,0.1961,0.1176</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60061" displayName="DE: Restaurant Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,9,14,16,20</TimePoints>
+					<Values>0,0.307,0.614,0.4298,0.614,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60062" displayName="DE: Restaurant Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10</TimePoints>
+					<Values>0,1</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60063" displayName="DE: Restaurant Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7</TimePoints>
+					<Values>17,21</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60064" displayName="DE: Restaurant Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7</TimePoints>
+					<Values>28,24</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60065" displayName="DE: Küche in Nichtwohngebäuden Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10,11,12,13,15,21,22,23</TimePoints>
+					<Values>0,0.21,0.35,0.7,0.35,0.7,0.49,0.35,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60066" displayName="DE: Küche in Nichtwohngebäuden Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,9,10,14,15,20,22,23</TimePoints>
+					<Values>0,0.2521,0.5042,0.2521,0.5042,0.3529,0.2521,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60067" displayName="DE: Küche in Nichtwohngebäuden Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60068" displayName="DE: Küche in Nichtwohngebäuden Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60069" displayName="DE: Küche in Nichtwohngebäuden Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60070" displayName="DE: Küche – Vorbereitung, Lager Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10,11,12,13,15,21,22,23</TimePoints>
+					<Values>0,0.21,0.35,0.7,0.35,0.7,0.49,0.35,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60071" displayName="DE: Küche – Vorbereitung, Lager Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,9,21,23</TimePoints>
+					<Values>0,0.4478,0.3134,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60072" displayName="DE: Küche – Vorbereitung, Lager Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,10,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60073" displayName="DE: Küche – Vorbereitung, Lager Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60074" displayName="DE: Küche – Vorbereitung, Lager Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60075" displayName="DE: WC und Sanitärräume in Nichtwohngebäuden Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60076" displayName="DE: WC und Sanitärräume in Nichtwohngebäuden Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60077" displayName="DE: WC und Sanitärräume in Nichtwohngebäuden Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60078" displayName="DE: WC und Sanitärräume in Nichtwohngebäuden Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60079" displayName="DE: WC und Sanitärräume in Nichtwohngebäuden Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60080" displayName="DE: Sonstige Aufenthaltsräume Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,9,10,15,16,18</TimePoints>
+					<Values>0,0.2381,0.3333,0.4762,0.3333,0.2381,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60081" displayName="DE: Sonstige Aufenthaltsräume Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,8,11,14,18</TimePoints>
+					<Values>0,0.4706,0.2353,0.4706,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60082" displayName="DE: Sonstige Aufenthaltsräume Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60083" displayName="DE: Sonstige Aufenthaltsräume Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60084" displayName="DE: Sonstige Aufenthaltsräume Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60085" displayName="DE: Nebenflächen (ohne Aufenthaltsräume) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60086" displayName="DE: Nebenflächen (ohne Aufenthaltsräume) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60087" displayName="DE: Nebenflächen (ohne Aufenthaltsräume) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60088" displayName="DE: Nebenflächen (ohne Aufenthaltsräume) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60089" displayName="DE: Nebenflächen (ohne Aufenthaltsräume) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60090" displayName="DE: Verkehrsflächen Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60091" displayName="DE: Verkehrsflächen Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60092" displayName="DE: Verkehrsflächen Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60093" displayName="DE: Verkehrsflächen Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60094" displayName="DE: Verkehrsflächen Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60095" displayName="DE: Lager, Technik, Archiv Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60096" displayName="DE: Lager, Technik, Archiv Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60097" displayName="DE: Lager, Technik, Archiv Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60098" displayName="DE: Lager, Technik, Archiv Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60099" displayName="DE: Lager, Technik, Archiv Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60100" displayName="DE: Rechenzentrum Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,8,11,12,15</TimePoints>
+					<Values>0,1,0,1,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60101" displayName="DE: Rechenzentrum Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0.5</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60102" displayName="DE: Rechenzentrum Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60103" displayName="DE: Rechenzentrum Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60104" displayName="DE: Rechenzentrum Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60105" displayName="DE: Gewerbliche und industrielle Hallen – schwere Arbeit, stehende Tätigkeit Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,11,12,16</TimePoints>
+					<Values>0,1,0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60106" displayName="DE: Gewerbliche und industrielle Hallen – schwere Arbeit, stehende Tätigkeit Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,5,6,11,12,16</TimePoints>
+					<Values>0,0.4,0.8,0.4,0.8,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60107" displayName="DE: Gewerbliche und industrielle Hallen – schwere Arbeit, stehende Tätigkeit Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,16</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60108" displayName="DE: Gewerbliche und industrielle Hallen – schwere Arbeit, stehende Tätigkeit Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>11</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60109" displayName="DE: Gewerbliche und industrielle Hallen – schwere Arbeit, stehende Tätigkeit Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>32</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60110" displayName="DE: Gewerbliche und industrielle Hallen – mittelschwere Arbeit, überwiegend stehende Tätigkeit Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,11,12,16</TimePoints>
+					<Values>0,1,0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60111" displayName="DE: Gewerbliche und industrielle Hallen – mittelschwere Arbeit, überwiegend stehende Tätigkeit Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,5,6,11,12,16</TimePoints>
+					<Values>0,0.4,0.8,0.4,0.8,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60112" displayName="DE: Gewerbliche und industrielle Hallen – mittelschwere Arbeit, überwiegend stehende Tätigkeit Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,16</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60113" displayName="DE: Gewerbliche und industrielle Hallen – mittelschwere Arbeit, überwiegend stehende Tätigkeit Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>13</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60114" displayName="DE: Gewerbliche und industrielle Hallen – mittelschwere Arbeit, überwiegend stehende Tätigkeit Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>30</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60115" displayName="DE: Gewerbliche und industrielle Hallen – leichte Arbeit, überwiegend sitzende Tätigkeit Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,11,12,16</TimePoints>
+					<Values>0,1,0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60116" displayName="DE: Gewerbliche und industrielle Hallen – leichte Arbeit, überwiegend sitzende Tätigkeit Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,5,6,11,12,16</TimePoints>
+					<Values>0,0.4,0.8,0.4,0.8,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60117" displayName="DE: Gewerbliche und industrielle Hallen – leichte Arbeit, überwiegend sitzende Tätigkeit Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,7,16</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60118" displayName="DE: Gewerbliche und industrielle Hallen – leichte Arbeit, überwiegend sitzende Tätigkeit Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>16</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60119" displayName="DE: Gewerbliche und industrielle Hallen – leichte Arbeit, überwiegend sitzende Tätigkeit Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6</DayTypes>
+					<TimePoints>0,6,16</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60120" displayName="DE: Zuschauerbereich (Theater und Veranstaltungsbauten) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,19,20,22,23</TimePoints>
+					<Values>0,0.2308,0.7692,0.2308,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60121" displayName="DE: Zuschauerbereich (Theater und Veranstaltungsbauten) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60122" displayName="DE: Zuschauerbereich (Theater und Veranstaltungsbauten) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,19,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60123" displayName="DE: Zuschauerbereich (Theater und Veranstaltungsbauten) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,17,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60124" displayName="DE: Zuschauerbereich (Theater und Veranstaltungsbauten) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,17,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60125" displayName="DE: Foyer (Theater und Veranstaltungsbauten) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,19,20,22,23</TimePoints>
+					<Values>0,0.5,0,0.5,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60126" displayName="DE: Foyer (Theater und Veranstaltungsbauten) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60127" displayName="DE: Foyer (Theater und Veranstaltungsbauten) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,19,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60128" displayName="DE: Foyer (Theater und Veranstaltungsbauten) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,17,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60129" displayName="DE: Foyer (Theater und Veranstaltungsbauten) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,17,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60130" displayName="DE: Bühne (Theater und Veranstaltungsbauten) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60131" displayName="DE: Bühne (Theater und Veranstaltungsbauten) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60132" displayName="DE: Bühne (Theater und Veranstaltungsbauten) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,13,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60133" displayName="DE: Bühne (Theater und Veranstaltungsbauten) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,11,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60134" displayName="DE: Bühne (Theater und Veranstaltungsbauten) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,11,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60135" displayName="DE: Messe/Kongress Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,9,18</TimePoints>
+					<Values>0,0.6667,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60136" displayName="DE: Messe/Kongress Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,6,8,18</TimePoints>
+					<Values>0,0.1154,0.5769,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60137" displayName="DE: Messe/Kongress Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,9,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60138" displayName="DE: Messe/Kongress Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60139" displayName="DE: Messe/Kongress Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>4,5,6</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>3,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60140" displayName="DE: Ausstellungsräume und Museum mit konservatorischen Anforderungen Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,10,11,17,18</TimePoints>
+					<Values>0,0.2857,0.5714,0.2857,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60141" displayName="DE: Ausstellungsräume und Museum mit konservatorischen Anforderungen Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60142" displayName="DE: Ausstellungsräume und Museum mit konservatorischen Anforderungen Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,10,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60143" displayName="DE: Ausstellungsräume und Museum mit konservatorischen Anforderungen Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60144" displayName="DE: Ausstellungsräume und Museum mit konservatorischen Anforderungen Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60145" displayName="DE: Bibliothek – Lesesaal Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,8,9,19,20</TimePoints>
+					<Values>0,0.2727,0.5455,0.2727,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60146" displayName="DE: Bibliothek – Lesesaal Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60147" displayName="DE: Bibliothek – Lesesaal Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,20</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60148" displayName="DE: Bibliothek – Lesesaal Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60149" displayName="DE: Bibliothek – Lesesaal Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60150" displayName="DE: Bibliothek – Freihandbereich Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,8,9,17,20</TimePoints>
+					<Values>0,0.3,0.6,0.3,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60151" displayName="DE: Bibliothek – Freihandbereich Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60152" displayName="DE: Bibliothek – Freihandbereich Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,20</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60153" displayName="DE: Bibliothek – Freihandbereich Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60154" displayName="DE: Bibliothek – Freihandbereich Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60155" displayName="DE: Bibliothek – Magazin und Depot Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60156" displayName="DE: Bibliothek – Magazin und Depot Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60157" displayName="DE: Bibliothek – Magazin und Depot Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,7,20</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60158" displayName="DE: Bibliothek – Magazin und Depot Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60159" displayName="DE: Bibliothek – Magazin und Depot Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8</DayTypes>
+					<TimePoints>0,6,20</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60160" displayName="DE: Turnhalle ohne Zuschauer Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,8,9,12,13,17,18,22,23</TimePoints>
+					<Values>0,0.3788,0.7576,0.3788,0.7576,0.5303,0.7576,0.3788,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60161" displayName="DE: Turnhalle ohne Zuschauer Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60162" displayName="DE: Turnhalle ohne Zuschauer Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60163" displayName="DE: Turnhalle ohne Zuschauer Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>15</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60164" displayName="DE: Turnhalle ohne Zuschauer Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60165" displayName="DE: Parkhäuser (Büro- und Privatnutzung) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60166" displayName="DE: Parkhäuser (Büro- und Privatnutzung) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60167" displayName="DE: Parkhäuser (Büro- und Privatnutzung) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60168" displayName="DE: Parkhäuser (Büro- und Privatnutzung) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60169" displayName="DE: Parkhäuser (Büro- und Privatnutzung) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60170" displayName="DE: Parkhäuser (Öffentliche Nutzung) Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60171" displayName="DE: Parkhäuser (Öffentliche Nutzung) Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60172" displayName="DE: Parkhäuser (Öffentliche Nutzung) Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,9</TimePoints>
+					<Values>0,1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60173" displayName="DE: Parkhäuser (Öffentliche Nutzung) Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60174" displayName="DE: Parkhäuser (Öffentliche Nutzung) Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60175" displayName="DE: Saunabereich Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,10,22,23</TimePoints>
+					<Values>0,0.8,0.4,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60176" displayName="DE: Saunabereich Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,6,8,22</TimePoints>
+					<Values>0,0.3333,0.6667,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60177" displayName="DE: Saunabereich Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,10,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60178" displayName="DE: Saunabereich Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60179" displayName="DE: Saunabereich Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60180" displayName="DE: Fitnessraum Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,8,9,11,12,14,15,21,22,23</TimePoints>
+					<Values>0,0.4959,0.9917,0.6942,0.4959,0.6942,0.9917,0.6942,0.4959,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60181" displayName="DE: Fitnessraum Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>0,0.75,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60182" displayName="DE: Fitnessraum Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,7,23</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60183" displayName="DE: Fitnessraum Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,6,23</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60184" displayName="DE: Fitnessraum Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0,6,23</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60185" displayName="DE: Labor Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,8,9,11,13,16,17,18</TimePoints>
+					<Values>0,0.225,0.525,0.75,0.375,0.75,0.525,0.225,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60186" displayName="DE: Labor Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>0,0.5,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60187" displayName="DE: Labor Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60188" displayName="DE: Labor Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>18</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60189" displayName="DE: Labor Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60190" displayName="DE: Untersuchungs- und Behandlungsräume Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,11,13,18</TimePoints>
+					<Values>0,0.7778,0,0.7778,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60191" displayName="DE: Untersuchungs- und Behandlungsräume Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,11,13,18</TimePoints>
+					<Values>0,0.5556,0,0.5556,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60192" displayName="DE: Untersuchungs- und Behandlungsräume Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60193" displayName="DE: Untersuchungs- und Behandlungsräume Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>18</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60194" displayName="DE: Untersuchungs- und Behandlungsräume Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,4,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60195" displayName="DE: Sepzialpflegebereiche Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60196" displayName="DE: Sepzialpflegebereiche Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60197" displayName="DE: Sepzialpflegebereiche Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60198" displayName="DE: Sepzialpflegebereiche Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60199" displayName="DE: Sepzialpflegebereiche Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60200" displayName="DE: Flure des allgemeinen Pflegebereichs Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60201" displayName="DE: Flure des allgemeinen Pflegebereichs Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60202" displayName="DE: Flure des allgemeinen Pflegebereichs Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60203" displayName="DE: Flure des allgemeinen Pflegebereichs Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60204" displayName="DE: Flure des allgemeinen Pflegebereichs Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60205" displayName="DE: Arztpraxen und therapeutische Praxen Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,12,13,18</TimePoints>
+					<Values>0,0.9,0,0.9,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60206" displayName="DE: Arztpraxen und therapeutische Praxen Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,12,13,18</TimePoints>
+					<Values>0,0.5,0,0.5,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60207" displayName="DE: Arztpraxen und therapeutische Praxen Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,7,18</TimePoints>
+					<Values>0,1,0</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60208" displayName="DE: Arztpraxen und therapeutische Praxen Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>17,21,17</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>18</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60209" displayName="DE: Arztpraxen und therapeutische Praxen Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7</DayTypes>
+					<TimePoints>0,6,18</TimePoints>
+					<Values>28,24,28</Values>
+				</DailyCycle>
+				<DailyCycle>
+					<DayTypes>8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>28</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60210" displayName="DE: Lagerhallen, Logistikhallen Personen Anwesenheit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60211" displayName="DE: Lagerhallen, Logistikhallen Geräte Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60212" displayName="DE: Lagerhallen, Logistikhallen Beleuchtung Nutzungszeit |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60213" displayName="DE: Lagerhallen, Logistikhallen Heizsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>21</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60214" displayName="DE: Lagerhallen, Logistikhallen Kühlsollwert |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>24</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+
+
+<Schedule id="60300" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 70 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>70</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60301" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 60 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>60</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60302" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 80 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>80</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60303" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 120 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>120</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60304" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 125 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>125</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60305" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 110 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>110</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60306" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 90 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>90</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+
+<Schedule id="60307" displayName="DE: Metabolische Aktivitätsrate DIN V 18599 100 W (nur sensible Wärme) |EN: &lt;new schedule&gt;">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>100</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60308" displayName="DE: Aus |EN: Off">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>0</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+<Schedule id="60309" displayName="DE: An |EN: On">
+	<UseLinearInterpolation>false</UseLinearInterpolation>
+	<HaveAnnualSchedule>false</HaveAnnualSchedule>
+	<Periods>
+		<ScheduleInterval intervalStartDay="0">
+			<DailyCycles>
+				<DailyCycle>
+					<DayTypes>3,4,5,6,7,8,9</DayTypes>
+					<TimePoints>0</TimePoints>
+					<Values>1</Values>
+				</DailyCycle>
+			</DailyCycles>
+		</ScheduleInterval>
+	</Periods>
+</Schedule>
+
+<!-- SimQuality -->
+	<Schedule id="60500" displayName="DE: TF08.1 ElectricEquipment |EN: TF08.1 ElectricEquipment;">
 		<UseLinearInterpolation>0</UseLinearInterpolation>
 		<Periods>
 			<ScheduleInterval intervalStartDay="0">
@@ -14,7 +4246,7 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
-	<Schedule id="6002" displayName="DE: TF05.2 |EN: TF05.2">
+	<Schedule id="60501" displayName="DE: TF05.2 |EN: TF05.2">
 		<UseLinearInterpolation>0</UseLinearInterpolation>
 		<Periods>
 			<ScheduleInterval displayName="TF05.2" intervalStartDay="0">
@@ -28,7 +4260,7 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
-	<Schedule id="6003" displayName="DE: TF05.3 |EN: TF05.3;">
+	<Schedule id="60502" displayName="DE: TF05.3 |EN: TF05.3;">
 		<UseLinearInterpolation>0</UseLinearInterpolation>
 		<Periods>
 			<ScheduleInterval intervalStartDay="0">
@@ -60,7 +4292,7 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
-	<Schedule id="6005" displayName="DE: TF08.3 |EN: TF08.3;">
+	<Schedule id="60503" displayName="DE: TF08.3 |EN: TF08.3;">
 		<UseLinearInterpolation>0</UseLinearInterpolation>
 		<Periods>
 			<ScheduleInterval intervalStartDay="0">
@@ -74,19 +4306,6 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
-	<Schedule id="6006" displayName="DE: Condenser Mean Temperature |EN: &lt;new schedule&gt;">
-		<UseLinearInterpolation>false</UseLinearInterpolation>
-		<HaveAnnualSchedule>false</HaveAnnualSchedule>
-		<Periods>
-			<ScheduleInterval intervalStartDay="0">
-				<DailyCycles>
-					<DailyCycle>
-						<DayTypes>3,4,5,6,7,8,9</DayTypes>
-						<TimePoints>0</TimePoints>
-						<Values>35</Values>
-					</DailyCycle>
-				</DailyCycles>
-			</ScheduleInterval>
-		</Periods>
-	</Schedule>
+
+
 </Schedules>
