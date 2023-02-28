@@ -161,7 +161,13 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				itemMatChild->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
 				double totalCost = aggregatedCompData.m_area * matLayer.m_cost.value / 100;
-				int usageTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
+				int usageTime = 50;
+
+				try {
+					usageTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
+				} catch(IBK::Exception &ex) {
+					IBK::IBK_Message(IBK::FormatString("No usage time is specified for material layer '%1' of material '%2'. Taking 50 years.").arg(i).arg(mat.m_displayName));
+				}
 
 				itemMatChild->setText(ColInvestCost, QString( "%1 €" ).arg( totalCost, 7, 'f', 2 ) );
 				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
