@@ -1,0 +1,10 @@
+{
+	"title":"Database-Plugin-Dummy",
+	"short-description":"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin.",
+	"long-description":"en:This is a dummy database plugin that privides lots of data, but only as an example.|de:Dies ist ein Datenbank-Plugin dass unglaublich viele Daten liefert, aber eben nur als Beispiel.",
+	"version":"1.0.0",
+	"vicus-version":"0.9",
+	"webpage":"https://sim-vicus.de",
+	"author":"Andreas Nicolai",
+	"license":"LGPL 2 or newer"
+}

@@ -29,7 +29,7 @@
          <property name="title">
           <string>Simulation time and duration</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
+         <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="labelStart">
             <property name="text">
@@ -39,6 +39,20 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEditStartDate">
+            <property name="placeholderText">
+             <string>dd.mm.yyyy hh:mm:ss</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelEnd">
+            <property name="text">
+             <string>End date:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEditEndDate">
             <property name="placeholderText">
              <string>dd.mm.yyyy hh:mm:ss</string>
             </property>
@@ -61,17 +75,13 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelEnd">
-            <property name="text">
-             <string>End date:</string>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="checkBoxEnableMoistureBalance">
+            <property name="enabled">
+             <bool>true</bool>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEditEndDate">
-            <property name="placeholderText">
-             <string>dd.mm.yyyy hh:mm:ss</string>
+            <property name="text">
+             <string>Enable moisture balance</string>
             </property>
            </widget>
           </item>

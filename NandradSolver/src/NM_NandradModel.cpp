@@ -82,6 +82,7 @@
 #include "NM_ConstructionBalanceModel.h"
 #include "NM_NaturalVentilationModel.h"
 #include "NM_InternalLoadsModel.h"
+#include "NM_InternalMoistureLoadsModel.h"
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
 #include "NM_HydraulicNetworkModel.h"
@@ -1318,6 +1319,28 @@ void NandradModel::initModels() {
 		}
 	}
 
+	// internal moisture loads
+	if (!m_project->m_models.m_internalMoistureLoadsModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing internal moisture loads models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (const NANDRAD::InternalMoistureLoadsModel & m : m_project->m_models.m_internalMoistureLoadsModels) {
+			NANDRAD_MODEL::InternalMoistureLoadsModel * mod = new NANDRAD_MODEL::InternalMoistureLoadsModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters(m_project->m_simulationParameter);
+				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
+			}
+
+			registerStateDependendModel(mod);
+		}
+	}
+
 	// shading control model
 	if (!m_project->m_models.m_shadingControlModels.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Initializing shading control models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -2332,7 +2355,7 @@ void NandradModel::initOutputReferenceList() {
 	}
 
 
-	// *** append variable name substitutions for zones ***
+	// *** append variable name substitutions for zones, construction instances, ... ***
 
 	for (const NANDRAD::Zone & zone : m_project->m_zones) {
 		// skip zones without display name
@@ -2341,6 +2364,23 @@ void NandradModel::initOutputReferenceList() {
 		std::string zoneObjectRef = IBK::FormatString("Zone(id=%1)").arg(zone.m_id).str();
 		m_varSubstitutionMap[zoneObjectRef] = zone.m_displayName;
 	}
+
+	for (const NANDRAD::ConstructionInstance &ci: m_project->m_constructionInstances) {
+		for (const NANDRAD::EmbeddedObject &eo: ci.m_embeddedObjects) {
+			// skip eos without display name
+			if (!eo.m_displayName.empty()) {
+				std::string eoObjectRef = IBK::FormatString("EmbeddedObject(id=%1)").arg(eo.m_id).str();
+				m_varSubstitutionMap[eoObjectRef] = eo.m_displayName;
+			}
+
+		}
+		// skip cis without display name
+		if (!ci.m_displayName.empty()) {
+			std::string ciObjectRef = IBK::FormatString("ConstructionInstance(id=%1)").arg(ci.m_id).str();
+			m_varSubstitutionMap[ciObjectRef] = ci.m_displayName;
+		}
+	}
+
 
 	// *** replace any "[" and "]" in the display names to avoid problems in post proc
 	for (std::map<std::string, std::string>::iterator it = m_varSubstitutionMap.begin(); it != m_varSubstitutionMap.end(); ++it ){
@@ -2356,7 +2396,7 @@ void NandradModel::initOutputReferenceList() {
 	// create the mapping file
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
-	for (auto m : m_varSubstitutionMap)
+	for (const auto & m : m_varSubstitutionMap)
 		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 

@@ -184,6 +184,15 @@ void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_itemSelectionChanged
 
 
 void SVPropSupplySystemsWidget::on_pushButtonEditSupplySystem_clicked() {
+	openEditSupplySystemsDialog();
+}
+
+void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_cellDoubleClicked(int /*row*/, int /*column*/) {
+	openEditSupplySystemsDialog();
+
+}
+
+void SVPropSupplySystemsWidget::openEditSupplySystemsDialog() {
 	int currentRow = m_ui->tableWidgetSupplySystems->currentRow();
 	std::map<const VICUS::SupplySystem*, std::set<const VICUS::Surface *> >::const_iterator it = m_supplySysSurfacesMap.begin();
 	std::advance(it, currentRow);
@@ -357,3 +366,6 @@ void SVPropSupplySystemsWidget::on_pushButtonRemoveSupplySystem_clicked()
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed supply systems"), cis);
 	undo->push();
 }
+
+
+

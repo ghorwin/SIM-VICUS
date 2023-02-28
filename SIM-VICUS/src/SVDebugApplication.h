@@ -28,7 +28,7 @@
 
 #include <QApplication>
 
-class SVMainWindow;
+class QWidget;
 
 /*! This class catches all exceptions thrown during eventloop execution.
 	It basically programmed for debug purposes.
@@ -48,9 +48,8 @@ public:
 	/*! Set to true in case of a critical exception */
 	bool m_aboutToTerminate = false;
 
-	/*! Pointer to the main window, needed to relay global key presses to window, when the scene has focus. */
-	SVMainWindow * m_mainWindow = nullptr;
-
+	/*! Holds main window pointer so that we can ignore duplicate keypress events. */
+	const QWidget * m_mainWindow = nullptr;
 };
 
 

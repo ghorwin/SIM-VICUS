@@ -51,10 +51,8 @@ SVViewStateHandler::~SVViewStateHandler() {
 
 
 void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
-	if (newViewState != m_viewState) {
-		m_viewState = newViewState;
-		emit viewStateChanged();
-	}
+	m_viewState = newViewState;
+	emit viewStateChanged();
 }
 
 
@@ -62,4 +60,3 @@ void SVViewStateHandler::refreshColors() {
 	if (SVProjectHandler::instance().isValid())
 		emit colorRefreshNeeded();
 }
-

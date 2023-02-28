@@ -1,0 +1,526 @@
+SIM-VICUS Plugin Entwicklung
+============================
+Andreas Nicolai <https://github.com/ghorwin>
+v1.0 (01.01.2023)
+// v1.0 date_on_line_above
+:Author Initials: AN
+:toc: left
+:toclevels: 3
+:toc-title: Inhaltsverzeichnis
+:icons: font
+:imagesdir: ./images
+:numbered:
+:website: https://github.com/ghorwin/SIM-VICUS
+:source-highlighter: rouge
+:rouge-style: custom
+:title-page:
+:stylesdir: ../css
+:stylesheet: roboto_ubuntu.css
+:tabsize: 2
+
+:caution-caption: Achtung
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:section-refsig: Abschnitt
+
+
+// Bildskalierung: 1400px/16cm  : 16cm/1400px = 0,011429 cm/px
+//
+// Beispiel: Bildbreite = 1076  -> Breite in cm = 1076 * 0,011428 = 12.2 cm
+
+:xrefstyle: short
+
+## Hintergrund-Informationen
+
+### Dynamische Bibliotheken und Binärkompatibilität
+
+Plugins sind letztlich dynamisch geladene Bibliotheken, bzw. _shared library_ oder _dynamically linked library (DLL)_. Zum Verständnis der Versionierungsanforderungen unten hilft vielleicht ein kurzer Einblick in die interne Funktionsweise von C/C++.
+
+In C/C++ werden Variablen über Speicheradressen verwaltet. Über die Adresse im Speicher und den Typ weiß der Compiler, wie der rohe Speicherinhalt zu interpretieren ist.
+Bei Objekten (_struct_ oder _class_) wird die Adresse auf den Beginn des Objekts gespeichert. Bei Membervariablen weiß der Compiler dann durch deren Typen und _offset_ (Abstand von der Startadresse des Objekts), wo im darauffolgenden Speicher deren Daten liegen.
+
+Der _offset_ einer Membervariablen ist aber nicht nur von der Größe der jeweiligen Datentypen abhängig. Zusätzlich werden die einzelnen Variablen noch am Speicherraster ausgerichtet, durch ein sogenanntes _padding_ (siehe auch https://en.wikipedia.org/wiki/Data_structure_alignment ).
+
+Das Padding ist compiler- und plattformabhängig, da das binäre Speicherlayout bei C/C++ nicht standardisiert ist (was auch gut ist, da so hardwarespezifisch optimaler Code generiert werden kann). Man kann das beispielsweise austesten, indem man das Testprogramm <<ex_struct>> mit verschiedenen Compilern und Betriebssystemen ausführt.
+
+[[ex_struct]]
+.Beispiel für die unterschiedliche Größe von Strukturen durch Padding in Abhängigkeit von Typ und Reihenfolge der Membervariablen. `sizeof` liefert den Speicherbedarf für eine Variable, `offsetof` liefert die Anzahl der Bytes zwischen Aresse des Objekts und Adresse der Membervariablen.
+====
+[source,cpp]
+----
+#include <iostream>
+
+using namespace std;
+
+struct A {
+    char c; // 1 Byte
+    char d; // 1 Byte
+            // 2 Byte Padding
+    int i;  // 4 Byte
+};
+
+struct B {
+    char c; // 1 Byte
+            // 3 Byte Padding
+    int i;  // 4 Byte
+    char d; // 1 Byte
+            // 3 Byte Padding
+};
+
+int main() {
+    A a;
+    B b;
+
+    std::cout << "Size of A: " << sizeof(A) << std::endl;
+    std::cout << "  Offset of A.d: " << offsetof(A,d) << std::endl;
+    std::cout << "  Offset of A.i: " << offsetof(A,i) << std::endl;
+    std::cout << "Size of B: " << sizeof(B) << std::endl;
+    std::cout << "  Offset of B.i: " << offsetof(B,i) << std::endl;
+    std::cout << "  Offset of B.d: " << offsetof(B,d) << std::endl;
+    return 0;
+}
+
+
+// Ausgabe:
+// Size of A: 8
+//   Offset of A.d: 1
+//   Offset of A.i: 4
+// Size of B: 12
+//   Offset of B.i: 4
+//   Offset of B.d: 8
+----
+====
+
+Am Beispiel wird deutlich, dass die Reihenfolge der Membervariablen in einem struct oder einer Klasse Auswirkungen auf die Speicheranordnung hat. Bei unterschiedlichen Compilern/Plattformen kann das auch individuell unterschiedlich gemacht werden, sodass aus dem gleichen C/C++-Code von unterschiedlichen Compilern generierter Binärcode eventuell unterschiedlich im Speicher abgelegt wird.  Glücklicherweise machen die meisten Compiler heutzutage auf x86 bzw. x64-Systemen das Gleiche, man kann sich jedoch leider _nicht darauf verlassen_. 
+
+Das ist wichtig wenn eine dynamisch geladene Bibliothek direkten Speicherzugriff auf Datenstrukturen des ladenden Programmes bekommt, oder letzteres auf Speicherbereiche zugreift, die von der Shared Lib befüllt wurden. 
+
+Daraus leitet sich die erste Grundregel ab bei der Verwendung von dynamisch geladenen Bibliotheken ab:
+
+[IMPORTANT]
+====
+Host-Programm und DLLs müssen stets mit binär-compatiblen Compilern compiliert werden. Das muss nicht zwingend die gleiche Compiler-Version sein. Z.B. gilt Binärcompatibilität für eine Reihe von Visual Studio Compilern (ab 2015/VC14), siehe https://learn.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017?view=msvc-170
+====
+
+
+### Quelltextunterschiede und Versionierung
+
+Software "lebt" und wird weiterentwickelt. Dies gilt für Plugins und für das eigentliche Hauptprogramm gleichermaßen. Die Trennung von Plugin und Hauptsoftware hat ja auch den Grund, dass ein (externer) Pluginentwickler eigene, vom Hauptprogramm unabhängige Release-Zyklen haben kann und z.B. ein Plugin auch für mehrere Hauptprogrammversionen gültig sein kann. Allerdings sind Hauptprogramm und Plugin nicht komplett unabhängig, wenn Sie gemeinschaftlich auf Daten im Speicher zugreifen bzw. komplexe Objekte austauschen.
+
+Die größte Unabhängigkeit zwischen Plugin und Hauptprogramm erreicht man, wenn man:
+
+- keine komplexen Datentypen zum Datenaustausch nutzt, sondern ausschließlich einfache Datentypen (_PODs - plain old data types_) wie int, bool, double, char austauschen. Ein `std::string` ist bereits ein komplexer Datentyp, sodass zum Austausch von Zeichenketten meist nur ein `const char *` verwendet wird.
+
+- keinen gegenseitigen Speicherzugriff auf den jeweiligen Datenbereich des Plugins oder Hauptprogramms erlaubt
+
+Allerdings ist das für umfangreichere (also quasi alle sinnvollen) Plugins **_nicht praktikabel_**. Es müssen also zwischen Veränderungen des Quelltextes gegenüber einer einheitlichen Ausgangsvariante, mit der sowohl Hauptprogramm als auch Plugin compiliert wurden, erkannt und behandelt werden.
+
+#### Fall 1: Gemeinsam genutzte Datenstruktur im Hauptprogramm ändert sich
+
+Dies ist einer der häufigten Fälle und betrifft im Fall von SIM-VICUS zumeist das Datenmodell in der _VICUS_ Bibliothek und dadurch auch _NANDRAD_ und die _IBK_ Libs (und alle anderen Bibliotheken, die Datenstrukturen von Membervariablen innerhalb von `VICUS::Project` deklarieren).
+
+Nehmen wir an, es gibt eine Veränderung in einer Klasse `PlainGeometry` wie im <<ex_plainGeometry>> gezeigt.
+
+[[ex_plainGeometry]]
+.Typische Erweiterung einer Datenstruktur während des Entwicklungsprozesses; hierbei wird eine neue Membervariable `m_displayName` hinzugefügt, welche die bisherigen Membervariablen innerhalb des Objekts im Speicher nach hinten verschiebt.
+====
+[source,cpp,tabsize=4]
+----
+// Ursprungsversion
+class PlainGeometry {
+public:
+    // ...
+
+	/*! Polygons with holes/subsurfaces inside the polygon. */
+	std::vector<Surface>						m_surfaces; 			// XML:E
+	/*! Indicates whether all children elements are visible. */
+	bool										m_visible = true;		// XML:A
+	/*! Indicates whether all children elements are selected. */
+	bool										m_selected = false;
+};
+
+
+
+// Neue Version
+class PlainGeometry {
+public:
+    // ...
+
+    /*! Descriptive name. */
+    std::string                                 m_displayName;   		// XML:A
+	/*! Polygons with holes/subsurfaces inside the polygon. */
+	std::vector<Surface>						m_surfaces; 			// XML:E
+	/*! Indicates whether all children elements are visible. */
+	bool										m_visible = true;		// XML:A
+	/*! Indicates whether all children elements are selected. */
+	bool										m_selected = false;
+};
+----
+====
+
+
+Nehmen wir mal an, das Plugin wurde mit der Ursprungsversion kompiliert und das Hauptprogramm bereits mit der neuen Version. Nun wird das Plugin geladen, erhält vom Hauptprogramm die Adresse eines `PlainGeometry` Objekts und greift auf die Membervariable `m_surfaces` zu. Im Quelltext des Plugins stand diese Variable an erster Stelle (offset 0), allerdings steht im Speicher des vom Hauptprogramm übergebenen Objekts nun ein String (beim offset 0). Beim Zugriff und Auswertung des Speicherbereichs wird das Plugin nun string-Daten als vector interpretieren und mit hoher Wahrscheinlichkeit mit einer Access Violoation/SEGFAULT crashen.
+
+**Das Problem:** sowohl das Hauptprogramm als auch das Plugin können derartige Unterschiede nicht einfach erkennen (die Prüfung der binäre Struktur aller beteiligter Klassen ist quasi unmöglich). 
+
+**Lösung:** Das Hauptprogramm muss anhand von _Plugin-Metadaten_ feststellen, ob das Plugin mit der gleichen Datenstruktur-Version kompiliert wurde.
+
+[IMPORTANT]
+====
+Plugins müssen Metadaten mitliefern, die Auskunft über die verwendeten Datenstrukturversionen bzw. Bibliotheksversionen geben.
+====
+
+Ein Beispiel für solche Metadaten wäre, wenn das Plugin mitteilt, für welche Hauptprogrammversionen (=Datenstrukturversion) ein Plugin anzuwenden ist, also beispielsweise `vicus-version : 0.9.4`. In der Regel ist dies immer exakt eine SIM-VICUS Release-Version. Bei der Veröffentlichung der nächsten Version würden daher alle alten Plugins automatisch deaktiviert, d.h. nicht geladen werden.
+
+Da ein Plugin jedoch meist nur Teile einer Datenstruktur verwendet, kann es bei bestimmten Datenstrukturänderungen durchaus möglich sein, ein älteres Plugin weiter zu verwenden. Ein Beispiel dafür wäre ein Plugin, welches mit Materialdaten arbeitet. Wenn in der Datenstruktur lediglich Änderungen an Netzwerkklassen vorgenommen werden, dann sind derartige Versionsänderungen für das Plugin unwichtig. Das kompilierte Plugin kann auch bei neueren Versionen des Hauptprogramms weiter verwendet werden - man muss nur die Metadaten anpassen. In diesem Fall würde man den Zulässigkeitsbereich des Plugins auf die nächste Hauptprogrammversion erweitern, z.B. `vicus-version : 0.9.4..0.9.5`.
+
+[CAUTION]
+====
+Die Pflege der Metadaten und Kompatibilitätsversionen ist für korrekt funktionierende Plugins kritisch!
+====
+
+
+
+#### Fall 2: Plugin-Schnittstelle ändert sich
+
+Unter _Plugin-Schnittstelle_ versteht man die Deklaration der Funktionen, die im Plugin seitens des Hauptprogramms aufgerufen werden. <<ex_PluginInterface>> zeigt eine solche Schnittstelle für ein Datenbank-Plugin.
+
+
+[[ex_PluginInterface]]
+.Plugin-Schnittstellen-Deklaration
+====
+[source,cpp,tabsize=4]
+----
+/*! Interface for a plugin that provides VICUS database elements. */
+class SVDatabasePluginInterface {
+public:
+	/*! Virtual D'tor. */
+	virtual ~SVDatabasePluginInterface() = default;
+
+	/*! Returns a title text for the plugin, used in the main menu for settings and
+		for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+	*/
+	virtual QString title() const = 0;
+
+	/*! This function needs to be implemented by the database plugin to populate the database with its own data.
+	*/
+	virtual bool retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) = 0;
+};
+
+#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVDatabasePluginInterface, SVDatabasePluginInterface_iid)
+
+----
+====
+
+Bei einer solchen Schnittstellendeklaration handelt es sich einfach um eine Klasse mit virtuellen Memberfunktionen. Diese Schnittstelle wird vom konkreten Plugin geerbt und implementiert (im Plugin-Quelltext). Die Schnittstellendeklaration teilt dem Hauptprogramm lediglich mit, welche Funktionen mit welchen Argumenten vom Plugin zur Verfügung gestellt werden.
+
+Wenn das Hauptprogramm nun eine dynamische Bibliothek lädt, dann wird zunächst nur ein Zeiger auf die Klassenschnittstelle (das Objekt des Plugins) geladen. Das Hauptprogramm könnte nun mittels `dynamic_cast` prüfen, ob es sich um ein Plugin einer bestimmten Schnittstellendeklaration handelt:
+
+[source,cpp,tabsize=4]
+----
+void * ptrToPlugin = ... ; // Zeiger hält Plugin-Objekt-Adresse
+
+SVDatabasePluginInterface * dbPlugin = dynamic_cast<SVDatabasePluginInterface *>(ptrToPlugin);
+if (dbPlugin != nullptr) {
+    // es ist ein DB-Plugin!
+}
+----
+
+Eine Schnittstellendeklaration ändert sich z.B. dann, wenn das Hauptprogramm eine neue Funktion für das Plugin oder ein verändertes Verhalten unterstützt. Im Gegensatz zur Fall 1 oben muss das nicht zwingend eine Datenstrukturänderung bedingen, es kann z.B. einfach ein neues Argument sein, was zu einer deklarierten Funktion hinzugefügt wird.
+
+**Das Problem:** Wenn sich innerhalb der Deklaration von `SVDatabasePluginInterface` eine Memberfunktion ändert, z.B. die Argumente geändert werden oder neue Funktionen hinzugefügt werden, dann ändert sich dadurch nicht der Typ des Objekts. D.h. der `dynamic_cast` liefert weiterhin eine gültige Adresse.  Wenn nun das Hauptprogramm mittels dieser Adresse eine neue Memberfunktion (deklariert in einer neuen Version der Pluginschnittstelle im Hauptprogramm) im Plugin (kompiliert mit alter Schnittstelle) aufruft, führt dies zu einer Access Violation/SEGFAULT.
+
+**Die Lösung:** Die Schnittstelle, d.h. die gesamte Deklaration der Schnittstelle muss seitens des Hauptprogramms bei der Zeigerkonvertierung auf Passgenauigkeit geprüft werden. Dies gelingt _nicht_ mit `dynamic_cast`, jedoch bietet Qt die Möglichkeit, mittels `qobject_cast`:
+
+[source,cpp,tabsize=4]
+----
+SVDatabasePluginInterface * dbPlugin = qobject_cast<SVDatabasePluginInterface*>(ptrToPlugin);
+----
+
+Die `qobject_cast`-Funktion prüft dabei zusätzlich noch die Interface-ID, welche mit 
+
+[source,cpp,tabsize=4]
+----
+#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVDatabasePluginInterface, SVDatabasePluginInterface_iid)
+----
+
+festgelegt wird. Nehmen wir mal an, dass das Plugin kompiliert wird und dabei die Interface-ID als `ibk.sim-vicus.Plugin.DatabaseInterface/1.0` festgelegt wird. Nun ändert sich die Schnittstelle im Hauptprogramm und seitens des Hauptprogramms wird die Versionsnummer auf `ibk.sim-vicus.Plugin.DatabaseInterface/2.0` erhöht. Beim Einladen des Plugins mit der alten Schnittstelle liefert der `qobject_cast` nun wegen unpassender Interface-IDs einen n ullptr zurück. Dadurch kann man absichern, dass die Schnittstelle zum Zeitpunkt der Plugin- und Hauptprogramm-Kompilierung identisch sind.
+
+[IMPORTANT]
+====
+Sobald man die Schnittstelle eines Plugins (oder Elternklasse) im Hauptprogramm ändert, muss man die Interface-ID anpassen!
+====
+
+
+## Plugin-Entwicklung
+
+Folgende Schritte sind für die Entwicklung eines Plugins notwendig:
+
+. Kopieren eines Plugin-Beispiel-Projektverzeichnisses `SIM-VICUS/plugins/xxx` und Anpassen/Umbenennen der Dateinamen und `.pro` und `CMakeLists.txt`-Dateien
+. Aktualisieren der Meta-Daten JSON-Datei (siehe Beispiel unten)
+. Implementieren der Plugin-Schnittstelle (siehe Beispiel unten)
+. Plugin kompilieren
+. Plugin veröffentlichen: Plugin als zip-Datei + Meta-Daten JSON auf Server hochladen in Verzeichnisstruktur (siehe Beispiel unten)
+
+
+### Implementieren der Schnittstelle
+
+Für alle Plugins müssen die allgemeinen Schnittstellenfunktionen implementiert werden:
+
+.Schnittstellenfunktionen für alle Plugins (`SVCommonPluginInterface`)
+[source,cpp,tabsize=4]
+----
+
+/*! Returns a title text for the plugin, used in the main menu for settings and
+	for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+*/
+virtual QString title() const;
+
+/*! Optionally return a pixmap to show in the plugin manager.
+	nullptr means "use default plugin icon".
+	No ownership transfer!
+*/
+virtual const QPixmap * icon() const;
+
+/*! Optionally return a list of pixmaps to show in the plugin manager.
+	nullptr means "no screenshots".
+	No ownership transfer!
+*/
+virtual const QList<QPixmap> * screenShots() const;
+
+/*! If this function returns true, the plugin provides a
+	settings/configuration page.
+*/
+virtual bool hasSettingsDialog() const;
+
+/*! If a settings dialog page is provided, this function is called when
+	the user clicks on the respective settings dialog menu entry.
+	\param parent Parent class pointer, to be used as parent for modal dialogs.
+	\return Returns a bitmask that signals what kind of update is needed
+		in the user-interface as consequence of the settings dialogs
+		changes (see SettingsDialogUpdateNeeds).
+*/
+virtual int showSettingsDialog(QWidget * parent);
+----
+
+
+- `title()` - liefert einen kurzen Titel des Plugins, beispielsweise `IFC Import-Plugin`. Der Text kann internationalisiert werden, im Format `en:PV-Panel designer and optimizer|de:PV-Panel-Entwurfs- und Optimierung`.
+
+- `icon()` - liefert optional ein Icon (min. 64x64 Pixel) zur Anzeige im Pluginmanager aus
+
+- `screenShots()` - liefert optional eine Liste von Screenshots zur Anzeige im Pluginmanager aus
+
+- `hasSettingsDialog()` - liefert optional true, falls das Plugin einen Einstellungsdialog hat, der ins _Plugins_-Hauptmenü eingegliedert werden soll
+
+-  `showSettingsDialog()` - implementiert die Anzeige des Plugin-spezifischen Einstellungsdialogs. Rückgabewert signalisiert, ob und inwieweit die Programmoberfläche aktualisiert werden soll
+
+
+Die anderen Schnittstellenfunktionen sind in den jeweils abgeleiteten Klassen deklariert.
+
+### Plugin-Meta-Daten
+
+Die Metadaten des Plugins werden in einer JSON-Datei abgelegt, welche vom Resource-Compiler in das Plugin kompiliert wird und durch den PluginLoader ausgelesen wird. Damit muss die JSON-Datei nicht zusätzlich zum Plugin installiert werden.
+
+[[ex_JSON]]
+.JSON-Datei für ein Plugin
+.JSON-Plugin-Metadaten-Datei
+====
+[source,json]
+----
+{
+	"short-description":"en:This is a dummy database plugin.|de:Dies ist ein Beispiel für ein Datenbank-Plugin.",
+	"long-description":"en:This is a dummy database plugin that privides lots of data, but only as an example.|de:Dies ist ein Datenbank-Plugin dass unglaublich viele Daten liefert, aber eben nur als Beispiel.",
+	"version":"1.0.0",
+	"vicus-version":"0.9",
+	"webpage":"https://sim-vicus.de",
+	"author":"Andreas Nicolai",
+	"license":"LGPL 2 or newer"
+}
+----
+====
+
+- `title`: Titel des Plugins (wie zurückgeliefert von `title()`)
+- `short-description`: Kurzbeschreibung des Plugins zur Anzeige im Pluginmanager, kann mehrzeilig sein.
+- `long-description`: (optional) Langbeschreibung des Plugins, mit Detailinformationen und ggfs. Versions-/Updateinformation
+- `version`: Version des _Plugins_
+- `vicus-version`: Kompatible SIM-VICUS-Versionen (Datenstrukturversionen)
+- `webpage` : (optional) Webseite des Plugin-Entwicklers
+- `author`: (optional) Authoren und Copyright-Info
+- `license`: Lizenzinformation; bei _commercial_  sollte das Plugin eine Aktivierung/Lizensierung beinhalten
+
+[NOTE]
+====
+Eigentlich wäre es ausreichend, den Titel/Namen des Plugins über die JSON-Metadaten zu übermitteln. Da der Pluginmanager aber bei fehlenden Metadaten dennoch in der Lage sein muss, das Plugin zu benennen, ist die zwingend zu implementierende pur virtuelle Memberfunktion `title()` der sicherste Weg, an einen Anzeigenamen zu kommen.
+====
+
+Die JSON-Datei wird beim Kompilieren angegeben, wie im <<ex_PluginExample>> gezeigt.
+
+[[ex_PluginExample]]
+.Headerdatei eines minimalistischen Plugins
+====
+[source,c++,tabsize=4]
+----
+#ifndef DummyDatabasePluginH
+#define DummyDatabasePluginH
+
+#include <QObject>
+#include <QtPlugin>
+
+#include <SVDatabasePluginInterface.h>
+
+class DummyDatabasePlugin : public QObject, public SVDatabasePluginInterface {
+public:
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "ibk.sim-vicus.Plugin.DatabaseInterface"  FILE "../data/metadata.json")
+	Q_INTERFACES(SVDatabasePluginInterface)
+public:
+
+	// SVCommonPluginInterface interface
+	QString title() const override { return "Database-Plugin-Dummy"; }
+	bool hasSettingsDialog() const override { return true;}
+	int showSettingsDialog(QWidget * parent) override;
+
+	// SVDatabasePluginInterface interface
+	bool retrieve(const SVDatabase & currentDB, SVDatabase & additionalDBElemnts) override;
+};
+
+#endif // DummyDatabasePluginH
+----
+
+Wichtig ist die Zeile mit `Q_PLUGIN_METADATA()`, in der sowohl die implementierte Schnittstelle also auch die Metadaten deklariert werden. Mit `Q_INTERFACES(SVDatabasePluginInterface)` werden die implementierten Schnittstellen angegeben, also letztlich die Klassen, welche vererbt und implementiert werden. Bei SIM-VICUS Plugins sollte dies immer nur eine Schnittstelle sein (auch wenn man sicherlich Import- und Databank-Plugin-Schnittstellen in einem Plugin kombinieren könnte).
+====
+
+### Plugin-Erstellung
+
+Das Plugin wird mit CMake oder qmake im Release-Modus übersetzt und es entsteht eine `dll` unter Windows oder `so`, bzw. `dylib` unter Linux bzw. Mac. Diese ist durch die eingebettete JSON-Datei bereits komplett fertig für die Auslieferung.
+
+### Plugin-Veröffentlichung
+
+Plugins werden auf der SIM-VICUS-Webseite veröffentlicht. Das passiert entweder manuell durch den Admin oder durch das Plugin-Upload-Tool. Auf dem Server befindet sich eine Plugin-Listen-Datei im JSON-Format, welche eine Übersicht über alle verfügbaren Plugins und deren Versionsnummern enthält.
+
+Die Plugins selbst werden in einer Verzeichnisstruktur auf dem Server gehostet:
+
+----
+plugins.json
+plugins/
+  1/
+    screenshots/
+      image1.png
+      image2.png
+      ...
+      imageN.png
+    1.0/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+    1.1/
+      BrickMaterialDBPlugin.zip
+      BrickMaterialDBPlugin.json
+  2/
+    2.5.2/
+      PVDesignPlugin.zip
+      PVDesignPlugin.json
+      ...
+  3/
+    ...
+----
+
+Top-Level liegt die Plugin-Listen-Datei `plugins.json`. In dieser werden Plugins, deren Versionen und deren VICUS-Kompatibilitäts-Versionen mit dem jeweiligen Pfad referenziert, also beispielsweise:
+
+[source,json]
+----
+{
+   "plugins":[
+      {
+         "title":"Brick Material DB Plugin",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"1.0.0",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "screenshots":[
+            "image1.png",
+            "image2.png",
+            "image3.png"
+         ],
+         "path":"1/1.0/BrickMaterialDBPlugin"
+      },
+      {
+         "title":"Brick Material DB Plugin",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"1.1",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "screenshots":[
+            "image1.png",
+            "image2.png",
+            "image5-newVersion.png"
+         ],
+         "path":"1/1.1/BrickMaterialDBPlugin"
+      },
+      {
+         "title":"PV Panel Designer",
+         "short-description":"xxx",
+         "long-description":"xxx",
+         "version":"2.5.2",
+         "vicus-version":"0.9",
+         "webpage":"https://sim-vicus.de",
+         "author":"Andreas Nicolai",
+         "license":"LGPL 2 or newer",
+         "path":"2/2.5.2/PVDesignPlugin"
+      }
+   ]
+}
+----
+
+Die JSON-Datei enthält effektiv die Metadaten der einzelnen Plugins und zusätzlich das Element `path`.
+
+Durch Anhängen von `*.zip` bzw. `*.json` an den `path` erhält man die jeweiligen Dateien zum Download.
+
+[NOTE]
+====
+Die Ablage der Plugin-JSON-Dateien ist notwendig, sodass bei Dateioperationen z.B. Kopieren eines Plugin-Verzeichnisses in die Verzeichnisstruktur, ein Skript automatisiert eine aktualisierte `plugins.json` generieren kann, die dann immer synchron mit der Verzeichnisliste ist und somit keine 404-Fehler beim Download liefert.
+====
+
+Die Angabe von _screenshots_ ist optional. Screenshots werden im Plugin-Top-Level-Verzeichnis, also bspw. `1/screenshots` oder `2/screenshots` abgelegt, sodass die gleichen Screenshots von mehrere Plugin-Versionen referenziert werden können (Screenshots ändern sich ja kaum). Referenziert werden diese dann _ohne_ Pfadangabe, also nur via `image1.png`. Falls bei einer neuen Pluginversion neue/aktualisierte Screenshotversionen hinzukommen, so gibt man in der `screenshots`-Zeile für dieses Plugin einfach die neuen Dateinamen für die Screenshots an.
+
+[NOTE]
+====
+Der Titel eines Plugins sollte sich eigentlich nicht ändern. Aber es wäre möglich, dass bei einem Update bspw. Tippfehler oder Übersetzungsfehler behoben werden, wodurch das Plugin eben einen anderen Titel erhalten könnte.
+====
+
+Plugins mit gleichem obersten Pfad (durchnummeriert, 1, 2, etc.) sind unterschiedliche Versionen des gleichen Plugins und werden vom Plugin-Manager entsprechend nur einmal in der Liste dargestellt. Aus Sicht des Website-Hostings sollte der Workflow beim Plugin-Download immer so aussehen:
+
+. Download der Datei https://sim-vicus.de/plugins/plugins.json 
+. Generieren der Plugin-Liste
+. Für jedes angezeigte Plugin generieren der Screenshot-Pfade und Download/Cache der Screenshot-Bilder.
+
+Nun kann eine vollständige Liste/Übersicht aller verfügbaren Plugins angezeigt werden. 
+
+Bei der Installation:
+
+. Nutzer-Auswahl eines Plugins und Version, woraus sich der Pfad ergib, z.B. `1/1.0/BrickMaterialDBPlugin`
+. Download des Plugins `1/1.0/BrickMaterialDBPlugin.zip` und entpacken im nutzerspezifischen Pluginsverzeichnis: `%APPDATA%/SIM-VICUS/plugins/` bzw. `~/.local/share/SIM-VICUS/plugins`. Dabei wird die Verzeichnisstruktur auf dem Server gespiegelt.
+
+[TIP]
+====
+Man könnte einfach die gesamte Verzeichnisstruktur im `plugins`-Verzeichnis lokal in des nutzerspezifische Pluginsverzeichnis kopieren und SIM-VICUS würde dann beim Start alle kompatiblen Plugins laden. Das erleichtert Tests und Entwicklung, da man nur eine Verzeichnisstruktur unterstützen und parsen muss.
+====
+
+
+
+
+ 
+
+
+
+

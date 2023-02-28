@@ -16,15 +16,12 @@ LIBS += \
 
 DEPENDPATH = $${INCLUDEPATH}
 
-win32 {
-	PRE_TARGETDEPS +=   $$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib
-}
-
 SOURCES += \
 	../../src/ClassInfo.cpp \
 	../../src/CodeGenerator.cpp \
 	../../src/constants.cpp \
 	../../src/main.cpp
+
 HEADERS += \
 	../../src/ClassInfo.h \
 	../../src/CodeGenerator.h \

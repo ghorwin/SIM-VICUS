@@ -28,18 +28,21 @@ public:
 private slots:
 	void on_pushButtonAssignZoneTemplate_clicked();
 	void on_tableWidgetZoneTemplates_itemSelectionChanged();
+	/* Triggers the openEditZoneTemplatesDialog*/
 	void on_pushButtonEditZoneTemplates_clicked();
 	void on_pushButtonExchangeZoneTemplates_clicked();
 	void on_checkBoxZoneTemplateColorOnlyActive_toggled(bool checked);
 	void on_checkBoxZoneTemplateShowOnlyActive_toggled(bool checked);
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
-
 	/*! All rooms (including surfaces) that reference the currently selected zone template (in the table) will be selected. */
 	void on_pushButtonSelectObjectsWithZoneTemplate_clicked();
 
 
 	void on_pushButtonAssignSelectedZoneTemplate_clicked();
+
+	/* Triggers the openEditZoneTemplatesDialog*/
+	void on_tableWidgetZoneTemplates_cellDoubleClicked(int, int);
 
 private:
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
@@ -48,12 +51,15 @@ private:
 	/*! Triggered when show-only-active check box was checked and table selection has changed,
 		sends a recolor signal.
 	*/
-	void zoneTemplateVisibilityChanged();
+	void zoneTemplateColoredZoneSelectionChanged();
 
 	/*! Triggered when select-active check box was checked and table selection has changed,
 		modifies visibility state of respective room nodes (and their surfaces).
 	*/
-	void zoneTemplateSelectionChanged();
+	void zoneTemplateVisibleZonesSelectionChanged();
+
+	/*! Launches ZoneTemplates db edit dialog. */
+	void openEditZoneTemplatesDialog();
 
 	Ui::SVPropBuildingZoneTemplatesWidget *m_ui;
 

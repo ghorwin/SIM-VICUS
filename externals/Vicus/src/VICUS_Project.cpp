@@ -312,6 +312,58 @@ void Project::readXML(const IBK::Path & filename) {
 	}
 }
 
+void Project::readXML(const QString & projectText) {
+	FUNCID(Project::readXML);
+
+	TiXmlDocument doc;
+	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
+	if (!xmlElem)
+		return; // empty project, this means we are using only defaults
+
+	// we read our subsections from this handle
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+
+	// clear existing grid planes
+	m_viewSettings.m_gridPlanes.clear();
+
+	try {
+		xmlElem = xmlRoot.FirstChild("ProjectInfo").Element();
+		if (xmlElem) {
+			m_projectInfo.readXML(xmlElem);
+		}
+
+		// Directory Placeholders
+		xmlElem = xmlRoot.FirstChild( "DirectoryPlaceholders" ).Element();
+		if (xmlElem) {
+			readDirectoryPlaceholdersXML(xmlElem);
+		}
+
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+		if (xmlElem) {
+			readXML(xmlElem);
+		}
+
+		// if we do not have a default grid, create it
+		if (m_viewSettings.m_gridPlanes.empty()) {
+			m_viewSettings.m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+																	IBKMK::Vector3D(1,0,0), QColor("white"), 200, 10 ) );
+		}
+
+		// update internal pointer-based links
+		updatePointers();
+
+		// set default colors for network objects
+		for (VICUS::Network & net : m_geometricNetworks) {
+			// updateColor is a const-function, this is possible since
+			// the m_color property of edges and nodes is mutable
+			net.setDefaultColors();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading project from text."), FUNC_ID);
+	}
+}
+
 
 void Project::writeXML(const IBK::Path & filename) const {
 	TiXmlDocument doc;
@@ -421,6 +473,14 @@ void Project::clean() {
 	//        reference valid surfaces etc.
 }
 
+void Project::addChildSurface(const VICUS::Surface &s) {
+    for (VICUS::Surface & childSurf : const_cast<std::vector<VICUS::Surface> &>(s.childSurfaces()) ) {
+        addAndCheckForUniqueness(&childSurf);
+        childSurf.m_componentInstance = nullptr;
+
+        addChildSurface(childSurf);
+    }
+}
 
 void Project::updatePointers() {
 	FUNCID(Project::updatePointers);
@@ -445,6 +505,8 @@ void Project::updatePointers() {
 						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
+
+                    addChildSurface(s);
 				}
 			}
 		}
@@ -601,6 +663,7 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 							if (selectionCheck(sub, takeSelected, takeVisible))
 								selectedObjs.insert(&sub);
 						}
+                        selectChildSurfaces(selectedObjs, s, takeSelected, takeVisible);
 					}
 					if (selectionCheck(r, takeSelected, takeVisible))
 						selectedObjs.insert(&r);
@@ -636,7 +699,15 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 			if (selectionCheck(s, takeSelected, takeVisible))
 				selectedObjs.insert(&s);
 		}
-	}
+    }
+}
+
+void Project::selectChildSurfaces(std::set<const Object *> &selectedObjs, const Surface &s, bool takeSelected, bool takeVisible) const {
+    for (const VICUS::Surface &childSurf : s.childSurfaces()) {
+        if (selectionCheck(childSurf, takeSelected, takeVisible))
+            selectedObjs.insert(&childSurf);
+        selectChildSurfaces(selectedObjs, childSurf, takeSelected, takeVisible);
+    }
 }
 
 bool Project::selectedSubSurfaces(std::vector<const SubSurface *> & subSurfaces, const Project::SelectionGroups & sg) const {
@@ -785,6 +856,48 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 }
 
 
+IBKMK::Vector3D Project::boundingBox(const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
+
+	if (nodes.empty() && edges.empty())
+		return IBKMK::Vector3D ( 0,0,0 );
+
+	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	IBKMK::Vector3D upperValues(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
+
+	for (const VICUS::NetworkNode *node: nodes) {
+		upperValues.m_x = std::max(upperValues.m_x, node->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, node->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, node->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, node->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, node->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, node->m_position.m_z);
+	}
+
+	for (const VICUS::NetworkEdge *edge: edges) {
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node1->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node1->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node1->m_position.m_z);
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node2->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node2->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node2->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node1->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node1->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node1->m_position.m_z);
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node2->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node2->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node2->m_position.m_z);
+	}
+
+	// center point of bounding box
+	center = 0.5*(lowerValues+upperValues);
+
+	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
+	return (upperValues-lowerValues);
+}
+
+
 IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 									 std::vector<const SubSurface *> & subsurfaces,
 									 IBKMK::Vector3D & center,
@@ -879,6 +992,7 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 	// TODO : Dirk, implement algorithm
 	qDebug() << "Not implemented, yet";
 
+
 	return false;
 }
 
@@ -920,10 +1034,17 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	{
 		// TODO Dirk das ist erstmal nur vorübergehend
 		// es muss dafür ein Dialog im SV... erstellt werden und später die Werte übergeben werden
-		NANDRAD::Sensor sensor;
-		sensor.createSensor(2000000, 0,0);
 
-		p.m_location.m_sensors.push_back(sensor);
+		//create sensors for all the 5 orientations
+		for(unsigned int i = 0; i < NUM_ST; i++){
+			NANDRAD::Sensor s;
+			if(i == ST_Horizontal)
+				s.createSensor(2000000 + i, 0, 0);
+			else
+				s.createSensor(2000000 + i, 90 * (i - 1),90);
+
+			p.m_location.m_sensors.push_back(s);
+		}
 	}
 
 	// do we have a climate path?
@@ -938,9 +1059,13 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// These ids are kept in the header of the shading file for later replacement of the ids.
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<MappingElement>	mappings;
-
-	generateBuildingProjectDataNeu(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
+	try {
+		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
 								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("%1\nCould not export NANDRAD project.").arg(ex.what()), FUNC_ID);
+	}
 
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);

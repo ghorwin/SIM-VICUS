@@ -69,6 +69,9 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	/*! checks the selected category and en/disables the corresponding lineEdits*/
+	void checkCategory();
+
 	Ui::SVDBZoneControlShadingEditWidget				*m_ui;
 
 	/*! Cached pointer to database object. */

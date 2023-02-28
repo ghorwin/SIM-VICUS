@@ -19,11 +19,10 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lIBK -lIBKMK
+LIBS += -lIBK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src \
-		../../../IBKMK/src
+		../../../IBK/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
@@ -48,6 +47,7 @@ HEADERS += \
 	../../src/QtExt_BrowseFilenameWidget.h \
 	../../src/QtExt_CellSizeFormater.h \
 	../../src/QtExt_ChartScene.h \
+	../../src/QtExt_ClickableLabel.h \
 	../../src/QtExt_ColorButton.h \
 	../../src/QtExt_ColorEditWidget.h \
 	../../src/QtExt_ColorListModel.h \
@@ -116,6 +116,7 @@ HEADERS += \
 	../../src/QtExt_TextFrameInformations.h \
 	../../src/QtExt_TextFrameWidgetBase.h \
 	../../src/QtExt_TextProperties.h \
+	../../src/QtExt_ToolBox.h \
 	../../src/QtExt_TreeWidget.h \
 	../../src/QtExt_ValidatingInputBase.h \
 	../../src/QtExt_ValidatingLineEdit.h \
@@ -130,6 +131,7 @@ SOURCES += \
 	../../src/QtExt_AutoUpdater.cpp \
 	../../src/QtExt_BrowseFilenameWidget.cpp \
 	../../src/QtExt_ChartScene.cpp \
+	../../src/QtExt_ClickableLabel.cpp \
 	../../src/QtExt_ColorButton.cpp \
 	../../src/QtExt_ColorEditWidget.cpp \
 	../../src/QtExt_ColorListModel.cpp \
@@ -194,6 +196,7 @@ SOURCES += \
 	../../src/QtExt_TextFrameInformations.cpp \
 	../../src/QtExt_TextFrameWidgetBase.cpp \
 	../../src/QtExt_TextProperties.cpp \
+	../../src/QtExt_ToolBox.cpp \
 	../../src/QtExt_TreeWidget.cpp \
 	../../src/QtExt_ValidatingInputBase.cpp \
 	../../src/QtExt_ValidatingLineEdit.cpp \

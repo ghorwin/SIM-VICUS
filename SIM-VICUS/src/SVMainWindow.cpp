@@ -80,6 +80,7 @@
 #include "SVPostProcHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVNetworkImportDialog.h"
+#include "SVNetworkExportDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
@@ -92,6 +93,7 @@
 #include "SVView3DDialog.h"
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
+#include "SVPluginLoader.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -123,7 +125,7 @@ SVMainWindow * SVMainWindow::m_self = nullptr;
 
 SVMainWindow & SVMainWindow::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVMainWindow::instance]",
-			   "You must not access SVMainWindow::instance() when the is no SVMainWindow "
+			   "You must not access SVMainWindow::instance() when there is no SVMainWindow "
 			   "instance (anylonger).");
 	return *m_self;
 }
@@ -141,6 +143,7 @@ void SVMainWindow::addUndoCommand(QUndoCommand * command) {
 SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_ui(new Ui::SVMainWindow),
 	m_undoStack(new QUndoStack(this)),
+	m_pluginLoader(new SVPluginLoader),
 	m_postProcHandler(new SVPostProcHandler),
 	m_viewStateHandler(new SVViewStateHandler)
 {
@@ -170,7 +173,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
 
-	m_ui->actionDBZoneControlShading->setEnabled(false);
+	m_ui->actionDBZoneControlShading->setEnabled(true);
 }
 
 
@@ -672,9 +675,6 @@ void SVMainWindow::setup() {
 	m_ui->centralWidget->setLayout(lay);
 	m_welcomeScreen->updateWelcomePage();
 
-	// *** Ptoject Notes Dialog ***
-	m_notesDialog = new SVNotesDialog(this);
-
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProject(QString)), this, SLOT(onOpenProjectByFilename(QString)));
@@ -710,6 +710,7 @@ void SVMainWindow::setup() {
 	// *** Geometry view ***
 
 	m_geometryView = new SVGeometryView(this);
+	m_geometryView->m_focusRootWidgets.insert(m_navigationTreeWidget); // remember as possible focus widget for events
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
@@ -843,16 +844,27 @@ void SVMainWindow::onImportPluginTriggered() {
 	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
 	Q_ASSERT(plugin != nullptr);
 	SVImportPluginInterface * importPlugin = dynamic_cast<SVImportPluginInterface *>(plugin);
+	importPlugin->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
 	Q_ASSERT(importPlugin != nullptr);
 
 	VICUS::Project p;
-	bool success = importPlugin->import(this, p);
+	QString projectText;
+	bool success = importPlugin->import(this, projectText);
+	try {
+		p.readXML(projectText);
+		std::ofstream out("g:\\temp\\VicusImport.txt");
+		out << projectText.toStdString();
+	}
+	catch(IBK::Exception& e) {
+		success = false;
+	}
 
 	if (success) {
 		// if we have no project, yet, create a new project based on our imported data
 		if (!m_projectHandler.isValid()) {
 			// create new project
 			m_projectHandler.newProject(&p); // emits updateActions()
+			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
 			// ask user about preference
@@ -876,13 +888,16 @@ void SVMainWindow::onImportPluginTriggered() {
 				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
 
 				m_projectHandler.importProject(p);
+				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 			}
 		}
 	}
 	// call of import plugin not successful
 	else {
-		///< \todo Error handling in case of import error
+		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
+						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
+//	m_geometryView->refreshSceneView();
 }
 
 
@@ -1254,38 +1269,58 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 
 
 void SVMainWindow::on_actionViewFindSelectedGeometry_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(6);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_FindSelection);
 }
 
 
 void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Reset);
 }
 
 
 void SVMainWindow::on_actionViewFromNorth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_North);
 }
 
 
+
 void SVMainWindow::on_actionViewFromEast_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_East);
 }
 
 
 void SVMainWindow::on_actionViewFromSouth_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_South);
 }
 
 
 void SVMainWindow::on_actionViewFromWest_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_West);
 }
 
 
 void SVMainWindow::on_actionViewFromAbove_triggered() {
-	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Above);
+}
+
+void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthWest);
+
+}
+
+void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthWest);
+
+}
+
+void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthEast);
+
+}
+
+void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
+	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthEast);
 }
 
 
@@ -1472,6 +1507,31 @@ void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
 }
 
 
+void SVMainWindow::on_actionEditProjectNotes_triggered() {
+	// create on first use
+	if (m_notesDialog == nullptr)
+		m_notesDialog = new SVNotesDialog(this);
+
+	m_notesDialog->exec();
+}
+
+
+void SVMainWindow::on_actionPluginsManager_triggered() {
+	// show plugin view
+
+}
+
+
+void SVMainWindow::on_actionExportNetworkAsGeoJSON_triggered() {
+	// opens export network dialog
+	if (m_networkExportDialog == nullptr)
+		m_networkExportDialog = new SVNetworkExportDialog(this);
+
+	m_networkExportDialog->edit();
+}
+
+
+
 void SVMainWindow::onUpdateActions() {
 	// purpose of this function is to update the view layout based on the existance of a project or none
 
@@ -1487,6 +1547,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditProjectNotes->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
+	m_ui->actionExportNetworkAsGeoJSON->setEnabled(have_project);
 	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
@@ -1554,6 +1615,7 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
 
 		m_geometryViewSplitter->setVisible(true);
+		m_geometryView->setFocus();
 		m_ui->toolBar->setVisible(true);
 		m_ui->toolBar->toggleViewAction()->setEnabled(true);
 
@@ -1795,6 +1857,7 @@ void SVMainWindow::setupDockWidgets() {
 
 	// *** Log widget ***
 	m_logDockWidget = new QDockWidget(this);
+	m_geometryView->m_focusRootWidgets.insert(m_logDockWidget); // remember as possible focus widget for events
 	m_logDockWidget->setObjectName("LogDockWidget");
 	m_logDockWidget->setContentsMargins(0,0,0,0);
 	m_logDockWidget->setWindowTitle(tr("Application Log"));
@@ -1811,37 +1874,12 @@ void SVMainWindow::setupDockWidgets() {
 
 
 void SVMainWindow::setupPlugins() {
-	IBK::IBK_Message("Loading plugins...\n");
-	const auto staticInstances = QPluginLoader::staticInstances();
-	for (QObject *plugin : staticInstances) {
-		setupPluginMenuEntries(plugin);
-	}
+	m_pluginLoader->loadPlugins();
 
-	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
-#if defined(Q_OS_WIN32)
-	SetDllDirectoryW(pluginsDir.absolutePath().toStdWString().c_str());
-#endif
-	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
-
-	const auto entryList = pluginsDir.entryList(QDir::Files);
-	for (const QString &fileName : entryList) {
-		QString ext = QFileInfo(fileName).suffix();
-		if (ext != "so" && ext != "dll" && ext != "dylib")
-			continue;
-		// skip files that do not have a valid file extensions
-		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-		loader.setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
-		QObject *plugin = loader.instance();
-		if (plugin != nullptr) {
-			IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
-			setupPluginMenuEntries(plugin);
-		}
-		else {
-			QString errtxt = loader.errorString();
-			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1': %2\n")
-							 .arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()).arg(errtxt.toStdString()),
-							 IBK::MSG_ERROR);
-		}
+//	const auto staticInstances = QPluginLoader::staticInstances();
+	for (auto pldata = m_pluginLoader->m_plugins.begin(); pldata != m_pluginLoader->m_plugins.end(); ++pldata) {
+		QObject* pl = pldata->m_loader->instance();
+		setupPluginMenuEntries(pl);
 	}
 }
 
@@ -1878,18 +1916,16 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 	SVDatabasePluginInterface* dbPlugin = dynamic_cast<SVDatabasePluginInterface*>(plugin);
 	if (dbPlugin != nullptr) {
 		// create copy of database
-		SVDatabase dbCopy(SVSettings::instance().m_db);
+		SVDatabase addedDB;
 		// update database entries
-		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
+		if (dbPlugin->retrieve(SVSettings::instance().m_db, addedDB)) {
 			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\n").arg(dbPlugin->title().toStdString()),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
-			// TODO : here we need to implement the check functionality for each database:
-			//        all original DB elements must also be included in the augmented DB
+			// process all DB elements in the second DB and transfer those into our db, but only if we do not have
+			// conflicting IDs
 
-			// For now, we just replace the entire DB - this is a bit dangerous, but since we do this only
-			// at the start of the application, where there is no project loaded, yet, the risk of data loss is small
-			SVSettings::instance().m_db = dbCopy;
+
 		}
 		else {
 			IBK::IBK_Message(IBK::FormatString("  Error importing database entries from plugin '%1'").arg(dbPlugin->title().toStdString()),
@@ -1959,7 +1995,10 @@ QString SVMainWindow::saveThumbNail() {
 	if (!QDir(thumbNailPath).exists())
 		QDir().mkpath(thumbNailPath);
 	// compose temporary file path
-	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + QFileInfo(m_projectHandler.projectFile() + ".png").fileName();
+	// thumb name is <filename>_<parent directory>
+	QFileInfo prjFinfo(m_projectHandler.projectFile());
+	QString thumbName = prjFinfo.fileName() + "_" + prjFinfo.dir().dirName();
+	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 	QFileInfo finfo(thumbPath);
 	if (finfo.exists()) {
 		// only update thumbnail if project file is newer than thumbnail file
@@ -2157,12 +2196,8 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-void SVMainWindow::on_actionEditProjectNotes_triggered() {
-	m_notesDialog->exec();
-}
-
-
 void SVMainWindow::on_actionDBEpdElements_triggered() {
 	dbEpdEditDialog()->edit();
 }
+
 

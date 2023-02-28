@@ -68,6 +68,28 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 	return xmlElem;
 }
 
+TiXmlElement * openXMLText(const std::string & xmltext,
+						   const std::string & parentXmlTag, TiXmlDocument & doc) {
+	FUNCID(NANDRAD::openXMLFile);
+	if (!doc.Parse(xmltext.c_str(), 0, TIXML_ENCODING_UTF8)) {
+		throw IBK::Exception(IBK::FormatString("Error in line %1 of project text \n%2")
+				.arg(doc.ErrorRow())
+				.arg(doc.ErrorDesc()), FUNC_ID);
+	}
+
+	// we use a handle so that NULL pointer checks are done during the query functions
+	TiXmlHandle xmlHandleDoc(&doc);
+
+	// read root element
+	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+	if (!xmlElem)
+		return nullptr; // empty file?
+	std::string rootnode = xmlElem->Value();
+	if (rootnode != parentXmlTag)
+		throw IBK::Exception( IBK::FormatString("Expected '%1' as root node in XML file.").arg(parentXmlTag), FUNC_ID);
+
+	return xmlElem;
+}
 
 void readLinearSplineElement(const TiXmlElement * element,
 							 IBK::LinearSpline & spl, std::string & name, IBK::Unit * xunit, IBK::Unit * yunit)

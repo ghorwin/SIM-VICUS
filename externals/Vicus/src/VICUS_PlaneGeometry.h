@@ -29,6 +29,7 @@
 #include <IBKMK_Vector3D.h>
 
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Object.h"
 #include "VICUS_Polygon3D.h"
 #include "VICUS_Polygon2D.h"
 #include "VICUS_PlaneTriangulationData.h"
@@ -47,8 +48,27 @@ namespace VICUS {
 	Note: PlaneGeometry is a runtime-only class and not used in the VICUS::Project data model. Instead,
 		  all data stored in PlaneGeometry is actually held in VICUS::Surface and its member variables.
 */
+
 class PlaneGeometry {
 public:
+
+    /*! Struct for Holes- */
+    struct Hole {
+
+        Hole(unsigned int idObj, const VICUS::Polygon2D &hole, bool isChildSurface) :
+            m_idObject(idObj),
+            m_holeGeometry(hole),
+            m_isChildSurface(isChildSurface)
+        {}
+
+        /*! Pointer to corresponding vicus hole object. */
+        unsigned int            m_idObject = INVALID_ID;
+        /*! Hole geometry. */
+        VICUS::Polygon2D        m_holeGeometry;
+        /*! Hole is part of an child surface. */
+        bool                    m_isChildSurface;
+    };
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -86,7 +106,7 @@ public:
 	/*! Calculates surface area in m2.
 		Requires valid polygon, otherwise an exception is thrown.
 	*/
-	double area(int digits = 1) const { return m_polygon.polyline().area(digits); }
+    double area(int digits = 1) const;
 
 	/*! Calculates the center point of the surface/polygon .
 		Requires valid polygon, otherwise an exception is thrown.
@@ -98,7 +118,7 @@ public:
 	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
 	const IBKMK::Polygon2D & polygon2D() const { return m_polygon.polyline(); }
 	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */
-	const std::vector<Polygon2D> & holes() const { return m_holes; }
+    const std::vector<Hole> & holes() const { return m_holes; }
 
 	// Setter functions for plane geometry
 
@@ -106,10 +126,10 @@ public:
 	void setPolygon(const Polygon3D & polygon3D);
 
 	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
-	void setHoles(const std::vector<Polygon2D> & holes);
+    void setHoles(const std::vector<Hole> &holes);
 
 	/*! Set outer polygon and holes together (needs only one call to triangulate()). */
-	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
+    void setGeometry(const Polygon3D & polygon3D, const std::vector<Hole> &holes);
 
 	/*! Flips the normal vector of the geometry. Does not require update of triangulation.
 		Requires valid polygon, otherwise an exception is thrown.
@@ -165,7 +185,7 @@ private:
 	Polygon3D									m_polygon;
 
 	/*! Polygons with holes/subsurfaces inside the polygon. */
-	std::vector<Polygon2D>						m_holes;
+    std::vector<Hole>                           m_holes;
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of.
 		Includes only the triangles of the opaque surfaces without any holes

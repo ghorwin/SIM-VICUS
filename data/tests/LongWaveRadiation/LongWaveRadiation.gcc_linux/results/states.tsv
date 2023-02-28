@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=1).SurfaceTemperatureB [C]	ConstructionInstance(id=2).SurfaceTemperatureB [C]
+Time [h]	Surface East Var01.SurfaceTemperatureB [C]	Surface East Var01.SurfaceTemperatureB [C]
 0	20	20
 1	11.0003	14.0467
 2	8.55627	11.925

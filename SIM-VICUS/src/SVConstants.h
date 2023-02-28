@@ -81,7 +81,7 @@ enum DataRoles {
 };
 
 /*! Different edit/coloring modes. */
-enum BuildingPropertyTypes {
+enum BuildingPropertyType {
 	/*! Assigned component. */
 	BT_Components,
 	/*! Assigned sub-surface components. */
@@ -101,11 +101,13 @@ enum BuildingPropertyTypes {
 	/*! Zone property */
 	BT_ZoneProperty,
 	/*! Floor manager. */
-	BT_FloorManager
+	BT_FloorManager,
 };
 
 /*! Different edit/coloring modes. */
 enum NetworkPropertyTypes {
+	/*! Assigned node properties. */
+	NT_Geometry,
 	/*! Assigned node properties. */
 	NT_Node,
 	/*! Assigned edge properties. */

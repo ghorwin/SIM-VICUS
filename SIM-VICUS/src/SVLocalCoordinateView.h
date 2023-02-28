@@ -45,6 +45,9 @@ public:
 
 	/*! Sets the Coordinates of the Center Point of the local Coordinate System. */
 	void setCoordinates(const Vic3D::Transform3D &t);
+
+	void clearCoordinates();
+
 	/*! Sets the Dimension of Bounding Box Dimension. */
 	void setBoundingBoxDimension(const IBKMK::Vector3D& bb);
 

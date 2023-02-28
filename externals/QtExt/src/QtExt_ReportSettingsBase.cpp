@@ -36,11 +36,7 @@ void ReportSettingsBase::readSettings(QSettings & settings) {
 	QString activatedFrames = settings.value("ActivatedFrames").toString();
 	m_frames.clear();
 	if(!activatedFrames.isEmpty()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-		QStringList lst = activatedFrames.split(" ", Qt::SkipEmptyParts);
-#else
 		QStringList lst = activatedFrames.split(" ", QString::SkipEmptyParts);
-#endif
 		for (int i=0; i<lst.count(); ++i) {
 			bool ok;
 			int activated = lst[i].toInt(&ok);

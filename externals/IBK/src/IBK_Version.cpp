@@ -100,6 +100,35 @@ unsigned int minorFromVersionASCII( unsigned int version ) {
 }
 
 
+Version::Version(const std::string & version) {
+	unsigned int maj, minor, pat;
+	if (extractMajorMinorPatchVersionNumber(version, maj, minor, pat)) {
+		m_major = maj;
+		m_minor = minor;
+		m_patch = pat;
+	}
+	else if (extractMajorMinorVersionNumber(version, maj, minor)) {
+		m_major = maj;
+		m_minor = minor;
+		m_patch = 0;
+	}
+	else {
+		// fallback to default version number
+		m_major = 1;
+		m_minor = 0;
+		m_patch = 0;
+	}
+}
+
+
+bool Version::operator<(const Version & other) const {
+	if (m_major < other.m_major) return true;
+	if (m_major > other.m_major) return false;
+	if (m_minor < other.m_minor) return true;
+	if (m_minor > other.m_minor) return false;
+	return m_patch < other.m_patch;
+}
+
 void Version::read(std::istream & in, unsigned int magicNumberFirstBinary, unsigned int magicNumberSecondBinary,
 				 unsigned int magicNumberFirstASCII, unsigned int magicNumberSecondASCII,
 				 bool & isBinary, unsigned int & majorVersion, unsigned int & minorVersion)

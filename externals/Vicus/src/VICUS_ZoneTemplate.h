@@ -57,6 +57,7 @@ public:
 		ST_IntLoadLighting,					// Keyword: IntLoadLighting				<#FFEECC>	'Lighting loads'
 		ST_IntLoadOther,					// Keyword: IntLoadOther				<#602222>	'Other internal loads'
 		ST_ControlThermostat,				// Keyword: ControlThermostat			<#E00010>	'Thermostat control'
+		ST_ControlShading,					// Keyword: ControlShading				<#A2F0F4>	'Shading control'
 		ST_ControlVentilationNatural,		// Keyword: ControlVentilationNatural	<#00A000>	'Natural ventilation control'
 		ST_Infiltration,					// Keyword: Infiltration				<#A0B0FF>	'Infiltration loads'
 		ST_VentilationNatural,				// Keyword: NaturalVentilation			<#22EE22>	'Natural ventilation loads

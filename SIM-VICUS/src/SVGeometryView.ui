@@ -84,6 +84,28 @@
         </layout>
        </item>
        <item>
+        <widget class="SVColorLegend" name="colorLegend" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QToolBar" name="modeSelectionToolBar">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -127,12 +149,12 @@
          <addaction name="actionAlignGeometry"/>
          <addaction name="actionCopyGeometry"/>
          <addaction name="separator"/>
-         <addaction name="actionEditNetworkGeometry"/>
-         <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
+         <addaction name="actionAcousticParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
+         <addaction name="actionShowResults"/>
         </widget>
        </item>
       </layout>
@@ -333,19 +355,34 @@
     <string>Edit Site Parametrization</string>
    </property>
   </action>
-  <action name="actionEditNetworkGeometry">
+  <action name="actionAcousticParametrization">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/NetworkGeo.png</normaloff>:/gfx/actions/NetworkGeo.png</iconset>
+     <normaloff>:/gfx/actions/acoustic.png</normaloff>:/gfx/actions/acoustic.png</iconset>
    </property>
    <property name="text">
-    <string>Edit Network Geometry</string>
+    <string>Acoustic parametrization</string>
    </property>
    <property name="toolTip">
-    <string>Edit Network Geometry</string>
+    <string>Acoustic parametrization</string>
+   </property>
+  </action>
+  <action name="actionShowResults">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/64x64/resultsView.png</normaloff>:/gfx/actions/64x64/resultsView.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Results</string>
    </property>
   </action>
  </widget>
@@ -354,6 +391,12 @@
    <class>SVPropertyWidget</class>
    <extends>QWidget</extends>
    <header>SVPropertyWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SVColorLegend</class>
+   <extends>QWidget</extends>
+   <header>SVColorLegend.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -112,6 +112,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Area per person");
 	tr("Power");
 	tr("Power per area");
+	tr("Moisture production rate per area");
 	tr("Convective heat factor");
 	tr("Latent heat factor");
 	tr("Loss heat factor");
@@ -317,6 +318,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame area fraction of the window");
 	tr("Divider width of the window");
 	tr("Divider area fraction of the window");
+	tr("Reduction factor for dynamic shading");
 	tr("Divider material thickness.");
 	tr("Frame material thickness.");
 	tr("Standard globbed-layers model");
@@ -347,6 +349,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Lighting loads");
 	tr("Other internal loads");
 	tr("Thermostat control");
+	tr("Shading control");
 	tr("Natural ventilation control");
 	tr("Infiltration loads");
 	tr("NaturalVentilation");

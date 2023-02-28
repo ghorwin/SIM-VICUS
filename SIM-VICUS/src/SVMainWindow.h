@@ -51,6 +51,7 @@ class SVLogWidget;
 class SVGeometryView;
 class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
+class SVNetworkExportDialog;
 class SVImportIDFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
@@ -62,6 +63,9 @@ class SVCoSimCO2VentilationDialog;
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
 class SVDBDuplicatesDialog;
+
+class SVPluginLoader;
+
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -327,6 +331,10 @@ private slots:
 	void on_actionViewFromSouth_triggered();
 	void on_actionViewFromWest_triggered();
 	void on_actionViewFromAbove_triggered();
+	void on_actionBirdsEyeViewNorthWest_triggered();
+	void on_actionBirdsEyeViewNorthEast_triggered();
+	void on_actionBirdsEyeViewSouthWest_triggered();
+	void on_actionBirdsEyeViewSouthEast_triggered();
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationExportFMI_triggered();
@@ -342,8 +350,10 @@ private slots:
 	void on_actionHelpLinuxDesktopIntegration_triggered();
 
 	void on_actionFileImportNetworkGISData_triggered();
-
 	void on_actionEditProjectNotes_triggered();
+	void on_actionPluginsManager_triggered();
+
+	void on_actionExportNetworkAsGeoJSON_triggered();
 
 
 private:
@@ -434,6 +444,8 @@ private:
 	SVProjectHandler			m_projectHandler;
 	/*! The thread pool managed by the main window. */
 	QList<SVThreadBase*>		m_threadPool;
+	/*! The plugin-loader. */
+	SVPluginLoader				*m_pluginLoader;
 
 	QAction *					m_undoAction;
 	QAction *					m_redoAction;
@@ -461,6 +473,9 @@ private:
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;
+
+	/*! Network export dialog */
+	SVNetworkExportDialog		*m_networkExportDialog									= nullptr;
 
 	/*! Network edit dialog */
 	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;

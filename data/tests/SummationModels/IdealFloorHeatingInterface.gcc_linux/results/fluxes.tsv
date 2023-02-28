@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=2001).FluxHeatConductionA [W]	ConstructionInstance(id=2002).FluxHeatConductionA [W]	ConstructionInstance(id=3001).FluxHeatConductionA [W]	ConstructionInstance(id=3002).FluxHeatConductionA [W]	ConstructionInstance(id=2001).ThermalLoad(id=1) [W]	ConstructionInstance(id=2002).ThermalLoad(id=1) [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]	ConstructionInstance(id=3002).ThermalLoad(id=1) [W]	Model(id=801).TotalHeatLoad [W]
+Time [h]	South.FluxHeatConductionA [W]	South.FluxHeatConductionA [W]	Ground Floor.FluxHeatConductionA [W]	Upper Floor.FluxHeatConductionA [W]	South.ThermalLoad(id=1) [W]	South.ThermalLoad(id=1) [W]	Ground Floor.ThermalLoad(id=1) [W]	Upper Floor.ThermalLoad(id=1) [W]	Model(id=801).TotalHeatLoad [W]
 3840	0	0	0	0	0	0	0	0	0
 3841	0.125549	0.121802	-0.0574903	-0.0345022	0	0	2.25571	1.37879	3.6345
 3842	3.78798	3.50381	-3.52519	-2.92606	0	0	48.6232	44.5641	93.1873

@@ -28,6 +28,7 @@
 #include <QVector3D>
 #include <QOpenGLShaderProgram>
 #include <QElapsedTimer>
+#include <VICUS_PlaneGeometry.h>
 
 #include <VICUS_Project.h>
 #include <SVConversions.h>
@@ -231,7 +232,7 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 		double wMax = widthSurface - 2 * minDistance;
 
 		// vector for each window to be created as polygon within the surface polygon
-		std::vector<VICUS::Polygon2D> windows;
+        std::vector<VICUS::PlaneGeometry::Hole> windows;
 
 
 		// *** Generate by percentage ***
@@ -425,9 +426,7 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + width), sillHeight));
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + width), sillHeight + height));
 				verts.push_back(IBKMK::Vector2D(dist + i * (dist + width), sillHeight + height));
-				for(IBKMK::Vector2D &p0 : verts)
-					 p0 *= factor;
-				windows.push_back(VICUS::Polygon2D(verts));
+                windows.push_back(VICUS::PlaneGeometry::Hole(s->m_id, VICUS::Polygon2D(verts), false));
 			}
 		}
 		else {
@@ -448,8 +447,8 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + widthWinPre), heightSill));
 				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + widthWinPre), heightSill + heightWinPre));
 				verts.push_back(IBKMK::Vector2D(dist + i * (dist + widthWinPre), heightSill + heightWinPre));
-				windows.push_back(VICUS::Polygon2D(verts));
-			}
+                windows.push_back(VICUS::PlaneGeometry::Hole(s->m_id, VICUS::Polygon2D(verts), false));
+            }
 		}
 
 		// no windows generated? skip surface

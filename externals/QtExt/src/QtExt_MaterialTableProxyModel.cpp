@@ -90,7 +90,11 @@ QVariant MaterialTableProxyModel::data(const QModelIndex &proxyIndex, int role) 
 
 static bool searchForString(const QString& str, const QString& searchPattern) {
 	if( !searchPattern.isEmpty()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+		QStringList tokens = searchPattern.split(' ', Qt::SkipEmptyParts);
+#else
 		QStringList tokens = searchPattern.split(' ', QString::SkipEmptyParts);
+#endif
 		bool found = false;
 		foreach (QString t, tokens) {
 			QRegExp regEx(t);
@@ -122,7 +126,11 @@ bool MaterialTableProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex 
 	}
 
 	if( !m_nameFilter.isEmpty()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+		QStringList tokens = m_nameFilter.split(' ', Qt::SkipEmptyParts);
+#else
 		QStringList tokens = m_nameFilter.split(' ', QString::SkipEmptyParts);
+#endif
 		bool found = false;
 		foreach (QString t, tokens) {
 			QRegExp regEx(t);

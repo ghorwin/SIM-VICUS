@@ -28,6 +28,9 @@
 
 #include <VICUS_Project.h>
 
+#include "VICUS_AcousticTemplate.h"
+//TODO Anton Why the include?
+
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
 	Initialize the database once in your program using the init() function and use it
@@ -63,6 +66,7 @@ public:
 		DT_VentilationNatural,
 		DT_Infiltration,
 		DT_ZoneTemplates,
+		DT_AcousticTemplates,
 		NUM_DT // used for "all"
 	};
 
@@ -77,6 +81,11 @@ public:
 
 	/*! Writes user-defined database. */
 	void writeDatabases();
+
+	/*! Import DB elements from other database into our database, but only if the IDs of the imported
+		DB elements to not yet exist. Import errors are logged to IBK::IBK_message()
+	*/
+	void mergeDatabases(const SVDatabase & db);
 
 
 	/*! Searches through project and all copies all references database elements into
@@ -205,6 +214,10 @@ public:
 
 	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
+
+	/*! Map of all database Acoustic templates. */
+	VICUS::Database<VICUS::AcousticTemplate>			m_acousticTemplates;
+
 };
 
 

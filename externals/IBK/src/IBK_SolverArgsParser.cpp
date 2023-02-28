@@ -125,16 +125,6 @@ void SolverArgsParser::parse(int argc, const char * const argv[]) {
 		}
 	}
 
-	if (findOption(0, "restart-realtime-dt") != m_knownOptions.size() && hasOption(GO_RESTART_REALTIME_DT)) {
-		// parse argument
-		std::stringstream strm(option(GO_RESTART_REALTIME_DT));
-		// extract value
-		double val;
-		if (strm >> val) {
-			m_restartRealtimeDt = val;
-		}
-	}
-
 	// use num parallel threads variable
 	if (hasOption(GO_PARALLEL_THREADS)) {
 		// try to convert argument to integer
@@ -360,7 +350,6 @@ std::string SolverArgsParser::keyword( int index ) const {
 		case GO_TEST_INIT					: return "test-init";
 		case GO_OUTPUT_DIR					: return "output-dir";
 		case GO_PARALLEL_THREADS			: return "parallel-threads";
-		case GO_RESTART_REALTIME_DT			: return "restart-realtime-dt";
 		case OO_INTEGRATOR					: return "integrator";
 		case OO_LES_SOLVER					: return "les-solver";
 		case OO_PRECONDITIONER				: return "precond";
@@ -384,7 +373,6 @@ std::string SolverArgsParser::description( int index ) const {
 		case GO_TEST_INIT					: return "Run the solver initialization and stop.";
 		case GO_OUTPUT_DIR					: return "Writes solver output to different base directory.";
 		case GO_PARALLEL_THREADS			: return "Number of threads to use by the solver, 0 means use of OMP_NUM_THREADS environment variable.";
-		case GO_RESTART_REALTIME_DT			: return "Time interval in seconds for writing restart file.";
 		// specific solver implementations should provide overloads for this function and provide a more
 		// detailed description of the next two arguments.
 		case OO_INTEGRATOR					: return "Specify an alternative integrator engine.";
@@ -411,7 +399,6 @@ std::string SolverArgsParser::descriptionValue( int index ) const {
 		case GO_TEST_INIT					: return "true|false";
 		case GO_OUTPUT_DIR					: return "directory";
 		case GO_PARALLEL_THREADS			: return "0...MaxNumThreads";
-		case GO_RESTART_REALTIME_DT			: return "value";
 		case OO_LES_SOLVER					: return "auto|BTridiag|Band|GMRES|BiCGStab|TFQMR";
 		case OO_PRECONDITIONER				: return "auto|Band|ILU";
 		case OO_INTEGRATOR					: return "auto|CVode|ImplicitEuler";
@@ -437,7 +424,6 @@ std::string SolverArgsParser::defaultValue( int index ) const {
 		case GO_TEST_INIT					: return "false";
 		case GO_OUTPUT_DIR					: return "";
 		case GO_PARALLEL_THREADS			: return "1"; // by default sequential run
-		case GO_RESTART_REALTIME_DT			: return "300"; // 5 mins
 		case OO_INTEGRATOR					: return "auto";
 		case OO_LES_SOLVER					: return "auto";
 		case OO_PRECONDITIONER				: return "auto";

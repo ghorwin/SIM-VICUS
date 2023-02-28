@@ -96,6 +96,8 @@ private slots:
 
 	void on_tabWidget_currentChanged(int index);
 
+	void on_checkBoxEnableMoistureBalance_toggled(bool checked);
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();

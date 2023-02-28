@@ -73,6 +73,15 @@ public:
 		NUM_SG
 	};
 
+	/*! Sensor types for dynamic shading control. */
+	enum SenorType {
+		ST_Horizontal,
+		ST_North,
+		ST_East,
+		ST_South,
+		ST_West,
+		NUM_ST
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -93,6 +102,11 @@ public:
 	*/
 	void readXML(const IBK::Path & filename);
 
+	/*! Reads the project data from an text which contains XML.
+		\param projectText  Text with VICUS project.
+	*/
+	void readXML(const QString & projectText);
+
 	/*! Writes the project file to an XML file.
 		\param filename  The full path to the project file.
 	*/
@@ -111,6 +125,9 @@ public:
 		objects linked through pointers (building hierarchies, networks etc.).
 	*/
 	void updatePointers();
+
+    /*! Adds child surfaces to pointers of project. */
+    void addChildSurface(const VICUS::Surface &s);
 
 	/*! Searches through all objects and determines the largest object ID (not unique ID!) used for buildings, buildingLevels, rooms, surface,
 		subsurfaces, networks, etc and returns the next ID to be used for new data elements. For example, if IDs 10, 11, 14 have been used already,
@@ -174,6 +191,10 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
+    /*! Select all child surfaces of surface. */
+    void selectChildSurfaces(std::set<const Object*> &selectedObjs, const VICUS::Surface & s,
+                             bool takeSelected, bool takeVisible) const;
+
 	/*! This function collects the pointers to all selected sub surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type SubSurface.
@@ -220,6 +241,13 @@ public:
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces,
 									   std::vector<const SubSurface*> &subsurfaces,
+									   IBKMK::Vector3D &center);
+
+	/*! This function computes the global bounding box of all selected surfaces and the center point in global coordinates.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
+	*/
+	static IBKMK::Vector3D boundingBox(const std::vector<const NetworkEdge*> &edges,
+									   const std::vector<const NetworkNode*> &nodes,
 									   IBKMK::Vector3D &center);
 
 	/*! This function computes the bounding box of all selected surfaces and the center point in LOCAL coordinates of
@@ -323,10 +351,10 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(const QString &modelName,
-										NANDRAD::Project & p, QStringList & errorStack,
-										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										std::vector<MappingElement> &mappings)const;
+	void generateBuildingProjectData(const QString &modelName,
+									 NANDRAD::Project & p, QStringList & errorStack,
+									 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+									 std::vector<MappingElement> &mappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,

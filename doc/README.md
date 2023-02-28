@@ -37,6 +37,8 @@ Also, run the linkcheck.sh scripts to test, if all cross references are valid.
 > sudo gem install rouge
 > sudo gem install asciidoctor-rouge
 
-
+# math extensions - may not work, so try to avoid!
+> sudo apt install ruby-dev
+> sudo gem install asciidoctor-mathematical
 
 ```

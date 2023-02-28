@@ -38,12 +38,12 @@
 #include "SVPropAddGeometry.h"
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
-#include "SVPropNetworkPropertiesWidget.h"
 #include "SVPropBuildingEditWidget.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
-#include "SVPropEditNetwork.h"
-
+#include "SVPropNetworkEditWidget.h"
+#include "SVPropBuildingAcousticTemplatesWidget.h"
+#include "SVPropResultsWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -81,8 +81,26 @@ void SVPropertyWidget::setBuildingPropertyType(int buildingPropertyType) {
 
 
 void SVPropertyWidget::setNetworkPropertyType(int networkPropertyType) {
-	showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
-	qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
+	showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
+}
+
+
+void SVPropertyWidget::updateColorMode() {
+	switch (m_propertyWidgetMode) {
+		case SVViewState::PM_BuildingProperties : {
+			// enforce color update
+			SVPropBuildingEditWidget *widget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
+		case SVViewState::PM_NetworkProperties : {
+			// enforce color update
+			SVPropNetworkEditWidget *widget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
+
+		default: break;
+	}
 }
 
 
@@ -103,13 +121,6 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 			showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 		break;
 
-		case SVViewState::PM_EditNetwork : {
-			showPropertyWidget<SVPropEditNetwork>(M_EditNetwork);
-			SVPropEditNetwork *propEditNetworkWidget = qobject_cast<SVPropEditNetwork*>(m_propWidgets[M_EditNetwork]);
-			propEditNetworkWidget->updateComboBoxNetworks();
-			propEditNetworkWidget->updateUi();
-		} break;
-
 		case SVViewState::PM_VertexList:
 			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
 			setMinimumWidth(500);
@@ -126,14 +137,19 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 
 		case SVViewState::PM_BuildingProperties : {
 			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
-			SVPropBuildingEditWidget *propBuildingWidget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
-			propBuildingWidget->setPropertyType(propBuildingWidget->currentPropertyType());
+		} break;
+
+		case SVViewState::PM_BuildingAcousticProperties : {
+			showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
 		} break;
 
 		case SVViewState::PM_NetworkProperties : {
-			showPropertyWidget<SVPropNetworkPropertiesWidget>(M_NetworkProperties);
-			SVPropNetworkPropertiesWidget *propNetworkWidget = qobject_cast<SVPropNetworkPropertiesWidget*>(m_propWidgets[M_NetworkProperties]);
-			propNetworkWidget->setPropertyType(propNetworkWidget->currentPropertyType());
+			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+		} break;
+
+		case SVViewState::PM_ResultsProperties : {
+			showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
+			qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
 		} break;
 	}
 }

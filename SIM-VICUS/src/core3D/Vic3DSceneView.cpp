@@ -58,9 +58,10 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_E);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
-	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Alt);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Space);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -127,6 +128,7 @@ SceneView::SceneView() :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
 			this, &SceneView::onColorRefreshNeeded);
+
 }
 
 
@@ -175,8 +177,8 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 
 	// now downsample the framebuffers color buffer (all other buffers are not needed for the screenshot)
 	QOpenGLFramebufferObject::blitFramebuffer(
-		m_screenShotDownSampleFrameBuffer, m_screenShotMultiSampleFrameBuffer,
-		GL_COLOR_BUFFER_BIT, GL_NEAREST);
+				m_screenShotDownSampleFrameBuffer, m_screenShotMultiSampleFrameBuffer,
+				GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	m_mainScene.m_smallCoordinateSystemObjectVisible = true;
 	m_mainScene.m_surfaceNormalsVisible = surfaceNormalsVisible;
@@ -227,86 +229,293 @@ void SceneView::toggleMeasurementMode() {
 	}
 }
 
-void SceneView::toggleRubberbandMode() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
+// calculates the distance needed from the selected surface to completly see in on the screen
+// max is defined as the longest length of the rendered bounding box (e.g. for zenith view is would be max(x,y) / from north would be max(x,z) ...)
+double logarithmicDistance(double max){
+	// log parameters
+	double a = 4.3;
+	double b = 0.97;
+	double c = 1.12;
+	double d = 0.9;
+	double e = 2;
 
-	if (vs.m_sceneOperationMode == SVViewState::OM_RubberbandSelection)
-		m_mainScene.leaveRubberbandMode(); // leave measurement mode
-	else {
-		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
-		m_mainScene.enterRubberbandMode();
-	}
+	return pow(a * log10(b * max + c) + d, e);
 }
 
 
-void SceneView::resetCamera(int position) {
-	// reset camera position
-	switch (position) {
-		case 0 :
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
-			break;
+void SceneView::resetCamera(CameraPosition cameraPosition) {
 
-		case 1 : // from north
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,-0.1f), QVector3D(0,0,1));
-			break;
+	std::vector<const VICUS::Surface*> surfaces;
+	std::vector<const VICUS::SubSurface*> subsurfaces;
+	std::vector<const VICUS::NetworkNode*> nodes;
+	std::vector<const VICUS::NetworkEdge*> edges;
+	std::set<const VICUS::Object *> selectedObjects;
+	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+	for (const VICUS::Object * o : selectedObjects) {
+		const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
+		if (s != nullptr)
+			surfaces.push_back(s);
+		else {
+			const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
+			if (sub != nullptr)
+				subsurfaces.push_back(sub);
+		}
+		const VICUS::NetworkNode *n = dynamic_cast<const VICUS::NetworkNode*>(o);
+		if (n != nullptr)
+			nodes.push_back(n);
+		const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
+		if (e != nullptr)
+			edges.push_back(e);
+	}
 
-		case 2 : // from east
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(-100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,-0.1f), QVector3D(0,0,1));
-			break;
+	// center and bDim will be overriden
+	IBKMK::Vector3D center(0,0,0);
+	// compute bounding box of selected geometry
+	IBKMK::Vector3D bbDim(0,0,0);
 
-		case 3 : // from south
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, +100, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,-0.1f), QVector3D(0,0,1));
-			break;
-
-		case 4 : // from west
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(100, 0, 10);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,-0.1f), QVector3D(0,0,1));
-			break;
-
-		case 5 : // from above
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, 0, 100);
-			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
-			break;
-
-		case 6 : {
-			std::vector<const VICUS::Surface*> surfaces;
-			std::vector<const VICUS::SubSurface*> subsurfaces;
-			std::set<const VICUS::Object *> selectedObjects;
-			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
-			if (selectedObjects.empty())
-				return; // nothing selected/visible, do nothing
-			for (const VICUS::Object * o : selectedObjects) {
-				const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
-				if (s != nullptr)
-					surfaces.push_back(s);
-				else {
-					const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
-					if (sub != nullptr)
-						subsurfaces.push_back(sub);
+	if (selectedObjects.empty()){
+		// take all surfsaces into account
+		for (const VICUS::Building & b : project().m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
+						surfaces.push_back(&s);
+						for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+							subsurfaces.push_back(&sub);
+						}
+					}
 				}
 			}
+		}
+		for (const VICUS::Network & n : project().m_geometricNetworks) {
+			for (const VICUS::NetworkEdge &e: n.m_edges)
+				edges.push_back(&e);
+			for (const VICUS::NetworkNode &n: n.m_nodes)
+				nodes.push_back(&n);
+		}
+	}
 
-			IBKMK::Vector3D center;
-			// compute bounding box of visible geometry
-			project().boundingBox(surfaces, subsurfaces, center);
-			// move camera to position and a little bit back
-			Camera c;
-			c.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
-			QVector3D offset = -2*c.forward();
-			center.m_x += (double)offset.x();
-			center.m_y += (double)offset.y();
-			center.m_z += (double)offset.z();
-			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center;
+	if (!edges.empty() || !nodes.empty())
+		bbDim = project().boundingBox(edges, nodes, center);
+	else
+		bbDim = project().boundingBox(surfaces, subsurfaces, center);
+
+
+	switch (cameraPosition) {
+		case CP_Reset : { // reset camera position -> go to point (0,0,100) and camera faces down
+
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0,0,100);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+
+		} break;
+		case CP_South : { // from south
+
+			double offset =  logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(0, offset,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,0), QVector3D(0,0,1));
+
+		} break;
+		case CP_West : { // from west
+
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center - IBKMK::Vector3D(offset, 0, 0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,0), QVector3D(0,0,1));
+
+		} break;
+		case CP_North : { // from north
+
+			double offset = logarithmicDistance(std::max(bbDim.m_x, bbDim.m_z)) + bbDim.m_y/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0, offset,0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,0), QVector3D(0,0,1));
+
+		} break;
+		case CP_East : { // from east
+
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_z)) + bbDim.m_x/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(offset , 0, 0);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,0), QVector3D(0,0,1));
+
+		} break;
+		case CP_Above : { // from above
+
+			double offset = logarithmicDistance(std::max(bbDim.m_y, bbDim.m_x)) + bbDim.m_z/2;
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(0,0, offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+
+		} break;
+		case CP_FindSelection : { // STRG + F, find the selected object
+			if (selectedObjects.empty())
+				return; // nothing selected/visible, do nothing
+
+			// extract the current camera direction vector
+			IBKMK::Vector3D direction = QVector2IBKVector(-1*m_mainScene.camera().forward());
+
+			const double &x = direction.m_x;
+			const double &y = direction.m_y;
+			const double &z = direction.m_z;
+
+			IBKMK::Vector3D scalingFactors(0,0,0);
+			// calculate the percentage of the length of the rendered edges of the bounding box in relation to their original lenght
+			// is defined as the cosinus of the angle between the direction vector (x,y,z) and (x,y,0) for Z / (x,0,z) for Y / (0,y,z) for X
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z)))
+				scalingFactors.m_x = y*y + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(y*y + z*z));
+
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z)))
+				scalingFactors.m_y = x*x + z*z / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + z*z));
+
+			if(!IBK::near_zero(std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y)))
+				scalingFactors.m_z = x*x + y*y / (std::sqrt(x*x + y*y + z*z) * std::sqrt(x*x + y*y));
+
+			double offset = calculateCameraOffset(bbDim, scalingFactors);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + direction.normalized() * offset;
 
 		} break;
 
-	}
+		case CP_BirdEyeSouthEast: { // birds eye view from south east
+
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,-1.f,+1.f), QVector3D(-1,1,1));
+
+		} break;
+		case CP_BirdEyeSouthWest: { // birds eye view from south west
+
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), -(bbDim.m_y / 2 + offset), bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,-1.f,+1.f), QVector3D(1,1,1));
+
+		} break;
+		case CP_BirdEyeNorthEast: { // birds eye view from north east
+
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(bbDim.m_x / 2 + offset, bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(+1.f,+1.f,+1.f), QVector3D(-1,-1,1));
+
+		} break;
+		case CP_BirdEyeNorthWest: { // birds eye view from north west
+
+			// offset depending on the greater length of (x + y) * cos 45° and z * cos 35,2°
+			double offset = std::sqrt(std::pow(logarithmicDistance(std::max((bbDim.m_x + bbDim.m_y) * 0.707106781,  bbDim.m_z * 0.816500508)), 2)/3);
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center + IBKMK::Vector3D(-(bbDim.m_x / 2 + offset), bbDim.m_y / 2 + offset, bbDim.m_z / 2 + offset);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1.f,+1.f,+1.f), QVector3D(1,-1,1));
+
+		} break;
+
+		case NUM_CP: break;
+	} // switch
+
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
+}
+
+double SceneView::calculateCameraOffset(const IBKMK::Vector3D &boundingBoxDimension, const IBKMK::Vector3D &scalingFactors) {
+
+	double factor1 = boundingBoxDimension.m_x * scalingFactors.m_x + boundingBoxDimension.m_y * scalingFactors.m_y;
+	double factor2 = boundingBoxDimension.m_z * scalingFactors.m_z;
+
+	return logarithmicDistance(std::max(factor1, factor2));
+}
+
+
+
+void SceneView::handleKeyPressEvent(QKeyEvent *event) {
+	m_keyboardMouseHandler.keyPressEvent(event);
+	checkInput();
+}
+
+
+void SceneView::handleKeyReleaseEvent(QKeyEvent *event) {
+	m_keyboardMouseHandler.keyReleaseEvent(event);
+	checkInput();
+
+	// handle everything that are not scene navigation keys
+	Qt::Key k = static_cast<Qt::Key>(event->key());
+	switch (k) {
+
+		// *** Escape ***
+		case Qt::Key_Escape : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+				// *** place a vertex ***
+				case SVViewState::OM_PlaceVertex : {
+					// abort "place vertex" operation
+					// reset new polygon object, so that it won't be drawn anylonger
+					SVViewStateHandler::instance().m_newGeometryObject->clear();
+					// signal, that we are no longer in "add vertex" mode
+					SVViewState vs = SVViewStateHandler::instance().viewState();
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+					// now tell all UI components to toggle their view state
+					SVViewStateHandler::instance().setViewState(vs);
+				} break;
+
+				case SVViewState::OM_AlignLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+					break;
+				case SVViewState::OM_MoveLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+					break;
+				case SVViewState::OM_MeasureDistance :
+					m_mainScene.leaveMeasurementMode();
+					break;
+
+				case SVViewState::OM_SelectedGeometry:
+					// TODO : should we clear the selection here?
+				break;
+
+				case SVViewState::OM_ThreePointRotation:
+					// TODO : handle OM_ThreePointRotation
+				break;
+
+				case SVViewState::NUM_OM:
+				break;
+			}
+		} break;
+
+
+			// *** Enter/Return ***
+		case Qt::Key_Return : {
+			// different operation depending on scene's operation mode
+			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
+
+				// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
+				//       geometry view's toolbar - either with coordinates, or without, there the polygon
+				//       is finished (if possible, otherwise an error message pops up)
+
+				// *** align coordinate system ***
+				case SVViewState::OM_AlignLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+				case SVViewState::OM_MoveLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+
+				default:; // in all other modes, Enter has no effect (for now)
+			}
+		} break;
+
+
+			// *** Delete selected geometry ***
+			// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
+			// when the user had just selected objects)
+		case Qt::Key_Delete : {
+			m_mainScene.deleteSelected();
+		} break;
+
+
+			// *** Selected all selectable objects (i.e. objects shown in the scene) ***
+		case Qt::Key_A : {
+			if (event->modifiers() & Qt::ControlModifier)
+				m_mainScene.selectAll();
+		} break;
+
+		default :; // ignore the rest
+	} // switch
+
 }
 
 
@@ -318,10 +527,10 @@ void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	switch (mod) {
 		case SVProjectHandler::AllModified :
 			m_mainScene.updateWorld2ViewMatrix(); // reposition camera
-		break;
+			break;
 		case SVProjectHandler::GridModified :
 			resizeGL(width(), height());
-		break;
+			break;
 		default:; // nothing to do for other modification events
 
 	}
@@ -380,7 +589,11 @@ void SceneView::onColorRefreshNeeded() {
 	if (!SVProjectHandler::instance().isValid())
 		return;
 	m_mainScene.refreshColors();
-	renderLater();
+    renderLater();
+}
+
+void SceneView::onTransparentBuildingModeChanged(Scene::HighlightingMode m) {
+    m_mainScene.updatedHighlightingMode(m);
 }
 
 
@@ -457,7 +670,7 @@ void SceneView::resizeGL(int width, int height) {
 
 
 void SceneView::paintGL() {
-//#define SHOW_PAINT_CPU_TIMINGS
+	//#define SHOW_PAINT_CPU_TIMINGS
 #ifdef SHOW_PAINT_CPU_TIMINGS
 	m_cpuTimer.start();
 #endif
@@ -516,92 +729,6 @@ void SceneView::paintGL() {
 }
 
 
-void SceneView::keyPressEvent(QKeyEvent *event) {
-	m_keyboardMouseHandler.keyPressEvent(event);
-	checkInput();
-}
-
-void SceneView::keyReleaseEvent(QKeyEvent *event) {
-	m_keyboardMouseHandler.keyReleaseEvent(event);
-	checkInput();
-
-	// handle everything that are not scene navigation keys
-	Qt::Key k = static_cast<Qt::Key>(event->key());
-	switch (k) {
-
-		// *** Escape ***
-		case Qt::Key_Escape : {
-			// different operation depending on scene's operation mode
-			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-				// *** place a vertex ***
-				case SVViewState::OM_PlaceVertex : {
-					// abort "place vertex" operation
-					// reset new polygon object, so that it won't be drawn anylonger
-					SVViewStateHandler::instance().m_newGeometryObject->clear();
-					// signal, that we are no longer in "add vertex" mode
-					SVViewState vs = SVViewStateHandler::instance().viewState();
-					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-					// now tell all UI components to toggle their view state
-					SVViewStateHandler::instance().setViewState(vs);
-				} break;
-
-				case SVViewState::OM_AlignLocalCoordinateSystem :
-					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-				break;
-				case SVViewState::OM_MoveLocalCoordinateSystem :
-					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-				break;
-				case SVViewState::OM_MeasureDistance :
-					m_mainScene.leaveMeasurementMode();
-				break;
-
-				// TODO : handle other special modes like OM_ThreePointRotation
-			}
-		} break;
-
-
-		// *** Enter/Return ***
-		case Qt::Key_Return : {
-			// different operation depending on scene's operation mode
-			switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
-
-				// Note: place vertex mode is ended by "Enter" press through the "coordinate input widget" in the
-				//       geometry view's toolbar - either with coordinates, or without, there the polygon
-				//       is finished (if possible, otherwise an error message pops up)
-
-				// *** align coordinate system ***
-				case SVViewState::OM_AlignLocalCoordinateSystem : {
-					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-				} break;
-				case SVViewState::OM_MoveLocalCoordinateSystem : {
-					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-				} break;
-
-				default:; // in all other modes, Enter has no effect (for now)
-			}
-		} break;
-
-
-		// *** Delete selected geometry ***
-		// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
-		// when the user had just selected objects)
-		case Qt::Key_Delete : {
-			m_mainScene.deleteSelected();
-		} break;
-
-
-		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
-		case Qt::Key_A : {
-			if (event->modifiers() & Qt::ControlModifier)
-				m_mainScene.selectAll();
-		} break;
-
-		default :; // ignore the rest
-	} // switch
-
-}
 
 void SceneView::mousePressEvent(QMouseEvent *event) {
 	m_keyboardMouseHandler.mousePressEvent(event);
@@ -620,14 +747,6 @@ void SceneView::mouseMoveEvent(QMouseEvent * /*event*/) {
 void SceneView::wheelEvent(QWheelEvent *event) {
 	m_keyboardMouseHandler.wheelEvent(event);
 	checkInput();
-}
-
-void SceneView::focusOutEvent(QFocusEvent * event) {
-	// leave Rubberband mode when during selection window loses focus
-	if(SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_RubberbandSelection) {
-		m_mainScene.leaveRubberbandMode();
-		m_keyboardMouseHandler.releaseKey(Qt::Key_Alt);
-	}
 }
 
 
@@ -696,7 +815,7 @@ bool SceneView::processInput() {
 	// function must only be called if an input event has been received
 	Q_ASSERT(m_inputEventReceived);
 	m_inputEventReceived = false;
-//	qDebug() << "SceneView::processInput()";
+	//	qDebug() << "SceneView::processInput()";
 
 	// get current cursor position - might be different from last mouse press/release position,
 	// but usually is the same

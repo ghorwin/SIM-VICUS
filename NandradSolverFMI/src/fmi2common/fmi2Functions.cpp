@@ -496,7 +496,7 @@ fmi2Status fmi2SerializedFMUstateSize(fmi2Component c, fmi2FMUstate FMUstate, si
 }
 
 
-fmi2Status fmi2SerializeFMUstate(fmi2Component c, fmi2FMUstate FMUstate, fmi2Byte serializedState[], size_t s) {
+fmi2Status fmi2SerializeFMUstate(fmi2Component c, fmi2FMUstate FMUstate, fmi2Byte serializedState[], size_t /*s*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	MessageHandlerSwapper handlerSwap(modelInstance->m_messageHandlerPtr); (void)handlerSwap;
 	FMI_ASSERT(modelInstance != NULL);
@@ -720,8 +720,8 @@ fmi2Status fmi2GetNominalsOfContinuousStates(void* c, fmi2Real[], size_t nx) {
 
 
 // CoSim only
-fmi2Status fmi2SetRealInputDerivatives(void* c,	const fmi2ValueReference vr[], size_t nvr,
-										const fmi2Integer order[], const fmi2Real value[]) {
+fmi2Status fmi2SetRealInputDerivatives(void* c,	const fmi2ValueReference /*vr*/[], size_t nvr,
+										const fmi2Integer /*order*/[], const fmi2Real /*value*/[]) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -731,8 +731,8 @@ fmi2Status fmi2SetRealInputDerivatives(void* c,	const fmi2ValueReference vr[], s
 
 
 // CoSim only
-fmi2Status fmi2GetRealOutputDerivatives(void* c, const fmi2ValueReference vr[], size_t nvr,
-										const fmi2Integer order[], fmi2Real value[]) {
+fmi2Status fmi2GetRealOutputDerivatives(void* c, const fmi2ValueReference /*vr*/[], size_t nvr,
+										const fmi2Integer /*order*/[], fmi2Real /*value*/[]) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -783,8 +783,8 @@ fmi2Status fmi2CancelStep(void* c) {
 
 
 // CoSim only
-fmi2Status fmi2GetStatus(void* c, const fmi2StatusKind s,
-						fmi2Status* value) {
+fmi2Status fmi2GetStatus(void* c, const fmi2StatusKind /*s*/,
+						fmi2Status* /*value*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -794,8 +794,8 @@ fmi2Status fmi2GetStatus(void* c, const fmi2StatusKind s,
 
 
 // CoSim only
-fmi2Status fmi2GetRealStatus(void* c, const fmi2StatusKind s,
-						fmi2Real* value) {
+fmi2Status fmi2GetRealStatus(void* c, const fmi2StatusKind /*s*/,
+						fmi2Real* /*value*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -805,8 +805,8 @@ fmi2Status fmi2GetRealStatus(void* c, const fmi2StatusKind s,
 
 
 // CoSim only
-fmi2Status fmi2GetIntegerStatus(void* c, const fmi2StatusKind s,
-						fmi2Integer* value) {
+fmi2Status fmi2GetIntegerStatus(void* c, const fmi2StatusKind /*s*/,
+						fmi2Integer* /*value*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -816,8 +816,8 @@ fmi2Status fmi2GetIntegerStatus(void* c, const fmi2StatusKind s,
 
 
 // CoSim only
-fmi2Status fmi2GetBooleanStatus(void* c, const fmi2StatusKind s,
-						fmi2Boolean* value) {
+fmi2Status fmi2GetBooleanStatus(void* c, const fmi2StatusKind /*s*/,
+						fmi2Boolean* /*value*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
@@ -827,8 +827,8 @@ fmi2Status fmi2GetBooleanStatus(void* c, const fmi2StatusKind s,
 
 
 // CoSim only
-fmi2Status fmi2GetStringStatus(void* c, const fmi2StatusKind s,
-						fmi2String* value) {
+fmi2Status fmi2GetStringStatus(void* c, const fmi2StatusKind /*s*/,
+						fmi2String* /*value*/) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);

@@ -39,6 +39,10 @@ namespace NANDRAD_MODEL {
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
 	It implements either constant or scheduled ventilation rates and computes thermal ventilation loads
 	for all zones referenced in the object list.
+
+	Ventilation model supports both thermal and hygrothermal calculations. In the latter case, the
+	VentilationMoistureMassFlux is provided. The enthalpy and sensible heat is always computed together in
+	VentilationHeatFlux.
 */
 class NaturalVentilationModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -46,6 +50,7 @@ public:
 	enum VectorValuedResults {
 		VVR_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Natural ventilation/infiltration air change rate'
 		VVR_VentilationHeatFlux,			// Keyword: VentilationHeatFlux				[W]		'Natural ventilation/infiltration heat flux'
+		VVR_VentilationMoistureMassFlux,	// Keyword: VentilationMoistureMassFlux		[kg/s]	'Natural ventilation/infiltration moisture mass flux'
 		NUM_VVR
 	};
 
@@ -140,6 +145,11 @@ private:
 	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
 	/*! Vector with input references. */
 	std::vector<const double*>						m_valueRefs;
+
+	/*! Offset in inputRefs/valueRefs vector where zone-specific variables start */
+	mutable unsigned int							m_zoneVariableOffset;
+	/*! Number of zone-dependent variables in inputRefs/valueRefs vector. */
+	mutable unsigned int							m_zoneVariableCount;
 };
 
 } // namespace NANDRAD_MODEL

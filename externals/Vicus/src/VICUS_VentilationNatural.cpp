@@ -31,6 +31,7 @@ namespace VICUS {
 
 bool VentilationNatural::isValid(const Database<Schedule> &scheduleDB) const {
 
+	std::string err;
 	if ( m_id == INVALID_ID )
 		return false;
 
@@ -41,7 +42,7 @@ bool VentilationNatural::isValid(const Database<Schedule> &scheduleDB) const {
 		const Schedule * sched = scheduleDB[m_idSchedule];
 		if (sched == nullptr)
 			return false;
-		if (!sched->isValid())
+		if (!sched->isValid(err, true))
 			return false;
 	}
 

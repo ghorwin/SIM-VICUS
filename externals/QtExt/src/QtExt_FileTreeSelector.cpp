@@ -91,7 +91,11 @@ QStringList FileTreeSelector::selectedFiles() const {
 
 void FileTreeSelector::setRootPath(const QString& path, bool forceUpdate) {
 	m_rootPath = path;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	m_pathList = QDir::toNativeSeparators(m_rootPath).split(QDir::separator(), Qt::SkipEmptyParts);
+#else
 	m_pathList = QDir::toNativeSeparators(m_rootPath).split(QDir::separator(), QString::SkipEmptyParts);
+#endif
 	if(forceUpdate)
 		update();
 }
@@ -246,8 +250,11 @@ void FileTreeSelector::update() {
 
 bool FileTreeSelector::categoriesFromDir(const QDir& filePath, QStringList& res) {
 	res.clear();
-	QStringList filePathList = QDir::toNativeSeparators(filePath.absolutePath()).split(QDir::separator(),
-							 QString::SkipEmptyParts);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	QStringList filePathList = QDir::toNativeSeparators(filePath.absolutePath()).split(QDir::separator(), Qt::SkipEmptyParts);
+#else
+	QStringList filePathList = QDir::toNativeSeparators(filePath.absolutePath()).split(QDir::separator(), QString::SkipEmptyParts);
+#endif
 	if(m_pathList.size() > filePathList.size())
 		return false;
 

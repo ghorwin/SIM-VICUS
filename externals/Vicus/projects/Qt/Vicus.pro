@@ -19,7 +19,7 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO
 
 INCLUDEPATH = \
 	../../src \
@@ -34,6 +34,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
 	../../src/VICUS_AbstractDBElement.h \
+	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BoundaryCondition.h \
 	../../src/VICUS_Building.h \
@@ -104,6 +105,7 @@ HEADERS += \
 
 SOURCES += \
 	../../src/VICUS_AbstractDBElement.cpp \
+    ../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \
@@ -159,6 +161,7 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \

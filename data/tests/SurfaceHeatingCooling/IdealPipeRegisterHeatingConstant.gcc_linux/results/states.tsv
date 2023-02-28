@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	dummy.AirTemperature [C]	Model(id=701).ReturnTemperature(id=3001) [C]
+Time [h]	Floor.ActiveLayerTemperature [C]	dummy.AirTemperature [C]	Model(id=701).ReturnTemperature(id=3001) [C]
 0	26	26	26
 1	25.7891	22.0159	25.7891
 2	25.9496	21.9887	25.9792

@@ -88,7 +88,12 @@ SVDatabase::SVDatabase() :
 	m_zoneIdealHeatingCooling(1075000),
 	m_ventilationNatural(1077500),
 	m_infiltration(1080000),
-	m_zoneTemplates(1082500)
+	m_zoneTemplates(1082500),
+	m_acousticTemplates(1400100)
+
+  //TODO Anton Start Id ist glaube ich nicht richtig implementiert
+  //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
+  //davon starten manche bei 1 und manche bei 10.000.000 ???
 {
 }
 
@@ -123,6 +128,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
+		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_epdDatasets.readXML(				dbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", true);
 
@@ -182,6 +188,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_infiltration.readXML(				userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.readXML(			userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
+	if (t == NUM_DT || t == DT_AcousticTemplates)
+		m_acousticTemplates.readXML(			userDbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", false);
+
 }
 
 
@@ -217,6 +226,36 @@ void SVDatabase::writeDatabases() {
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
 	m_epdDatasets.writeXML(			userDbDir / "db_epdDatasets.xml", "EpdDatasets");
+}
+
+
+void SVDatabase::mergeDatabases(const SVDatabase & db) {
+	// process all databases and import not yet existing elements
+	m_materials.import(db.m_materials);
+	m_constructions.import(db.m_constructions);
+	m_windows.import(db.m_windows);
+	m_windowGlazingSystems.import(db.m_windowGlazingSystems);
+	m_boundaryConditions.import(db.m_boundaryConditions);
+	m_components.import(db.m_components);
+	m_subSurfaceComponents.import(db.m_subSurfaceComponents);
+	m_surfaceHeatings.import(db.m_surfaceHeatings);
+	m_pipes.import(db.m_pipes);
+	m_fluids.import(db.m_fluids);
+	m_networkComponents.import(db.m_networkComponents);
+	m_networkControllers.import(db.m_networkControllers);
+	m_subNetworks.import(db.m_subNetworks);
+	m_supplySystems.import(db.m_supplySystems);
+	m_schedules.import(db.m_schedules);
+	m_internalLoads.import(db.m_internalLoads);
+	m_zoneControlThermostat.import(db.m_zoneControlThermostat);
+	m_zoneControlShading.import(db.m_zoneControlShading);
+	m_zoneControlVentilationNatural.import(db.m_zoneControlVentilationNatural);
+	m_zoneIdealHeatingCooling.import(db.m_zoneIdealHeatingCooling);
+	m_ventilationNatural.import(db.m_ventilationNatural);
+	m_infiltration.import(db.m_infiltration);
+	m_zoneTemplates.import(db.m_zoneTemplates);
+	m_acousticTemplates.import(db.m_acousticTemplates);
+
 }
 
 
@@ -505,19 +544,26 @@ void SVDatabase::updateElementChildren() {
 			VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
 			VICUS::Infiltration *inf = m_infiltration[idType];
 			VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
+			VICUS::ZoneControlShading *ctrlShad = m_zoneControlShading[idType];
 			if (intLoad	!= nullptr) {
 				zt.m_childrenRefs.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
 				switch (tempType) {
-					case VICUS::ZoneTemplate::ST_IntLoadPerson:
+					case VICUS::ZoneTemplate::ST_IntLoadPerson: {
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idActivitySchedule]);
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idOccupancySchedule]);
+						VICUS::Schedule *moistSchedule = m_schedules[intLoad->m_idMoistureProductionRatePerAreaSchedule];
+						// moisture production rate is optional
+						if(moistSchedule != nullptr)
+							intLoad->m_childrenRefs.insert(moistSchedule);
+					}
 					break;
 					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
 					case VICUS::ZoneTemplate::ST_IntLoadOther:
 						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idPowerManagementSchedule]);
 					break;
+					case VICUS::ZoneTemplate::ST_ControlShading:
 					case VICUS::ZoneTemplate::ST_ControlThermostat:
 					case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
 					case VICUS::ZoneTemplate::ST_Infiltration:
@@ -541,6 +587,8 @@ void SVDatabase::updateElementChildren() {
 			}
 			else if(idealHeatCool != nullptr)
 				zt.m_childrenRefs.insert(idealHeatCool);
+			else if(ctrlShad != nullptr)
+				zt.m_childrenRefs.insert(ctrlShad);
 		}
 	}
 
@@ -875,6 +923,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
 				// might be any of the following four
 				replaceID(elementID, replacementElementID, c.m_idActivitySchedule, m_internalLoads);
+				replaceID(elementID, replacementElementID, c.m_idMoistureProductionRatePerAreaSchedule, m_internalLoads);
 				replaceID(elementID, replacementElementID, c.m_idOccupancySchedule, m_internalLoads);
 				replaceID(elementID, replacementElementID, c.m_idPowerManagementSchedule, m_internalLoads);
 			}
@@ -1088,6 +1137,7 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 		case VICUS::ZoneTemplate::ST_IntLoadLighting:
 		case VICUS::ZoneTemplate::ST_IntLoadOther:					return m_internalLoads[id];
 		case VICUS::ZoneTemplate::ST_ControlThermostat:				return m_zoneControlThermostat[id];
+		case VICUS::ZoneTemplate::ST_ControlShading:				return m_zoneControlShading[id];
 		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:		return m_zoneControlVentilationNatural[id];
 		case VICUS::ZoneTemplate::ST_Infiltration:					return m_infiltration[id];
 		case VICUS::ZoneTemplate::ST_VentilationNatural:			return m_ventilationNatural[id];

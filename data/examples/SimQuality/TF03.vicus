@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.7">
+<VicusProject fileVersion="0.9">
 	<ProjectInfo>
-		<Created>Mi. Juni 30 10:16:20 2021</Created>
-		<LastEdited>Sa. Dez. 18 17:12:42 2021</LastEdited>
 		<Comment>Das ist der Testfall TF03 der SimQuality-Testreihe, worin das korrekte zeitliche Verhalten von Konstruktionen bei reiner Wärmeleitung und -speicherung kontrolliert wird. 4 unterschiedliche Konstruktionen umgeben jeweils einen gleichartigen Raum. Je nach Schichtfolge und Materialeigenschaften wirkt sich ein Temperatursprung in der Klimadatei unterschiedlich schnell auf die Innenraumtemperaturen aus.</Comment>
+		<Created>Mi. Juni 30 10:16:20 2021</Created>
+		<LastEdited>Mo. Feb. 27 13:37:24 2023</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -44,8 +44,6 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<GridSpacing>10</GridSpacing>
-			<GridWidth>100</GridWidth>
 			<CameraTranslation>4.37809 -15.7748 7.42567</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.802685</Wp>
@@ -54,11 +52,18 @@
 				<Z>-0.118337</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="200" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
 		</ViewSettings>
 		<Buildings>
-			<Building id="1" displayName="Building1">
+			<Building id="1000" displayName="Building1">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="Level1">
+					<BuildingLevel id="100" displayName="Level1">
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
@@ -66,29 +71,23 @@
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
-									<Surface id="11" displayName="Floor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>6 0 0, 4 0 0, 4 5 0, 6 5 0</Polygon3D>
+									<Surface id="11" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="6 0 0" normal="0 0 -1" localX="-1 0 0">0 0, 2 0, 2 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="12" displayName="Ceiling">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>6 5 3, 4 5 3, 4 0 3, 6 0 3</Polygon3D>
+									<Surface id="12" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="6 5 3" normal="0 0 1" localX="-1 0 0">0 0, 2 0, 2 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="13" displayName="North">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4 5 3, 6 5 3, 6 5 0, 4 5 0</Polygon3D>
+									<Surface id="13" displayName="North" displayColor="#c8c88c">
+										<Polygon3D offset="4 5 3" normal="0 1 0" localX="1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="14" displayName="West">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4 0 3, 4 5 3, 4 5 0, 4 0 0</Polygon3D>
+									<Surface id="14" displayName="West" displayColor="#c8c88c">
+										<Polygon3D offset="4 0 3" normal="-1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="15" displayName="South">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6 0 3, 4 0 3, 4 0 0, 6 0 0</Polygon3D>
+									<Surface id="15" displayName="South" displayColor="#c8c88c">
+										<Polygon3D offset="6 0 3" normal="0 -1 0" localX="-1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="16" displayName="East">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6 5 3, 6 0 3, 6 0 0, 6 5 0</Polygon3D>
+									<Surface id="16" displayName="East" displayColor="#c8c88c">
+										<Polygon3D offset="6 5 3" normal="1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -96,29 +95,23 @@
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
-									<Surface id="18" displayName="Floor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>7 0 0, 7 5 0, 9 5 0, 9 0 0</Polygon3D>
+									<Surface id="18" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="7 0 0" normal="0 0 -1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="19" displayName="Ceiling">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>9 0 3, 9 5 3, 7 5 3, 7 0 3</Polygon3D>
+									<Surface id="19" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="9 0 3" normal="0 0 1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="20" displayName="East">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9 5 3, 9 0 3, 9 0 0, 9 5 0</Polygon3D>
+									<Surface id="20" displayName="East" displayColor="#c8c88c">
+										<Polygon3D offset="9 5 3" normal="1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="21" displayName="North">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>7 5 3, 9 5 3, 9 5 0, 7 5 0</Polygon3D>
+									<Surface id="21" displayName="North" displayColor="#c8c88c">
+										<Polygon3D offset="7 5 3" normal="0 1 0" localX="1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="22" displayName="West">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>7 0 3, 7 5 3, 7 5 0, 7 0 0</Polygon3D>
+									<Surface id="22" displayName="West" displayColor="#c8c88c">
+										<Polygon3D offset="7 0 3" normal="-1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="23" displayName="South">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9 0 3, 7 0 3, 7 0 0, 9 0 0</Polygon3D>
+									<Surface id="23" displayName="South" displayColor="#c8c88c">
+										<Polygon3D offset="9 0 3" normal="0 -1 0" localX="-1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -126,29 +119,23 @@
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
-									<Surface id="25" displayName="Floor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>10 0 0, 10 5 0, 12 5 0, 12 0 0</Polygon3D>
+									<Surface id="25" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="10 0 0" normal="0 0 -1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="26" displayName="Ceiling">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12 0 3, 12 5 3, 10 5 3, 10 0 3</Polygon3D>
+									<Surface id="26" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="12 0 3" normal="0 0 1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="27" displayName="East">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12 5 3, 12 0 3, 12 0 0, 12 5 0</Polygon3D>
+									<Surface id="27" displayName="East" displayColor="#c8c88c">
+										<Polygon3D offset="12 5 3" normal="1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="28" displayName="North">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>10 5 3, 12 5 3, 12 5 0, 10 5 0</Polygon3D>
+									<Surface id="28" displayName="North" displayColor="#c8c88c">
+										<Polygon3D offset="10 5 3" normal="0 1 0" localX="1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="29" displayName="West">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>10 0 3, 10 5 3, 10 5 0, 10 0 0</Polygon3D>
+									<Surface id="29" displayName="West" displayColor="#c8c88c">
+										<Polygon3D offset="10 0 3" normal="-1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="30" displayName="South">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12 0 3, 10 0 3, 10 0 0, 12 0 0</Polygon3D>
+									<Surface id="30" displayName="South" displayColor="#c8c88c">
+										<Polygon3D offset="12 0 3" normal="0 -1 0" localX="-1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -156,29 +143,23 @@
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
-									<Surface id="32" displayName="Floor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>13 0 0, 13 5 0, 15 5 0, 15 0 0</Polygon3D>
+									<Surface id="32" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="13 0 0" normal="0 0 -1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="33" displayName="Ceiling">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>15 0 3, 15 5 3, 13 5 3, 13 0 3</Polygon3D>
+									<Surface id="33" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="15 0 3" normal="0 0 1" localX="0 1 0">0 0, 5 0, 5 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="34" displayName="East">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>15 5 3, 15 0 3, 15 0 0, 15 5 0</Polygon3D>
+									<Surface id="34" displayName="East" displayColor="#c8c88c">
+										<Polygon3D offset="15 5 3" normal="1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="35" displayName="North">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>13 5 3, 15 5 3, 15 5 0, 13 5 0</Polygon3D>
+									<Surface id="35" displayName="North" displayColor="#c8c88c">
+										<Polygon3D offset="13 5 3" normal="0 1 0" localX="1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="36" displayName="West">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>13 0 3, 13 5 3, 13 5 0, 13 0 0</Polygon3D>
+									<Surface id="36" displayName="West" displayColor="#c8c88c">
+										<Polygon3D offset="13 0 3" normal="-1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="37" displayName="South">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>15 0 3, 13 0 3, 13 0 0, 15 0 0</Polygon3D>
+									<Surface id="37" displayName="South" displayColor="#c8c88c">
+										<Polygon3D offset="15 0 3" normal="0 -1 0" localX="-1 0 0">0 0, 2 0, 2 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -213,6 +194,7 @@
 			<ComponentInstance id="27" idComponent="1004" idSideASurface="36" />
 			<ComponentInstance id="28" idComponent="1004" idSideASurface="37" />
 		</ComponentInstances>
+		<PlainGeometry />
 		<EmbeddedDatabase>
 			<Materials>
 				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">

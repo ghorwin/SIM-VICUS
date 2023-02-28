@@ -68,6 +68,7 @@ SOURCES += \
 	../../src/NM_IdealPipeRegisterModel.cpp \
 	../../src/NM_IdealSurfaceHeatingCoolingModel.cpp \
 	../../src/NM_InternalLoadsModel.cpp \
+	../../src/NM_InternalMoistureLoadsModel.cpp \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
 	../../src/NM_NandradModel.cpp \
@@ -117,6 +118,7 @@ HEADERS += \
 	../../src/NM_IdealPipeRegisterModel.h \
 	../../src/NM_IdealSurfaceHeatingCoolingModel.h \
 	../../src/NM_InputReference.h \
+	../../src/NM_InternalMoistureLoadsModel.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \
 	../../src/NM_NandradModel.h \

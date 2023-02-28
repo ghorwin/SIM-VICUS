@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Constant ventilation rate model test for single zone, no constructions, same initial and ambient temperatures,
+					 different relative humidities. Moisture density in room air should follow analytical solution.
+			</Comment>
+			<Created>2020-08-24</Created>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<IBK:Flag name="EnableMoistureBalance">true</IBK:Flag>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">50</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+		</Models>
+		<Outputs>
+			<TimeUnit>h</TimeUnit>
+			<Definitions>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>MoistureDensity</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>RelativeHumidity</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Climate">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Infiltration">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

@@ -33,12 +33,20 @@ public:
 	void updateUi();
 
 private slots:
+	/*! Triggers the openEditBoundaryConditionsDialog function */
 	void on_pushButtonEditBoundaryConditions_clicked();
 	void on_tableWidgetBoundaryConditions_itemSelectionChanged();
 
 	void on_pushButtonSelectBoundaryConditions_clicked();
 
+	/*! Triggers the openEditBoundaryConditionsDialog function */
+	void on_tableWidgetBoundaryConditions_cellDoubleClicked(int, int);
+
 private:
+
+	/*! Launches BoundaryConditions db edit dialog. */
+	void openEditBoundaryConditionsDialog();
+
 	Ui::SVPropBuildingBoundaryConditionsWidget *m_ui;
 
 	/*! Map that holds the list of used boundary conditions vs. visible surfaces. */

@@ -28,13 +28,14 @@
 
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QListWidgetItem>
 
 #include <VICUS_KeywordList.h>
 #include <VICUS_NetworkNode.h>
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
-#include <SVConversions.h>
-
+#include "SVConversions.h"
 #include "SVProjectHandler.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVDatabase.h"
@@ -46,6 +47,8 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui(new Ui::SVSmartSelectDialog)
 {
 	m_ui->setupUi(this);
+
+	m_arrowRight = QPixmap(":/gfx/actions/24x24/arrow-right-grey.png");
 
 	m_ui->verticalLayoutNetwork->setContentsMargins(0,6,0,0);
 	m_ui->gridLayoutBuildings->setContentsMargins(0,6,0,0);
@@ -80,30 +83,57 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->checkBoxLengthBelow->setChecked(false);
 	m_ui->checkBoxLengthAbove->setChecked(false);
 	m_ui->checkBoxNodeId->setChecked(false);
-	m_ui->checkBoxNodeDisplayName->setChecked(false);
 	m_ui->checkBoxMaxHeatingDemandEqualTo->setChecked(false);
+	on_checkBoxLengthAbove_stateChanged(0);
+	on_checkBoxLengthBelow_stateChanged(0);
+	on_checkBoxMaxHeatingDemandAbove_stateChanged(0);
+	on_checkBoxMaxHeatingDemandBelow_stateChanged(0);
+	on_checkBoxMaxHeatingDemandEqualTo_stateChanged(0);
+	on_checkBoxNodeId_stateChanged(0);
 
+
+	m_ui->lineEditFilterName->setPlaceholderText(tr("Use wildcard '*' or filter for multiple names separated with ';' "));
 
 	// populate static options
-	m_options.m_options.resize(3);
+	m_allOptions = FilterOption();
+	m_allOptions.m_options.resize(NUM_ET);
 
-	FilterOption & components = m_options.m_options[0];
+	// Components
+	FilterOption & components = m_allOptions.m_options[ET_Component];
 	components.m_name = tr("Components");
+	for (int i=0; i<VICUS::Component::NUM_CT; ++i) {
+		std::string name = VICUS::KeywordList::Keyword("Component::ComponentType", i);
+		components.m_options.push_back(FilterOption(VICUS::camelCase2ReadableString(name), nullptr));
+	}
+	components.m_options.push_back(FilterOption("Invalid Component", nullptr));
 
-	components.m_options.push_back(FilterOption(tr("Outside walls"), nullptr));
-	components.m_options.push_back(FilterOption(tr("Inside walls"), nullptr));
-	components.m_options.push_back(FilterOption(tr("Other walls"), nullptr));
-	components.m_options.push_back(FilterOption(tr("Windows"), nullptr));
+	// Subsurfaces
+	FilterOption & surf = m_allOptions.m_options[ET_SubSurface];
+	surf.m_name = tr("Sub Surfaces");
+	for (int i=0; i<VICUS::SubSurfaceComponent::NUM_CT; ++i) {
+		std::string name = VICUS::KeywordList::Keyword("SubSurfaceComponent::SubSurfaceComponentType", i);
+		surf.m_options.push_back(FilterOption(VICUS::camelCase2ReadableString(name), nullptr));
+	}
+	surf.m_options.push_back(FilterOption("Invalid sub surface", nullptr));
 
-	FilterOption & geometry = m_options.m_options[1];
+	// Geometry
+	FilterOption & geometry = m_allOptions.m_options[ET_Geometry];
 	geometry.m_name = tr("Geometry");
 	geometry.m_options.push_back(FilterOption(tr("Surfaces"), nullptr));
 	geometry.m_options.push_back(FilterOption(tr("Sub-Surfaces"), nullptr));
+	geometry.m_options.push_back(FilterOption(tr("Rooms"), nullptr));
 
-	FilterOption & thermalElements = m_options.m_options[2];
-	thermalElements.m_name = tr("Thermal elements");
 
-	delete m_ui->pushButtonDummy;
+	// configure list widget
+	m_ui->listWidgetOptions->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->listWidgetOptions->setAlternatingRowColors(true);
+
+	// check box & combobox boundary condition
+	m_ui->checkBoxFilterBoundaryCondition->setChecked(false);
+	m_ui->comboBoxBoundaryCondition->setEnabled(false);
+
+	m_ui->checkBoxFilterName->setChecked(false);
+	m_ui->lineEditFilterName->setEnabled(false);
 }
 
 
@@ -116,124 +146,310 @@ SVSmartSelectDialog::~SVSmartSelectDialog() {
 
 void SVSmartSelectDialog::select() {
 
-	const unsigned int COMPONENT_INDEX = 0;
-//	const unsigned int GEOMETRY_INDEX = 1;
-
-	// populate dynamic elements
-
-	// all assigned components/subsurface components
-	FilterOption & outsideWalls = m_options.m_options[COMPONENT_INDEX].m_options[0];
-	outsideWalls.m_options.clear();
-	FilterOption & insideWalls = m_options.m_options[COMPONENT_INDEX].m_options[1];
-	insideWalls.m_options.clear();
-	FilterOption & otherWalls = m_options.m_options[COMPONENT_INDEX].m_options[2];
-	otherWalls.m_options.clear();
-	FilterOption & windows = m_options.m_options[COMPONENT_INDEX].m_options[3];
-	windows.m_options.clear();
-
 	// process data structure and populate options
+
 	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// populate boundary condition combobox
+	std::map<unsigned int, QString> boundaryConditionNames;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		const VICUS::Component *c = db.m_components[ci.m_idComponent];
+		if (c != nullptr) {
+			const VICUS::BoundaryCondition *bcA =  db.m_boundaryConditions[c->m_idSideABoundaryCondition];
+			if (bcA != nullptr) {
+				boundaryConditionNames[bcA->m_id] = QtExt::MultiLangString2QString(bcA->m_displayName);
+			}
+			const VICUS::BoundaryCondition *bcB =  db.m_boundaryConditions[c->m_idSideBBoundaryCondition];
+			if (bcB != nullptr) {
+				boundaryConditionNames[bcB->m_id] = QtExt::MultiLangString2QString(bcB->m_displayName);
+			}
+		}
+	}
+	m_ui->comboBoxBoundaryCondition->clear();
+	for (auto it=boundaryConditionNames.begin(); it!=boundaryConditionNames.end(); ++it)
+		m_ui->comboBoxBoundaryCondition->addItem(it->second, it->first);
+
+	// clear existing options
+	for (int i=0; i<=VICUS::Component::NUM_CT; ++i) // NUM_CT also exists!
+		m_allOptions.m_options[ET_Component].m_options[VICUS::Component::ComponentType(i)].m_options.clear();
+	for (int i=0; i<=VICUS::SubSurfaceComponent::NUM_CT; ++i) // NUM_CT also exists!
+		m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::SubSurfaceComponentType(i)].m_options.clear();
+
+
+	// populate components
 
 	std::set<const VICUS::Component *> components;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
 		components.insert(db.m_components[ci.m_idComponent]);
+
 	for (const VICUS::Component * comp : components) {
-		if (comp == nullptr) continue;
+
+		if (comp == nullptr) {
+			m_allOptions.m_options[ET_Component].m_options[VICUS::Component::NUM_CT].m_options
+					.push_back(FilterOption("Invalid Component", nullptr) );
+		continue;
+		}
+
 		switch (comp->m_type) {
 			case VICUS::Component::CT_OutsideWall:
-				outsideWalls.m_options.push_back(
-							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_OutsideWall].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::Component::CT_OutsideWallToGround:
-				outsideWalls.m_options.push_back(
-							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_OutsideWallToGround].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::Component::CT_InsideWall:
-				insideWalls.m_options.push_back(
-							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_InsideWall].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::Component::CT_FloorToCellar:
-			case VICUS::Component::CT_FloorToAir:
-			case VICUS::Component::CT_FloorToGround:
-			case VICUS::Component::CT_Ceiling:
-			case VICUS::Component::CT_SlopedRoof:
-			case VICUS::Component::CT_FlatRoof:
-			case VICUS::Component::CT_ColdRoof:
-			case VICUS::Component::CT_WarmRoof:
-			case VICUS::Component::CT_Miscellaneous:
-				otherWalls.m_options.push_back(
-							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_FloorToCellar].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
-			case VICUS::Component::NUM_CT: break;
+			case VICUS::Component::CT_FloorToAir:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_FloorToAir].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_FloorToGround:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_FloorToGround].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_Ceiling:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_Ceiling].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_SlopedRoof:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_SlopedRoof].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_FlatRoof:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_FlatRoof].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_ColdRoof:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_ColdRoof].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_WarmRoof:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_WarmRoof].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_Miscellaneous:
+				m_allOptions.m_options[ET_Component].m_options[VICUS::Component::CT_Miscellaneous].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::NUM_CT:
+			break;
 		}
 	}
+
+	// populate subsurfaces
 
 	std::set<const VICUS::SubSurfaceComponent *> subSurfaceComponents;
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances)
 		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent]);
+
 	for (const VICUS::SubSurfaceComponent * comp : subSurfaceComponents) {
-		if (comp == nullptr) continue;
+		if (comp == nullptr) {
+			m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::NUM_CT].m_options
+					.push_back(FilterOption("Invalid sub surface", nullptr) );
+		continue;
+		}
 		switch (comp->m_type) {
 			case VICUS::SubSurfaceComponent::CT_Window:
-				windows.m_options.push_back(
-							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+				m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::CT_Window].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::SubSurfaceComponent::CT_Door:
+				m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::CT_Door].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+				m_allOptions.m_options[ET_SubSurface].m_options[VICUS::SubSurfaceComponent::CT_Miscellaneous].m_options
+						.push_back(FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::SubSurfaceComponent::NUM_CT:
 			break;
 		}
 	}
 
-
-	updateButtonGrid();
+	updateButtonsAndListWidget();
 
 	// everything else is done inside the dialog
 	exec();
 }
 
 
-void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set<const VICUS::Object*> & objs)  {
-	// if we have child leaves, process these
-	if (!option->m_options.empty()) {
-		for (FilterOption & o : option->m_options)
-			collectSelectedObjects(&o, objs);
+
+void SVSmartSelectDialog::onSelectClicked() {
+
+	// evaluate selection and create undo action for the selection
+	if (m_ui->tabWidgetGroup->currentIndex() == 0)
+		selectBuildingComponents();
+	else
+		selectNetworkComponents();
+
+	// when this even is done, close dialog automatically
+	close();
+}
+
+
+void SVSmartSelectDialog::selectBuildingComponents() {
+
+	// do we have a component selected?
+	FilterOption * option = &m_allOptions;
+	for (unsigned int i=0; i<m_selectionIndex.size(); ++i) {
+		unsigned int selectedIndex = m_selectionIndex[i];
+		if (selectedIndex >= option->m_options.size())
+			break; // not available, skip
+		option = &option->m_options[selectedIndex];
 	}
-	else {
-		// we have a child node, now determine the type
-		const VICUS::Component * c = dynamic_cast<const VICUS::Component *>(option->m_dbElement);
-		if (c != nullptr) {
-			// now lookup all component instances that make use of this component
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				if (ci.m_idComponent == c->m_id) {
-					// look up referenced surfaces
-					if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
-						objs.insert(ci.m_sideASurface);
-					if (ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible)
-						objs.insert(ci.m_sideBSurface);
+
+	// filter for selection (an empty filter means no filtering)
+	std::set<QString> filterList;
+	const auto &selectedItems = m_ui->listWidgetOptions->selectedItems();
+	for (const QListWidgetItem *item: selectedItems) {
+		filterList.insert(item->text());
+	}
+
+	// filter boundary condition
+	int boundaryConditionFilterId = -1;
+	if (m_ui->checkBoxFilterBoundaryCondition->isChecked())
+		boundaryConditionFilterId = m_ui->comboBoxBoundaryCondition->currentData().toInt();
+
+	std::set<const VICUS::Object*> selectedObjects;
+	for (FilterOption &option: option->m_options) {
+		if (filterList.empty() || filterList.find(option.m_name) != filterList.end())
+			collectSelectedObjects(&option, selectedObjects, boundaryConditionFilterId);
+	}
+
+	// read filter name
+	QStringList namesList;
+	if (m_ui->checkBoxFilterName->isChecked()) {
+		QString str = m_ui->lineEditFilterName->text();
+		if (str.contains(";"))
+			namesList = str.split(";");
+		else
+			namesList.push_back(str);
+	}
+
+	// filter for names
+	std::set<const VICUS::Object*> tmpSelectedObjects;
+	if (!namesList.empty()) {
+		for (const VICUS::Object *obj: selectedObjects) {
+			for (QString filterName: namesList) { // copy is on purpose
+				// if there is a "*" wildcard, we check wether the filterString is part of diaplayName
+				if (filterName.startsWith("*")) {
+					if (obj->m_displayName.endsWith(filterName.replace("*", "")))
+						tmpSelectedObjects.insert(obj);
+				}
+				else if (filterName.endsWith("*")) {
+					if (obj->m_displayName.startsWith(filterName.replace("*", "")))
+						tmpSelectedObjects.insert(obj);
+				}
+				// otherwise displayName must be identical
+				else if (obj->m_displayName == filterName){
+					tmpSelectedObjects.insert(obj);
 				}
 			}
 		}
-		const VICUS::SubSurfaceComponent * ssc = dynamic_cast<const VICUS::SubSurfaceComponent *>(option->m_dbElement);
-		if (ssc != nullptr) {
-			// now lookup all component instances that make use of this component
-			for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
-				if (ssci.m_idSubSurfaceComponent == ssc->m_id) {
-					// look up referenced surfaces
-					if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
-						objs.insert(ssci.m_sideASubSurface);
-					if (ssci.m_sideBSubSurface != nullptr && ssci.m_sideBSubSurface->m_visible)
-						objs.insert(ssci.m_sideBSubSurface);
+		// finally overwrite selected objects
+		selectedObjects = tmpSelectedObjects;
+	}
+
+	// if a room is selected, also select its subsurfaces
+	for (const VICUS::Object *obj: selectedObjects) {
+		const VICUS::Room *r = dynamic_cast<const VICUS::Room*>(obj);
+		if (r==nullptr)
+			continue;
+		for (const VICUS::Surface & s : r->m_surfaces) {
+			selectedObjects.insert(&s);
+			for (const VICUS::SubSurface & sub : s.subSurfaces() ) {
+				selectedObjects.insert(&sub);
+			}
+		}
+	}
+
+
+	if (selectedObjects.empty())
+		QMessageBox::information(this, QString(), tr("No objects found with given properties."));
+
+	std::set<unsigned int> nodeIDs;
+	for (const VICUS::Object* o : selectedObjects)
+		nodeIDs.insert(o->m_id);
+
+	// create an undo-action with the selected
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+	undo->push();
+}
+
+
+
+void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set<const VICUS::Object*> & objs, int boundaryConditionFilterId)  {
+
+	// if we have child leaves, process these
+	if (!option->m_options.empty()) {
+		for (FilterOption & o : option->m_options) {
+			collectSelectedObjects(&o, objs, boundaryConditionFilterId);
+		}
+	}
+	else {
+
+		// we have a child node, now determine the type
+		const VICUS::Component * componentToLookFor = dynamic_cast<const VICUS::Component *>(option->m_dbElement);
+		// Note: it is intended that componentToLookFor can be a nullptr
+		// now lookup all component instances that make use of this component
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			VICUS::Component *comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+
+			if (comp == componentToLookFor) { // could be that both are nullptr
+
+				// filter boundary condition
+				if (comp !=nullptr) {
+					if ( boundaryConditionFilterId > 0 &&
+						comp->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
+						comp->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
+						continue;
 				}
+
+				// look up referenced surfaces
+				if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
+					objs.insert(ci.m_sideASurface);
+				if (ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible)
+					objs.insert(ci.m_sideBSurface);
+			}
+		}
+
+
+		const VICUS::SubSurfaceComponent * sscToLookFor = dynamic_cast<const VICUS::SubSurfaceComponent *>(option->m_dbElement);
+		// Note: it is intended that sscToLookFor can be a nullptr
+		// now lookup all component instances that make use of this component
+		for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
+			VICUS::SubSurfaceComponent *ssc = SVSettings::instance().m_db.m_subSurfaceComponents[ssci.m_idSubSurfaceComponent];
+
+			if (ssc == sscToLookFor) { // could be that both are nullptr
+
+				// filter boundary condition
+				if (ssc !=nullptr) {
+					if ( boundaryConditionFilterId > 0 &&
+						ssc->m_idSideABoundaryCondition != (unsigned int)boundaryConditionFilterId &&
+						ssc->m_idSideBBoundaryCondition != (unsigned int)boundaryConditionFilterId )
+						continue;
+				}
+
+				// look up referenced surfaces
+				if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
+					objs.insert(ssci.m_sideASubSurface);
+				if (ssci.m_sideBSubSurface != nullptr && ssci.m_sideBSubSurface->m_visible)
+					objs.insert(ssci.m_sideBSubSurface);
 			}
 		}
 
 		// group select, compare pointers
 
 		// surfaces
-		if (&m_options.m_options[1].m_options[0] == option) {
+		if (option == &m_allOptions.m_options[ET_Geometry].m_options[0]) {
 			// get list of all surfaces
 			for (const VICUS::Building & b : project().m_buildings)
 				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
@@ -242,7 +458,7 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 							objs.insert(&s);
 		}
 		// sub-surfaces
-		if (&m_options.m_options[1].m_options[1] == option) {
+		if (option == &m_allOptions.m_options[ET_Geometry].m_options[1]) {
 			// get list of all subsurfaces
 			for (const VICUS::Building & b : project().m_buildings)
 				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
@@ -251,154 +467,255 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 							for (const VICUS::SubSurface & sub : s.subSurfaces() )
 								objs.insert(&sub);
 		}
+
+		// rooms
+		if (option == &m_allOptions.m_options[ET_Geometry].m_options[2]) {
+			// get list of all subsurfaces
+			for (const VICUS::Building & b : project().m_buildings)
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+					for (const VICUS::Room & r : bl.m_rooms)
+						objs.insert(&r);
+		}
 	}
 }
 
 
-void SVSmartSelectDialog::onSelectClicked() {
-	// evaluate selection and create undo action for the selection
-	if (m_ui->tabWidgetGroup->currentIndex() == 0) {
-		// do we have a component selected?
-		FilterOption * option = &m_options;
-		for (unsigned int i=0; i<m_selections.size(); ++i) {
-			unsigned int selectedIndex = m_selections[i];
-			if (selectedIndex >= option->m_options.size())
-				break; // not available, skip
-			option = &option->m_options[selectedIndex];
+void SVSmartSelectDialog::onSelectionButtonPressed() {
+	QPushButton * btn = qobject_cast<QPushButton *>(sender());
+	Q_ASSERT(btn != nullptr);
+
+	// determine level and reduce selection accordingly
+	unsigned int buttonLevel = 0;
+	for (;buttonLevel < m_selectionButtons.size(); ++buttonLevel)
+		if (m_selectionButtons[buttonLevel] == btn)
+			break;
+
+	if (buttonLevel+1 == m_selectionButtons.size()) {
+		m_selectionButtons.back()->setDown(true);
+		return;
+	}
+	m_selectionIndex.resize(buttonLevel+1);
+	updateButtonsAndListWidget();
+}
+
+
+void SVSmartSelectDialog::onListWidgetItemClicked() {
+
+	// determine level and reduce selection accordingly
+	unsigned int optionLevel = 0;
+	QString name = m_ui->listWidgetOptions->currentItem()->text();
+	for (;optionLevel < m_optionNames.size(); ++optionLevel)
+		if (m_optionNames[optionLevel] == name)
+			break;
+
+	// append selection
+	m_selectionIndex.push_back(optionLevel);
+	updateButtonsAndListWidget();
+}
+
+
+void SVSmartSelectDialog::updateButtonsAndListWidget() {
+	// Mind: it may be the case that we cannot follow all selections through, if
+	//       dynamic options have disappeared sind last call
+
+	qDeleteAll(m_selectionButtons);
+	qDeleteAll(m_arrows);
+	m_selectionButtons.clear();
+	m_arrows.clear();
+
+	FilterOption * options = &m_allOptions;
+	std::vector<unsigned int> validSelections;
+	for (unsigned int i=0; i<m_selectionIndex.size(); ++i) {
+		unsigned int selectedIndex = m_selectionIndex[i];
+		if (selectedIndex >= options->m_options.size())
+			break; // not available, skip
+		validSelections.push_back(selectedIndex);
+		options = &options->m_options[selectedIndex];
+		// create push button
+		QPushButton * button = new QPushButton(options->m_name);
+		// connect clicked signal
+		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onSelectionButtonPressed);
+		m_selectionButtons.push_back(button);
+		if (m_selectionButtons.size() > 1) {
+			QLabel *labelIcon = new QLabel;
+			labelIcon->setPixmap(m_arrowRight);
+			m_arrows.push_back(labelIcon);
+			m_ui->horizontalLayoutBreadCrums->insertWidget(m_ui->horizontalLayoutBreadCrums->count()-1, labelIcon);
+		}
+		m_ui->horizontalLayoutBreadCrums->insertWidget(m_ui->horizontalLayoutBreadCrums->count()-1, button);
+
+	}
+	m_selectionIndex.swap(validSelections);
+
+	if (!m_selectionButtons.empty()) {
+		m_selectionButtons.back()->setDown(true);
+	}
+
+	// now update list widget
+
+	m_ui->listWidgetOptions->clear();
+	m_optionNames.clear();
+
+	// based on the currently selected hierarchy level 'option', populate buttons
+	for (FilterOption & o : options->m_options) {
+
+		QListWidgetItem *item = new QListWidgetItem(o.m_name);
+		item->setFlags(item->flags() & ~Qt::ItemIsUserCheckable);
+		item->setData(Qt::UserRole, (int)o.m_options.size());
+		QFont fnt;
+		if (o.m_options.size() > 0)
+			fnt.setWeight(QFont::Bold);
+		else
+			fnt.setWeight(QFont::Normal);
+		item->setFont(fnt);
+		m_ui->listWidgetOptions->addItem(item);
+		m_optionNames.push_back(&o.m_name);
+
+	}
+}
+
+
+void SVSmartSelectDialog::selectNetworkComponents() {
+	// Network selections
+	int filterNetworkId = m_ui->comboBoxNetwork->currentData().toInt();
+
+	// node selections
+	if (m_ui->tabWidgetNetworkSelections->currentIndex()==0) {
+
+		VICUS::NetworkNode::NodeType nodeTypeFilter = VICUS::NetworkNode::NUM_NT; // no filter on node type
+		if (m_ui->comboBoxNodeType->currentIndex() != 0)
+			nodeTypeFilter = (VICUS::NetworkNode::NodeType)m_ui->comboBoxNodeType->currentData().toInt();
+
+		// heating demand must be below value
+		double maxHeatingDemandBelowFilter = std::numeric_limits<double>::max();
+		if (m_ui->checkBoxMaxHeatingDemandBelow->isChecked() && m_ui->lineEditMaxHeatingDemandBelow->isValid())
+			maxHeatingDemandBelowFilter = m_ui->lineEditMaxHeatingDemandBelow->value();
+
+		// heating demand must be above value
+		double maxHeatingDemandAboveFilter = std::numeric_limits<double>::lowest();
+		if (m_ui->checkBoxMaxHeatingDemandAbove->isChecked() && m_ui->lineEditMaxHeatingDemandAbove->isValid())
+			maxHeatingDemandAboveFilter = m_ui->lineEditMaxHeatingDemandAbove->value();
+
+		// heating demand equal to value
+		double equalToHeatingDemandFilter = -1;
+		if (m_ui->checkBoxMaxHeatingDemandEqualTo->isChecked() && m_ui->lineEditMaxHeatingDemandEqualTo->isValid())
+			equalToHeatingDemandFilter = m_ui->lineEditMaxHeatingDemandEqualTo->value();
+
+		unsigned int idFilter = VICUS::INVALID_ID;
+		if (m_ui->checkBoxNodeId->isChecked() && m_ui->lineEditNodeId->isValid())
+			idFilter = (unsigned int)m_ui->lineEditNodeId->value();
+
+
+		// now process all network objects and store IDs of selected nodes
+		std::set<unsigned int> nodeIDs;
+
+		for (const VICUS::Network & nw : project().m_geometricNetworks) {
+
+			// filter networks
+			if (filterNetworkId != -1 && filterNetworkId != (int)nw.m_id)
+				continue;
+
+			for (const VICUS::NetworkNode & n : nw.m_nodes) {
+			// apply filter rules
+
+				// id filter
+				if (idFilter != VICUS::INVALID_ID && n.m_id != idFilter)
+					continue;
+
+				// filter based on type
+				if (nodeTypeFilter != VICUS::NetworkNode::NUM_NT && n.m_type != nodeTypeFilter)
+					continue;
+
+				// heating demand filter
+				if (n.m_maxHeatingDemand.value > maxHeatingDemandBelowFilter)
+					continue;
+				if (n.m_maxHeatingDemand.value < maxHeatingDemandAboveFilter)
+					continue;
+				if ( equalToHeatingDemandFilter > 0 &&
+					 abs(n.m_maxHeatingDemand.value - equalToHeatingDemandFilter) > 0.1)
+					continue;
+
+				// all filters match, store unique ID of this node
+				nodeIDs.insert(n.m_id);
+			}
 		}
 
-		// collect list of selected components or subsurface components
-		std::set<const VICUS::Object*> selectedObjects;
+		// read filter name
+		QStringList namesList;
+		if (m_ui->checkBoxFilterName->isChecked()) {
+			QString str = m_ui->lineEditFilterName->text();
+			if (str.contains(";"))
+				namesList = str.split(";");
+			else
+				namesList.push_back(str);
+		}
 
-		// we process recursively all selected "options" and gather all objects selected by the current choice
-		// Mind: selectedObjects only holds visible objects
-		collectSelectedObjects(option, selectedObjects);
+		// filter for names
+		std::set<unsigned int> tmpNodeIDs;
+		if (!namesList.empty()) {
+			for (unsigned int id: nodeIDs) {
+				const VICUS::Object *obj = project().objectById(id);
+				for (QString filterName: namesList) { // copy is on purpose
+					// if there is a "*" wildcard, we check wether the filterString is part of diaplayName
+					if (filterName.startsWith("*")) {
+						if (obj->m_displayName.endsWith(filterName.replace("*", "")))
+							tmpNodeIDs.insert(id);
+					}
+					else if (filterName.endsWith("*")) {
+						if (obj->m_displayName.startsWith(filterName.replace("*", "")))
+							tmpNodeIDs.insert(id);
+					}
+					// otherwise displayName must be identical
+					else if (obj->m_displayName == filterName){
+						tmpNodeIDs.insert(id);
+					}
+				}
+			}
+			// finally overwrite selected objects
+			nodeIDs = tmpNodeIDs;
+		}
 
-		std::set<unsigned int> nodeIDs;
-		for (const VICUS::Object* o : selectedObjects)
-			nodeIDs.insert(o->m_id);
+		if (nodeIDs.empty())
+			QMessageBox::information(this, QString(), tr("No objects found with given properties."));
 
-		// create an undo-action with the selected
-		SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+		SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting nodes"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
 		undo->push();
 	}
 	else {
+		// length must be below value
+		double lengthBelowFilter = std::numeric_limits<double>::max();
+		if (m_ui->checkBoxLengthBelow->isChecked() && m_ui->lineEditLengthBelow->isValid())
+			lengthBelowFilter = m_ui->lineEditLengthBelow->value();
 
-		// Network selections
-		int filterNetworkId = m_ui->comboBoxNetwork->currentData().toInt();
+		// length must be above value
+		double lengthAboveFilter = std::numeric_limits<double>::lowest();
+		if (m_ui->checkBoxLengthAbove->isChecked() && m_ui->lineEditLengthAbove->isValid())
+			lengthAboveFilter = m_ui->lineEditLengthAbove->value();
 
-		// node selections
-		if (m_ui->tabWidgetNetworkSelections->currentIndex()==0) {
+		std::set<unsigned int> edgeIDs;
 
-			VICUS::NetworkNode::NodeType nodeTypeFilter = VICUS::NetworkNode::NUM_NT; // no filter on node type
-			if (m_ui->comboBoxNodeType->currentIndex() != 0)
-				nodeTypeFilter = (VICUS::NetworkNode::NodeType)m_ui->comboBoxNodeType->currentData().toInt();
+		for (const VICUS::Network & nw : project().m_geometricNetworks) {
 
-			// heating demand must be below value
-			double maxHeatingDemandBelowFilter = std::numeric_limits<double>::max();
-			if (m_ui->checkBoxMaxHeatingDemandBelow->isChecked() && m_ui->lineEditMaxHeatingDemandBelow->isValid())
-				maxHeatingDemandBelowFilter = m_ui->lineEditMaxHeatingDemandBelow->value();
+			// filter networks
+			if (filterNetworkId != -1 && filterNetworkId != (int)nw.m_id)
+				continue;
 
-			// heating demand must be above value
-			double maxHeatingDemandAboveFilter = std::numeric_limits<double>::lowest();
-			if (m_ui->checkBoxMaxHeatingDemandAbove->isChecked() && m_ui->lineEditMaxHeatingDemandAbove->isValid())
-				maxHeatingDemandAboveFilter = m_ui->lineEditMaxHeatingDemandAbove->value();
+			for (const VICUS::NetworkEdge & edge : nw.m_edges) {
 
-			// heating demand equal to value
-			double equalToHeatingDemandFilter = -1;
-			if (m_ui->checkBoxMaxHeatingDemandEqualTo->isChecked() && m_ui->lineEditMaxHeatingDemandEqualTo->isValid())
-				equalToHeatingDemandFilter = m_ui->lineEditMaxHeatingDemandEqualTo->value();
-
-			unsigned int idFilter = VICUS::INVALID_ID;
-			if (m_ui->checkBoxNodeId->isChecked() && m_ui->lineEditNodeId->isValid())
-				idFilter = (unsigned int)m_ui->lineEditNodeId->value();
-
-			QString nameFilter = "";
-			if (m_ui->checkBoxNodeDisplayName->isChecked())
-				nameFilter = m_ui->lineEditNodeDisplayName->text();
-
-
-			// now process all network objects and store IDs of selected nodes
-			std::set<unsigned int> nodeIDs;
-
-			for (const VICUS::Network & nw : project().m_geometricNetworks) {
-
-				// filter networks
-				if (filterNetworkId != -1 && filterNetworkId != (int)nw.m_id)
+				if (edge.length() > lengthBelowFilter)
 					continue;
 
-				for (const VICUS::NetworkNode & n : nw.m_nodes) {
-				// apply filter rules
-
-					// name filter
-					if (!nameFilter.isEmpty() && n.m_displayName != nameFilter)
-						continue;
-
-					// id filter
-					if (idFilter != VICUS::INVALID_ID && n.m_id != idFilter)
-						continue;
-
-					// filter based on type
-					if (nodeTypeFilter != VICUS::NetworkNode::NUM_NT && n.m_type != nodeTypeFilter)
-						continue;
-
-					// heating demand filter
-					if (n.m_maxHeatingDemand.value > maxHeatingDemandBelowFilter)
-						continue;
-					if (n.m_maxHeatingDemand.value < maxHeatingDemandAboveFilter)
-						continue;
-					if ( equalToHeatingDemandFilter > 0 &&
-						 abs(n.m_maxHeatingDemand.value - equalToHeatingDemandFilter) > 0.1)
-						continue;
-
-					// all filters match, store unique ID of this node
-					nodeIDs.insert(n.m_id);
-				}
-			}
-
-			SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting nodes"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
-			undo->push();
-		}
-		else {
-
-			// length must be below value
-			double lengthBelowFilter = std::numeric_limits<double>::max();
-			if (m_ui->checkBoxLengthBelow->isChecked() && m_ui->lineEditLengthBelow->isValid())
-				lengthBelowFilter = m_ui->lineEditLengthBelow->value();
-
-			// length must be above value
-			double lengthAboveFilter = std::numeric_limits<double>::lowest();
-			if (m_ui->checkBoxLengthAbove->isChecked() && m_ui->lineEditLengthAbove->isValid())
-				lengthAboveFilter = m_ui->lineEditLengthAbove->value();
-
-			std::set<unsigned int> edgeIDs;
-
-			for (const VICUS::Network & nw : project().m_geometricNetworks) {
-
-				// filter networks
-				if (filterNetworkId != -1 && filterNetworkId != (int)nw.m_id)
+				if (edge.length() < lengthAboveFilter)
 					continue;
 
-				for (const VICUS::NetworkEdge & edge : nw.m_edges) {
-
-					if (edge.length() > lengthBelowFilter)
-						continue;
-
-					if (edge.length() < lengthAboveFilter)
-						continue;
-
-					// all filters match, store unique ID of this node
-					edgeIDs.insert(edge.m_id);
-				}
+				// all filters match, store unique ID of this node
+				edgeIDs.insert(edge.m_id);
 			}
-
-			SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting edges"), SVUndoTreeNodeState::SelectedState, edgeIDs, true);
-			undo->push();
 		}
+
+		SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting edges"), SVUndoTreeNodeState::SelectedState, edgeIDs, true);
+		undo->push();
 	}
-
-	// when this even is done, close dialog automatically
-	close();
 }
 
 
@@ -440,94 +757,32 @@ void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandEqualTo_stateChanged(int ar
 	m_ui->lineEditMaxHeatingDemandEqualTo->setEnabled(checked);
 }
 
-void SVSmartSelectDialog::on_checkBoxNodeDisplayName_stateChanged(int arg1)
-{
-	m_ui->lineEditNodeDisplayName->setEnabled(arg1);
+
+void SVSmartSelectDialog::on_listWidgetOptions_itemDoubleClicked(QListWidgetItem *item) {
+	// only items that contain children can be clicked
+	if (item->data(Qt::UserRole).toUInt() > 0)
+		onListWidgetItemClicked();
 }
 
-void SVSmartSelectDialog::on_pushButtonReset_clicked() {
+
+void SVSmartSelectDialog::on_checkBoxFilterBoundaryCondition_stateChanged(int arg1) {
+	m_ui->comboBoxBoundaryCondition->setEnabled(arg1);
+}
+
+
+void SVSmartSelectDialog::on_toolButtonReset_clicked() {
 	// reset current hierarchy level to 0
-	m_selections.clear();
-	updateButtonGrid();
+	m_selectionIndex.clear();
+	updateButtonsAndListWidget();
 }
 
 
-void SVSmartSelectDialog::onSelectionButtonPressed() {
-	QPushButton * btn = qobject_cast<QPushButton *>(sender());
-	Q_ASSERT(btn != nullptr);
-
-	// determine level and reduce selection accordingly
-	unsigned int buttonLevel = 0;
-	for (;buttonLevel < m_selectionButtons.size(); ++buttonLevel)
-		if (m_selectionButtons[buttonLevel] == btn)
-			break;
-
-	if (buttonLevel+1 == m_selectionButtons.size()) {
-		m_selectionButtons.back()->setDown(true);
-		return;
-	}
-	m_selections.resize(buttonLevel+1);
-	updateButtonGrid();
+void SVSmartSelectDialog::on_checkBoxFilterName_clicked(bool checked) {
+	m_ui->lineEditFilterName->setEnabled(checked);
 }
 
 
-void SVSmartSelectDialog::onOptionButtonPressed() {
-	QPushButton * btn = qobject_cast<QPushButton *>(sender());
-	Q_ASSERT(btn != nullptr);
-
-	// determine level and reduce selection accordingly
-	unsigned int buttonLevel = 0;
-	for (;buttonLevel < m_optionButtons.size(); ++buttonLevel)
-		if (m_optionButtons[buttonLevel] == btn)
-			break;
-
-	// append selection
-	m_selections.push_back(buttonLevel);
-	updateButtonGrid();
+void SVSmartSelectDialog::on_checkBoxNodeId_stateChanged(int arg1) {
+	m_ui->lineEditNodeId->setEnabled(arg1);
 }
-
-
-void SVSmartSelectDialog::updateButtonGrid() {
-	// Mind: it may be the case that we cannot follow all selections through, if
-	//       dynamic options have disappeared sind last call
-
-	qDeleteAll(m_selectionButtons);
-	m_selectionButtons.clear();
-
-	FilterOption * option = &m_options;
-	std::vector<unsigned int> validSelections;
-	for (unsigned int i=0; i<m_selections.size(); ++i) {
-		unsigned int selectedIndex = m_selections[i];
-		if (selectedIndex >= option->m_options.size())
-			break; // not available, skip
-		validSelections.push_back(selectedIndex);
-		option = &option->m_options[selectedIndex];
-		// create push button
-		QPushButton * button = new QPushButton(option->m_name);
-		// connect clicked signal
-		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onSelectionButtonPressed);
-		m_ui->horizontalLayoutBreadCrums->insertWidget(m_ui->horizontalLayoutBreadCrums->count()-1, button);
-		m_selectionButtons.push_back(button);
-	}
-	m_selections.swap(validSelections);
-
-	if (!m_selectionButtons.empty()) {
-		m_selectionButtons.back()->setDown(true);
-	}
-
-	// now update button grid
-	qDeleteAll(m_optionButtons);
-	m_optionButtons.clear();
-
-	// based on the currently selected hierarchy level 'option', populate buttons
-	for (FilterOption & o : option->m_options) {
-		QPushButton * button = new QPushButton(o.m_name);
-		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onOptionButtonPressed);
-		m_ui->verticalLayoutOptions->insertWidget(m_ui->verticalLayoutOptions->count()-1, button);
-		m_optionButtons.push_back(button);
-	}
-
-}
-
-
 

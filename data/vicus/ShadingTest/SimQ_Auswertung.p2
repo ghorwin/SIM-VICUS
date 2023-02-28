@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.3">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#c66300" Checked="1">.</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SimQ_09.1</SubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="SimQuality Azimuth">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>9</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
+						<Maximum>0.99999999999999967</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Azimuth</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Altitude">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>9</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
+						<Maximum>0.99999999999999967</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Altitude</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.1">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.1</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.2">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.2</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.3">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Sonnenlichtfaktor</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.3</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.4">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.4</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.5">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.5</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="SimQuality Var 9.6">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF09_Reference_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_09.1_shadingFactors.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>24</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<LineStyle>3</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenWidth>4</PenWidth>
+						<PenStyle>0</PenStyle>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+						<MarkerSize>25</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>149.99932550984249</Maximum>
+						<Minimum>147.69913038680053</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>SimQuality Var 9.6</TitleText>
+					<TitleFont>Roboto,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<MaxColumns>1</MaxColumns>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="479" size2="1338" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="479" size2="1338" orientation="2" />
+		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="1235" size2="1235" orientation="1" />
+		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="1235" size2="1235" orientation="1" />
+		<Widget id="5" parent="2" viewTable="0" mapperIndex="6" size1="852" size2="479" orientation="2" />
+		<Widget id="6" parent="2" viewTable="0" mapperIndex="4" size1="422" size2="422" orientation="2" />
+		<Widget id="7" parent="4" viewTable="0" mapperIndex="7" size1="852" size2="479" orientation="2" />
+		<Widget id="8" parent="4" viewTable="0" mapperIndex="5" size1="422" size2="422" orientation="2" />
+		<FocusedWidget>5</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

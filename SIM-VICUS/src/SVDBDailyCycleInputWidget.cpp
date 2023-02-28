@@ -95,9 +95,7 @@ SVDBDailyCycleInputWidget::SVDBDailyCycleInputWidget(QWidget *parent)
 }
 
 
-void SVDBDailyCycleInputWidget::setup(const QString& valueCaption,
-	double minVal, double maxVal)
-{
+void SVDBDailyCycleInputWidget::setup(const QString&, double minVal, double maxVal) {
 	Q_ASSERT(minVal < maxVal);
 
 	m_minValLimit = m_minVal = minVal;
@@ -436,8 +434,8 @@ void SVDBDailyCycleInputNode::paint ( QPainter * painter, const QStyleOptionGrap
 	if (m_hoveredOver) {
 		//gradient.setCenter(0, 0);
 		gradient.setFocalPoint(0, 0);
-		gradient.setColorAt(0, QColor(Qt::red).light(160));
-		gradient.setColorAt(1, QColor(Qt::darkRed).light(160));
+		gradient.setColorAt(0, QColor(Qt::red).lighter(160));
+		gradient.setColorAt(1, QColor(Qt::darkRed).lighter(160));
 	}
 	else {
 		gradient.setColorAt(0, QColor(Qt::red));

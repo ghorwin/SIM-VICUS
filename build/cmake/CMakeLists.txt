@@ -180,6 +180,7 @@ add_subdirectory( ../../externals/IDFReader/projects/cmake_local IDFReader )
 if (NOT DISABLE_QT)
 	message("*** Building Qt-based libs ***")
 	
+        add_subdirectory( ../../externals/RoomClipper/projects/cmake_local RoomClipper )
 	add_subdirectory( ../../externals/Vicus/projects/cmake_local Vicus )
 	add_subdirectory( ../../externals/qwt/projects/cmake_local qwt )
 	add_subdirectory( ../../externals/QtExt/projects/cmake_local QtExt )

@@ -1,4 +1,4 @@
-/*	The SIM-VICUS data model library.
+﻿/*	The SIM-VICUS data model library.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -31,15 +31,28 @@
 #include "VICUS_KeywordList.h"
 #include "VICUS_utilities.h"
 
+#include <QFile>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonArray>
+
+#include <QJsonParseError>
+#include <QJsonValue>
+
 #include <IBK_assert.h>
 #include <IBK_Path.h>
 #include <IBK_FileReader.h>
 #include <IBK_FluidPhysics.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_UTM.h>
+
+
+
 
 #include <fstream>
 #include <algorithm>
+
 
 
 #define PI				3.141592653589793238
@@ -84,9 +97,13 @@ unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v,
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
-		for (const NetworkNode &n: m_nodes){
-			if (n.m_position.distanceTo(v) < GeometricResolution)
+		for (NetworkNode &n: m_nodes){
+			if (n.m_position.distanceTo(v) < GeometricResolution){
+				if(n.m_type != type){
+					n.m_type = type;
+				}
 				return n.m_id;
+			}
 		}
 	}
 	// else add new node
@@ -285,63 +302,6 @@ bool Network::checkConnectedGraph() const {
 	return (connectedEdge.size() && m_edges.size() && connectedNodes.size() == m_nodes.size());
 }
 
-
-void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
-	std::vector<std::string> cont;
-	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
-
-	// extract vector of string-xy-pairs
-	std::vector<std::string> tokens;
-	for (std::string &line: cont){
-		if (line.find("MULTILINESTRING ((") == std::string::npos)
-			continue;
-		IBK::trim(line, ",");
-		IBK::trim(line, "\"");
-		IBK::trim(line, "MULTILINESTRING ((");
-		IBK::trim(line, "))");
-		IBK::explode(line, tokens, ",", IBK::EF_NoFlags);
-
-		// convert this vector to double and add it as a graph
-		std::vector<std::vector<double> > polyLine;
-		for (std::string str: tokens){
-			std::vector<std::string> xyStr;
-			IBK::explode(str, xyStr, " ", IBK::EF_NoFlags);
-			double x = IBK::string2val<double>(xyStr[0]);
-			double y = IBK::string2val<double>(xyStr[1]);
-			polyLine.push_back({x, y});
-		}
-		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
-			addEdge(++nextId, n1, n2, true, INVALID_ID);
-		}
-	}
-}
-
-
-void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
-	std::vector<std::string> cont;
-	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
-
-	// extract vector of string-xy
-	std::vector<std::string> lineSepStr;
-	std::vector<std::string> xyStr;
-	for (std::string &line: cont){
-		if (line.find("POINT") == std::string::npos)
-			continue;
-		IBK::explode(line, lineSepStr, ",", IBK::EF_NoFlags);
-		IBK::trim(lineSepStr[0], "\"");
-		IBK::trim(lineSepStr[0], "POINT ((");
-		IBK::trim(lineSepStr[0], "))");
-		IBK::explode(lineSepStr[0], xyStr, " ", IBK::EF_NoFlags);
-		if (xyStr.size()!=2)
-			continue;
-		// add node
-		unsigned id = addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - m_origin,
-				NetworkNode::NT_SubStation);
-		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
-	}
-}
 
 
 void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> &addedNodes, std::vector<unsigned int> &addedEdges){
@@ -807,7 +767,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid & fluid, const D
 }
 
 
-void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
+void Network::findSourceNodes(std::vector<NetworkNode> &sources) const {
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Source)
 			sources.push_back(n);
@@ -816,7 +776,7 @@ void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
 
 
 void Network::dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
-										   std::vector<NetworkEdge*> &pathEndToStart) const{
+										   std::vector<NetworkEdge*> &pathEndToStart) const {
 
 	// init: all nodes have infinte distance to start node and no predecessor
 	for (const NetworkNode &n: m_nodes){
@@ -867,20 +827,18 @@ void Network::updateExtends() {
 }
 
 
-IBKMK::Vector3D Network::origin() const
-{
+IBKMK::Vector3D Network::origin() const {
 	return m_origin;
 }
 
-void Network::setOrigin(const IBKMK::Vector3D &origin)
-{
+void Network::setOrigin(const IBKMK::Vector3D &origin) {
 	m_origin = origin;
 	for (NetworkNode &n: m_nodes)
 		n.m_position -= m_origin;
 }
 
 
-double Network::totalLength() const{
+double Network::totalLength() const {
 	double length = 0;
 	for(const NetworkEdge &e: m_edges){
 		length += e.length();
@@ -889,7 +847,7 @@ double Network::totalLength() const{
 }
 
 
-NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
+NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2) {
 	for (NetworkEdge &e: m_edges){
 		if (e.nodeId1() == nodeId1 && e.nodeId2() == nodeId2)
 			return &e;
@@ -908,7 +866,7 @@ NetworkEdge * Network::edgeById(unsigned id) {
 }
 
 
-unsigned int VICUS::Network::indexOfEdge(unsigned nodeId1, unsigned nodeId2){
+unsigned int VICUS::Network::indexOfEdge(unsigned nodeId1, unsigned nodeId2) {
 	for (unsigned int i=0; i<m_edges.size(); ++i){
 		if (m_edges[i].nodeId1() == nodeId1 && m_edges[i].nodeId2() == nodeId2)
 			return i;
@@ -926,7 +884,7 @@ unsigned int Network::indexOfEdge(unsigned edgeId) {
 	return 9999;
 }
 
-size_t Network::numberOfBuildings() const{
+size_t Network::numberOfBuildings() const {
 	size_t count = 0;
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type == NetworkNode::NT_SubStation)
@@ -935,7 +893,7 @@ size_t Network::numberOfBuildings() const{
 	return count;
 }
 
-void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
+void Network::writeNetworkNodesCSV(const IBK::Path &file) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	for (const NetworkNode &n: m_nodes){
@@ -947,7 +905,7 @@ void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
 	f.close();
 }
 
-void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
+void Network::writeNetworkEdgesCSV(const IBK::Path &file) const {
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(0);

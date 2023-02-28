@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.8">
+<VicusProject fileVersion="0.9">
 	<ProjectInfo>
 		<Created>Di Apr 13 17:44:07 2021</Created>
-		<LastEdited>Sa. Aug. 20 10:21:28 2022</LastEdited>
+		<LastEdited>Do Nov 17 17:36:42 2022</LastEdited>
 	</ProjectInfo>
-	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
-	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
-	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -30,11 +26,11 @@
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Location>
-			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
-			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Latitude" unit="Deg">50</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">14.27</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/SIMQ_TF09_Klima.epw</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -50,12 +46,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>31.1871 -25.9252 27.0633</CameraTranslation>
+			<CameraTranslation>-53.9104 -32.6271 9.20485</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.830343</Wp>
-				<X>0.479739</X>
-				<Y>0.141618</Y>
-				<Z>0.245254</Z>
+				<Wp>0.819577</Wp>
+				<X>0.571624</X>
+				<Y>0.0221147</Y>
+				<Z>0.0295039</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>

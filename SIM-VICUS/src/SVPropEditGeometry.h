@@ -30,10 +30,7 @@
 
 #include <IBKMK_Vector3D.h>
 
-//#include <VICUS_Surface.h>
-
 #include <Vic3DTransform3D.h>
-//#include <Vic3DCoordinateSystemObject.h>
 
 namespace VICUS {
 	class Project;

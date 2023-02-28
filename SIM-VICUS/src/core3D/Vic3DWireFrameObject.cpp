@@ -110,7 +110,6 @@ void WireFrameObject::destroy() {
 	m_indexBufferObject.destroy();
 }
 
-
 void WireFrameObject::updateBuffers() {
 	// get all selected and visible objects
 	m_selectedObjects.clear();
@@ -139,6 +138,7 @@ void WireFrameObject::updateBuffers() {
 		if (s != nullptr) {
 			if (!s->geometry().isValid()) continue;
 			addPlane(s->geometry().triangulationData(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+
 			continue;
 		}
 
@@ -257,7 +257,7 @@ void WireFrameObject::localScaling(const QVector3D & offset, const QQuaternion &
 	m_translation = offset;
 	m_rotation = toLocal;
 	m_scaling = localScaleFactors;
-	m_transform.setLocalScaling(offset, toLocal, localScaleFactors);
+    m_transform.setLocalScaling(offset, toLocal, localScaleFactors);
 }
 
 

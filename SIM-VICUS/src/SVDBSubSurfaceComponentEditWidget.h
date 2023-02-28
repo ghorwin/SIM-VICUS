@@ -75,6 +75,8 @@ private slots:
 
 	void on_pushButtonColor_clicked();
 
+	void on_lineEditReductionFactor_editingFinishedSuccessfully();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

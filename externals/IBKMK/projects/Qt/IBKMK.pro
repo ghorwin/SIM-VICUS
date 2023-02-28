@@ -49,6 +49,7 @@ SOURCES += \
 	../../src/IBKMKC_vector_operations.c \
 	../../src/IBKMK_DenseMatrix.cpp \
 	../../src/IBKMK_IndexGenerator.cpp \
+	../../src/IBKMK_UTM.cpp \
 	../../src/IBKMK_Vector3D.cpp \
 	../../src/IBKMK_numerics.cpp \
 	../../src/IBKMK_Polygon2D.cpp \
@@ -72,6 +73,7 @@ HEADERS += \
 	../../src/IBKMKC_band_matrix.h \
 	../../src/IBKMKC_dense_matrix.h \
 	../../src/IBKMKC_ilut.h \
+	../../src/IBKMK_UTM.h \
 	../../src/IBKMK_common_defines.h \
 	../../src/IBKMK_CRSpline.h \
 	../../src/IBKMKC_sparse_matrix.h \

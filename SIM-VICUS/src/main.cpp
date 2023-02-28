@@ -269,17 +269,16 @@ int main(int argc, char *argv[]) {
 	try { // open scope to control lifetime of main window, ensure that main window instance dies before settings or project handler
 
 		SVMainWindow w;
-		a.m_mainWindow = &w;
+		a.m_mainWindow = &w; // set main window pointer for event filtering
 
 		// start event loop
 		res = a.exec();
-		a.m_mainWindow = nullptr; // prevent access to dangling pointer
 	} // here our mainwindow dies, main window goes out of scope and UI goes down -> destructor does ui and thread cleanup
 	catch (IBK::Exception & ex) {
-		a.m_mainWindow = nullptr; // prevent access to dangling pointer
 		ex.writeMsgStackToError();
 		return EXIT_FAILURE;
 	}
+	a.m_mainWindow = nullptr; // no more main window
 
 	// return exit code to environment
 	return res;

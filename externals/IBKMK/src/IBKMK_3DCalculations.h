@@ -57,7 +57,7 @@ namespace IBKMK {
 */
 bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
 					  const Vector3D & v, double & x, double & y,
-					  double tolerance = 1e-4);
+					  double tolerance = 1e-4, bool showWarings = false);
 
 
 /*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.

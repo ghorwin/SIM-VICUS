@@ -36,6 +36,10 @@
 
 #include <cmath>
 
+#include <QMatrix4x4>
+
+#include <fstream>
+
 #include "SH_ShadedSurfaceObject.h"
 
 #if defined(_OPENMP)
@@ -44,25 +48,36 @@
 
 namespace SH {
 
+QVector4D convertIBKMKVector3D2QVector4D(const IBKMK::Vector3D &v3d) {
+	return QVector4D((float)v3d.m_x,
+					 (float)v3d.m_y,
+					 (float)v3d.m_z,
+					 1.0);
+}
+
+
+
+unsigned int StructuralShading::ShadingObject::latestId = 0;
+
 /*! Returns Angle between vectors in DEG */
 static double angleVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
 
 	double dot = v1.scalarProduct(v2);    // between [x1, y1, z1] and [x2, y2, z2]
-	double angle2 = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+	//	double angle2 = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 	IBKMK::Vector3D cross = v1.crossProduct(v2); // Normal on both vectors
 	double det =  v1.m_x*v2.m_y*cross.m_z + v1.m_z*v2.m_x*cross.m_y + v1.m_y*v2.m_z*cross.m_x
-				- v1.m_z*v2.m_y*cross.m_x - v1.m_y*v2.m_x*cross.m_z - v1.m_x*v2.m_z*cross.m_y;
+			- v1.m_z*v2.m_y*cross.m_x - v1.m_y*v2.m_x*cross.m_z - v1.m_x*v2.m_z*cross.m_y;
 	double angle = std::atan2(det,dot) / IBK::DEG2RAD;
 
-//	IBK::IBK_Message(IBK::FormatString("Old: %1\tNew: %1").arg(angle).arg(angle2), IBK::MSG_PROGRESS);
+	//	IBK::IBK_Message(IBK::FormatString("Old: %1\tNew: %1").arg(angle).arg(angle2), IBK::MSG_PROGRESS);
 
 	return angle;
 }
 
 
 void StructuralShading::initializeShadingCalculation(int timeZone, double longitudeInDeg, double latitudeInDeg,
-									const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,
-									double sunConeDeg)
+													 const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,
+													 double sunConeDeg)
 {
 	// TODO Stephan, validity checks, throw IBK::Exception if out of range
 	m_timeZone =  timeZone;
@@ -104,8 +119,7 @@ void StructuralShading::setGeometry(const std::vector<ShadingObject> & surfaces,
 	}
 }
 
-
-void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth) {
+void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth, bool useClippingMethod) {
 	FUNCID(StructuralShading::calculateShadingFactors);
 
 	// TODO Stephan, input data check
@@ -117,6 +131,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	if (m_sunConeNormals.empty())
 		createSunNormals();
 
+	// if we use the clipping algorithm to calculate shading factors, we precalculated projected polys
+	if(useClippingMethod)
+		createProjectedPolygonsInSunPane();
+
 	// prepare target memory
 	m_shadingFactors.resize(m_surfaces.size());
 	for (std::vector<double> & sf : m_shadingFactors) {
@@ -127,7 +145,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	}
 
 	// Find visible shading surfaces for each surface
-	findVisibleSurfaces();
+	findVisibleSurfaces(useClippingMethod);
 
 	IBK::IBK_Message(IBK::FormatString("Initialize shading calculation"));
 
@@ -150,10 +168,19 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	IBK::StopWatch totalTimer;
 	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
-	IBK::StopWatch w;
+	IBK::StopWatch w, v;
 	w.start();
+	v.start();
 	notify->notify(0);
 	int surfacesCompleted = 0;
+
+#ifdef WRITE_OUTPUT
+	// Create Shading debugging path
+	IBK::Path path ("shading_debugging/");
+	if(path.exists())
+		IBK::Path::remove(path);
+	IBK::Path::makePath(path);
+#endif
 
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(dynamic, 1)
@@ -171,10 +198,11 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// readability improvement
 			const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
 
+
 			// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
 
 			ShadedSurfaceObject surfaceObject;
-			surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
+			surfaceObject.setPolygon(so.m_idVicus, so.m_name, so.m_polygon, so.m_holes, so.m_idParent, m_gridWidth, useClippingMethod);
 
 			std::vector<ShadingObject> shadingObstacles;
 
@@ -183,38 +211,66 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				if (so.m_visibleSurfaces.find(shading.m_id) != so.m_visibleSurfaces.end())
 					shadingObstacles.push_back(shading);
 
+
 			// 2. for each center point perform intersection tests again _all_ obstacle polygons
 			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+
+#ifdef WRITE_OUTPUT
+				std::ofstream out(QString("C:/shading/shading_info_%1_%2.txt")
+								  .arg(QString::fromStdString(so.m_name))
+								  .arg(i).toStdString());
+				out << "Shading calculation for surface " << so.m_name << std::endl;
+				out << "Sun normal: X:" << m_sunConeNormals[i].m_x << " Y: " << m_sunConeNormals[i].m_y << "Z: " << m_sunConeNormals[i].m_z;
+				out << std::endl;
+//				out << "Visible Shading objects:" << std::endl;
+//				for (const ShadingObject &shading : shadingObstacles)
+//					out << shading.m_idVicus << ": " <<shading.m_name << std::endl;
+//				out << std::endl;
+#endif
 
 				if (notify->m_aborted)
 					continue; // skip ahead to quickly stop loop
 
 				double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
-//				// if sun does not shine uppon surface, no shading factor needed
+				//				// if sun does not shine uppon surface, no shading factor needed
 				if (angle >= 90)
 					continue;
 
-				double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], shadingObstacles);
+				double sf;
+				if (!useClippingMethod)
+					sf = surfaceObject.calcShadingFactorWithRayTracing(m_sunConeNormals[i], shadingObstacles);
+				else {
+					surfaceObject.setProjectedPolygonAndHoles(so.m_projectedPolys[i], so.m_projectedHoles[i]);
+#ifdef WRITE_OUTPUT
+					surfaceObject.setOutputFile(&out);
+#endif
+					sf = surfaceObject.calcShadingFactorWithClipping(i, m_sunConeNormals[i], shadingObstacles);
+				}
 
-//				// 3. store shaded/not shaded information for sub-polygon and its surface area
-//				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
-//				// 5. store in result vector
+				//				// 3. store shaded/not shaded information for sub-polygon and its surface area
+				//				// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
+				//				// 5. store in result vector
 				shadingFactors[i] = sf;
 
+#ifdef WRITE_OUTPUT
+				out << "Calculated shading factor for sun cone index " << i  << ": " << sf << std::endl;
+				out.flush();
+#endif
 
 				// master thread 0 updates the progress dialog; this should be good enough for longer runs
-	#if defined(_OPENMP)
+#if defined(_OPENMP)
 				if ( omp_get_thread_num() == 0) {
-	#endif
+#endif
 					// only notify every second or so
 					if (!notify->m_aborted && w.difference() > 100) {
 						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
 						w.start();
 					}
-	#if defined(_OPENMP)
+#if defined(_OPENMP)
 				}
-	#endif
+#endif
 			}
+
 
 			// increase number of completed surfaces (done by all threads, hence in critical section)
 #if defined(_OPENMP)
@@ -230,6 +286,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 	} // omp for loop
 	notify->notify(1.0);
+
+
 	IBK::IBK_Message(IBK::FormatString("Finished after %1.\n").arg(totalTimer.diff_str()));
 }
 
@@ -275,7 +333,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 
 	if (fname_wo_ext != path) {
 		throw IBK::Exception(IBK::FormatString("Invalid filename (extension) of output file '%1', should have been '%2'!\n")
-			.arg(path).arg(fname_wo_ext), FUNC_ID);
+							 .arg(path).arg(fname_wo_ext), FUNC_ID);
 	}
 
 	std::ofstream tsvFile ( path.str() );
@@ -317,7 +375,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
 	for (unsigned int i=0; i<stepCount; ++i) {
 		unsigned int timeInSec = (startStep + i)*m_samplingPeriod;
-//		tsvFile << IBK::val2string<double>((double)timeInSec/3600, 4 ) << "\t";
+		//		tsvFile << IBK::val2string<double>((double)timeInSec/3600, 4 ) << "\t";
 		double time = (double)timeInSec/3600;
 		tsvFile << std::to_string(time) << "\t";
 
@@ -461,7 +519,7 @@ void StructuralShading::createSunNormals() {
 	// low, we accept this. When the sun cone angle gets lower (eg 1 Deg) we
 	// minimize this problem
 
-	for (size_t i=0; i<m_sunPositions.size(); ++i) {
+	for (unsigned int i=0; i<m_sunPositions.size(); ++i) {
 		IBKMK::Vector3D n = m_sunPositions[i].calcNormal();
 		int id = findSimilarNormals(n);
 
@@ -470,9 +528,9 @@ void StructuralShading::createSunNormals() {
 			m_sunConeNormals.push_back(n);
 			m_indexesOfSimilarNormals.push_back( std::vector<unsigned int>(1, i) );
 		}
-		else if (id > 0) {
+		else if (id >= 0) {
 			// similar normal exists, append current sun positions index to vector
-			m_indexesOfSimilarNormals[(unsigned int)id].push_back(i);
+			m_indexesOfSimilarNormals[(unsigned int)id].push_back((unsigned int)i);
 		}
 	}
 
@@ -495,13 +553,24 @@ int StructuralShading::findSimilarNormals(const IBKMK::Vector3D &sunNormal) cons
 	return -1;
 }
 
-void StructuralShading::findVisibleSurfaces() {
+void StructuralShading::findVisibleSurfaces(bool useClipping) {
 	// Finding shading partners for all surfaces
 	for(ShadingObject &surf : m_surfaces) {
 		// iterate through all vertex points of surface
-		for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+		for(const ShadingObject &obst : m_obstacles) {
+
+			for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
 			// iterate through all possible shading objects
-			for(const ShadingObject &obst : m_obstacles) {
+				bool obstAdded = false;
+
+				// skip parent objects (wall surface) of sub-surfaces such as windows
+				if(!useClipping && (surf.m_idParent == obst.m_idVicus))
+					continue;
+
+				// skip parent objects (wall surface) of sub-surfaces such as windows
+				if((obst.m_idParent != INVALID_ID) && (surf.m_idVicus != obst.m_idParent))
+					continue;
+
 				// iterate through all vertexes of shading objects
 				for(const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
 					double linefactor = 0;
@@ -514,9 +583,81 @@ void StructuralShading::findVisibleSurfaces() {
 					if (linefactor>1e-4) {
 						// store the surface that lies in front
 						surf.m_visibleSurfaces.insert(obst.m_id);
+						obstAdded = true; // we store that we already added the
 						break;
 					}
 				}
+				if(obstAdded)
+					break; // Do not handle all the other surface vertexes
+			}
+		}
+	}
+}
+
+void StructuralShading::createProjectedPolygonsInSunPane() {
+
+	for (unsigned int i = 0; i<m_sunConeNormals.size(); ++i) {
+		const IBKMK::Vector3D &vSun = m_sunConeNormals[i];
+		QVector3D sun = 1000*QVector3D((float)vSun.m_x, (float)vSun.m_y, (float)vSun.m_z);
+		QVector3D zero(0,0,0);
+		QVector3D up(0,0,1);
+
+		// qDebug() << "Sun: x: " << sun.x() << " y: " << sun.y() << " z: " << sun.z();
+
+		QMatrix4x4 mat;
+		mat.ortho(-100, 100, -100, 100, 0, 2000);
+		mat.lookAt(sun, zero, up);
+
+		for (ShadingObject &shading : m_obstacles) {
+			std::vector<IBKMK::Vector2D> projectedVerts;
+			for(const IBKMK::Vector3D v3D : shading.m_polygon.vertexes()) {
+				QVector4D projectedP = mat * convertIBKMKVector3D2QVector4D(v3D);
+				projectedP = projectedP/projectedP.w();
+				projectedVerts.push_back(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+
+				// qDebug() << "Surface: x: " << projectedP.x() << " y: " << projectedP.y();
+			}
+			shading.m_projectedPolys[i] = projectedVerts;
+
+			for(const IBKMK::Polygon2D &hole : shading.m_holes) {
+				std::vector<IBKMK::Vector2D> projectedHoleVerts;
+				for(const IBKMK::Vector2D v2D : hole.vertexes()) {
+
+					// Convert to polygon 3D and then project it
+					const IBKMK::Polygon3D &p = shading.m_polygon;
+					IBKMK::Vector3D v3D = p.offset() + p.localX()*v2D.m_x + p.localY()*v2D.m_y;
+
+					QVector4D projectedP = mat * convertIBKMKVector3D2QVector4D(v3D);
+					projectedP = projectedP/projectedP.w();
+					projectedHoleVerts.push_back(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+				}
+				shading.m_projectedHoles[i].push_back(projectedHoleVerts);
+			}
+		}
+		for (ShadingObject &s : m_surfaces) {
+			std::vector<IBKMK::Vector2D> projectedVerts;
+			for(const IBKMK::Vector3D v3D : s.m_polygon.vertexes()) {
+				QVector4D projectedP = mat * convertIBKMKVector3D2QVector4D(v3D);
+				projectedP = projectedP/projectedP.w();
+				projectedVerts.push_back(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+
+				// qDebug() << "Surface: x: " << projectedP.x() << " y: " << projectedP.y();
+			}
+			s.m_projectedPolys[i] = projectedVerts;
+
+			for(const IBKMK::Polygon2D &hole : s.m_holes) {
+				std::vector<IBKMK::Vector2D> projectedHoleVerts;
+				for(const IBKMK::Vector2D &v2D : hole.vertexes()) {
+
+					// Convert to polygon 3D and then project it
+					const IBKMK::Polygon3D &p = s.m_polygon;
+					IBKMK::Vector3D v3D = p.offset() + p.localX()*v2D.m_x + p.localY()*v2D.m_y;
+
+					QVector4D projectedP = mat * convertIBKMKVector3D2QVector4D(v3D);
+					projectedP = projectedP/projectedP.w();
+					projectedHoleVerts.push_back(IBKMK::Vector2D(projectedP.x(), projectedP.y()));
+				}
+				s.m_projectedHoles[i].push_back(projectedHoleVerts);
 			}
 		}
 	}

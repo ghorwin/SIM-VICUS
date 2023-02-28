@@ -2,6 +2,8 @@
 #define SVCommonPluginInterfaceH
 
 #include <QtPlugin>
+#include <QJsonDocument>
+
 class QWidget;
 
 /*! This class declares common plugin interface functions.
@@ -31,6 +33,18 @@ public:
 	*/
 	virtual QString title() const = 0;
 
+	/*! Optionally return a pixmap to show in the plugin manager.
+		nullptr means "use default plugin icon".
+		No ownership transfer!
+	*/
+	virtual const QPixmap * icon() const { return nullptr; }
+
+	/*! Optionally return a list of pixmaps to show in the plugin manager.
+		nullptr means "no screenshots".
+		No ownership transfer!
+	*/
+	virtual const QList<QPixmap> * screenShots() const { return nullptr; }
+
 	/*! If this function returns true, the plugin provides a
 		settings/configuration page.
 	*/
@@ -44,6 +58,13 @@ public:
 			changes (see SettingsDialogUpdateNeeds).
 	*/
 	virtual int showSettingsDialog(QWidget * parent) { (void)parent; return NoUpdate; }
+  
+  /*! Set the language Id for for the plugin.
+      This function should be called by the master program directly after loading the plugin.
+      \param langId Language id (e.g. en for English)
+      \param appname Name of the calling application
+  */
+  virtual void setLanguage(QString langId, QString appname) { };
 };
 
 

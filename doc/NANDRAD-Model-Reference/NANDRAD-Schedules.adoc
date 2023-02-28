@@ -417,8 +417,8 @@ Ein Jahreszeitplan kann ebenso über die Einbindung von Daten aus einem *tsv-Fil
 * Die nachfolgenden Spalten müssen mit der jeweiligen Einheit des Parameters im Header versehen werden.
 
 
-[[ex_AnnualSchedule]]
-.Beispiel Tsv-Datei
+[[ex_AnnualSchedule_TSV]]
+.Beispiel tsv-Datei
 ====
 [source,xml,tabsize=4]
 Time [h]	PersonHeatLoadPerAreaSchedule [W/m2]	EquipmentHeatLoadPerAreaSchedule [W/m2]		
@@ -431,7 +431,7 @@ Time [h]	PersonHeatLoadPerAreaSchedule [W/m2]	EquipmentHeatLoadPerAreaSchedule [
 ====
 
 
-[[ex_AnnualSchedule]]
+[[ex_AnnualSchedule_XML]]
 .Definition von Jahresplänen aus TSV-Datei
 ====
 [source,xml,tabsize=4]

@@ -24,8 +24,8 @@ public:
 	explicit SVPropBuildingSurfaceHeatingWidget(QWidget *parent = nullptr);
 	~SVPropBuildingSurfaceHeatingWidget();
 
-	/*! Updates user interface. */
-	void updateUi();
+	/*! Updates user interface. Use the onlySelectionModified flag if only selection has been changed to avoid costly updating the table widget. */
+	void updateUi(bool onlySelectionModified);
 
 private slots:
 	void on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int index);
@@ -36,6 +36,8 @@ private slots:
 	void on_tableWidgetSurfaceHeating_itemSelectionChanged();
 	void on_pushButtonRemoveSelectedSurfaceHeating_clicked();
 	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
+
+	void on_pushButtonSwitchControlZone_clicked();
 
 private:
 	Ui::SVPropBuildingSurfaceHeatingWidget *m_ui;
