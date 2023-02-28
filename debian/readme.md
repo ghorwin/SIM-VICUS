@@ -1,5 +1,13 @@
 # Debian package creation
 
+## Debian/Ubuntu Distros
+
+* Kinetic (22.10)
+* Jammy (22.04 LTS)
+* Impish (21.10)
+* Focal (20.04 LTS)
+* Bionic (18.04 LTS)
+
 ## Release Procedure
 
 ### First release for a new upstream version
