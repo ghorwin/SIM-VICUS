@@ -187,6 +187,11 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->pushButtonCancel->setVisible(false);
 	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
+	// hide buttons that require a project if we do not have any
+	bool haveProject = SVProjectHandler::instance().isValid();
+	m_ui->toolButtonStoreInUserDB->setVisible(haveProject);
+	m_ui->toolButtonRemoveFromUserDB->setVisible(haveProject);
+
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
