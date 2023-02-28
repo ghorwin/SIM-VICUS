@@ -89,13 +89,13 @@ void RubberbandObject::render() {
 	else
 		col = QVector4D(0.960784314, 0.258823529, 0.258823529, 1.0);
 
-	float dash = 0.0;
+	float dash = 20.0;
 	float gap = 0.0;
 	// if geometry is touched set alpha to 0.5
 	if(m_touchGeometry) {
 		glEnable(GL_BLEND);
 		//col.setW(0.5);
-		dash = 20.0;
+		//dash = 20.0;
 		gap = 15.0;
 	}
 
@@ -121,11 +121,14 @@ void RubberbandObject::render() {
 	m_vao.release();
 }
 
+
 void RubberbandObject::setStartPoint(const QVector3D &topLeft) {
 	m_topLeft = topLeft;
 }
 
-void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
+
+void RubberbandObject::setRubberband(const QRect & viewport, const QVector3D &bottomRight) {
+	m_viewport = viewport;
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>	rubberbandVertexBufferData;
 
@@ -200,17 +203,16 @@ void RubberbandObject::setRubberband(const QVector3D &bottomRight) {
 	m_vbo.release();
 }
 
+
 ClipperLib::IntPoint RubberbandObject::toClipperIntPoint(const QVector3D & p) {
 	return ClipperLib::IntPoint(int(Vic3D::SCALE_FACTOR*p.x() ), int(SCALE_FACTOR*p.y() ) );
 }
 
-void RubberbandObject::setViewport(const QRect & viewport) {
-	m_viewport = viewport;
-}
 
 bool RubberbandObject::surfaceIntersectionClippingAreaWithRubberband(const QMatrix4x4 &mat, const VICUS::Surface &surf,
 																	 const ClipperLib::Path &pathRubberband,
-																	 double &intersectionArea, double &surfaceArea) {
+																	 double &intersectionArea, double &surfaceArea)
+{
 	ClipperLib::Clipper clp;
 	// clp.AddPaths(otherPoly, ClipperLib::ptClip, true);
 
@@ -338,9 +340,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 							continue;
 						}
 
-						ClipperLib::Path &path = intersectionPaths[0];
+						double intersectionArea = 0.0;
+						for(ClipperLib::Path &path : intersectionPaths)
+							intersectionArea += std::abs(ClipperLib::Area(path));
 
-						double intersectionArea = std::abs(ClipperLib::Area(path));
 						double surfaceArea = std::abs(ClipperLib::Area(pathSubSurface));
 
 						// qDebug() << "Intersection Area: " << intersectionArea << " | Surface Area: " << surfaceArea;
@@ -393,17 +396,16 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 				nodeIDs.insert(ne.m_id);
 				continue;
 			}
-			else if(m_touchGeometry &&
+			else if(m_touchGeometry && (projectedP1 != projectedP2) &&
 					IBKMK::intersectsLine2D(verts2D, IBKMK::Vector2D(projectedP1.x(), projectedP1.y()),
 											IBKMK::Vector2D(projectedP2.x(), projectedP2.y()), intersectionP) ) {
 				nodeIDs.insert(ne.m_id);
 				break;
 			}
-
 		}
-		for(const VICUS::NetworkNode &nn : n.m_nodes) {
+
+		for (const VICUS::NetworkNode &nn : n.m_nodes) {
 			// projected radius on NDC
-			const double &r = nn.m_visualizationRadius;
 			const IBKMK::Vector3D &v3D = nn.m_position;
 
 			// project onto NDC

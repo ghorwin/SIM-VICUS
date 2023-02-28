@@ -30,7 +30,6 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
-
 #include <IBK_Parameter.h>
 namespace VICUS {
 /*!
@@ -40,6 +39,7 @@ namespace VICUS {
 class EpdCategorySet {
 
 public:
+
 	enum Category {
 		C_IDCategoryA,				// Keyword: IDCategoryA				[-]	'ID of Catefory A'
 		C_IDCategoryB,				// Keyword: IDCategoryB				[-]	'ID of Catefory B'
@@ -74,9 +74,10 @@ public:
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/* Id of Category .*/
-	IDType				m_idCategory[NUM_C];					// XML:E
+	IDType				m_idCategory[NUM_C];
 
 };
+
 
 inline bool EpdCategorySet::operator!=(const EpdCategorySet & other) const {
 	if (m_idCategory[C_IDCategoryA] != other.m_idCategory[C_IDCategoryA]) return true;

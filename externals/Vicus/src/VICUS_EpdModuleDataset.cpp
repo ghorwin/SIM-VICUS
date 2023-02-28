@@ -74,7 +74,7 @@ const EpdModuleDataset& EpdModuleDataset::operator+=(const EpdModuleDataset &oth
 }
 
 void EpdModuleDataset::readXML(const TiXmlElement * element) {
-	FUNCID(EpdCategoryDataset::readXML);
+	FUNCID(EpdModuleDataset::readXML);
 
 	try {
 

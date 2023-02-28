@@ -44,7 +44,6 @@
 #include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVSimulationNetworkOptions.h"
-#include "SVSimulationLCAOptions.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVUndoModifyProject.h"
@@ -130,13 +129,6 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationNetworkOptions);
 		m_ui->tabNetworkSettings->setLayout(h);
 	}
-	{
-		m_simulationLcaOptions = new SVSimulationLCAOptions(this, m_localProject.m_lcaSettings, m_localProject.m_lccSettings);
-		QHBoxLayout * h = new QHBoxLayout;
-		h->addWidget(m_simulationLcaOptions);
-		m_ui->tabLCASettings->setLayout(h);
-	}
-
 
 	// start with initial page, always
 	m_ui->tabWidget->blockSignals(true);
@@ -219,7 +211,6 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	// network tab is only enabled when there is a network
 	m_ui->tabNetworkSettings->setEnabled(!m_localProject.m_geometricNetworks.empty());
 	m_simulationNetworkOptions->updateUi();
-	m_simulationLcaOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();

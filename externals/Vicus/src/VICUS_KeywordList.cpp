@@ -268,9 +268,10 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "ConvectiveHeatFactor";
-				case 6 : return "LatentHeatFactor";
-				case 7 : return "LossHeatFactor";
+				case 5 : return "MoistureProductionRatePerArea";
+				case 6 : return "ConvectiveHeatFactor";
+				case 7 : return "LatentHeatFactor";
+				case 8 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -645,6 +646,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -727,10 +729,11 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlVentilationNatural";
-				case 6 : return "Infiltration";
-				case 7 : return "NaturalVentilation";
-				case 8 : return "IdealHeatingCooling";
+				case 5 : return "ControlShading";
+				case 6 : return "ControlVentilationNatural";
+				case 7 : return "Infiltration";
+				case 8 : return "NaturalVentilation";
+				case 9 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -886,9 +889,10 @@ namespace VICUS {
 				case 2 : return "AreaPerPerson";
 				case 3 : return "Power";
 				case 4 : return "PowerPerArea";
-				case 5 : return "ConvectiveHeatFactor";
-				case 6 : return "LatentHeatFactor";
-				case 7 : return "LossHeatFactor";
+				case 5 : return "MoistureProductionRatePerArea";
+				case 6 : return "ConvectiveHeatFactor";
+				case 7 : return "LatentHeatFactor";
+				case 8 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -1263,6 +1267,7 @@ namespace VICUS {
 				case 1 : return "FrameFraction";
 				case 2 : return "DividerWidth";
 				case 3 : return "DividerFraction";
+				case 4 : return "ReductionFactor";
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -1345,10 +1350,11 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlVentilationNatural";
-				case 6 : return "Infiltration";
-				case 7 : return "NaturalVentilation";
-				case 8 : return "IdealHeatingCooling";
+				case 5 : return "ControlShading";
+				case 6 : return "ControlVentilationNatural";
+				case 7 : return "Infiltration";
+				case 8 : return "NaturalVentilation";
+				case 9 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -1505,9 +1511,10 @@ namespace VICUS {
 				case 2 : return "Area per person";
 				case 3 : return "Power";
 				case 4 : return "Power per area";
-				case 5 : return "Convective heat factor";
-				case 6 : return "Latent heat factor";
-				case 7 : return "Loss heat factor";
+				case 5 : return "Moisture production rate per area";
+				case 6 : return "Convective heat factor";
+				case 7 : return "Latent heat factor";
+				case 8 : return "Loss heat factor";
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -1882,6 +1889,7 @@ namespace VICUS {
 				case 1 : return "Frame area fraction of the window";
 				case 2 : return "Divider width of the window";
 				case 3 : return "Divider area fraction of the window";
+				case 4 : return "Reduction factor for dynamic shading";
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -1964,10 +1972,11 @@ namespace VICUS {
 				case 2 : return "Lighting loads";
 				case 3 : return "Other internal loads";
 				case 4 : return "Thermostat control";
-				case 5 : return "Natural ventilation control";
-				case 6 : return "Infiltration loads";
-				case 7 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
-				case 8 : return "Heating/cooling loads";
+				case 5 : return "Shading control";
+				case 6 : return "Natural ventilation control";
+				case 7 : return "Infiltration loads";
+				case 8 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
+				case 9 : return "Heating/cooling loads";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -2123,9 +2132,10 @@ namespace VICUS {
 				case 2 : return "m2/Person";
 				case 3 : return "W";
 				case 4 : return "W/m2";
-				case 5 : return "---";
+				case 5 : return "kg/m2s";
 				case 6 : return "---";
 				case 7 : return "---";
+				case 8 : return "---";
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -2500,6 +2510,7 @@ namespace VICUS {
 				case 1 : return "---";
 				case 2 : return "m";
 				case 3 : return "---";
+				case 4 : return "---";
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -2586,6 +2597,7 @@ namespace VICUS {
 				case 6 : return "";
 				case 7 : return "";
 				case 8 : return "";
+				case 9 : return "";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -2744,6 +2756,7 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -3118,6 +3131,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -3200,10 +3214,11 @@ namespace VICUS {
 				case 2 : return "#FFEECC";
 				case 3 : return "#602222";
 				case 4 : return "#E00010";
-				case 5 : return "#00A000";
-				case 6 : return "#A0B0FF";
-				case 7 : return "#22EE22";
-				case 8 : return "#B08000";
+				case 5 : return "#A2F0F4";
+				case 6 : return "#00A000";
+				case 7 : return "#A0B0FF";
+				case 8 : return "#22EE22";
+				case 9 : return "#B08000";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
@@ -3362,6 +3377,7 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// InternalLoad::Category
 			case 15 :
@@ -3736,6 +3752,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowDivider::para_t
 			case 58 :
@@ -3822,6 +3839,7 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
@@ -3860,7 +3878,7 @@ namespace VICUS {
 			// InterfaceHeatConduction::para_t
 			case 13 : return 2;
 			// InternalLoad::para_t
-			case 14 : return 8;
+			case 14 : return 9;
 			// InternalLoad::Category
 			case 15 : return 4;
 			// InternalLoad::PersonCountMethod
@@ -3946,7 +3964,7 @@ namespace VICUS {
 			// Window::Method
 			case 56 : return 3;
 			// Window::para_t
-			case 57 : return 4;
+			case 57 : return 5;
 			// WindowDivider::para_t
 			case 58 : return 1;
 			// WindowFrame::para_t
@@ -3972,7 +3990,7 @@ namespace VICUS {
 			// ZoneIdealHeatingCooling::para_t
 			case 69 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 70 : return 9;
+			case 70 : return 10;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -4010,7 +4028,7 @@ namespace VICUS {
 			// InterfaceHeatConduction::para_t
 			case 13 : return 1;
 			// InternalLoad::para_t
-			case 14 : return 7;
+			case 14 : return 8;
 			// InternalLoad::Category
 			case 15 : return 3;
 			// InternalLoad::PersonCountMethod
@@ -4096,7 +4114,7 @@ namespace VICUS {
 			// Window::Method
 			case 56 : return 2;
 			// Window::para_t
-			case 57 : return 3;
+			case 57 : return 4;
 			// WindowDivider::para_t
 			case 58 : return 0;
 			// WindowFrame::para_t
@@ -4122,7 +4140,7 @@ namespace VICUS {
 			// ZoneIdealHeatingCooling::para_t
 			case 69 : return 1;
 			// ZoneTemplate::SubTemplateType
-			case 70 : return 9;
+			case 70 : return 10;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

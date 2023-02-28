@@ -1,8 +1,8 @@
-#include "SVSimulationLCAResultsDialog.h"
+#include "SVLcaLccResultsDialog.h"
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 #include "QtExt_Conversions.h"
-#include "ui_SVSimulationLCAResultsDialog.h"
+#include "ui_SVLcaLccResultsDialog.h"
 
 #include <QTreeWidgetItem>
 #include <VICUS_KeywordList.h>
@@ -11,7 +11,7 @@
 	\param layerThickness Thickness of layer in m
 	\param layerArea Area of layer in m
 */
-double SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
+double SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
 																double layerThickness, double layerArea){
 	if(refUnit.name() == "kg")
 		return layerArea * layerThickness * layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3"); // area * thickness * density --> layer mass
@@ -36,20 +36,20 @@ double SVSimulationLCAResultsDialog::conversionFactorEpdReferenceUnit(const IBK:
 }
 
 
-SVSimulationLCAResultsDialog::SVSimulationLCAResultsDialog(QWidget *parent) :
+SVLcaLccResultsDialog::SVLcaLccResultsDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVSimulationLCAResultsDialog)
+	m_ui(new Ui::SVLcaLccResultsDialog)
 {
 	m_ui->setupUi(this);
 
 	setup();
 }
 
-SVSimulationLCAResultsDialog::~SVSimulationLCAResultsDialog() {
+SVLcaLccResultsDialog::~SVLcaLccResultsDialog() {
 	delete m_ui;
 }
 
-void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component::ComponentType, AggregatedComponentData> &lcaResultMap,
+void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::ComponentType, AggregatedComponentData> &lcaResultMap,
 												 const std::map<unsigned int, AggregatedComponentData> compIdToAggregatedData,
 												 const VICUS::EpdDataset::Category &category,
 												 const VICUS::LcaSettings &settings,
@@ -217,7 +217,7 @@ void SVSimulationLCAResultsDialog::setLcaResults(const std::map<VICUS::Component
 	m_ui->treeWidgetLcaResults->setColumnWidth(ColColor, 20);
 }
 
-void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
+void SVLcaLccResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
 												   const double &gasConsumption,
 												   const double &electricityConsumption,
 												   const double &coalConsumption) {
@@ -327,7 +327,7 @@ void SVSimulationLCAResultsDialog::setUsageResults(const VICUS::LcaSettings &set
 	m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
 }
 
-void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings, const double &totalEnergyCost,
+void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings, const double &totalEnergyCost,
 												  const std::vector<double> &totalMaterialCost) {
 
 	QTableWidget &tab = *m_ui->tableWidgetLccResults;
@@ -473,7 +473,7 @@ void SVSimulationLCAResultsDialog::setCostResults(const VICUS::LccSettings &lccS
 }
 
 
-void SVSimulationLCAResultsDialog::setup() {
+void SVLcaLccResultsDialog::setup() {
 	// Add data to treeWidget
 	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
@@ -505,7 +505,7 @@ void SVSimulationLCAResultsDialog::setup() {
 	m_ui->tableWidgetLccOverview->setSortingEnabled(false);
 }
 
-void SVSimulationLCAResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item) {
+void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item) {
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
@@ -513,7 +513,7 @@ void SVSimulationLCAResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWid
 }
 
 
-void SVSimulationLCAResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item) {
+void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item) {
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 

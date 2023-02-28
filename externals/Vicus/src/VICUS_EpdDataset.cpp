@@ -147,8 +147,11 @@ bool EpdDataset::isCategoryDefined(const LcaSettings &settings, const Category &
 	}
 
 	for(unsigned int j=0; j<EpdModuleDataset::NUM_M; ++j) {
-		QString key = VICUS::KeywordList::Keyword("EpdCategoryDataset::Module", j);
+		QString key = VICUS::KeywordList::Keyword("EpdModuleDataset::Module", j);
 		if(!key.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat)))
+			continue;
+
+		if(!settings.isLcaCategoryDefined(static_cast<VICUS::EpdModuleDataset::Module>(j)))
 			continue;
 
 		if(definedModules.find((EpdModuleDataset::Module)j) == definedModules.end())

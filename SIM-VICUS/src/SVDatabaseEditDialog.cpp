@@ -34,6 +34,7 @@
 #include <QTimer>
 #include <QSplitter>
 
+
 #include "SVSettings.h"
 #include "SVStyle.h"
 #include "SVConstants.h"
@@ -769,6 +770,7 @@ void SVDatabaseEditDialog::on_toolButtonApplyFilter_clicked() {
 	int filterCol = m_ui->comboBoxColumn->currentData().toInt();
 
 	m_proxyModel->setFilterWildcard(filter);
+	m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	m_proxyModel->setFilterKeyColumn(filterCol);
 }
 

@@ -24,6 +24,7 @@
 */
 
 #include "SVMainWindow.h"
+#include "SVLcaLccSettingsDialog.h"
 #include "ui_SVMainWindow.h"
 
 #include <QCloseEvent>
@@ -94,6 +95,7 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
+#include "SVLcaLccResultsDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -2200,4 +2202,15 @@ void SVMainWindow::on_actionDBEpdElements_triggered() {
 	dbEpdEditDialog()->edit();
 }
 
+
+
+void SVMainWindow::on_actionLccLcaAnalysis_triggered() {
+	VICUS::Project &prj = const_cast<VICUS::Project&>(SVProjectHandler::instance().project());
+
+	if(m_lcaLccSettingsDialog == nullptr)
+		m_lcaLccSettingsDialog = new SVLcaLccSettingsDialog(this, prj.m_lcaSettings, prj.m_lccSettings);
+
+	m_lcaLccSettingsDialog->exec();
+
+}
 

@@ -1,5 +1,5 @@
-#ifndef SVSimulationLCAResultsDialogH
-#define SVSimulationLCAResultsDialogH
+#ifndef SVLcaLccResultsDialogH
+#define SVLcaLccResultsDialogH
 
 #include <QDialog>
 #include <QTreeWidgetItem>
@@ -100,10 +100,10 @@ class Component;
 }
 
 namespace Ui {
-class SVSimulationLCAResultsDialog;
+class SVLcaLccResultsDialog;
 }
 
-class SVSimulationLCAResultsDialog : public QDialog
+class SVLcaLccResultsDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -144,8 +144,8 @@ class SVSimulationLCAResultsDialog : public QDialog
 	};
 
 public:
-	explicit SVSimulationLCAResultsDialog(QWidget *parent = nullptr);
-	~SVSimulationLCAResultsDialog();
+	explicit SVLcaLccResultsDialog(QWidget *parent = nullptr);
+	~SVLcaLccResultsDialog();
 
 	/*! Sets up Dialog with LCA Data. Needs to be called once before Dialog is beeing used. */
 	void setup();
@@ -184,7 +184,7 @@ private:
 	std::set<unsigned int>					m_idComponentEpdUndefined;
 
 	/*! Pointer to UI. */
-	Ui::SVSimulationLCAResultsDialog *m_ui;
+	Ui::SVLcaLccResultsDialog *m_ui;
 };
 
-#endif // SVSimulationLCAResultsDialogH
+#endif // SVLcaLccResultsDialogH

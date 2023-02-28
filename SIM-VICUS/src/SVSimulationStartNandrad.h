@@ -41,7 +41,6 @@ class SVSimulationModelOptions;
 class SVSimulationShadingOptions;
 class SVSimulationRunRequestDialog;
 class SVSimulationNetworkOptions;
-class SVSimulationLCAOptions;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -132,8 +131,6 @@ private:
 	SVSimulationShadingOptions		*m_simulationShadingOptions = nullptr;
 	/*! Page with network options. */
 	SVSimulationNetworkOptions		*m_simulationNetworkOptions = nullptr;
-	/*! Page with network options. */
-	SVSimulationLCAOptions			*m_simulationLcaOptions = nullptr;
 	/*! Page with Run request options. */
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 };

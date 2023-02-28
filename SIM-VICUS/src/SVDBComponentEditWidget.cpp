@@ -70,6 +70,8 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 													<< VICUS::KeywordList::Description("EpdDataset::Category", VICUS::EpdDataset::C_CategoryD) );
 	m_ui->tableWidgetLca->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
+	m_ui->tableWidgetLca->setSortingEnabled(false);
+
 	updateInput(-1);
 }
 
@@ -370,6 +372,12 @@ void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd
 		else
 			icon = QIcon(":/gfx/actions/16x16/error.png");
 	}
+	else {
+		item->setText("-");
+		table->setItem(row, col, item);
+		return;
+	}
+
 	item->setIcon(icon);
 	table->setItem(row, col, item);
 }
@@ -381,6 +389,7 @@ void SVDBComponentEditWidget::updateLcaTable() {
 
 	// Get COnstruction
 	const VICUS::Construction &con = *m_db->m_constructions[m_current->m_idConstruction];
+
 	m_ui->tableWidgetLca->setRowCount((int)con.m_materialLayers.size());
 	for(unsigned int i=0; i<con.m_materialLayers.size(); ++i) {
 		const VICUS::MaterialLayer &ml = con.m_materialLayers[i];

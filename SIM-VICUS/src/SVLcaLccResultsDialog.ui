@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVSimulationLCAResultsDialog</class>
- <widget class="QDialog" name="SVSimulationLCAResultsDialog">
+ <class>SVLcaLccResultsDialog</class>
+ <widget class="QDialog" name="SVLcaLccResultsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

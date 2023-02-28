@@ -161,7 +161,7 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
+        ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \

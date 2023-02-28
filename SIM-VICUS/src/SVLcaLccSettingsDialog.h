@@ -1,9 +1,10 @@
-#ifndef SVSimulationLCAOptionsH
-#define SVSimulationLCAOptionsH
+#ifndef SVLcaLccSettingsDialogH
+#define SVLcaLccSettingsDialogH
+
 
 #include <QWidget>
 
-#include "SVSimulationLCAResultsDialog.h"
+#include "SVLcaLccResultsDialog.h"
 
 #include <SVSettings.h>
 
@@ -12,14 +13,13 @@
 #include <VICUS_Project.h>
 
 namespace Ui {
-class SVSimulationLCAOptions;
+class SVLcaLccSettingsDialog;
 }
 
-class SVSimulationLCAOptions : public QWidget {
+class SVLcaLccSettingsDialog : public QDialog {
 	Q_OBJECT
 
 public:
-
 
 	/*! Column enums. */
 	enum ColData {
@@ -100,8 +100,8 @@ public:
 		ColA2WDP,
 	};
 
-	SVSimulationLCAOptions(QWidget *parent, VICUS::LcaSettings & lcaSettings, VICUS::LccSettings & lccSettings);
-	~SVSimulationLCAOptions();
+	SVLcaLccSettingsDialog(QWidget *parent, VICUS::LcaSettings & lcaSettings, VICUS::LccSettings & lccSettings);
+	~SVLcaLccSettingsDialog();
 
 	void calculateLCA();
 
@@ -199,16 +199,16 @@ private:
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
 	/*! Returns the pointer to the Results Dialog. */
-	SVSimulationLCAResultsDialog						*lcaResultsDialog();
+	SVLcaLccResultsDialog								*lcaResultsDialog();
 
 	/*! Pointer to Ui */
-	Ui::SVSimulationLCAOptions							*m_ui;
+	Ui::SVLcaLccSettingsDialog							*m_ui;
 
 	/*! Pointer to LCA Settings. */
-	VICUS::LcaSettings									*m_lcaSettings = nullptr;
+	const VICUS::LcaSettings							*m_lcaSettings = nullptr;
 
 	/*! Pointer to LCC Settings. */
-	VICUS::LccSettings									*m_lccSettings = nullptr;
+	const VICUS::LccSettings							*m_lccSettings = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
@@ -231,7 +231,7 @@ private:
 	std::set<unsigned int>								m_idComponentEpdUndefined;
 
 	/*! Pointer to LCA Result Dialog. */
-	SVSimulationLCAResultsDialog						*m_lcaResultDialog = nullptr;
+	SVLcaLccResultsDialog								*m_lcaResultDialog = nullptr;
 
 	/*! Reference to VICUS Project. */
 	const VICUS::Project								&m_prj;
@@ -241,4 +241,4 @@ private:
 
 };
 
-#endif // SVSimulationLCAOptionsH
+#endif // SVLCALCCSETTINGSDIALOG_H

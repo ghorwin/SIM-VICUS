@@ -59,6 +59,7 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
+class SVLcaLccSettingsDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -356,6 +357,8 @@ private slots:
 	void on_actionExportNetworkAsGeoJSON_triggered();
 
 
+	void on_actionLccLcaAnalysis_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -533,6 +536,8 @@ private:
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
 
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
+
+	SVLcaLccSettingsDialog				*m_lcaLccSettingsDialog							= nullptr;
 
 	friend class SVThreadBase;
 };

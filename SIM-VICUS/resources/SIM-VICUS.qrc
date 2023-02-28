@@ -188,5 +188,8 @@
         <file>gfx/actions/colormap_spectral.png</file>
         <file>gfx/actions/colormap_viridis.png</file>
         <file>gfx/actions/search_icon.png</file>
+        <file>gfx/actions/acoustic.jpg</file>
+        <file>gfx/actions/acoustic_neu.png</file>
+        <file>gfx/actions/sound-waves.png</file>
     </qresource>
 </RCC>
