@@ -42,7 +42,7 @@ SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 	m_prj(SVProjectHandler::instance().project())
 {
 	m_ui->setupUi(this);
-	layout()->setMargin(0);
+	// layout()->setMargin(0);
 
 	//	m_lcaSettings->initDefaults();
 
