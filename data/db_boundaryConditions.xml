@@ -2,7 +2,6 @@
 <BoundaryConditions>
 	
 	
-	
 	<BoundaryCondition id="30000" displayName="EN: Outside conditions (only heat conduction) |DE: Außenbedingungen (nur Wärmeleitung)" color="#0055ff"><!--SimQ Testfall 03 ehemals id=1001-->
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>

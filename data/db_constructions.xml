@@ -140,7 +140,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20009" displayName="DE: Betonwand, halbe Wanddicke |en: Concrete wall, half thickness">
+	<Construction id="20009" displayName="DE: Betonwand (10cm, halbe Wanddicke) |en: Concrete wall (10cm, half thickness)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
