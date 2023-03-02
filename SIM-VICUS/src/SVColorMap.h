@@ -2,6 +2,7 @@
 #define SVCOLORMAPH
 
 #include <QColor>
+#include <vector>
 
 class TiXmlElement;
 
