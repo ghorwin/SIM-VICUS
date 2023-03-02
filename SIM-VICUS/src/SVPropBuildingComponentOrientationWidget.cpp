@@ -161,15 +161,12 @@ void SVPropBuildingComponentOrientationWidget::alignSelectedComponents(bool toSi
 			std::vector<VICUS::ComponentInstance>::iterator it = std::find(compInstances.begin(), compInstances.end(), c->m_id);
 			Q_ASSERT(it != compInstances.end());
 
-			if(it->m_sideASurface != nullptr ) {
-				if (sideASelected)
-					surfacesToDDeselect.insert(it->m_sideASurface->m_id);
-			}
 
-			if(it->m_sideBSurface != nullptr ) {
-				if (sideBSelected)
-					surfacesToDDeselect.insert(it->m_sideBSurface->m_id);
-			}
+			if (sideASelected && it->m_sideASurface != nullptr )
+				surfacesToDDeselect.insert(it->m_sideASurface->m_id);
+
+			if (sideBSelected && it->m_sideBSurface != nullptr )
+				surfacesToDDeselect.insert(it->m_sideBSurface->m_id);
 
 			std::swap(it->m_idSideASurface, it->m_idSideBSurface);
 		}
