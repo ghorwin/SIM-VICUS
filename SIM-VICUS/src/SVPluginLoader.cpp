@@ -1,5 +1,7 @@
 #include "SVPluginLoader.h"
 
+#include <memory>
+
 #include <IBK_messages.h>
 #include <IBK_MultiLanguageString.h>
 #include <IBK_Version.h>
