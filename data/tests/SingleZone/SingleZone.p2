@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.3.0">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#aa0000" Checked="0">SingleZoneSingleOutdoorsConstruction</SubDir>
+			<SubDir Color="#55aaff" Checked="0">SingleZoneSingleOutdoorsConstruction.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">SingleZoneSingleOutdoorsConstruction.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">SingleZoneSingleOutdoorsConstructionSideB</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">SingleZoneSingleOutdoorsConstructionSideB.VC2019_win64</SubDir>
+			<SubDir Color="#c66300" Checked="0">SingleZoneSingleOutdoorsConstructionSideB.gcc_linux</SubDir>
+			<SubDir Color="#ff5500" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRad</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRad.VC2019_win64</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRad.gcc_linux</SubDir>
+			<SubDir Color="#ff5500" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRadInverted</SubDir>
+			<SubDir Color="#ffffff" Checked="0">SingleZoneSingleOutdoorsConstructionWithShwRadInverted.gcc_linux</SubDir>
+			<SubDir Color="#416fce" Checked="0">SingleZoneSingleOutdoorsConstructionWithWindow</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">SingleZoneSingleOutdoorsConstructionWithWindow.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SingleZoneSingleOutdoorsConstructionWithWindow.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">SingleZoneWithConstantOtherRoom</SubDir>
+			<SubDir Color="#ffee00" Checked="0">SingleZoneWithConstantOtherRoom.VC2019_win64</SubDir>
+			<SubDir Color="#45ad45" Checked="0">SingleZoneWithConstantOtherRoom.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">SingleZoneWithScheduledOtherRoom</SubDir>
+			<SubDir Color="#55aaff" Checked="0">SingleZoneWithScheduledOtherRoom.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">SingleZoneWithScheduledOtherRoom.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+		<Directory>
+			<Path>/home/ghorwin/git/_IBK-Apps/SIM-VICUS/data/tests/Windows</Path>
+			<SubDir Color="#7141d1" Checked="0">WindowSingleConstSHGC</SubDir>
+			<SubDir Color="#ffee00" Checked="0">WindowSingleConstSHGC.VC2019_win64</SubDir>
+			<SubDir Color="#45ad45" Checked="0">WindowSingleConstSHGC.gcc_linux</SubDir>
+			<SubDir Color="#ffffff" Checked="0">WindowSingleConstSHGCInverted</SubDir>
+			<SubDir Color="#aa0000" Checked="0">WindowSingleVarSHGC</SubDir>
+			<SubDir Color="#55aaff" Checked="0">WindowSingleVarSHGC.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">WindowSingleVarSHGC.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">WindowSingleVarSHGCWithFrame</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">WindowSingleVarSHGCWithFrame.VC2019_win64</SubDir>
+			<SubDir Color="#c66300" Checked="0">WindowSingleVarSHGCWithFrame.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>/home/ghorwin/git/_IBK-Apps/SIM-VICUS/data/tests/Windows/WindowSingleConstSHGC/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>/home/ghorwin/git/_IBK-Apps/SIM-VICUS/data/tests/Windows/WindowSingleConstSHGCInverted/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>Seite B außen</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>Seite A außen</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText />
+					<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>true</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SingleZoneSingleOutdoorsConstructionWithShwRad.gcc_linux/results/states_hourly.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SingleZoneSingleOutdoorsConstructionWithShwRadInverted/results/states_hourly.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>Seite B außen</TitleText>
+						<PenColor>#ef2929</PenColor>
+						<MarkerColor>#ef2929</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>Seite A außen</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>Eine Wand, Strahlung außen, alter Code (v1.0.0)</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>true</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>
