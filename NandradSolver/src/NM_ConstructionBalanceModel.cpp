@@ -734,7 +734,8 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 
 	// *** inside solar radiation boundary condition
 
-	if (m_valueRefs[InputRef_SideASolarRadiationFromWindowLoads] != nullptr) {
+	// short wave radiation through windows, onto side A
+	if (sideA && m_valueRefs[InputRef_SideASolarRadiationFromWindowLoads] != nullptr) {
 		// we got radiation load (positive into zone and hence positive into construction surface as well)
 
 		// retrieve total solar radiation load into the zone [W]
@@ -753,7 +754,8 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		m_fluxDensityShortWaveRadiationA += radLoadFraction/m_area;
 	}
 
-	if (m_valueRefs[InputRef_SideBSolarRadiationFromWindowLoads] != nullptr) {
+	// short wave radiation through windows, onto side B
+	if (!sideA && m_valueRefs[InputRef_SideBSolarRadiationFromWindowLoads] != nullptr) {
 		// we got radiation load (positive into zone and hence positive into construction surface as well)
 
 		// retrieve total solar radiation load into the zone [W]
@@ -776,7 +778,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 
 	// *** internal loads radiation boundary condition
 
-	if (m_valueRefs[InputRef_SideARadiationFromEquipmentLoads] != nullptr) {
+	if (sideA && m_valueRefs[InputRef_SideARadiationFromEquipmentLoads] != nullptr) {
 		// retrieve total solar radiation load into the zone [W]
 		double internalRadiation = *m_valueRefs[InputRef_SideARadiationFromEquipmentLoads];
 
@@ -796,7 +798,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		m_fluxDensityShortWaveRadiationA += radLoadFraction/m_area;
 	}
 
-	if (m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads] != nullptr) {
+	if (!sideA && m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads] != nullptr) {
 		// retrieve total solar radiation load into the zone [W]
 		double internalRadiation = *m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads];
 
