@@ -33,8 +33,8 @@
 
 namespace NANDRAD {
 
-void Zone::readXML(const TiXmlElement * element) {
-	FUNCID(Zone::readXML);
+void Zone::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Zone::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -99,7 +99,7 @@ void Zone::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Zone::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Zone");
 	parent->LinkEndChild(e);

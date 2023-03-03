@@ -151,6 +151,11 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 	// return already generated references
 	m_inputRefs.resize(NUM_InputRef);
 
+	// Input references to values of long wave radiation that is emitted by other instances and received by this one at side A.
+	std::vector<InputReference>						inputRefsAbsorbedLWRadiationA;
+	// Input references to values of long wave radiation that is emitted by other instances and received by this one at side B.
+	std::vector<InputReference>						inputRefsAbsorbedLWRadiationB;
+
 	// compute input references depending on requirements of interfaces
 
 	// side A
@@ -174,7 +179,37 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				m_inputRefs[InputRef_RoomATemperature] = ref;
 			}
 		}
+		// check for inside long wave radiation, Note: outside long wave radiation is retrieved directly from corresponding states model
+		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			// Note: for LW exchange with ambient we don't need input references, as we access loads model directly
+
+			if (m_con->m_interfaceA.m_zoneId != 0) {
+				// for internal LW exchange we need emitted LW fluxes from each connected interface
+				const auto &connectedInterfacesA = m_con->m_interfaceA.m_connectedInterfaces;
+				for (auto it=connectedInterfacesA.begin(); it!=connectedInterfacesA.end(); ++it) {
+					InputReference ref;
+					ref.m_id = it->first; // id of emitting construction instance
+					ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+					// we need to find out if this interface is side A or B or connected construction
+					bool sideA = it->second->m_isSideA;
+					if (sideA)
+						ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", ConstructionStatesModel::VVR_EmittedLongWaveRadiationA);
+					else
+						ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", ConstructionStatesModel::VVR_EmittedLongWaveRadiationB);
+					ref.m_name.m_index = int(m_id); // id of absorbing instance (ourself)
+					inputRefsAbsorbedLWRadiationA.push_back(ref);
+				}
+
+				InputReference ref;
+				ref.m_id = m_con->m_id;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxA);
+				ref.m_required = true;
+				m_inputRefs[InputRef_SideAEmittedLongWaveRadiation] = ref;
+			}
+		}
 	}
+
 
 	// side B
 
@@ -197,7 +232,33 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				m_inputRefs[InputRef_RoomBTemperature] = ref;
 			}
 		}
+		// check for inside long wave radiation, Note: outside long wave radiation is retrieved directly from corresponding states model
+		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			if (m_con->m_interfaceB.m_zoneId != 0) {
+				const auto &connectedInterfacesB = m_con->m_interfaceB.m_connectedInterfaces;
+				for (auto it=connectedInterfacesB.begin(); it!=connectedInterfacesB.end(); ++it) {
+					InputReference ref;
+					ref.m_id = it->first;  // id of emitting construction instance
+					ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+					// we need to find out if this interface is side A or B or connected construction
+					bool sideA = it->second->m_isSideA;
+					if (sideA)
+						ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", ConstructionStatesModel::VVR_EmittedLongWaveRadiationA);
+					else
+						ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", ConstructionStatesModel::VVR_EmittedLongWaveRadiationB);
+					ref.m_name.m_index = int(m_id); // id of absorbing instance (ourself)
+					inputRefsAbsorbedLWRadiationB.push_back(ref);
+				}
+			}
+			InputReference ref;
+			ref.m_id = m_con->m_id;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxB);
+			ref.m_required = true;
+			m_inputRefs[InputRef_SideBEmittedLongWaveRadiation] = ref;
+		}
 	}
+
 
 	// we take solar radiation load from RoomRadiationLoadsModel and then split it up according to the distribution rules
 
@@ -349,6 +410,12 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		}
 	} // model object loop
 
+	// insert references for absorbed long wave radiation
+	m_inputRefs.insert(m_inputRefs.end(), inputRefsAbsorbedLWRadiationA.begin(), inputRefsAbsorbedLWRadiationA.end());
+	m_inputRefs.insert(m_inputRefs.end(), inputRefsAbsorbedLWRadiationB.begin(), inputRefsAbsorbedLWRadiationB.end());
+	m_absorbedLWRadiationACount = inputRefsAbsorbedLWRadiationA.size();
+	m_absorbedLWRadiationBCount = inputRefsAbsorbedLWRadiationB.size();
+
 	// insert references to all surface heating load mdoels
 	m_inputRefs.insert(m_inputRefs.end(), surfaceHeatLoadRH.begin(), surfaceHeatLoadRH.end());
 }
@@ -366,13 +433,25 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 
 	// resize value references
 	m_valueRefs.resize(NUM_InputRef, nullptr);
+
 	// copy required values
 	for(unsigned int i = 0; i < NUM_InputRef; ++i)
 		m_valueRefs[i] = resultValueRefs[i];
 
+	// copy optional values for inside long wave radiation, side A and B
+	unsigned int lastIdx = NUM_InputRef;
+	for (unsigned int i = lastIdx; i < lastIdx + m_absorbedLWRadiationACount; ++i)
+		m_valueRefsAbsorbedLWRadiationA.push_back( resultValueRefs[i] );
+	lastIdx += m_absorbedLWRadiationACount;
+
+	for (unsigned int i = lastIdx; i < lastIdx + m_absorbedLWRadiationBCount; ++i)
+		m_valueRefsAbsorbedLWRadiationB.push_back( resultValueRefs[i] );
+	lastIdx += m_absorbedLWRadiationBCount;
+
+	// copy optional values for active layer
 	if (m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		// check all surface heating loads
-		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_surfaceHeatingCoolingModelCount; ++i) {
+		for (unsigned int i= lastIdx; i < lastIdx + m_surfaceHeatingCoolingModelCount; ++i) {
 			// check that only one active layer is references
 			if (resultValueRefs[i] != nullptr) {
 				if (m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
@@ -427,14 +506,10 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 
 		// long wave emission
 		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveradiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
-			// ydot of first element depends on boundary flux
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveradiationA] ) );
+			// TODO Hauke: add dependencies
 		}
 		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveradiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
-			// ydot of first element depends on boundary flux
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveradiationB] ) );
+			// TODO Hauke: add dependencies
 		}
 
 
@@ -585,15 +660,18 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 
 
 	// set radiation fluxes to 0 and later add optional radiant fluxes
-	m_fluxDensityShortWaveRadiationA = 0.0;
-	m_fluxDensityShortWaveRadiationB = 0.0;
-	m_results[R_FluxShortWaveRadiationA] = 0.0;
-	m_results[R_FluxShortWaveRadiationB] = 0.0;
-
-	m_fluxDensityLongWaveRadiationA = 0.0;
-	m_fluxDensityLongWaveRadiationB = 0.0;
-	m_results[R_FluxLongWaveradiationA] = 0.0;
-	m_results[R_FluxLongWaveradiationB] = 0.0;
+	if (sideA) {
+		m_fluxDensityShortWaveRadiationA = 0.0;
+		m_fluxDensityLongWaveRadiationA = 0.0;
+		m_results[R_FluxShortWaveRadiationA] = 0.0;
+		m_results[R_FluxLongWaveRadiationA] = 0.0;
+	}
+	else {
+		m_fluxDensityLongWaveRadiationB = 0.0;
+		m_fluxDensityShortWaveRadiationB = 0.0;
+		m_results[R_FluxShortWaveRadiationB] = 0.0;
+		m_results[R_FluxLongWaveRadiationB] = 0.0;
+	}
 
 
 	// *** outside solar radiation boundary condition
@@ -615,20 +693,40 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 
 	// *** outside long wave radiation boundary condition
 
-	if (iface.m_zoneId == 0 && iface.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-		// different calculation from left or right side
-		if (sideA) {
-			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxA];
-			m_fluxDensityLongWaveRadiationA = fluxDensity; // positive from left to right (into construction)
-			m_results[R_FluxLongWaveradiationA] = fluxDensity*m_area; // total flux [W], positive into construction
+	if (iface.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+		if (iface.m_zoneId == 0) { // ambient
+			// different calculation from left or right side
+			if (sideA) {
+				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxA];
+				m_fluxDensityLongWaveRadiationA += fluxDensity; // positive from left to right (into construction)
+			}
+			else {
+				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxB];
+				m_fluxDensityLongWaveRadiationB -= fluxDensity; // positive from left to right (into construction)
+			}
 		}
 		else {
-			double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxB];
-			m_fluxDensityLongWaveRadiationB = -fluxDensity; // positive from left to right (into construction)
-			m_results[R_FluxLongWaveradiationB] = fluxDensity*m_area; // total flux [W], positive into construction
+			// inside LW rad exchange
+
+			if (sideA) {
+				// subtract emitted LW rad (this is in W/m2)
+				m_fluxDensityLongWaveRadiationA = - *m_valueRefs[InputRef_SideAEmittedLongWaveRadiation];
+				// add all received LW rad (these are in W, we need to devide by OUR area)
+				for (unsigned int i=0; i<m_valueRefsAbsorbedLWRadiationA.size(); ++i)
+					m_fluxDensityLongWaveRadiationA += *m_valueRefsAbsorbedLWRadiationA[i] / m_area;
+			}
+			else {
+				// same as for side A, but with inverse sign
+				m_fluxDensityLongWaveRadiationB += *m_valueRefs[InputRef_SideBEmittedLongWaveRadiation];
+				for (unsigned int i=0; i<m_valueRefsAbsorbedLWRadiationB.size(); ++i)
+					m_fluxDensityLongWaveRadiationB -= *m_valueRefsAbsorbedLWRadiationB[i] / m_area;
+			}
 		}
 	}
 
+	// compute output variables
+	m_results[R_FluxLongWaveRadiationA] = m_fluxDensityLongWaveRadiationA * m_area; // total flux [W], positive into construction
+	m_results[R_FluxLongWaveRadiationB] = -m_fluxDensityLongWaveRadiationB * m_area; // total flux [W], positive into construction
 
 	// *** inside solar radiation boundary condition
 
@@ -669,6 +767,8 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		m_results[R_FluxShortWaveRadiationB] += radLoadFraction; // this is into the construction
 		m_fluxDensityShortWaveRadiationB -= radLoadFraction/m_area;
 	}
+
+
 
 	// *** internal loads radiation boundary condition
 

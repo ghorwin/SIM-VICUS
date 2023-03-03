@@ -74,6 +74,10 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Is called in case the given interface is connected to a zone and moreover has a long wave emission model defined. It then checks if all construction instances connected to the same zone
+	 *  also have a long wave emission model defined and stores pointers to the connected interfaces. Also checks if all required view factors are given by the according zone. */
+	void checkAndPrepareLongWaveHeatExchange(const Project & prj, Interface & ourInterface);
+
 	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.
 		Material and ConstructionType objects have already been checked for correctness.
 		\note This function throws an exception if invalid parameters are defined, parameters are missing, or
@@ -134,10 +138,13 @@ public:
 	/*! Cached net transfer area [m2] for heat conduction to room, calculated as difference between P_Area parameter
 		and sum of all embedded object areas (updated in checkParameters()).
 	*/
-	double								m_netHeatTransferArea = 999;
+	double						m_netHeatTransferArea = 999;
 
 	/*! Quick-access pointer to the underlying construction type. */
-	const NANDRAD::ConstructionType		*m_constructionType = nullptr;
+	const ConstructionType		*m_constructionType = nullptr;
+
+
+
 };
 
 

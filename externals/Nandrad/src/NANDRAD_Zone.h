@@ -69,11 +69,18 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE
+	NANDRAD_READWRITE_PRIVATE
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters() const;
+
+	/*! Calls the generated readXMLPrivate and additionally reads the view factors */
+	void readXML(const TiXmlElement * element);
+
+	/*! Calls the generated writeXMLPrivate and additionally reads the view factors */
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -91,9 +98,12 @@ public:
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
-	/*! Data type used in view factor definition. */
+	/*! Optional: Used for view factor definition: pairs of contruction instance ids meaning the view factor from id to id. */
 	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
-	/*! Optional: view factors for all inside interfaces of the current zone. */
+
+	/*! Optional: View factors for all inside interfaces of the current zone. Contains the view factor for a pair of construction instance ids.
+		The pair contains the IDs of the interconnected construction instances, the value is the view factor (0..1).
+	*/
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
 
 }; // Zone
