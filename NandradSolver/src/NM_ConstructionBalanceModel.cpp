@@ -234,6 +234,8 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		}
 		// check for inside long wave radiation, Note: outside long wave radiation is retrieved directly from corresponding states model
 		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+
+			// dependencies only for inside radiation exchange
 			if (m_con->m_interfaceB.m_zoneId != 0) {
 				const auto &connectedInterfacesB = m_con->m_interfaceB.m_connectedInterfaces;
 				for (auto it=connectedInterfacesB.begin(); it!=connectedInterfacesB.end(); ++it) {
@@ -249,13 +251,14 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 					ref.m_name.m_index = int(m_id); // id of absorbing instance (ourself)
 					inputRefsAbsorbedLWRadiationB.push_back(ref);
 				}
+
+				InputReference ref;
+				ref.m_id = m_con->m_id;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxB);
+				ref.m_required = true;
+				m_inputRefs[InputRef_SideBEmittedLongWaveRadiation] = ref;
 			}
-			InputReference ref;
-			ref.m_id = m_con->m_id;
-			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-			ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxB);
-			ref.m_required = true;
-			m_inputRefs[InputRef_SideBEmittedLongWaveRadiation] = ref;
 		}
 	}
 
@@ -506,12 +509,15 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 
 		// long wave emission
 		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			// TODO Hauke: add dependencies
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+			// ydot of first element depends on boundary flux
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveRadiationA] ) );
 		}
 		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			// TODO Hauke: add dependencies
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+			// ydot of first element depends on boundary flux
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveRadiationB] ) );
 		}
-
 
 		// remaining dependency pattern
 		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
@@ -658,7 +664,6 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		}
 	}
 
-
 	// set radiation fluxes to 0 and later add optional radiant fluxes
 	if (sideA) {
 		m_fluxDensityShortWaveRadiationA = 0.0;
@@ -672,7 +677,6 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		m_results[R_FluxShortWaveRadiationB] = 0.0;
 		m_results[R_FluxLongWaveRadiationB] = 0.0;
 	}
-
 
 	// *** outside solar radiation boundary condition
 
