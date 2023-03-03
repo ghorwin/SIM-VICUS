@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QPluginLoader>
 
+#include <memory>
+
 /*! Implements all plugin loading/updating logic and stores collected information
 	about available and installed plugins for use by the plugin manager.
 */
