@@ -374,8 +374,7 @@ unsigned int ConstructionStatesModel::interfaceBZoneID() const {
 }
 
 
-void ConstructionStatesModel::
-yInitial(double * y) const {
+void ConstructionStatesModel::yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
 	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 	for (unsigned i=0; i<m_nElements; ++i) {
