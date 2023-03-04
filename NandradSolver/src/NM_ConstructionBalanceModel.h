@@ -47,16 +47,16 @@ class ConstructionBalanceModel : public AbstractModel, public AbstractStateDepen
 public:
 
 	enum Results {
-		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction)'
-		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
-		R_FluxHeatConductionAreaSpecificA,	// Keyword: FluxHeatConductionAreaSpecificA			[W/m2]		'Heat conduction flux across interface A (into construction) normated per area'
-		R_FluxHeatConductionAreaSpecificB,	// Keyword: FluxHeatConductionAreaSpecificB			[W/m2]		'Heat conduction flux across interface B (into construction) normated per area'
-		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
-		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA					[W]			'Heat conduction flux across interface A (into construction)'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB					[W]			'Heat conduction flux across interface B (into construction)'
+		R_FluxHeatConductionAreaSpecificA,	// Keyword: FluxHeatConductionAreaSpecificA		[W/m2]		'Heat conduction flux density across interface A (into construction)'
+		R_FluxHeatConductionAreaSpecificB,	// Keyword: FluxHeatConductionAreaSpecificB		[W/m2]		'Heat conduction flux density across interface B (into construction)'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA				[W]			'Short wave radiation flux across interface A (into construction)'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB				[W]			'Short wave radiation flux across interface B (into construction)'
 		/*! This is the long-wave balance (both for ambient and internal lw radiation). */
-		R_FluxLongWaveRadiationA,			// Keyword: FluxLongWaveRadiationA		[W]			'Long wave radiation flux across interface A (into construction)'
+		R_FluxLongWaveRadiationA,			// Keyword: FluxLongWaveRadiationA				[W]			'Long wave radiation flux across interface A (into construction)'
 		/*! This is the long-wave balance (both for ambient and internal lw radiation). */
-		R_FluxLongWaveRadiationB,			// Keyword: FluxLongWaveRadiationB		[W]			'Long wave radiation flux across interface B (into construction)'
+		R_FluxLongWaveRadiationB,			// Keyword: FluxLongWaveRadiationB				[W]			'Long wave radiation flux across interface B (into construction)'
 		NUM_R
 	};
 

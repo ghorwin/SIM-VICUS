@@ -469,84 +469,120 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 
 
 void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// resultInputValueReferences = pair(target variable, source variable)
 
-	// this model computes:
-	//
-	// - ydot
-	// - FluxHeatConductionA
-	// - FluxHeatConductionB
-
-	// and takes input:
-	// - Zone temperatures
-	// - (indirectly) y-dots from ConstructionStatesModel through temperatures and calculated heat fluxes
-	//
-	// see update()
+	// Note: The construction balance model is explicitely evaluated AFTER the model graph has been processed (see
+	//       NandradModel::m_constructionBalanceModelContainer and its use in NandradModel::updateStateDependentModels()
+	//       So, for the purpose of evaluation order, we would not have to define resultInputValueReferences.
+	//       However, for setting up the Jacobian matrix correctly, we need to know which variable depends on which other variables
+	//       in order to fill the respective positions in
 
 	// Mind: we access some results of the ConstructionStatesModel directly, like surface temperatures and computed heat fluxes.
 	//       In the case of variables that are *not* exported (internal construction heat fluxes), we simply compute the dependencies
 	//       from the layer temperatures ourselves.
 
-	if (!m_moistureBalanceEnabled) {
+	// ydot  (depend on element temperatures), boundary ydot also from boundary fluxes (added below)
+	for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
+		// each ydot depends on the temperature in the cell itself
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i ) );
+		// and on right-side element
+		if (i<m_statesModel->m_nElements-1)
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i+1 ) );
+		// and on left-side element
+		if (i > 0)
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
+	}
 
-		// first we publish the dependencies of the boundary fluxes
-		if (m_con->m_interfaceA.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
-			if (m_valueRefs[InputRef_RoomATemperature] != nullptr) {
-				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_RoomATemperature]));
-				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
-				// ydot of first element depends on boundary flux
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxHeatConductionA] ) );
-			}
-		}
-		if (m_con->m_interfaceB.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
-			if (m_valueRefs[InputRef_RoomBTemperature] != nullptr) {
-				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_RoomBTemperature]));
-				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
-				// ydot of last element depends on boundary flux
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxHeatConductionB] ) );
-			}
-		}
-		// TODO : Add dependency to short wave radiation flux in case this depends on controlled shading
+	if (m_moistureBalanceEnabled) {
+		/// \todo hygrothermal code
+	}
 
-		// long wave emission
-		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+
+
+	// dependencies of computed fluxes
+
+	// R_FluxHeatConductionA
+	if (m_con->m_interfaceA.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+		if (m_valueRefs[InputRef_RoomATemperature] != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_RoomATemperature]));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
 			// ydot of first element depends on boundary flux
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveRadiationA] ) );
-		}
-		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
-			// ydot of first element depends on boundary flux
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveRadiationB] ) );
-		}
-
-		// remaining dependency pattern
-		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
-			// each ydot depends on the temperature in the cell itself
-			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i ) );
-			// and on right-side element
-			if (i<m_statesModel->m_nElements-1)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i+1 ) );
-			// and on left-side element
-			if (i > 0)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
-		}
-
-
-
-		// add active layer heat source dependencies
-		if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr ) {
-
-			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
-			// loop through all elements of active layer
-			unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
-			unsigned int elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
-
-			for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_valueRefs[InputRef_ActiveLayerHeatLoads]) );
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxHeatConductionA] ) );
 		}
 	}
-	else {
-		/// \todo hygrothermal code
+	// R_FluxHeatConductionB
+	if (m_con->m_interfaceB.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
+		if (m_valueRefs[InputRef_RoomBTemperature] != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_RoomBTemperature]));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+			// ydot of last element depends on boundary flux
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxHeatConductionB] ) );
+		}
+	}
+
+	// R_FluxLongWaveRadiationA
+	if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+		// ydot of first element depends on boundary flux
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveRadiationA] ) );
+	}
+	// R_FluxLongWaveRadiationB
+	if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+		// ydot of first element depends on boundary flux
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveRadiationB] ) );
+	}
+
+	// R_FluxShortWaveRadiationA and R_FluxShortWaveRadiationB depend on Loads -> not a state dependency, so we do not need this
+	// but these fluxes also depend on internal load models
+
+	// R_FluxShortWaveRadiationA
+	bool haveSideAShortWaveRadiationFlux = false;
+	if (m_valueRefs[InputRef_SideARadiationFromEquipmentLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationA], m_valueRefs[InputRef_SideARadiationFromEquipmentLoads]));
+		haveSideAShortWaveRadiationFlux = true;
+	}
+	if (m_valueRefs[InputRef_SideARadiationFromPersonLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationA], m_valueRefs[InputRef_SideARadiationFromPersonLoads]));
+		haveSideAShortWaveRadiationFlux = true;
+	}
+	if (m_valueRefs[InputRef_SideARadiationFromLightingLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationA], m_valueRefs[InputRef_SideARadiationFromLightingLoads]));
+		haveSideAShortWaveRadiationFlux = true;
+	}
+	// ydot of side A element depends on short wave radiation flux, if computed
+	if (haveSideAShortWaveRadiationFlux)
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxShortWaveRadiationA] ) );
+
+	// R_FluxShortWaveRadiationB
+	bool haveSideBShortWaveRadiationFlux = false;
+	if (m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationB], m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads]));
+		haveSideBShortWaveRadiationFlux = true;
+	}
+	if (m_valueRefs[InputRef_SideBRadiationFromPersonLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationB], m_valueRefs[InputRef_SideBRadiationFromPersonLoads]));
+		haveSideBShortWaveRadiationFlux = true;
+	}
+	if (m_valueRefs[InputRef_SideBRadiationFromLightingLoads] != nullptr) {
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxShortWaveRadiationB], m_valueRefs[InputRef_SideBRadiationFromLightingLoads]));
+		haveSideBShortWaveRadiationFlux = true;
+	}
+	// ydot of side A element depends on short wave radiation flux, if computed
+	if (haveSideBShortWaveRadiationFlux)
+		resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxShortWaveRadiationB] ) );
+
+
+	// add active layer heat source dependencies
+	if (m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr ) {
+
+		IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
+		// loop through all elements of active layer
+		unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
+		unsigned int elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
+
+		for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_valueRefs[InputRef_ActiveLayerHeatLoads]) );
 	}
 
 }

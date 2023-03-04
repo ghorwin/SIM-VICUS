@@ -523,8 +523,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Heat conduction flux across interface A (into construction)";
 				case 1 : return "Heat conduction flux across interface B (into construction)";
-				case 2 : return "Heat conduction flux across interface A (into construction) normated per area";
-				case 3 : return "Heat conduction flux across interface B (into construction) normated per area";
+				case 2 : return "Heat conduction flux density across interface A (into construction)";
+				case 3 : return "Heat conduction flux density across interface B (into construction)";
 				case 4 : return "Short wave radiation flux across interface A (into construction)";
 				case 5 : return "Short wave radiation flux across interface B (into construction)";
 				case 6 : return "Long wave radiation flux across interface A (into construction)";
