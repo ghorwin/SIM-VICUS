@@ -523,7 +523,11 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 	// R_FluxLongWaveRadiationA
 	if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
-		// if we have an internal long wave radiation model, we need to add dependencies to all other surfaces as well
+		// if we have an internal long wave radiation model, we need to add dependencies to all long wave radiation fluxes received from other surfaces as well
+		if (m_con->m_interfaceA.m_zoneId != 0) {
+			for (unsigned int i=0; i<m_absorbedLWRadiationACount; ++i)
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], m_valueRefsAbsorbedLWRadiationA[i]));
+		}
 
 		// ydot of first element depends on boundary flux
 		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveRadiationA] ) );
@@ -531,7 +535,12 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 	// R_FluxLongWaveRadiationB
 	if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
-		// ydot of first element depends on boundary flux
+		// if we have an internal long wave radiation model, we need to add dependencies to all long wave radiation fluxes received from other surfaces as well
+		if (m_con->m_interfaceB.m_zoneId != 0) {
+			for (unsigned int i=0; i<m_absorbedLWRadiationBCount; ++i)
+				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationB], m_valueRefsAbsorbedLWRadiationB[i]));
+		}
+		// ydot of last element depends on boundary flux
 		resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxLongWaveRadiationB] ) );
 	}
 
