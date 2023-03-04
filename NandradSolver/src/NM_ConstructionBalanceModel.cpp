@@ -523,6 +523,8 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 	// R_FluxLongWaveRadiationA
 	if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxLongWaveRadiationA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+		// if we have an internal long wave radiation model, we need to add dependencies to all other surfaces as well
+
 		// ydot of first element depends on boundary flux
 		resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxLongWaveRadiationA] ) );
 	}
@@ -749,7 +751,7 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 			// inside LW rad exchange
 
 			if (sideA) {
-				// subtract emitted LW rad (this is in W/m2)
+				// subtract emitted LW rad (this is in W/m2), sign definition positive into construction
 				m_fluxDensityLongWaveRadiationA = - *m_valueRefs[InputRef_SideAEmittedLongWaveRadiation];
 				// add all received LW rad (these are in W, we need to devide by OUR area)
 				for (unsigned int i=0; i<m_valueRefsAbsorbedLWRadiationA.size(); ++i)

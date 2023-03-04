@@ -28,11 +28,11 @@
 		</SimulationParameter>
 		
 		<Zones>
-			<Zone id="1" displayName="dummy" type="Active">
+			<Zone id="1" displayName="No LW" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>				
 			</Zone>
-			<Zone id="11" displayName="dummy" type="Active">
+			<Zone id="11" displayName="LW" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
 				<!-- These view factors are precalculated. 
@@ -44,7 +44,7 @@
 							4002 4001 0.5
 			  </ViewFactors>
 			</Zone>
-			<Zone id="12" displayName="dummy" type="Active">
+			<Zone id="12" displayName="LW inverted" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
 				<!-- These view factors are precalculated. 
@@ -263,15 +263,27 @@
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 				<OutputDefinition>
 					<Quantity>SurfaceTemperatureA</Quantity>
 					<ObjectListName>Walls</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureB</Quantity>
+					<ObjectListName>Walls</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
 				<OutputDefinition>
 					<Quantity>FluxLongWaveRadiationA</Quantity>
+					<ObjectListName>Floors</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>FluxLongWaveRadiationB</Quantity>
 					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -298,7 +310,7 @@
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Floors">
-				<FilterID>3001,4001</FilterID>
+				<FilterID>3001,4001,5001</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 			

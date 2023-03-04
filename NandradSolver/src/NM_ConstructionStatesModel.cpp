@@ -218,7 +218,6 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	// in the case of an actiev construction add active temperature layer
 	if (m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		QuantityDescription result;
-		// Note: we do not specify an ID here, as we do not know which model may supply us with the ActiveLayerTemperature
 		result.m_constant = true;
 		result.m_description = "Temperature of the active material layer";
 		result.m_name = "ActiveLayerTemperature";
