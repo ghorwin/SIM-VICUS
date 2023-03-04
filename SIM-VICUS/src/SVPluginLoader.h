@@ -68,6 +68,8 @@ public:
 		*/
 		QJsonObject m_metadata;
 
+		/*! Plugin-Title (no languange). */
+		QString m_title;
 		/*! A short description text, already in application language. */
 		QString m_shortDesc;
 		/*! A longer description text, already in application language. */

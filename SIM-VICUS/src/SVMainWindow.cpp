@@ -837,7 +837,6 @@ void SVMainWindow::onImportPluginTriggered() {
 	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
 	Q_ASSERT(plugin != nullptr);
 	SVImportPluginInterface * importPlugin = dynamic_cast<SVImportPluginInterface *>(plugin);
-	importPlugin->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
 	Q_ASSERT(importPlugin != nullptr);
 
 	VICUS::Project p;
@@ -845,10 +844,10 @@ void SVMainWindow::onImportPluginTriggered() {
 	bool success = importPlugin->import(this, projectText);
 	try {
 		p.readXML(projectText);
-		std::ofstream out("g:\\temp\\VicusImport.txt");
-		out << projectText.toStdString();
+//		std::ofstream out("g:\\temp\\VicusImport.txt");
+//		out << projectText.toStdString();
 	}
-	catch(IBK::Exception& e) {
+	catch(IBK::Exception& ) {
 		success = false;
 	}
 
