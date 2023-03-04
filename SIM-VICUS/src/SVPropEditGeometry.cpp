@@ -1047,9 +1047,9 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 			// get the transformation matrix
 			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
-            std::vector<IBKMK::Vector3D> verts = poly.vertexes();
-            for (IBKMK::Vector3D & v : verts) {
-                v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+			std::vector<IBKMK::Vector3D> verts = poly.vertexes();
+			for (IBKMK::Vector3D & v : verts) {
+				v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
 			}
 			// reconstruct the polygon with new vertexes
 			if (!poly.setVertexes(verts)) {
@@ -1076,9 +1076,9 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			double scaleY = diffNew.m_y/diffOrig.m_y;
 
 			std::vector<VICUS::SubSurface> modSubs = modS.subSurfaces();
-            std::vector<VICUS::Surface>    modChilds = modS.childSurfaces();
+			std::vector<VICUS::Surface>    modChilds = modS.childSurfaces();
 			for (VICUS::SubSurface & sub : modSubs) {
-                std::vector<IBKMK::Vector2D> polyVerts = sub.m_polygon2D.vertexes();
+				std::vector<IBKMK::Vector2D> polyVerts = sub.m_polygon2D.vertexes();
 				for (unsigned int i=0; i<polyVerts.size(); ++i) {
 					polyVerts[i].m_x *= scaleX;
 					polyVerts[i].m_y *= scaleY;
@@ -1086,17 +1086,17 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 				// now set the new subsurface polygon
 				sub.m_polygon2D.setVertexes(polyVerts);
 			}
-            for (VICUS::Surface & child : modChilds) {
-                std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
-                for (IBKMK::Vector3D & v : verts) {
-                    v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
-                }
-                // now set the new subsurface polygon
-                const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
-            }
+			for (VICUS::Surface & child : modChilds) {
+				std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
+				for (IBKMK::Vector3D & v : verts) {
+					v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+				}
+				// now set the new subsurface polygon
+				const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
+			}
 
 			modS.setPolygon3D((VICUS::Polygon3D)poly);
-            modS.setChildAndSubSurfaces(modSubs, modChilds);
+			modS.setChildAndSubSurfaces(modSubs, modChilds);
 			modifiedSurfaces.push_back(modS);
 		}
 		else {
@@ -1205,9 +1205,9 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 		handledSurfaces.insert(parentSurf);
 
-        std::vector<VICUS::Surface> childs = parentSurf->childSurfaces();
+		std::vector<VICUS::Surface> childs = parentSurf->childSurfaces();
 		// we update the 2D polyline
-        newSurf.setChildAndSubSurfaces(newSubSurfs, childs);
+		newSurf.setChildAndSubSurfaces(newSubSurfs, childs);
 		modifiedSurfaces.push_back(newSurf);
 	}
 

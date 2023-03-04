@@ -11,7 +11,7 @@ SVUndoModifyRoomAcousticTemplateAssociation::SVUndoModifyRoomAcousticTemplateAss
 	 // populate vector with new zone template ID
 	m_acoutsicTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), zoneTemplateID);
 
- }
+}
 
 void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
 	// exchange acoustic template IDs

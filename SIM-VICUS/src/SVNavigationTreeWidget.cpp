@@ -76,64 +76,64 @@ SVNavigationTreeWidget::~SVNavigationTreeWidget() {
 
 
 void SVNavigationTreeWidget::addChildSurface(QTreeWidgetItem *item, const VICUS::Surface &s) {
-    for (unsigned int holeIdx = 0; holeIdx < s.geometry().holes().size(); ++holeIdx) {
+	for (unsigned int holeIdx = 0; holeIdx < s.geometry().holes().size(); ++holeIdx) {
 
-        const VICUS::PlaneGeometry::Hole &h = s.geometry().holes()[holeIdx];
+		const VICUS::PlaneGeometry::Hole &h = s.geometry().holes()[holeIdx];
 
-        const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
+		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
 
-        const VICUS::SubSurface *sub = dynamic_cast<const VICUS::SubSurface*>(obj);
+		const VICUS::SubSurface *sub = dynamic_cast<const VICUS::SubSurface*>(obj);
 
-        if(sub != nullptr) {
-            QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub->m_displayName, QTreeWidgetItem::Type);
-            m_treeItemMap[sub->m_id] = subsurface;
-            subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		if(sub != nullptr) {
+			QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub->m_displayName, QTreeWidgetItem::Type);
+			m_treeItemMap[sub->m_id] = subsurface;
+			subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 
-            // mark invalid subsurfaces in red and give tooltip with error
-            if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
-                subsurface->setForeground(0, QColor(128,0,0));
-                subsurface->setToolTip(0, tr("Invalid polygon data"));
-            }
+			// mark invalid subsurfaces in red and give tooltip with error
+			if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
+				subsurface->setForeground(0, QColor(128,0,0));
+				subsurface->setToolTip(0, tr("Invalid polygon data"));
+			}
 
-            item->addChild(subsurface);
-            subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub->m_id);
-            subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub->m_visible);
-            subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub->m_selected);
-            if (!sub->m_polygon2D.isValid()) {
-                subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
-                subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
-            }
+			item->addChild(subsurface);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub->m_id);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub->m_visible);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub->m_selected);
+			if (!sub->m_polygon2D.isValid()) {
+				subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+				subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
+			}
 
-            continue;
-        }
+			continue;
+		}
 
-        const VICUS::Surface *surf = dynamic_cast<const VICUS::Surface*>(obj);
+		const VICUS::Surface *surf = dynamic_cast<const VICUS::Surface*>(obj);
 
-        if(surf != nullptr) {
-            QTreeWidgetItem * childSurface = new QTreeWidgetItem(QStringList() << surf->m_displayName, QTreeWidgetItem::Type);
-            m_treeItemMap[surf->m_id] = childSurface;
-            childSurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		if(surf != nullptr) {
+			QTreeWidgetItem * childSurface = new QTreeWidgetItem(QStringList() << surf->m_displayName, QTreeWidgetItem::Type);
+			m_treeItemMap[surf->m_id] = childSurface;
+			childSurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 
-            // mark invalid subsurfaces in red and give tooltip with error
-            if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
-                childSurface->setForeground(0, QColor(128,0,0));
-                childSurface->setToolTip(0, tr("Invalid polygon data"));
-            }
+			// mark invalid subsurfaces in red and give tooltip with error
+			if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
+				childSurface->setForeground(0, QColor(128,0,0));
+				childSurface->setToolTip(0, tr("Invalid polygon data"));
+			}
 
-            item->addChild(childSurface);
-            childSurface->setData(0, SVNavigationTreeItemDelegate::NodeID, surf->m_id);
-            childSurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, surf->m_visible);
-            childSurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, surf->m_selected);
-            if (!surf->polygon3D().isValid()) {
-                childSurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
-                childSurface->setData(0, Qt::ToolTipRole, tr("Invalid child-surface polygon"));
-            }
+			item->addChild(childSurface);
+			childSurface->setData(0, SVNavigationTreeItemDelegate::NodeID, surf->m_id);
+			childSurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, surf->m_visible);
+			childSurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, surf->m_selected);
+			if (!surf->polygon3D().isValid()) {
+				childSurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+				childSurface->setData(0, Qt::ToolTipRole, tr("Invalid child-surface polygon"));
+			}
 
-            for(const VICUS::Surface &childSurf : s.childSurfaces())
-                addChildSurface(childSurface, childSurf);
-        }
+			for(const VICUS::Surface &childSurf : s.childSurfaces())
+				addChildSurface(childSurface, childSurf);
+		}
 
-    }
+	}
 }
 
 
@@ -149,16 +149,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::BuildingTopologyChanged : {
 			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
 			SVUndoModifyRoomZoneTemplateAssociation::Data * d = dynamic_cast<SVUndoModifyRoomZoneTemplateAssociation::Data *>(data);
-			if(d == nullptr)
+
+			// not a RoomZoneTemplateAssociation? In this case update the entire tree
+			if (d == nullptr)
 				break;	// leave switch case and update entire tree
-			for(const VICUS::Object *obj : d->m_objects) {
-				QTreeWidgetItem * item = m_treeItemMap[obj->m_id];
-				Q_ASSERT(item != nullptr);
-				m_ui->treeWidget->blockSignals(true);
-				// item->setExpanded(true);
-				m_ui->treeWidget->blockSignals(false);
-			}
-			return;
+			return; // do nothing, this topology change does not require rebuild of nav tree
 		}
 
 		case SVProjectHandler::ObjectRenamed : {
@@ -185,15 +180,16 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			Q_ASSERT(info != nullptr);
 
 			for (unsigned int ID : info->m_nodeIDs) {
-				// special handling for ID 0 as it is the plain geometry
-//				if (ID == 0)
-//					continue;
-
 				const VICUS::Object * o = project().objectById(ID);
-				if(ID == 0)
+				if (o == nullptr) {
+					qCritical() << "Object with ID" << ID << "does not exist!";
 					continue;
+				}
 				auto itemId = m_treeItemMap.find(ID);
-				Q_ASSERT(itemId != m_treeItemMap.end());
+				if (itemId == m_treeItemMap.end()) {
+					qCritical() << "Tree node for object with ID" << ID << "does not exist!";
+					continue;
+				}
 				QTreeWidgetItem * item = itemId->second;
 				m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
 				if(ID == 0) { // Special handling for plain geometry
@@ -279,7 +275,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 						surface->setData(0, Qt::ToolTipRole, tr("Invalid polygon/hole geometry"));
 					}
 
-                    addChildSurface(surface, s);
+					addChildSurface(surface, s);
 				}
 			}
 		}

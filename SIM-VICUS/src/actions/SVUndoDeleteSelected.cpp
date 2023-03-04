@@ -71,11 +71,11 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 						for (const VICUS::SubSurface & sub : r.m_surfaces[sIdx].subSurfaces())
 							if (selectedUniqueIDs.find(sub.m_id) == selectedUniqueIDs.end() )
 								remainingSubSurfaces.push_back(sub); // keep only those that are not selected
-                        std::vector<VICUS::Surface> remainingChildSurfaces;
-                        for (const VICUS::Surface & child : r.m_surfaces[sIdx].childSurfaces())
-                            if (selectedUniqueIDs.find(child.m_id) == selectedUniqueIDs.end() )
-                                remainingChildSurfaces.push_back(child); // keep only those that are not selected
-                        r.m_surfaces[sIdx].setChildAndSubSurfaces(remainingSubSurfaces, remainingChildSurfaces); // keep remaining subs
+						std::vector<VICUS::Surface> remainingChildSurfaces;
+						for (const VICUS::Surface & child : r.m_surfaces[sIdx].childSurfaces())
+							if (selectedUniqueIDs.find(child.m_id) == selectedUniqueIDs.end() )
+								remainingChildSurfaces.push_back(child); // keep only those that are not selected
+						r.m_surfaces[sIdx].setChildAndSubSurfaces(remainingSubSurfaces, remainingChildSurfaces); // keep remaining subs
 						++sIdx; // go to next surface
 					}
 				}

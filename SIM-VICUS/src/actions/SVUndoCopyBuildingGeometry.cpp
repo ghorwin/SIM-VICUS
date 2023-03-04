@@ -104,9 +104,9 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 					for (unsigned int m=0; m<rooms[k].m_surfaces.size(); ++m) {
 						if (rooms[k].m_surfaces[m].m_id == parentSurfaceID) {
 							std::vector<VICUS::SubSurface> subs = rooms[k].m_surfaces[m].subSurfaces();
-                            std::vector<VICUS::Surface> childs = rooms[k].m_surfaces[m].childSurfaces();
+							std::vector<VICUS::Surface> childs = rooms[k].m_surfaces[m].childSurfaces();
 							subs.push_back(newSub);
-                            rooms[k].m_surfaces[m].setChildAndSubSurfaces(subs, childs);
+							rooms[k].m_surfaces[m].setChildAndSubSurfaces(subs, childs);
 							found = true;
 							break;
 						}
