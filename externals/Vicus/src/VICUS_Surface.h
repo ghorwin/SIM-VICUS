@@ -54,7 +54,7 @@ public:
 	/*! Sets default surface color based on inclination of associated plane geometry. */
 	void initializeColorBasedOnInclination();
 
-    void updateParents();
+	void updateParents();
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
@@ -66,13 +66,13 @@ public:
 	void setPolygon3D(const IBKMK::Polygon3D & polygon3D);
 
 	const std::vector<SubSurface> &		subSurfaces() const { return m_subSurfaces; }
-    const std::vector<Surface> &		childSurfaces() const { return m_childSurfaces; }
+	const std::vector<Surface> &		childSurfaces() const { return m_childSurfaces; }
 
-    void setChildAndSubSurfaces(const std::vector<SubSurface>  & subSurfaces,
-                                const std::vector<Surface>     &childSurfaces);
+	void setChildAndSubSurfaces(const std::vector<SubSurface>  & subSurfaces,
+								const std::vector<Surface>     &childSurfaces);
 
 	/*! Gives read-access to the surface's geometry. */
-    const PlaneGeometry & geometry() const { return m_geometry; }
+	const PlaneGeometry & geometry() const { return m_geometry; }
 
 	/*! Flips the normal vector of polygon.
 		This also swaps local X and localY axes, so the x and y coordinates of our sub-surface
@@ -114,8 +114,8 @@ private:
 	/*! Subsurfaces of the surface. */
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
-    /*! ChildSurfaces of the surface. */
-    std::vector<Surface>                m_childSurfaces;            // XML:E
+	/*! ChildSurfaces of the surface. */
+	std::vector<Surface>				m_childSurfaces;			// XML:E
 
 	// *** RUNTIME VARIABLES ***
 
