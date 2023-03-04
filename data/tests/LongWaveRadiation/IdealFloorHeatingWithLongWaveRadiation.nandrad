@@ -2,8 +2,12 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Test case for floor heating system with long wave radiation. Two identical zones with a heated floor and another wall each. In zone 1 there is no long wave radiation. Zone 11 is almost identical to that, except that floor and wall exchange heat through long wave radiation.
-					As a result the surface temperatures in zone 11 are closer to each other and there is an emitted long wave radiation flux that can be checked using Stefan Boltzmann equation.
+			<Comment>Test case for floor heating system with long wave radiation. Two identical zones with a heated floor and another wall each. 
+					In zone 1 there is no long wave radiation. 
+					Zone 11 is almost identical to that, except that floor and wall exchange heat through long wave radiation.
+					As a result, the surface temperatures in zone 11 are closer to each other and there is an emitted long wave radiation flux 
+					that can be checked using Stefan Boltzmann equation.
+					Zone 12 is the same as zone 11, but with inverted constructions and interfaces (to check correct sign handling).
 			</Comment>
 		</ProjectInfo>
 		<Location>
@@ -31,9 +35,25 @@
 			<Zone id="11" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+				<!-- These view factors are precalculated. 
+					 Note: some surfaces are missing, so that the view factors for a single surface
+					       do not add up to 1.
+				-->
 				<ViewFactors>
 							4001 4002 0.5
 							4002 4001 0.5
+			  </ViewFactors>
+			</Zone>
+			<Zone id="12" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+				<!-- These view factors are precalculated. 
+					 Note: some surfaces are missing, so that the view factors for a single surface
+					       do not add up to 1.
+				-->
+				<ViewFactors>
+							5001 5002 0.5
+							5002 5001 0.5
 			  </ViewFactors>
 			</Zone>
 		</Zones>
@@ -102,6 +122,41 @@
 				</InterfaceA>
 			</ConstructionInstance>
 			
+
+			<!-- walls with long wave rad - inverted -->
+			
+			<ConstructionInstance id="5001" displayName="Floor with lw - inverted">
+				<ConstructionTypeId>20001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceB id="1" zoneId="12">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+			
+			<ConstructionInstance id="5002" displayName="OtherWall with lw - inverted">
+				<ConstructionTypeId>20001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceB id="1" zoneId="12">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</InterfaceB>
+			</ConstructionInstance>
+			
 			
 		</ConstructionInstances>
 		
@@ -115,9 +170,13 @@
 					<MaterialLayer thickness="0.12" matId="1001" />
 				</MaterialLayers>
 			</ConstructionType>
-			<ConstructionType id="10002" displayName="Simple construction">
+			<ConstructionType id="20001" displayName="Construction with heated slab - inverted">
+				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
+				<ActiveLayerIndex>1</ActiveLayerIndex>
 				<MaterialLayers>
-					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.12" matId="1001" />
+					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
+					<MaterialLayer thickness="0.01" matId="1002" />
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
