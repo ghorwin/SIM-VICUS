@@ -251,7 +251,9 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 			res.m_indexKeys.clear();
 			resDesc.push_back(res);
 		}
+	}
 
+	if (m_con->m_interfaceB.m_zoneId != 0) {
 		// emitted long wave radiation of surface B
 		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
 			QuantityDescription res;
