@@ -203,19 +203,22 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	}
 
 	// add vector valued quantities
-	QuantityDescription res;
-	res.m_constant = true;
-	res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
-	res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
-	res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
-	// this is a vector-valued quantity with as many elements as material layers
-	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
-	res.resize(m_con->m_constructionType->m_materialLayers.size());
-	resDesc.push_back(res);
+	{
+		QuantityDescription res;
+		res.m_constant = true;
+		res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
+		res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
+		res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_ElementTemperature);
+		// this is a vector-valued quantity with as many elements as material layers
+		// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
+		res.resize(m_con->m_constructionType->m_materialLayers.size());
+		resDesc.push_back(res);
+	}
 
-	// in the case of an actiev construction add active temparture layer
+	// in the case of an actiev construction add active temperature layer
 	if (m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		QuantityDescription result;
+		// Note: we do not specify an ID here, as we do not know which model may supply us with the ActiveLayerTemperature
 		result.m_constant = true;
 		result.m_description = "Temperature of the active material layer";
 		result.m_name = "ActiveLayerTemperature";
@@ -223,40 +226,55 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 		resDesc.push_back(result);
 	}
 
-	// emmited inner long wave radiation of surface A
-	if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
-		m_con->m_interfaceA.m_zoneId != 0) {
-		res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		res.m_id = m_id; // id of emmitting instance (ourself)
-		res.m_constant = true;
+	if (m_con->m_interfaceA.m_zoneId != 0) {
+		// emitted inner long wave radiation of surface A
+		if (m_con->m_interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			// first publish individual emitted long wave radiation fluxes to all connected surfaces
+			QuantityDescription res;
+			res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			res.m_id = m_id; // id of emmitting instance (ourself)
 
-		res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
-		res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
-		res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationA);
 
-		const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesA = m_con->m_interfaceA.m_connectedInterfaces;
-		for (auto it = connectedInterfacesA.begin(); it!=connectedInterfacesA.end(); ++it)
-			res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
-		res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
-		resDesc.push_back(res);
-	}
+			const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesA = m_con->m_interfaceA.m_connectedInterfaces;
+			for (auto it = connectedInterfacesA.begin(); it!=connectedInterfacesA.end(); ++it)
+				res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
+			res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
+			resDesc.push_back(res);
 
-	// emmited long wave radiation of surface B
-	if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
-		m_con->m_interfaceB.m_zoneId != 0) {
-		res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		res.m_id = m_id; // id of emmitting instance (ourself)
-		res.m_constant = true;
+			// publish sum of emitted radiation flux density
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
+			res.m_indexKeys.clear();
+			resDesc.push_back(res);
+		}
 
-		res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
-		res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
-		res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
+		// emitted long wave radiation of surface B
+		if (m_con->m_interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+			QuantityDescription res;
+			res.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			res.m_id = m_id; // id of emmitting instance (ourself)
 
-		const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesB = m_con->m_interfaceB.m_connectedInterfaces;
-		for (auto it = connectedInterfacesB.begin(); it!=connectedInterfacesB.end(); ++it)
-			res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
-		res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
-		resDesc.push_back(res);
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::VectorValuedResults", VVR_EmittedLongWaveRadiationB);
+
+			const std::map<unsigned int, const NANDRAD::Interface*>	&connectedInterfacesB = m_con->m_interfaceB.m_connectedInterfaces;
+			for (auto it = connectedInterfacesB.begin(); it!=connectedInterfacesB.end(); ++it)
+				res.m_indexKeys.push_back(it->first); // id of targeted instance (the absorbing construction instance)
+			res.m_indexKeyType = VectorValuedQuantityIndex::IK_ModelID;
+			resDesc.push_back(res);
+
+			// publish sum of emitted radiation flux density
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
+			res.m_indexKeys.clear();
+			resDesc.push_back(res);
+		}
 	}
 }
 
