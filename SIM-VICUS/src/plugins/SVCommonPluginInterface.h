@@ -58,13 +58,13 @@ public:
 			changes (see SettingsDialogUpdateNeeds).
 	*/
 	virtual int showSettingsDialog(QWidget * parent) { (void)parent; return NoUpdate; }
-  
-  /*! Set the language Id for for the plugin.
-      This function should be called by the master program directly after loading the plugin.
-      \param langId Language id (e.g. en for English)
-      \param appname Name of the calling application
-  */
-  virtual void setLanguage(QString langId, QString appname) { };
+
+	/*! Set the language Id for for the plugin.
+		This function should be called by the master program directly after loading the plugin.
+		\param langId Language id (e.g. en for English)
+		\param appname Name of the calling application (used to generate save file location).
+	*/
+	virtual void setLanguage(QString langId, QString appname) { (void)langId; (void)appname; }
 };
 
 
