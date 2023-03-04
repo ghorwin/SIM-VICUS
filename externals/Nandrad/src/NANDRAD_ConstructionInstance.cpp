@@ -105,7 +105,7 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 	}
 	try {
 		m_interfaceB.checkParameters();
-		m_interfaceA.m_isSideA = false;
+		m_interfaceB.m_isSideA = false;
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error checking model parameters for InterfaceB.", FUNC_ID);
 	}
