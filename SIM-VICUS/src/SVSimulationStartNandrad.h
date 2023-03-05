@@ -96,7 +96,6 @@ private slots:
 
 	void on_tabWidget_currentChanged(int index);
 
-	void on_checkBoxEnableMoistureBalance_toggled(bool checked);
 
 	void on_lineEditEndDate_returnPressed();
 

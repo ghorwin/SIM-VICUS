@@ -595,21 +595,6 @@ void SVSimulationStartNandrad::on_tabWidget_currentChanged(int) {
 }
 
 
-void SVSimulationStartNandrad::on_checkBoxEnableMoistureBalance_toggled(bool checked) {
-	// update flag
-	NANDRAD::SimulationParameter & simParas = m_localProject.m_simulationParameter; // readability improvements
-	std::string name = std::string();
-
-	// only set name if moisture balance is enabled
-	if(checked) {
-		name = NANDRAD::KeywordList::Keyword("SimulationParameter::flag_t",
-				NANDRAD::SimulationParameter::F_EnableMoistureBalance);
-	}
-
-	simParas.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].set(name, checked);
-}
-
-
 void SVSimulationStartNandrad::on_lineEditStartDate_returnPressed() {
 	// same as editing finished, but just move the focus to lineEditEnd
 	m_ui->lineEditEndDate->setFocus();
