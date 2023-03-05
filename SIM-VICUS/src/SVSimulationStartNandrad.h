@@ -85,6 +85,7 @@ private slots:
 
 	void on_lineEditDuration_editingFinishedSuccessfully();
 	void on_lineEditStartDate_editingFinished();
+	void on_lineEditStartDate_returnPressed();
 	void on_lineEditEndDate_editingFinished();
 
 	void on_comboBoxTermEmulator_currentIndexChanged(int index);
@@ -96,6 +97,8 @@ private slots:
 	void on_tabWidget_currentChanged(int index);
 
 	void on_checkBoxEnableMoistureBalance_toggled(bool checked);
+
+	void on_lineEditEndDate_returnPressed();
 
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */

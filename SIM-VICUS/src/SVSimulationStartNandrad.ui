@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
@@ -329,6 +329,9 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -353,8 +356,11 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
               <property name="default">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -380,8 +386,11 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
               <property name="default">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -431,6 +440,9 @@
        <property name="text">
         <string>Show log file...</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -450,6 +462,9 @@
       <widget class="QPushButton" name="pushButtonClose">
        <property name="text">
         <string>Store input data and close dialog</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
