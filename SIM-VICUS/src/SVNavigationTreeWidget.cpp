@@ -82,27 +82,33 @@ void SVNavigationTreeWidget::addChildSurface(QTreeWidgetItem *item, const VICUS:
 
 		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
 
-		const VICUS::SubSurface *sub = dynamic_cast<const VICUS::SubSurface*>(obj);
+    for (unsigned int holeIdx = 0; holeIdx < s.geometry().holes().size(); ++holeIdx) {
 
-		if(sub != nullptr) {
-			QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub->m_displayName, QTreeWidgetItem::Type);
-			m_treeItemMap[sub->m_id] = subsurface;
-			subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+        const VICUS::PlaneGeometry::Hole &h = s.geometry().holes()[holeIdx];
 
-			// mark invalid subsurfaces in red and give tooltip with error
-			if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
-				subsurface->setForeground(0, QColor(128,0,0));
-				subsurface->setToolTip(0, tr("Invalid polygon data"));
-			}
+        const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
 
-			item->addChild(subsurface);
-			subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub->m_id);
-			subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub->m_visible);
-			subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub->m_selected);
-			if (!sub->m_polygon2D.isValid()) {
-				subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
-				subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
-			}
+		const VICUS::SubSurface *subSurf = dynamic_cast<const VICUS::SubSurface*>(obj);
+
+		if(subSurf != nullptr) {
+			QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << subSurf->m_displayName, QTreeWidgetItem::Type);
+			m_treeItemMap[subSurf->m_id] = subsurface;
+            subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+
+            // mark invalid subsurfaces in red and give tooltip with error
+            if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
+                subsurface->setForeground(0, QColor(128,0,0));
+                subsurface->setToolTip(0, tr("Invalid polygon data"));
+            }
+
+            item->addChild(subsurface);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, subSurf->m_id);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, subSurf->m_visible);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, subSurf->m_selected);
+			if (!subSurf->m_polygon2D.isValid()) {
+                subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+                subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
+            }
 
 			continue;
 		}
