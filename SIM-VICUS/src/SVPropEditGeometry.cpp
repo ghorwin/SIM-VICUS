@@ -509,7 +509,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 			m_surfNames.insert(s->m_displayName );
 			if (s->m_selected && s->m_visible)
 				m_selSurfaces.push_back(s);
-			selectChildSurfaces(m_selSurfaces, *s);
+			//selectChildSurfaces(m_selSurfaces, *s);
 		}
 		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(o);
 		if (r != nullptr ) {
