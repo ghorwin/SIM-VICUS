@@ -423,7 +423,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 				IBK::IBK_Message(IBK::FormatString("Surface '%1' is beeing clipped by surface '%2'")
 								 .arg(originSurf.m_displayName.toStdString())
-								 .arg(originSurf.m_displayName.toStdString()), IBK::MSG_PROGRESS);
+								 .arg(s2.m_displayName.toStdString()), IBK::MSG_PROGRESS);
 
 				try {
 					originSurf.m_id = ++m_nextVicusId;
@@ -541,7 +541,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 				std::vector<VICUS::Polygon2D> holes(poly.m_holePolygons.size());
 
-				std::vector<VICUS::Surface> childSurfaces;
+				std::vector<VICUS::Surface> childSurfaces = originSurf.childSurfaces();
 				for(unsigned int i=0; i<poly.m_holePolygons.size(); ++i) {
 					IBKMK::Polygon2D &holePoly = poly.m_holePolygons[i];
 					std::vector<IBKMK::Vector3D> vertexes(holePoly.vertexes().size());
@@ -622,12 +622,14 @@ QString VicusClipper::generateUniqueName(QString name) {
 	QString baseName = name.left(idx1-1);
 
 	if(m_nameMap.find(baseName) != m_nameMap.end())
-		++m_nameMap[baseName];
-	else
+		m_nameMap[baseName]++;
+	else {
 		m_nameMap[baseName] = 1;
+		return QString("%1").arg(baseName);
+	}
 
 
-	return QString("%1 [%2]").arg(baseName).arg(m_nameMap[baseName]);
+	return QString("%1 (%2)").arg(baseName).arg(m_nameMap[baseName]);
 }
 
 
@@ -994,9 +996,9 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 									 std::vector<ClippingPolygon> &mainIntersections,
 									 bool normalInterpolation) {
 
-	ClipperLib::Paths	mainPoly(2);
+	ClipperLib::Paths	mainPoly(1+surf.m_holePolygons.size());
 	ClipperLib::Path	&polyClp = mainPoly[0];
-	ClipperLib::Path	&holeClp = mainPoly.back();
+	//ClipperLib::Path	&holeClp = mainPoly.back();
 
 	ClipperLib::PolyTree polyTreeResultsIntersection;
 	ClipperLib::PolyTree polyTreeResultsDiffs;
@@ -1016,16 +1018,14 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 		for (unsigned int idxHole = 0; idxHole < surf.m_holePolygons.size(); ++idxHole) {
 			const IBKMK::Polygon2D &holePoly = surf.m_holePolygons[idxHole];
 			qDebug() << "Adding hole with Index " << idxHole << " to Clipper data structure";
-			holeClp = convertVec2DToClipperPath(holePoly.vertexes());
-			bool orientationHolePoly = ClipperLib::Orientation(holeClp);
+			mainPoly[1+idxHole] = convertVec2DToClipperPath(holePoly.vertexes());
+			bool orientationHolePoly = ClipperLib::Orientation(mainPoly[1+idxHole]);
 			// Init PolyNode
 			ClipperLib::PolyNode pnHole;
 			pnHole.Contour = convertVec2DToClipperPath(holePoly.vertexes());
 			pnMain.Childs.push_back(&pnHole);
 		}
 	}
-	if(surf.m_holePolygons.empty())
-		mainPoly.pop_back();
 
 
 	// set up clipper lib paths
