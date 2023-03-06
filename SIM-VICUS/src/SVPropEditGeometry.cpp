@@ -1173,7 +1173,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 			// number of sub-surfaces and holes should always be equal
 			// Just in order to be safe
-			Q_ASSERT(newSurf.subSurfaces().size() == newSurf.geometry().holes().size());
+			Q_ASSERT( ( newSurf.subSurfaces().size() + newSurf.childSurfaces().size() ) == newSurf.geometry().holes().size());
 
 			// we only modify our selected sub surface
 			VICUS::SubSurface &subS = newSubSurfs[i];
