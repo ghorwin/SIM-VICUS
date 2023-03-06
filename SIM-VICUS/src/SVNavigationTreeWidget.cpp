@@ -76,39 +76,34 @@ SVNavigationTreeWidget::~SVNavigationTreeWidget() {
 
 
 void SVNavigationTreeWidget::addChildSurface(QTreeWidgetItem *item, const VICUS::Surface &s) {
+
 	for (unsigned int holeIdx = 0; holeIdx < s.geometry().holes().size(); ++holeIdx) {
 
 		const VICUS::PlaneGeometry::Hole &h = s.geometry().holes()[holeIdx];
 
 		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
 
-    for (unsigned int holeIdx = 0; holeIdx < s.geometry().holes().size(); ++holeIdx) {
-
-        const VICUS::PlaneGeometry::Hole &h = s.geometry().holes()[holeIdx];
-
-        const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(h.m_idObject);
-
 		const VICUS::SubSurface *subSurf = dynamic_cast<const VICUS::SubSurface*>(obj);
 
 		if(subSurf != nullptr) {
 			QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << subSurf->m_displayName, QTreeWidgetItem::Type);
 			m_treeItemMap[subSurf->m_id] = subsurface;
-            subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+			subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 
-            // mark invalid subsurfaces in red and give tooltip with error
-            if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
-                subsurface->setForeground(0, QColor(128,0,0));
-                subsurface->setToolTip(0, tr("Invalid polygon data"));
-            }
+			// mark invalid subsurfaces in red and give tooltip with error
+			if (!s.geometry().holes()[holeIdx].m_holeGeometry.isValid()) {
+				subsurface->setForeground(0, QColor(128,0,0));
+				subsurface->setToolTip(0, tr("Invalid polygon data"));
+			}
 
-            item->addChild(subsurface);
+			item->addChild(subsurface);
 			subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, subSurf->m_id);
 			subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, subSurf->m_visible);
 			subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, subSurf->m_selected);
 			if (!subSurf->m_polygon2D.isValid()) {
-                subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
-                subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
-            }
+				subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+				subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
+			}
 
 			continue;
 		}
@@ -147,73 +142,73 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
-		case SVProjectHandler::AllModified :
-		case SVProjectHandler::NetworkGeometryChanged :
-		case SVProjectHandler::BuildingGeometryChanged :
+	case SVProjectHandler::AllModified :
+	case SVProjectHandler::NetworkGeometryChanged :
+	case SVProjectHandler::BuildingGeometryChanged :
 
 		break;
-		case SVProjectHandler::BuildingTopologyChanged : {
-			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
-			SVUndoModifyRoomZoneTemplateAssociation::Data * d = dynamic_cast<SVUndoModifyRoomZoneTemplateAssociation::Data *>(data);
+	case SVProjectHandler::BuildingTopologyChanged : {
+		/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
+		SVUndoModifyRoomZoneTemplateAssociation::Data * d = dynamic_cast<SVUndoModifyRoomZoneTemplateAssociation::Data *>(data);
 
-			// not a RoomZoneTemplateAssociation? In this case update the entire tree
-			if (d == nullptr)
-				break;	// leave switch case and update entire tree
-			return; // do nothing, this topology change does not require rebuild of nav tree
-		}
+		// not a RoomZoneTemplateAssociation? In this case update the entire tree
+		if (d == nullptr)
+			break;	// leave switch case and update entire tree
+		return; // do nothing, this topology change does not require rebuild of nav tree
+	}
 
-		case SVProjectHandler::ObjectRenamed : {
-			SVUndoModifyObjectName::Data * d = dynamic_cast<SVUndoModifyObjectName::Data *>(data);
-			Q_ASSERT(d != nullptr);
-			// modify tree item
-			QTreeWidgetItem * item = m_treeItemMap[d->m_object->m_id];
-			Q_ASSERT(item != nullptr);
-			m_ui->treeWidget->blockSignals(true);
-			item->setText(0, d->m_object->m_displayName);
-			m_ui->treeWidget->blockSignals(false);
-			return;
-		}
+	case SVProjectHandler::ObjectRenamed : {
+		SVUndoModifyObjectName::Data * d = dynamic_cast<SVUndoModifyObjectName::Data *>(data);
+		Q_ASSERT(d != nullptr);
+		// modify tree item
+		QTreeWidgetItem * item = m_treeItemMap[d->m_object->m_id];
+		Q_ASSERT(item != nullptr);
+		m_ui->treeWidget->blockSignals(true);
+		item->setText(0, d->m_object->m_displayName);
+		m_ui->treeWidget->blockSignals(false);
+		return;
+	}
 
-		case SVProjectHandler::NodeStateModified : {
-			// we only change data properties of existing nodes and emit itemChanged() signals, so
-			// that the view updates its content
+	case SVProjectHandler::NodeStateModified : {
+		// we only change data properties of existing nodes and emit itemChanged() signals, so
+		// that the view updates its content
 
-			QElapsedTimer timer;
-			timer.start();
+		QElapsedTimer timer;
+		timer.start();
 
-			// first decode the modification info object
-			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
-			Q_ASSERT(info != nullptr);
+		// first decode the modification info object
+		const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
+		Q_ASSERT(info != nullptr);
 
-			for (unsigned int ID : info->m_nodeIDs) {
-				const VICUS::Object * o = project().objectById(ID);
-				if (o == nullptr) {
-					qCritical() << "Object with ID" << ID << "does not exist!";
-					continue;
-				}
-				auto itemId = m_treeItemMap.find(ID);
-				if (itemId == m_treeItemMap.end()) {
-					qCritical() << "Tree node for object with ID" << ID << "does not exist!";
-					continue;
-				}
-				QTreeWidgetItem * item = itemId->second;
-				m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
-				if(ID == 0) { // Special handling for plain geometry
-					item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, project().m_plainGeometry.m_visible);
-					item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, project().m_plainGeometry.m_selected);
-				} else {
-					item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, o->m_visible);
-					item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, o->m_selected);
-				}
-				m_ui->treeWidget->blockSignals(false);
+		for (unsigned int ID : info->m_nodeIDs) {
+			const VICUS::Object * o = project().objectById(ID);
+			if (o == nullptr) {
+				qCritical() << "Object with ID" << ID << "does not exist!";
+				continue;
 			}
-
-			qDebug() << timer.elapsed() << "ms for navigation model node state update.";
-			return; // nothing else to do here
+			auto itemId = m_treeItemMap.find(ID);
+			if (itemId == m_treeItemMap.end()) {
+				qCritical() << "Tree node for object with ID" << ID << "does not exist!";
+				continue;
+			}
+			QTreeWidgetItem * item = itemId->second;
+			m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
+			if(ID == 0) { // Special handling for plain geometry
+				item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, project().m_plainGeometry.m_visible);
+				item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, project().m_plainGeometry.m_selected);
+			} else {
+				item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, o->m_visible);
+				item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, o->m_selected);
+			}
+			m_ui->treeWidget->blockSignals(false);
 		}
 
-		default:
-			return; // do nothing by default
+		qDebug() << timer.elapsed() << "ms for navigation model node state update.";
+		return; // nothing else to do here
+	}
+
+	default:
+		return; // do nothing by default
 	}
 
 	QElapsedTimer timer;
@@ -229,8 +224,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
 	root->setFlags(Qt::ItemIsEnabled);
-//	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
-//	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
+	//	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
+	//	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
 
 	// get project data
@@ -413,8 +408,8 @@ void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (!vs.inPropertyEditingMode() &&
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry &&
-		vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+			vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry &&
+			vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
 	{
 		if (SVViewStateHandler::instance().m_propEditGeometryWidget->handleGlobalKeyPress(Qt::Key_Escape))
 			return;
