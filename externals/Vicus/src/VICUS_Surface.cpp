@@ -52,10 +52,11 @@ void Surface::updateParents() {
 		m_children.push_back(&sub);
 		sub.m_parent = this;
 	}
-	for (Surface &surf : m_childSurfaces) {
-		m_children.push_back(&surf);
-		surf.m_parent = this;
-	}
+	for (Surface &childSurf : m_childSurfaces) {
+		m_children.push_back(&childSurf);
+		childSurf.m_parent = this;
+		childSurf.updateParents();
+    }
 }
 
 

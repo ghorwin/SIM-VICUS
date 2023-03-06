@@ -61,7 +61,7 @@ public:
             m_isChildSurface(isChildSurface)
         {}
 
-        /*! Pointer to corresponding vicus hole object. */
+		/*! ID to corresponding vicus hole object. */
         unsigned int            m_idObject = INVALID_ID;
         /*! Hole geometry. */
         VICUS::Polygon2D        m_holeGeometry;
