@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -184,7 +184,7 @@
            </widget>
           </item>
           <item row="9" column="3">
-           <widget class="QToolButton" name="toolButtonEditComponents1">
+           <widget class="QToolButton" name="toolButtonEditComponents">
             <property name="text">
              <string>...</string>
             </property>
@@ -415,7 +415,7 @@
            </widget>
           </item>
           <item row="5" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents2">
+           <widget class="QToolButton" name="toolButtonEditComponentsFloor">
             <property name="text">
              <string>...</string>
             </property>
@@ -462,7 +462,7 @@
            </widget>
           </item>
           <item row="6" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents3">
+           <widget class="QToolButton" name="toolButtonEditComponentsCeiling">
             <property name="text">
              <string>...</string>
             </property>
@@ -529,7 +529,7 @@
            </widget>
           </item>
           <item row="7" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents4">
+           <widget class="QToolButton" name="toolButtonEditComponentsWalls">
             <property name="text">
              <string>...</string>
             </property>
@@ -657,14 +657,14 @@
            </widget>
           </item>
           <item row="5" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents5">
+           <widget class="QToolButton" name="toolButtonEditComponentsRoof3">
             <property name="text">
              <string>...</string>
             </property>
            </widget>
           </item>
           <item row="7" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents8">
+           <widget class="QToolButton" name="toolButtonEditComponentsFloor3">
             <property name="text">
              <string>...</string>
             </property>
@@ -795,7 +795,7 @@
            </widget>
           </item>
           <item row="6" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents7">
+           <widget class="QToolButton" name="toolButtonEditComponentsWall3">
             <property name="text">
              <string>...</string>
             </property>
@@ -1198,11 +1198,11 @@
   <tabstop>comboBoxBuildingLevel2</tabstop>
   <tabstop>toolButtonAddBuildingLevel2</tabstop>
   <tabstop>comboBoxComponentFloor</tabstop>
-  <tabstop>toolButtonEditComponents2</tabstop>
+  <tabstop>toolButtonEditComponentsFloor</tabstop>
   <tabstop>comboBoxComponentCeiling</tabstop>
-  <tabstop>toolButtonEditComponents3</tabstop>
+  <tabstop>toolButtonEditComponentsCeiling</tabstop>
   <tabstop>comboBoxComponentWalls</tabstop>
-  <tabstop>toolButtonEditComponents4</tabstop>
+  <tabstop>toolButtonEditComponentsWalls</tabstop>
   <tabstop>lineEditZoneHeight</tabstop>
   <tabstop>pushButtonPickZoneHeight</tabstop>
   <tabstop>pushButtonCreateZone</tabstop>
@@ -1213,9 +1213,9 @@
   <tabstop>comboBoxBuildingLevel3</tabstop>
   <tabstop>toolButtonAddBuildingLevel3</tabstop>
   <tabstop>comboBoxComponentRoof3</tabstop>
-  <tabstop>toolButtonEditComponents5</tabstop>
+  <tabstop>toolButtonEditComponentsRoof3</tabstop>
   <tabstop>comboBoxComponentWall3</tabstop>
-  <tabstop>toolButtonEditComponents7</tabstop>
+  <tabstop>toolButtonEditComponentsWall3</tabstop>
   <tabstop>comboBoxRoofType</tabstop>
   <tabstop>radioButtonRoofHeight</tabstop>
   <tabstop>lineEditRoofHeight</tabstop>

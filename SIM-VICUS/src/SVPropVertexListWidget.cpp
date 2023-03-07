@@ -101,13 +101,13 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	connect(m_ui->toolButtonEditSubSurfComponents, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditSubSurfaceComponents);
 
-	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsCeiling, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsFloor, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsWalls, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsFloor3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsRoof3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsWall3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 
 	updateButtonStates(); // see class comment
 
@@ -430,11 +430,33 @@ void SVPropVertexListWidget::onCancel() {
 
 
 void SVPropVertexListWidget::onEditComponents() {
+	// determine which combo box called us
+	QComboBox * combo = nullptr;
+	if (sender() == m_ui->toolButtonEditComponents)					combo = m_ui->comboBoxComponent;
+	else if (sender() == m_ui->toolButtonEditComponentsCeiling)		combo = m_ui->comboBoxComponentCeiling;
+	else if (sender() == m_ui->toolButtonEditComponentsFloor)		combo = m_ui->comboBoxComponentFloor;
+	else if (sender() == m_ui->toolButtonEditComponentsWalls)		combo = m_ui->comboBoxComponentWalls;
+	else if (sender() == m_ui->toolButtonEditComponentsRoof3)		combo = m_ui->comboBoxComponentRoof3;
+	else if (sender() == m_ui->toolButtonEditComponentsFloor3)		combo = m_ui->comboBoxComponentFloor3;
+	else if (sender() == m_ui->toolButtonEditComponentsWall3)		combo = m_ui->comboBoxComponentWall3;
+
+	Q_ASSERT(combo != nullptr);
+
+	// get ID of currently selected component
+	unsigned int currentComponentID = combo->currentData().toUInt();
+	if (combo->count() == 0)
+		currentComponentID = VICUS::INVALID_ID;
+
 	// ask main window to show database dialog, afterwards update component combos
-	SVMainWindow::instance().on_actionDBComponents_triggered();
-	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
-	//       no need to call this here
+	unsigned int newID = SVMainWindow::instance().dbComponentEditDialog()->select(currentComponentID);
+	if (newID != VICUS::INVALID_ID) {
+		// first update all combo boxes, in case user had edited names of components
+		updateComponentComboBoxes();
+		// now reselect the newly selected component
+		reselectById(combo, newID);
+	}
 }
+
 
 void SVPropVertexListWidget::onEditSubSurfaceComponents() {
 	// ask main window to show database dialog, afterwards update component combos
@@ -1326,7 +1348,7 @@ void SVPropVertexListWidget::updateButtonStates() {
 
 		m_ui->labelComponent->setEnabled(false);
 		m_ui->comboBoxComponent->setEnabled(false);
-		m_ui->toolButtonEditComponents1->setEnabled(false);
+		m_ui->toolButtonEditComponents->setEnabled(false);
 
 		m_ui->checkBoxSubSurfaceGeometry->setEnabled(false);
 		m_ui->comboBoxSurface->setEnabled(false);
@@ -1344,7 +1366,7 @@ void SVPropVertexListWidget::updateButtonStates() {
 
 		m_ui->labelComponent->setEnabled(!subSurf);
 		m_ui->comboBoxComponent->setEnabled(!subSurf);
-		m_ui->toolButtonEditComponents1->setEnabled(!subSurf);
+		m_ui->toolButtonEditComponents->setEnabled(!subSurf);
 
 		// building controls
 		m_ui->labelAddBuilding->setEnabled(!subSurf);
