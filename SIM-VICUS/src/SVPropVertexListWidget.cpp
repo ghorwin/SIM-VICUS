@@ -699,9 +699,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 			subSurfs.push_back(newSubsurface);
 
-            std::vector<VICUS::Surface> childs = newSurf.childSurfaces();
+			std::vector<VICUS::Surface> childs = newSurf.childSurfaces();
 
-            newSurf.setChildAndSubSurfaces(subSurfs, childs);
+			newSurf.setChildAndSubSurfaces(subSurfs, childs);
 			modSurfaces.push_back(newSurf);
 
 			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surface/window"),
@@ -1471,6 +1471,22 @@ void SVPropVertexListWidget::updateNetworkButtons() {
 
 }
 
+template <typename T>
+class SortByDisplayName {
+public:
+	SortByDisplayName(const VICUS::Database<T> & vec) :
+		m_vec(vec)
+	{}
+
+	bool operator()(unsigned int lhsIdx, unsigned int rhsIdx) const {
+		QString leftName = QtExt::MultiLangString2QString(m_vec[lhsIdx]->m_displayName);
+		QString rightName = QtExt::MultiLangString2QString(m_vec[rhsIdx]->m_displayName);
+		return  QString::localeAwareCompare(leftName, rightName) < 0;
+	}
+
+	const VICUS::Database<T> & m_vec;
+};
+
 
 void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
 	// remember currently selected component IDs
@@ -1480,21 +1496,35 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 
 	combo->clear();
 
-	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
-	for (auto & c : SVSettings::instance().m_db.m_components) {
-		switch (c.second.m_type) {
+	// process all components and put them into 2 containers; first for the filtered types,
+	// second for the rest
+
+	std::vector<unsigned int> selectedComponents;
+	std::vector<unsigned int> otherComponents;
+
+	const VICUS::Database<VICUS::Component> & comps = SVSettings::instance().m_db.m_components;
+
+	std::map<unsigned int, VICUS::Component>::const_iterator it = comps.begin();
+	for (unsigned int i=0; i<comps.size(); ++i, ++it) {
+		const VICUS::Component & c = it->second;
+
+		switch (c.m_type) {
 			case VICUS::Component::CT_OutsideWall :
 			case VICUS::Component::CT_OutsideWallToGround :
 			case VICUS::Component::CT_InsideWall :
 				if (type == -1 || type == 0)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_FloorToCellar :
 			case VICUS::Component::CT_FloorToAir :
 			case VICUS::Component::CT_FloorToGround :
 				if (type == -1 || type == 1)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_Ceiling :
@@ -1503,15 +1533,36 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 			case VICUS::Component::CT_ColdRoof :
 			case VICUS::Component::CT_WarmRoof :
 				if (type == -1 || type == 2)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_Miscellaneous :
 			case VICUS::Component::NUM_CT:
-				combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+				otherComponents.push_back(c.m_id);
 			break;
 		}
 	}
+
+	// sort by name
+	std::sort(selectedComponents.begin(), selectedComponents.end(), SortByDisplayName<VICUS::Component>(comps));
+	std::sort(otherComponents.begin(), otherComponents.end(), SortByDisplayName<VICUS::Component>(comps));
+
+	// first add the selected components
+	for (unsigned int i=0; i<selectedComponents.size(); ++i) {
+		const VICUS::Component * c = comps[selectedComponents[i]];
+		combo->addItem( QtExt::MultiLangString2QString(c->m_displayName), selectedComponents[i]);
+		combo->setItemData(i, true, Qt::UserRole+1); // highlight
+	}
+
+	// then the rest
+	for (unsigned int i=0; i<otherComponents.size(); ++i) {
+		const VICUS::Component * c = comps[otherComponents[i]];
+		combo->addItem( QtExt::MultiLangString2QString(c->m_displayName), otherComponents[i]);
+		combo->setItemData(selectedComponents.size()+i, false, Qt::UserRole+1); // no highlight
+	}
+
 
 	// reselect previously selected components
 	reselectById(combo, compID);
