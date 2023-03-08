@@ -185,24 +185,21 @@ void ValidatingLineEdit::onEditingFinished() {
 
 void ValidatingLineEdit::onTextChanged ( const QString& ) {
 	if (!isEnabled()) {
-		QPalette palEdit;
-		setPalette(palEdit);
+		setStyleSheet("");
 		setToolTip("");
 		return;
 	}
 	if (isReadOnly()) {
 		QPalette palEdit;
-		palEdit.setColor(QPalette::Base, Style::ReadOnlyEditFieldBackground);
-		setPalette(palEdit);
+		setStyleSheet("QLineEdit:enabled { background-color: "+ Style::ReadOnlyEditFieldBackground +"; color: 'black'}");
 		setToolTip("");
 		return;
 	}
 
 	// Note: isValid() will update m_value when it value in text is ok
 	if (!isValid()) {
-		QPalette palEdit;
-		palEdit.setColor(QPalette::Base, Style::ErrorEditFieldBackground);
-		setPalette(palEdit);
+		setStyleSheet("QLineEdit { background-color: "+ Style::ErrorEditFieldBackground +";}");
+
 		if( m_validator.get() != nullptr && !m_validator->toolTip().isEmpty()) {
 			setToolTip(m_validator->toolTip());
 		}
@@ -211,9 +208,7 @@ void ValidatingLineEdit::onTextChanged ( const QString& ) {
 		}
 	}
 	else {
-		QPalette palEdit;
-		palEdit.setColor(QPalette::Base, Style::EditFieldBackground);
-		setPalette(palEdit);
+		setStyleSheet("");
 		setToolTip("");
 	}
 }
