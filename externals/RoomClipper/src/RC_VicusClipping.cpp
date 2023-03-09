@@ -431,7 +431,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 					// calculate new offset 3D
 					IBKMK::Vector3D newOffset3D = offset	+ localX * poly.m_polygon.vertexes()[0].m_x
-							+ localY * poly.m_polygon.vertexes()[0].m_y;
+															+ localY * poly.m_polygon.vertexes()[0].m_y;
 
 					// calculate new ofsset 2D
 					IBKMK::Vector2D newOffset2D = poly.m_polygon.vertexes()[0];
@@ -445,6 +445,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					IBKMK::Polygon3D poly3D = originSurf.geometry().polygon3D();
 					poly3D.setTranslation(newOffset3D);
 					originSurf.setPolygon3D(poly3D);		// now marked dirty = true
+
 				}
 				catch (IBK::Exception &ex) {
 					IBK::IBK_Message(IBK::FormatString("Surface '%1' is broken after clipping, using the original surface geometry.")
@@ -569,12 +570,42 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					childSurfaces.push_back(childSurf);
 				}
 
-				originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), childSurfaces);
+				const IBKMK::Vector3D &originLocalX = originSurfCopy.geometry().localX();
+				const IBKMK::Vector3D &originLocalY = originSurfCopy.geometry().localY();
+				const IBKMK::Vector3D &originOffset = originSurfCopy.geometry().offset();
+
+				// Update geometry
+				originSurf.geometry().isValid();
+
+				const IBKMK::Vector3D &localX = originSurf.geometry().localX();
+				const IBKMK::Vector3D &localY = originSurf.geometry().localY();
+				const IBKMK::Vector3D &offset = originSurf.geometry().offset();
+
+				std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
+				// Now we should update all sub-surfaces
+				for(unsigned int idxSub=0; idxSub<originSurfCopy.subSurfaces().size(); ++idxSub) {
+					VICUS::SubSurface &sub = subs[idxSub];
+
+					std::vector<IBKMK::Vector2D> points(sub.m_polygon2D.vertexes().size());
+
+					for(unsigned int i=0; i<sub.m_polygon2D.vertexes().size(); ++i) {
+
+						IBKMK::Vector3D v3D = originOffset + originLocalX * sub.m_polygon2D.vertexes()[i].m_x
+														   + originLocalY * sub.m_polygon2D.vertexes()[i].m_y;
+
+						IBKMK::planeCoordinates(offset, localX, localY, v3D, points[i].m_x, points[i].m_y);
+					}
+
+					sub.m_polygon2D = points;
+				}
+
+				originSurf.setChildAndSubSurfaces(subs, childSurfaces);
 				//#if defined(_OPENMP)
 				//#pragma omp critical
 				//#endif
 				originSurf.updateParents();
 			}
+
 
 			// ==========================
 
