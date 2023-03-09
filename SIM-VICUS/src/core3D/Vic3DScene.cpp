@@ -1511,6 +1511,8 @@ void Scene::generateBuildingGeometry() {
 
 
 void Scene::generateTransparentBuildingGeometry(const HighlightingMode &mode) {
+	FUNCID(Scene::generateTransparentBuildingGeometry);
+
 	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
 	//		return;
@@ -1700,7 +1702,23 @@ void Scene::generateTransparentBuildingGeometry(const HighlightingMode &mode) {
 							// lookup subsurface component - if it exists
 							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
 							if (comp != nullptr) {
-								addPlane(s.geometry().holeTriangulationData()[i], col, currentVertexIndex, currentElementIndex,
+
+								bool foundHole = false;
+								unsigned int idx = 0;
+								// Find correct hole index
+								for(;idx<s.geometry().holes().size(); ++idx) {
+									const VICUS::PlaneGeometry::Hole & h = s.geometry().holes()[idx];
+									if(!h.m_isChildSurface && h.m_idObject == sub.m_id) {
+										foundHole = true;
+										break;
+									}
+								}
+
+								if(!foundHole) {
+									IBK::IBK_Message(IBK::FormatString("Corresponding hole triangulation data of sub-surface '%1' was not found!").arg(sub.m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+									continue;
+								}
+								addPlane(s.geometry().holeTriangulationData()[idx], col, currentVertexIndex, currentElementIndex,
 										 m_transparentBuildingObject.m_vertexBufferData,
 										 m_transparentBuildingObject.m_colorBufferData,
 										 m_transparentBuildingObject.m_indexBufferData, false);
