@@ -94,6 +94,8 @@ private slots:
 
 	void on_pushButtonAddShading_clicked();
 
+	void on_pushButtonAddVentilationNaturalControl_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

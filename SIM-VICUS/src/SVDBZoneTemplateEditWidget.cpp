@@ -94,7 +94,7 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 	m_ui->pushButtonAddVentilationNaturalControl->setEnabled(false);	m_ui->pushButtonAddVentilationNaturalControl->setChecked(false);
 
 	//m_ui->pushButtonAddShading->setVisible(false);
-	m_ui->pushButtonAddVentilationNaturalControl->setVisible(false);
+	//m_ui->pushButtonAddVentilationNaturalControl->setVisible(false);
 
 
 	if (!isEnabled) {
@@ -174,6 +174,12 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 		m_ui->pushButtonAddShading->setChecked(true);
 	}
 
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_ControlVentilationNatural] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddVentilationNaturalControl->setEnabled(true);
+	else{
+		m_ui->pushButtonAddVentilationNaturalControl->setEnabled(false);
+		m_ui->pushButtonAddVentilationNaturalControl->setChecked(true);
+	}
 
 
 	// now the sub-template stuff
@@ -271,6 +277,16 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::Z
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(ideal->m_displayName) );
 		}
 		break;
+		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:{
+			m_ui->labelSubTemplate->setText(tr("Natural Ventilation:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::ZoneControlNaturalVentilation * natVent = m_db->m_zoneControlVentilationNatural[(unsigned int)subTemplateId];
+			if (natVent == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(natVent->m_displayName) );
+		}
+		break;
 		case VICUS::ZoneTemplate::NUM_ST:
 		break;
 	}
@@ -303,15 +319,16 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 	if(id != VICUS::INVALID_ID){
 		switch (m_currentSubTemplateType) {
-			case VICUS::ZoneTemplate::ST_IntLoadPerson:			on_pushButtonAddPersonLoad_clicked();			break;
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:		on_pushButtonAddElectricLoad_clicked();			break;
-			case VICUS::ZoneTemplate::ST_IntLoadLighting:		on_pushButtonAddLightLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:				on_pushButtonAddPersonLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:			on_pushButtonAddElectricLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:			on_pushButtonAddLightLoad_clicked();			break;
 			case VICUS::ZoneTemplate::ST_IntLoadOther:						break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:		on_pushButtonAddThermostat_clicked();			break;
-			case VICUS::ZoneTemplate::ST_Infiltration:			on_pushButtonAddInfiltration_clicked();			break;
-			case VICUS::ZoneTemplate::ST_VentilationNatural:	on_pushButtonAddVentilationNatural_clicked();	break;
-			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:	on_pushButtonAddIdealHeatingCooling_clicked();	break;
-			case VICUS::ZoneTemplate::ST_ControlShading:	on_pushButtonAddShading_clicked();					break;
+			case VICUS::ZoneTemplate::ST_ControlThermostat:			on_pushButtonAddThermostat_clicked();			break;
+			case VICUS::ZoneTemplate::ST_Infiltration:				on_pushButtonAddInfiltration_clicked();			break;
+			case VICUS::ZoneTemplate::ST_VentilationNatural:		on_pushButtonAddVentilationNatural_clicked();	break;
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:		on_pushButtonAddIdealHeatingCooling_clicked();	break;
+			case VICUS::ZoneTemplate::ST_ControlShading:			on_pushButtonAddShading_clicked();				break;
+			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:	on_pushButtonAddShading_clicked();				break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 
@@ -534,6 +551,31 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddShading_clicked() {
 	unsigned int id = SVMainWindow::instance().dbZoneControlShadingEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddShading->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			modelModify();
+		}
+	}
+	refreshUi();
+}
+
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNaturalControl_clicked() {
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_ControlVentilationNatural;
+	// open the control natural ventilation DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbZoneControlVentilationNaturalEditDialog()->select(m_current->m_idReferences[subType]);
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddVentilationNaturalControl->setChecked(false);
 		return;
 	}
 	if (m_current->m_idReferences[subType] != id) {
