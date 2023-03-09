@@ -319,16 +319,16 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 	if(id != VICUS::INVALID_ID){
 		switch (m_currentSubTemplateType) {
-			case VICUS::ZoneTemplate::ST_IntLoadPerson:				on_pushButtonAddPersonLoad_clicked();			break;
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:			on_pushButtonAddElectricLoad_clicked();			break;
-			case VICUS::ZoneTemplate::ST_IntLoadLighting:			on_pushButtonAddLightLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:				on_pushButtonAddPersonLoad_clicked();					break;
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:			on_pushButtonAddElectricLoad_clicked();					break;
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:			on_pushButtonAddLightLoad_clicked();					break;
 			case VICUS::ZoneTemplate::ST_IntLoadOther:						break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:			on_pushButtonAddThermostat_clicked();			break;
-			case VICUS::ZoneTemplate::ST_Infiltration:				on_pushButtonAddInfiltration_clicked();			break;
-			case VICUS::ZoneTemplate::ST_VentilationNatural:		on_pushButtonAddVentilationNatural_clicked();	break;
-			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:		on_pushButtonAddIdealHeatingCooling_clicked();	break;
-			case VICUS::ZoneTemplate::ST_ControlShading:			on_pushButtonAddShading_clicked();				break;
-			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:	on_pushButtonAddShading_clicked();				break;
+			case VICUS::ZoneTemplate::ST_ControlThermostat:			on_pushButtonAddThermostat_clicked();					break;
+			case VICUS::ZoneTemplate::ST_Infiltration:				on_pushButtonAddInfiltration_clicked();					break;
+			case VICUS::ZoneTemplate::ST_VentilationNatural:		on_pushButtonAddVentilationNatural_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:		on_pushButtonAddIdealHeatingCooling_clicked();			break;
+			case VICUS::ZoneTemplate::ST_ControlShading:			on_pushButtonAddShading_clicked();						break;
+			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:	on_pushButtonAddVentilationNaturalControl_clicked();	break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 
