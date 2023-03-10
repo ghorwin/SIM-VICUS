@@ -1670,9 +1670,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
 			for(double val: values) {
 				if(val > maxVal)  {
-
-					QString errmsg = QString("Error in ventilation with id: %1. "
-											 "Parameter of ventilation 'AirChangeRate' %3 1/h must lower than 'MaximumAirChangeRateComfort' "
+					QString errmsg = QString("Error in ventilation modle #%1."
+											 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model ()"
 											 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 					errorStack.push_back(errmsg);
 					break;
