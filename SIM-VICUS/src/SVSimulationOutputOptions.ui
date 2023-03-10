@@ -391,7 +391,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Object name filter:</string>
+            <string>Name filter:</string>
            </property>
           </widget>
          </item>

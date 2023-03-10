@@ -688,7 +688,7 @@ void SVSimulationOutputOptions::on_checkBoxBinaryFormat_clicked(bool checked) {
 
 
 void SVSimulationOutputOptions::on_lineEditReferenceType_textEdited(const QString &filterText) {
-	m_ui->lineEditReferenceType->setText("");
+	m_ui->lineEditQuantity->setText("");
 
 	m_outputTableProxyModel->setFilterWildcard(filterText);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
@@ -697,7 +697,7 @@ void SVSimulationOutputOptions::on_lineEditReferenceType_textEdited(const QStrin
 
 
 void SVSimulationOutputOptions::on_lineEditQuantity_textEdited(const QString &filterText) {
-	m_ui->lineEditQuantity->setText("");
+	m_ui->lineEditReferenceType->setText("");
 
 	m_outputTableProxyModel->setFilterWildcard(filterText);
 	m_outputTableProxyModel->setFilterKeyColumn(2);
