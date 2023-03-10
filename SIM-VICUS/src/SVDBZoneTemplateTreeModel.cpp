@@ -83,7 +83,8 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 			case Qt::DecorationRole : {
 				if (index.column() == ColCheck) {
 					if (it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
-										   m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
+										   m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling,
+										   m_db->m_zoneControlShading, m_db->m_zoneControlVentilationNatural))
 						return QIcon(":/gfx/actions/16x16/ok.png");
 					else
 						return QIcon(":/gfx/actions/16x16/error.png");
@@ -99,7 +100,8 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 			case Qt::ToolTipRole: {
 				if(index.column() == ColCheck) {
 					if (!it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
-										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
+										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling,
+											m_db->m_zoneControlShading, m_db->m_zoneControlVentilationNatural))
 						return QString::fromStdString(it->second.m_errorMsg);
 				}
 			} break;
@@ -204,7 +206,8 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 			case Qt::ToolTipRole: {
 				if(index.column() == ColCheck) {
 					if (!it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
-										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
+										m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling,
+											m_db->m_zoneControlShading, m_db->m_zoneControlVentilationNatural))
 						return QString::fromStdString(it->second.m_errorMsg);
 				}
 			} break;
