@@ -104,7 +104,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabWindow">
       <attribute name="title">
@@ -171,19 +171,22 @@
           </size>
          </property>
          <property name="text">
-          <string>Reduction factor:</string>
+          <string>Sunlight-factor F&lt;sub&gt;z&lt;/sub&gt;:</string>
          </property>
         </widget>
        </item>
        <item row="0" column="2">
         <widget class="QLabel" name="labelDisplayName_7">
          <property name="text">
-          <string>-</string>
+          <string>---</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QtExt::ValidatingLineEdit" name="lineEditReductionFactor">
+         <property name="toolTip">
+          <string>Fraction of radiation passed through to the window when the shading is activated.</string>
+         </property>
          <property name="toolTipDuration">
           <number>9</number>
          </property>
@@ -276,10 +279,12 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
+   <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
@@ -287,12 +292,10 @@
    <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
   <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
+   <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-   <slots>
-    <signal>editingFinishedSuccessfully()</signal>
-   </slots>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
