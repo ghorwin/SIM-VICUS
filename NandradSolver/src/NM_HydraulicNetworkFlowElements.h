@@ -505,6 +505,8 @@ private:
 	/*! The efficiency in current operation point - */
 	double							m_efficiency = -999;
 
+	double							m_controllerError = -999;
+
 }; // HNControlledPump
 
 
