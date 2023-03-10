@@ -316,14 +316,13 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 	}break;
 
 	case IT_SubStation:{
-		double heatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
 		if(fname.extension() == "geojson"){
 			convert2QJsonObject(fname, jsonObj);
-			readBuildingsFromGeoJson(network, jsonObj, heatingDemand, nextId);
+			readBuildingsFromGeoJson(network, jsonObj, nextId);
 			}
 		else {
 			// if not geoJson then its a CSV File
-			readBuildingsFromCSV(network, fname, heatingDemand, nextId);
+			readBuildingsFromCSV(network, fname, nextId);
 		}
 	}break;
 
@@ -457,18 +456,19 @@ void SVNetworkImportDialog::importLineString(VICUS::Network &network, const QJso
 	for (unsigned i=0; i<polyLine.size()-1; ++i){
 		unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
 		unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
-		network.addEdge(++nextId, n1, n2, false, pipeId);
+		network.addEdge(++nextId, n1, n2, true, pipeId);
 	}
 }
 
 
-void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) const {
+void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const IBK::Path &filePath, unsigned int nextId) const {
 	std::vector<std::string> cont;
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
 	// extract vector of string-xy
 	std::vector<std::string> lineSepStr;
 	std::vector<std::string> xyStr;
+	unsigned int counter = 0;
 	for (std::string &line: cont){
 		if (line.find("POINT") == std::string::npos)
 			continue;
@@ -492,14 +492,28 @@ void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const
 		// add node
 		unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
 				VICUS::NetworkNode::NT_SubStation);
-		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
+
+		double heatingDemand = 5000; // default value
+		if (m_ui->lineEditMaxHeatingDemand->text().toDouble() > 0)
+			heatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
+		QString name = m_ui->lineEditSubStationName->text();
+
+		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatingDemand, "W");
+		network.nodeById(id)->m_displayName = QString("%1_%2").arg(name).arg(++counter);
 	}
 }
 
 
-void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, const double &defaultHeatingDemand, unsigned int nextId) const {
+void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, unsigned int nextId) const {
+
+	double defaultHeatingDemand = 5000; // default value
+	if (m_ui->lineEditMaxHeatingDemand->text().toDouble() > 0)
+		defaultHeatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
+	QString defaultName = m_ui->lineEditSubStationName->text();
 
 	const QJsonArray features = jsonObj["features"].toArray();
+
+	unsigned int counter = 0;
 
 	for(const QJsonValue & feature :  features){
 
@@ -508,19 +522,20 @@ void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, c
 
 		if(geometry["type"].toString() ==  "Point") {
 			QJsonArray coordinates = geometry["coordinates"].toArray();
-			importPoints(network, coordinates, props, defaultHeatingDemand, nextId);
+			importPoints(network, coordinates, props, defaultHeatingDemand, QString("%1_%2").arg(defaultName).arg(++counter), nextId);
 		}
 		else if(geometry["type"].toString() == "MultiPoint") {
 			for (QJsonValue val: geometry["coordinates"].toArray()) {
 				QJsonArray coordinates = val.toArray();
-				importPoints(network, coordinates, props, defaultHeatingDemand, nextId);
+				importPoints(network, coordinates, props, defaultHeatingDemand, QString("%1_%2").arg(defaultName).arg(++counter), nextId);
 			}
 		}
 	}
 }
 
 
-void SVNetworkImportDialog::importPoints(VICUS::Network & network, const QJsonArray & coordinates, const QJsonObject &properties, const double &defaultHeatingDemand, unsigned int & nextId) const {
+void SVNetworkImportDialog::importPoints(VICUS::Network & network, const QJsonArray & coordinates, const QJsonObject &properties, const double &defaultHeatingDemand,
+										 const QString &defaultName, unsigned int & nextId) const {
 
 	double x,y;
 	double z = 0;
@@ -540,11 +555,12 @@ void SVNetworkImportDialog::importPoints(VICUS::Network & network, const QJsonAr
 		z = coordinates[2].toDouble();
 
 	double heatingDemand = defaultHeatingDemand;
-
 	double val = properties["MaxHeatingDemand"].toDouble();
 	if (val>0)
 		heatingDemand = val * 1000; // expected in kW
 	QString name = properties["Name"].toString();
+	if (name.isEmpty())
+		name = defaultName;
 
 	// add node
 	unsigned id = network.addNode(++nextId, IBKMK::Vector3D(x, y, z) - network.m_origin,
