@@ -154,7 +154,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
-	auto *lineEdit = m_ui->lineEditTemperatureAirRoomMaximum;
+	QtExt::ValidatingLineEdit *lineEdit = m_ui->lineEditTemperatureAirRoomMaximum;
 	VICUS::ZoneControlNaturalVentilation::para_t paraName = VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::para_t";
 
@@ -172,7 +172,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
-	auto *lineEdit = m_ui->lineEditTemperatureAirRoomMaximum;
+	QtExt::ValidatingLineEdit *lineEdit = m_ui->lineEditTemperatureAirRoomMinimum;
 	VICUS::ZoneControlNaturalVentilation::para_t paraName = VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin;
 	std::string keywordList = "ZoneControlNaturalVentilation::para_t";
 
