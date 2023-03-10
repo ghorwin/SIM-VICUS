@@ -686,3 +686,21 @@ void SVSimulationOutputOptions::on_checkBoxBinaryFormat_clicked(bool checked) {
 	m_outputs->m_flags[VICUS::Outputs::F_BinaryFormat].set("BinaryFormat", checked);
 }
 
+
+void SVSimulationOutputOptions::on_lineEditReferenceType_textEdited(const QString &filterText) {
+	m_ui->lineEditReferenceType->setText("");
+
+	m_outputTableProxyModel->setFilterWildcard(filterText);
+	m_outputTableProxyModel->setFilterKeyColumn(1);
+	m_outputTableProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+}
+
+
+void SVSimulationOutputOptions::on_lineEditQuantity_textEdited(const QString &filterText) {
+	m_ui->lineEditQuantity->setText("");
+
+	m_outputTableProxyModel->setFilterWildcard(filterText);
+	m_outputTableProxyModel->setFilterKeyColumn(2);
+	m_outputTableProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+}
+

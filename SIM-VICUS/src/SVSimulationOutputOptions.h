@@ -135,6 +135,10 @@ private slots:
 
 	void on_checkBoxBinaryFormat_clicked(bool checked);
 
+	void on_lineEditReferenceType_textEdited(const QString &filterText);
+
+	void on_lineEditQuantity_textEdited(const QString &filterText);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();
