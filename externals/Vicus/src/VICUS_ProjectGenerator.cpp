@@ -1640,7 +1640,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].value;
 			if(val > maxVal)  {
 
-				QString errmsg = QString("Error in Infiltration with id: "
+				QString errmsg = QString("Error in infiltration with id: %1. "
 										 "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
 										 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
 				errorStack.push_back(errmsg);
@@ -1671,9 +1671,9 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			for(double val: values) {
 				if(val > maxVal)  {
 
-					QString errmsg = QString("Error in Infiltration with id: "
-											 "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
-											 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+					QString errmsg = QString("Error in ventilation with id: %1. "
+											 "Parameter of ventilation 'AirChangeRate' %3 1/h must lower than 'MaximumAirChangeRateComfort' "
+											 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 					errorStack.push_back(errmsg);
 					break;
 				}
@@ -2149,14 +2149,14 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 }
 
 const VICUS::Room* checkForSurfaceParent(const VICUS::Object *obj) {
-    if(obj->m_parent == nullptr)
-        return nullptr;
+	if(obj->m_parent == nullptr)
+		return nullptr;
 
-    VICUS::Room *r = dynamic_cast<VICUS::Room*>(obj->m_parent);
-    if(r != nullptr)
-        return r;
-    else
-        return checkForSurfaceParent(obj->m_parent);
+	VICUS::Room *r = dynamic_cast<VICUS::Room*>(obj->m_parent);
+	if(r != nullptr)
+		return r;
+	else
+		return checkForSurfaceParent(obj->m_parent);
 }
 
 NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
@@ -2197,7 +2197,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	if (s != nullptr) {
 		// get the zone that this interface is connected to
 		const VICUS::Object * obj = s->m_parent;
-        const VICUS::Room * room = checkForSurfaceParent(s);
+		const VICUS::Room * room = checkForSurfaceParent(s);
 
 		if (room == nullptr){
 			errorStack.append(qApp->tr("Component instance #%1 references surface #%2 '%3', which is not associated to a zone.")
