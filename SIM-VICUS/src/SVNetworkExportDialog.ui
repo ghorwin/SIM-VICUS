@@ -6,93 +6,95 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>211</height>
+    <width>561</width>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Export GeoJson</string>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="comboBoxNetworkSelection"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QCheckBox" name="checkBoxExportSubStation">
+     <property name="text">
+      <string>Export substation</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="2">
-       <widget class="QCheckBox" name="checkBoxExportSubStation">
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QtExt::BrowseFilenameWidget" name="lineEditExportFileName" native="true"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="checkBoxExportPipeline">
+     <property name="text">
+      <string>Export pipeline</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Select Network</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Export file name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBoxToUTM">
+     <property name="title">
+      <string>Convert to UTM</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="2">
+       <widget class="QRadioButton" name="radioButtonSouthern">
         <property name="text">
-         <string>Export substation</string>
+         <string>Southern</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="radioButtonNorthern">
         <property name="text">
-         <string>Select Network</string>
+         <string>Northern</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="checkBoxExportPipeline">
-        <property name="text">
-         <string>Export pipeline</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBoxNetworkSelection"/>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QtExt::BrowseFilenameWidget" name="lineEditExportFileName"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Export file name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>UTM Zone</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBoxUTMZone"/>
-      </item>
-      <item row="4" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Hemisphere</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QRadioButton" name="radioButtonNorthern">
-          <property name="text">
-           <string>Northern</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioButtonSouthern">
-          <property name="text">
-           <string>Southern</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxUTMZone"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>UTM Zone</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="4" column="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="enabled">
       <bool>true</bool>
@@ -110,8 +112,12 @@
  <customwidgets>
   <customwidget>
    <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_BrowseFilenameWidget.h</header>
+   <extends>QWidget</extends>
+   <header>QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>editingFinished()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
