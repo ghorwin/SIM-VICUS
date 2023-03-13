@@ -1640,9 +1640,9 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].value;
 			if(val > maxVal)  {
 
-				QString errmsg = QString("Error in infiltration with id: %1. "
-										 "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
-										 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+				QString errmsg = QString("Error in infiltration model #%1. "
+										 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model (%2 1/h!)"
+										 ).arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 				errorStack.push_back(errmsg);
 			}
 			else {
@@ -1670,9 +1670,9 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
 			for(double val: values) {
 				if(val > maxVal)  {
-					QString errmsg = QString("Error in ventilation modle #%1."
-											 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model ()"
-											 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
+					QString errmsg = QString("Error in ventilation model #%1. "
+											 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model (%2 1/h!)"
+											 ).arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 					errorStack.push_back(errmsg);
 					break;
 				}
