@@ -144,34 +144,34 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
 	// default titles
-	m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
-	m_ui->pushButtonCompletePolygon->setText("Complete polygon");
+	m_ui->groupBoxPolygonVertexes->setTitle(tr("Polygon vertexes"));
+	m_ui->pushButtonCompletePolygon->setText(tr("Complete polygon"));
 
 	// initialize new geometry object
 	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
-			m_ui->groupBoxPolygonVertexes->setTitle("Rectangle vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete Rectangle");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Rectangle vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete Rectangle"));
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 		case Vic3D::NewGeometryObject::NGM_Zone :
 		case Vic3D::NewGeometryObject::NGM_Roof :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
-			m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete polygon");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Polygon vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete polygon"));
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Pipeline:
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Pipeline);
-			m_ui->groupBoxPolygonVertexes->setTitle("Polyline vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete polyline");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Polyline vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete polyline"));
 		break;
 		case Vic3D::NewGeometryObject::NGM_SubStations:
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_SubStations);
-			m_ui->groupBoxPolygonVertexes->setTitle("Vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete vertexes");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete vertexes"));
 		break;
 
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler

@@ -2961,7 +2961,7 @@
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.ui" line="72"/>
         <source>Main/load bearing material:</source>
-        <translation>Material des Haupt-/Lastlagers:</translation>
+        <translation>Tragstruktur:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.ui" line="85"/>
@@ -3239,7 +3239,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="390"/>
         <source>WindowGlazingSystems</source>
-        <translation>FensterVerglasungsSysteme</translation>
+        <translation>FensterVerglasungssysteme</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="395"/>
@@ -4160,7 +4160,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="46"/>
         <source>Controlled Property</source>
-        <translation>Kontrollierte Eigenschaft</translation>
+        <translation>Steuerungseigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkControllerEditWidget.ui" line="75"/>
@@ -4294,7 +4294,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="46"/>
         <source>Fluid properties</source>
-        <translation>Fluideigenten</translation>
+        <translation>Fluideigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="52"/>
@@ -4623,7 +4623,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="61"/>
         <source>Periods</source>
-        <translation>Perioden</translation>
+        <translation>Periode(n)</translation>
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="167"/>
@@ -4696,12 +4696,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="331"/>
         <source>Select all week days</source>
-        <translation>Wählen Sie alle Wochentage aus</translation>
+        <translation>Alle Wochentage auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="338"/>
         <source>Select all week end days</source>
-        <translation>Wählen Sie alle Wochenendtage aus</translation>
+        <translation>Alle Wochenendtage auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="514"/>
@@ -5051,7 +5051,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSubSurfaceComponentEditWidget.ui" line="162"/>
         <source>Shading properties</source>
-        <translation>Verschattungseigenschaften</translation>
+        <translation>dyn. Verschattungseigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSubSurfaceComponentEditWidget.ui" line="174"/>
@@ -6287,7 +6287,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="80"/>
         <source>Electric Equipment</source>
-        <translation>Elektronische Ausrüstung</translation>
+        <translation>Elektrische Geräte</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="90"/>
@@ -6323,7 +6323,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="168"/>
         <source>Controls</source>
-        <translation>Kontrollen</translation>
+        <translation>Steuerung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneTemplateEditWidget.ui" line="174"/>
@@ -6623,12 +6623,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="618"/>
         <source>Zone Control Natural Ventilation Database</source>
-        <translation>Zone Control Natural Ventilation Database</translation>
+        <translation>Zonenreglungsdatenbank natürliche Lüftung</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="618"/>
         <source>Zone Control Natural Ventilation properties</source>
-        <translation>Eigenschaften der Zone Control Natural Ventilation</translation>
+        <translation>Eigenschaften der Zonensteuerung natürlich Lüftung</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="628"/>
@@ -9654,7 +9654,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="68"/>
         <source>Select surfaces with selected component</source>
-        <translation>Wähle Räume mit selektierter Komponente aus</translation>
+        <translation>Auswählen</translation>
     </message>
     <message>
         <source>Select</source>
@@ -9922,7 +9922,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="22"/>
         <source>Sub-Surface Component</source>
-        <translation>Sub-Surface-Komponente</translation>
+        <translation>Fenster-/Türenkomponente</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="150"/>
@@ -10204,7 +10204,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="29"/>
         <source>Supply system</source>
-        <translation>Versorgungs System</translation>
+        <translation>Versorgungssystem</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="74"/>
@@ -10273,7 +10273,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingZoneProperty.ui" line="77"/>
         <source>Only selected rooms:</source>
-        <translation>Nur ausgewählte Zimmer:</translation>
+        <translation>Nur ausgewählte Räume:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingZoneProperty.ui" line="103"/>
@@ -10749,7 +10749,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="30"/>
         <source>Move to world coordinates</source>
-        <translation>Bewegen Sie sich zu den Weltkoordinaten</translation>
+        <translation>Positionieren mittels Weltkoordinaten</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="247"/>
@@ -11041,12 +11041,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropFloorManagerWidget.cpp" line="61"/>
         <source>Elevation [m]</source>
-        <translation>Höhe [m]</translation>
+        <translation>Höhe über Bodenbezug [m]</translation>
     </message>
     <message>
         <location filename="../../src/SVPropFloorManagerWidget.cpp" line="61"/>
         <source>Height [m]</source>
-        <translation>Höhe [m]</translation>
+        <translation>Raumhöhe [m]</translation>
     </message>
     <message>
         <location filename="../../src/SVPropFloorManagerWidget.cpp" line="188"/>
@@ -12156,7 +12156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="52"/>
         <source>Vertex</source>
-        <translation>Scheitel</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="57"/>
@@ -12210,7 +12210,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="282"/>
         <source>Zone:</source>
-        <translation>Zone:</translation>
+        <translation>Raum:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="239"/>
@@ -12266,7 +12266,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="367"/>
         <source>Create zone</source>
-        <translation>Zone erstellen</translation>
+        <translation>Raum erstellen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="407"/>
@@ -12288,7 +12288,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="507"/>
         <source>Pick zone height</source>
-        <translation>Wählen Sie die Zonenhöhe</translation>
+        <translation>Wählen Sie die Raumhöhe</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="517"/>
@@ -12310,7 +12310,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="560"/>
         <source>Zone height:</source>
-        <translation>Zonenhöhe:</translation>
+        <translation>Raumhöhe:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="609"/>

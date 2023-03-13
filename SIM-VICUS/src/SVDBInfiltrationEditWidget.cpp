@@ -69,6 +69,9 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 	m_ui->lineEditAirChangeRate->setup(0, 100, tr("Houly air change rate of entire zone air volume."), true, true);
 	m_ui->lineEditShieldCoefficient->setup(0, 1, tr("Shield coefficient DIN EN 13789."), true, true); //Vorinit auf 0.07?
 
+	// only to show no text (its only a comment in GUI text)
+	m_ui->label_2->setText("");
+
 	configureChart(m_ui->widgetPlot);
 
 	// initial state is "nothing selected"
