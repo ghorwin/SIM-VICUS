@@ -34,7 +34,12 @@ SVUndoAddNetwork::SVUndoAddNetwork(const QString & label, const VICUS::Network &
 {
 	setText( label );
 	m_gridWidth = 1.2 * std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
-	m_gridSpacing = std::round( m_gridWidth / 100.) ;
+	if (m_gridWidth > 9999)
+		m_gridSpacing = 1000;
+	else if (m_gridWidth > 999)
+		m_gridSpacing = 100;
+	else
+		m_gridSpacing = 10;
 	m_farDistance = std::max(1000.0, 2*m_gridWidth);
 }
 

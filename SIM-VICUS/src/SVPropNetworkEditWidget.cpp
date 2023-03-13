@@ -32,7 +32,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->toolBox->blockSignals(true);
 	m_ui->toolBox->addPage(tr("Geometry"), m_geometryWidget);
 	m_ui->toolBox->addPage(tr("Nodes"), m_nodesWidget);
-	m_ui->toolBox->addPage(tr("Edges"), m_edgesWidget);
+	m_ui->toolBox->addPage(tr("Pipes"), m_edgesWidget);
 	m_ui->toolBox->addPage(tr("Sub Stations"), m_subStationWidget);
 	m_ui->toolBox->addPage(tr("Heat Exchange"), m_hxWidget);
 	m_ui->toolBox->blockSignals(false);
