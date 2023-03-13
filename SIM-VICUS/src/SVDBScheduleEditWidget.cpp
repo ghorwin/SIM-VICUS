@@ -1074,8 +1074,13 @@ void SVDBScheduleEditWidget::updateColumnIndexList() {
 		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
 		return;
 	}
+	// store x title
+	if (reader.m_captions.size() > 0 && reader.m_units.size() > 0)
+		m_xTitle = IBK::FormatString("%1 [%2]").arg(reader.m_captions[0]).arg(reader.m_units[0]).str();
+
 	// special case: only two columns, just compose linear spline parameter and populate diagram
 	if (reader.m_captions.size() == 2) {
+		m_yTitle = IBK::FormatString("%1 [%2]").arg(reader.m_captions[1]).arg(reader.m_units[1]).str();
 		updateAnnualDataDiagram();
 		return;
 	}
@@ -1136,7 +1141,7 @@ void SVDBScheduleEditWidget::updateAnnualDataDiagram() {
 			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
 			return;
 		}
-		m_ui->widgetTimeSeriesPreview->setData(spl);
+		m_ui->widgetTimeSeriesPreview->setData(spl, m_xTitle, m_yTitle);
 	}
 	else {
 		// embedded data variant
@@ -1148,7 +1153,7 @@ void SVDBScheduleEditWidget::updateAnnualDataDiagram() {
 		}
 
 		// simply transfer the data to the widget
-		m_ui->widgetTimeSeriesPreview->setData(m_current->m_annualSchedule);
+		m_ui->widgetTimeSeriesPreview->setData(m_current->m_annualSchedule, m_xTitle, m_yTitle);
 	}
 }
 
@@ -1164,6 +1169,7 @@ void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QLi
 		return;
 	}
 	QString unitName = current->data(Qt::UserRole+1).toString();
+	m_yTitle = QString("%1 [%2]").arg(current->data(Qt::UserRole+2).toString()).arg(unitName).toStdString();
 
 	// add suffix to file name
 	IBK::Path fname(IBK::Path(m_ui->filepathAnnualDataFile->filename().toStdString()));

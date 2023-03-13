@@ -186,6 +186,10 @@ private:
 
 	/*! The curve used to plot the preview data. */
 	QwtPlotCurve						*m_curve = nullptr;
+
+	/*! The x and y title of plot. */
+	std::string							m_xTitle;
+	std::string							m_yTitle;
 };
 
 

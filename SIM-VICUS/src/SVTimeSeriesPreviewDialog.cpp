@@ -199,8 +199,14 @@ void SVTimeSeriesPreviewDialog::updateColumnIndexList() {
 		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
 		return;
 	}
+
+	// store x title
+	if (reader.m_captions.size() > 0 && reader.m_units.size() > 0)
+		m_xTitle = IBK::FormatString("%1 [%2]").arg(reader.m_captions[0]).arg(reader.m_units[0]).str();
+
 	// special case: only two columns, just compose linear spline parameter and populate diagram
 	if (reader.m_captions.size() == 2) {
+		m_yTitle = IBK::FormatString("%1 [%2]").arg(reader.m_captions[1]).arg(reader.m_units[1]).str();
 		updateAnnualDataDiagram();
 		return;
 	}
@@ -262,7 +268,7 @@ void SVTimeSeriesPreviewDialog::updateAnnualDataDiagram() const{
 			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
 			return;
 		}
-		m_ui->widgetTimeSeriesPreview->setData(spl);
+		m_ui->widgetTimeSeriesPreview->setData(spl, m_xTitle, m_yTitle);
 	}
 	else {
 		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("No data, yet."));
@@ -283,6 +289,8 @@ void SVTimeSeriesPreviewDialog::on_listWidgetColumnSelection_currentItemChanged(
 		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Invalid/missing unit in column header of data file."));
 		return;
 	}
+	QString unitName = current->data(Qt::UserRole+1).toString();
+	m_yTitle = QString("%1 [%2]").arg(current->data(Qt::UserRole+2).toString()).arg(unitName).toStdString();
 
 	// add suffix to file name
 	IBK::Path fname(IBK::Path(m_ui->filepathDataFile->filename().toStdString()));
@@ -294,6 +302,7 @@ void SVTimeSeriesPreviewDialog::on_listWidgetColumnSelection_currentItemChanged(
 			.arg(currentListItem);
 	m_ui->filepathDataFile->setFilename( extendedFilename );
 	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
+
 	updateAnnualDataDiagram();
 }
 
