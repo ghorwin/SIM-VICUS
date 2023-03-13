@@ -8518,22 +8518,32 @@ p, li { white-space: pre-wrap; }
         <translation>Übergabestationen importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="146"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="99"/>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="129"/>
+        <source>Sub Station Name</source>
+        <translation>Name der Übergabestation</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="156"/>
         <source>Select network</source>
         <translation>Netzwerk auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="166"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="176"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="176"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="186"/>
         <source>Add to existing network</source>
         <translation>Zum bestehenden Netzwerk hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="213"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="223"/>
         <source>convert to UTM when import geojson</source>
         <translation>konvertiere in UTM bei geoJSON Import</translation>
     </message>
@@ -8556,7 +8566,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">UTM Daten für geojson Import</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="222"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="232"/>
         <source>UTM Zone</source>
         <translation>UTM Zone</translation>
     </message>
@@ -8576,7 +8586,7 @@ p, li { white-space: pre-wrap; }
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="193"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="203"/>
         <source>Origin</source>
         <translation>Ursprungskoordinaten</translation>
     </message>
@@ -8586,9 +8596,8 @@ p, li { white-space: pre-wrap; }
         <translation>Übergabestation importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="99"/>
         <source>File Name</source>
-        <translation>Dateiname</translation>
+        <translation type="vanished">Dateiname</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="109"/>
@@ -8643,7 +8652,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Verfügbare Rohre auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="200"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="210"/>
         <source>New network</source>
         <translation>Neues Netzwerk</translation>
     </message>
@@ -8758,17 +8767,17 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="337"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="336"/>
         <source>Number of edges: </source>
         <translation>Anzahl der Kanten: </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="338"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="337"/>
         <source>Number of nodes: </source>
         <translation>Anzahl der Knoten: </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="339"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="338"/>
         <source>Coordinate range: </source>
         <translation>Koordinaten Umfang: </translation>
     </message>
@@ -11264,13 +11273,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropNetworkEditWidget.cpp" line="35"/>
+        <source>Pipes</source>
+        <translation>Rohre</translation>
+    </message>
+    <message>
         <source>Edges</source>
-        <translation>Kanten</translation>
+        <translation type="vanished">Kanten</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkEditWidget.cpp" line="36"/>
         <source>Sub Stations</source>
-        <translation>Übergabestationen</translation>
+        <translation>Anlagen</translation>
     </message>
     <message>
         <source>Pipeline</source>
@@ -12940,14 +12953,18 @@ p, li { white-space: pre-wrap; }
         <translation>Modelloptionen für hydraulische Netze</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationNetworkOptions.ui" line="36"/>
         <source>Reference pressure [Pa]:</source>
-        <translation>Referenzdruck [Pa]:</translation>
+        <translation type="vanished">Referenzdruck [Pa]:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="20"/>
         <source>Network to simulate:</source>
         <translation>Zu simulierendes Netzwerk:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationNetworkOptions.ui" line="36"/>
+        <source>Reference pressure [bar]:</source>
+        <translation>Referenzdruck [bar]:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="50"/>
