@@ -118,7 +118,7 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 
 		++row;
 
-		// newt row: element
+		// next row: element
 
 		// column 1 - color of component
 		item = new QTableWidgetItem;
@@ -137,6 +137,7 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		m_ui->tableWidgetElements->setItem(row, 1, item);
 
+		m_ui->tableWidgetElements->selectRow(row);
 		++row;
 	}
 
@@ -185,8 +186,12 @@ void SVDBSubNetworkEditWidget::updateElementProperties() {
 		}
 
 	}
-	else
+	else {
 		m_ui->groupBoxEditElement->setEnabled(false);
+		m_ui->lineEditComponent->clear();
+		m_ui->lineEditController->clear();
+		m_ui->checkBoxElementHasHeatExchange->setChecked(false);
+	}
 }
 
 void SVDBSubNetworkEditWidget::setInletOutletIds()
