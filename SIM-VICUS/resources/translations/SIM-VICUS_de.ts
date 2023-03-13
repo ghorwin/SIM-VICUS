@@ -3346,7 +3346,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBInfiltrationEditWidget.ui" line="40"/>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="96"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="99"/>
         <source>Shield Coefficient:</source>
         <translation>Abschirmungskoeffizient:</translation>
     </message>
@@ -3357,7 +3357,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBInfiltrationEditWidget.ui" line="97"/>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="95"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="98"/>
         <source>Air Change Rate:</source>
         <translation>Luftwechselrate:</translation>
     </message>
@@ -3368,7 +3368,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBInfiltrationEditWidget.ui" line="47"/>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="93"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="96"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -3384,7 +3384,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBInfiltrationEditWidget.ui" line="90"/>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="94"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="97"/>
         <source>Method:</source>
         <translation>Methode:</translation>
     </message>
@@ -3404,12 +3404,12 @@ p, li { white-space: pre-wrap; }
         <translation>Abschirmkoeffizient DIN EN 13789.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="247"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="250"/>
         <source>Time [d]</source>
         <translation>Zeit [d]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="250"/>
+        <location filename="../../src/SVDBInfiltrationEditWidget.cpp" line="253"/>
         <source>Air Change Rate [1/h]</source>
         <translation>Luftwechselrate [1/h]</translation>
     </message>
@@ -4893,17 +4893,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1074"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1136"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1141"/>
         <source>Error reading data file.</source>
         <translation>Fehler beim Lesen der Datendatei.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1146"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1151"/>
         <source>No data, yet.</source>
         <translation>Noch keine Daten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1163"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1168"/>
         <source>Invalid/missing unit in column header of data file.</source>
         <translation>Ungültige/fehlende Einheit im Spaltenkopf der Datendatei.</translation>
     </message>
@@ -12150,6 +12150,8 @@ p, li { white-space: pre-wrap; }
     <name>SVPropVertexListWidget</name>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="24"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="147"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="162"/>
         <source>Polygon vertexes</source>
         <translation>Eckpunkte von Polygonen</translation>
     </message>
@@ -12175,6 +12177,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="95"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="148"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="163"/>
         <source>Complete polygon</source>
         <translation>Vollständiges Polygon</translation>
     </message>
@@ -12458,6 +12462,36 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/SVPropVertexListWidget.cpp" line="79"/>
         <source>Maximum/Nominal heating demand [W].</source>
         <translation>Maximaler/nominaler Heizbedarf [W].</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="154"/>
+        <source>Rectangle vertexes</source>
+        <translation>Rechteckpunkte</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="155"/>
+        <source>Complete Rectangle</source>
+        <translation>Erstelle Rechteck</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="168"/>
+        <source>Polyline vertexes</source>
+        <translation>Polylinepunkte</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="169"/>
+        <source>Complete polyline</source>
+        <translation>Erstelle Polyline</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="173"/>
+        <source>Vertexes</source>
+        <translation>Punkte</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="174"/>
+        <source>Complete vertexes</source>
+        <translation>Erstelle Punkte</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.cpp" line="362"/>
@@ -14287,17 +14321,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="199"/>
-        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="262"/>
+        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="268"/>
         <source>Error reading data file.</source>
         <translation>Fehler beim Lesen der Datendatei.</translation>
     </message>
     <message>
-        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="268"/>
+        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="274"/>
         <source>No data, yet.</source>
         <translation>Noch keine Daten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="283"/>
+        <location filename="../../src/SVTimeSeriesPreviewDialog.cpp" line="289"/>
         <source>Invalid/missing unit in column header of data file.</source>
         <translation>Ungültige/fehlende Einheit im Spaltenkopf der Datendatei.</translation>
     </message>
