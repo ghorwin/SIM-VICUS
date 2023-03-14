@@ -81,7 +81,6 @@ public:
 	/*! Calls the generated writeXMLPrivate and additionally reads the view factors */
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the zone. */

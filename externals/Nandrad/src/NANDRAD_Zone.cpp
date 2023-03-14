@@ -20,12 +20,11 @@
 */
 
 #include "NANDRAD_Zone.h"
-#include "NANDRAD_KeywordList.h"
 
+#include "NANDRAD_KeywordList.h"
 #include <IBK_messages.h>
 
 #include <tinyxml.h>
-
 
 namespace NANDRAD {
 
@@ -69,54 +68,48 @@ void Zone::checkParameters() const {
 		case NUM_ZT : ; // just to make compiler happy
 	}
 
-	// if we have view factors, avoid self-references
-	for (const std::pair<viewFactorPair, double> & vf : m_viewFactors) {
-		if (vf.first.first == vf.first.second)
-			throw IBK::Exception(IBK::FormatString("Zone #%1 has invalid view factors (self-reference).").arg(m_id), FUNC_ID);
-	}
-}
 
+}
 
 void Zone::readXML(const TiXmlElement * element) {
 	FUNCID("[Zone::readXML]");
+
+	// readXMLPrivate(element);
 
 	try {
 		// read parameters
 		const TiXmlElement * c;
 		// read sub-elements
-		for ( c = element->FirstChildElement(); c; ) {
-			const TiXmlElement * nextC = c->NextSiblingElement();
+		for ( c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
 			// determine data based on element name
 			std::string cname = c->Value();
 
 			if (cname == "ViewFactors") {
-				std::string viewFactorString;
-				std::stringstream str(c->GetText());
+				std::string content = c->GetText();
 
-				// get first line
-				while(std::getline(str,viewFactorString,'\n')) {
-					IBK::trim(viewFactorString);
-					if(viewFactorString.empty())
-						continue;
+				std::vector<std::string> viewFactorTripels;
+
+				IBK::explode(content, viewFactorTripels, ';', false);
+
+				for(std::string tripel : viewFactorTripels){
 					std::vector<std::string> tokens;
-					IBK::explode(viewFactorString, tokens, ' ', true);
-					// alterantively search for tab string
-					if(tokens.size() != 3)
-						IBK::explode(viewFactorString, tokens, '\t', true);
-					if (tokens.size() != 3)
+					IBK::explode(tripel, tokens, ':', false);
+
+					std::vector<std::string> ids;
+					IBK::explode(tokens[0], ids, ' ', true);
+
+					if(tokens.size() != 2 || ids.size() != 2){
 						throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
 							IBK::FormatString("Wrong ViewFactor format!")
 							),FUNC_ID);
-
-					viewFactorPair idPair(IBK::string2val<unsigned int>(tokens[0]),
-										IBK::string2val<unsigned int>(tokens[1]));
+					}
+					double viewFactor = IBK::string2val<double>(tokens[1]);
+					viewFactorPair idPair(IBK::string2val<unsigned int>(ids[0]),
+										IBK::string2val<unsigned int>(ids[1]));
 					m_viewFactors.push_back(std::make_pair
-						(idPair, IBK::string2val<double>(tokens[2])) );
+						(idPair, viewFactor));
 				}
-				// remove processed tag ViewVactors from elements
-				const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 			}
-			c = nextC;
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -136,14 +129,20 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = writeXMLPrivate(parent);
 
 	// write view factors
-	if (!m_viewFactors.empty() ) {
-		std::string str("\n");
-		for (unsigned int i = 0; i < m_viewFactors.size(); ++i) {
-			str += IBK::val2string<unsigned int>(m_viewFactors[i].first.first) + std::string(" ") +
-					IBK::val2string<unsigned int>(m_viewFactors[i].first.second) + std::string(" ") +
-					IBK::val2string<double>(m_viewFactors[i].second) + std::string("\n");
+	if(!m_viewFactors.empty() ) {
+		std::string str = "";
+		for(unsigned int i = 0; i < m_viewFactors.size(); ++i) {
+			str += IBK::val2string<unsigned int>(m_viewFactors[i].first.first) +" " +
+					IBK::val2string<unsigned int>(m_viewFactors[i].first.second) + ":" +
+					IBK::val2string<double>(m_viewFactors[i].second) + ";";
 		}
-		TiXmlElement::appendSingleAttributeElement(e, "ViewFactors", nullptr, std::string(), str);
+		std::vector<std::string> tokens;
+		IBK::explode(str, tokens, ';', false);
+
+
+		TiXmlElement * viewFactors = new TiXmlElement("ViewFactors");
+		viewFactors->LinkEndChild(new TiXmlText(str.c_str()));
+		e->LinkEndChild(viewFactors);
 	}
 	return e;
 }

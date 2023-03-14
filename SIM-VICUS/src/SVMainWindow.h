@@ -271,7 +271,6 @@ private slots:
 	void on_actionFileOpenProjectDir_triggered();
 	void on_actionFileClose_triggered();
 	void on_actionFileExportProjectPackage_triggered();
-	void on_actionFileExportView3D_triggered();
 	void on_actionFileQuit_triggered();
 
 	void on_actionEditTextEditProject_triggered();
@@ -351,6 +350,8 @@ private slots:
 	void on_actionPluginsManager_triggered();
 
 	void on_actionExportNetworkAsGeoJSON_triggered();
+
+	void on_actionCalculateViewFactors_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

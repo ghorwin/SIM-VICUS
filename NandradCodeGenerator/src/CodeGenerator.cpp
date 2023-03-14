@@ -694,7 +694,12 @@ void CodeGenerator::generateReadWriteCode() {
 							"	if (!m_" + varName + ".m_values.empty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
 				}
-				else if (xmlInfo.typeStr == "IDVectorMap") {
+				else if (xmlInfo.typeStr == "IDVectorMap<unsigned int>") {
+					elements +=
+							"	if (!m_" + varName + ".m_values.empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
+				}
+				else if (xmlInfo.typeStr == "IDVectorMap<double>") {
 					elements +=
 							"	if (!m_" + varName + ".m_values.empty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
@@ -938,7 +943,8 @@ void CodeGenerator::generateReadWriteCode() {
 								"IBK::Time",
 								"IBK::Path",
 								"DataTable",
-								"IDVectorMap",
+								"IDVectorMap<unsigned int>",
+								"IDVectorMap<double>",
 								"std::vector<unsigned int>"
 							};
 							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
@@ -1113,7 +1119,13 @@ void CodeGenerator::generateReadWriteCode() {
 							"				m_"+varName+".setEncodedString(c->GetText());\n";
 						handledVariables.insert(varName);
 					}
-					else if (xmlInfo.typeStr == "IDVectorMap") {
+					else if (xmlInfo.typeStr == "IDVectorMap<unsigned int>") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+".setEncodedString(c->GetText());\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IDVectorMap<double>") {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+".setEncodedString(c->GetText());\n";

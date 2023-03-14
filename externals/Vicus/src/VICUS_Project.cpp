@@ -1058,10 +1058,12 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
 	// These ids are kept in the header of the shading file for later replacement of the ids.
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
-	std::vector<MappingElement>	mappings;
+	std::vector<RoomMapping>	roomMappings;
+	std::vector<ComponentInstanceMapping>	componentInstanceMappings;
+
 	try {
 		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
-								   p, errorStack, surfaceIdsVicusToNandrad, mappings);
+								   p, errorStack, surfaceIdsVicusToNandrad, roomMappings, componentInstanceMappings);
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(IBK::FormatString("%1\nCould not export NANDRAD project.").arg(ex.what()), FUNC_ID);
@@ -1070,7 +1072,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);
 
-	if(!exportMappingTable(IBK::Path(nandradProjectPath), mappings, true)){
+	if(!exportMappingTable(IBK::Path(nandradProjectPath), roomMappings, true)){
 		errorStack.push_back(tr("Mapping table export failed!"));
 		throw IBK::Exception("Mapping table export failed!", FUNC_ID);
 	}

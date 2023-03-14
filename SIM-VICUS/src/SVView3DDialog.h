@@ -58,9 +58,9 @@ public:
 		{
 		}
 
-		unsigned int		m_id;		///< id of vertex
+		unsigned int		m_id;		///> id of vertex
 
-		IBKMK::Vector3D		m_vertex;	///< point of vertex with coordinates
+		IBKMK::Vector3D		m_vertex;	///> point of vertex with coordinates
 	};
 
 	/*! Struct to hold all data for a View3D Surface */
@@ -83,18 +83,18 @@ public:
 
         unsigned int					m_id;			///> id of surface
 
-		unsigned int					m_vicusId;		///< corresponding vicus id
+		unsigned int					m_vicusId;		///> corresponding vicus id
 
-		unsigned int					m_v1;			///< id of first vertex
-		unsigned int					m_v2;			///< id of second vertex
-		unsigned int					m_v3;			///< id of third vertex
-		unsigned int					m_v4;			///< id of fourth vertex
+		unsigned int					m_v1;			///> id of first vertex
+		unsigned int					m_v2;			///> id of second vertex
+		unsigned int					m_v3;			///> id of third vertex
+		unsigned int					m_v4;			///> id of fourth vertex
 
-		unsigned int					m_combId;		///< id of surface that combines
+		unsigned int					m_combId;		///> id of surface that combines
 
-		double							m_emittance;	///< emittance of surface
+		double							m_emittance;	///> emittance of surface
 
-		std::string						m_name;			///< surface name for export
+		std::string						m_name;			///> surface name for export
 	};
 
 
@@ -113,13 +113,13 @@ public:
 		{
 		}
 
-		const unsigned int							m_idVicusSurface = VICUS::INVALID_ID;		///< id of Vicus Surface
+		const unsigned int							m_idVicusSurface = VICUS::INVALID_ID;		///> id of Vicus Surface
 
-		std::map<const unsigned int, double>		m_vicSurfIdToViewFactor;					///< Map with pointer to Surface and viewfactor
+		std::map<const unsigned int, double>		m_vicSurfIdToViewFactor;					///> Map with pointer to Surface and viewfactor
 
-//		std::map<const VICUS::SubSurface*, double>	m_vicSubSurfToViewFactor;					///< Map with pointer to Surface and viewfactor
+//		std::map<const VICUS::SubSurface*, double>	m_vicSubSurfToViewFactor;					///> Map with pointer to Surface and viewfactor
 
-		bool										m_isSubSurface = false;						///< indicates wheather its a subsurface
+		bool										m_isSubSurface = false;						///> indicates wheather its a subsurface
 	};
 
 
@@ -134,14 +134,14 @@ public:
 		{
 		}
 
-		unsigned int							m_roomId;					///< Room Id
+		unsigned int							m_roomId;					///> Room Id
 
-		QString									m_displayName;				///< Room display name
+		QString									m_displayName;				///> Room display name
 
-		std::vector<view3dSurface>				m_surfaces;					///< Vector with all surfaces
-		std::vector<view3dVertex>				m_vertexes;					///< Vector with all vertexes
+		std::vector<view3dSurface>				m_surfaces;					///> Vector with all surfaces
+		std::vector<view3dVertex>				m_vertexes;					///> Vector with all vertexes
 
-		std::vector<view3dExtendedSurfaces>		m_extendedSurfaces;			///< Extended surfaces with all data
+		std::vector<view3dExtendedSurfaces>		m_extendedSurfaces;			///> Extended surfaces with all data
 	};
 
 
@@ -152,9 +152,13 @@ public:
 	void readView3dResults(IBK::Path fname, view3dRoom &v3dRoom);
 
 
-	std::vector<const VICUS::Surface*>						m_selSurfaces;					///< Vector with all selected surfaces in project
+	std::vector<const VICUS::Surface*>						m_selSurfaces;					///> Vector with all selected surfaces in project
 
-	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///< Map with View3D Rooms
+
+	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
+
+
+	std::vector<VICUS::Surface>								m_modifiedSurfaces;				///>modified surfaces for the Undo Action
 
 };
 

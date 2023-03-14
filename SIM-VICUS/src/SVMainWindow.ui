@@ -35,7 +35,6 @@
 	 <property name="title">
 	  <string>Export</string>
 	 </property>
-	 <addaction name="actionFileExportView3D"/>
 	 <addaction name="actionFileExportProjectPackage"/>
 	 <addaction name="actionExportNetworkAsGeoJSON"/>
 	</widget>
@@ -171,20 +170,21 @@
 	<addaction name="actionDBRemoveDuplicates"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
-	<property name="title">
-	 <string>&amp;Simulation</string>
-	</property>
-	<widget class="QMenu" name="menuCoSimulation">
-	 <property name="title">
-	  <string>Co-Simulation</string>
-	 </property>
-	 <addaction name="actionSimulationCO2Balance"/>
-	</widget>
-	<addaction name="actionSimulationNANDRAD"/>
-	<addaction name="separator"/>
-	<addaction name="actionSimulationExportFMI"/>
-	<addaction name="separator"/>
-	<addaction name="menuCoSimulation"/>
+    <property name="title">
+     <string>&amp;Simulation</string>
+    </property>
+    <widget class="QMenu" name="menuCoSimulation">
+     <property name="title">
+      <string>Co-Simulation</string>
+     </property>
+     <addaction name="actionSimulationCO2Balance"/>
+    </widget>
+    <addaction name="actionSimulationNANDRAD"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulationExportFMI"/>
+    <addaction name="separator"/>
+    <addaction name="menuCoSimulation"/>
+    <addaction name="actionCalculateViewFactors"/>
    </widget>
    <widget class="QMenu" name="menuBuildings">
 	<property name="title">
@@ -863,6 +863,11 @@
   <action name="actionExportNetworkAsGeoJSON">
    <property name="text">
 	<string>Export network as geoJSON...</string>
+   </property>
+  </action>
+  <action name="actionCalculateViewFactors">
+   <property name="text">
+    <string>Calculate view factors</string>
    </property>
   </action>
  </widget>
