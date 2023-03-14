@@ -184,6 +184,7 @@ SOURCES += \
 	../../src/SVPropBuildingComponentOrientationWidget.cpp \
 	../../src/SVPropBuildingComponentsWidget.cpp \
 	../../src/SVPropBuildingEditWidget.cpp \
+	../../src/SVPropBuildingStructuralUnitWidget.cpp \
 	../../src/SVPropBuildingSubComponentsWidget.cpp \
 	../../src/SVPropBuildingSurfaceConnectionWidget.cpp \
 	../../src/SVPropBuildingSurfaceHeatingWidget.cpp \
@@ -386,6 +387,7 @@ HEADERS  += \
 	../../src/SVPropBuildingComponentOrientationWidget.h \
 	../../src/SVPropBuildingComponentsWidget.h \
 	../../src/SVPropBuildingEditWidget.h \
+	../../src/SVPropBuildingStructuralUnitWidget.h \
 	../../src/SVPropBuildingSubComponentsWidget.h \
 	../../src/SVPropBuildingSurfaceConnectionWidget.h \
 	../../src/SVPropBuildingSurfaceHeatingWidget.h \
@@ -552,6 +554,7 @@ FORMS    += \
 	../../src/SVPropBuildingComponentOrientationWidget.ui \
 	../../src/SVPropBuildingComponentsWidget.ui \
 	../../src/SVPropBuildingEditWidget.ui \
+	../../src/SVPropBuildingStructuralUnitWidget.ui \
 	../../src/SVPropBuildingSubComponentsWidget.ui \
 	../../src/SVPropBuildingSurfaceConnectionWidget.ui \
 	../../src/SVPropBuildingSurfaceHeatingWidget.ui \
