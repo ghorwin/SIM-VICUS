@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Test case with a single construction, a single window, simple model with constant SHGC value</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">181</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">191</IBK:Parameter>
+			</Interval>
+  		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="4" displayName="South">
+				<ConstructionTypeId>100010</ConstructionTypeId>
+				<!-- South -->
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<!-- Wall -->
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceB id="5" zoneId="1">
+					<!--Interface to room -->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+				<InterfaceA id="6" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<!-- No solar adsorption, no long wave emission
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+					-->
+				</InterfaceA>
+				<EmbeddedObjects>
+					<EmbeddedObject id="1000" displayName="Simple window, no frame and divider">
+						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
+						<Window glazingSystemId="10000" />
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction 1">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.005" matId="1003" />
+				</MaterialLayers>
+			</ConstructionType>
+			<!-- Inverted construction -->
+			<ConstructionType id="100010" displayName="Construction 1 - inverted">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.005" matId="1003" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Stein">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Dämmung">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="1003" displayName="Putz">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+		</Materials>
+		<WindowGlazingSystems>
+			<WindowGlazingSystem id="10000" displayName="SimpleGlazingSystem - constant SHGC" modelType="Simple">
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">2</IBK:Parameter>
+				<LinearSplineParameter name="SHGC">
+					<X unit="Deg">0 90 </X>
+					<Y unit="---">0.6 0.6 </Y>
+				</LinearSplineParameter>
+			</WindowGlazingSystem>
+		</WindowGlazingSystems>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>WindowSolarRadiationFluxSum</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+<!--
+				<OutputDefinition>
+					<Quantity>WindowSolarRadiationLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<ObjectListName>Windows</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+-->
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Windows">
+				<FilterID>*</FilterID>
+				<ReferenceType>EmbeddedObject</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

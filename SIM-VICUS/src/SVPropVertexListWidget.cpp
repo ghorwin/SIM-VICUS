@@ -101,13 +101,13 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	connect(m_ui->toolButtonEditSubSurfComponents, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditSubSurfaceComponents);
 
-	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsCeiling, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsFloor, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsWalls, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsFloor3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsRoof3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponentsWall3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 
 	updateButtonStates(); // see class comment
 
@@ -144,34 +144,34 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
 	// default titles
-	m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
-	m_ui->pushButtonCompletePolygon->setText("Complete polygon");
+	m_ui->groupBoxPolygonVertexes->setTitle(tr("Polygon vertexes"));
+	m_ui->pushButtonCompletePolygon->setText(tr("Complete polygon"));
 
 	// initialize new geometry object
 	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
-			m_ui->groupBoxPolygonVertexes->setTitle("Rectangle vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete Rectangle");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Rectangle vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete Rectangle"));
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 		case Vic3D::NewGeometryObject::NGM_Zone :
 		case Vic3D::NewGeometryObject::NGM_Roof :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
-			m_ui->groupBoxPolygonVertexes->setTitle("Polygon vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete polygon");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Polygon vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete polygon"));
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Pipeline:
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Pipeline);
-			m_ui->groupBoxPolygonVertexes->setTitle("Polyline vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete polyline");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Polyline vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete polyline"));
 		break;
 		case Vic3D::NewGeometryObject::NGM_SubStations:
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_SubStations);
-			m_ui->groupBoxPolygonVertexes->setTitle("Vertexes");
-			m_ui->pushButtonCompletePolygon->setText("Complete vertexes");
+			m_ui->groupBoxPolygonVertexes->setTitle(tr("Vertexes"));
+			m_ui->pushButtonCompletePolygon->setText(tr("Complete vertexes"));
 		break;
 
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
@@ -430,11 +430,33 @@ void SVPropVertexListWidget::onCancel() {
 
 
 void SVPropVertexListWidget::onEditComponents() {
+	// determine which combo box called us
+	QComboBox * combo = nullptr;
+	if (sender() == m_ui->toolButtonEditComponents)					combo = m_ui->comboBoxComponent;
+	else if (sender() == m_ui->toolButtonEditComponentsCeiling)		combo = m_ui->comboBoxComponentCeiling;
+	else if (sender() == m_ui->toolButtonEditComponentsFloor)		combo = m_ui->comboBoxComponentFloor;
+	else if (sender() == m_ui->toolButtonEditComponentsWalls)		combo = m_ui->comboBoxComponentWalls;
+	else if (sender() == m_ui->toolButtonEditComponentsRoof3)		combo = m_ui->comboBoxComponentRoof3;
+	else if (sender() == m_ui->toolButtonEditComponentsFloor3)		combo = m_ui->comboBoxComponentFloor3;
+	else if (sender() == m_ui->toolButtonEditComponentsWall3)		combo = m_ui->comboBoxComponentWall3;
+
+	Q_ASSERT(combo != nullptr);
+
+	// get ID of currently selected component
+	unsigned int currentComponentID = combo->currentData().toUInt();
+	if (combo->count() == 0)
+		currentComponentID = VICUS::INVALID_ID;
+
 	// ask main window to show database dialog, afterwards update component combos
-	SVMainWindow::instance().on_actionDBComponents_triggered();
-	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
-	//       no need to call this here
+	unsigned int newID = SVMainWindow::instance().dbComponentEditDialog()->select(currentComponentID);
+	if (newID != VICUS::INVALID_ID) {
+		// first update all combo boxes, in case user had edited names of components
+		updateComponentComboBoxes();
+		// now reselect the newly selected component
+		reselectById(combo, newID);
+	}
 }
+
 
 void SVPropVertexListWidget::onEditSubSurfaceComponents() {
 	// ask main window to show database dialog, afterwards update component combos
@@ -698,7 +720,10 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			}
 
 			subSurfs.push_back(newSubsurface);
-			newSurf.setSubSurfaces(subSurfs);
+
+			std::vector<VICUS::Surface> childs = newSurf.childSurfaces();
+
+			newSurf.setChildAndSubSurfaces(subSurfs, childs);
 			modSurfaces.push_back(newSurf);
 
 			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surface/window"),
@@ -1323,7 +1348,7 @@ void SVPropVertexListWidget::updateButtonStates() {
 
 		m_ui->labelComponent->setEnabled(false);
 		m_ui->comboBoxComponent->setEnabled(false);
-		m_ui->toolButtonEditComponents1->setEnabled(false);
+		m_ui->toolButtonEditComponents->setEnabled(false);
 
 		m_ui->checkBoxSubSurfaceGeometry->setEnabled(false);
 		m_ui->comboBoxSurface->setEnabled(false);
@@ -1341,7 +1366,7 @@ void SVPropVertexListWidget::updateButtonStates() {
 
 		m_ui->labelComponent->setEnabled(!subSurf);
 		m_ui->comboBoxComponent->setEnabled(!subSurf);
-		m_ui->toolButtonEditComponents1->setEnabled(!subSurf);
+		m_ui->toolButtonEditComponents->setEnabled(!subSurf);
 
 		// building controls
 		m_ui->labelAddBuilding->setEnabled(!subSurf);
@@ -1468,6 +1493,22 @@ void SVPropVertexListWidget::updateNetworkButtons() {
 
 }
 
+template <typename T>
+class SortByDisplayName {
+public:
+	SortByDisplayName(const VICUS::Database<T> & vec) :
+		m_vec(vec)
+	{}
+
+	bool operator()(unsigned int lhsIdx, unsigned int rhsIdx) const {
+		QString leftName = QtExt::MultiLangString2QString(m_vec[lhsIdx]->m_displayName);
+		QString rightName = QtExt::MultiLangString2QString(m_vec[rhsIdx]->m_displayName);
+		return  QString::localeAwareCompare(leftName, rightName) < 0;
+	}
+
+	const VICUS::Database<T> & m_vec;
+};
+
 
 void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
 	// remember currently selected component IDs
@@ -1477,21 +1518,35 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 
 	combo->clear();
 
-	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
-	for (auto & c : SVSettings::instance().m_db.m_components) {
-		switch (c.second.m_type) {
+	// process all components and put them into 2 containers; first for the filtered types,
+	// second for the rest
+
+	std::vector<unsigned int> selectedComponents;
+	std::vector<unsigned int> otherComponents;
+
+	const VICUS::Database<VICUS::Component> & comps = SVSettings::instance().m_db.m_components;
+
+	std::map<unsigned int, VICUS::Component>::const_iterator it = comps.begin();
+	for (unsigned int i=0; i<comps.size(); ++i, ++it) {
+		const VICUS::Component & c = it->second;
+
+		switch (c.m_type) {
 			case VICUS::Component::CT_OutsideWall :
 			case VICUS::Component::CT_OutsideWallToGround :
 			case VICUS::Component::CT_InsideWall :
 				if (type == -1 || type == 0)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_FloorToCellar :
 			case VICUS::Component::CT_FloorToAir :
 			case VICUS::Component::CT_FloorToGround :
 				if (type == -1 || type == 1)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_Ceiling :
@@ -1500,15 +1555,36 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 			case VICUS::Component::CT_ColdRoof :
 			case VICUS::Component::CT_WarmRoof :
 				if (type == -1 || type == 2)
-					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+					selectedComponents.push_back(c.m_id);
+				else
+					otherComponents.push_back(c.m_id);
 			break;
 
 			case VICUS::Component::CT_Miscellaneous :
 			case VICUS::Component::NUM_CT:
-				combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+				otherComponents.push_back(c.m_id);
 			break;
 		}
 	}
+
+	// sort by name
+	std::sort(selectedComponents.begin(), selectedComponents.end(), SortByDisplayName<VICUS::Component>(comps));
+	std::sort(otherComponents.begin(), otherComponents.end(), SortByDisplayName<VICUS::Component>(comps));
+
+	// first add the selected components
+	for (unsigned int i=0; i<selectedComponents.size(); ++i) {
+		const VICUS::Component * c = comps[selectedComponents[i]];
+		combo->addItem( QtExt::MultiLangString2QString(c->m_displayName), selectedComponents[i]);
+		combo->setItemData(i, true, Qt::UserRole+1); // highlight
+	}
+
+	// then the rest
+	for (unsigned int i=0; i<otherComponents.size(); ++i) {
+		const VICUS::Component * c = comps[otherComponents[i]];
+		combo->addItem( QtExt::MultiLangString2QString(c->m_displayName), otherComponents[i]);
+		combo->setItemData(selectedComponents.size()+i, false, Qt::UserRole+1); // no highlight
+	}
+
 
 	// reselect previously selected components
 	reselectById(combo, compID);

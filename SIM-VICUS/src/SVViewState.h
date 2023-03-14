@@ -57,7 +57,10 @@ public:
 
 
 	/*! The different operation modes the scene can be in. NUM_OM means "none" and indicates simple
-		navigation.
+		navigation and selection operations.
+
+		The scene modes indicate, which operations are generally possible to the user and what kind
+		of widgets are visible. Also, some modes are linked to certain property widgets that are visible.
 	*/
 	enum SceneOperationMode {
 		/*! The scene is in passive geometry edit mode and has at least one selected surface/element.
@@ -90,9 +93,6 @@ public:
 			a line between starting point and current coordinate system's location is drawn and the distance is displayed.
 		*/
 		OM_MeasureDistance,
-		/*! In this mode, surfaces can be selected via an interactive rubberband inside the scene.
-		*/
-		OM_RubberbandSelection,
 		/*! In this mode, the user can place three points after another (by snapping the local coordinate system
 			to the points). When the third point was placed, all selected objects are rotated accordingly.
 		*/
@@ -119,8 +119,12 @@ public:
 		PM_AddSubSurfaceGeometry,
 		/*! Shows the widget with building properties. */
 		PM_BuildingProperties,
+		/*! Shows the widget with building acoustic properties. */
+		PM_BuildingAcousticProperties,
 		/*! Shows the widget with network properties. */
-		PM_NetworkProperties
+		PM_NetworkProperties,
+		/*! Shows the widget with results visualisation. */
+		PM_ResultsProperties
 	};
 
 	/*! These enum values indicate what kind of coloring/highlighting shall be applied
@@ -172,11 +176,16 @@ public:
 			are shown in orange.
 		*/
 		OCM_SelectedSurfacesHighlighted,
+		OCM_AcousticRoomType,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,
 		OCM_NetworkHeatExchange,
 		OCM_NetworkSubNetworks,
+		/*! This mode is selected, when user has the results property widget open.
+			Then, the colors of all objects are set by the results property widget (and updateColors() won't be called.
+		*/
+		OCM_ResultColorView =	0x2000
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the

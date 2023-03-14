@@ -52,6 +52,11 @@ void Surface::updateParents() {
 		m_children.push_back(&sub);
 		sub.m_parent = this;
 	}
+	for (Surface &childSurf : m_childSurfaces) {
+		m_children.push_back(&childSurf);
+		childSurf.m_parent = this;
+		childSurf.updateParents();
+    }
 }
 
 
@@ -100,10 +105,24 @@ void Surface::readXML(const TiXmlElement * element) {
 
 	readXMLPrivate(element);
 	// copy polygon to plane geometry
-	std::vector<Polygon2D> holes;
-	for (const SubSurface & s : m_subSurfaces)
-		holes.push_back(s.m_polygon2D);
+	std::vector<PlaneGeometry::Hole> holes;
+	for(const SubSurface & s : m_subSurfaces)
+		holes.push_back(PlaneGeometry::Hole(s.m_id, s.m_polygon2D, false));
 
+	for(const Surface & s : m_childSurfaces) {
+		const IBKMK::Vector3D &offset = poly3D.offset();
+		const IBKMK::Vector3D &localX = poly3D.localX();
+		const IBKMK::Vector3D &localY = poly3D.localY();
+
+		const std::vector<IBKMK::Vector3D> &vertexes = s.polygon3D().vertexes();
+		std::vector<IBKMK::Vector2D> holePoints(vertexes.size());
+
+		for(unsigned int j=0; j<vertexes.size(); ++j) {
+			IBKMK::planeCoordinates(offset, localX, localY, vertexes[j], holePoints[j].m_x, holePoints[j].m_y);
+		}
+
+		holes.push_back(PlaneGeometry::Hole(s.m_id, holePoints, true) );
+	}
 	// if we didn't get a Polygon3D element, the next call will throw an exception
 	m_geometry.setGeometry( poly3D, holes);
 }
@@ -132,20 +151,36 @@ void Surface::setPolygon3D(const IBKMK::Polygon3D & polygon) {
 }
 
 
-void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
+void Surface::setChildAndSubSurfaces(const std::vector<SubSurface>  & subSurfaces,
+									 const std::vector<Surface>     & childSurfaces) {
 	m_subSurfaces = subSurfaces;
-	std::vector<Polygon2D> holes;
-	for (const SubSurface & s : subSurfaces)
-		holes.push_back(s.m_polygon2D);
+	m_childSurfaces = childSurfaces;
+	std::vector<PlaneGeometry::Hole> holes;
+	for (const SubSurface & s : m_subSurfaces)
+		holes.push_back(PlaneGeometry::Hole(s.m_id, s.m_polygon2D, false));
+	for (const Surface & s : m_childSurfaces) {
+
+		const IBKMK::Vector3D &offset = geometry().offset();
+		const IBKMK::Vector3D &localX = geometry().localX();
+		const IBKMK::Vector3D &localY = geometry().localY();
+
+		const std::vector<IBKMK::Vector3D> &vertexes = s.polygon3D().vertexes();
+		std::vector<IBKMK::Vector2D> holePoints(vertexes.size());
+
+		for(unsigned int j=0; j<vertexes.size(); ++j) {
+			IBKMK::planeCoordinates(offset, localX, localY, vertexes[j], holePoints[j].m_x, holePoints[j].m_y);
+		}
+
+		holes.push_back(PlaneGeometry::Hole(s.m_id, holePoints, true) );
+	}
 	m_geometry.setHoles(holes);
 }
-
 
 void Surface::flip() {
 	m_geometry.flip(); // the hole polygons have been adjusted here already
 	IBK_ASSERT(m_subSurfaces.size() == m_geometry.holes().size());
 	for (unsigned int i=0, count=m_subSurfaces.size(); i<count; ++i)
-		m_subSurfaces[i].m_polygon2D = m_geometry.holes()[i];
+		m_subSurfaces[i].m_polygon2D = m_geometry.holes()[i].m_holeGeometry;
 }
 
 void Surface::changeOrigin(unsigned int idx) {

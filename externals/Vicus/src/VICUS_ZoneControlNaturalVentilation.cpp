@@ -81,7 +81,10 @@ bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB
 		}  catch (...) {
 			return false;
 		}
+
 	}
+	if(m_para[P_TemperatureAirMax].value <= m_para[P_TemperatureAirMin].value)
+		return false;
 
 	return true;
 

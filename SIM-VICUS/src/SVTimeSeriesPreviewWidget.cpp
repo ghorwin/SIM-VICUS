@@ -66,7 +66,7 @@ void SVTimeSeriesPreviewWidget::setErrorMessage(const QString& errmsg) {
 }
 
 
-void SVTimeSeriesPreviewWidget::setData(const NANDRAD::LinearSplineParameter & data) {
+void SVTimeSeriesPreviewWidget::setData(const NANDRAD::LinearSplineParameter & data, const std::string & xTitle, const std::string & yTitle) {
 	m_data = data;
 
 	// we need valid data, otherwise we clear the chart and show an error message
@@ -78,12 +78,22 @@ void SVTimeSeriesPreviewWidget::setData(const NANDRAD::LinearSplineParameter & d
 	}
 
 	m_chart->setVisible(true);
+
 	// adjust styling based on current theme's settings
 	configureCurveTheme(m_curve);
-
 	m_errorTextBrowser->setVisible(false);
 
 	m_curve->setRawSamples(m_data.m_values.x().data(), m_data.m_values.y().data(), (int)m_data.m_values.size());
+
+	QFont ft;
+	ft.setPointSize(10);
+	QwtText xl(QString::fromStdString(xTitle));
+	xl.setFont(ft);
+	m_chart->setAxisTitle(QwtPlot::xBottom, xl);
+	QwtText yl(QString::fromStdString(yTitle));
+	yl.setFont(ft);
+	m_chart->setAxisTitle(QwtPlot::yLeft, yl);
+
 	m_chart->replot();
 }
 

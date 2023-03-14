@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>737</width>
-    <height>876</height>
+    <width>619</width>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,54 @@
   <layout class="QVBoxLayout" name="masterLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="0">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelDisplayName">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QtExt::ColorButton" name="pushButtonColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelComponentType">
+       <property name="text">
+        <string>Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="comboBoxSubSurfaceType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
       <widget class="QLabel" name="labelDisplayName_2">
        <property name="minimumSize">
         <size>
@@ -29,44 +76,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelComponentType">
-       <property name="text">
-        <string>Type:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QtExt::ColorButton" name="pushButtonColor">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-     </item>
-     <item row="1" column="2" colspan="2">
-      <widget class="QComboBox" name="comboBoxSubSurfaceType">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLabel" name="labelDisplayName_3">
-       <property name="text">
-        <string>W/m2K</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
+     <item>
       <widget class="QLineEdit" name="lineEditUValue">
        <property name="toolTip">
         <string>U-value is being calculated using the heat conduction values from the assigned boundary conditions.</string>
@@ -76,16 +86,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelDisplayName">
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>0</height>
-        </size>
-       </property>
+     <item>
+      <widget class="QLabel" name="labelDisplayName_3">
        <property name="text">
-        <string>Name:</string>
+        <string>W/m2K</string>
        </property>
       </widget>
      </item>
@@ -167,19 +171,22 @@
           </size>
          </property>
          <property name="text">
-          <string>Reduction factor:</string>
+          <string>Sunlight-factor F&lt;sub&gt;z&lt;/sub&gt;:</string>
          </property>
         </widget>
        </item>
        <item row="0" column="2">
         <widget class="QLabel" name="labelDisplayName_7">
          <property name="text">
-          <string>-</string>
+          <string>---</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QtExt::ValidatingLineEdit" name="lineEditReductionFactor">
+         <property name="toolTip">
+          <string>Fraction of radiation passed through to the window when the shading is activated.</string>
+         </property>
          <property name="toolTipDuration">
           <number>9</number>
          </property>
@@ -272,12 +279,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
@@ -289,6 +290,12 @@
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

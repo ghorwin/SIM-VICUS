@@ -110,6 +110,8 @@ public:
 		\note Throws an exception for invalid polygons, otherwise computes the area.
 	*/
 	double area(int digits = 1) const;
+	/*! Calculates surface area in m2 but the result is signed. */
+	double areaSigned(int digits) const;
 
 	/*! Calculates surface circumference in m.
 		\note Throws an exception for invalid polygons, otherwise computes the circumference.

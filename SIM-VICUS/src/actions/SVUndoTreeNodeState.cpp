@@ -24,6 +24,7 @@
 */
 
 #include "SVUndoTreeNodeState.h"
+#include "SVProjectHandler.h"
 
 #include <VICUS_Project.h>
 
@@ -76,6 +77,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 						if (exclusive || nodeIDs.find(sub.m_id) != nodeIDs.end())
 							storeState(sub, m_nodeStates[sub.m_id]);
 					}
+					storeStateChildSurface(s, nodeIDs, exclusive);
 				}
 			}
 		}
@@ -153,7 +155,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 
 SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & label,
 															SVUndoTreeNodeState::NodeState t,
-															unsigned int nodeID, bool withChildren, bool on)
+															unsigned int nodeID, bool withChildren, bool on, bool exclusive)
 {
 	std::set<unsigned int> nodeIDs;
 	const VICUS::Project & p = project();
@@ -169,7 +171,7 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 			obj->collectChildIDs(nodeIDs);
 		}
 		// Since VICUS::PlainGeometry is not derived from VICUS::Object there is no hierarchy
-		// therefore we need to handle all surfaces in an extra loop and add their IDs 
+		// therefore we need to handle all surfaces in an extra loop and add their IDs
 		if(nodeID == 0) {
 			for (const VICUS::Surface &s : project().m_plainGeometry.m_surfaces)
 				nodeIDs.insert(s.m_id);
@@ -177,7 +179,7 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 	}
 
 	// now use the regular constructor to create the undo action
-	return new SVUndoTreeNodeState(label, t, nodeIDs, on);
+	return new SVUndoTreeNodeState(label, t, nodeIDs, on, exclusive);
 }
 
 
@@ -185,6 +187,25 @@ void SVUndoTreeNodeState::undo() {
 	redo(); // same stuff as for redos
 }
 
+void SVUndoTreeNodeState::setStateChildSurface(std::vector<unsigned int> & modifiedIDs,
+											   std::map<unsigned int, int >::const_iterator it, VICUS::Surface &s) {
+	for(const VICUS::Surface &cs : s.childSurfaces()) {
+		VICUS::Surface &childSurf = const_cast<VICUS::Surface&>(cs);
+		if ((it = m_nodeStates.find(childSurf.m_id)) != m_nodeStates.end()) {
+			setState(childSurf, it->second);
+			modifiedIDs.push_back(it->first);
+		}
+		setStateChildSurface(modifiedIDs, it, childSurf);
+	}
+}
+
+void SVUndoTreeNodeState::storeStateChildSurface(const VICUS::Surface &s, const std::set<unsigned int> &nodeIDs, bool exclusive) {
+	for (const VICUS::Surface &childSurf : s.childSurfaces()) {
+		if (exclusive || nodeIDs.find(childSurf.m_id) != nodeIDs.end())
+			storeState(childSurf, m_nodeStates[childSurf.m_id]);
+		storeStateChildSurface(childSurf, nodeIDs, exclusive);
+	}
+}
 
 void SVUndoTreeNodeState::redo() {
 	// get a copy of the project
@@ -228,6 +249,8 @@ void SVUndoTreeNodeState::redo() {
 							modifiedIDs.push_back(it->first);
 						}
 					}
+
+					setStateChildSurface(modifiedIDs, it, s);
 				}
 			}
 		}

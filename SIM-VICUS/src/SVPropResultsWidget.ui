@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVPropResultsWidget</class>
+ <widget class="QWidget" name="SVPropResultsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>445</width>
+    <height>702</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Results directory</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QtExt::BrowseFilenameWidget" name="resultsDir" native="true"/>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButtonSetDefaultDirectory">
+        <property name="toolTip">
+         <string>Reset to default output directory.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/gfx/actions/24x24/arrow-source-grey.png</normalon>
+         </iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxAvailableOutputs">
+     <property name="title">
+      <string>Available outputs</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QPushButton" name="pushButtonRefreshDirectory">
+        <property name="text">
+         <string>Refresh list of available outputs</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/gfx/actions/24x24/reload.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tableWidgetAvailableResults">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>Double-click output quantity to read/update data set!</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxConvertToAbsolute">
+        <property name="text">
+         <string>convert to absolute values</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxColormap">
+     <property name="title">
+      <string>Colormap</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="4">
+       <widget class="QPushButton" name="pushButtonReadColormap">
+        <property name="text">
+         <string>Read from file...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="5">
+       <widget class="QPushButton" name="pushButtonSetGlobalMinMax">
+        <property name="text">
+         <string>Set min/max from entire data set</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Colormap</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="5">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxValue"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Maximum:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="pushButtonSaveColormap">
+        <property name="text">
+         <string>Save to file...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="5">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMinValue"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="pushButtonSetDefaultColormap">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/colormap_turbo.png</normaloff>:/gfx/actions/colormap_turbo.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>36</width>
+          <height>12</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Minimum:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButtonSetColormapViridis">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/colormap_viridis.png</normaloff>:/gfx/actions/colormap_viridis.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>36</width>
+          <height>12</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="5">
+       <widget class="QPushButton" name="pushButtonSetLocalMinMax">
+        <property name="text">
+         <string>Set min/max for current time point</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="pushButtonSetColormapSpectral">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/colormap_spectral.png</normaloff>:/gfx/actions/colormap_spectral.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>36</width>
+          <height>12</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxAnalysis">
+     <property name="title">
+      <string>Analysis</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="pushButtonFindMinObject">
+        <property name="toolTip">
+         <string>Show object with minimum value at current time point</string>
+        </property>
+        <property name="text">
+         <string>Show object with min value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="pushButtonJumpToMin">
+        <property name="toolTip">
+         <string>Jump to time point of the minimum value of entire data set</string>
+        </property>
+        <property name="text">
+         <string>Jump to time of min value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="pushButtonFindMaxObject">
+        <property name="toolTip">
+         <string>Show object with maximum value at current time point</string>
+        </property>
+        <property name="text">
+         <string>Show object with max value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="pushButtonJumpToMax">
+        <property name="toolTip">
+         <string>Jump to time point of the maximum value of entire data set</string>
+        </property>
+        <property name="text">
+         <string>Jump to time of max value</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxCurrentSelection">
+     <property name="title">
+      <string>Current selection</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="labelCurrentValue">
+        <property name="text">
+         <string>None selected</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditCurrentValue">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxTime">
+     <property name="title">
+      <string>Time</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="SVTimeSliderWidget" name="widgetTimeSlider" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SVTimeSliderWidget</class>
+   <extends>QWidget</extends>
+   <header>SVTimeSliderWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
+ <connections/>
+</ui>

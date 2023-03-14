@@ -266,7 +266,7 @@ public:
 	ModelType								m_modelType = MT_ThermalHydraulicNetwork;	// XML:A
 
 	/*! Determines if this network is currently selected for simulation */
-	unsigned int							m_selectedForSimulation = false;			// XML:E
+	unsigned int							m_selectedForSimulation = true;			// XML:E
 
 	/*! Determines wether the entire network has heat exchange with the ground */
 	bool									m_hasHeatExchangeWithGround = false;		// XML:E

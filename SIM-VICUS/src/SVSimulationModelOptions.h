@@ -72,6 +72,8 @@ private slots:
 
 	void on_checkBoxUsePerez_toggled(bool checked);
 
+	void on_checkBoxEnableMoistureBalance_toggled(bool checked);
+
 private:
 
 	/*! UI pointer. */

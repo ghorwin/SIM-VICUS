@@ -279,10 +279,34 @@ void SVSimulationStartNandrad::on_pushButtonShowScreenLog_clicked() {
 void SVSimulationStartNandrad::on_lineEditStartDate_editingFinished() {
 	IBK::Time startTime = IBK::Time::fromDateTimeFormat(m_ui->lineEditStartDate->text().toStdString());
 
-	// update date time
 	NANDRAD::SimulationParameter & simParas = m_localProject.m_simulationParameter; // readability improvements
+	// store current end time
+	IBK::Time endTime(simParas.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value, simParas.m_interval.m_para[NANDRAD::Interval::P_End].value);
+
+	// update date time
 	simParas.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].set("StartYear", startTime.year());
 	simParas.m_interval.m_para[NANDRAD::Interval::P_Start].set("Start", startTime.secondsOfYear(), IBK::Unit("s"));
+
+	// check if end date is preceeding start date, and if so, fix it by adding duration to start
+	// Mind: start year of startTime might be different from start year of end time
+	if (startTime >= endTime) {
+		// take duration from input
+		// we always update the end time and let the end time signal do the undo action stuff
+		IBK::Parameter durPara = m_ui->lineEditDuration->toParameter("Duration");
+		if (!durPara.name.empty() && durPara.value > 0) {
+			simParas.m_interval.m_para[NANDRAD::Interval::P_End].value = simParas.m_interval.m_para[NANDRAD::Interval::P_Start].value + durPara.value;
+		}
+		else
+			simParas.m_interval.m_para[NANDRAD::Interval::P_End].value = simParas.m_interval.m_para[NANDRAD::Interval::P_Start].value + 365*24*3600; // one year by default
+	}
+	// update duration unit
+	double diff = simParas.m_interval.m_para[NANDRAD::Interval::P_End].value - simParas.m_interval.m_para[NANDRAD::Interval::P_Start].value;
+	IBK::Unit durUnit;
+	if (diff  >= 365*24*3600)	durUnit.set("a");
+	else if (diff  > 24*3600)	durUnit.set("d");
+	else						durUnit.set("h");
+	simParas.m_interval.m_para[NANDRAD::Interval::P_End].IO_unit = durUnit;
+
 	updateTimeFrameEdits();
 }
 
@@ -299,13 +323,20 @@ void SVSimulationStartNandrad::on_lineEditEndDate_editingFinished() {
 	// compute difference between dates
 	IBK::Time diff = endTime - startTime; // Might be negative!
 	if (!diff.isValid()) {
+		m_ui->lineEditDuration->blockSignals(true);
 		m_ui->lineEditDuration->setValue(0); // set zero duration to indicate that something is wrong!
+		m_ui->lineEditDuration->blockSignals(false);
 		return;
 	}
 
-	// end date is the offset from start, so we first need the start date
-	simParas.m_interval.m_para[NANDRAD::Interval::P_End].set("End", diff.secondsOfYear(), IBK::Unit("s"));
-	simParas.m_interval.m_para[NANDRAD::Interval::P_End].IO_unit = m_ui->lineEditDuration->currentUnit();
+	// diff holds offset from start, so we need to add startOffset
+	simParas.m_interval.m_para[NANDRAD::Interval::P_End].set("End", offset + diff.secondsOfYear(), IBK::Unit("s"));
+	// select unit based on time selected
+	IBK::Unit durUnit;
+	if (diff.secondsOfYear() >= 365*24*3600)	durUnit.set("a");
+	else if (diff.secondsOfYear() > 24*3600)	durUnit.set("d");
+	else										durUnit.set("h");
+	simParas.m_interval.m_para[NANDRAD::Interval::P_End].IO_unit = durUnit;
 
 	updateTimeFrameEdits();
 }
@@ -368,10 +399,9 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 	IBK::Time t(startYear, startOffset);
 	m_ui->lineEditStartDate->setText( QString::fromStdString(t.toDateTimeFormat()) );
 
-	double endTime = simParas.m_interval.m_para[ NANDRAD::Interval::P_End].value;
-	if (simParas.m_interval.m_para[ NANDRAD::Interval::P_End].name.empty())
-		endTime = startOffset + 365*24*3600; // fallback to 1 year
+	double endTime = simParas.m_interval.m_para[ NANDRAD::Interval::P_End].value; // always valid, see edit()
 	double simDuration = endTime - startOffset;
+	// Note: if user had manipulated project file, duration may be negative. But we just show it anyway - solver will complain!
 	t += simDuration;
 
 	m_ui->lineEditEndDate->setText( QString::fromStdString(t.toDateTimeFormat()) );
@@ -565,16 +595,11 @@ void SVSimulationStartNandrad::on_tabWidget_currentChanged(int) {
 }
 
 
-void SVSimulationStartNandrad::on_checkBoxEnableMoistureBalance_toggled(bool checked) {
-	// update flag
-	NANDRAD::SimulationParameter & simParas = m_localProject.m_simulationParameter; // readability improvements
-	std::string name = std::string();
+void SVSimulationStartNandrad::on_lineEditStartDate_returnPressed() {
+	// same as editing finished, but just move the focus to lineEditEnd
+	m_ui->lineEditEndDate->setFocus();
+}
 
-	// only set name if moisture balance is enabled
-	if(checked) {
-		name = NANDRAD::KeywordList::Keyword("SimulationParameter::flag_t",
-				NANDRAD::SimulationParameter::F_EnableMoistureBalance);
-	}
-
-	simParas.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].set(name, checked);
+void SVSimulationStartNandrad::on_lineEditEndDate_returnPressed() {
+	m_ui->lineEditDuration->setFocus();
 }

@@ -1,7 +1,4 @@
 /debug_x64/
 /moc/
 /ui/
-/qrc_*.cpp
-/release_x64/
-/release/
-/debug/
+qrc_*

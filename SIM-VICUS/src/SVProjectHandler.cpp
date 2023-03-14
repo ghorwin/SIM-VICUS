@@ -362,12 +362,16 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 	for (VICUS::ComponentInstance & c : other.m_componentInstances) {
 		c.m_idSideASurface = IDMap[c.m_idSideASurface];
 		c.m_idSideBSurface = IDMap[c.m_idSideBSurface];
+		c.m_id = nextID++;
 	}
 
 	for (VICUS::SubSurfaceComponentInstance & c : other.m_subSurfaceComponentInstances) {
 		c.m_idSideASurface = IDMap[c.m_idSideASurface];
 		c.m_idSideBSurface = IDMap[c.m_idSideBSurface];
+		c.m_id = nextID++;
 	}
+
+
 
 	// fix problems in the project; will set have_modified_project to true if fixes were applied
 	bool haveErrors;

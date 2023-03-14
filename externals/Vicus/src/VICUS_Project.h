@@ -127,6 +127,9 @@ public:
 	*/
 	void updatePointers();
 
+    /*! Adds child surfaces to pointers of project. */
+    void addChildSurface(const VICUS::Surface &s);
+
 	/*! Searches through all objects and determines the largest object ID (not unique ID!) used for buildings, buildingLevels, rooms, surface,
 		subsurfaces, networks, etc and returns the next ID to be used for new data elements. For example, if IDs 10, 11, 14 have been used already,
 		the function returns 15.
@@ -189,6 +192,10 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
+    /*! Select all child surfaces of surface. */
+    void selectChildSurfaces(std::set<const Object*> &selectedObjs, const VICUS::Surface & s,
+                             bool takeSelected, bool takeVisible) const;
+
 	/*! This function collects the pointers to all selected sub surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type SubSurface.
@@ -235,6 +242,13 @@ public:
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces,
 									   std::vector<const SubSurface*> &subsurfaces,
+									   IBKMK::Vector3D &center);
+
+	/*! This function computes the global bounding box of all selected surfaces and the center point in global coordinates.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
+	*/
+	static IBKMK::Vector3D boundingBox(const std::vector<const NetworkEdge*> &edges,
+									   const std::vector<const NetworkNode*> &nodes,
 									   IBKMK::Vector3D &center);
 
 	/*! This function computes the bounding box of all selected surfaces and the center point in LOCAL coordinates of

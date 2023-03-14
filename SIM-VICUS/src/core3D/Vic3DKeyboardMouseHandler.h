@@ -153,9 +153,6 @@ public:
 	/*! This resets all key states currently marked as "WasPressed". */
 	void clearWasPressedKeyStates();
 
-	/*! Returns list of monitored keys. */
-	std::vector<Qt::Key> keys() const;
-
 private:
 	enum KeyStates {
 		StateNotPressed,

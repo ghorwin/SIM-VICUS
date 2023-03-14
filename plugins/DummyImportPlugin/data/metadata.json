@@ -3,7 +3,7 @@
 	"short-description":"en:This is a dummy import plugin.|de:Dies ist ein Beispiel für ein Import-Plugin.",
 	"long-description":"en:This small dummy import plugin illustrates the use of the import interface by generating no data, but simply showing the import dialog.|de:Dieses kleine Dummy-Import-Plugin macht nicht wirklich was, zeigt aber, wie man die Import-Schnittstelle implementiert.",
 	"version":"1.0.0",
-	"vicus-version":"0.9",
+	"vicus-version":"1.0",
 	"webpage":"https://sim-vicus.de",
 	"author":"Andreas Nicolai",
 	"license":"LGPL 2 or newer"

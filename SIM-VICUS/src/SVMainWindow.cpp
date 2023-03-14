@@ -703,6 +703,7 @@ void SVMainWindow::setup() {
 	// *** Geometry view ***
 
 	m_geometryView = new SVGeometryView(this);
+	m_geometryView->m_focusRootWidgets.insert(m_navigationTreeWidget); // remember as possible focus widget for events
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
@@ -843,11 +844,11 @@ void SVMainWindow::onImportPluginTriggered() {
 	bool success = importPlugin->import(this, projectText);
 	try {
 		p.readXML(projectText);
+//		std::ofstream out("g:\\temp\\VicusImport.txt");
+//		out << projectText.toStdString();
 	}
-	catch(IBK::Exception& e) {
+	catch(IBK::Exception& ) {
 		success = false;
-		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
-						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
 
 	if (success) {
@@ -855,6 +856,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		if (!m_projectHandler.isValid()) {
 			// create new project
 			m_projectHandler.newProject(&p); // emits updateActions()
+			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
 			// ask user about preference
@@ -878,13 +880,16 @@ void SVMainWindow::onImportPluginTriggered() {
 				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
 
 				m_projectHandler.importProject(p);
+				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 			}
 		}
 	}
 	// call of import plugin not successful
 	else {
-		///< \todo Error handling in case of import error
+		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
+						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
+//	m_geometryView->refreshSceneView();
 }
 
 
@@ -1285,22 +1290,23 @@ void SVMainWindow::on_actionViewFromAbove_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_Above);
 }
 
-void SVMainWindow::on_actionBirdsEyeViewSouthWest_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewSouthWest_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthWest);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewNorthWest_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewNorthWest_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthWest);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewSouthEast_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewSouthEast_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeSouthEast);
-
 }
 
-void SVMainWindow::on_actionBirdsEyeViewNorthEast_triggered(){
+
+void SVMainWindow::on_actionViewBirdsEyeViewNorthEast_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthEast);
 }
 
@@ -1550,6 +1556,10 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionViewFromSouth->setEnabled(have_project);
 	m_ui->actionViewFromWest->setEnabled(have_project);
 	m_ui->actionViewFromAbove->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewNorthEast->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewNorthWest->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewSouthEast->setEnabled(have_project);
+	m_ui->actionViewBirdsEyeViewSouthWest->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
@@ -1596,6 +1606,7 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
 
 		m_geometryViewSplitter->setVisible(true);
+		m_geometryView->setFocus();
 		m_ui->toolBar->setVisible(true);
 		m_ui->toolBar->toggleViewAction()->setEnabled(true);
 
@@ -1837,6 +1848,7 @@ void SVMainWindow::setupDockWidgets() {
 
 	// *** Log widget ***
 	m_logDockWidget = new QDockWidget(this);
+	m_geometryView->m_focusRootWidgets.insert(m_logDockWidget); // remember as possible focus widget for events
 	m_logDockWidget->setObjectName("LogDockWidget");
 	m_logDockWidget->setContentsMargins(0,0,0,0);
 	m_logDockWidget->setWindowTitle(tr("Application Log"));
@@ -1854,6 +1866,12 @@ void SVMainWindow::setupDockWidgets() {
 
 void SVMainWindow::setupPlugins() {
 	m_pluginLoader->loadPlugins();
+
+//	const auto staticInstances = QPluginLoader::staticInstances();
+	for (auto pldata = m_pluginLoader->m_plugins.begin(); pldata != m_pluginLoader->m_plugins.end(); ++pldata) {
+		QObject* pl = pldata->m_loader->instance();
+		setupPluginMenuEntries(pl);
+	}
 }
 
 
@@ -1968,7 +1986,10 @@ QString SVMainWindow::saveThumbNail() {
 	if (!QDir(thumbNailPath).exists())
 		QDir().mkpath(thumbNailPath);
 	// compose temporary file path
-	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + QFileInfo(m_projectHandler.projectFile() + ".png").fileName();
+	// thumb name is <filename>_<parent directory>
+	QFileInfo prjFinfo(m_projectHandler.projectFile());
+	QString thumbName = prjFinfo.fileName() + "_" + prjFinfo.dir().dirName();
+	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 	QFileInfo finfo(thumbPath);
 	if (finfo.exists()) {
 		// only update thumbnail if project file is newer than thumbnail file

@@ -47,12 +47,16 @@ class ConstructionBalanceModel : public AbstractModel, public AbstractStateDepen
 public:
 
 	enum Results {
-		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction)'
-		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
-		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
-		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
-		R_FluxLongWaveradiationA,			// Keyword: FluxLongWaveradiationA		[W]			'Long wave radiation flux across interface A (into construction)'
-		R_FluxLongWaveradiationB,			// Keyword: FluxLongWaveradiationB		[W]			'Long wave radiation flux across interface B (into construction)'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA					[W]			'Heat conduction flux across interface A (into construction)'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB					[W]			'Heat conduction flux across interface B (into construction)'
+		R_FluxHeatConductionAreaSpecificA,	// Keyword: FluxHeatConductionAreaSpecificA		[W/m2]		'Heat conduction flux density across interface A (into construction)'
+		R_FluxHeatConductionAreaSpecificB,	// Keyword: FluxHeatConductionAreaSpecificB		[W/m2]		'Heat conduction flux density across interface B (into construction)'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA				[W]			'Short wave radiation flux across interface A (into construction)'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB				[W]			'Short wave radiation flux across interface B (into construction)'
+		/*! This is the long-wave balance (both for ambient and internal lw radiation). */
+		R_FluxLongWaveRadiationA,			// Keyword: FluxLongWaveRadiationA				[W]			'Long wave radiation flux across interface A (into construction)'
+		/*! This is the long-wave balance (both for ambient and internal lw radiation). */
+		R_FluxLongWaveRadiationB,			// Keyword: FluxLongWaveRadiationB				[W]			'Long wave radiation flux across interface B (into construction)'
 		NUM_R
 	};
 
@@ -158,6 +162,10 @@ private:
 		InputRef_SideBRadiationFromPersonLoads,
 		InputRef_SideARadiationFromLightingLoads,
 		InputRef_SideBRadiationFromLightingLoads,
+		/*! Emitted long-wave radiation from this construction at side A in [W/m2] (provided by ConstructionStatesModel). */
+		InputRef_SideAEmittedLongWaveRadiation,
+		/*! Emitted long-wave radiation from this construction at side B in [W/m2] (provided by ConstructionStatesModel). */
+		InputRef_SideBEmittedLongWaveRadiation,
 		InputRef_ActiveLayerHeatLoads,
 		NUM_InputRef
 	};
@@ -181,12 +189,24 @@ private:
 	/*! Cached divergences of balance equations. */
 	std::vector<double>								m_ydot;
 
-	/*! Vector with input references, first the NUM_InputRef scalar input refs, then the vector-valued. */
+	/*! Vector with input references, holds ONLY the NUM_InputRef scalar input refs. */
 	std::vector<const double*>						m_valueRefs;
+
+	/*! References to values of long wave radiation that is emitted by other instances and received by this one at side A in [W]. */
+	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationA;
+
+	/*! References to values of long wave radiation that is emitted by other instances and received by this one at side B in [W]. */
+	std::vector<const double*>						m_valueRefsAbsorbedLWRadiationB;
 
 	/*! Input references used by this object. These references store optional loads from
 		internal sources as well as obnligatory references for heat exchange with all neighboring
 		zones.
+
+		Order of input refs in vector:
+		  0...NUM_InputRef-1 : named, always present input variables
+		  inputRefsAbsorbedLWRadiationA  - vector
+		  inputRefsAbsorbedLWRadiationB  - vector
+		  surfaceHeatLoadRH              - vector   -> we only select one of the delivered variables and store it in slot InputRef_ActiveLayerHeatLoads
 	*/
 	std::vector<InputReference>						m_inputRefs;
 
@@ -210,8 +230,13 @@ private:
 	/*! Number of ideal surface heating model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_surfaceHeatingCoolingModelCount = 0;
 
+	/*! Number of model input refs for long wave radiation at side A */
+	unsigned int									m_absorbedLWRadiationACount = 0;
+	unsigned int									m_absorbedLWRadiationBCount = 0;
+
 	double											m_totalAdsorptionAreaA = 6666;
 	double											m_totalAdsorptionAreaB = 7777;
+
 };
 
 } // namespace NANDRAD_MODEL

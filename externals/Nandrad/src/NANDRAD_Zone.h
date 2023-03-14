@@ -97,10 +97,12 @@ public:
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
-	/*! Data type used in view factor definition. */
-	// ids of the construction instances
+	/*! Optional: Used for view factor definition: pairs of contruction instance ids meaning the view factor from id to id. */
 	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
-	/*! Optional: view factors for all inside interfaces of the current zone. */
+
+	/*! Optional: View factors for all inside interfaces of the current zone. Contains the view factor for a pair of construction instance ids.
+		The pair contains the IDs of the interconnected construction instances, the value is the view factor (0..1).
+	*/
 	std::vector<std::pair<viewFactorPair, double> >	m_viewFactors;
 
 }; // Zone

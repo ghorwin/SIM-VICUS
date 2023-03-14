@@ -40,7 +40,9 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 						   const Database<Schedule> &schedulesDB,
 						   const Database<Infiltration> & infiltraionDB,
 						   const Database<VentilationNatural> &ventilationDB,
-						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const
+						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB,
+						   const Database<ZoneControlShading> &ctrlShadingDB,
+						   const Database<ZoneControlNaturalVentilation> &ctrlNatVentDB) const
 {
 
 	if (m_id == INVALID_ID) {
@@ -137,7 +139,38 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 			break;
 
 			case ZoneTemplate::ST_ControlVentilationNatural: {
-				// TODO Dirk
+				const ZoneControlNaturalVentilation *ctrl = ctrlNatVentDB[id];
+				if(ctrl == nullptr) {
+					IBK::FormatString("Zone natural ventilation control model with ID '%1' does not exist.").arg(id).str();
+					return false;
+				}
+				if (!ctrl->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Zone natural ventilation control model  '%1' is invalid.").arg(ctrl->m_displayName).str();
+					return false;
+				}
+				// Zone natural ventilation control always requires a valid ventilation model
+				const VentilationNatural *vent = ventilationDB[m_idReferences[ST_VentilationNatural]];
+				if (vent == nullptr) {
+					IBK::FormatString("Ventilation model with ID '%1' does not exist.").arg(m_idReferences[ST_ControlThermostat]).str();
+					return false;
+				}
+				if (!vent->isValid(schedulesDB)) {
+					m_errorMsg = IBK::FormatString("Ventilation '%1' is invalid.").arg(vent->m_displayName).str();
+					return false;
+				}
+			}
+			break;
+
+			case ZoneTemplate::ST_ControlShading: {
+				const ZoneControlShading *ctrl = ctrlShadingDB[id];
+				if(ctrl == nullptr) {
+					IBK::FormatString("Shading control model with ID '%1' does not exist.").arg(id).str();
+					return false;
+				}
+				if (!ctrl->isValid()) {
+					m_errorMsg = IBK::FormatString("Shading control model  '%1' is invalid.").arg(ctrl->m_displayName).str();
+					return false;
+				}
 			}
 			break;
 

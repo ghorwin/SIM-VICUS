@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QPluginLoader>
 
+#include <memory>
+
 /*! Implements all plugin loading/updating logic and stores collected information
 	about available and installed plugins for use by the plugin manager.
 */
@@ -31,6 +33,11 @@ public:
 	};
 
 	struct PluginData {
+		/*! Standard constructor. Create the pluginLoader.*/
+		PluginData() :
+			m_loader(new QPluginLoader)
+		{}
+
 		/*! Attempts to retrieve as much useful information from the meta data in member m_metadata as possible. */
 		void decodeMetadata();
 
@@ -48,7 +55,7 @@ public:
 		/*! The pluginloader (library wrapper) of this library.
 			Only set to an object if library was successfully loaded.
 		*/
-		QPluginLoader	m_loader;
+		std::shared_ptr<QPluginLoader>	m_loader;
 
 		/*! Stores the result of the load operation. */
 		LoadResult	m_result;
@@ -61,6 +68,8 @@ public:
 		*/
 		QJsonObject m_metadata;
 
+		/*! Plugin-Title (no languange). */
+		QString m_title;
 		/*! A short description text, already in application language. */
 		QString m_shortDesc;
 		/*! A longer description text, already in application language. */

@@ -74,6 +74,11 @@ class Scene {
 	Q_DECLARE_TR_FUNCTIONS(Scene)
 public:
 
+    enum HighlightingMode {
+        HM_TransparentWithBoxes,
+        HM_ColoredSurfaces
+    };
+
 	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
 
 	/*! Triggered when SVProjectHandler::modified() is emitted. */
@@ -137,15 +142,10 @@ public:
 	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemTranslationMode(bool abort);
 
-	/*! Enter Rubberband Mode. */
-	void enterRubberbandMode();
-	/*! Leaves Rubberband Mode. .*/
-	void leaveRubberbandMode();
-
 	/*! Toggles "measurement" mode on. */
 	void enterMeasurementMode();
 	/*! Leaves the "measurement" mode and returns to previous mode. */
-	void leaveMeasurementMode(bool setViewState = true);
+	void leaveMeasurementMode();
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
@@ -156,9 +156,11 @@ public:
 	/*! Getter for worldToView Matrix. */
 	const QMatrix4x4 & worldToView() const;
 
+    void updatedHighlightingMode(HighlightingMode mode);
+
 private:
 	void generateBuildingGeometry();
-	void generateTransparentBuildingGeometry();
+    void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_ColoredSurfaces);
 	void generateNetworkGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
@@ -169,6 +171,9 @@ private:
 		\note There is always at least one pick candidate in the list of intersection candidates, which is the intersection with the far plane.
 	*/
 	void pick(PickObject & pickObject);
+
+    /*! Pick all child surfaces. */
+    void pickChildSurfaces();
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
@@ -246,7 +251,6 @@ private:
 	/*! Light color. */
 	QColor					m_lightColor = Qt::white;
 
-
 	// *** Drawable objects ***
 
 	/*! The grid draw object. */
@@ -289,6 +293,9 @@ private:
 	/// TODO Andreas, add vector of snap marker objects, stripped down coordinate system objects with just a single sphere.
 	OpaqueGeometryObject	m_rotationMarkerObject;
 
+    /*! Cached surface colors. */
+    std::map<unsigned int, QColor> m_surfaceColor;
+
 	// *** Navigation stuff ***
 
 	/*! Struct for exclusive navigation modes.
@@ -301,6 +308,7 @@ private:
 		NM_InteractiveTranslation,
 		NM_InteractiveRotation, // this is set for any axis rotation - which rotation is rotated about is set in the local coordinate system TM_xx bit
 		NM_InteractiveScaling, // this is set for any axis - which axis is scaled is set in the local coordinate system TM_xx bit
+		NM_RubberbandSelection, // not really a navigation mode, but here the user drags a visible rectangle, hence other navigation operations are disabled
 		NUM_NM
 	};
 

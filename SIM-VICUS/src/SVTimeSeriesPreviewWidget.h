@@ -44,7 +44,7 @@ public:
 	~SVTimeSeriesPreviewWidget();
 
 	/*! Updates internal data structure of widget and displayed data. */
-	void setData(const NANDRAD::LinearSplineParameter & data);
+	void setData(const NANDRAD::LinearSplineParameter & data, const std::string &xTitle, const std::string &yTitle);
 
 	/*! Hides the diagram and shows the error label with the given text. */
 	void setErrorMessage(const QString& errmsg);

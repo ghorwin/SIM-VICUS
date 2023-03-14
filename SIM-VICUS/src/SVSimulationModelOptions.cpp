@@ -97,17 +97,25 @@ void SVSimulationModelOptions::updateUi() {
 				solMod.m_para[type].IO_unit.base_id() == unit.base_id()) {
 			val = solMod.m_para[type].get_value(unit);
 		}
+		// prevent against inputting 0
+		if (val < 0)
+			val = 0;
 	}
 
-
-	m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue(solarValues[0]);
-	m_ui->spinBoxSolarRadiationToFloor->setValue(solarValues[1]);
-	m_ui->spinBoxSolarRadiationToRoofCeiling->setValue(solarValues[2]);
-	m_ui->spinBoxSolarRadiationToWalls->setValue(solarValues[3]);
+	// set percentages in spin boxes -> round to whole numbers!
+	m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue((int)solarValues[0]);
+	m_ui->spinBoxSolarRadiationToFloor->setValue((int)solarValues[1]);
+	m_ui->spinBoxSolarRadiationToRoofCeiling->setValue((int)solarValues[2]);
+	m_ui->spinBoxSolarRadiationToWalls->setValue((int)solarValues[3]);
 
 	m_ui->checkBoxUsePerez->blockSignals(true);
 	m_ui->checkBoxUsePerez->setChecked(m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled());
 	m_ui->checkBoxUsePerez->blockSignals(false);
+
+	m_ui->checkBoxEnableMoistureBalance->blockSignals(true);
+	m_ui->checkBoxEnableMoistureBalance->setChecked(m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled());
+	m_ui->checkBoxEnableMoistureBalance->blockSignals(false);
+
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);
 	int idx = m_simParams->m_solarLoadsDistributionModel.m_distributionType;
 	m_ui->comboBoxSolarDistributionModeltype->setCurrentIndex(idx);
@@ -244,3 +252,12 @@ void SVSimulationModelOptions::on_checkBoxUsePerez_toggled(bool checked) {
 		m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].clear();
 }
 
+
+void SVSimulationModelOptions::on_checkBoxEnableMoistureBalance_toggled(bool checked) {
+	// set/clear flag
+	if (checked)
+		m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].set(
+					NANDRAD::KeywordList::Keyword("SimulationParameter::flag_t", NANDRAD::SimulationParameter::F_EnableMoistureBalance), true);
+	else
+		m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].clear();
+}

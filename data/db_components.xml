@@ -1,93 +1,428 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Components>
-	<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+	<Component id="1" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1001</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<IdConstruction>20000</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
+	<Component id="2" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1002</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<IdConstruction>20001</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
+	<Component id="3" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1003</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<IdConstruction>20002</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+	<Component id="4" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1004</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<IdConstruction>20003</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#00aa00">
+	<Component id="5" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#4e9a06">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1003</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20002</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#a00000">
+	<Component id="6" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#cc0000">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1004</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20003</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1007" displayName="DE: [SimQuality] Komponente für TF04.3 Innenwand |EN: [SimQuality] Component for TF04.3 Inside wall" color="#c4a000">
+	<Component id="7" displayName="DE: [SimQuality] Komponente für TF04.3 Innenwand |EN: [SimQuality] Component for TF04.3 Inside wall" color="#c4a000">
 		<Type>InsideWall</Type>
-		<IdConstruction>1002</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20001</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1008" displayName="DE: [SimQuality] Komponente für TF08 |EN: [SimQuality] component for TF08" color="#ac66ff">
+	<Component id="8" displayName="DE: [SimQuality] Komponente für TF08 |EN: [SimQuality] component for TF08" color="#ac66ff">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1005</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-		<ActiveLayerIndex>2</ActiveLayerIndex>
+		<IdConstruction>20004</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
+		<ActiveLayerIndex>1</ActiveLayerIndex>
 	</Component>
-	<Component id="1009" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
+	<Component id="9" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1007</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20006</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
+	<Component id="10" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
 		<Type>InsideWall</Type>
-		<IdConstruction>1008</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20007</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1011" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
+	<Component id="11" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
 		<Type>Ceiling</Type>
-		<IdConstruction>1009</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20008</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1012" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
+	<Component id="12" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1006</IdConstruction>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdConstruction>20005</IdConstruction>
+		<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1013" displayName="DE: [SimQuality] Komponente für TF06 |EN: [SimQuality] Component for TF06" color="#f57900">
+	<Component id="13" displayName="DE: [SimQuality] Komponente für TF06.1 |EN: [SimQuality] Component for TF06.1" color="#f57900">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1001</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1004</IdSideBBoundaryCondition>
+		<IdConstruction>20000</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30003</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1014" displayName="DE: [SimQuality] Komponente für TF04 Innenwand (adiabat) |EN: [SimQuality] Component for TF04 partition (adiabatic) " color="#5a6eff">
+	<Component id="14" displayName="DE: [SimQuality] Komponente für TF06.2 |EN: [SimQuality] Component for TF06.2" color="#f57900">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1010</IdConstruction>
-		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdConstruction>20001</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30003</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1015" displayName="DE: [SimQuality] Komponente für TF08.2 |EN: [SimQuality] component for TF08" color="#ff5aaa">
+	<Component id="15" displayName="DE: [SimQuality] Komponente für TF04 Innenwand (adiabat) |EN: [SimQuality] Component for TF04 partition (adiabatic) " color="#5a6eff">
 		<Type>OutsideWall</Type>
-		<IdConstruction>1005</IdConstruction>
-		<IdSideABoundaryCondition>1005</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<IdConstruction>20009</IdConstruction>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
 	</Component>
+	<Component id="16" displayName="DE: [SimQuality] Komponente für TF08.2 |EN: [SimQuality] component for TF08" color="#ff5aaa">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20004</IdConstruction>
+		<IdSideABoundaryCondition>30004</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
+	</Component>
+				
+				
+				
+				
+				
+				
+				
+				
+	<Component id="100" displayName="DE: [Teaser] Außenwandkonstruktion schwer bis 1948" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20100</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="101" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1949 bis 1968" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20101</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="102" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1969 bis 1978" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20102</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="103" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1979 bis 1983" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20103</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="104" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1984 bis 1994" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20104</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="105" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1995 bis 2015" color="#8F4314">
+<Type>OutsideWall</Type>
+<IdConstruction>20105</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+
+	<Component id="106" displayName="DE: [Teaser] Außenwandkonstruktion leicht bis 1948" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20106</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="107" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1949 bis 1968" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20107</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="108" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1969 bis 1978" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20108</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="109" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1979 bis 1983" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20109</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="110" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1984 bis 1994" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20110</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="111" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1995 bis 2005" color="#03A313">
+<Type>OutsideWall</Type>
+<IdConstruction>20111</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+
+	<Component id="112" displayName="DE: [Teaser] Dachkonstruktion schwer bis 1948" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20112</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="113" displayName="DE: [Teaser] Dachkonstruktion schwer 1949 bis 1968" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20113</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="114" displayName="DE: [Teaser] Dachkonstruktion schwer 1969 bis 1978" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20114</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="115" displayName="DE: [Teaser] Dachkonstruktion schwer 1979 bis 1983" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20115</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="116" displayName="DE: [Teaser] Dachkonstruktion schwer 1984 bis 1994" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20116</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="117" displayName="DE: [Teaser] Dachkonstruktion schwer 1995 bis 2015" color="#C71F17">
+<Type>SlopedRoof</Type>
+<IdConstruction>20117</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="118" displayName="DE: [Teaser] Dachkonstruktion leicht bis 1918" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20118</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="119" displayName="DE: [Teaser] Dachkonstruktion leicht 1919 bis 1968" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20119</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="120" displayName="DE: [Teaser] Dachkonstruktion leicht 1969 bis 1978" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20120</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="121" displayName="DE: [Teaser] Dachkonstruktion leicht 1979 bis 1983" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20121</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="122" displayName="DE: [Teaser] Dachkonstruktion leicht 1984 bis 1994" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20122</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>
+	<Component id="123" displayName="DE: [Teaser] Dachkonstruktion leicht 1995 bis 2015" color="#E0251B">
+<Type>SlopedRoof</Type>
+<IdConstruction>20123</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
+</Component>				
+				
+	<Component id="124" displayName="DE: [Teaser] Bodenplatte schwer bis 1948" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20124</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="125" displayName="DE: [Teaser] Bodenplatte schwer 1949 bis 1968" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20125</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="126" displayName="DE: [Teaser] Bodenplatte schwer 1969 bis 1978" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20126</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="127" displayName="DE: [Teaser] Bodenplatte schwer 1979 bis 1983" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20127</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="128" displayName="DE: [Teaser] Bodenplatte schwer 1984 bis 2015" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20128</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="129" displayName="DE: [Teaser] Bodenplatte leicht bis 1918" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20129</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="130" displayName="DE: [Teaser] Bodenplatte leicht 1919 bis 1968" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20130</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="131" displayName="DE: [Teaser] Bodenplatte leicht 1969 bis 1983" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20131</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	<Component id="132" displayName="DE: [Teaser] Bodenplatte leicht 1984 bis 2015" color="#B05319">
+<Type>FloorToGround</Type>
+<IdConstruction>20132</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="133" displayName="DE: [Teaser] Innenwand schwer bis 1948" color="#28572D">
+<Type>InsideWall</Type>
+<IdConstruction>20133</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="134" displayName="DE: [Teaser] Innenwand schwer 1949 bis 1968" color="#28572D">
+<Type>InsideWall</Type>
+<IdConstruction>20134</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="135" displayName="DE: [Teaser] Innenwand schwer 1969 bis 1978" color="#28572D">
+<Type>InsideWall</Type>
+<IdConstruction>20135</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="136" displayName="DE: [Teaser] Innenwand schwer 1979 bis 2015" color="#28572D">
+<Type>InsideWall</Type>
+<IdConstruction>20136</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="137" displayName="DE: [Teaser] Innenwand leicht bis 1948" color="#03A313">
+<Type>InsideWall</Type>
+<IdConstruction>20137</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="138" displayName="DE: [Teaser] Innenwand leicht 1969 bis 1978" color="#03A313">
+<Type>InsideWall</Type>
+<IdConstruction>20138</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="139" displayName="DE: [Teaser] Innenwand leicht 1979 bis 2015" color="#03A313">
+<Type>InsideWall</Type>
+<IdConstruction>20139</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="140" displayName="DE: [Teaser] Geschossdecke schwer bis 1948" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20140</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="141" displayName="DE: [Teaser] Geschossdecke schwer 1949 bis 1968" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20141</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="142" displayName="DE: [Teaser] Geschossdecke schwer 1969 bis 1978" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20142</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="143" displayName="DE: [Teaser] Geschossdecke schwer 1979 bis 1983" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20143</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="144" displayName="DE: [Teaser] Geschossdecke schwer 1984 bis 1994" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20144</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="145" displayName="DE: [Teaser] Geschossdecke schwer 1995 bis 2015" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20145</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	
+	<Component id="146" displayName="DE: [Teaser] Geschossdecke leicht bis 1948" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20146</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="147" displayName="DE: [Teaser] Geschossdecke leicht 1949 bis 1968" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20147</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="148" displayName="DE: [Teaser] Geschossdecke leicht 1969 bis 1978" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20148</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="149" displayName="DE: [Teaser] Geschossdecke leicht 1979 bis 1983" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20149</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+	<Component id="150" displayName="DE: [Teaser] Geschossdecke leicht 1984 bis 2015" color="#A3149A">
+<Type>InsideWall</Type>
+<IdConstruction>20150</IdConstruction>
+<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+<IdSideBBoundaryCondition>30005</IdSideBBoundaryCondition>
+</Component>
+				
+				
+				
+				
+				
+
 </Components>

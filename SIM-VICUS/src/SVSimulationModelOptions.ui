@@ -34,6 +34,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Balance equations</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="checkBoxEnableMoistureBalance">
+        <property name="text">
+         <string>Enable moisture balance</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Solar radiation model options</string>
@@ -139,6 +155,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -45,10 +45,6 @@ void SVSimulationNetworkOptions::updateUi() {
 		m_ui->comboBoxNetwork->addItem(n.m_displayName, n.m_id);
 	m_current = nullptr;
 
-	// FIXME: Hauke, falls es kein Netzwerk gibt, sollte die Oberfläche die Registerkarte "Netzwerk" entweder gar
-	//		  nicht anzeigen, oder die Eingabefelder deaktivieren.
-
-
 	// find currently selected network (for now we select the first one with this flag)
 	unsigned int currentId = VICUS::INVALID_ID;
 	for (const VICUS::Network &net: *m_networks) {
@@ -77,6 +73,7 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 	m_ui->lineEditReferencePressure->setEnabled(haveNetwork);
 	m_ui->lineEditMaxPipeDiscretization->setEnabled(haveNetwork);
 	m_ui->comboBoxModelType->setEnabled(haveNetwork);
+	m_ui->groupBoxHeatExchangeWithGround->setEnabled(haveNetwork);
 
 	m_current = nullptr;
 	if (!haveNetwork)
@@ -101,7 +98,7 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 
 	// update parameters
 	if (!m_current->m_para[VICUS::Network::P_ReferencePressure].empty())
-		m_ui->lineEditReferencePressure->setValue(m_current->m_para[VICUS::Network::P_ReferencePressure].value);
+		m_ui->lineEditReferencePressure->setValue(m_current->m_para[VICUS::Network::P_ReferencePressure].get_value("Bar"));
 	if (!m_current->m_para[VICUS::Network::P_DefaultFluidTemperature].empty())
 		m_ui->lineEditDefaultFluidTemperature->setValue(m_current->m_para[VICUS::Network::P_DefaultFluidTemperature].get_value("C"));
 	if (!m_current->m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
@@ -137,8 +134,9 @@ void SVSimulationNetworkOptions::on_lineEditDefaultFluidTemperature_editingFinis
 void SVSimulationNetworkOptions::on_lineEditReferencePressure_editingFinished() {
 	Q_ASSERT(m_current!=nullptr);
 	if (m_ui->lineEditReferencePressure->isValid())
-		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_ReferencePressure,
-											 m_ui->lineEditReferencePressure->value());
+		m_current->m_para[VICUS::Network::P_ReferencePressure] = IBK::Parameter(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_ReferencePressure),
+																				m_ui->lineEditReferencePressure->value(),
+																				"Bar");
 }
 
 

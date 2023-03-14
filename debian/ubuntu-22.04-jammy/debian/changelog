@@ -1,0 +1,11 @@
+simvicus (1.0.0-1~jammy~ppa3) jammy; urgency=medium
+
+  * Update to 1.0.0 upstream
+
+ -- Andreas Nicolai <andreas.nicolai@gmx.net>  Tue, 28 Feb 2023 08:57:01 +0100
+
+simvicus (0.9.0-1~jammy~ppa1) jammy; urgency=medium
+
+  * Update to 0.9.0 upstream
+
+ -- Andreas Nicolai <andreas.nicolai@gmx.net>  Mon, 17 Oct 2022 08:44:36 +0200

@@ -140,7 +140,9 @@ void SVWelcomeScreen::updateWelcomePage() {
 				SVStyle::formatWelcomePage(description);
 			}
 
-			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + finfo.fileName() + ".png";
+			// thumb name is <filename>_<parent directory>
+			QString thumbName = finfo.fileName() + "_" + finfo.dir().dirName();
+			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 
 			QFileInfo thumbFileInfo(thumbPath);
 			// check if file exists
@@ -263,7 +265,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo Andreas: fix warning about bad resource loading (related to image files)
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pexample:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size

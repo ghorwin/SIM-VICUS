@@ -1687,9 +1687,9 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].value;
 			if(val > maxVal)  {
 
-				QString errmsg = QString("Error in Infiltration with id: "
-										 "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
-										 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+				QString errmsg = QString("Error in infiltration model #%1. "
+										 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model (%2 1/h!)"
+										 ).arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 				errorStack.push_back(errmsg);
 			}
 			else {
@@ -1717,10 +1717,9 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
 			for(double val: values) {
 				if(val > maxVal)  {
-
-					QString errmsg = QString("Error in Infiltration with id: "
-											 "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
-											 "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+					QString errmsg = QString("Error in ventilation model #%1. "
+											 "Maximum air change rate (%3 1/h) must be lower than maximum air change rate in comfort model (%2 1/h!)"
+											 ).arg(ctrlVentilation->m_id).arg(maxVal).arg(val);
 					errorStack.push_back(errmsg);
 					break;
 				}
@@ -2004,7 +2003,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 						  .arg(surf->m_displayName);
 			continue;
 		}
-		emb.m_displayName = ss.m_displayName.toStdString();
+		emb.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(ss.m_displayName.toStdString()).arg(ss.m_id).str();
 
 		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
 		//find sub surface component instance
@@ -2195,6 +2194,17 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 	}
 }
 
+const VICUS::Room* checkForSurfaceParent(const VICUS::Object *obj) {
+	if(obj->m_parent == nullptr)
+		return nullptr;
+
+	VICUS::Room *r = dynamic_cast<VICUS::Room*>(obj->m_parent);
+	if(r != nullptr)
+		return r;
+	else
+		return checkForSurfaceParent(obj->m_parent);
+}
+
 NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 																		 unsigned int interfaceID,
 																		 QStringList &errorStack,
@@ -2233,7 +2243,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	if (s != nullptr) {
 		// get the zone that this interface is connected to
 		const VICUS::Object * obj = s->m_parent;
-		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+		const VICUS::Room * room = checkForSurfaceParent(s);
+
 		if (room == nullptr){
 			errorStack.append(qApp->tr("Component instance #%1 references surface #%2 '%3', which is not associated to a zone.")
 							  .arg(ci.m_id).arg(s->m_id).arg(s->m_displayName));
@@ -2422,8 +2433,8 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				/// TODO Dirk :	do we need to also store a displayname for each component instance/construction instance?
 				///				We could also name internal walls automatically using zone names, such as
 				///				"Wall between 'Bath' and 'Kitchen'".
-				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2'")
-						.arg(compInstaVicus.m_sideASurface->m_displayName, compInstaVicus.m_sideBSurface->m_displayName).toStdString();
+				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2' (ID=%3)")
+						.arg(compInstaVicus.m_sideASurface->m_displayName, compInstaVicus.m_sideBSurface->m_displayName).arg(compInstaVicus.m_idSideASurface).toStdString();
 			}
 			else {
 
@@ -2436,7 +2447,8 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
 												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
-				constrInstNandrad.m_displayName = compInstaVicus.m_sideASurface->m_displayName.toStdString();
+				constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideASurface->m_displayName.toStdString())
+																				.arg(compInstaVicus.m_idSideASurface).str();
 			}
 
 			if(area<MIN_AREA_FOR_EXPORTED_SURFACES){
@@ -2488,7 +2500,9 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
-			constrInstNandrad.m_displayName = compInstaVicus.m_sideBSurface->m_displayName.toStdString();
+			constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideBSurface->m_displayName.toStdString())
+																		.arg(compInstaVicus.m_idSideBSurface).str();
+
 			// sub surface
 			const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideBSurface->subSurfaces();
 			if(subSurfs.size()>0){
@@ -4261,9 +4275,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// 3. create display name
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, nandradElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			QString name = QString("%1#%2_(%3)").arg(node.m_displayName).arg(node.m_id).arg(elem.m_displayName);
-			std::string newName = IBK::replace_string(name.toStdString(), " ", "-");
-			nandradElement.m_displayName = IBK::replace_string(newName, ".", "-");
+			IBK::FormatString name = IBK::FormatString("%1.%2(ID=%3)").arg(sub->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))
+																.arg(elem.m_displayName.toStdString()).arg(node.m_id);
+			nandradElement.m_displayName = IBK::replace_string(name.str(), " ", "-");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
 			if (node.m_type == VICUS::NetworkNode::NT_Source) {
@@ -4434,11 +4448,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 
 		// create name
-		IBK::FormatString pipeName = IBK::FormatString("%1#%2_%3#%4")
-				.arg(vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.toStdString())
-				.arg(vicusNetwork.nodeById(edge->m_idNodeInlet)->m_id)
-				.arg(vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.toStdString())
-				.arg(vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_id);
+//		std::string nodeInletName, nodeOutletName;
+//		if (vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.isEmpty())
+//			nodeInletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeInlet).str();
+//		else
+//			nodeInletName = vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.toStdString();
+//		if (vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.isEmpty())
+//			nodeOutletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeOutlet).str();
+//		else
+//			nodeOutletName = vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.toStdString();
+//		IBK::FormatString pipeName = IBK::FormatString("%1->%2(ID=%3)").arg(nodeInletName).arg(nodeOutletName).arg(edge->m_id);
 
 		// add inlet pipe element
 		unsigned int inletNode = supplyNodeIdMap[edge->m_idNodeInlet];
@@ -4451,7 +4470,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													networkPipeComponent.m_id,
 													edge->m_idPipe,
 													edge->length());
-		supplyPipe.m_displayName = "SupplyPipe." + pipeName.str();
+		supplyPipe.m_displayName = IBK::FormatString("SupplyPipe(ID=%1)").arg(edge->m_id).str();
 		supplyPipe.m_heatExchange = edge->m_heatExchange;
 		try {
 			supplyPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);
@@ -4473,7 +4492,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 													networkPipeComponent.m_id,
 													edge->m_idPipe,
 													edge->length());
-		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
+		returnPipe.m_displayName = IBK::FormatString("ReturnPipe(ID=%1)").arg(edge->m_id).str();
 		returnPipe.m_heatExchange = edge->m_heatExchange;
 		try {
 			returnPipe.m_heatExchange.checkParameters(p.m_placeholders, p.m_zones, p.m_constructionInstances, false);

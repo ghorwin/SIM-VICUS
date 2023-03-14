@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.3.0">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#7141d1" Checked="1">IdealFloorHeatingWithLongWaveRadiation</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">IdealFloorHeatingWithLongWaveRadiation.gcc_linux</SubDir>
+			<SubDir Color="#ff007f" Checked="0">IdealFloorHeatingWithoutLongWaveRadiation</SubDir>
+			<SubDir Color="#c66300" Checked="0">LongWaveRadiation</SubDir>
+			<SubDir Color="#ff5500" Checked="0">LongWaveRadiation.VC2019_win64</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">LongWaveRadiation.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>7</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>9</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>17</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>6</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>8</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorHeatingWithLongWaveRadiation/results/states.tsv?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>16</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#204a87</PenColor>
+						<MarkerColor>#204a87</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#aecf00</PenColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#2e3436</PenColor>
+						<MarkerColor>#2e3436</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#5c3566</PenColor>
+						<MarkerColor>#5c3566</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#fcaf3e</PenColor>
+						<MarkerColor>#fcaf3e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#a40000</PenColor>
+						<MarkerColor>#a40000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>2.3071046600458365</Maximum>
+						<Minimum>2.0664629488158899</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>24.466544454628782</Maximum>
+						<Minimum>24.17140238313474</Minimum>
+						<MinorGridVisible>false</MinorGridVisible>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>505.50652256747384</Maximum>
+						<Minimum>505.50652256744587</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>true</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<IconStyle>1</IconStyle>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

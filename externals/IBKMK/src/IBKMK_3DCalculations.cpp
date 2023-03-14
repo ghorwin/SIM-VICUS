@@ -68,7 +68,7 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 	Note: when the point p is not in the plane, this function will still get a valid result.
 */
 bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
-							 const Vector3D & v, double & x, double & y, double tolerance)
+							 const Vector3D & v, double & x, double & y, double tolerance, bool showWarings)
 {
 	FUNCID(IBKMK::planeCoordinates);
 	// compute projection of vector v onto plane
@@ -82,7 +82,7 @@ bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3
 	// move point v along normal vector with distance dist
 	IBKMK::Vector3D v2 = v - dist*n;
 	IBKMK::Vector3D v2offset = v2 - v;
-	if (v2offset.magnitude() > tolerance) {
+	if (showWarings && v2offset.magnitude() > tolerance) {
 		IBK::IBK_Message(IBK::FormatString("Distance between point (%1) and projection point (%2) is too large (distance = %3)!")
 						 .arg(v.toString()).arg(v2.toString()).arg(v2offset.magnitude()),
 						 IBK::MSG_WARNING, FUNC_ID);
@@ -120,8 +120,8 @@ bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3
 	// check that the point was indeed in the plane
 	IBKMK::Vector3D v3 = offset + x*a + y*b;
 	IBKMK::Vector3D v3offset = v3 - v;
-	if (v3offset.magnitude() > tolerance) {
-		IBK::IBK_Message(IBK::FormatString("Plane coordinate calculation incorrect: deviation = %1").arg(v3offset.magnitude()), IBK::MSG_WARNING, FUNC_ID);
+	if (showWarings && v3offset.magnitude() > tolerance) {
+            IBK::IBK_Message(IBK::FormatString("Plane coordinate calculation incorrect: deviation = %1").arg(v3offset.magnitude()), IBK::MSG_WARNING, FUNC_ID);
 		return false;
 	}
 	else

@@ -1,5 +1,7 @@
 #include "SVPluginLoader.h"
 
+#include <memory>
+
 #include <IBK_messages.h>
 #include <IBK_MultiLanguageString.h>
 #include <IBK_Version.h>
@@ -28,18 +30,8 @@ SVPluginLoader::SVPluginLoader()
 void SVPluginLoader::loadPlugins() {
 	IBK::IBK_Message("Loading plugins...\n");
 
-//	const auto staticInstances = QPluginLoader::staticInstances();
-//	for (QObject *plugin : staticInstances) {
-//		setupPluginMenuEntries(plugin);
-//	}
-
 	// first load built-in (installed) plugins
 	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
-#if defined(Q_OS_WIN32)
-	// Mind: we need a variable for the converted wstring here!!!
-	std::wstring plugDir = pluginsDir.absolutePath().toStdWString();
-	SetDllDirectoryW(plugDir.c_str());
-#endif
 	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
 
 	QStringList entryList = pluginsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
@@ -52,11 +44,6 @@ void SVPluginLoader::loadPlugins() {
 
 	// then load user-installed plugins
 	pluginsDir = QDir(QtExt::Directories::userDataDir() + "/plugins");
-#if defined(Q_OS_WIN32)
-	// Mind: we need a variable for the converted wstring here!!!
-	plugDir = pluginsDir.absolutePath().toStdWString();
-	SetDllDirectoryW(plugDir.c_str());
-#endif
 	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
 
 	entryList = pluginsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
@@ -66,10 +53,17 @@ void SVPluginLoader::loadPlugins() {
 		loadPlugin(pluginsDir.filePath(dirName), pd);
 	}
 
+//	const auto staticInstances = QPluginLoader::staticInstances();
+//	for (QObject *plugin : staticInstances) {
+//		setupPluginMenuEntries(plugin);
+//	}
+
 }
 
 
 void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
+	FUNCID(SVPluginLoader::loadPlugin);
+
 	QDir pluginDir(pluginPath);
 	const auto entryList = pluginDir.entryList(QDir::Files);
 	pd.m_result = LR_NoBinary;
@@ -86,9 +80,9 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 		libFiles.append(fileName);
 		// do we have a plugin file?
 		if (fileName.contains("plugin", Qt::CaseInsensitive)) {
-			++count;
 			if (count == 0)
 				pluginFile = fileName;
+			++count;
 		}
 	}
 
@@ -121,38 +115,31 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 
 	// try to load plugin
 	QString pluginFilePath = pluginDir.absoluteFilePath(pluginFile);
-	pd.m_loader.setFileName(pluginFilePath);
-	pd.m_loader.setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
-	pd.m_metadata = pd.m_loader.metaData().value("MetaData").toObject();
+	pd.m_loader->setFileName(pluginFilePath);
+	pd.m_loader->setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
+	pd.m_metadata = pd.m_loader->metaData().value("MetaData").toObject();
 	pd.decodeMetadata(); // to have some fallback data
 	// check for matching versions before attempting to load the plugin
+	// Plugin must have the same version as SIM-VICUS!
 	if (pd.m_abiVersion.isEmpty() || !pd.matchesVersion()) {
 		pd.m_result = LR_IncompatibleVersion;
 		IBK::IBK_Message(IBK::FormatString("  Plugin library '%1' does not match installed version '%2', since it requires '%3'.\n")
-						 .arg(pluginPath.toStdString()), IBK::MSG_ERROR);
+						 .arg(pluginPath.toStdString()).arg(VICUS::VERSION).arg(pd.m_abiVersion.toStdString()), IBK::MSG_ERROR);
 		return;
 	}
 
-	QObject *plugin = pd.m_loader.instance();
-	if (plugin != nullptr) {
-		IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(pluginFilePath.toStdString()) );
-		// ok, we have a plugin, check for valid interfaces
+	QObject * plugin = nullptr;
+	// add path to plugin to library search paths
+	qApp->addLibraryPath(pluginDir.absolutePath());
+	bool success = pd.m_loader->load(); // load the plugin
+	// and remove the path again, so that subsequent libs won't load wrong dll/so-files
+	qApp->removeLibraryPath(pluginDir.absolutePath());
+	if (success)
+		plugin = pd.m_loader->instance(); // access the library
 
-		SVDatabasePluginInterface * dbIface = qobject_cast<SVDatabasePluginInterface*>(plugin);
-		if (dbIface != nullptr) {
-			pd.m_interfaceType = IT_Database;
-			IBK::IBK_Message(IBK::FormatString("    Database interface\n") );
-		}
-		else {
-			SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
-			if (iface != nullptr) {
-				pd.m_interfaceType = IT_Import;
-				IBK::IBK_Message(IBK::FormatString("    Import interface\n") );
-			}
-		}
-	}
-	else {
-		QString errtxt = pd.m_loader.errorString();
+	// error handling
+	if (!success || plugin == nullptr) {
+		QString errtxt = pd.m_loader->errorString();
 		IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1': %2\n")
 						 .arg(pluginFilePath.toStdString()).arg(errtxt.toStdString()),
 						 IBK::MSG_ERROR);
@@ -164,6 +151,36 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 		else
 			pd.m_metadata = jdoc.object();
 		pd.decodeMetadata(); // to have some fallback data
+	}
+	else {
+		IBK::MessageIndentor ident2;
+		IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(pluginFilePath.toStdString()) );
+		// ok, we have a plugin, check for valid interfaces
+
+		// Mind: use qobject_cast here!
+		SVDatabasePluginInterface * dbIface = qobject_cast<SVDatabasePluginInterface*>(plugin);
+		if (dbIface != nullptr) {
+			pd.m_interfaceType = IT_Database;
+			dbIface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
+			IBK::MessageIndentor ident;
+			IBK::IBK_Message(IBK::FormatString("%1, Version %2, Database interface\n").arg(dbIface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
+			m_plugins[pluginFile] = pd;
+		}
+		else {
+			// Mind: use qobject_cast here!
+			SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
+			if (iface != nullptr) {
+				pd.m_interfaceType = IT_Import;
+				iface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
+				IBK::MessageIndentor ident;
+				IBK::IBK_Message(IBK::FormatString("%1, Version %2, Import interface\n").arg(iface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
+				m_plugins[pluginFile] = pd;
+			}
+			else {
+				// not one of our interfaces
+				IBK::IBK_Message("Not a recognized interface, ignored.\n", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD );
+			}
+		}
 	}
 }
 
@@ -192,10 +209,11 @@ QString retrieveMultilanguageText(const QJsonObject & o, const QString & name) {
 }
 
 void SVPluginLoader::PluginData::decodeMetadata() {
+	m_title = retrieveMultilanguageText(m_metadata, "title");
 	m_longDesc = retrieveMultilanguageText(m_metadata, "long-description");
 	m_shortDesc = retrieveMultilanguageText(m_metadata, "short-description");
 	m_pluginVersion = m_metadata["version"].toString();
-	m_abiVersion = m_metadata["abi-version"].toString();
+	m_abiVersion = m_metadata["vicus-version"].toString();
 	m_license = m_metadata["license"].toString();
 	m_webpage = m_metadata["webpage"].toString();
 	m_author = m_metadata["author"].toString();

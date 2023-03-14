@@ -302,8 +302,11 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 	std::set<unsigned int> objIds;
 	for(const VICUS::Room *r : m_zoneTemplateAssignments[zt]){
 		objIds.insert(r->m_id);
-		for (const VICUS::Surface &s : r->m_surfaces)
+		for (const VICUS::Surface &s : r->m_surfaces) {
 			objIds.insert(s.m_id);
+			for (const VICUS::SubSurface &ss : s.subSurfaces())
+				objIds.insert(ss.m_id);
+		}
 	}
 
 	QString undoText;

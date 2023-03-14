@@ -108,6 +108,8 @@ public slots:
 	/*! Connects to the ToolBox and changes the color view */
 	void onPropertyTypeChanged(int propertyType);
 
+	void onStyleChanged();
+
 private:
 
 	/*! Filters network objects from currently selected objects and stores their pointers. */

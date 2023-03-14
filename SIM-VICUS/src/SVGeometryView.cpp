@@ -76,7 +76,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	// *** create window container widget
 
 	m_sceneViewContainerWidget = QWidget::createWindowContainer(m_sceneView);
-	m_sceneViewContainerWidget->setFocusPolicy(Qt::TabFocus);
+	// Note: despite focus policy, the container widget does not receive focus when we click on the scene
+//	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 	m_sceneViewContainerWidget->setMinimumSize(QSize(640,400));
 
 	// replace dummy widget with scene view container widget
@@ -92,10 +93,9 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->splitter->setStretchFactor(0,1);
 	m_ui->splitter->setStretchFactor(1,0);
 
-
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
+	setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
 	// add special widgets to tool bars (things we cannot do in Qt Creator)
 	setupToolBar();
@@ -110,6 +110,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	SVViewStateHandler::instance().m_geometryView = this;
 	onViewStateChanged();
+
+	m_focusRootWidgets.insert(this);
 }
 
 
@@ -127,12 +129,32 @@ void SVGeometryView::refreshSceneView() {
 	m_sceneView->renderLater();
 }
 
+
 void SVGeometryView::resetCamera(Vic3D::SceneView::CameraPosition positionID) {
 	m_sceneView->resetCamera(positionID);
 }
 
 
-bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
+bool SVGeometryView::handleGlobalKeyPressEvent(QKeyEvent * ke) {
+	Qt::Key k = (Qt::Key)ke->key();
+//	qDebug() << "SVGeometryView::handleGlobalKeyPress" << k;
+	if (m_sceneView->isVisible()) {
+		// we only relay the key event if the currently focused widget has one of the acceptable widgets as parent
+		const QWidget * fw = qApp->focusWidget();
+		bool sendEventToScene = false;
+		if (fw == nullptr)
+			sendEventToScene = true;
+		while (fw)  {
+			if (m_focusRootWidgets.contains(fw)) {
+				sendEventToScene = true;
+				break;
+			}
+			fw = fw->parentWidget();
+		}
+		// we always pass the key event if it is a special key
+		if (k==Qt::Key_Shift || k==Qt::Key_Control || k==Qt::Key_Alt || k==Qt::Key_AltGr || sendEventToScene)
+			m_sceneView->handleKeyPressEvent(ke);
+	}
 	switch (k) {
 		case Qt::Key_0 :
 		case Qt::Key_1 :
@@ -166,22 +188,25 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 		case Qt::Key_X :
 			if (!m_ui->actionXLock->isVisible())
 				return false;
+			m_lineEditCoordinateInput->setText("");
 			m_ui->actionXLock->trigger();
 			break;
 
 		case Qt::Key_Y :
 			if (!m_ui->actionYLock->isVisible())
 				return false;
+			m_lineEditCoordinateInput->setText("");
 			m_ui->actionYLock->trigger();
 			break;
 
 		case Qt::Key_Z :
 			if (!m_ui->actionZLock->isVisible())
 				return false;
+			m_lineEditCoordinateInput->setText("");
 			m_ui->actionZLock->trigger();
 			break;
 
-			// *** F3 - toggle "snap mode" mode ****
+		// *** F3 - toggle "snap mode" mode ****
 		case Qt::Key_F3 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_snapEnabled) {
@@ -198,13 +223,13 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 			// all view modes that require snapping
 		} break;
 
-			// *** F4 - toggle "align coordinate system" mode ****
+		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleAlignCoordinateSystem();
 			break;
 
-			// *** F5 - toggle "move local coordinate system" mode ****
+		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
 			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
 				m_sceneView->toggleTranslateCoordinateSystem();
@@ -215,6 +240,21 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 		default:
 			return false; // not our key
 	}
+	return true;
+}
+
+
+bool SVGeometryView::handleGlobalKeyRelease(QKeyEvent * ke) {
+//	Qt::Key k = (Qt::Key)ke->key();
+//	qDebug() << "SVGeometryView::handleGlobalKeyRelease" << k;
+
+	// avoid accidentally deleting anything from the scene
+	if (!this->hasFocus() && ke->key() == Qt::Key_Delete)
+		return true;
+
+	// key release events are sent always, as these "do nothing" normally unless the scene was in a special state before
+	if (m_sceneView->isVisible())
+		m_sceneView->handleKeyReleaseEvent(ke);
 	return true;
 }
 
@@ -253,6 +293,13 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionScaleGeometry->setChecked(false);
 	m_ui->actionSiteParametrization->setChecked(false);
 	m_ui->actionTranslateGeometry->setChecked(false);
+	m_ui->actionAcousticParametrization->setChecked(false);
+	m_ui->actionShowResults->setChecked(false);
+}
+
+
+SVColorLegend * SVGeometryView::colorLegend() {
+	return m_ui->colorLegend;
 }
 
 
@@ -391,6 +438,8 @@ void SVGeometryView::onViewStateChanged() {
 	// hide measurement widget when no longer needed
 	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
 		hideMeasurementWidget();
+
+	m_ui->colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
 }
 
 
@@ -661,6 +710,23 @@ void SVGeometryView::on_actionCopyGeometry_triggered() {
 }
 
 
+void SVGeometryView::on_actionAcousticParametrization_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionAcousticParametrization->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingAcousticProperties;
+	vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+//	// we need to manually update the color mode, since above we reset it to OCM_None.
+//	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+//	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
+}
+
+
 void SVGeometryView::on_actionNetworkParametrization_triggered() {
 	uncheckAllActionsInButtonBar();
 	m_ui->actionNetworkParametrization->setChecked(true);
@@ -690,6 +756,21 @@ void SVGeometryView::on_actionSiteParametrization_triggered() {
 }
 
 
+void SVGeometryView::on_actionShowResults_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionShowResults->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_ResultsProperties;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_objectColorMode = SVViewState::OCM_ResultColorView;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+
 // *** Protected Functions ***
 
 
@@ -698,24 +779,6 @@ void SVGeometryView::resizeEvent(QResizeEvent *event) {
 	moveMeasurementWidget(); // adjust position of measurement widget
 }
 
-bool SVGeometryView::eventFilter(QObject * obj, QEvent * event) {
-	if (obj == m_lineEditCoordinateInput && event->type() == QEvent::KeyPress) {
-		QKeyEvent *key = dynamic_cast<QKeyEvent *>(event);
-
-		if(key == nullptr)
-			return QObject::eventFilter(obj, event);
-
-		switch (key->key()) {
-			case Qt::Key_X : m_lineEditCoordinateInput->setText(""); m_ui->actionXLock->trigger(); return true; // stop any further inputs in line edit
-			case Qt::Key_Y : m_lineEditCoordinateInput->setText(""); m_ui->actionYLock->trigger(); return true; // stop any further inputs in line edit
-			case Qt::Key_Z : m_lineEditCoordinateInput->setText(""); m_ui->actionZLock->trigger(); return true; // stop any further inputs in line edit
-		}
-		qDebug() << "Key Pressed";
-	}
-
-
-	return QObject::eventFilter(obj, event);
-}
 
 // *** Private Functions ***
 
@@ -810,5 +873,4 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
-
 

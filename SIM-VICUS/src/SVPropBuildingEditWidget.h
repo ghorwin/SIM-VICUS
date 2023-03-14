@@ -76,6 +76,7 @@ public slots:
 	/*! Returns current property type (index of toolbox) */
 	unsigned int currentPropertyType();
 
+	void onStyleChanged();
 
 private:
 	/*! Updates all edit widgets to current project state.

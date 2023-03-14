@@ -141,7 +141,7 @@
   <action name="actionSmartSelect">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/SmartSelect.png</normaloff>:/gfx/actions/SmartSelect.png</iconset>
+     <normaloff>:/gfx/actions/search.png</normaloff>:/gfx/actions/search.png</iconset>
    </property>
    <property name="text">
     <string>Smart select</string>

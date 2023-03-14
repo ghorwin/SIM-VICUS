@@ -976,12 +976,14 @@ void HNControlledPump::modelQuantities(std::vector<QuantityDescription> &quantit
 	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Current electrical power demand of pump", false));
 	quantities.push_back(QuantityDescription("PumpEfficiency", "---", "Current efficiency of pump", false));
 	IBK_ASSERT(m_controller != nullptr);
+	quantities.push_back(QuantityDescription("ControllerErrorValue","---", "The calculated controller error for pump", false));
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
 		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint) {
 		quantities.push_back(QuantityDescription("PressureDifferenceAtWorstpoint","Pa", "The pressure difference at worst point in network", false));
 		quantities.push_back(QuantityDescription("WorstpointNodeId","---", "The VICUS Node Id of the worst point", false));
 	}
+
 }
 
 
@@ -989,6 +991,7 @@ void HNControlledPump::modelQuantityValueRefs(std::vector<const double*> &valRef
 	valRefs.push_back(&m_pressureHead);
 	valRefs.push_back(&m_electricalPower);
 	valRefs.push_back(&m_efficiency);
+	valRefs.push_back(&m_controllerError);
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
 		valRefs.push_back(&m_temperatureDifference);
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint) {
@@ -1235,6 +1238,7 @@ void HNControlledPump::updateResults(double mdot, double p_inlet, double p_outle
 	m_efficiency = efficiency(mdot, p_outlet - p_inlet);
 	m_electricalPower = electricalPower(mdot, p_outlet - p_inlet, m_efficiency);
 	m_pressureHead = pressureHeadControlled(mdot);
+	m_controllerError = m_controller->m_errorValue;
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
 		m_temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint)
@@ -1243,8 +1247,40 @@ void HNControlledPump::updateResults(double mdot, double p_inlet, double p_outle
 
 
 void HNControlledPump::stepCompleted(double t) {
-	IBK_ASSERT(m_controller != nullptr);
+	if (m_controller == nullptr)
+		return;
+
 	m_controller->stepCompleted(t);
+
+//	// Anti-windup of PI-controller: For high controller errors (e.g. >70 % of set point), i.e. when the current value is
+//	// very far from the setpoint, we don't use the integral part. This avoids an increase (windup) of the integral during times when
+//	// there is no heat flux and the temperature difference setpoint can not be reached.
+//	const double relControllerErrorIntegratorReset = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_RelControllerErrorForIntegratorReset].value;
+//	if (relControllerErrorIntegratorReset > 0) {
+//		switch (m_controlElement->m_controlledProperty ) {
+//			case NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint:
+//				if (m_controller->m_errorValue > relControllerErrorIntegratorReset * *m_pressureDifferenceSetpointRef)  {
+//					m_controller->resetErrorIntegral();
+//				} break;
+//			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+//			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
+////					if (m_controller->m_errorValue > relControllerErrorIntegratorReset * *m_temperatureDifferenceSetpointRef)  {
+////						m_controller->resetErrorIntegral();
+////					}
+////				}
+//				break;
+//			case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
+//				// TODO anti-windup for mass flux control ?
+//				break;
+//			case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+//			case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
+
+//			case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
+//				break; // just for compiler
+//		}
+//	}
+//}
+
 }
 
 

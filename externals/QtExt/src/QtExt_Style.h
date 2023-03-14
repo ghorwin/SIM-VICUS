@@ -67,6 +67,9 @@ public:
 	static QString AlternativeBackgroundDark;
 	static QString AlternativeBackgroundText;
 
+	static QString ToolBoxPageBackground;
+	static QString ToolBoxPageEdge;
+
 	/*! This adjusts layout and palette style of a QtExt::FeatureWidget.
 		This function expects a content widget as second widget of the
 		feature widget's layout and calls adjustContentWidget() on it.

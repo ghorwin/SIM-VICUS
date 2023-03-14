@@ -1,4 +1,4 @@
-/*	SIM-VICUS - Building and District Energy Simulation Tool.
+    /*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -29,6 +29,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 
+#include "VICUS_Surface.h"
 #include "Vic3DVertex.h"
 #include "Vic3DTransform3D.h"
 

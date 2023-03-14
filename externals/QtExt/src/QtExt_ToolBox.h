@@ -37,6 +37,8 @@ public:
 	/*! Returns index of currently expanded page */
 	unsigned int currentIndex();
 
+	void updatePageBackgroundColorFromStyle();
+
 private slots:
 	/*! Changes arrow icons and visibility of given page, connected to ClickableLabels */
 	void onLabelClicked();

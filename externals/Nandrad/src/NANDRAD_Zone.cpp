@@ -74,7 +74,7 @@ void Zone::checkParameters() const {
 void Zone::readXML(const TiXmlElement * element) {
 	FUNCID("[Zone::readXML]");
 
-	readXMLPrivate(element);
+	// readXMLPrivate(element);
 
 	try {
 		// read parameters
@@ -118,7 +118,11 @@ void Zone::readXML(const TiXmlElement * element) {
 	catch (std::exception & ex2) {
 		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Zone' element.").arg(ex2.what()), FUNC_ID);
 	}
+
+	// now auto-generated code
+	readXMLPrivate(element);
 }
+
 
 TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 

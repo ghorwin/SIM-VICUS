@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <SubSurfaceComponents>
-	<SubSurfaceComponent id="10001" displayName="DE: Standard-Fenster |EN: Default-Window;" color="#f3ff99">
+	<SubSurfaceComponent id="40000" displayName="DE: Standard-Fenster |EN: Default-Window;" color="#f3ff99">
 		<Type>Window</Type>
-		<IdWindow>3001</IdWindow>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdWindow>35000</IdWindow>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="10002" displayName="DE: FensterTF07.1 |EN: WindowTF07.1" color="#5affde">
+	<SubSurfaceComponent id="40001" displayName="DE: FensterTF07.1 |EN: WindowTF07.1" color="#5affde">
 		<Type>Window</Type>
-		<IdWindow>3002</IdWindow>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdWindow>35001</IdWindow>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="10003" displayName="DE: FensterTF07.2 |EN: WindowTF07.2;" color="#a25aff">
+	<SubSurfaceComponent id="40002" displayName="DE: FensterTF07.2 |EN: WindowTF07.2;" color="#a25aff">
 		<Type>Window</Type>
-		<IdWindow>3003</IdWindow>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdWindow>35002</IdWindow>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="10004" displayName="DE: FensterTF07.3 |EN: WindowTF07.3;" color="#f3ff99">
+	<SubSurfaceComponent id="40003" displayName="DE: FensterTF07.3 |EN: WindowTF07.3;" color="#f3ff99">
 		<Type>Window</Type>
-		<IdWindow>3004</IdWindow>
-		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+		<IdWindow>35003</IdWindow>
+		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
 </SubSurfaceComponents>

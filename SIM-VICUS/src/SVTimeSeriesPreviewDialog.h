@@ -45,7 +45,9 @@ private:
 
 	void generateRelativeFilePath() const;
 
-
+	/*! The chart x,y titles. */
+	std::string						m_xTitle;
+	std::string						m_yTitle;
 
 	Ui::SVTimeSeriesPreviewDialog	*m_ui;
 

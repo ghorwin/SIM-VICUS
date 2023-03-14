@@ -129,6 +129,7 @@ public:
 		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
 	*/
 	double												m_visualizationRadius;
+
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor										m_color;
 

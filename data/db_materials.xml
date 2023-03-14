@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Materials>
-	<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a29f2f">
+	<Material id="10000" displayName="de:Beton|en:Concrete"  color="#a29f2f">
 		<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -9,7 +9,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 	</Material>
-	<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster"  color="#bbbbcf">
+	<Material id="10001" displayName="de:Putz|en:Plaster"  color="#bbbbcf">
 		<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -18,7 +18,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 	</Material>
-	<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
+	<Material id="10002" displayName="de:Dämmung|en:Insulation" color="#f3dba0">
 		<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -27,7 +27,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
-	<Material id="10003" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#A2B84B">
+	<Material id="10003" displayName="de:PUR|en:PUR" color="#A2B84B">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -36,7 +36,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
-	<Material id="10004" displayName="de:[SimQuality] Dämmung 2 |en:[SimQuality] Insulation 2" color="#f3dba0">
+	<Material id="10004" displayName="de:Dämmung 2 |en:Insulation 2" color="#f3dba0">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -45,7 +45,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
 	</Material>
-	<Material id="10005" displayName="de:[SimQuality] Glas opak|en:[SimQuality] Glass opaque" color="#407FBF">
+	<Material id="10005" displayName="de:Glas opak|en:Glass opaque" color="#407FBF">
 		<Notes>en:Used in SimQuality test cases (TF12).|de:Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -54,7 +54,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">880</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.99</IBK:Parameter>
 	</Material>
-	<Material id="10006" displayName="de:[SimQuality] Gipskartonplatte|en:[SimQuality] Plasterboard" color="#f3dba0">
+	<Material id="10006" displayName="de:Gipskartonplatte|en:Plasterboard" color="#f3dba0">
 		<Notes>en:Cladding to be used in SimQuality test cases (TF12).|de:Verkleidung zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -63,7 +63,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.16</IBK:Parameter>
 	</Material>
-	<Material id="10007" displayName="de:[SimQuality] Gipsputz|en:[SimQuality] Gypsum plaster" color="#cbb4b4">
+	<Material id="10007" displayName="de:Gipsputz|en:Gypsum plaster" color="#cbb4b4">
 		<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -72,7 +72,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
 	</Material>
-	<Material id="10008" displayName="de:[SimQuality] Mineralwolle |en:[SimQuality] Mineral wool" color="#58B970">
+	<Material id="10008" displayName="de:Mineralwolle |en:Mineral wool" color="#58B970">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -81,7 +81,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
-	<Material id="10009" displayName="de:[SimQuality] Stahlbeton|en:[SimQuality] reinforced concrete"  color="#a29f2f">
+	<Material id="10009" displayName="de:Stahlbeton|en:reinforced concrete"  color="#a29f2f">
 		<Notes>en:Contrete to be used in SimQuality test cases (TF12).|de:Beton zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -90,7 +90,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
 	</Material>
-	<Material id="10010" displayName="de:[SimQuality] Fließestrich|en:[SimQuality] flowing screed"  color="#a29f2f">
+	<Material id="10010" displayName="de:Fließestrich|en:flowing screed"  color="#a29f2f">
 		<Notes>en:Screed to be used in SimQuality test cases (TF12).|de:Estrich zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -99,7 +99,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
 	</Material>
-	<Material id="10011" displayName="de:[SimQuality] PfostenDämmung|en:[SimQuality] MullionInsulation" color="#f3dba0">
+	<Material id="10011" displayName="de:PfostenDämmung|en:MullionInsulation" color="#f3dba0">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -108,7 +108,7 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1390</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.038</IBK:Parameter>
 	</Material>
-	<Material id="10012" displayName="de:[SimQuality] Teppichboden|en:[SimQuality] Carpeting" color="#BF6E40">
+	<Material id="10012" displayName="de:Teppichboden|en:Carpeting" color="#BF6E40">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -120,42 +120,65 @@
 	
 	
 	
-	<Material id="10013" displayName="de:[TEASER] Fachwerk mit Strohlehmausfachung|en:[TEASER] half-timber with straw-loam-infill" color="#BF6E40">
-		<Notes/>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>TEASER</DataSource>
-		<Category>Insulations</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">1150</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.56</IBK:Parameter>
-	</Material>	
-	<Material id="10014" displayName="de:[TEASER] Leichtbetonhohlblockstein|en:[TEASER] Light concrete hollow block" color="#BF6E40">
-		<Notes/>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>TEASER</DataSource>
-		<Category>Insulations</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
-	</Material>	
-	<Material id="10015" displayName="de:[TEASER] PSDämmung|en:[TEASER] PSInsulation" color="#BF6E40">
-		<Notes/>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>TEASER</DataSource>
-		<Category>Insulations</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
-	</Material>	
-	<Material id="10016" displayName="de:[TEASER] Mineralfaserdämmung|en:[TEASER] mineral fiber insulation" color="#BF6E40">
-		<Notes/>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>TEASER</DataSource>
-		<Category>Insulations</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">700</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1700</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.17</IBK:Parameter>
-	</Material>
 	
 	
+<Material id="10100" displayName="de:Schaumglasplatte | en:foam glass board" color="#BF6E40">	
+	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	
+	<IBK:Parameter name="Density" unit="kg/m3">130</IBK:Parameter>	
+	<IBK:Parameter name="Conductivity" unit="W/mK">0.65</IBK:Parameter>	
+	<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>	
+</Material>
+<Material id="10101" displayName="de:Gipskartonplatten | en:plasterboard" color="#BF6E40">	
+	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>BuildingBoards</Category>	
+	<IBK:Parameter name="Density" unit="kg/m3">732.0223</IBK:Parameter>	
+	<IBK:Parameter name="Conductivity" unit="W/mK">0.2113</IBK:Parameter>	
+	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1383.8755</IBK:Parameter>	
+</Material>
+<Material id="10102" displayName="de:Hochlochziegel 700 | en:vertical core brick 700" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Bricks</Category>	<IBK:Parameter name="Density" unit="kg/m3">695</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.13</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>	</Material>
+<Material id="10103" displayName="de:Vollziegel k | en:solid brick k" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Bricks</Category>	<IBK:Parameter name="Density" unit="kg/m3">1736.5363</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.745</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">915.6</IBK:Parameter>	</Material>
+<Material id="10104" displayName="de:Stahlblech | en:steel sheet" color="#BF6E40">
+	<Notes/>
+	<Manufacturer>generic</Manufacturer>
+	<DataSource>TEASER</DataSource>	
+	<Category>BuildingBoards</Category>	
+	<IBK:Parameter name="Density" unit="kg/m3">7800</IBK:Parameter>	
+	<IBK:Parameter name="Conductivity" unit="W/mK">48</IBK:Parameter>	
+	<IBK:Parameter name="HeatCapacity" unit="J/kgK">477</IBK:Parameter>	
+</Material>
+<Material id="10105" displayName="de:Holzfaserplatte leicht | en:wood fibrebard light" color="#BF6E40">
+	<Notes/>
+	<Manufacturer>generic</Manufacturer>
+	<DataSource>TEASER</DataSource>	
+	<Category>Woodbased</Category>	
+	<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>	
+	<IBK:Parameter name="Conductivity" unit="W/mK">0.056</IBK:Parameter>	
+	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	
+</Material>
+<Material id="10106" displayName="de:Kalkputz | en:lime plaster" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Plaster</Category>	<IBK:Parameter name="Density" unit="kg/m3">1600</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>	</Material>
+<Material id="10107" displayName="de:Schotter einfaches Granulat | en:gravel single granular" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>NaturalMaterials</Category>	<IBK:Parameter name="Density" unit="kg/m3">1500</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.814</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>	</Material>
+<Material id="10108" displayName="de:Beton CEM II BS325R wz05 | en:concrete CEM II BS325R wz05" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Cementitious</Category>	<IBK:Parameter name="Density" unit="kg/m3">2420</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">2.1</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10109" displayName="de:Holzbalken mit Isolierung | en:wooden beams with insulation" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.12</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10110" displayName="de:CMU-Hohlblockstein Vermiculit 1200 | en:hollow CMU Vermiculit 1200" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Bricks</Category>	<IBK:Parameter name="Density" unit="kg/m3">1200</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.535</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1050</IBK:Parameter>	</Material>
+<Material id="10111" displayName="de:schwimmender Zementestrich 2 Boden | en:cement floating screed 2 bottom" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Cementitious</Category>	<IBK:Parameter name="Density" unit="kg/m3">1990</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10112" displayName="de:faseriger Lehm 1200 | en:fibrous loa 1200" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>NaturalMaterials</Category>	<IBK:Parameter name="Density" unit="kg/m3">1200</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.488</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10113" displayName="de:Holzbalken mit Luft und Lehm | en:wooden beams with air and clay" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">736</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>	</Material>
+<Material id="10114" displayName="de:Fichten längs | en:spruces longitudinal" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">455</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.23</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	</Material>
+<Material id="10115" displayName="de:Beton wz05 | en:concrete wz05" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Cementitious</Category>	<IBK:Parameter name="Density" unit="kg/m3">2300</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">1.6</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>	</Material>
+<Material id="10116" displayName="de:Faserplatte | en:fibreboard" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">620</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1700</IBK:Parameter>	</Material>
+<Material id="10117" displayName="de:Luft | en:air" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Miscellaneous</Category>	<IBK:Parameter name="Density" unit="kg/m3">1.184</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.0261</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1005</IBK:Parameter>	</Material>
+<Material id="10118" displayName="de:XPS 3 Kernschicht | en:XPS 3 core layer" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">40</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.03</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	</Material>
+										
+<Material id="10134" displayName="de:Eiche radial | en:oak radial" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">685</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.13</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	</Material>
+<Material id="10135" displayName="de:Mineralwolle | en:mineral wool" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">60</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>	</Material>
+<Material id="10136" displayName="de:Hartholz | en:hardwood" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Woodbased</Category>	<IBK:Parameter name="Density" unit="kg/m3">650</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.13</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	</Material>
+<Material id="10137" displayName="de:EPS 040 15 | en:EPS 040 15" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">15</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>	</Material>
+<Material id="10138" displayName="de:Lehmputz | en:clay plaster" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>NaturalMaterials</Category>	<IBK:Parameter name="Density" unit="kg/m3">1514</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.65</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10139" displayName="de:Aluminium | en:aluminium" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Miscellaneous</Category>	<IBK:Parameter name="Density" unit="kg/m3">2800</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">237</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">897</IBK:Parameter>	</Material>
+<Material id="10140" displayName="de:Trittschalldämmung | en:footstep sound insulation" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+<Material id="10141" displayName="de:Holzwolleplatte Gips 420 | en:wood wool board gypsum 420" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">420</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.099</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">2000</IBK:Parameter>	</Material>
+<Material id="10142" displayName="de:Gips | en:gypsum" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Miscellaneous</Category>	<IBK:Parameter name="Density" unit="kg/m3">850</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.3</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+						
+						
+<Material id="10145" displayName="de:Dachsparren und Isolierung | en:rafters and insulation" color="#BF6E40">	<Notes/><Manufacturer>generic</Manufacturer><DataSource>TEASER</DataSource>	<Category>Insulations</Category>	<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>	<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>	<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>	</Material>
+
 </Materials>

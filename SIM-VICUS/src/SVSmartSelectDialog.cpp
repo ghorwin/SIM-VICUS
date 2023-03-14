@@ -83,11 +83,16 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->checkBoxLengthBelow->setChecked(false);
 	m_ui->checkBoxLengthAbove->setChecked(false);
 	m_ui->checkBoxNodeId->setChecked(false);
-	m_ui->checkBoxNodeDisplayName->setChecked(false);
 	m_ui->checkBoxMaxHeatingDemandEqualTo->setChecked(false);
+	on_checkBoxLengthAbove_stateChanged(0);
+	on_checkBoxLengthBelow_stateChanged(0);
+	on_checkBoxMaxHeatingDemandAbove_stateChanged(0);
+	on_checkBoxMaxHeatingDemandBelow_stateChanged(0);
+	on_checkBoxMaxHeatingDemandEqualTo_stateChanged(0);
+	on_checkBoxNodeId_stateChanged(0);
+
 
 	m_ui->lineEditFilterName->setPlaceholderText(tr("Use wildcard '*' or filter for multiple names separated with ';' "));
-
 
 	// populate static options
 	m_allOptions = FilterOption();
@@ -600,10 +605,6 @@ void SVSmartSelectDialog::selectNetworkComponents() {
 		if (m_ui->checkBoxNodeId->isChecked() && m_ui->lineEditNodeId->isValid())
 			idFilter = (unsigned int)m_ui->lineEditNodeId->value();
 
-		QString nameFilter = "";
-		if (m_ui->checkBoxNodeDisplayName->isChecked())
-			nameFilter = m_ui->lineEditNodeDisplayName->text();
-
 
 		// now process all network objects and store IDs of selected nodes
 		std::set<unsigned int> nodeIDs;
@@ -616,10 +617,6 @@ void SVSmartSelectDialog::selectNetworkComponents() {
 
 			for (const VICUS::NetworkNode & n : nw.m_nodes) {
 			// apply filter rules
-
-				// name filter
-				if (!nameFilter.isEmpty() && n.m_displayName != nameFilter)
-					continue;
 
 				// id filter
 				if (idFilter != VICUS::INVALID_ID && n.m_id != idFilter)
@@ -641,6 +638,41 @@ void SVSmartSelectDialog::selectNetworkComponents() {
 				// all filters match, store unique ID of this node
 				nodeIDs.insert(n.m_id);
 			}
+		}
+
+		// read filter name
+		QStringList namesList;
+		if (m_ui->checkBoxFilterName->isChecked()) {
+			QString str = m_ui->lineEditFilterName->text();
+			if (str.contains(";"))
+				namesList = str.split(";");
+			else
+				namesList.push_back(str);
+		}
+
+		// filter for names
+		std::set<unsigned int> tmpNodeIDs;
+		if (!namesList.empty()) {
+			for (unsigned int id: nodeIDs) {
+				const VICUS::Object *obj = project().objectById(id);
+				for (QString filterName: namesList) { // copy is on purpose
+					// if there is a "*" wildcard, we check wether the filterString is part of diaplayName
+					if (filterName.startsWith("*")) {
+						if (obj->m_displayName.endsWith(filterName.replace("*", "")))
+							tmpNodeIDs.insert(id);
+					}
+					else if (filterName.endsWith("*")) {
+						if (obj->m_displayName.startsWith(filterName.replace("*", "")))
+							tmpNodeIDs.insert(id);
+					}
+					// otherwise displayName must be identical
+					else if (obj->m_displayName == filterName){
+						tmpNodeIDs.insert(id);
+					}
+				}
+			}
+			// finally overwrite selected objects
+			nodeIDs = tmpNodeIDs;
 		}
 
 		if (nodeIDs.empty())
@@ -725,11 +757,6 @@ void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandEqualTo_stateChanged(int ar
 	m_ui->lineEditMaxHeatingDemandEqualTo->setEnabled(checked);
 }
 
-void SVSmartSelectDialog::on_checkBoxNodeDisplayName_stateChanged(int arg1)
-{
-	m_ui->lineEditNodeDisplayName->setEnabled(arg1);
-}
-
 
 void SVSmartSelectDialog::on_listWidgetOptions_itemDoubleClicked(QListWidgetItem *item) {
 	// only items that contain children can be clicked
@@ -752,5 +779,10 @@ void SVSmartSelectDialog::on_toolButtonReset_clicked() {
 
 void SVSmartSelectDialog::on_checkBoxFilterName_clicked(bool checked) {
 	m_ui->lineEditFilterName->setEnabled(checked);
+}
+
+
+void SVSmartSelectDialog::on_checkBoxNodeId_stateChanged(int arg1) {
+	m_ui->lineEditNodeId->setEnabled(arg1);
 }
 

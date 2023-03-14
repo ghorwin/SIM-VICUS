@@ -78,10 +78,12 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
-				case 2 : return "FluxShortWaveRadiationA";
-				case 3 : return "FluxShortWaveRadiationB";
-				case 4 : return "FluxLongWaveradiationA";
-				case 5 : return "FluxLongWaveradiationB";
+				case 2 : return "FluxHeatConductionAreaSpecificA";
+				case 3 : return "FluxHeatConductionAreaSpecificB";
+				case 4 : return "FluxShortWaveRadiationA";
+				case 5 : return "FluxShortWaveRadiationB";
+				case 6 : return "FluxLongWaveRadiationA";
+				case 7 : return "FluxLongWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -92,6 +94,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return "ElementTemperature";
+				case 1 : return "EmittedLongWaveRadiationA";
+				case 2 : return "EmittedLongWaveRadiationB";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -102,6 +106,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return "SolarRadiationFluxB";
 				case 4 : return "LongWaveRadiationFluxA";
 				case 5 : return "LongWaveRadiationFluxB";
+				case 6 : return "EmittedLongWaveRadiationFluxA";
+				case 7 : return "EmittedLongWaveRadiationFluxB";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -294,10 +300,12 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
-				case 2 : return "FluxShortWaveRadiationA";
-				case 3 : return "FluxShortWaveRadiationB";
-				case 4 : return "FluxLongWaveradiationA";
-				case 5 : return "FluxLongWaveradiationB";
+				case 2 : return "FluxHeatConductionAreaSpecificA";
+				case 3 : return "FluxHeatConductionAreaSpecificB";
+				case 4 : return "FluxShortWaveRadiationA";
+				case 5 : return "FluxShortWaveRadiationB";
+				case 6 : return "FluxLongWaveRadiationA";
+				case 7 : return "FluxLongWaveRadiationB";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -308,6 +316,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return "ElementTemperature";
+				case 1 : return "EmittedLongWaveRadiationA";
+				case 2 : return "EmittedLongWaveRadiationB";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -318,6 +328,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return "SolarRadiationFluxB";
 				case 4 : return "LongWaveRadiationFluxA";
 				case 5 : return "LongWaveRadiationFluxB";
+				case 6 : return "EmittedLongWaveRadiationFluxA";
+				case 7 : return "EmittedLongWaveRadiationFluxB";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -511,10 +523,12 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Heat conduction flux across interface A (into construction)";
 				case 1 : return "Heat conduction flux across interface B (into construction)";
-				case 2 : return "Short wave radiation flux across interface A (into construction)";
-				case 3 : return "Short wave radiation flux across interface B (into construction)";
-				case 4 : return "Long wave radiation flux across interface A (into construction)";
-				case 5 : return "Long wave radiation flux across interface B (into construction)";
+				case 2 : return "Heat conduction flux density across interface A (into construction)";
+				case 3 : return "Heat conduction flux density across interface B (into construction)";
+				case 4 : return "Short wave radiation flux across interface A (into construction)";
+				case 5 : return "Short wave radiation flux across interface B (into construction)";
+				case 6 : return "Long wave radiation flux across interface A (into construction)";
+				case 7 : return "Long wave radiation flux across interface B (into construction)";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -525,6 +539,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return "Finite-volume mean element temperature";
+				case 1 : return "Emitted internal long-wave radiation from side A.";
+				case 2 : return "Emitted internal long-wave radiation from side B.";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -533,8 +549,10 @@ namespace NANDRAD_MODEL {
 				case 1 : return "Surface temperature at interface B";
 				case 2 : return "Solar radiation flux density into surface A";
 				case 3 : return "Solar radiation flux density into surface B";
-				case 4 : return "Absorbed minus emitted long wave radiation flux density for surface A";
-				case 5 : return "Absorbed minus emitted long wave radiation flux density for surface B";
+				case 4 : return "Absorbed minus emitted ambient long wave radiation flux density for surface A";
+				case 5 : return "Absorbed minus emitted ambient long wave radiation flux density for surface B";
+				case 6 : return "Emitted long wave radiation flux density for surface A (sum of all emissions to all other inside surface)";
+				case 7 : return "Emitted long wave radiation flux density for surface B (sum of all emissions to all other inside surface)";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -727,10 +745,12 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
-				case 2 : return "W";
-				case 3 : return "W";
+				case 2 : return "W/m2";
+				case 3 : return "W/m2";
 				case 4 : return "W";
 				case 5 : return "W";
+				case 6 : return "W";
+				case 7 : return "W";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -741,6 +761,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return "C";
+				case 1 : return "W";
+				case 2 : return "W";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -751,6 +773,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return "W/m2";
 				case 4 : return "W/m2";
 				case 5 : return "W/m2";
+				case 6 : return "W/m2";
+				case 7 : return "W/m2";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -947,6 +971,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -957,6 +983,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -967,6 +995,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -1163,6 +1193,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
@@ -1173,6 +1205,8 @@ namespace NANDRAD_MODEL {
 			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
@@ -1183,6 +1217,8 @@ namespace NANDRAD_MODEL {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -1372,13 +1408,13 @@ namespace NANDRAD_MODEL {
 	unsigned int KeywordList::Count(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionBalanceModel::Results
-			case 0 : return 6;
+			case 0 : return 8;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 1;
 			// ConstructionStatesModel::VectorValuedResults
-			case 2 : return 1;
+			case 2 : return 3;
 			// ConstructionStatesModel::Results
-			case 3 : return 6;
+			case 3 : return 8;
 			// HeatLoadSummationModel::Results
 			case 4 : return 1;
 			// IdealHeatingCoolingModel::VectorValuedResults
@@ -1426,13 +1462,13 @@ namespace NANDRAD_MODEL {
 	int KeywordList::MaxIndex(const char * const enumtype) {
 		switch (enum2index(enumtype)) {
 			// ConstructionBalanceModel::Results
-			case 0 : return 5;
+			case 0 : return 7;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 : return 0;
 			// ConstructionStatesModel::VectorValuedResults
-			case 2 : return 0;
+			case 2 : return 2;
 			// ConstructionStatesModel::Results
-			case 3 : return 5;
+			case 3 : return 7;
 			// HeatLoadSummationModel::Results
 			case 4 : return 0;
 			// IdealHeatingCoolingModel::VectorValuedResults

@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
@@ -29,7 +29,7 @@
          <property name="title">
           <string>Simulation time and duration</string>
          </property>
-         <layout class="QFormLayout" name="formLayout">
+         <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
            <widget class="QLabel" name="labelStart">
             <property name="text">
@@ -74,16 +74,6 @@
              <widget class="QComboBox" name="comboBoxUnitDuration"/>
             </item>
            </layout>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="checkBoxEnableMoistureBalance">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Enable moisture balance</string>
-            </property>
-           </widget>
           </item>
           <item row="3" column="1">
            <spacer name="verticalSpacer">
@@ -136,7 +126,7 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
+             <enum>QSizePolicy::Preferred</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -329,6 +319,9 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -353,8 +346,11 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
               <property name="default">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -380,8 +376,11 @@
                 <height>32</height>
                </size>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
               <property name="default">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -431,6 +430,9 @@
        <property name="text">
         <string>Show log file...</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -450,6 +452,9 @@
       <widget class="QPushButton" name="pushButtonClose">
        <property name="text">
         <string>Store input data and close dialog</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

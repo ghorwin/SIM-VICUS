@@ -45,6 +45,8 @@ private:
 	VICUS::Network	m_addedNetwork;
 
 	double			m_farDistance;
+	double			m_gridWidth;
+	double			m_gridSpacing;
 
 	bool			m_networkGeometryModified;
 	bool			m_modifyFarDist;

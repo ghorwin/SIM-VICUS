@@ -1,3 +1,9 @@
+simvicus (1.0.0-1~focal~ppa1) focal; urgency=medium
+
+  * Update to 1.0.0 upstream
+
+ -- Andreas Nicolai <andreas.nicolai@gmx.net>  Tue, 28 Feb 2023 08:57:01 +0100
+
 simvicus (0.7.1-1~focal~ppa1) focal; urgency=medium
 
   * First release of SIM-VICUS as Ubuntu package

@@ -88,7 +88,12 @@ SVDatabase::SVDatabase() :
 	m_zoneIdealHeatingCooling(1075000),
 	m_ventilationNatural(1077500),
 	m_infiltration(1080000),
-	m_zoneTemplates(1082500)
+	m_zoneTemplates(1082500),
+	m_acousticTemplates(1400100)
+
+  //TODO Anton Start Id ist glaube ich nicht richtig implementiert
+  //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
+  //davon starten manche bei 1 und manche bei 10.000.000 ???
 {
 }
 
@@ -123,6 +128,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
+		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
 
 	}
 
@@ -178,6 +184,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_infiltration.readXML(				userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.readXML(			userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
+	if (t == NUM_DT || t == DT_AcousticTemplates)
+		m_acousticTemplates.readXML(			userDbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", false);
+
 }
 
 
@@ -240,6 +249,7 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_ventilationNatural.import(db.m_ventilationNatural);
 	m_infiltration.import(db.m_infiltration);
 	m_zoneTemplates.import(db.m_zoneTemplates);
+	m_acousticTemplates.import(db.m_acousticTemplates);
 
 }
 
@@ -526,6 +536,7 @@ void SVDatabase::updateElementChildren() {
 			VICUS::Infiltration *inf = m_infiltration[idType];
 			VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
 			VICUS::ZoneControlShading *ctrlShad = m_zoneControlShading[idType];
+			VICUS::ZoneControlNaturalVentilation *ctrlNatVent = m_zoneControlVentilationNatural[idType];
 			if (intLoad	!= nullptr) {
 				zt.m_childrenRefs.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
@@ -570,6 +581,8 @@ void SVDatabase::updateElementChildren() {
 				zt.m_childrenRefs.insert(idealHeatCool);
 			else if(ctrlShad != nullptr)
 				zt.m_childrenRefs.insert(ctrlShad);
+			else if(ctrlNatVent != nullptr)
+				zt.m_childrenRefs.insert(ctrlNatVent);
 		}
 	}
 

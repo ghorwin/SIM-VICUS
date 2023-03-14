@@ -40,6 +40,8 @@
 #include "VICUS_Infiltration.h"
 #include "VICUS_VentilationNatural.h"
 #include "VICUS_ZoneIdealHeatingCooling.h"
+#include "VICUS_ZoneControlNaturalVentilation.h"
+#include "VICUS_ZoneControlShading.h"
 
 namespace VICUS {
 
@@ -78,7 +80,9 @@ public:
 				 const Database<Schedule> &schedulesDB,
 				 const Database<Infiltration> &infiltraionDB,
 				 const Database<VentilationNatural> &ventilationDB,
-				 const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const;
+				 const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB,
+				 const Database<ZoneControlShading> &ctrlShadingDB,
+				 const Database<ZoneControlNaturalVentilation> &ctrlNatVentDB) const;
 
 	/*! Returns number of assigned sub-templates (needed by tree-model). */
 	unsigned int subTemplateCount() const;

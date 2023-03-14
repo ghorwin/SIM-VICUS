@@ -396,7 +396,7 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 				nodeIDs.insert(ne.m_id);
 				continue;
 			}
-			else if(m_touchGeometry &&
+			else if(m_touchGeometry && (projectedP1 != projectedP2) &&
 					IBKMK::intersectsLine2D(verts2D, IBKMK::Vector2D(projectedP1.x(), projectedP1.y()),
 											IBKMK::Vector2D(projectedP2.x(), projectedP2.y()), intersectionP) ) {
 				nodeIDs.insert(ne.m_id);

@@ -91,7 +91,7 @@ void SVNetworkExportDialog::exportToGeoJson(unsigned int networkId) {
 	if(m_ui->checkBoxExportPipeline->isChecked()){
 		for(const VICUS::NetworkEdge & edge : network->m_edges){
 			QJsonObject feature;
-			feature["feature"] = "Feature";
+			feature["type"] = "Feature";
 			QJsonObject properties;
 			properties["id"] = featureId;
 
@@ -115,19 +115,31 @@ void SVNetworkExportDialog::exportToGeoJson(unsigned int networkId) {
 			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
 			bool isSouthern = m_ui->radioButtonSouthern->isChecked();
 
-			double lat1, lon1;
 			double x1 = node1->m_position.m_x + network->m_origin.m_x;
 			double y1 = node1->m_position.m_y + network->m_origin.m_y;
-			IBKMK::UTMXYToLatLon (x1, y1, utmZone, isSouthern, lat1, lon1);
-			coordinate1.push_back(IBKMK::RadToDeg(lon1));
-			coordinate1.push_back(IBKMK::RadToDeg(lat1));
+			if (m_ui->groupBoxToUTM->isChecked()) {
+				double lat1, lon1;
+				IBKMK::UTMXYToLatLon (x1, y1, utmZone, isSouthern, lat1, lon1);
+				coordinate1.push_back(IBKMK::RadToDeg(lon1));
+				coordinate1.push_back(IBKMK::RadToDeg(lat1));
+			}
+			else {
+				coordinate1.push_back(x1);
+				coordinate1.push_back(y1);
+			}
 
 			double lat2, lon2;
 			double x2 = node2->m_position.m_x + network->m_origin.m_x;
 			double y2 = node2->m_position.m_y + network->m_origin.m_y;
-			IBKMK::UTMXYToLatLon (x2, y2, utmZone, isSouthern, lat2, lon2);
-			coordinate2.push_back(IBKMK::RadToDeg(lon2));
-			coordinate2.push_back(IBKMK::RadToDeg(lat2));
+			if (m_ui->groupBoxToUTM->isChecked()) {
+				IBKMK::UTMXYToLatLon (x2, y2, utmZone, isSouthern, lat2, lon2);
+				coordinate2.push_back(IBKMK::RadToDeg(lon2));
+				coordinate2.push_back(IBKMK::RadToDeg(lat2));
+			}
+			else {
+				coordinate2.push_back(x2);
+				coordinate2.push_back(y2);
+			}
 
 			coordinates.push_back(coordinate1);
 			coordinates.push_back(coordinate2);
@@ -161,12 +173,17 @@ void SVNetworkExportDialog::exportToGeoJson(unsigned int networkId) {
 			double lat, lon;
 			double x = n.m_position.m_x + network->m_origin.m_x;
 			double y = n.m_position.m_y + network->m_origin.m_y;
-			int utmZone = m_ui->comboBoxUTMZone->currentIndex();
-			bool isSouthern = m_ui->radioButtonSouthern->isChecked();
-			IBKMK::UTMXYToLatLon (x, y, utmZone, isSouthern, lat, lon);
-
-			coordinates.push_back(IBKMK::RadToDeg(lon));
-			coordinates.push_back(IBKMK::RadToDeg(lat));
+			if (m_ui->groupBoxToUTM->isChecked()) {
+				int utmZone = m_ui->comboBoxUTMZone->currentIndex();
+				bool isSouthern = m_ui->radioButtonSouthern->isChecked();
+				IBKMK::UTMXYToLatLon (x, y, utmZone, isSouthern, lat, lon);
+				coordinates.push_back(IBKMK::RadToDeg(lon));
+				coordinates.push_back(IBKMK::RadToDeg(lat));
+			}
+			else {
+				coordinates.push_back(x);
+				coordinates.push_back(y);
+			}
 
 			geometry["coordinates"] = coordinates;
 			feature["geometry"] = geometry;

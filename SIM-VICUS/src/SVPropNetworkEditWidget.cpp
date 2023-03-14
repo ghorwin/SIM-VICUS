@@ -13,6 +13,9 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVViewStateHandler.h"
 #include "SVConstants.h"
+#include "SVMainWindow.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -29,7 +32,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->toolBox->blockSignals(true);
 	m_ui->toolBox->addPage(tr("Geometry"), m_geometryWidget);
 	m_ui->toolBox->addPage(tr("Nodes"), m_nodesWidget);
-	m_ui->toolBox->addPage(tr("Edges"), m_edgesWidget);
+	m_ui->toolBox->addPage(tr("Pipes"), m_edgesWidget);
 	m_ui->toolBox->addPage(tr("Sub Stations"), m_subStationWidget);
 	m_ui->toolBox->addPage(tr("Heat Exchange"), m_hxWidget);
 	m_ui->toolBox->blockSignals(false);
@@ -40,6 +43,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropNetworkEditWidget::onModified);
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVPropNetworkEditWidget::onStyleChanged);
 
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified);
@@ -105,6 +111,11 @@ void SVPropNetworkEditWidget::onPropertyTypeChanged(int propertyType) {
 		case NT_HeatExchange	: vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange ; break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropNetworkEditWidget::onStyleChanged() {
+	m_ui->toolBox->updatePageBackgroundColorFromStyle();
 }
 
 unsigned int SVPropNetworkEditWidget::currentPropertyType() {

@@ -68,10 +68,13 @@ public:
 	void setPolygon3D(const IBKMK::Polygon3D & polygon3D);
 
 	const std::vector<SubSurface> &		subSurfaces() const { return m_subSurfaces; }
-	void setSubSurfaces(const std::vector<SubSurface> & subSurfaces);
+	const std::vector<Surface> &		childSurfaces() const { return m_childSurfaces; }
+
+	void setChildAndSubSurfaces(const std::vector<SubSurface>  & subSurfaces,
+								const std::vector<Surface>     &childSurfaces);
 
 	/*! Gives read-access to the surface's geometry. */
-	const PlaneGeometry &				geometry() const { return m_geometry; }
+	const PlaneGeometry & geometry() const { return m_geometry; }
 
 	/*! Subtracts the subsurface are from the surface area */
 	double areaWithoutSubsurfaces() const ;
@@ -119,6 +122,8 @@ private:
 	/*! Subsurfaces of the surface. */
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
+	/*! ChildSurfaces of the surface. */
+	std::vector<Surface>				m_childSurfaces;			// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

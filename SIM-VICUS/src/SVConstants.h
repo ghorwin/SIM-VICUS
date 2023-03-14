@@ -101,7 +101,7 @@ enum BuildingPropertyType {
 	/*! Zone property */
 	BT_ZoneProperty,
 	/*! Floor manager. */
-	BT_FloorManager
+	BT_FloorManager,
 };
 
 /*! Different edit/coloring modes. */

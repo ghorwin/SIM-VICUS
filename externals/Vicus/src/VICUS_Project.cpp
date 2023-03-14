@@ -473,6 +473,14 @@ void Project::clean() {
 	//        reference valid surfaces etc.
 }
 
+void Project::addChildSurface(const VICUS::Surface &s) {
+    for (VICUS::Surface & childSurf : const_cast<std::vector<VICUS::Surface> &>(s.childSurfaces()) ) {
+        addAndCheckForUniqueness(&childSurf);
+        childSurf.m_componentInstance = nullptr;
+
+        addChildSurface(childSurf);
+    }
+}
 
 void Project::updatePointers() {
 	FUNCID(Project::updatePointers);
@@ -497,6 +505,8 @@ void Project::updatePointers() {
 						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
+
+                    addChildSurface(s);
 				}
 			}
 		}
@@ -653,6 +663,7 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 							if (selectionCheck(sub, takeSelected, takeVisible))
 								selectedObjs.insert(&sub);
 						}
+                        selectChildSurfaces(selectedObjs, s, takeSelected, takeVisible);
 					}
 					if (selectionCheck(r, takeSelected, takeVisible))
 						selectedObjs.insert(&r);
@@ -688,7 +699,15 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 			if (selectionCheck(s, takeSelected, takeVisible))
 				selectedObjs.insert(&s);
 		}
-	}
+    }
+}
+
+void Project::selectChildSurfaces(std::set<const Object *> &selectedObjs, const Surface &s, bool takeSelected, bool takeVisible) const {
+    for (const VICUS::Surface &childSurf : s.childSurfaces()) {
+        if (selectionCheck(childSurf, takeSelected, takeVisible))
+            selectedObjs.insert(&childSurf);
+        selectChildSurfaces(selectedObjs, childSurf, takeSelected, takeVisible);
+    }
 }
 
 bool Project::selectedSubSurfaces(std::vector<const SubSurface *> & subSurfaces, const Project::SelectionGroups & sg) const {
@@ -837,6 +856,48 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 }
 
 
+IBKMK::Vector3D Project::boundingBox(const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
+
+	if (nodes.empty() && edges.empty())
+		return IBKMK::Vector3D ( 0,0,0 );
+
+	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	IBKMK::Vector3D upperValues(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
+
+	for (const VICUS::NetworkNode *node: nodes) {
+		upperValues.m_x = std::max(upperValues.m_x, node->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, node->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, node->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, node->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, node->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, node->m_position.m_z);
+	}
+
+	for (const VICUS::NetworkEdge *edge: edges) {
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node1->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node1->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node1->m_position.m_z);
+		upperValues.m_x = std::max(upperValues.m_x, edge->m_node2->m_position.m_x);
+		upperValues.m_y = std::max(upperValues.m_y, edge->m_node2->m_position.m_y);
+		upperValues.m_z = std::max(upperValues.m_z, edge->m_node2->m_position.m_z);
+
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node1->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node1->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node1->m_position.m_z);
+		lowerValues.m_x = std::min(lowerValues.m_x, edge->m_node2->m_position.m_x);
+		lowerValues.m_y = std::min(lowerValues.m_y, edge->m_node2->m_position.m_y);
+		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node2->m_position.m_z);
+	}
+
+	// center point of bounding box
+	center = 0.5*(lowerValues+upperValues);
+
+	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
+	return (upperValues-lowerValues);
+}
+
+
 IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 									 std::vector<const SubSurface *> & subsurfaces,
 									 IBKMK::Vector3D & center,
@@ -930,6 +991,7 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 {
 	// TODO : Dirk, implement algorithm
 	qDebug() << "Not implemented, yet";
+
 
 	return false;
 }

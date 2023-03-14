@@ -28,16 +28,27 @@
 
 #include <VICUS_Project.h>
 
-SVUndoModifyBuildingTopology::SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings) :
+SVUndoModifyBuildingTopology::SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings,
+														   const std::vector<VICUS::ComponentInstance> *surfaceComponentInstances) :
 	m_buildings(buildings)
 {
 	setText( label );
+	if (surfaceComponentInstances != nullptr) {
+		m_modifySurfaceComponentInstances = true;
+		m_surfaceComponentInstances = *surfaceComponentInstances;
+	}
 }
 
 
 void SVUndoModifyBuildingTopology::undo() {
 	// exchange building meta data
 	std::swap( theProject().m_buildings, m_buildings);
+
+	// also modified sub-surface components, if needed
+	if (m_modifySurfaceComponentInstances) {
+		m_surfaceComponentInstances.swap(theProject().m_componentInstances);
+	}
+
 	theProject().updatePointers();
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }

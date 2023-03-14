@@ -104,8 +104,9 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 					for (unsigned int m=0; m<rooms[k].m_surfaces.size(); ++m) {
 						if (rooms[k].m_surfaces[m].m_id == parentSurfaceID) {
 							std::vector<VICUS::SubSurface> subs = rooms[k].m_surfaces[m].subSurfaces();
+							std::vector<VICUS::Surface> childs = rooms[k].m_surfaces[m].childSurfaces();
 							subs.push_back(newSub);
-							rooms[k].m_surfaces[m].setSubSurfaces(subs);
+							rooms[k].m_surfaces[m].setChildAndSubSurfaces(subs, childs);
 							found = true;
 							break;
 						}
@@ -145,6 +146,39 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 	return new SVUndoCopyBuildingGeometry(tr("Copied subsurfaces"), newBuildings, newPlainGeometry, newCI, newSubCI, deselectedObjectIDs);
 }
 
+void copyChildSurfaces(const VICUS::Surface &surf, unsigned int &newID, const IBKMK::Vector3D & translation) {
+	if(surf.childSurfaces().empty())
+		return;
+
+	std::map<unsigned int, unsigned int> replacedChildIds;
+	for(const VICUS::Surface &cs : surf.childSurfaces()) {
+		VICUS::Surface newChildSurf(cs);
+
+		newChildSurf.m_displayName += " Copy";
+		// now modify *all* ID s
+		unsigned int originalID = cs.m_id;
+		newChildSurf.m_id = ++newID;
+
+		// Store replaced child ids for hole replacement
+		replacedChildIds[cs.m_id] = newChildSurf.m_id;
+
+		// apply transformation
+		IBKMK::Polygon3D poly = newChildSurf.polygon3D();
+		poly.translate(translation);
+		newChildSurf.setPolygon3D(poly);
+
+		const_cast<VICUS::Surface&>(cs) = newChildSurf;
+
+		copyChildSurfaces(cs, newID, translation);
+	}
+
+	for(const VICUS::PlaneGeometry::Hole &h : surf.geometry().holes()) {
+		if(!h.m_isChildSurface)
+			continue;
+		const_cast<VICUS::PlaneGeometry::Hole &>(h).m_idObject = replacedChildIds[h.m_idObject];
+	}
+}
+
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation) {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
@@ -159,6 +193,8 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 	for (const VICUS::Surface * s : selectedSurfaces) {
 		// we copy *everything* in the entire surface
 		VICUS::Surface newSurf(*s);
+
+		newSurf.m_displayName += " Copy";
 		// now modify *all* ID s
 		unsigned int originalID = s->m_id;
 		newSurf.m_id = ++newID;
@@ -168,9 +204,12 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 		newSurf.setPolygon3D(poly);
 
 		VICUS::Room *parent = dynamic_cast<VICUS::Room *>(s->m_parent);
+		VICUS::Surface *childSurfaceParent = dynamic_cast<VICUS::Surface *>(s->m_parent);
+
+		bool haveChildSurface = childSurfaceParent != nullptr;
 		// check if we have a dump geometry
 		bool found = false;
-		if (parent == nullptr) {
+		if (parent == nullptr && !haveChildSurface) {
 			// we add our new surface to plain geometry
 			newPlainGeometry.push_back(newSurf);
 			for (VICUS::Surface &surf : newPlainGeometry) {
@@ -185,6 +224,8 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 				if(found) break;
 			}
 		}
+		else if (haveChildSurface)
+			continue;
 		if (found) continue;
 
 
@@ -228,19 +269,28 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 					break;
 				}
 			}
+
+			for(const VICUS::PlaneGeometry::Hole &h : newSurf.geometry().holes()) {
+				if(h.m_idObject == originalID) {
+					const_cast<VICUS::PlaneGeometry::Hole &>(h).m_idObject = sub.m_id;
+				}
+			}
 		}
 
 		// lookup parent room id in unmodified, original data structure
-		unsigned int parentRoomID = s->m_parent->m_id;
+		unsigned int parentID = s->m_parent->m_id;
 		// now insert into original room
 		found = false;
 		for (unsigned int i=0; !found && i<newBuildings.size(); ++i) {
 			for (unsigned int j=0; j<newBuildings[i].m_buildingLevels.size(); ++j) {
 				std::vector<VICUS::Room> & rooms = newBuildings[i].m_buildingLevels[j].m_rooms;
 				for (unsigned int k=0; k<rooms.size(); ++k) {
-					if (rooms[k].m_id == parentRoomID) {
+					if (!haveChildSurface && rooms[k].m_id == parentID) {
+						copyChildSurfaces(newSurf, newID, translation);
+
 						rooms[k].m_surfaces.push_back(newSurf);
 						found = true;
+
 						break;
 					}
 				}
@@ -343,7 +393,15 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(con
 						break;
 					}
 				}
+				for(const VICUS::PlaneGeometry::Hole &h : s.geometry().holes()) {
+					if(h.m_idObject == originalID) {
+						const_cast<VICUS::PlaneGeometry::Hole &>(h).m_idObject = sub.m_id;
+					}
+				}
 			}
+
+			// Copy child surfaces
+			copyChildSurfaces(s, newID, translation);
 		}
 		// lookup parent building id in unmodified, original data structure
 		unsigned int parentBuildingLevelID = r->m_parent->m_id;
@@ -464,7 +522,15 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildingL
 							break;
 						}
 					}
+					for(const VICUS::PlaneGeometry::Hole &h : s.geometry().holes()) {
+						if(h.m_idObject == originalID) {
+							const_cast<VICUS::PlaneGeometry::Hole &>(h).m_idObject = sub.m_id;
+						}
+					}
 				}
+
+				// Copy child surfaces
+				copyChildSurfaces(s, newID, translation);
 			}
 		}
 		// lookup parent building id in unmodified, original data structure
@@ -586,7 +652,16 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyBuildings
 								break;
 							}
 						}
+
+						for(const VICUS::PlaneGeometry::Hole &h : s.geometry().holes()) {
+							if(h.m_idObject == originalID) {
+								const_cast<VICUS::PlaneGeometry::Hole &>(h).m_idObject = sub.m_id;
+							}
+						}
 					}
+
+					// Copy child surfaces
+					copyChildSurfaces(s, newID, translation);
 				}
 			}
 		}

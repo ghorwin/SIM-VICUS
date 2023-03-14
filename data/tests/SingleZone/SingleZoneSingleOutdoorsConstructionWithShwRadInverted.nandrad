@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Tests single zone connected to single outside constructiuon</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">160</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">170</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.01</IBK:Parameter>
+		</SolverParameter>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="101" displayName="South">
+				<ConstructionTypeId>100030</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="2" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						</InterfaceHeatConduction>
+						<InterfaceSolarAbsorption modelType="Constant">
+							<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+						</InterfaceSolarAbsorption>
+						<InterfaceLongWaveEmission modelType="Constant">
+							<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
+						</InterfaceLongWaveEmission>
+				</InterfaceA>
+				<InterfaceB id="1" zoneId="1">
+						<!--Interface to 'Room'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10003" displayName="Construction 3">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.005" matId="1003" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.2" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<!-- inverted construction -->
+			<ConstructionType id="100030" displayName="Construction 3 - inverted">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="1001" />
+					<MaterialLayer thickness="0.1" matId="1002" />
+					<MaterialLayer thickness="0.005" matId="1003" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="1003" displayName="Board">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>semihourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluxShortWaveRadiationB</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>semihourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SolarRadiationFluxA</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>semihourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SolarRadiationFluxB</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Constructions</ObjectListName>
+					<GridName>semihourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SWRadDiffuseHorizontal</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SWRadDirectNormal</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="semihourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Constructions">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
