@@ -7590,7 +7590,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="870"/>
         <source>Precalculate view factors</source>
-        <translation>Verschattungsfaktoren vorberechnen</translation>
+        <translation type="unfinished">Sichtfaktoren vorberechnen</translation>
     </message>
     <message>
         <source>Calculate view factors</source>
