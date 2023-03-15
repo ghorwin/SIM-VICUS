@@ -114,7 +114,6 @@ SOURCES += \
         ../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
         ../../src/NANDRAD_HydraulicNetworkNode.cpp \
         ../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
-        ../../src/NANDRAD_IDVectorMap.cpp \
         ../../src/NANDRAD_IdealHeatingCoolingModel.cpp \
         ../../src/NANDRAD_IdealPipeRegisterModel.cpp \
         ../../src/NANDRAD_IdealSurfaceHeatingCoolingModel.cpp \
