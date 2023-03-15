@@ -393,7 +393,7 @@ private:
 	*/
 	void addAndCheckForUniqueness(VICUS::Object* o);
 
-	void addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, QStringList & errorStack) const;
+	void addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, std::map<unsigned int, unsigned int> subSurfaceMapping, QStringList & errorStack) const;
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().
