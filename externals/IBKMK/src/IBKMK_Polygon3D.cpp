@@ -363,9 +363,20 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 
 	IBKMK::Vector3D n(0,0,0);
 
-	for(unsigned int i=2; i<polygon.size(); ++i) {
-		IBKMK::Vector3D v1 = polygon[i-1] - polygon[0];
-		IBKMK::Vector3D v2 = polygon[i  ] - polygon[0];
+	IBKMK::Vector3D e(0,0,0);
+
+	for(unsigned int i=0; i<polygon.size(); ++i) {
+		e += polygon[i];
+	}
+	e /= polygon.size();
+
+
+	for(unsigned int i=0; i<polygon.size(); ++i) {
+		unsigned int s = polygon.size();
+		unsigned int j = (i + s -1)%s;
+
+		IBKMK::Vector3D v1 = polygon[j] - e;
+		IBKMK::Vector3D v2 = polygon[i] - e;
 
 		n += v1.crossProduct(v2).normalized();
 	}
