@@ -7589,8 +7589,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="870"/>
+        <source>Precalculate view factors</source>
+        <translation>Verschattungsfaktoren vorberechnen</translation>
+    </message>
+    <message>
         <source>Calculate view factors</source>
-        <translation>Sichtfaktoren vorberechnen</translation>
+        <translation type="vanished">Sichtfaktoren vorberechnen</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="719"/>
@@ -8456,7 +8460,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVNetworkExportDialog.ui" line="54"/>
         <source>Convert to UTM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkExportDialog.ui" line="90"/>
@@ -14403,43 +14407,43 @@ p, li { white-space: pre-wrap; }
     <name>SVView3DDialog</name>
     <message>
         <location filename="../../src/SVView3DDialog.cpp" line="66"/>
-        <source>There is nothing to compute, since no rooms were selected!</source>
-        <translation type="unfinished"></translation>
+        <source>Please select at least one room in order to pre-calculate view factors´!</source>
+        <translation>Bitte selektiere mindestens einen Raum, um die Sichtfaktoren vorzuberechnen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="95"/>
-        <source>All surfaces of a room must be selected for view factor calculation! Surface &quot;%1&quot; of the room &quot;%2&quot;  is not selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/SVView3DDialog.cpp" line="96"/>
+        <source>All surfaces of a room must be selected for view factor calculation! Surface &apos;%1&apos; of room &apos;%2&apos; is not selected</source>
+        <translation>Alle Flächen eines Raumes müssen für die Sichtfaktorberechnung selektiert sein. Fläche &apos;%1&apos; des Raumes &apos;%2&apos; ist nicht selektiert!</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="103"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="104"/>
         <source>Calculating view factors</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechne Sichtfaktoren</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="103"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="104"/>
         <source>Abort</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="392"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="393"/>
         <source>Error running View3D program &apos;%1&apos;</source>
         <translation>Fehler beim Ausführen des View3D-Programms &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="407"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="408"/>
         <source>View factors have been calculated for all selected rooms.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtfaktoren wurden für alle selektierten Flächen berechnet.</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="409"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="410"/>
         <source>View factors added</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtfaktoren wurden hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVView3DDialog.cpp" line="412"/>
+        <location filename="../../src/SVView3DDialog.cpp" line="413"/>
         <source>Calculation of View factors was canceled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtfaktorberechnung wurde abgebrochen.</translation>
     </message>
     <message>
         <source>View factors have been calculated for all selected surfaces/rooms.</source>
