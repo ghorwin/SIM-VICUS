@@ -758,7 +758,6 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		}
 		else {
 			// inside LW rad exchange
-
 			if (sideA) {
 				// subtract emitted LW rad (this is in W/m2), sign definition positive into construction
 				m_fluxDensityLongWaveRadiationA = - *m_valueRefs[InputRef_SideAEmittedLongWaveRadiation];

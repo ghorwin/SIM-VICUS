@@ -368,7 +368,6 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 				resultInputValueReferences.push_back(std::make_pair(&m_activeLayerMeanTemperature, &m_vectorValuedResults[VVR_ElementTemperature].data()[i] ) );
 		}
 
-
 		// emitted long-wave radiation fluxes depend exclusively on surface temperature
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_EmittedLongWaveRadiationFluxA], &m_results[R_SurfaceTemperatureA]) );
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_EmittedLongWaveRadiationFluxB], &m_results[R_SurfaceTemperatureB]) );
@@ -548,8 +547,8 @@ int ConstructionStatesModel::update(const double * y) {
 					m_results[R_LongWaveRadiationFluxA] = radiationBalance;
 				}
 			}
+			// emitted long wave radiation to other construction instance
 			else {
-				// emitted long wave radiation to other construction instance
 				double sourceEps = m_con->m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 				double TsA2 = m_TsA * m_TsA;
 				double area = m_con->m_para[NANDRAD::ConstructionInstance::P_Area].value;
@@ -611,7 +610,6 @@ int ConstructionStatesModel::update(const double * y) {
 					unsigned int targetId = it->first; // id of targeted construction instance
 					double viewFactor = m_con->m_interfaceB.m_viewFactors.at(targetId);
 					double targetEps = it->second->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
-					longWaveRadVector[i] = area * viewFactor * sourceEps * targetEps * IBK::BOLTZMANN * TsB2 * TsB2;
 					double emittedFlux = viewFactor * sourceEps * targetEps * IBK::BOLTZMANN * TsB2 * TsB2;
 					longWaveRadVector[i] = area * emittedFlux;
 					emittedFluxSum += emittedFlux;
