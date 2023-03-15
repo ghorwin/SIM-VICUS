@@ -354,7 +354,8 @@ void SVDBDuplicatesDialog::updateUi() {
 	if (m_dbType != SVDatabase::NUM_DT) {
 		// remove all but the selected DB type
 		for (unsigned int i=0; i<SVDatabase::NUM_DT; ++i) {
-			if (i == m_dbType) continue;
+			if (i == m_dbType)
+				continue;
 			dupInfos[i].clear();
 		}
 	}
@@ -379,8 +380,6 @@ void SVDBDuplicatesDialog::updateUi() {
 					item->setText(tr("Constructions"));
 					dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
 				break;
-
-				// TODO : Katja
 				case SVDatabase::DT_Windows:
 					item->setText(tr("Windows"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);

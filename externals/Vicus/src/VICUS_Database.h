@@ -230,8 +230,8 @@ public:
 		\warning Throws an IBK::Exception if reading fails.
 	*/
 	void readXML(const IBK::Path & fname, const std::string & topLevelTag,
-				   const std::string & childTagName,
-				   bool builtIn = false)
+				 const std::string & childTagName,
+				 bool builtIn = false)
 	{
 		FUNCID(Datbase::readXML);
 
@@ -242,9 +242,9 @@ public:
 		try {
 			if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
 				throw IBK::Exception(IBK::FormatString("Error in line %1 of XML file '%2':\n%3")
-						.arg(doc.ErrorRow())
-						.arg(fname)
-						.arg(doc.ErrorDesc()), FUNC_ID);
+									 .arg(doc.ErrorRow())
+									 .arg(fname)
+									 .arg(doc.ErrorDesc()), FUNC_ID);
 			}
 
 			// we use a handle so that NULL pointer checks are done during the query functions
@@ -270,14 +270,20 @@ public:
 				obj.m_builtIn = builtIn;
 				obj.m_local = false;  // objects we read from the DB are not local by definition
 
-				// check for existing DB element - must not exist, otherwise DB file is faulty
-				if (m_data.find(obj.m_id) != m_data.end()){
-					IBK::Exception(IBK::FormatString("Database '%1' contains duplicate ids %2 ")
-								   .arg(fname.str()).arg(obj.m_id), FUNC_ID);
-				}
-
-				m_data[obj.m_id] = obj;
 				c2 = c2->NextSiblingElement();
+
+				// Check for existing DB element with same ID, if both are built-in or both are user DB (not build-in), this raises an exception
+				// If there is no element with this id yet OR if this is a built-in element: we store the element
+				typename std::map<unsigned int, T>::iterator it = m_data.find(obj.m_id);
+				if (it == m_data.end() || obj.m_builtIn )
+					m_data[obj.m_id] = obj;
+				else if (it->second.m_builtIn && obj.m_builtIn)
+					throw IBK::Exception(IBK::FormatString("Build-In database '%1' contains duplicate ids %2 ")
+														 .arg(fname.str()).arg(obj.m_id), FUNC_ID);
+				else if (!it->second.m_builtIn && !obj.m_builtIn)
+					throw IBK::Exception(IBK::FormatString("User database '%1' contains duplicate ids %2 ")
+														 .arg(fname.str()).arg(obj.m_id), FUNC_ID);
+
 			}
 		}
 		catch (IBK::Exception & ex) {

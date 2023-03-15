@@ -89,6 +89,7 @@ SVDatabase::SVDatabase() :
 	m_ventilationNatural(1077500),
 	m_infiltration(1080000),
 	m_zoneTemplates(1082500),
+	//	SubNetworks: 1110000-1112500
 	m_acousticTemplates(1400100)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
@@ -651,7 +652,8 @@ void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::Dupli
 				SVDatabase::DuplicateInfo info;
 				info.m_idFirst = it->first;
 				info.m_idSecond = it2->first;
-				info.m_identical = (compRes == VICUS::AbstractDBElement::Equal);
+				// we compare if both elements are identical and also wether both are builtIn or not, this avoids replacing builtin elements
+				info.m_identical = (compRes == VICUS::AbstractDBElement::Equal) && (it->second.m_builtIn == it2->second.m_builtIn);
 				dupInfos.push_back(info);
 				duplicateIDs.insert(it->first);
 				duplicateIDs.insert(it2->first);
