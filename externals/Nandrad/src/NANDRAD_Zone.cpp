@@ -74,16 +74,15 @@ void Zone::checkParameters() const {
 void Zone::readXML(const TiXmlElement * element) {
 	FUNCID("[Zone::readXML]");
 
-	// readXMLPrivate(element);
-
 	try {
 		// read parameters
-		const TiXmlElement * c;
+		const TiXmlElement * c = element->FirstChildElement();
 		// read sub-elements
-		for ( c = element->FirstChildElement(); c; c = c->NextSiblingElement()) {
+		while (c) {
 			// determine data based on element name
 			std::string cname = c->Value();
 
+			// Read view factors
 			if (cname == "ViewFactors") {
 				std::string content = c->GetText();
 
@@ -109,7 +108,13 @@ void Zone::readXML(const TiXmlElement * element) {
 					m_viewFactors.push_back(std::make_pair
 						(idPair, viewFactor));
 				}
+
+				// remove ViewFactor element from parent, to avoid getting spammed with "unknown View3D" warning
+				const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 			}
+
+			// next element
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -119,7 +124,7 @@ void Zone::readXML(const TiXmlElement * element) {
 		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Zone' element.").arg(ex2.what()), FUNC_ID);
 	}
 
-	// now auto-generated code
+	// now read all private elements
 	readXMLPrivate(element);
 }
 
