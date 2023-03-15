@@ -30,7 +30,7 @@
 		<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 	</NetworkComponent>
 	<NetworkComponent id="4" displayName="DE: Waterkotte Ecotouch 5029.5 |EN: Waterkotte Ecotouch 5029.5" color="#ffb703" modelType="HeatPumpVariableSourceSide">
-		<ScheduleIds>6006</ScheduleIds>
+		<ScheduleIds>60505</ScheduleIds>
 		<IBK:Parameter name="HydraulicDiameter" unit="mm">80</IBK:Parameter>
 		<IBK:Parameter name="PressureLossCoefficient" unit="---">800</IBK:Parameter>
 		<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
@@ -38,7 +38,7 @@
 		<PolynomCoefficients>COP:-47.1938,0.55908,-0.143389,-0.00273061,0.000714288,0.0012619;</PolynomCoefficients>
 	</NetworkComponent>
 	<NetworkComponent id="5" displayName="DE: Waterkotte Ecotouch 5007.5 |EN: Waterkotte Ecotouch 5007.5" color="#fb8500" modelType="HeatPumpVariableSourceSide">
-		<ScheduleIds>6006</ScheduleIds>
+		<ScheduleIds>60505</ScheduleIds>
 		<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
 		<IBK:Parameter name="PressureLossCoefficient" unit="---">200</IBK:Parameter>
 		<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
