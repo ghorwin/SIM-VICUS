@@ -462,7 +462,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 				continue;
 			}
 			// check if the area is almost matching
-			if(areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface)- area[j] < 0.1){
+			if(areaFromVicusObjectId(v3dRoom.m_extendedSurfaces[j].m_idVicusSurface) - area[j] < 0.1){
 				// get the sub(surface) from the v3dRoom
 				const VICUS::Object * obj = SVProjectHandler::instance().project().objectById(v3dRoom.m_extendedSurfaces[i-2].m_idVicusSurface);
 				// check if the current object is a surface or a subsurface
@@ -471,6 +471,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 					//check if the surface is already in the modified list
 					bool foundSurface = false;
 					for(VICUS::Surface & modS : m_modifiedSurfaces){
+						// skip view factor to itself, since its always 0
 						if(modS.m_id == surf->m_id){
 							// already exists, add the value and go to next
 							modS.m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
@@ -478,9 +479,10 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 							break;
 						}
 					}
-					if(!foundSurface){
+					if(!foundSurface && surf->m_id != v3dRoom.m_extendedSurfaces[j].m_idVicusSurface){
 						// does not exist already, create a copy and append to the modified surfaces
 						VICUS::Surface modS(*surf);
+						modS.m_viewFactors.m_values.clear();
 						// is a surface
 						// store the viewFactor
 						modS.m_viewFactors.m_values[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = std::vector<double>{IBK::string2val<double>(token)};
