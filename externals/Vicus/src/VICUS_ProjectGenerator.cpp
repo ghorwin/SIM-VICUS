@@ -763,7 +763,8 @@ bool Project::exportAreaAndVolume() {
 	return true;
 }
 
-void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, QStringList & errorStack) const {
+void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings,
+										   std::map<unsigned int, unsigned int> subSurfaceMapping, QStringList & errorStack) const {
 	for(NANDRAD::Zone & z : p.m_zones){
 		RoomMapping rM;
 		// select the correct mapping
@@ -777,17 +778,21 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Pro
 		// save view factors in zone
 		std::vector<VICUS::Surface> surfaces = room->m_surfaces;
 		for(unsigned int i = 0; i < surfaces.size(); i++){
-			for(unsigned int ii = 0; ii < surfaces.size(); ii++){
+			for(unsigned int j = 0; j < surfaces.size(); j++){
 
 				// the view factor from surface[i] to surface[ii]
-				if(surfaces[i].m_componentInstance == nullptr || surfaces[ii].m_componentInstance == nullptr){
-					QString name = (surfaces[i].m_componentInstance == nullptr) ? surfaces[i].m_displayName : surfaces[ii].m_displayName;
+				if(surfaces[i].m_componentInstance == nullptr || surfaces[j].m_componentInstance == nullptr){
+					QString name = (surfaces[i].m_componentInstance == nullptr) ? surfaces[i].m_displayName : surfaces[j].m_displayName;
 					errorStack.append(tr("Invalid Surface (%1)! Has no component instace!").arg(name));
 					return;
 				}
 				unsigned int cId1 = surfaces[i].m_componentInstance->m_id;
-				unsigned int cId2 = surfaces[ii].m_componentInstance->m_id;
-				double vF = surfaces[i].m_viewFactors.m_values[surfaces[ii].m_id][0];
+				unsigned int cId2 = surfaces[j].m_componentInstance->m_id;
+
+				if(cId1 == cId2)
+					continue;
+
+				double vF = surfaces[i].m_viewFactors.m_values[surfaces[j].m_id][0];
 
 				// get the nandrad ids
 				ComponentInstanceMapping cM1;
@@ -803,6 +808,37 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Pro
 				}
 				NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, cM2.m_idComponentInstanceNandrad);
 				z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vF));
+
+
+				// First we scan all concections between sub-surface and its parent wall (always 0)
+				// Than we also scan for other sub-surfaces inside walls
+//				for(unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
+//					const VICUS::SubSurface &subSurf1 = surfaces[i].subSurfaces()[k];
+
+//					double vFSubSurf1 = surfaces[i].m_viewFactors.m_values[subSurf1.m_id][0];
+
+//					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf1.m_id]);
+//					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf1));
+
+//					for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
+//						const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
+
+//						double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
+
+//						NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(subSurfaceMapping[subSurf1.m_id], subSurfaceMapping[subSurf2.m_id]);
+//						z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
+//					}
+//				}
+
+//				// We also want the primary sub-surface wall connection
+//				for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
+//					const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
+
+//					double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
+
+//					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf2.m_id]);
+//					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
+//				}
 			}
 		}
 	}
@@ -867,10 +903,10 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
+	addViewFactorsToNandradZones(p, roomMappings, componentInstanceMappings, constrInstaModelGenerator.m_surfaceIdsVicusToNandrad, errorStack);
 
 	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
 
-	addViewFactorsToNandradZones(p, roomMappings, componentInstanceMappings, errorStack);
 
 	// *** Ideal Surface Heating Systems ***
 
