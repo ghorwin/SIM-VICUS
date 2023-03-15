@@ -63,7 +63,7 @@ void SVView3DDialog::exportView3d() {
 	//exit if no surfaces were selected
 
 	if(m_selSurfaces.size() == 0){
-		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("There is nothing to compute, since no rooms were selected!"));
+		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("Please select at least one room in order to pre-calculate view factors´!"));
 		return;
 	}
 
@@ -92,7 +92,8 @@ void SVView3DDialog::exportView3d() {
 				}
 			}
 			if(!found){
-				QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("All surfaces of a room must be selected for view factor calculation! Surface \"%1\" of the room \"%2\"  is not selected").arg(s.m_displayName).arg(r->m_displayName));
+				QMessageBox::critical(&SVMainWindow::instance(), QString(),
+									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
 				return;
 			}
 		}
