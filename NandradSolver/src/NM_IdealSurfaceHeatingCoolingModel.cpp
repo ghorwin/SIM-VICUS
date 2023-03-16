@@ -92,7 +92,7 @@ void IdealSurfaceHeatingCoolingModel::initResults(const std::vector<AbstractMode
 			if (conMod->id() == indexKeys[j]) {
 				// already set?
 				IBK_ASSERT(m_constructionAreas[j] == -999);
-				m_constructionAreas[j] = conMod->construction()->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				m_constructionAreas[j] = conMod->construction()->m_netHeatTransferArea;
 				break;
 			}
 		}
