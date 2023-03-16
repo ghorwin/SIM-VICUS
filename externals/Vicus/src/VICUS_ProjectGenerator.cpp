@@ -801,6 +801,8 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Pro
 
 				double vF = surfaces[i].m_viewFactors.m_values[surfaces[j].m_id][0];
 
+
+				// FIXME : Dirk, der code kann nicht funktionieren!
 				// get the nandrad ids
 				ComponentInstanceMapping cM1;
 				ComponentInstanceMapping cM2;
