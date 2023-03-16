@@ -164,7 +164,8 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 
 		}
 
-		IBK::IBK_Message(IBK::FormatString("Found connections for '%1'")
+		IBK::IBK_Message(IBK::FormatString("Found connections for '%1 | %2'")
+						 .arg(s1->m_parent->m_displayName.toStdString())
 						 .arg(s1->m_displayName.toStdString()), IBK::MSG_PROGRESS);
 	}
 }
@@ -231,9 +232,10 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 		// swap old clipping objects with newly sorted and in range surfaces
 		cs.m_clippingObjects.swap(newClippingObjects);
 
-		IBK::IBK_Message(IBK::FormatString("Found %1 surfaces in range of surface '%2'")
-						 .arg(surfCounter)
-						 .arg(s1.m_displayName.toStdString()), IBK::MSG_PROGRESS);
+		IBK::IBK_Message(IBK::FormatString("Found %1 surfaces in range of surface '%2 | %3'")
+						 .arg(surfCounter, 4)
+						 .arg(s1.m_displayName.toStdString())
+						 .arg(s1.m_parent->m_displayName.toStdString()), IBK::MSG_PROGRESS);
 	}
 }
 
@@ -424,8 +426,10 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				if(!poly.m_polygon.isValid())
 					continue;
 
-				IBK::IBK_Message(IBK::FormatString("Surface '%1' is beeing clipped by surface '%2'")
+				IBK::IBK_Message(IBK::FormatString("Surface '%1 | %2' is beeing clipped by surface '%3 | %4'")
+								 .arg(originSurf.m_parent->m_displayName.toStdString())
 								 .arg(originSurf.m_displayName.toStdString())
+								 .arg(s2.m_parent->m_displayName.toStdString())
 								 .arg(s2.m_displayName.toStdString()), IBK::MSG_PROGRESS);
 
 				try {
@@ -455,8 +459,8 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 				}
 				catch (IBK::Exception &ex) {
-					IBK::IBK_Message(IBK::FormatString("Surface '%1' is broken after clipping, using the original surface geometry.")
-									 .arg(originSurf.m_displayName.toStdString())
+					IBK::IBK_Message(IBK::FormatString("Surface '%1 | %2' is broken after clipping, using the original surface geometry.")
+									 .arg(originSurf.m_parent->m_displayName.toStdString())
 									 .arg(originSurf.m_displayName.toStdString()), IBK::MSG_ERROR);
 					originSurf = originSurfCopy;
 				}
@@ -887,9 +891,17 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					// if both ids are invalid take invalid
 					// qDebug() << "Fläche " << surfA->m_displayName << " wird mit Fläche " << surfB->m_displayName<< " gekoppelt.";
 
-					IBK::IBK_Message(IBK::FormatString("'%1' will be coupled with '%2'")
-									 .arg(s1->m_displayName.toStdString())
-									 .arg(s2->m_displayName.toStdString()), IBK::MSG_PROGRESS);
+					IBK::FormatString roomString = IBK::FormatString("'%1 | %2'")
+														 .arg(s1->m_displayName.toStdString())
+														 .arg(s1->m_parent->m_displayName.toStdString());
+
+					QString text = QString("%1").arg(QString::fromStdString(roomString.str()), 100);
+
+					IBK::IBK_Message(IBK::FormatString("%1 %2 <-> %3 %4")
+									 .arg(s1->m_parent->m_displayName.toStdString(), 20, std::ios_base::left)
+									 .arg(s1->m_displayName.toStdString(), 20, std::ios_base::left)
+									 .arg(s2->m_parent->m_displayName.toStdString(), 20, std::ios_base::left)
+									 .arg(s2->m_displayName.toStdString(), 20, std::ios_base::left), IBK::MSG_PROGRESS);
 
 					// build new component
 					ci = VICUS::ComponentInstance(nextUnusedId++, compId, s1->m_id, s2->m_id);
