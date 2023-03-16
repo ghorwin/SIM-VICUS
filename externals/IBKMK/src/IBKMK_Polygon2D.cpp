@@ -80,7 +80,7 @@ void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
 
 
 void Polygon2D::boundingBox(Vector2D & lowerValues, Vector2D & upperValues) const {
-	FUNCID("Polygon2D::boundingBox");
+	FUNCID(Polygon2D::boundingBox);
 	if (m_vertexes.empty())
 		throw IBK::Exception("Require at least one vertex in the polyline.", FUNC_ID);
 	// initialize bounding box with first point

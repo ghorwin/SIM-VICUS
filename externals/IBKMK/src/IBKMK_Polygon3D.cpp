@@ -313,7 +313,7 @@ IBKMK::Vector3D Polygon3D::centerPoint() const {
 
 
 void Polygon3D::boundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
-	FUNCID("Polygon3D::boundingBox");
+	FUNCID(Polygon3D::boundingBox);
 	if (!isValid())
 		throw IBK::Exception("Invalid polygon.", FUNC_ID);
 	// Note: do not access m_vertexes directly, as this array may be dirty
@@ -327,7 +327,7 @@ void Polygon3D::boundingBox(Vector3D & lowerValues, Vector3D & upperValues) cons
 
 
 void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
-	FUNCID("Polygon3D::enlargeBoundingBox");
+	FUNCID(Polygon3D::enlargeBoundingBox);
 	if (!isValid())
 		throw IBK::Exception("Invalid polygon.", FUNC_ID);
 	// Note: do not access m_vertexes directly, as this array may be dirty

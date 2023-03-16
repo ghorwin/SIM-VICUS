@@ -72,7 +72,7 @@ void Zone::checkParameters() const {
 }
 
 void Zone::readXML(const TiXmlElement * element) {
-	FUNCID("[Zone::readXML]");
+	FUNCID(Zone::readXML);
 
 	try {
 		// read parameters

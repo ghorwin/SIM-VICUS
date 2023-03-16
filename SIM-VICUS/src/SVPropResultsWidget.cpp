@@ -536,7 +536,7 @@ void SVPropResultsWidget::updateTableWidgetFormatting() {
 
 
 void SVPropResultsWidget::readDataFile(const QString & filename) {
-	FUNCID("SVPropResultsWidget::readDataFile");
+	FUNCID(SVPropResultsWidget::readDataFile);
 
 	QString fullFilePath = m_resultsDir.absoluteFilePath("results/" + filename);
 	QProgressDialog progDiag(tr("Reading file '%1'").arg(filename), tr("Cancel"), 0, 100, this);
