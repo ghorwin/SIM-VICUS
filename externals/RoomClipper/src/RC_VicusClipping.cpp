@@ -220,7 +220,7 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 			IBKMK::Vector3D rayEndPoint;
 			IBKMK::lineToPointDistance( s1.geometry().offset(), s1.geometry().normal().normalized(),
 										s2.geometry().offset(), co.m_distance, rayEndPoint);
-            if(co.m_distance > m_maxDistanceOfSurfaces + EPSILON || co.m_distance < 0)
+			if(co.m_distance > m_maxDistanceOfSurfaces + EPSILON || co.m_distance < 0)
 				continue;
 
 			newClippingObjects.push_back(co);
@@ -378,6 +378,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		// Store room surface count
 		unsigned int roomSurfaceCount = r->m_surfaces.size();
 
+		// Temporarily store all original sub-surfaces
+		std::vector<VICUS::SubSurface> originalSubSurfaces = originSurf.subSurfaces();
+
 		// Iterate through all found possible clipping objects
 		for(ClippingObject &co : cs.m_clippingObjects){
 			const VICUS::Surface &s2 = co.m_vicusSurface;
@@ -431,7 +434,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 					// calculate new offset 3D
 					IBKMK::Vector3D newOffset3D = offset	+ localX * poly.m_polygon.vertexes()[0].m_x
-															+ localY * poly.m_polygon.vertexes()[0].m_y;
+							+ localY * poly.m_polygon.vertexes()[0].m_y;
 
 					// calculate new ofsset 2D
 					IBKMK::Vector2D newOffset2D = poly.m_polygon.vertexes()[0];
@@ -445,6 +448,10 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					IBKMK::Polygon3D poly3D = originSurf.geometry().polygon3D();
 					poly3D.setTranslation(newOffset3D);
 					originSurf.setPolygon3D(poly3D);		// now marked dirty = true
+
+					// Remove original window
+					originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), originSurf.childSurfaces());
+
 
 				}
 				catch (IBK::Exception &ex) {
@@ -493,7 +500,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			mainDiffs.clear();
 		}
 
-		// push back polygon rests
+		/// All polygons that could not be cutted are remaining as rests.
+		/// So if we cut polygons with windows, we have to project them back
+		/// And we also have to check if the windows remain inside the surfaces.
 		for(ClippingPolygon &poly : clippingPolygons) {
 
 			if(!poly.m_polygon.isValid())
@@ -533,16 +542,19 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			IBKMK::Polygon3D poly3D = originSurf.geometry().polygon3D();
 			poly3D.setTranslation(newOffset3D);
 			originSurf.setPolygon3D(poly3D);		// now marked dirty = true
-			originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), std::vector<VICUS::Surface>());
+
+			// Reset all child and sub-surfaces
+			originSurf.setChildAndSubSurfaces(originSurfCopy.subSurfaces(), std::vector<VICUS::Surface>());
 
 			// ==========================
 			// CRAZY HOLE ACTION INCOMING
+			// Now we start to handle all holes
 
+			std::vector<VICUS::Surface> childSurfaces = originSurf.childSurfaces();
 			if(poly.m_haveRealHole && poly.m_holePolygons.size() > 0) {
 
 				std::vector<VICUS::Polygon2D> holes(poly.m_holePolygons.size());
 
-				std::vector<VICUS::Surface> childSurfaces = originSurf.childSurfaces();
 				for(unsigned int i=0; i<poly.m_holePolygons.size(); ++i) {
 					IBKMK::Polygon2D &holePoly = poly.m_holePolygons[i];
 					std::vector<IBKMK::Vector3D> vertexes(holePoly.vertexes().size());
@@ -569,7 +581,18 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 					childSurfaces.push_back(childSurf);
 				}
+			}
 
+
+			/// ==========================
+			/// Update sub-surfaces ======
+			/// If we have outside surface with windows and partially covered surfaces, that have been connected by the clipper
+			/// We have to move the windows to the difference (rest) surfaces. Since connecting surfaces are not allowed right now
+			/// to contain windows.
+
+			if(!originSurfCopy.subSurfaces().empty()) {
+
+				// Cache original surface data
 				const IBKMK::Vector3D &originLocalX = originSurfCopy.geometry().localX();
 				const IBKMK::Vector3D &originLocalY = originSurfCopy.geometry().localY();
 				const IBKMK::Vector3D &originOffset = originSurfCopy.geometry().offset();
@@ -577,11 +600,14 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				// Update geometry
 				originSurf.geometry().isValid();
 
+				// For better usage
 				const IBKMK::Vector3D &localX = originSurf.geometry().localX();
 				const IBKMK::Vector3D &localY = originSurf.geometry().localY();
 				const IBKMK::Vector3D &offset = originSurf.geometry().offset();
 
+				// We copy our sub-surfaces
 				std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
+
 				// Now we should update all sub-surfaces
 				for(unsigned int idxSub=0; idxSub<originSurfCopy.subSurfaces().size(); ++idxSub) {
 					VICUS::SubSurface &sub = subs[idxSub];
@@ -591,7 +617,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					for(unsigned int i=0; i<sub.m_polygon2D.vertexes().size(); ++i) {
 
 						IBKMK::Vector3D v3D = originOffset + originLocalX * sub.m_polygon2D.vertexes()[i].m_x
-														   + originLocalY * sub.m_polygon2D.vertexes()[i].m_y;
+								+ originLocalY * sub.m_polygon2D.vertexes()[i].m_y;
 
 						IBKMK::planeCoordinates(offset, localX, localY, v3D, points[i].m_x, points[i].m_y);
 					}
@@ -599,15 +625,14 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					sub.m_polygon2D = points;
 				}
 
+				// Update all child and sub-surfaces
 				originSurf.setChildAndSubSurfaces(subs, childSurfaces);
-				//#if defined(_OPENMP)
-				//#pragma omp critical
-				//#endif
-				originSurf.updateParents();
 			}
 
-
-			// ==========================
+			//#if defined(_OPENMP)
+			//#pragma omp critical
+			//#endif
+			originSurf.updateParents();
 
 			// Add back holes to data structure
 			//#if defined(_OPENMP)
@@ -821,7 +846,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 				IBKMK::Vector3D rayEndPoint;
 				IBKMK::lineToPointDistance( s1->geometry().offset(), s1->geometry().normal().normalized(),
 											s2->geometry().offset(), distance, rayEndPoint);
-                if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0)
+				if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0)
 					continue;
 
 				std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
