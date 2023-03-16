@@ -778,7 +778,14 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Pro
 		// save view factors in zone
 		std::vector<VICUS::Surface> surfaces = room->m_surfaces;
 		for(unsigned int i = 0; i < surfaces.size(); i++){
+
+			if(surfaces[i].geometry().area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
+				continue; // skip too small surfaces
+
 			for(unsigned int j = 0; j < surfaces.size(); j++){
+
+				if(surfaces[j].geometry().area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
+					continue; // skip too small surfaces
 
 				// the view factor from surface[i] to surface[ii]
 				if(surfaces[i].m_componentInstance == nullptr || surfaces[j].m_componentInstance == nullptr){
