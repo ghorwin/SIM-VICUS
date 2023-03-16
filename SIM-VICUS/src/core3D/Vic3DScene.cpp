@@ -1459,7 +1459,7 @@ void Scene::generateBuildingGeometry() {
 								// now select transparent or opaque surface based on type
 								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
 									// only add to transparent subsurfaces if visible and not selected
-									if (sub.m_visible && !sub.m_selected)
+									if (sub.m_visible && !sub.m_selected && !s.geometry().holeTriangulationData().empty())
 										transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
 									continue; // next surface
 								}
@@ -1498,7 +1498,13 @@ void Scene::generateBuildingGeometry() {
 	// now add all transparent surfaces
 	for (std::pair<const VICUS::SubSurface *, const VICUS::PlaneTriangulationData*> & p : transparentSubsurfaces) {
 		QColor col = p.first->m_color;
-		addPlane(*p.second, col, currentVertexIndex, currentElementIndex,
+
+		const VICUS::PlaneTriangulationData* triangu = dynamic_cast<const VICUS::PlaneTriangulationData*>(p.second);
+
+		if(triangu == nullptr)
+			continue;
+
+		addPlane(*triangu, col, currentVertexIndex, currentElementIndex,
 				 m_buildingGeometryObject.m_vertexBufferData,
 				 m_buildingGeometryObject.m_colorBufferData,
 				 m_buildingGeometryObject.m_indexBufferData, false);
@@ -1718,6 +1724,10 @@ void Scene::generateTransparentBuildingGeometry(const HighlightingMode &mode) {
 									IBK::IBK_Message(IBK::FormatString("Corresponding hole triangulation data of sub-surface '%1' was not found!").arg(sub.m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 									continue;
 								}
+
+								if(s.geometry().holeTriangulationData().empty())
+									continue;
+
 								addPlane(s.geometry().holeTriangulationData()[idx], col, currentVertexIndex, currentElementIndex,
 										 m_transparentBuildingObject.m_vertexBufferData,
 										 m_transparentBuildingObject.m_colorBufferData,
