@@ -1161,33 +1161,40 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 		// convert all interscetion polygons
 		// for(unsigned int i=0; i<solutionIntersection.size(); ++i) {
 		ClipperLib::PolyNode *childNode = polyTreeResultsDiffs.Childs[i];
-		const ClipperLib::Path &path = childNode->Contour;
+		// const ClipperLib::Path &path = childNode->Contour;
 
-		// Add back main intersection
-		mainDiffs.push_back(ClippingPolygon());
-		IBKMK::Polygon2D &poly = mainDiffs.back().m_polygon;
+		// Done to retain valid polygons for VICUS
+		ClipperLib::Paths paths;
+		ClipperLib::SimplifyPolygon(childNode->Contour, paths);
 
-		// Convert back points
-		poly.setVertexes(convertClipperPathToVec2D(path));
+		for(const ClipperLib::Path &path : paths) {
 
-		// ToDo Stephan ist das richtig wenn das aktuelle diff-poly keine punkte hat dann einfach dieses zu überspringen
-		// kann dann das nächste polygon ein loch von diesem sein?
-		if(poly.vertexes().empty()){
-			mainDiffs.pop_back();
-			continue;
-		}
+			// Add back main intersection
+			mainDiffs.push_back(ClippingPolygon());
+			IBKMK::Polygon2D &poly = mainDiffs.back().m_polygon;
 
-		if(poly.isValid())
-			mainDiffs.back().m_area = poly.area();
+			// Convert back points
+			poly.setVertexes(convertClipperPathToVec2D(path));
 
-		for(ClipperLib::PolyNode *secondChild : childNode->Childs){
-			if(!secondChild->IsHole())
+			// ToDo Stephan ist das richtig wenn das aktuelle diff-poly keine punkte hat dann einfach dieses zu überspringen
+			// kann dann das nächste polygon ein loch von diesem sein?
+			if(poly.vertexes().empty()){
+				mainDiffs.pop_back();
 				continue;
-			IBKMK::Polygon2D polyHole;
-			polyHole.setVertexes(convertClipperPathToVec2D(secondChild->Contour));
-			mainDiffs.back().m_holePolygons.push_back(polyHole);
-		}
+			}
 
+			if(poly.isValid())
+				mainDiffs.back().m_area = poly.area();
+
+			for(ClipperLib::PolyNode *secondChild : childNode->Childs){
+				if(!secondChild->IsHole())
+					continue;
+				IBKMK::Polygon2D polyHole;
+
+				polyHole.setVertexes(convertClipperPathToVec2D(secondChild->Contour));
+				mainDiffs.back().m_holePolygons.push_back(polyHole);
+			}
+		}
 		// Should not be an hole
 		Q_ASSERT(!childNode->IsHole());
 	}
