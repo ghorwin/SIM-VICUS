@@ -23,8 +23,8 @@
 
 namespace RC {
 
-const char * const VERSION			= "0.1";
-const char * const LONG_VERSION		= "0.1.0";
+const char * const VERSION			= "1.0";
+const char * const LONG_VERSION		= "1.0.0";
 const char * const RELEASE_DATE		= "February 23rd, 2023";
 
 const unsigned int SCALE_FACTOR     = 1E6;
