@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>860</width>
-    <height>466</height>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Smart-clipping settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -128,6 +128,11 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QPlainTextEdit" name="plainTextEdit">
+        <property name="font">
+         <font>
+          <family>Ubuntu Mono</family>
+         </font>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
