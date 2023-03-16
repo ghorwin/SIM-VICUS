@@ -39,7 +39,7 @@
 					 Note: some surfaces are missing, so that the view factors for a single surface
 					       do not add up to 1.
 				-->
-				<ViewFactors>4001 4002:0.4;4002 4001:0.4;</ViewFactors>
+				<ViewFactors>4001 4002:0.4;4002 4001:0.4;4001 4003:0.2;4002 4003:0;</ViewFactors>
 			</Zone>
 			<Zone id="12" displayName="LW inverted" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
@@ -48,7 +48,7 @@
 					 Note: some surfaces are missing, so that the view factors for a single surface
 					       do not add up to 1.
 				-->
-				<ViewFactors>5001 5002:0.5;5002 5001:0.5;</ViewFactors>
+				<ViewFactors>5001 5002:0.4;5002 5001:0.4;5001 5003:0.2;5002 5003:0;</ViewFactors>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
