@@ -819,33 +819,33 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Pro
 
 				// First we scan all concections between sub-surface and its parent wall (always 0)
 				// Than we also scan for other sub-surfaces inside walls
-//				for(unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
-//					const VICUS::SubSurface &subSurf1 = surfaces[i].subSurfaces()[k];
+				for(unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
+					const VICUS::SubSurface &subSurf1 = surfaces[i].subSurfaces()[k];
 
-//					double vFSubSurf1 = surfaces[i].m_viewFactors.m_values[subSurf1.m_id][0];
+					double vFSubSurf1 = surfaces[i].m_viewFactors.m_values[subSurf1.m_id][0];
 
-//					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf1.m_id]);
-//					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf1));
+					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf1.m_id]);
+					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf1));
 
-//					for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
-//						const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
+					for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
+						const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
 
-//						double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
+						double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
 
-//						NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(subSurfaceMapping[subSurf1.m_id], subSurfaceMapping[subSurf2.m_id]);
-//						z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
-//					}
-//				}
+						NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(subSurfaceMapping[subSurf1.m_id], subSurfaceMapping[subSurf2.m_id]);
+						z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
+					}
+				}
 
-//				// We also want the primary sub-surface wall connection
-//				for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
-//					const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
+				// We also want the primary sub-surface wall connection
+				for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
+					const VICUS::SubSurface &subSurf2 = surfaces[j].subSurfaces()[l];
 
-//					double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
+					double vFSubSurf2 = surfaces[i].m_viewFactors.m_values[subSurf2.m_id][0];
 
-//					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf2.m_id]);
-//					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
-//				}
+					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(cM1.m_idComponentInstanceNandrad, subSurfaceMapping[subSurf2.m_id]);
+					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
+				}
 			}
 		}
 	}
