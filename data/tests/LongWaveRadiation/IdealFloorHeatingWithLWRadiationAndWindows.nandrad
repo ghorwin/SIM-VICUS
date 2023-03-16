@@ -39,10 +39,7 @@
 					 Note: some surfaces are missing, so that the view factors for a single surface
 					       do not add up to 1.
 				-->
-				<ViewFactors>
-							4001 4002:0.5;
-							4002 4001:0.5
-				</ViewFactors>
+				<ViewFactors>4001 4002:0.4;4002 4001:0.4;4001 4003:0.2;4002 4003:0;</ViewFactors>
 			</Zone>
 			<Zone id="12" displayName="LW inverted" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
@@ -51,10 +48,7 @@
 					 Note: some surfaces are missing, so that the view factors for a single surface
 					       do not add up to 1.
 				-->
-				<ViewFactors>
-							5001 5002:0.5;
-							5002 5001:0.5
-				</ViewFactors>
+				<ViewFactors>5001 5002:0.4;5002 5001:0.4;5001 5003:0.2;5002 5003:0;</ViewFactors>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
@@ -120,6 +114,14 @@
 						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
 					</InterfaceLongWaveEmission>
 				</InterfaceA>
+				
+				<EmbeddedObjects>
+					<EmbeddedObject id="4003" displayName="Fenster16 (ID=10306)">
+						<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
+						<Window glazingSystemId="1031003" />
+					</EmbeddedObject>
+				</EmbeddedObjects>
+				
 			</ConstructionInstance>
 			
 
@@ -155,6 +157,12 @@
 						<IBK:Parameter name="Emissivity" unit="---">0.95</IBK:Parameter>
 					</InterfaceLongWaveEmission>
 				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="5003" displayName="Fenster16 (ID=10306)">
+						<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
+						<Window glazingSystemId="1031003" />
+					</EmbeddedObject>
+				</EmbeddedObjects>
 			</ConstructionInstance>
 			
 			
@@ -230,6 +238,16 @@
 			</IdealSurfaceHeatingCoolingModels>
 
 		</Models>
+		
+		<WindowGlazingSystems>
+			<WindowGlazingSystem id="1031003" displayName="2-Scheiben ISO" modelType="Simple">
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.6</IBK:Parameter>
+				<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+					<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+					<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
+				</LinearSplineParameter>
+			</WindowGlazingSystem>
+		</WindowGlazingSystems>
 
 		<Outputs>
 			<Definitions>
