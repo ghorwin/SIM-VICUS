@@ -106,17 +106,20 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Maximal heating demand [W]</string>
+             <string>Installed power (maximum load) [kW]</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
+            <property name="toolTip">
+             <string>This is the maximum power of this sub station, used for pipe dimensioning</string>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>5000</string>
+             <string>5</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -243,17 +246,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_BrowseFilenameWidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_BrowseFilenameWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

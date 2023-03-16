@@ -57,12 +57,16 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_23">
         <property name="text">
-         <string>Maximum heating demand [W]</string>
+         <string>Installed power (maximum load) [kW]</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaximumHeatingDemand"/>
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaximumHeatingDemand">
+        <property name="toolTip">
+         <string>This is the maximum power of this sub station, used for pipe dimensioning</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

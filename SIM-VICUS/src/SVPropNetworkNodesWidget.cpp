@@ -69,7 +69,7 @@ void SVPropNetworkNodesWidget::updateUi() {
 	}
 
 	if (m_pa->uniformProperty(m_pa->m_currentNodes, &VICUS::NetworkNode::m_maxHeatingDemand))
-		m_ui->lineEditNodeMaximumHeatingDemand->setValue(m_pa->m_currentNodes[0]->m_maxHeatingDemand.value);
+		m_ui->lineEditNodeMaximumHeatingDemand->setValue(m_pa->m_currentNodes[0]->m_maxHeatingDemand.value / 1000);
 }
 
 
@@ -121,7 +121,7 @@ void SVPropNetworkNodesWidget::on_lineEditNodeZPosition_editingFinishedSuccessfu
 void SVPropNetworkNodesWidget::on_lineEditNodeMaximumHeatingDemand_editingFinishedSuccessfully() {
 	if (m_ui->lineEditNodeMaximumHeatingDemand->isValid())
 		m_pa->modifyNodeProperty(&VICUS::NetworkNode::m_maxHeatingDemand,
-						   IBK::Parameter("MaxHeatingDemand", m_ui->lineEditNodeMaximumHeatingDemand->value(), "W"));
+						   IBK::Parameter("MaxHeatingDemand", m_ui->lineEditNodeMaximumHeatingDemand->value()*1000, "W"));
 }
 
 void SVPropNetworkNodesWidget::on_lineEditNodeName_editingFinished()

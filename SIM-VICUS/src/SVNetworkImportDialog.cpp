@@ -67,7 +67,7 @@ SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	m_ui(new Ui::SVNetworkImportDialog)
 {
 	m_ui->setupUi(this);
-	m_ui->lineEditMaxHeatingDemand->setup(0, 1e9, tr("HeatingDemand must be > 0 m!"), false, true);
+	m_ui->lineEditMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("HeatingDemand must be > 0 m!"), false, true);
 	m_ui->lineEditOriginX->setup(0, std::numeric_limits<double>::max(), tr("Origin x-position"), true, true);
 	m_ui->lineEditOriginY->setup(0, std::numeric_limits<double>::max(), tr("Origin y-position"), true, true);
 	m_ui->lineEditOriginZ->setup(0, std::numeric_limits<double>::max(), tr("Origin z-position"), true, true);
@@ -494,8 +494,8 @@ void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const
 				VICUS::NetworkNode::NT_SubStation);
 
 		double heatingDemand = 5000; // default value
-		if (m_ui->lineEditMaxHeatingDemand->text().toDouble() > 0)
-			heatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
+		if (m_ui->lineEditMaxHeatingDemand->isValid())
+			heatingDemand = m_ui->lineEditMaxHeatingDemand->value() * 1000; // in Watt
 		QString name = m_ui->lineEditSubStationName->text();
 
 		network.nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatingDemand, "W");
@@ -507,8 +507,8 @@ void SVNetworkImportDialog::readBuildingsFromCSV(VICUS::Network & network, const
 void SVNetworkImportDialog::readBuildingsFromGeoJson(VICUS::Network & network, const QJsonObject jsonObj, unsigned int nextId) const {
 
 	double defaultHeatingDemand = 5000; // default value
-	if (m_ui->lineEditMaxHeatingDemand->text().toDouble() > 0)
-		defaultHeatingDemand = m_ui->lineEditMaxHeatingDemand->text().toDouble();
+	if (m_ui->lineEditMaxHeatingDemand->isValid())
+		defaultHeatingDemand = m_ui->lineEditMaxHeatingDemand->value() * 1000; // in Watt
 	QString defaultName = m_ui->lineEditSubStationName->text();
 
 	const QJsonArray features = jsonObj["features"].toArray();

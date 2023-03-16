@@ -69,9 +69,9 @@ void SVDBSubNetworkEditWidget::updateInput(int id) {
 
 	// now update the GUI controls
 	m_ui->lineEditSubNetworkName->setString(m_currentSubNet->m_displayName);
+	m_ui->pushButtonColor->setColor(m_currentSubNet->m_color);
 
 	updateTableWidget();
-	updateElementProperties();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_currentSubNet->m_builtIn;
@@ -137,9 +137,12 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		m_ui->tableWidgetElements->setItem(row, 1, item);
 
-		m_ui->tableWidgetElements->selectRow(row);
 		++row;
 	}
+
+	m_ui->tableWidgetElements->selectRow(row - 1);
+
+	updateElementProperties();
 
 	m_ui->tableWidgetElements->blockSignals(false);
 }
@@ -279,7 +282,6 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditComponent_clicked()
 	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_componentId = newId;
 	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_displayName = QtExt::MultiLangString2QString(m_db->m_networkComponents[newId]->m_displayName);
 	modelModify();
-	updateElementProperties();
 	updateTableWidget(); // for name and color
 }
 
