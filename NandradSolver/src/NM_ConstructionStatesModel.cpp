@@ -551,7 +551,7 @@ int ConstructionStatesModel::update(const double * y) {
 			else {
 				double sourceEps = m_con->m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 				double TsA2 = m_TsA * m_TsA;
-				double area = m_con->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				double area = m_con->m_netHeatTransferArea;
 				// loop over all connected constructions; NOTE: the ids in the m_vectorValuedResults[VVR_EmittedLongWaveRadiationA] are stored
 				// in the order of the m_connectedInterfaces
 				unsigned int i=0;
@@ -600,7 +600,7 @@ int ConstructionStatesModel::update(const double * y) {
 				IBK_ASSERT(m_con->m_interfaceB.m_viewFactors.size() == m_con->m_interfaceB.m_connectedInterfaces.size());
 				double sourceEps = m_con->m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 				double TsB2 = m_TsB * m_TsB;
-				double area = m_con->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				double area = m_con->m_netHeatTransferArea;
 				// loop over all connected constructions; NOTE: the ids in the m_vectorValuedResults[VVR_EmittedLongWaveRadiationA] are stored
 				// in the order of the m_connectedInterfaces
 				unsigned int i=0;
