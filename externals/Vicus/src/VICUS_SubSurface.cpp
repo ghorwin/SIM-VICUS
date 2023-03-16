@@ -40,49 +40,4 @@ void SubSurface::updateColor() {
 	}
 }
 
-void SubSurface::readXML(const TiXmlElement * element) {
-	FUNCID(SubSurface::readXML);
-	const TiXmlElement * c = element->FirstChildElement();
-	while (c) {
-		const std::string & cName = c->ValueStr();
-		/*if(cName == "ViewFactors") {
-			const TiXmlElement * cc = c->FirstChildElement();
-			while (cc) {
-				const std::string & ccName = cc->ValueStr();
-				if(ccName == "ViewFactor"){
-					const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(cc, "id");
-					if(attrib == nullptr){
-						throw IBK::Exception("Error reading ViewFactor tag. Has no id attribute!", FUNC_ID);
-					}
-					unsigned int id = IBK::string2val<unsigned int>(attrib->ValueStr());
-					double viewFactor = IBK::string2val<double>(cc->FirstChild()->ValueStr());
-					m_viewFactors[id] = viewFactor;
-				} else {
-					throw IBK::Exception("Error reading ViewFactors tag. Should only contain ViewFactor Tags", FUNC_ID);
-				}
-				cc = cc->NextSiblingElement();
-			}
-			// remove ViewFactor element from parent, to avoid getting spammed with "unknown ViewFactor" warning
-			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
-		}*/
-		c = c->NextSiblingElement();
-	}
-	readXMLPrivate(element);
-}
-
-TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = writeXMLPrivate(parent);
-	/*if(m_viewFactors.size() > 0){
-		TiXmlElement * viewFactors = new TiXmlElement("ViewFactors");
-		for(const std::pair<unsigned int, double> entry : m_viewFactors){
-			TiXmlElement * viewFactor = new TiXmlElement("ViewFactor");
-			viewFactor->SetAttribute("id",std::to_string(entry.first));
-			viewFactor->LinkEndChild(new TiXmlText(std::to_string(entry.second)));
-			viewFactors->LinkEndChild(viewFactor);
-		}
-		e->LinkEndChild(viewFactors);
-	}*/
-	return e;
-}
-
 } // namespace VICUS

@@ -284,6 +284,8 @@ void SVOutputGridEditDialog::showError(int row, int col, const QString & text) c
 
 
 void SVOutputGridEditDialog::on_tableWidget_cellChanged(int row, int column) {
+	// TODO : fix
+
 //	IBK::Parameter p;
 //	// if a valid start time has been entered and the previous interval's end edit is empty, update
 //	// the "autotext" properties

@@ -159,20 +159,22 @@ bool Window::isValid() const {
 }
 
 
-bool Window::calculateUValue(double & UValue, const VICUS::Database<Material> & materials,
+bool Window::calculateUValue(double & UValue, const VICUS::Database<Material> & /*materials*/,
 							 const VICUS::Database<WindowGlazingSystem> & glazingSystems,
-							 double ri, double re) const {
-
+							 double ri, double re) const
+{
 	UValue = -1;
-	if(m_idGlazingSystem == VICUS::INVALID_ID)
+	if (m_idGlazingSystem == VICUS::INVALID_ID)
 		return false;
 
 	const WindowGlazingSystem *glSys = glazingSystems[m_idGlazingSystem];
 
-	if(glSys == nullptr)
+	if (glSys == nullptr)
 		return false;
 
 	UValue = 1/(1/glSys->uValue() + ri + re);
+
+	// TODO : include frame in U-value calculation
 	return true;
 }
 

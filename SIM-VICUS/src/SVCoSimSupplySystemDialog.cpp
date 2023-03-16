@@ -49,8 +49,6 @@ int SVCoSimSupplySystemDialog::exec() {
 
 
 bool SVCoSimSupplySystemDialog::checkProjectData() const {
-	const VICUS::Project & p = project();
-
 	QString errorColor = SVSettings::instance().m_theme == SVSettings::TT_Dark ? "red" : "darkRed";
 	QString successColor = SVSettings::instance().m_theme == SVSettings::TT_Dark ? "lime" : "darkGreen";
 
@@ -532,8 +530,6 @@ void SVCoSimSupplySystemDialog::on_pushButtonGenerate_clicked() {
 	// store access to VICUS project file
 	const VICUS::Project &project = SVProjectHandler::instance().project();
 
-
-	bool success = true;
 
 	// NANDRAD FMU
 

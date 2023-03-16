@@ -352,7 +352,7 @@ void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID
 	}
 }
 
-void SVDBZoneTemplateEditDialog::on_treeView_expanded(const QModelIndex &index) {
+void SVDBZoneTemplateEditDialog::on_treeView_expanded(const QModelIndex &) {
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	// we add a bit more width since automatic resizing not fully working
@@ -360,7 +360,7 @@ void SVDBZoneTemplateEditDialog::on_treeView_expanded(const QModelIndex &index) 
 }
 
 
-void SVDBZoneTemplateEditDialog::on_treeView_collapsed(const QModelIndex &index) {
+void SVDBZoneTemplateEditDialog::on_treeView_collapsed(const QModelIndex &) {
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 }

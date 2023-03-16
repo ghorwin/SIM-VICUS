@@ -43,12 +43,12 @@ SVClimateDataTableModel::SVClimateDataTableModel(QObject * parent) :
 }
 
 
-int SVClimateDataTableModel::rowCount(const QModelIndex & parent) const {
+int SVClimateDataTableModel::rowCount(const QModelIndex &) const {
 	return m_climateFiles.size();
 }
 
 
-int SVClimateDataTableModel::columnCount(const QModelIndex & parent) const {
+int SVClimateDataTableModel::columnCount(const QModelIndex &) const {
 	return NUM_C;
 }
 

@@ -365,9 +365,9 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 	IBKMK::Vector3D n(0,0,0);
 	IBKMK::Vector3D e(0,0,0);
 
-	for(unsigned int i=0; i<polygon.size(); ++i) {
+	for(unsigned int i=0; i<polygon.size(); ++i)
 		e += polygon[i];
-	}
+
 	e /= polygon.size();
 
 
@@ -375,15 +375,13 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 		unsigned int s = polygon.size();
 		unsigned int j = (i + s - 1)%s;
 
-		IBKMK::Vector3D d = polygon[i] - polygon[j];
-
 		IBKMK::Vector3D v1 = polygon[j] - e;
 		IBKMK::Vector3D v2 = polygon[i] - e;
 
 		n += v1.crossProduct(v2).normalized();
 	}
 
-	if(n.magnitudeSquared() < 0.01) {
+	if (n.magnitudeSquared() < 0.01) {
 
 		n = Vector3D(0,0,0);
 
@@ -391,22 +389,20 @@ IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon
 			unsigned int s = polygon.size();
 			unsigned int j = (i + s - 1)%s;
 
-			IBKMK::Vector3D d = polygon[i] - polygon[j];
-
 			IBKMK::Vector3D v1 = polygon[j] - e;
 			IBKMK::Vector3D v2 = polygon[i] - e;
 
 			n += v1.crossProduct(v2).normalized();
 		}
 
-		if(n.magnitudeSquared() > 0.01)
+		if (n.magnitudeSquared() > 0.01)
 			return n.normalized();
 
 		IBK::IBK_Message(IBK::FormatString("Start point:\t%1\t%2\t%3")
 						 .arg(e.m_x)
 						 .arg(e.m_y)
 						 .arg(e.m_z), IBK::MSG_ERROR);
-		for(unsigned int i=0; i<polygon.size(); ++i) {
+		for (unsigned int i=0; i<polygon.size(); ++i) {
 
 			unsigned int s = polygon.size();
 			unsigned int j = (i + s -1)%s;
@@ -450,7 +446,7 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 
 	// calculate normal with first 3 points
 	m_localX = verts[1] - verts[0];
-	IBKMK::Vector3D y = verts.back() - verts[0];
+//	IBKMK::Vector3D y = verts.back() - verts[0];
 	IBKMK::Vector3D n1 = getNormal(verts);
 //	IBKMK::Vector3D n2;
 

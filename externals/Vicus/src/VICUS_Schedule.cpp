@@ -499,10 +499,12 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 }
 
 
-Schedule Schedule::createAnnualScheduleFromPeriodSchedule(std::string &name, const IBK::Unit & unit, unsigned int startDayOfYear) {
+Schedule Schedule::createAnnualScheduleFromPeriodSchedule(std::string &name, const IBK::Unit & /*unit*/, unsigned int startDayOfYear) {
 	FUNCID(Schedule::createAnnualScheduleFromPeriodSchedule);
 	if (m_periods.empty())
 		IBK::Exception(IBK::FormatString("Schedule must have at least one period."), FUNC_ID);
+
+	// TODO : check unit
 
 	// save start day of year for shifting later
 	unsigned int startDayOfPeriod = startDayOfYear;

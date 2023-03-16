@@ -903,7 +903,7 @@ void ClimateDataLoader::readClimateDataBBSRDat(const IBK::Path & fname, bool hea
 	// ***
 
 
-	const char * const HEADER_END1 = "     RW      HW MM DD HH     t    p  WR   WG N    x  RF    B    D   A    E IL";
+//	const char * const HEADER_END1 = "     RW      HW MM DD HH     t    p  WR   WG N    x  RF    B    D   A    E IL";
 	const char * const HEADER_END2 = "***";
 
 	try {

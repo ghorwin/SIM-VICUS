@@ -960,8 +960,8 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 		case SVDatabase::DT_ZoneControlShading:  {
 			for (const auto & p : m_zoneTemplates) {
-				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
 				// TODO Dirk : add as soon as available
+//				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
 				//replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_], m_zoneTemplates);
 			}
 			m_zoneControlShading.remove(elementID);

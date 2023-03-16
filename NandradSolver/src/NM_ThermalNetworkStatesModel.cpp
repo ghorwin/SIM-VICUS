@@ -555,7 +555,7 @@ void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> 
 		// skip elements without states
 		if (nStates == 0)
 			continue;
-		NANDRAD::HydraulicNetworkComponent::ModelType type = m_network->m_elements[n].m_component->m_modelType;
+//		NANDRAD::HydraulicNetworkComponent::ModelType type = m_network->m_elements[n].m_component->m_modelType;
 		IBK_ASSERT(flowElem!=nullptr);
 
 //		// for all elements that are not pipes (ie. heat exchangers/heat pumps etc.)

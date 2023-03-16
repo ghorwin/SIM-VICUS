@@ -33,7 +33,7 @@ void ShadingBuildingDetailed::read(const std::vector<std::string> & str, unsigne
 }
 
 
-void ShadingBuildingDetailed::write(std::string & outStr, unsigned int version) const {
+void ShadingBuildingDetailed::write(std::string & /*outStr*/, unsigned int /*version*/) const {
 	// TODO???
 }
 

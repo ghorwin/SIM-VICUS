@@ -248,6 +248,7 @@ namespace detail {
 				return *this;
 			}
 
+			Expansion & operator=(const Expansion&) = default;
 			Expansion(const Expansion& other) { *this = other; }
 
 			//vector like convenience functions

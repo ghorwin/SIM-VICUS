@@ -2285,7 +2285,6 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	// do we have a surface to a zone?
 	if (s != nullptr) {
 		// get the zone that this interface is connected to
-		const VICUS::Object * obj = s->m_parent;
 		const VICUS::Room * room = checkForSurfaceParent(s);
 
 		if (room == nullptr){

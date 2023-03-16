@@ -147,13 +147,13 @@ void DefaultStateDependency::inputReferenceDescriptions(std::vector<QuantityDesc
 }
 #endif
 
-void DefaultStateDependency::inputReferences(std::vector<InputReference>  & inputRefs) const {
+void DefaultStateDependency::inputReferences(std::vector<InputReference>  & /*inputRefs*/) const {
 
 	// copy references into vector
 //	inputRefs.insert(inputRefs.end(), m_inputReferences.begin(),m_inputReferences.end() );
 }
 
-void DefaultStateDependency::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
+void DefaultStateDependency::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & /*resultValueRefs*/) {
 #if 0
 	FUNCID(DefaultStateDependency::setInputValueRef);
 	// for the first call we need to resize all input value references
@@ -448,7 +448,7 @@ const InputReference & DefaultStateDependency::inputReference(int quantityType, 
 #endif
 
 
-std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int quantityType) const {
+std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRefs(int /*quantityType*/) const {
 #if 0
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);
 	// error: wrong quantity type is requested
@@ -474,7 +474,7 @@ std::vector<const double *>::const_iterator DefaultStateDependency::inputValueRe
 }
 
 
-const double *DefaultStateDependency::inputValueRef(int quantityType) const {
+const double *DefaultStateDependency::inputValueRef(int /*quantityType*/) const {
 #if 0
 
 	IBK_ASSERT(dynamic_cast<const AbstractModel*>(this) != nullptr);

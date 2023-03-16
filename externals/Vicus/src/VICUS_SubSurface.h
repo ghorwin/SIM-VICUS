@@ -51,11 +51,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE_PRIVATE
+	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
-
-	void readXML(const TiXmlElement * element);
-	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Sets color based on sub-surface type. */
 	void updateColor();

@@ -279,6 +279,8 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 			return QColor("#90BE6D");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
 			return QColor("#34836c");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating:
+			return QColor("#8B68a9");
 		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 			return QColor("#5B4869");
 	}

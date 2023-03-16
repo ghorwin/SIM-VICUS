@@ -9,7 +9,7 @@
 namespace EP {
 
 void ShadingSystems::read(const std::vector<std::string> & str, unsigned int /*version*/) {
-	const char * const FUNC_ID = "[ShadingSystems::read]";
+//	const char * const FUNC_ID = "[ShadingSystems::read]";
 	std::vector<std::string> str1(str);
 
 	// for version 8.3
@@ -111,7 +111,7 @@ void ShadingSystems::read(const std::vector<std::string> & str, unsigned int /*v
 }
 
 
-void ShadingSystems::write(std::string &outStr, unsigned int version) const {
+void ShadingSystems::write(std::string &outStr, unsigned int /*version*/) const {
 
 	std::stringstream ss;
 

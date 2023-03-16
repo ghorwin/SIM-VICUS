@@ -52,8 +52,6 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	//       to change that, we would need to derive from QTreeView and overload/re-implement drawRow().
 	//       --> later
 
-	unsigned int uniqueObjectId = index.data(NodeID).toUInt();
-
 	// root items or items without object Id are never current or selected
 	if (index.parent() == QModelIndex() /*! || uniqueObjectId == 0*/) {
 		// check if item is selected/current

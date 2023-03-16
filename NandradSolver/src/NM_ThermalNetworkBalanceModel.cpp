@@ -155,6 +155,7 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating:
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ;

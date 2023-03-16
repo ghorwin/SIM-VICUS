@@ -9,7 +9,7 @@
 namespace EP {
 
 void Frame::read(const std::vector<std::string> & str, unsigned int /*version*/) {
-	const char * const FUNC_ID = "[Frame::read]";
+//	const char * const FUNC_ID = "[Frame::read]";
 	std::vector<std::string> str1(str);
 
 	// for version 8.3

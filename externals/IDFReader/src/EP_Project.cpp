@@ -31,7 +31,7 @@ void Project::readIDF(const IDFParser & idfData) {
 }
 
 
-void Project::writeIDF(const IBK::Path & filename) {
+void Project::writeIDF(const IBK::Path & /*filename*/) {
 #if 0
 
 #if defined(_WIN32)

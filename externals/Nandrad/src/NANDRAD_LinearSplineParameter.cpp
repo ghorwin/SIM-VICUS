@@ -191,8 +191,14 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 								  .arg(m_yUnit.name()).arg(targetYUnit).arg(suffix), FUNC_ID);
 	}
 
-	// check 4: range check?
+	// TODO check 4: range check?
 //	for (double d : m_values.y()) {
+
+	(void)minYVal;
+	(void)maxYVal;
+	(void)isLessEqual;
+	(void)isGreaterEqual;
+
 
 //	}
 
