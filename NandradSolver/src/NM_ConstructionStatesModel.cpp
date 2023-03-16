@@ -565,6 +565,10 @@ int ConstructionStatesModel::update(const double * y) {
 					longWaveRadVector[i] = area * emittedFlux;
 					emittedFluxSum += emittedFlux;
 				}
+				// TODO calculate emitted radiation to window
+//				for (auto it=m_con->m_interfaceA.m_connectedWindows.begin(); it!=m_con->m_interfaceA.m_connectedWindows.end(); ++it, ++i) {
+
+//				}
 				m_results[R_EmittedLongWaveRadiationFluxA] = emittedFluxSum;
 			}
 		}
@@ -594,9 +598,8 @@ int ConstructionStatesModel::update(const double * y) {
 				// store absorbed flux
 				m_results[R_LongWaveRadiationFluxB] = radiationBalance;
 			}
-
+			// emitted long wave radiation to other construction instance
 			else {
-				// emitted long wave radiation to other construction instance
 				IBK_ASSERT(m_con->m_interfaceB.m_viewFactors.size() == m_con->m_interfaceB.m_connectedInterfaces.size());
 				double sourceEps = m_con->m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 				double TsB2 = m_TsB * m_TsB;
@@ -614,6 +617,9 @@ int ConstructionStatesModel::update(const double * y) {
 					longWaveRadVector[i] = area * emittedFlux;
 					emittedFluxSum += emittedFlux;
 				}
+				// TODO calculate emitted radiation to window
+//				for (auto it=m_con->m_interfaceB.m_connectedWindows.begin(); it!=m_con->m_interfaceB.m_connectedWindows.end(); ++it, ++i) {
+//				}
 				m_results[R_EmittedLongWaveRadiationFluxB] = emittedFluxSum;
 			}
 		}

@@ -90,6 +90,10 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 		throw IBK::Exception(IBK::FormatString("Glazing system with ID %1 not defined.").arg(m_glazingSystemId), FUNC_ID);
 	// cache pointer
 	m_glazingSystem = &(*it);
+
+
+	// TODO: epsilon here
+	// TODO: if epsilon > 0 check view factors here
 }
 
 

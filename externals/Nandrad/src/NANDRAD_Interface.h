@@ -36,6 +36,7 @@
 namespace NANDRAD {
 
 class Zone;
+class EmbeddedObject;
 
 /*!	An Interface identifies a surface of a wall and stores all data that are needed for boundary
 	condition calculation. Each ConstructionInstance contains two member variables of type
@@ -119,12 +120,14 @@ public:
 	*/
 	bool										m_isSideA;
 
-	/*! Stores view factors for construction instances visible from this one, whereby the key is the id of the visible construction instance. */
+	/*! Stores view factors for construction instances visible from this one, whereby the key is the id of the visible construction instance or embedded object. */
 	std::map<unsigned int, double>				m_viewFactors;
 
-	/*! Stores pointer to interfaces visible from this one, whereby the key is the id of the according construction instance.
+	/*! Stores pointer to interfaces visible from this one, whereby the key is the id of the visible construction instance.
 	 *  This is required to have access to the emission coefficient of the visible interface. */
 	std::map<unsigned int, const NANDRAD::Interface*>	m_connectedInterfaces;
+
+	std::map<unsigned int, const NANDRAD::EmbeddedObject*>	m_connectedWindows;
 };
 
 } // namespace NANDRAD

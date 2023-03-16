@@ -189,7 +189,8 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 	// Collect all construction instances and interfaces that interact with this one over the same zone
 	// connectedConstructionInstances holds pointers of all other constructions that share at least one interface
 	// to the same inner zone.
-	std::vector<const NANDRAD::ConstructionInstance*> connectedConstructionInstances;
+	std::vector<const ConstructionInstance*> connectedConstructionInstances;
+	std::vector<const EmbeddedObject*> connectedWindows;
 	ourInterface.m_connectedInterfaces.clear();
 	// loop over all constructions
 	for (const ConstructionInstance &ci: prj.m_constructionInstances) {
@@ -202,12 +203,20 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 		if (ci.m_interfaceA.m_zoneId == ourInterface.m_zoneId) {
 			ourInterface.m_connectedInterfaces[ci.m_id] = &ci.m_interfaceA;
 			connectedConstructionInstances.push_back(&ci);
+			for (const EmbeddedObject &eo: ci.m_embeddedObjects) {
+				connectedWindows.push_back(&eo);
+				ourInterface.m_connectedWindows[eo.m_id] = &eo;
+			}
 		}
 		// same for side B interface; NOTE: a construction may be an inner-zone element and reference the same zone
 		// with BOTH interfaces.
 		if (ci.m_interfaceB.m_zoneId == ourInterface.m_zoneId) {
 			ourInterface.m_connectedInterfaces[ci.m_id] = &ci.m_interfaceB;
 			connectedConstructionInstances.push_back(&ci);
+			for (const EmbeddedObject &eo: ci.m_embeddedObjects) {
+				connectedWindows.push_back(&eo);
+				ourInterface.m_connectedWindows[eo.m_id] = &eo;
+			}
 		}
 	}
 
@@ -223,6 +232,12 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 								 .arg(ourInterface.m_id).arg(m_id).arg(m_displayName), FUNC_ID );
 		}
 		++i;
+	}
+
+	for (auto it=ourInterface.m_connectedWindows.begin(); it!=ourInterface.m_connectedWindows.end(); ++it) {
+		const EmbeddedObject *eo = it->second;
+		IBK_ASSERT(eo != nullptr);
+		// TODO: check epsilon of window here
 	}
 
 	// now collect view factors from the given zone and store them as "our own" view factors, i.e. view factors from this ci to the connected one
@@ -254,21 +269,31 @@ void ConstructionInstance::checkAndPrepareLongWaveHeatExchange(const Project & p
 						 .arg(ourInterface.m_zoneId).arg(m_id).arg(viewFactorSum), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 	}
 
-	// check if we have a view factor for each connected ci
+	// check if we have a view factor for each connected ci / window
 	for (const ConstructionInstance *ci: connectedConstructionInstances) {
 		if (ourInterface.m_viewFactors.find(ci->m_id) == ourInterface.m_viewFactors.end())
 			throw IBK::Exception( IBK::FormatString("Construction instance #%1 exchanges long wave radiation with construction instance #%2, "
 													"but no view factor is defined between both.").arg(m_id).arg(ci->m_id), FUNC_ID );
 	}
-	// check if we have a connected ci for each view factor
+	for (const EmbeddedObject *eo: connectedWindows) {
+		if (ourInterface.m_viewFactors.find(eo->m_id) == ourInterface.m_viewFactors.end())
+			throw IBK::Exception( IBK::FormatString("Construction instance #%1 exchanges long wave radiation with embedded object #%2, "
+													"but no view factor is defined between both.").arg(m_id).arg(eo->m_id), FUNC_ID );
+	}
+
+	// check if we have a connected ci / window for each view factor
 	for (auto it = ourInterface.m_viewFactors.begin(); it!=ourInterface.m_viewFactors.end(); ++it) {
+		// for view factors that are zero, we skip this check (this could be the case for view factors from a wall to its own window)
+		if (it->second < 1e-4)
+			continue;
 		unsigned int targetId = it->first;
-		if (ourInterface.m_connectedInterfaces.find(targetId) == ourInterface.m_connectedInterfaces.end())
-			throw IBK::Exception( IBK::FormatString("View factor is given from construction instance #%1 to construction instance #%2, "
+		if ( ourInterface.m_connectedInterfaces.find(targetId) == ourInterface.m_connectedInterfaces.end() &&
+			ourInterface.m_connectedWindows.find(targetId) == ourInterface.m_connectedWindows.end()	)
+			throw IBK::Exception( IBK::FormatString("View factor is given from construction instance #%1 to construction instance / embedded object #%2, "
 													"but construction instance #%2 does not seem to exist or is not connected to construction instance #%1").arg(m_id).arg(targetId), FUNC_ID );
 	}
 	// for each long wave exchange we have one target construction and a view factor
-	IBK_ASSERT(ourInterface.m_connectedInterfaces.size() == ourInterface.m_viewFactors.size());
+	IBK_ASSERT(ourInterface.m_connectedInterfaces.size() + ourInterface.m_connectedWindows.size() == ourInterface.m_viewFactors.size());
 }
 
 
