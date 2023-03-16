@@ -21,7 +21,7 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 	m_ui->comboBoxProperty->clear();
 	for (int i=0; i<VICUS::NetworkController::NUM_CP; ++i)
 		m_ui->comboBoxProperty->addItem(QString("%1")
-											 .arg(VICUS::KeywordList::Description("NetworkController::ControlledProperty", i)),
+											 .arg(VICUS::KeywordListQt::Description("NetworkController::ControlledProperty", i)),
 											 i);
 
 	// setup line edits
@@ -146,7 +146,7 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 			NANDRAD::HydraulicNetworkControlElement::availableControllerTypes(
 				NANDRAD::HydraulicNetworkControlElement::ControlledProperty(m_current->m_controlledProperty));
 	for (int i: availableCtrTypes)
-		m_ui->comboBoxControllerType->addItem(QString("%1").arg(VICUS::KeywordList::Description("NetworkController::ControllerType", i)), i);
+		m_ui->comboBoxControllerType->addItem(QString("%1").arg(VICUS::KeywordListQt::Description("NetworkController::ControllerType", i)), i);
 
 	// controller type and parameters
 	int typeIdx = m_ui->comboBoxControllerType->findData(m_current->m_controllerType);

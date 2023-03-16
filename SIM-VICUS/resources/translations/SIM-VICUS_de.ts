@@ -327,37 +327,37 @@
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="88"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="180"/>
         <source>Control temperature difference of this element</source>
-        <translation>Kontrollieren Sie die Temperaturdifferenz dieses Elements</translation>
+        <translation>Regelung der Temperaturdifferenz dieses Elements</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="89"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="181"/>
         <source>Control temperature difference of the following element</source>
-        <translation>Kontrollieren Sie die Temperaturdifferenz des folgenden Elements</translation>
+        <translation>Regelung der Temperaturdifferenz des folgenden Elements</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="90"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="182"/>
         <source>Control zone thermostat values</source>
-        <translation>Zonenthermostatwerte steuern</translation>
+        <translation>Regelung der Zonenthermostate</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="91"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="183"/>
         <source>Control mass flux</source>
-        <translation>Massenstrom kontrollieren</translation>
+        <translation>Regelung des Massenstrom</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="92"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="184"/>
         <source>Control pump operation depending on following element</source>
-        <translation>Steuern Sie den Pumpenbetrieb in Abhängigkeit vom folgenden Element</translation>
+        <translation>Regelung des Pumpenbetriebs in Abhängigkeit vom folgenden Element</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="93"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="185"/>
         <source>Control pressure difference at worst point in the network</source>
-        <translation>Kontrollieren Sie die Druckdifferenz am schlechtesten Punkt im Netz</translation>
+        <translation>Regelung des Drucks am Netzschlechtpunkt</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="94"/>
@@ -3174,165 +3174,165 @@ p, li { white-space: pre-wrap; }
         <translation>Duplikat #2</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="375"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="376"/>
         <source>Materials</source>
         <translation>Materialien</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="379"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="380"/>
         <source>Constructions</source>
         <translation>Konstruktionen</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="385"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="384"/>
         <source>Windows</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="385"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="386"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="387"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="390"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="391"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="392"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="395"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="396"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="397"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="400"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="401"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="402"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="405"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="406"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="407"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="410"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="411"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="412"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="415"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="416"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="417"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="420"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="421"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="422"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="425"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="426"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="427"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="430"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="431"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="432"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="435"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="436"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="437"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="440"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="441"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="442"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="445"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="446"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="447"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="450"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="451"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="452"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="455"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="456"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="457"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="460"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="461"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="462"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="465"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="466"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="467"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="470"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="471"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="472"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="475"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="476"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="477"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="480"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="481"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="482"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="485"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="486"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="487"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="492"/>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="493"/>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="494"/>
         <source>%1 [%2]</source>
         <translation>%1 [%2]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="390"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="389"/>
         <source>WindowGlazingSystems</source>
         <translation>FensterVerglasungssysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="395"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="394"/>
         <source>BoundaryConditions</source>
         <translation>BoundaryConditions</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="400"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="399"/>
         <source>Components</source>
         <translation>Komponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="405"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="404"/>
         <source>SubSurfaceComponents</source>
         <translation>Teilflächenkomponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="410"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="409"/>
         <source>SurfaceHeating</source>
         <translation>Oberflächenheizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="415"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="414"/>
         <source>Pipes</source>
         <translation>Rohre</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="420"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="419"/>
         <source>Fluids</source>
         <translation>Fluide</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="425"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="424"/>
         <source>NetworkComponents</source>
         <translation>NetzwerkKomponenten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="430"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="429"/>
         <source>NetworkControllers</source>
         <translation>Netzwerksteuerungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="435"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="434"/>
         <source>SubNetworks</source>
         <translation>Anlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="440"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="439"/>
         <source>SupplySystems</source>
         <translation>VersorgungsSysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="445"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="444"/>
         <source>Schedules</source>
         <translation>Zeitpläne</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="450"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="449"/>
         <source>InternalLoads</source>
         <translation>InterneLasten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="455"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="454"/>
         <source>ZoneControlThermostat</source>
         <translation>ZonensteuerungThermostat</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="460"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="459"/>
         <source>ZoneControlShading</source>
         <translation>ZonensteuerungVerschattung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="465"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="464"/>
         <source>ZoneControlNaturalVentilation</source>
         <translation>ZonensteuerungNatürlicheLüftung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="470"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="469"/>
         <source>ZoneIdealHeatingCooling</source>
         <translation>ZoneIdealHeizungKühlung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="475"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="474"/>
         <source>VentilationNatural</source>
         <translation>BelüftungNatürlich</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="480"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="479"/>
         <source>Infiltration</source>
         <translation>Infiltration</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="485"/>
+        <location filename="../../src/SVDBDuplicatesDialog.cpp" line="484"/>
         <source>ZoneTemplates</source>
         <translation>Zonenvorlagen</translation>
     </message>
@@ -7590,7 +7590,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="870"/>
         <source>Precalculate view factors</source>
-        <translation type="unfinished">Sichtfaktoren vorberechnen</translation>
+        <translation>Sichtfaktoren vorberechnen</translation>
     </message>
     <message>
         <source>Calculate view factors</source>
@@ -8536,27 +8536,42 @@ p, li { white-space: pre-wrap; }
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="129"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="109"/>
+        <source>Installed power (maximum load) [kW]</source>
+        <translation>Anschlussleistung [kW]</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="116"/>
+        <source>This is the maximum power of this sub station, used for pipe dimensioning</source>
+        <translation>Die Anschlussleistung wird für die stationäre Rohrdimensionierung verwendet</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="122"/>
+        <source>5</source>
+        <translation>5</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="132"/>
         <source>Sub Station Name</source>
         <translation>Name der Übergabestation</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="156"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="159"/>
         <source>Select network</source>
         <translation>Netzwerk auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="176"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="179"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="186"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="189"/>
         <source>Add to existing network</source>
         <translation>Zum bestehenden Netzwerk hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="223"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="226"/>
         <source>convert to UTM when import geojson</source>
         <translation>konvertiere in UTM bei geoJSON Import</translation>
     </message>
@@ -8579,7 +8594,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">UTM Daten für geojson Import</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="232"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="235"/>
         <source>UTM Zone</source>
         <translation>UTM Zone</translation>
     </message>
@@ -8599,7 +8614,7 @@ p, li { white-space: pre-wrap; }
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="203"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="206"/>
         <source>Origin</source>
         <translation>Ursprungskoordinaten</translation>
     </message>
@@ -8613,9 +8628,8 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="109"/>
         <source>Maximal heating demand [W]</source>
-        <translation>Maximale Heizlast [W]</translation>
+        <translation type="vanished">Maximale Heizlast [W]</translation>
     </message>
     <message>
         <source>File Name:</source>
@@ -8630,9 +8644,8 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Maximale Heizlast</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="119"/>
         <source>5000</source>
-        <translation>5000</translation>
+        <translation type="vanished">5000</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.cpp" line="84"/>
@@ -8665,7 +8678,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Verfügbare Rohre auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="210"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="213"/>
         <source>New network</source>
         <translation>Neues Netzwerk</translation>
     </message>
@@ -11601,26 +11614,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="60"/>
-        <source>Maximum heating demand [W]</source>
-        <translation>Maximaler Heizbedarf [W]</translation>
+        <source>Installed power (maximum load) [kW]</source>
+        <translation>Anschlussleistung [kW]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="73"/>
+        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="67"/>
+        <source>This is the maximum power of this sub station, used for pipe dimensioning</source>
+        <translation>Die Anschlussleistung wird für die stationäre Rohrdimensionierung verwendet</translation>
+    </message>
+    <message>
+        <source>Maximum heating demand [W]</source>
+        <translation type="vanished">Maximaler Heizbedarf [W]</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="77"/>
         <source>Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="143"/>
+        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="147"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="150"/>
+        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="154"/>
         <source>Sub Station</source>
         <translation>Übergabestation</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="157"/>
+        <location filename="../../src/SVPropNetworkNodesWidget.ui" line="161"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
