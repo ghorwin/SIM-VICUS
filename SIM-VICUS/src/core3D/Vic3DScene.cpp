@@ -2560,28 +2560,38 @@ void Scene::pick(PickObject & pickObject) {
 					// can also pick both sides
 					int holeIndex;
 					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
-						// if a hole was clicked on, that is invisible, ignore this click
-						bool cond1 = holeIndex == -1 && s.m_visible;
+						// if there is no whole in the surface, we only require that the surface is visible - otherwise
+						// ignore the click
+						if (holeIndex == -1 && !s.m_visible)
+							continue; // skip
 
-						const VICUS::Object *obj;
-						if(holeIndex!=-1)
+						// we may have a click...
+						PickObject::PickResult r;
+						r.m_resultType = PickObject::RT_Object;
+						r.m_depth = dist;
+						r.m_pickPoint = intersectionPoint;
+						r.m_holeIdx = holeIndex;
+
+						// if we have hole, check if we did click on it
+						if (holeIndex != -1) {
+							const VICUS::Object *obj = nullptr;
 							obj = SVProjectHandler::instance().project().objectById(s.geometry().holes()[(unsigned int)holeIndex].m_idObject);
-
-						bool cond2 = holeIndex != -1 && obj->m_visible;
-						if ( cond1 || cond2 ) {
-							PickObject::PickResult r;
-							r.m_resultType = PickObject::RT_Object;
-							r.m_depth = dist;
-							r.m_pickPoint = intersectionPoint;
-							r.m_holeIdx = holeIndex;
-							if (holeIndex != -1) {
-								// store ID of window/embedded surface
-								r.m_objectID = obj->m_id;
+							if (obj == nullptr) {// guard against dangling IDs
+								// Note: cannot use an assert/exception here, as hole ID is user-data from potentially corrupt data file
+//								(IBK::FormatString("Invalid hole ID #%1 in surface #%2")
+								continue;
 							}
-							else
-								r.m_objectID = s.m_id;
-							pickObject.m_candidates.push_back(r);
+
+							// hole must be visible to be checked
+							if (!obj->m_visible)
+								continue;
+							r.m_objectID = obj->m_id;
 						}
+						else {
+							r.m_objectID = s.m_id;
+						}
+						// register click candidate
+						pickObject.m_candidates.push_back(r);
 					}
 				}
 			}
@@ -3266,35 +3276,35 @@ void Scene::setDefaultViewState() {
 	vs.m_locks = SVViewState::NUM_L; // no axis is locked
 
 	switch (vs.m_propertyWidgetMode) {
-	case SVViewState::PM_AddGeometry:
-	case SVViewState::PM_EditGeometry:
-	case SVViewState::PM_SiteProperties:
-	case SVViewState::PM_BuildingProperties:
-	case SVViewState::PM_ResultsProperties:
-	case SVViewState::PM_NetworkProperties: {
-		// do we have any selected geometries
-		std::set<const VICUS::Object *> sel;
-		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-		if (sel.empty()) {
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+		case SVViewState::PM_AddGeometry:
+		case SVViewState::PM_EditGeometry:
+		case SVViewState::PM_SiteProperties:
+		case SVViewState::PM_BuildingProperties:
+		case SVViewState::PM_ResultsProperties:
+		case SVViewState::PM_NetworkProperties: {
+			// do we have any selected geometries
+			std::set<const VICUS::Object *> sel;
+			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+			if (sel.empty()) {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
+			else
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
 		}
-		else
+
+		case SVViewState::PM_VertexList:
+			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+
+		case SVViewState::PM_AddSubSurfaceGeometry:
 			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		SVViewStateHandler::instance().setViewState(vs);
-		return;
-	}
-
-	case SVViewState::PM_VertexList:
-		vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-		SVViewStateHandler::instance().setViewState(vs);
-		return;
-
-	case SVViewState::PM_AddSubSurfaceGeometry:
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		SVViewStateHandler::instance().setViewState(vs);
-		return;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
 	} // switch
 }
 
