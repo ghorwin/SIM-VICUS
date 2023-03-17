@@ -40,7 +40,6 @@ public:
 		std::vector<std::string> tokens;
 		IBK::explode(str, tokens, ';', IBK::EF_TrimTokens);
 		m_values.clear();
-		int count = -1;
 		for (std::string & colStr : tokens) {
 			// tokens might have leading/trailing \n, so we execute a trim again
 			IBK::trim(colStr, " \t\r\n");
@@ -56,11 +55,6 @@ public:
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Invalid data in table, in column data '%1'").arg(colStr), FUNC_ID);
 			}
-			// check for correct column count
-			if (count == -1)
-				count = valVector.size();
-			else if (count != (int)valVector.size())
-				throw IBK::Exception(IBK::FormatString("Mismatching number of values (=%1) in column '%2' compared to previous columns.").arg(valVector.size()).arg(parts[0]), FUNC_ID);
 			// check that column name isn't duplicated
 			unsigned int keyId = IBK::string2val<unsigned int>(parts[0]);
 			if (m_values.find(keyId) != m_values.end())
