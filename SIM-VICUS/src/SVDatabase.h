@@ -69,12 +69,6 @@ public:
 		NUM_DT // used for "all"
 	};
 
-	enum DatabaseDataTypes {
-		DDT_Text,
-		DDT_Number,
-		NUM_DDT
-	};
-
 	/*! Standard constructor.*/
 	SVDatabase();
 
