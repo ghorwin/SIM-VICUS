@@ -37,13 +37,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="labelNodeId">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_21">
         <property name="text">
@@ -52,7 +45,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEditNodeName"/>
+       <widget class="QLineEdit" name="lineEditNodeName">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_23">
@@ -65,6 +62,13 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaximumHeatingDemand">
         <property name="toolTip">
          <string>This is the maximum power of this sub station, used for pipe dimensioning</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditNodeId">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>

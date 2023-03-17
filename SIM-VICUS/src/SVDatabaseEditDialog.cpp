@@ -100,6 +100,10 @@
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
+#include "SVStyle.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
+
 #include "Vic3DSceneView.h"
 
 SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTableModel * tableModel,
@@ -171,6 +175,14 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_ui->tableView->setItemDelegate(dg);
 
 	m_ui->tableView->installEventFilter(this);
+
+	m_ui->frameBuildInDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_alternativeBackgroundBright.name()));
+	m_ui->frameBuildInDB->setFrameShape(QFrame::NoFrame);
+	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
+	m_ui->frameUserDB->setFrameShape(QFrame::NoFrame);
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVDatabaseEditDialog::onStyleChanged);
 }
 
 
@@ -385,6 +397,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
 			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
 			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
+			case SVDatabase::DT_AcousticTemplates:		break;
 			case SVDatabase::NUM_DT:; // just to make compiler happy
 		}
 
@@ -455,6 +468,12 @@ void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 		m_editWidget->updateInput(-1);
 	}
+}
+
+
+void SVDatabaseEditDialog::onStyleChanged() {
+	m_ui->frameBuildInDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_alternativeBackgroundBright.name()));
+	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
 }
 
 

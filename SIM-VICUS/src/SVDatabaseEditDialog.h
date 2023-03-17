@@ -98,6 +98,8 @@ private slots:
 
 	void on_pushButtonRemoveUnusedElements_clicked();
 
+	void onStyleChanged();
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.
