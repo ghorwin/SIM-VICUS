@@ -45,6 +45,8 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 	m_ui->setupUi(this);
 	m_ui->masterLayout->setMargin(4);
 
+	setMinimumWidth(500);
+
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Sub-Surface component identification name"));
 
@@ -186,7 +188,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 			}
 		}
 
-        m_ui->lineEditReductionFactor->setValue(win->m_para[VICUS::Window::P_ReductionFactor].get_value());
+		m_ui->lineEditReductionFactor->setValue(win->m_para[VICUS::Window::P_ReductionFactor].get_value());
 
 	}
 	else {
@@ -207,7 +209,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
 	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 
-    m_ui->lineEditReductionFactor->setEnabled(isEditable);
+	m_ui->lineEditReductionFactor->setEnabled(isEditable);
 }
 
 
