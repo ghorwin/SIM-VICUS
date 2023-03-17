@@ -46,6 +46,8 @@ SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->masterLayout->setMargin(4);
 
+	setMinimumWidth(500);
+
 	// style the table widget
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);

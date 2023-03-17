@@ -91,6 +91,8 @@ void SVDBMaterialEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel
 void SVDBMaterialEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
+	setMinimumWidth(500);
+
 	if (id == -1) {
 		// disable all controls
 		m_ui->tabWidgetThermal->setEnabled(false); // makes all inactive

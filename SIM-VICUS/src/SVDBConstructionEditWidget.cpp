@@ -116,7 +116,7 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	connect(m_ui->widgetConstructionView, SIGNAL(moveLayer(int,bool)), this, SLOT(constructionViewMove_layer(int,bool)));
 	connect(m_ui->widgetConstructionView, SIGNAL(removelayer(int)), this, SLOT(constructionViewRemove_layer(int)));
 
-	setMinimumWidth(800); /// TODO : this should be font-size dependent?
+	setMinimumWidth(500); /// TODO : this should be font-size dependent?
 
 	updateInput(-1); // update widget for status "nothing selected"
 }

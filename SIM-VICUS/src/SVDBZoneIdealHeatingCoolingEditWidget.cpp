@@ -45,6 +45,8 @@ SVDBZoneIdealHeatingCoolingEditWidget::SVDBZoneIdealHeatingCoolingEditWidget(QWi
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
 
+	setMinimumWidth(500);
+
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone ideal heating/cooling model name"));
 
