@@ -43,7 +43,7 @@ https://www.listserv.dfn.de/sympa/info/sim-vicus
 
 ## Developer Info
 
-Every developer has to read the [developer documentation](https://ghorwin.github.io/SIM-VICUS/Developer-Documentation)
+Every developer has to read the [developer documentation](https://ghorwin.github.io/SIM-VICUS/Developer-Documentation) carefully!
 
 ### Directory Structure
 
