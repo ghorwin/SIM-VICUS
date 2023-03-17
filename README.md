@@ -2,7 +2,8 @@
 
 SIM-VICUS is a 3D modeling environment for building and district networks and an innovative dynamic simulation engine (NANDRAD). https://sim-vicus.de hosts the official webpage with user-centered information. Development-related information is stored and handled on github.
 
-![SIM-VICUS_fristfoerster](https://user-images.githubusercontent.com/6892676/131216469-553f0b81-d61a-470d-ae02-194ab0d82641.png)
+![SIM-VICUS_SAB](https://www.sim-vicus.de/wp-content/uploads/2023/03/grafik-2048x1169.png)
+
 
 
 ## Quality Assurance
@@ -72,6 +73,7 @@ NANDRAD Solver and SIM-VICUS use a bunch of common libraries from IBK and extern
 
 * **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
 * **clipper** - implements robust clipping calculation for two-dimensional polygons
+* **RoomClipper** - implements robust clipping and connection generation via component instances of VICUS Rooms and their Surfaces
 * **DataIO** - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
 * **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
 * **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching
