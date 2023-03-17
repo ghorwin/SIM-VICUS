@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1104</width>
-    <height>450</height>
+    <width>444</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,184 +19,191 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>450</height>
+    <height>440</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Construction editor</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0">
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Construction description</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
-      <item row="0" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_3">
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Construction description</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>Name:</string>
+           <string>Construction usage:</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Insulation type:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Main/load bearing material:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboBoxConstructionUsage"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="comboBoxMaterialKind"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="comboBoxInsulationKind"/>
         </item>
        </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Construction usage:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxConstructionUsage"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Insulation type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxInsulationKind"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Main/load bearing material:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBoxMaterialKind"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Material layers</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Material layers</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLabel" name="label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Number of layers:</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Number of layers:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBoxLayerCount">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>15</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxLayerCount">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>15</number>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="labelUValue">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;U-Value &lt;span style=&quot; font-size:7pt;&quot;&gt;(assuming standard heat transfer coefficients)&lt;/span&gt;:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEditUValue">
+            <property name="toolTip">
+             <string>The U-value is calculated using standard inside/outside heat transfer surface resistances of 0.13 and 0.04 W/m2K.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelUValueUnit">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;W/m&lt;span style=&quot; vertical-align:super;&quot;&gt;2&lt;/span&gt;K&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <spacer name="horizontalSpacer_2">
+         <widget class="Line" name="line">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelUValue">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;U-Value (assuming standard heat transfer coefficients):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEditUValue">
-          <property name="toolTip">
-           <string>The U-value is calculated using standard inside/outside heat transfer surface resistances of 0.13 and 0.04 W/m2K.</string>
+         <widget class="QSplitter" name="splitter">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelUValueUnit">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;W/m&lt;span style=&quot; vertical-align:super;&quot;&gt;2&lt;/span&gt;K&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QTableWidget" name="tableWidget">
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-        </item>
-        <item>
-         <widget class="QtExt::ConstructionViewWidget" name="widgetConstructionView" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>400</width>
-            <height>0</height>
-           </size>
-          </property>
+          <widget class="QTableWidget" name="tableWidget">
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+          </widget>
+          <widget class="QtExt::ConstructionViewWidget" name="widgetConstructionView" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
-    </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
