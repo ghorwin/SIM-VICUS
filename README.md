@@ -32,6 +32,7 @@ All extensive documentation is written in AsciiDoctor format inside the doc dire
 Source code documentation is done with Doxygen, which generates its documentation for the _entire_ source code and stores
 the output in `docs/api`. For this purpose run the `NandradSolver.doxyfile` in the `NandradSolver/doc` directory through Doxygen.
 
+General documentation can be also found inside the [overview](https://ghorwin.github.io/SIM-VICUS/).
 
 ## Mailing List 
 
