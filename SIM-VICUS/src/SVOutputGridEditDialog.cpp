@@ -282,22 +282,3 @@ void SVOutputGridEditDialog::showError(int row, int col, const QString & text) c
 	QMessageBox::critical(const_cast<SVOutputGridEditDialog*>(this), tr("Invalid input"), text);
 }
 
-
-void SVOutputGridEditDialog::on_tableWidget_cellChanged(int row, int column) {
-	// TODO : fix
-
-//	IBK::Parameter p;
-//	// if a valid start time has been entered and the previous interval's end edit is empty, update
-//	// the "autotext" properties
-//	if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "start", p) && row == 0) {
-//		if (column > 0 && m_ui->tableWidget->item(1,column-1)->text().isEmpty()) {
-//			QLineEdit * le = qobject_cast<QLineEdit *>(m_ui->tableWidget->cellWidget(2,column-1));
-//			if (le == nullptr) {
-//				le = new QLineEdit(m_ui->tableWidget);
-//				m_ui->tableWidget->setCellWidget(2,column-1,le);
-//			}
-//			le->setPlaceholderText(QString::fromStdString(p.toString()));
-//		}
-//	}
-
-}

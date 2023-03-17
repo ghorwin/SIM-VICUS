@@ -38,9 +38,6 @@ protected:
 private slots:
 	void on_spinBoxIntervalCount_valueChanged(int arg1);
 
-	/*! Triggered on any cell value change. */
-	void on_tableWidget_cellChanged(int row, int column);
-
 private:
 	/*! Populates interval table with content of interval vector in either m_schedule or m_grid, depending
 		on type of this dialog.
