@@ -60,6 +60,9 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
+	m_ui->tabLCA->setEnabled(false);
+	m_ui->tabSurface->setEnabled(false);
+
 	updateInput(-1);
 }
 
