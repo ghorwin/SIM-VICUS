@@ -69,10 +69,12 @@ public:
 				pressed, the function returns the ID of the selected item. Otherwise, if the
 				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
-	unsigned int select(unsigned int initialId);
+	unsigned int select(unsigned int initialId, bool resetModel = true, QString filterText = "", int filterColumn = -1);
 
 	/*! Event filter for resizing events in order to resize row to its contents. */
 	bool eventFilter(QObject * obj, QEvent * event) override;
+
+	SVAbstractDatabaseTableModel * dbModel() const;
 
 private slots:
 	void on_pushButtonSelect_clicked();
@@ -102,7 +104,9 @@ private slots:
 	
 	void on_toolButtonApplyFilter_clicked();
 
-	void on_comboBoxColumn_currentIndexChanged(int index);
+	void on_comboBoxColumn_currentIndexChanged(int /*index*/);
+
+	void on_lineEditFilter_returnPressed();
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.
@@ -129,7 +133,6 @@ private:
 	static SVDatabaseEditDialog * createSurfaceHeatingSystemEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createVentilationNaturalEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSupplySystemsEditDialog(QWidget * parent);
-
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createFluidEditDialog(QWidget * parent);
@@ -146,8 +149,6 @@ private:
 	/*! The edit widget (owned). */
 	SVAbstractDatabaseEditWidget	*m_editWidget	= nullptr;
 	QWidget							*m_editWidgetContainerWidget = nullptr;
-
-	int								m_nameColumnIdx = -2;
 
 	QString							m_currentFilter = "";
 

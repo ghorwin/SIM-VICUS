@@ -24,6 +24,7 @@
 */
 
 #include "SVDatabaseEditDialog.h"
+#include "SVPreferencesDialog.h"
 #include "ui_SVDatabaseEditDialog.h"
 
 #include <QItemSelectionModel>
@@ -36,6 +37,7 @@
 
 #include "SVSettings.h"
 #include "SVStyle.h"
+#include "SVPreferencesPageStyle.h"
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
 #include "SVMainWindow.h"
@@ -99,10 +101,6 @@
 
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
-
-#include "SVStyle.h"
-#include "SVPreferencesDialog.h"
-#include "SVPreferencesPageStyle.h"
 
 #include "Vic3DSceneView.h"
 
@@ -181,8 +179,8 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
 	m_ui->frameUserDB->setFrameShape(QFrame::NoFrame);
 
-	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-			this, &SVDatabaseEditDialog::onStyleChanged);
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged, this, &SVDatabaseEditDialog::onStyleChanged);
+
 	for(unsigned int i=0; i<m_dbModel->columnCount(); ++i){
 		QString name = m_dbModel->headerData(i, Qt::Horizontal).toString();
 		if(name == "") continue; // Skip valid column
@@ -226,18 +224,25 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 }
 
 
-unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
+unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetModel,  QString filterText, int filterColumn) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
-	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	if(resetModel)
+		m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
+
+	if(filterColumn > 1 && !filterText.isEmpty()) {
+		m_currentFilter = filterText;
+		m_proxyModel->setFilterKeyColumn(filterColumn);
+		m_proxyModel->setFilterWildcard(filterText);
+	}
 
 	// update "isRferenced" property of all elements
 	if (SVProjectHandler::instance().isValid()){
@@ -256,6 +261,9 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
 	}
+
+	m_proxyModel->setFilterWildcard("");
+	m_currentFilter = ""; // Reset filter
 
 	// nothing selected/dialog aborted
 	return initialId;
@@ -767,17 +775,24 @@ SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
 }
 
 
-
 void SVDatabaseEditDialog::on_toolButtonApplyFilter_clicked() {
 	QString filter = m_ui->lineEditFilter->text();
 
+	// Filter Column
 	int filterCol = m_ui->comboBoxColumn->currentData().toInt();
 
+	// Set filter
 	m_proxyModel->setFilterWildcard(filter);
 	m_proxyModel->setFilterKeyColumn(filterCol);
+	m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
-void SVDatabaseEditDialog::on_comboBoxColumn_currentIndexChanged(int index) {
+void SVDatabaseEditDialog::on_comboBoxColumn_currentIndexChanged(int /*index*/) {
 	m_proxyModel->setFilterWildcard("");
+}
+
+
+void SVDatabaseEditDialog::on_lineEditFilter_returnPressed() {
+	on_toolButtonApplyFilter_clicked();
 }
 
