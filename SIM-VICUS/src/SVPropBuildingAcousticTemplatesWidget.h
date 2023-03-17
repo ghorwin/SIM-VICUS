@@ -22,8 +22,8 @@ public:
 	explicit SVPropBuildingAcousticTemplatesWidget(QWidget *parent = nullptr);
 	~SVPropBuildingAcousticTemplatesWidget();
 
-/*! Updates user interface. */
-void updateUi();
+	/*! Updates user interface. */
+	void updateUi();
 
 private slots:
 	void on_tableWidgetAcousticTemplates_itemSelectionChanged();

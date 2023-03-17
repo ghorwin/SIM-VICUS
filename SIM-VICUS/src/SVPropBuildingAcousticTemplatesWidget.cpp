@@ -87,7 +87,7 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 
 		QTableWidgetItem * item = new QTableWidgetItem();
 		item->setBackground(it->second.m_color);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setFlags(Qt::ItemIsEnabled);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
