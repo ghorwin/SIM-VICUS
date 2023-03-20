@@ -1059,7 +1059,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// These ids are kept in the header of the shading file for later replacement of the ids.
 	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
 	std::vector<RoomMapping>	roomMappings;
-	std::vector<ComponentInstanceMapping>	componentInstanceMappings;
+	std::map<unsigned int, unsigned int>	componentInstanceMappings;
 
 	try {
 		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),

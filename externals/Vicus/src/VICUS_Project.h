@@ -345,13 +345,6 @@ public:
 
 
 
-	/*! Mapping element holds the component instace data for later export. */
-	struct ComponentInstanceMapping {
-		unsigned int							m_idComponentInstanceVicus;
-		unsigned int							m_idComponentInstanceNandrad;
-		// TODO Dirk
-	};
-
 private:
 
 
@@ -360,7 +353,7 @@ private:
 	void generateBuildingProjectData(const QString &modelName,
 									 NANDRAD::Project & p, QStringList & errorStack,
 									 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-									 std::vector<RoomMapping> &roomMappings,  std::vector<ComponentInstanceMapping>	componentInstanceMappings)const;
+									 std::vector<RoomMapping> &roomMappings,  std::map<unsigned int, unsigned int> componentInstanceMapping)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
@@ -393,7 +386,8 @@ private:
 	*/
 	void addAndCheckForUniqueness(VICUS::Object* o);
 
-	void addViewFactorsToNandradZones(NANDRAD::Project & p, std::vector<Project::RoomMapping> roomMappings, std::vector<ComponentInstanceMapping> componentInstanceMappings, std::map<unsigned int, unsigned int> subSurfaceMapping, QStringList & errorStack) const;
+	void addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vector<Project::RoomMapping> &roomMappings, const std::map<unsigned int, unsigned int> &componentInstanceMapping,
+									  std::map<unsigned int, unsigned int> &subSurfaceMapping, QStringList & errorStack) const;
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().
