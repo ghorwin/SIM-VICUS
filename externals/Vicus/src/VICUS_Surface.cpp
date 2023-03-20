@@ -80,26 +80,6 @@ void Surface::readXML(const TiXmlElement * element) {
 			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 			break;
 		}
-		/*if(cName == "ViewFactors") {
-			const TiXmlElement * cc = c->FirstChildElement();
-			while (cc) {
-				const std::string & ccName = cc->ValueStr();
-				if(ccName == "ViewFactor"){
-					const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(cc, "id");
-					if(attrib == nullptr){
-						throw IBK::Exception("Error reading ViewFactor tag. Has no id attribute!", FUNC_ID);
-					}
-					unsigned int id = IBK::string2val<unsigned int>(attrib->ValueStr());
-					double viewFactor = IBK::string2val<double>(cc->FirstChild()->ValueStr());
-					m_viewFactors[id] = viewFactor;
-				} else {
-					throw IBK::Exception("Error reading ViewFactors tag. Should only contain ViewFactor Tags", FUNC_ID);
-				}
-				cc = cc->NextSiblingElement();
-			}
-			// remove ViewFactors element from parent, to avoid getting spammed with "unknown ViewFactors" warning
-			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
-		}*/
 		c = c->NextSiblingElement();
 	}
 
