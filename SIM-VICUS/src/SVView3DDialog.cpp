@@ -393,13 +393,15 @@ void SVView3DDialog::exportView3d() {
 			QString fullText;
 			std::string file = SVSettings::instance().m_installDir.toStdString() + "/View3D.log";
 
-			std::ofstream log;
-			log.open(file);
-			std::stringstream ss;
-			ss << log.rdbuf();
+			std::vector<std::string> lines;
+			IBK::FileReader::readAll(IBK::Path(file), lines, std::vector<std::string>());
+
+			std::string log;
+			for(std::string &str : lines)
+				log += str + "\n";
 
 			QMessageBox box(this);
-			box.setDetailedText(QString::fromStdString(ss.str()));
+			box.setDetailedText(QString::fromStdString(log));
 			box.setIcon(QMessageBox::Critical);
 			box.setText(tr("Error running View3D program '%1'").arg(SVSettings::view3dExecutable()));
 			box.setWindowTitle(tr("View-factor generation error"));
