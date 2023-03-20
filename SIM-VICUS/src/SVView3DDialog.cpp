@@ -267,16 +267,28 @@ void SVView3DDialog::exportView3d() {
 
 	// we store view3D files within our project's base directory
 	QString projectBasePath = QFileInfo(SVProjectHandler::instance().projectFile()).absoluteFilePath();
+
+
+
 	// remove extension
 	int pos = projectBasePath.lastIndexOf(".");
 	if (pos != -1)
 		projectBasePath = projectBasePath.left(pos);
 	QString view3dPath = projectBasePath + "/view3D/";
+	QString view3dBinPath = view3dPath + "View3D";
+
+#ifdef _WIN32
+	view3dBinPath += ".exe";
+#endif // _WIN32
+
 
 	QDir dirView3d (view3dPath);
 
 	if( !dirView3d.exists() )
 		dirView3d.mkpath(view3dPath); // create base directory and view3D subdirectory as well
+
+	// Copy binary
+	QFile::copy(SVSettings::view3dExecutable(), view3dBinPath);
 
 	// we generate a view3D input file for each room, run the solver and parse the results
 	for ( std::map<unsigned int, view3dRoom>::iterator itRoom=m_vicusRoomIdToView3dRoom.begin();
@@ -387,11 +399,15 @@ void SVView3DDialog::exportView3d() {
 		// UI. If this becomes an issue, we need to write it multi-threaded.
 		IBK::IBK_Message(IBK::FormatString("Running View3D for room '%1' [#%2].\n").arg(room.m_displayName.toStdString()).arg(room.m_roomId),
 						 IBK::MSG_PROGRESS, FUNC_ID);
-		int returnCode = QProcess::execute(SVSettings::view3dExecutable(), commandLineArgs);
 
-		if (returnCode != 0) {
-			QString fullText;
-			std::string file = SVSettings::instance().m_installDir.toStdString() + "/View3D.log";
+		QProcess p;
+		p.setWorkingDirectory(view3dPath);
+		p.start(view3dBinPath, commandLineArgs);
+
+		p.waitForFinished();
+
+		if (p.exitStatus() == QProcess::CrashExit) {
+			std::string file = view3dPath.toStdString() + "View3D.log";
 
 			std::vector<std::string> lines;
 			IBK::FileReader::readAll(IBK::Path(file), lines, std::vector<std::string>());
@@ -400,11 +416,12 @@ void SVView3DDialog::exportView3d() {
 			for(std::string &str : lines)
 				log += str + "\n";
 
-			QMessageBox box(this);
+			QMessageBox box(&SVMainWindow::instance());
 			box.setDetailedText(QString::fromStdString(log));
 			box.setIcon(QMessageBox::Critical);
 			box.setText(tr("Error running View3D program '%1'").arg(SVSettings::view3dExecutable()));
 			box.setWindowTitle(tr("View-factor generation error"));
+			box.setFixedHeight(600);
 			box.exec();
 
 			return; // abort export
