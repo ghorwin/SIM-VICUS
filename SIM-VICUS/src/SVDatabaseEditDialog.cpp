@@ -34,6 +34,7 @@
 #include <QGroupBox>
 #include <QTimer>
 #include <QSplitter>
+#include <QScreen>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -519,7 +520,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 		new SVDBMaterialEditWidget(parent),
 		tr("Material Database"), tr("Material properties"), true
 	);
-	dlg->resize(1400,600);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -530,7 +531,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createConstructionEditDialog(QWidge
 		new SVDBConstructionEditWidget(parent),
 		tr("Construction Database"), QString(), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -541,7 +542,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 		new SVDBComponentEditWidget(parent),
 		tr("Component Database"), tr("Component properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -552,7 +553,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createSubSurfaceComponentEditDialog
 		new SVDBSubSurfaceComponentEditWidget(parent),
 		tr("Sub-Surface Component Database"), tr("Sub-Surface properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -563,7 +564,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowEditDialog(QWidget * pa
 		new SVDBWindowEditWidget(parent),
 		tr("Window Database"), tr("Window properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -573,7 +574,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowGlazingSystemEditDialog
 		new SVDBWindowGlazingSystemEditWidget(parent),
 		tr("Window glazing system Database"), tr("Window glazing system properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -583,7 +584,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(
 		new SVDBBoundaryConditionEditWidget(parent),
 		tr("Boundary Condition Database"), tr("Boundary condition properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -594,7 +595,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 		new SVDBScheduleEditWidget(parent),
 		tr("Schedule Database"), tr("Schedule properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -629,7 +630,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 		default:
 			Q_ASSERT(false);
 	}
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -639,7 +640,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlThermostatEditDialo
 		new SVDBZoneControlThermostatEditWidget(parent),
 		tr("Zone Control Thermostat Database"), tr("Zone control thermostat properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -649,7 +650,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlVentilationNaturalE
 		new SVDBZoneControlVentilationNaturalEditWidget(parent),
 		tr("Zone Control Natural Ventilation Database"), tr("Zone Control Natural Ventilation properties"), true
 		);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -659,7 +660,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlShadingEditDialog(Q
 		new SVDBZoneControlShadingEditWidget(parent),
 		tr("Zone Control Shading Database"), tr("Zone Control Shading properties"), true
 		);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -669,7 +670,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneIdealHeatingCoolingEditDia
 										  new SVDBZoneIdealHeatingCoolingEditWidget(parent),
 										  tr("Zone Ideal Heating/Cooling Database"), tr("Zone Ideal Heating/Cooling properties"), true
 										  );
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -679,7 +680,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createVentilationNaturalEditDialog(Q
 		new SVDBVentilationNaturalEditWidget(parent),
 		tr("Natural Ventilation Database"), tr("Natural Ventilation properties"), true
 		);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -689,7 +690,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createInfiltrationEditDialog(QWidget
 		new SVDBInfiltrationEditWidget(parent),
 		tr("Infiltration Database"), tr("Infiltration properties"), true
 		);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -700,7 +701,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog
 										  tr("Surface Heating/Cooling System Database"),
 														  tr("Surface Heating/Cooling System properties"), true
 										  );
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -711,7 +712,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createSupplySystemsEditDialog(QWidg
 		new SVDBSupplySystemEditWidget(parent),
 		tr("Supply System Database"), tr("Supply system properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -722,7 +723,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QW
 		new SVDBNetworkComponentEditWidget(parent),
 		tr("Network Component Database"), tr("Network Component Properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -733,7 +734,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 		new SVDBPipeEditWidget(parent),
 		tr("Network Pipes Database"), tr("Network Pipes Properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -744,7 +745,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *paren
 		new SVDBNetworkFluidEditWidget(parent),
 		tr("Network Fluids Database"), tr("Network Fluids Properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -755,7 +756,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createNetworkControllerEditDialog(QW
 		new SVDBNetworkControllerEditWidget(parent),
 		tr("Network Controllers Database"), tr("Network Controllers Properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -766,9 +767,18 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 		new SVDBSubNetworkEditWidget(parent),
 		tr("Sub Networks Database"), tr("Sub Networks Properties"), true
 	);
-	dlg->resize(1800,900);
+	resizeDBDialog(dlg);
 	return dlg;
 }
+
+
+void SVDatabaseEditDialog::resizeDBDialog(QDialog * dlg) {
+	QScreen *screen = QGuiApplication::primaryScreen();
+	Q_ASSERT(screen!=nullptr);
+	QRect rect = screen->geometry();
+	dlg->resize(int(0.8*rect.width()), int(0.8*rect.height()));
+}
+
 
 SVAbstractDatabaseTableModel * SVDatabaseEditDialog::dbModel() const {
 	return m_dbModel;

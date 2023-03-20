@@ -101,7 +101,7 @@ private slots:
 	void on_pushButtonRemoveUnusedElements_clicked();
 
 	void onStyleChanged();
-	
+
 	void on_toolButtonApplyFilter_clicked();
 
 	void on_comboBoxColumn_currentIndexChanged(int /*index*/);
@@ -138,6 +138,8 @@ private:
 	static SVDatabaseEditDialog * createFluidEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createNetworkControllerEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSubNetworkEditDialog(QWidget * parent);
+
+	static void resizeDBDialog(QDialog *dlg);
 
 
 	Ui::SVDatabaseEditDialog *m_ui;
