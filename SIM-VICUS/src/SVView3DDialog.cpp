@@ -390,7 +390,21 @@ void SVView3DDialog::exportView3d() {
 		int returnCode = QProcess::execute(SVSettings::view3dExecutable(), commandLineArgs);
 
 		if (returnCode != 0) {
-			QMessageBox::critical(this, QString(), tr("Error running View3D program '%1'").arg(SVSettings::view3dExecutable()));
+			QString fullText;
+			std::string file = SVSettings::instance().m_installDir.toStdString() + "/View3D.log";
+
+			std::ofstream log;
+			log.open(file);
+			std::stringstream ss;
+			ss << log.rdbuf();
+
+			QMessageBox box(this);
+			box.setDetailedText(QString::fromStdString(ss.str()));
+			box.setIcon(QMessageBox::Critical);
+			box.setText(tr("Error running View3D program '%1'").arg(SVSettings::view3dExecutable()));
+			box.setWindowTitle(tr("View-factor generation error"));
+			box.exec();
+
 			return; // abort export
 		}
 
