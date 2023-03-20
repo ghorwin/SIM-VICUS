@@ -47,6 +47,7 @@
 #include <QTranslator>
 #include <QProcess>
 #include <QProgressDialog>
+#include <QPolygonF>
 
 #include <fstream>
 
@@ -101,9 +102,9 @@ void SVView3DDialog::exportView3d() {
 
 
 	//show a progressDialog
-	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 1000, numberOfRooms, &SVMainWindow::instance());
+	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, &SVMainWindow::instance());
 	dlg.setWindowModality(Qt::WindowModal);
-	dlg.setMinimumDuration(0);
+	dlg.setMinimumDuration(1000);
 
 	// this value will be changed and set to the dialog
 	int progressCount = 0;
