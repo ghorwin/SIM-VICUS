@@ -600,7 +600,7 @@ int ConstructionStatesModel::update(const double * y) {
 			}
 			// emitted long wave radiation to other construction instance
 			else {
-				IBK_ASSERT(m_con->m_interfaceB.m_viewFactors.size() == m_con->m_interfaceB.m_connectedInterfaces.size());
+				IBK_ASSERT(m_con->m_interfaceB.m_viewFactors.size() == m_con->m_interfaceB.m_connectedInterfaces.size() + m_con->m_interfaceB.m_connectedWindows.size());
 				double sourceEps = m_con->m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 				double TsB2 = m_TsB * m_TsB;
 				double area = m_con->m_netHeatTransferArea;
