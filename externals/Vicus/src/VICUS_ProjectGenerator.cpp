@@ -809,11 +809,14 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				if(compInstId1 == compInstId2)
 					continue;
 
-				auto it = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
-				if(it == surfaces[i].m_viewFactors.m_values.end() && it->second.empty())
+				if(surfaces[i].m_viewFactors.m_values.empty())
 					continue;
 
-				double vF = it->second[0];
+				std::map<unsigned int, std::vector<double>>::const_iterator itSurf = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
+				if(itSurf == surfaces[i].m_viewFactors.m_values.end() && itSurf->second.empty())
+					continue;
+
+				double vF = itSurf->second[0];
 
 				if(componentInstanceMapping.find(compInstId2) == componentInstanceMapping.end())
 					continue; // Should not happen
@@ -831,21 +834,27 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 					for(unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
 						const VICUS::SubSurface &subSurf2 = surfaces[i].subSurfaces()[k];
 
-						auto it = subSurf1.m_viewFactors.m_values.find(subSurf2.m_id);
-						if(it == subSurf1.m_viewFactors.m_values.end() && it->second.empty())
+						if(subSurf1.m_viewFactors.m_values.empty())
 							continue;
 
-						double vFSubSurf2 = it->second[0];
+						std::map<unsigned int, std::vector<double>>::const_iterator itSubSurf2 = subSurf1.m_viewFactors.m_values.find(subSurf2.m_id);
+						if(itSubSurf2 == subSurf1.m_viewFactors.m_values.end() && itSubSurf2->second.empty())
+							continue;
+
+						double vFSubSurf2 = itSubSurf2->second[0];
 
 						NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(subSurfaceMapping[subSurf1.m_id], subSurfaceMapping[subSurf2.m_id]);
 						z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf2));
 					}
 
-					auto it = surfaces[i].m_viewFactors.m_values.find(subSurf1.m_id);
-					if(it == surfaces[i].m_viewFactors.m_values.end() && it->second.empty())
+					if(surfaces[i].m_viewFactors.m_values.empty())
 						continue;
 
-					double vFSubSurf1 = it->second[0];
+					std::map<unsigned int, std::vector<double>>::const_iterator  itSubSurf1 = surfaces[i].m_viewFactors.m_values.find(subSurf1.m_id);
+					if(itSubSurf1 == surfaces[i].m_viewFactors.m_values.end() && itSubSurf1->second.empty())
+						continue;
+
+					double vFSubSurf1 = itSubSurf1->second[0];
 
 					NANDRAD::Zone::viewFactorPair idPair = std::pair<unsigned int, unsigned int>(constInstId1Nandrad, subSurfaceMapping[subSurf1.m_id]);
 					z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair, vFSubSurf1));
