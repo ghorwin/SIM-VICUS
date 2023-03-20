@@ -91,11 +91,23 @@ void Zone::readXML(const TiXmlElement * element) {
 				IBK::explode(content, viewFactorTripels, ';', false);
 
 				for(std::string tripel : viewFactorTripels){
+					IBK::trim(tripel, "\t\r\n");
+					if(tripel.empty())
+						continue;
+
 					std::vector<std::string> tokens;
 					IBK::explode(tripel, tokens, ':', false);
 
 					std::vector<std::string> ids;
 					IBK::explode(tokens[0], ids, ' ', true);
+
+					std::vector<unsigned int> intIds;
+
+					intIds.push_back(IBK::string2val<unsigned int>(ids[0]));
+					intIds.push_back(IBK::string2val<unsigned int>(ids[1]));
+
+					if(intIds[0] == intIds[1])
+						continue;
 
 					if(tokens.size() != 2 || ids.size() != 2){
 						throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -103,8 +115,7 @@ void Zone::readXML(const TiXmlElement * element) {
 							),FUNC_ID);
 					}
 					double viewFactor = IBK::string2val<double>(tokens[1]);
-					viewFactorPair idPair(IBK::string2val<unsigned int>(ids[0]),
-										IBK::string2val<unsigned int>(ids[1]));
+					viewFactorPair idPair(intIds[0],intIds[1]);
 					m_viewFactors.push_back(std::make_pair
 						(idPair, viewFactor));
 				}
