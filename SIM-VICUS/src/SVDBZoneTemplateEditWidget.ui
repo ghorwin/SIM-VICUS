@@ -79,6 +79,10 @@
           <property name="text">
            <string>Electric Equipment</string>
           </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -88,6 +92,10 @@
          <widget class="QPushButton" name="pushButtonAddPersonLoad">
           <property name="text">
            <string>Person</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -102,6 +110,10 @@
           <property name="text">
            <string>Other</string>
           </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -111,6 +123,10 @@
          <widget class="QPushButton" name="pushButtonAddLightLoad">
           <property name="text">
            <string>Lights</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -131,6 +147,10 @@
           <property name="text">
            <string>Infiltration</string>
           </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -140,6 +160,10 @@
          <widget class="QPushButton" name="pushButtonAddVentilationNatural">
           <property name="text">
            <string>Natural Ventilation</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -173,6 +197,10 @@
           <property name="text">
            <string>Thermostat</string>
           </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -182,6 +210,10 @@
          <widget class="QPushButton" name="pushButtonAddShading">
           <property name="text">
            <string>Shading</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -195,6 +227,10 @@
          <widget class="QPushButton" name="pushButtonAddVentilationNaturalControl">
           <property name="text">
            <string>Natural Ventilation</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -227,6 +263,10 @@
          <widget class="QPushButton" name="pushButtonAddIdealHeatingCooling">
           <property name="text">
            <string>Ideal Heating/Cooling</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
