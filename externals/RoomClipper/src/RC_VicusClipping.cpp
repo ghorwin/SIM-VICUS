@@ -766,7 +766,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 		// get old construction instance properties -> component id
 		// qDebug() << "Surface " << surfA->m_displayName << " is cut.";
-
+		bool foundComponentInstance = false;
 		if(m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end()){
 			for(const VICUS::ComponentInstance &ciObj : m_vicusCompInstances){
 				if(ciObj.m_idSideASurface == surfA->m_id || ciObj.m_idSideBSurface == surfA->m_id){
@@ -774,20 +774,30 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					unsigned int idA = ciObj.m_idSideASurface;
 					unsigned int idB = ciObj.m_idSideBSurface;
 
-					if(idB != VICUS::INVALID_ID) {
+					if(idA != VICUS::INVALID_ID) {
+						if(m_compInstOriginSurfId.find(idA) != m_compInstOriginSurfId.end())
+							handledSurfaces.insert(m_compInstOriginSurfId[idA]);
+						else
+							handledSurfaces.insert(idA);
+					}
+
+					if (idB != VICUS::INVALID_ID) {
 						if(m_compInstOriginSurfId.find(idB) != m_compInstOriginSurfId.end())
 							handledSurfaces.insert(m_compInstOriginSurfId[idB]);
 						else
 							handledSurfaces.insert(idB);
 					}
-
-					handledSurfaces.insert(idA);
+					const_cast<VICUS::ComponentInstance &>(ciObj).m_id = nextUnusedId++; // update Id
 					cis.push_back(ciObj);
+					foundComponentInstance = true;
 					break;
 				}
 			}
 			// continue;
 		}
+
+		if(foundComponentInstance)
+			continue;
 
 		unsigned int compId = findComponentInstanceForSurface(m_compInstOriginSurfId[surfA->m_id]);
 		VICUS::ComponentInstance ci(nextUnusedId++, compId, surfA->m_id, VICUS::INVALID_ID);
