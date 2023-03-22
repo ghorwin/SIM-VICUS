@@ -35,6 +35,8 @@ private slots:
 
     void on_comboBoxHighlightingMode_currentIndexChanged(int);
 
+	void on_pushButtonClean_clicked();
+
 signals:
     void updatedHighlightingMode(Vic3D::Scene::HighlightingMode mode);
 
