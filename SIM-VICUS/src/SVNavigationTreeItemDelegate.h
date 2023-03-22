@@ -45,6 +45,7 @@ public:
 		TT_BuildingLevel,
 		TT_Room,
 		TT_Surface,
+		TT_Subsurface,
 		NUM_TT
 	};
 

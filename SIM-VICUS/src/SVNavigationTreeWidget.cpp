@@ -100,6 +100,7 @@ void SVNavigationTreeWidget::addChildSurface(QTreeWidgetItem *item, const VICUS:
 			subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, subSurf->m_id);
 			subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, subSurf->m_visible);
 			subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, subSurf->m_selected);
+			subsurface->setData(0, SVNavigationTreeItemDelegate::ItemType, SVNavigationTreeItemDelegate::TT_Subsurface);
 			if (!subSurf->m_polygon2D.isValid()) {
 				subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
 				subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
