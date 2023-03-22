@@ -333,9 +333,13 @@ public:
 
 	/*! Mapping element holds the room data for later export. */
 	struct RoomMapping {
+		unsigned int							m_idBuildingVicus;
+		unsigned int							m_idBuildingLevelVicus;
 		unsigned int							m_idRoomVicus;
 		unsigned int							m_idRoomNandrad;
 		unsigned int							m_idZoneTemplateVicus;
+		std::string								m_nameBuildingVicus;
+		std::string								m_nameBuildingLevelVicus;
 		std::string								m_nameRoomVicus;
 		std::string								m_nameRoomNandrad;
 		std::string								m_zonetemplateName;

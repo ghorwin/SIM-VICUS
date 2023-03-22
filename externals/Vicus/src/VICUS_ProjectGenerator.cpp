@@ -735,14 +735,14 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 		return false;
 	}
 
-	out << "VICUS room id\tNANDRAD room id\tVICUS room name\tNANDRAD room name\tzone template id\tzone template name" ;
+	out << "VICUS room id\tNANDRAD room id\tVICUS building name\tVICUS building level name\tVICUS room name\tNANDRAD room name\tzone template id\tzone template name" ;
 
 	if(addFloorAreaAndVolume)
 		out <<  "\tFloor area [m2]\tVolume [m3]";
 
 	out << std::endl;
 	for(const auto &m : mappings){
-		out << m.m_idRoomVicus << "\t" << m.m_idRoomNandrad << "\t" << m.m_nameRoomVicus << "\t" << m.m_nameRoomNandrad << "\t";
+		out << m.m_idRoomVicus << "\t" << m.m_idRoomNandrad << "\t" << m.m_nameBuildingVicus << "\t" << m.m_nameBuildingLevelVicus << "\t" << m.m_nameRoomVicus << "\t" << m.m_nameRoomNandrad << "\t";
 		if(m.m_idZoneTemplateVicus){
 			out << m.m_idZoneTemplateVicus << "\t";
 			out << m.m_zonetemplateName;
@@ -1105,11 +1105,15 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				QString name = QString("%2.%3.%4(ID=%1)").arg(r.m_id).arg(buildingName, buildingLevelName, r.m_displayName);
 
 				RoomMapping mapEle;
+				mapEle.m_idBuildingVicus = b.m_id;
+				mapEle.m_idBuildingLevelVicus = bl.m_id;
 				mapEle.m_idRoomVicus = r.m_id;
 				mapEle.m_idRoomNandrad = r.m_id;		// attention NANDRAD id is set in next loop but is the same
 				mapEle.m_idZoneTemplateVicus = INVALID_ID;
 				mapEle.m_nameRoomNandrad = name.toStdString();
 				mapEle.m_nameRoomVicus = r.m_displayName.toStdString();
+				mapEle.m_nameBuildingVicus = b.m_displayName.toStdString();
+				mapEle.m_nameBuildingLevelVicus = bl.m_displayName.toStdString();
 
 				if(!r.m_para[VICUS::Room::P_Area].empty())
 					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].value; // in m2
