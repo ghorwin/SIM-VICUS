@@ -361,7 +361,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/acoustic.png</normaloff>:/gfx/actions/acoustic.png</iconset>
+     <normaloff>:/gfx/actions/sound-wave.png</normaloff>:/gfx/actions/sound-wave.png</iconset>
    </property>
    <property name="text">
     <string>Acoustic parametrization</string>

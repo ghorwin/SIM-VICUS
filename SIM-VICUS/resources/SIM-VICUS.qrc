@@ -186,7 +186,7 @@
         <file>gfx/actions/colormap_turbo.png</file>
         <file>gfx/actions/colormap_spectral.png</file>
         <file>gfx/actions/colormap_viridis.png</file>
-        <file>gfx/actions/acoustic.png</file>
         <file>gfx/actions/search.png</file>
+        <file>gfx/actions/sound-wave.png</file>
     </qresource>
 </RCC>
