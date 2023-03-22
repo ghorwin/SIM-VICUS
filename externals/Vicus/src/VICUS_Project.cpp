@@ -1350,11 +1350,6 @@ std::string createUniqueNandradObjListName(const std::map<std::string, std::vect
 		}
 	}
 	return newName;
-
-
-
-
-
 }
 
 std::string createUniqueNandradObjListAndName(const std::string &name,
