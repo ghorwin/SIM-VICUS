@@ -227,6 +227,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
 												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
 												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
+
+		updateLcaTable();
 	}
 	else {
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
@@ -270,7 +272,6 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditRoughness->setText("---");
 	m_ui->lineEditSpecularity->setText("---");
 
-	updateLcaTable();
 }
 
 
