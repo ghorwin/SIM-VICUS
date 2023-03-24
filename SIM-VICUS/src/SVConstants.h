@@ -50,6 +50,10 @@ extern const char * const THIRD_LANGUAGE;
 /*! Fixed-size font family to be used in tables. */
 extern const char * const FIXED_FONT_FAMILY;
 
+/*! Fixed-size font family to be used in tables. */
+extern const int AUTO_SAVE_INTERVALL;
+
+
 /*! Custom data roles provided by the models.
 	Note: not all models provide all roles. But when they do, they should use the
 		  constants below
