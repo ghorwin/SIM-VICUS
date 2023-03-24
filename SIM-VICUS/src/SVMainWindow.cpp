@@ -94,6 +94,7 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
+#include "SVAutoSaveDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -145,7 +146,8 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_undoStack(new QUndoStack(this)),
 	m_pluginLoader(new SVPluginLoader),
 	m_postProcHandler(new SVPostProcHandler),
-	m_viewStateHandler(new SVViewStateHandler)
+	m_viewStateHandler(new SVViewStateHandler),
+	m_autoSave(new SVAutoSaveDialog)
 {
 	// store pointer to this object for global access
 	m_self = this;
@@ -172,6 +174,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
+	connect(m_autoSave, &SVAutoSaveDialog::autoSave, this, &SVMainWindow::onAutoSaveProject);
 
 	m_ui->actionDBZoneControlShading->setEnabled(true);
 }
@@ -191,6 +194,12 @@ bool SVMainWindow::saveProject() {
 	on_actionFileSave_triggered();
 	return	!SVProjectHandler::instance().isModified() &&
 			!SVProjectHandler::instance().projectFile().isEmpty();
+}
+
+void SVMainWindow::onAutoSaveProject() {
+	if(!m_projectHandler.isValid())
+		return; // Only opened projects get auto-saves
+	m_projectHandler.autoSave();
 }
 
 
@@ -794,6 +803,9 @@ void SVMainWindow::setup() {
 
 	// finally setup plugins
 	setupPlugins();
+
+	// do auto-save handling
+	m_autoSave->handleAutoSaves();
 }
 
 
@@ -1949,7 +1961,7 @@ void SVMainWindow::updateWindowTitle() {
 	}
 	if (m_projectHandler.isModified())
 		shortFileName += "*";
-	setWindowTitle(QString("SIM-VICUS %1 - %2").arg(VICUS::VERSION).arg(shortFileName));
+	setWindowTitle(QString("SIM-VICUS %1 - %2").arg(VICUS::LONG_VERSION).arg(shortFileName));
 }
 
 

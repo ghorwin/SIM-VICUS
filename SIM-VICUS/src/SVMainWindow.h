@@ -42,6 +42,7 @@ class QProgressDialog;
 class QSplitter;
 
 class SVThreadBase;
+class SVAutoSaveDialog;
 class SVWelcomeScreen;
 class SVNotesDialog;
 class SVButtonBar;
@@ -186,6 +187,11 @@ public slots:
 
 	void on_actionDBComponents_triggered();
 	void on_actionDBSubSurfaceComponents_triggered();
+
+	/*! Public access function to auto-save project file (called from simulation view).
+		\return Returns true if auto-save has been done successfully.
+	*/
+	void onAutoSaveProject();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -496,6 +502,8 @@ private:
 
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
+
+	SVAutoSaveDialog					*m_autoSave												= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
