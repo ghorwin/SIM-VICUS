@@ -265,6 +265,11 @@ public:
 
 	/*! The project file suffix including the . */
 	QString						m_projectFileSuffix			= ".vicus";
+
+	/*! The auto-save project file suffix including the . */
+	QString						m_projectFileAutoSaveSuffix	= ".vicus.bak";
+
+
 	/*! The project package suffix including the . */
 	QString						m_projectPackageSuffix		= ".vicpac";
 
