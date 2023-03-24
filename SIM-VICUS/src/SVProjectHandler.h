@@ -180,6 +180,9 @@ public:
 	*/
 	SaveResult saveWithNewFilename(QWidget * parent);
 
+	/*! Auto-saves the current project in app data. */
+	SaveResult autoSave();
+
 	/*! Saves project with new filename into the template folder (interactive function, asks user to input filename).
 		Calls saveProject() internally.
 	*/
