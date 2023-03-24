@@ -83,6 +83,7 @@ SOURCES += \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVAboutDialog.cpp \
 	../../src/SVAbstractDatabaseEditWidget.cpp \
+        ../../src/SVAutoSaveDialog.cpp \
 	../../src/SVChartUtils.cpp \
 	../../src/SVClimateDataSortFilterProxyModel.cpp \
 	../../src/SVClimateDataTableModel.cpp \
@@ -285,6 +286,7 @@ SOURCES += \
 HEADERS  += \
 	../../src/SVAboutDialog.h \
 	../../src/SVAbstractDatabaseEditWidget.h \
+        ../../src/SVAutoSaveDialog.h \
 	../../src/SVChartUtils.h \
 	../../src/SVClimateDataSortFilterProxyModel.h \
 	../../src/SVClimateDataTableModel.h \
@@ -493,6 +495,7 @@ HEADERS  += \
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
+        ../../src/SVAutoSaveDialog.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
@@ -542,7 +545,7 @@ FORMS    += \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPluginManager.ui \
 	../../src/SVPreferencesDialog.ui \
-	../../src/SVPreferencesPageMisc.ui \
+        ../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddGeometry.ui \
