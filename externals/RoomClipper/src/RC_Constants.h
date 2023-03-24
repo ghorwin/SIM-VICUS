@@ -38,6 +38,8 @@ extern const double MIN_AREA;
 /*! Epsilon for distance clipping. */
 extern const double EPSILON;
 
+// When defined writes detailled output for debugging
+//#define DETAILED_INFO
 
 } // namespace RC
 #endif // RC_ConstantsH
