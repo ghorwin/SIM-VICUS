@@ -173,7 +173,7 @@ void SVSettings::read() {
 	}
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
-	m_navigationSplitterSize = settings.value("NavigationSplitterSize", 250).toUInt();
+	m_navigationSplitterSize = (int)settings.value("NavigationSplitterSize", 250).toUInt();
 	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
 	m_terminalEmulator = (TerminalEmulators)settings.value("TerminalEmulator", TE_XTerm).toInt();
 
@@ -197,6 +197,11 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
 	m_useHighDPIScaling = settings.value("UseHighDPIScaling", m_useHighDPIScaling).toBool();
+
+#if defined(Q_OS_WIN)
+	// on windows, use the native file dialogs
+	m_dontUseNativeDialogs = false;
+#endif
 }
 
 
