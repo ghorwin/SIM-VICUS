@@ -1147,16 +1147,15 @@ void SVMainWindow::on_actionEditPreferences_triggered() {
 
 
 void SVMainWindow::on_actionEditCleanProject_triggered() {
+	QMessageBox::critical(this, QString(), tr("Not implemented, yet."));
+//	// create a copy of the whole project
+//	VICUS::Project cleanProject = SVProjectHandler::instance().project();
 
-	// create a copy of the whole project
-	VICUS::Project cleanProject = SVProjectHandler::instance().project();
+//	// TODO : Implement clean functionality
 
-	// clean it
-	cleanProject.clean();
-
-	// create undo action and push it
-	SVUndoModifyProject * undo = new SVUndoModifyProject( tr("Removed unused definitions"), cleanProject );
-	undo->push();
+//	// create undo action and push it
+//	SVUndoModifyProject * undo = new SVUndoModifyProject( tr("Removed unused definitions"), cleanProject );
+//	undo->push();
 
 }
 
