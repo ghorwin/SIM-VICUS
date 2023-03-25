@@ -336,9 +336,6 @@ private:
 	*/
 	void addToRecentFiles(const QString& fname);
 
-	/*! Set new colors for each invalid color in the surface data. */
-	void updateSurfaceColors();
-
 	/*! This function is called once a project has been read and the internal databases have been updated.
 		Here, all clearly invalid data elements are removed so that the project retains a meaningful state.
 

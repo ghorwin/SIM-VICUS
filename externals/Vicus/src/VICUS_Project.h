@@ -108,6 +108,9 @@ public:
 	*/
 	void readXML(const QString & projectText);
 
+	/*! Actual read function, called from both variants of readXML(). */
+	void readXMLDocument(TiXmlElement * rootElement);
+
 	/*! Writes the project file to an XML file.
 		\param filename  The full path to the project file.
 	*/
@@ -119,11 +122,12 @@ public:
 	/*! Writes the section with directory place holders. */
 	void writeDirectoryPlaceholdersXML(TiXmlElement * parent) const;
 
-	/*! Removes un-referenced/un-needed data structures. */
-	void clean();
-
 	/*! Call this function whenever project data has changed that depends on
 		objects linked through pointers (building hierarchies, networks etc.).
+		Checks interrelated definitions/references for validity.
+		Throws IBK::Exceptions in case of errors.
+		Call this function after reading a project and during debugging after
+		project modifications to ensure data consistency.
 	*/
 	void updatePointers();
 

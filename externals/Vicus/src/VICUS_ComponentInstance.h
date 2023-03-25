@@ -94,7 +94,6 @@ public:
 	VICUS::Surface			*m_sideBSurface					= nullptr;
 
 	VICUS::Room				*m_surfaceHeatingControlZone	= nullptr;
-	VICUS::SupplySystem		*m_supplySystem					= nullptr;
 };
 
 } // namespace VICUS
