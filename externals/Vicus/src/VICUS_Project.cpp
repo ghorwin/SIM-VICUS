@@ -609,7 +609,7 @@ void Project::updatePointers() {
 
 			// check that this surface hasn't been referenced before
 			std::map<unsigned int, unsigned int>::const_iterator it = referencedSubSurface.find(ci.m_idSideASurface);
-			if (it != referencedSurface.end())
+			if (it != referencedSubSurface.end())
 				throw IBK::Exception(IBK::FormatString("Subsurface #%1 name: '%2' is referenced by subcomponent instance #%3, but was previously also "
 													   "referenced by component instance #%4!")
 								 .arg(ci.m_idSideASurface).arg(ci.m_sideASubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
@@ -627,7 +627,7 @@ void Project::updatePointers() {
 
 			// check that this surface hasn't been referenced before
 			std::map<unsigned int, unsigned int>::const_iterator it = referencedSubSurface.find(ci.m_idSideBSurface);
-			if (it != referencedSurface.end())
+			if (it != referencedSubSurface.end())
 				throw IBK::Exception(IBK::FormatString("Subsurface #%1 name: '%2' is referenced by subcomponent instance #%3, but was previously also "
 													   "referenced by component instance #%4!")
 								 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);

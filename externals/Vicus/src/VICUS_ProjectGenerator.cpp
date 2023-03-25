@@ -717,10 +717,12 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	return true;
 }
 
+
 bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<RoomMapping> &mappings,
-								 bool addFloorAreaAndVolume) const {
+								 bool addFloorAreaAndVolume) const
+{
 	FUNCID(Project::exportMappingTable);
-	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
+	IBK::Path basePath(filepath.withoutExtension() / "var/mappingTable.txt");
 
 	std::ofstream out;
 	// write file
@@ -731,7 +733,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 #endif
 
 	if (!out.is_open()) {
-		IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
+		IBK::IBK_Message(IBK::FormatString("Error writing mapping file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
 
