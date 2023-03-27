@@ -35,13 +35,40 @@ namespace Ui {
 	class SVAutoSaveDialog;
 }
 
-
-/*! Class that contains all auto-save features. Such as a timer that emits a signal and
-	brings the MainWindow to perform an auto-save.
+/*! Class that contains all auto-save features.
+	Such as a timer that emits a signal and brings the Project Handler to perform an auto-save.
+	Also a dialog is shown, when auto-saves have been detected and can be restored.
 */
 class SVAutoSaveDialog : public QDialog {
 Q_OBJECT
 public:
+
+	/*! Struct to encapsulate all meta-data from auto-save. */
+	struct AutoSaveData {
+
+		AutoSaveData() {}
+
+		AutoSaveData(const QString &fileName, const QString &hash, const QString &timeStamp, const QString & basePath) :
+			m_fileName(fileName),
+			m_hash(hash),
+			m_timeStamp(timeStamp),
+			m_basePath(basePath)
+		{}
+
+		QString			m_fileName;		///>	filename of auto-save file
+		QString			m_hash;			///>	hash of auto-save file
+		QString			m_timeStamp;	///>    timestamp of auto-save file
+		QString			m_basePath;		///>	basePath of auto save file
+
+	};
+
+	enum AutosaveColumns {
+		AC_FileName,
+		AC_Hash,
+		AC_BasePath,
+		AC_TimeStamp,
+	};
+
 	explicit SVAutoSaveDialog(QDialog *parent = nullptr);
 	~SVAutoSaveDialog() override;
 
@@ -49,28 +76,42 @@ public:
 		\param autoSaves contains all found autosaves
 		\returns true, when autosaves exist
 	*/
-	void extracted(QStringList &files);
-	bool checkForAutoSaves(std::vector<QString> &autoSaves);
+	bool checkForAutoSaves();
 
 	/*! Removes all auto-saves when project will be closed. */
-	void removeAutoSaves();
+	void removeProjectSepcificAutoSaves(const QString &projectName);
 
-	/*! .*/
+	/*! Starts auto-save dialog on start-up, when auto-saves have been found.
+		Shows all information about auto-saved files (Name, time, folder)
+	*/
 	void handleAutoSaves();
+
+	/*! Updates table with all found auto-saves from m_autoSaveData. */
+	void updateAutoSavesInTable();
+
+	/*! Writes updated auto-save data to "autosave-metadata.info". */
+	void writeAutoSaveData();
 
 private slots:
 	void onTimerFinished();
 
 	void on_pushButtonRecoverFile_pressed();
 
+	void on_pushButtonRemoveAutoSave_clicked();
+
 signals:
+	/*! Is always emitted, when an auto-save has to be done. */
 	void autoSave();
 
 private:
+	/*! Pointer to Ui. */
 	Ui::SVAutoSaveDialog		*m_ui;
 
 	/*! Timer for auto-save periods. */
 	QTimer						*m_timer = nullptr;
+
+	/*! Cashed auto-save data. */
+	std::vector<AutoSaveData>	m_autoSaveData;
 };
 
 #endif // SVAutoSaveDialogH
