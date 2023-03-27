@@ -958,7 +958,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 		case SVDatabase::DT_ZoneControlShading:  {
 			for (const auto & p : m_zoneTemplates) {
-				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				//VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
 				// TODO Dirk : add as soon as available
 				//replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_], m_zoneTemplates);
 			}
@@ -1015,6 +1015,10 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			}
 			m_zoneTemplates.remove(elementID);
 			m_zoneTemplates.m_modified = true;
+		break;
+
+		case SVDatabase::DT_AcousticTemplates:
+			// currently removing of acoustic templates not possible
 		break;
 
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
@@ -1099,6 +1103,9 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_infiltration.removeNotReferencedLocalElements(); break;
 		case DT_ZoneTemplates:
 			m_zoneTemplates.removeNotReferencedLocalElements(); break;
+		case DT_AcousticTemplates:
+			// currently ignoring acoustic templates
+		break;
 		case NUM_DT:
 			break;
 	}
@@ -1206,6 +1213,9 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_ZoneTemplates:
 			Q_ASSERT(m_zoneTemplates[id] != nullptr);
 			m_zoneTemplates[id]->collectLocalChildren(localChildren); break;
+		case DT_AcousticTemplates:
+			// currently ignoring acoustic templates
+		break;
 		case NUM_DT:
 			break;
 	}

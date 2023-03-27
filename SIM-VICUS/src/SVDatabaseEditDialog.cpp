@@ -107,9 +107,9 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 										   const QString & title, const QString & editWidgetTitle,
 										   bool horizontalLayout) :
 	QDialog(parent
-#ifdef Q_OS_LINUX
+			#ifdef Q_OS_LINUX
 			, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint /*| Qt::WindowSystemMenuHint*/
-#endif
+			#endif
 			),
 	m_ui(new Ui::SVDatabaseEditDialog),
 	m_dbModel(tableModel),
@@ -362,30 +362,32 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 	{
 		// tell db to drop all user-defined items and re-read the DB
 		switch (m_dbModel->databaseType()) {
-			case SVDatabase::DT_Materials:				SVSettings::instance().m_db.m_materials.removeUserElements(); break;
-			case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
-			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
-			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
-			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
-			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
-			case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
-			case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
-			case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
-			case SVDatabase::DT_Fluids:					SVSettings::instance().m_db.m_fluids.removeUserElements(); break;
-			case SVDatabase::DT_NetworkComponents:		SVSettings::instance().m_db.m_networkComponents.removeUserElements(); break;
-			case SVDatabase::DT_NetworkControllers:		SVSettings::instance().m_db.m_networkControllers.removeUserElements(); break;
-			case SVDatabase::DT_SubNetworks:			SVSettings::instance().m_db.m_subNetworks.removeUserElements(); break;
-			case SVDatabase::DT_SupplySystems:			SVSettings::instance().m_db.m_supplySystems.removeUserElements(); break;
-			case SVDatabase::DT_Schedules:				SVSettings::instance().m_db.m_schedules.removeUserElements(); break;
-			case SVDatabase::DT_InternalLoads:			SVSettings::instance().m_db.m_internalLoads.removeUserElements(); break;
-			case SVDatabase::DT_ZoneControlThermostat:	SVSettings::instance().m_db.m_zoneControlThermostat.removeUserElements(); break;
-			case SVDatabase::DT_ZoneControlShading:		SVSettings::instance().m_db.m_zoneControlShading.removeUserElements(); break;
-			case SVDatabase::DT_ZoneControlNaturalVentilation:			SVSettings::instance().m_db.m_zoneControlVentilationNatural.removeUserElements(); break;
-			case SVDatabase::DT_ZoneIdealHeatingCooling:	SVSettings::instance().m_db.m_zoneIdealHeatingCooling.removeUserElements(); break;
-			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
-			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
-			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
-			case SVDatabase::NUM_DT:; // just to make compiler happy
+		case SVDatabase::DT_Materials:				SVSettings::instance().m_db.m_materials.removeUserElements(); break;
+		case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
+		case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
+		case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
+		case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
+		case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
+		case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
+		case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
+		case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
+		case SVDatabase::DT_Fluids:					SVSettings::instance().m_db.m_fluids.removeUserElements(); break;
+		case SVDatabase::DT_NetworkComponents:		SVSettings::instance().m_db.m_networkComponents.removeUserElements(); break;
+		case SVDatabase::DT_NetworkControllers:		SVSettings::instance().m_db.m_networkControllers.removeUserElements(); break;
+		case SVDatabase::DT_SubNetworks:			SVSettings::instance().m_db.m_subNetworks.removeUserElements(); break;
+		case SVDatabase::DT_SupplySystems:			SVSettings::instance().m_db.m_supplySystems.removeUserElements(); break;
+		case SVDatabase::DT_Schedules:				SVSettings::instance().m_db.m_schedules.removeUserElements(); break;
+		case SVDatabase::DT_InternalLoads:			SVSettings::instance().m_db.m_internalLoads.removeUserElements(); break;
+		case SVDatabase::DT_ZoneControlThermostat:	SVSettings::instance().m_db.m_zoneControlThermostat.removeUserElements(); break;
+		case SVDatabase::DT_ZoneControlShading:		SVSettings::instance().m_db.m_zoneControlShading.removeUserElements(); break;
+		case SVDatabase::DT_ZoneControlNaturalVentilation:			SVSettings::instance().m_db.m_zoneControlVentilationNatural.removeUserElements(); break;
+		case SVDatabase::DT_ZoneIdealHeatingCooling:	SVSettings::instance().m_db.m_zoneIdealHeatingCooling.removeUserElements(); break;
+		case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
+		case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
+		case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
+		case SVDatabase::DT_AcousticTemplates:		// currently ignoring acoustic templates
+			break;
+		case SVDatabase::NUM_DT:; // just to make compiler happy
 		}
 
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType()); // by default the "m_isReferenced" property is off after reading the user DB
@@ -483,10 +485,10 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBMaterialTableModel(parent, SVSettings::instance().m_db),
-		new SVDBMaterialEditWidget(parent),
-		tr("Material Database"), tr("Material properties"), true
-	);
+														  new SVDBMaterialTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBMaterialEditWidget(parent),
+														  tr("Material Database"), tr("Material properties"), true
+														  );
 	dlg->resize(1400,600);
 	return dlg;
 }
@@ -494,10 +496,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createConstructionEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBConstructionTableModel(parent, SVSettings::instance().m_db),
-		new SVDBConstructionEditWidget(parent),
-		tr("Construction Database"), QString(), false
-	);
+														  new SVDBConstructionTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBConstructionEditWidget(parent),
+														  tr("Construction Database"), QString(), false
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -505,10 +507,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createConstructionEditDialog(QWidge
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
-		new SVDBComponentEditWidget(parent),
-		tr("Component Database"), tr("Component properties"), true
-	);
+														  new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBComponentEditWidget(parent),
+														  tr("Component Database"), tr("Component properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -516,10 +518,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBSubSurfaceComponentTableModel(parent, SVSettings::instance().m_db),
-		new SVDBSubSurfaceComponentEditWidget(parent),
-		tr("Sub-Surface Component Database"), tr("Sub-Surface properties"), true
-	);
+														  new SVDBSubSurfaceComponentTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBSubSurfaceComponentEditWidget(parent),
+														  tr("Sub-Surface Component Database"), tr("Sub-Surface properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -527,30 +529,30 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createSubSurfaceComponentEditDialog
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBWindowTableModel(parent, SVSettings::instance().m_db),
-		new SVDBWindowEditWidget(parent),
-		tr("Window Database"), tr("Window properties"), true
-	);
+														  new SVDBWindowTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBWindowEditWidget(parent),
+														  tr("Window Database"), tr("Window properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowGlazingSystemEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBWindowGlazingSystemTableModel(parent, SVSettings::instance().m_db),
-		new SVDBWindowGlazingSystemEditWidget(parent),
-		tr("Window glazing system Database"), tr("Window glazing system properties"), true
-	);
+														  new SVDBWindowGlazingSystemTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBWindowGlazingSystemEditWidget(parent),
+														  tr("Window glazing system Database"), tr("Window glazing system properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
-		new SVDBBoundaryConditionEditWidget(parent),
-		tr("Boundary Condition Database"), tr("Boundary condition properties"), true
-	);
+														  new SVDBBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBBoundaryConditionEditWidget(parent),
+														  tr("Boundary Condition Database"), tr("Boundary condition properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -558,10 +560,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBScheduleTableModel(parent, SVSettings::instance().m_db),
-		new SVDBScheduleEditWidget(parent),
-		tr("Schedule Database"), tr("Schedule properties"), true
-	);
+														  new SVDBScheduleTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBScheduleEditWidget(parent),
+														  tr("Schedule Database"), tr("Schedule properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -570,32 +572,32 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category) {
 	SVDatabaseEditDialog * dlg = nullptr;
 	switch (category) {
-		case VICUS::InternalLoad::IC_Person :
-			dlg = new SVDatabaseEditDialog(parent,
-				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
-				new SVDBInternalLoadsPersonEditWidget(parent),
-				tr("Person Loads Database"), tr("Person load properties"), true);
-			break;
-		case VICUS::InternalLoad::IC_ElectricEquiment :
-			dlg = new SVDatabaseEditDialog(parent,
-				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
-				new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
-				tr("Electric Equipment Loads Database"), tr("Electric equipment load properties"), true);
-			break;
-		case VICUS::InternalLoad::IC_Lighting :
-			dlg = new SVDatabaseEditDialog(parent,
-				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
-				new SVDBInternalLoadsLightsEditWidget(parent),
-				tr("Lights Loads Database"), tr("Lights load properties"), true);
-			 break;
-		case VICUS::InternalLoad::IC_Other :
-			dlg = new SVDatabaseEditDialog(parent,
-				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
-				new SVDBInternalLoadsOtherEditWidget(parent),
-				tr("Other Loads Database"), tr("Other load properties"), true);
-			break;
-		default:
-			Q_ASSERT(false);
+	case VICUS::InternalLoad::IC_Person :
+		dlg = new SVDatabaseEditDialog(parent,
+									   new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+									   new SVDBInternalLoadsPersonEditWidget(parent),
+									   tr("Person Loads Database"), tr("Person load properties"), true);
+		break;
+	case VICUS::InternalLoad::IC_ElectricEquiment :
+		dlg = new SVDatabaseEditDialog(parent,
+									   new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+									   new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
+									   tr("Electric Equipment Loads Database"), tr("Electric equipment load properties"), true);
+		break;
+	case VICUS::InternalLoad::IC_Lighting :
+		dlg = new SVDatabaseEditDialog(parent,
+									   new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+									   new SVDBInternalLoadsLightsEditWidget(parent),
+									   tr("Lights Loads Database"), tr("Lights load properties"), true);
+		break;
+	case VICUS::InternalLoad::IC_Other :
+		dlg = new SVDatabaseEditDialog(parent,
+									   new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+									   new SVDBInternalLoadsOtherEditWidget(parent),
+									   tr("Other Loads Database"), tr("Other load properties"), true);
+		break;
+	default:
+		Q_ASSERT(false);
 	}
 	dlg->resize(1400,800);
 	return dlg;
@@ -603,71 +605,71 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlThermostatEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBZoneControlThermostatTableModel(parent, SVSettings::instance().m_db),
-		new SVDBZoneControlThermostatEditWidget(parent),
-		tr("Zone Control Thermostat Database"), tr("Zone control thermostat properties"), true
-	);
+														  new SVDBZoneControlThermostatTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBZoneControlThermostatEditWidget(parent),
+														  tr("Zone Control Thermostat Database"), tr("Zone control thermostat properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlVentilationNaturalEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBZoneControlVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
-		new SVDBZoneControlVentilationNaturalEditWidget(parent),
-		tr("Zone Control Natural Ventilation Database"), tr("Zone Control Natural Ventilation properties"), true
-		);
+														  new SVDBZoneControlVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBZoneControlVentilationNaturalEditWidget(parent),
+														  tr("Zone Control Natural Ventilation Database"), tr("Zone Control Natural Ventilation properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlShadingEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBZoneControlShadingTableModel(parent, SVSettings::instance().m_db),
-		new SVDBZoneControlShadingEditWidget(parent),
-		tr("Zone Control Shading Database"), tr("Zone Control Shading properties"), true
-		);
+														  new SVDBZoneControlShadingTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBZoneControlShadingEditWidget(parent),
+														  tr("Zone Control Shading Database"), tr("Zone Control Shading properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneIdealHeatingCoolingEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-										  new SVDBZoneIdealHeatingCoolingTableModel(parent, SVSettings::instance().m_db),
-										  new SVDBZoneIdealHeatingCoolingEditWidget(parent),
-										  tr("Zone Ideal Heating/Cooling Database"), tr("Zone Ideal Heating/Cooling properties"), true
-										  );
+														  new SVDBZoneIdealHeatingCoolingTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBZoneIdealHeatingCoolingEditWidget(parent),
+														  tr("Zone Ideal Heating/Cooling Database"), tr("Zone Ideal Heating/Cooling properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createVentilationNaturalEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
-		new SVDBVentilationNaturalEditWidget(parent),
-		tr("Natural Ventilation Database"), tr("Natural Ventilation properties"), true
-		);
+														  new SVDBVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBVentilationNaturalEditWidget(parent),
+														  tr("Natural Ventilation Database"), tr("Natural Ventilation properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createInfiltrationEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBInfiltrationTableModel(parent, SVSettings::instance().m_db),
-		new SVDBInfiltrationEditWidget(parent),
-		tr("Infiltration Database"), tr("Infiltration properties"), true
-		);
+														  new SVDBInfiltrationTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBInfiltrationEditWidget(parent),
+														  tr("Infiltration Database"), tr("Infiltration properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog(QWidget *parent){
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-										  new SVDBSurfaceHeatingTableModel(parent, SVSettings::instance().m_db),
-										  new SVDBSurfaceHeatingEditWidget(parent),
-										  tr("Surface Heating/Cooling System Database"),
+														  new SVDBSurfaceHeatingTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBSurfaceHeatingEditWidget(parent),
+														  tr("Surface Heating/Cooling System Database"),
 														  tr("Surface Heating/Cooling System properties"), true
-										  );
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -675,10 +677,10 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createSupplySystemsEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBSupplySystemTableModel(parent, SVSettings::instance().m_db),
-		new SVDBSupplySystemEditWidget(parent),
-		tr("Supply System Database"), tr("Supply system properties"), true
-	);
+														  new SVDBSupplySystemTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBSupplySystemEditWidget(parent),
+														  tr("Supply System Database"), tr("Supply system properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -686,10 +688,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createSupplySystemsEditDialog(QWidg
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
-		new SVDBNetworkComponentEditWidget(parent),
-		tr("Network Component Database"), tr("Network Component Properties"), true
-	);
+														  new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBNetworkComponentEditWidget(parent),
+														  tr("Network Component Database"), tr("Network Component Properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -697,10 +699,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QW
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
-		new SVDBPipeEditWidget(parent),
-		tr("Network Pipes Database"), tr("Network Pipes Properties"), true
-	);
+														  new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBPipeEditWidget(parent),
+														  tr("Network Pipes Database"), tr("Network Pipes Properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -708,10 +710,10 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
-		new SVDBNetworkFluidEditWidget(parent),
-		tr("Network Fluids Database"), tr("Network Fluids Properties"), true
-	);
+														  new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBNetworkFluidEditWidget(parent),
+														  tr("Network Fluids Database"), tr("Network Fluids Properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -719,10 +721,10 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *paren
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createNetworkControllerEditDialog(QWidget *parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBNetworkControllerTableModel(parent, SVSettings::instance().m_db),
-		new SVDBNetworkControllerEditWidget(parent),
-		tr("Network Controllers Database"), tr("Network Controllers Properties"), true
-	);
+														  new SVDBNetworkControllerTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBNetworkControllerEditWidget(parent),
+														  tr("Network Controllers Database"), tr("Network Controllers Properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
@@ -730,10 +732,10 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createNetworkControllerEditDialog(QW
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-		new SVDBSubNetworkTableModel(parent, SVSettings::instance().m_db),
-		new SVDBSubNetworkEditWidget(parent),
-		tr("Sub Networks Database"), tr("Sub Networks Properties"), true
-	);
+														  new SVDBSubNetworkTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBSubNetworkEditWidget(parent),
+														  tr("Sub Networks Database"), tr("Sub Networks Properties"), true
+														  );
 	dlg->resize(1400,800);
 	return dlg;
 }
