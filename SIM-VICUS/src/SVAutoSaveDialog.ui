@@ -29,14 +29,14 @@
      <item>
       <widget class="QPushButton" name="pushButtonRecoverFile">
        <property name="text">
-        <string>Wiederherstellen</string>
+        <string>Recover file</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonDiscard">
+      <widget class="QPushButton" name="pushButtonRemoveAutoSave">
        <property name="text">
-        <string>Abbrechen</string>
+        <string>Remove</string>
        </property>
       </widget>
      </item>
@@ -52,6 +52,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonDiscard">
+       <property name="text">
+        <string>Abbrechen</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
