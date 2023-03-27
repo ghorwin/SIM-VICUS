@@ -37,8 +37,9 @@
 #include <QDialogButtonBox>
 #include <QInputDialog>
 #include <QTimer>
+#include <QCryptographicHash>
 
-#include <QtExt_Directories.h>>
+#include <QtExt_Directories.h>
 
 #include <IBK_Exception.h>
 #include <IBK_FileUtils.h>
@@ -438,16 +439,22 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	IBK::Path path(m_projectFile.toStdString());
 
 	// Get baseName
-	QString fname = QString::fromStdString(path.filename().str());
+	QString originName = QString::fromStdString(path.filename().str());
+
+	const QDateTime now = QDateTime::currentDateTime();
+	const QString timestamp = now.toString(QLatin1String("yyyyMMdd-hhmmss"));
+
+	QString metaData = timestamp + "_" + QString::fromStdString(path.parentPath().str());
+	const QString metaHash = QString(QCryptographicHash::hash(metaData.toStdString().c_str(), QCryptographicHash::Md5).toHex());
+	QString fname = originName;
 
 	// if the file already ends with ".vicus" it will be removed
 	if (fname.endsWith(SVSettings::instance().m_projectFileSuffix))
 		fname.remove(SVSettings::instance().m_projectFileSuffix);
 
-	const QDateTime now = QDateTime::currentDateTime();
-	const QString timestamp = now.toString(QLatin1String("yyyyMMdd-hhmmss"));
+	fname += "(" + metaHash + ")";
 
-	fname += "(" + timestamp + ")";
+	// Append ".vicus.bak"
 	fname.append(SVSettings::instance().m_projectFileAutoSaveSuffix);
 
 	// Copy our current project
@@ -465,6 +472,7 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	// update embedded database
 	SVSettings::instance().m_db.updateEmbeddedDatabase(prj);
 
+	// Auto-Save directories
 	QString autoSaveBase = QtExt::Directories::userDataDir() + "/autosaves/";
 	QString autoSaveName = autoSaveBase + fname;
 
@@ -489,6 +497,32 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 		return SVProjectHandler::SaveCancelled;
 	}
+
+	QString info(autoSaveBase + "/autosave-metadata.info");
+	QFile autoSaveInformation(info);
+	unsigned int size = autoSaveInformation.size();
+
+	if(!autoSaveInformation.open(QIODevice::Append | QIODevice::Text)) {
+		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1' (path does not exist or missing permissions).")
+						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+		return SVProjectHandler::SaveCancelled;
+	}
+
+	// Check whether file is empty
+	QTextStream out(&autoSaveInformation);
+	if(size == 0) { // empty and add header data
+		out << "FileName\tHash\tTimestamp\tPath\n";
+	}
+
+	QString basePath;
+	if(!path.exists())
+		basePath = "-";
+	else
+		basePath = QString::fromStdString(path.parentPath().str());
+
+	out << originName << "\t" << metaHash << "\t" << timestamp << "\t" << basePath << "\n";
+
+	autoSaveInformation.close();
 
 	return SaveOK; // saving succeeded
 }
