@@ -43,6 +43,7 @@
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropBuildingAcousticTemplatesWidget.h"
+#include "SVPropBuildingStructuralUnitWidget.h"
 #include "SVPropResultsWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
@@ -142,7 +143,9 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 		case SVViewState::PM_BuildingAcousticProperties : {
 			showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
 		} break;
-
+		case SVViewState::PM_BuildingStructuralUnitProperties : {
+			showPropertyWidget<SVPropBuildingStructuralUnitWidget>(M_BuildingStructuralUnit);
+		} break;
 		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
 		} break;

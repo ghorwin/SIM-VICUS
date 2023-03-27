@@ -98,6 +98,8 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
+		/*! Structural units were modified (Add, edit, delete). */
+		StructuralUnitsModified,
 		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
 		ObjectRenamed,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)

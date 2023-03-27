@@ -151,6 +151,7 @@
          <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
          <addaction name="actionAcousticParametrization"/>
+         <addaction name="actionStructuralUnitParametrization"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
@@ -383,6 +384,21 @@
    </property>
    <property name="toolTip">
     <string>Show Results</string>
+   </property>
+  </action>
+  <action name="actionStructuralUnitParametrization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/filter.png</normaloff>:/gfx/actions/filter.png</iconset>
+   </property>
+   <property name="text">
+    <string>StructuralUnitParametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Structural Unit Parametrization</string>
    </property>
   </action>
  </widget>

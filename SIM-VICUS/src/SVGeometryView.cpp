@@ -726,6 +726,19 @@ void SVGeometryView::on_actionAcousticParametrization_triggered() {
 //	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
+void SVGeometryView::on_actionStructuralUnitParametrization_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionStructuralUnitParametrization->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
+	vs.m_objectColorMode = SVViewState::OCM_None;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
 
 void SVGeometryView::on_actionNetworkParametrization_triggered() {
 	uncheckAllActionsInButtonBar();
@@ -873,4 +886,7 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
 }
+
+
+
 

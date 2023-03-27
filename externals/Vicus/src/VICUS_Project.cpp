@@ -612,6 +612,13 @@ void Project::updatePointers() {
 		}
 		n.updateNodeEdgeConnectionPointers();
 	}
+
+	//structural units
+	// TODO Anton: assign own adress space
+	for(VICUS::StructuralUnit & u : m_structuralUnits){
+		addAndCheckForUniqueness(&u);
+	}
+
 }
 
 

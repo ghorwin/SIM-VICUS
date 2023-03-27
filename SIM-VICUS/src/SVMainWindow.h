@@ -59,6 +59,7 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
+class SVStructuralUnitCreationDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -181,6 +182,9 @@ public:
 
 	/*! Returns pointer to the applications preferences dialog. */
 	SVPreferencesDialog * preferencesDialog();
+
+	/*! Returns pointer to the structural unit creation dialog. */
+	SVStructuralUnitCreationDialog * createStructuralUnitDialog();
 
 public slots:
 
@@ -528,6 +532,8 @@ private:
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
 
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
+
+	SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
 
 	friend class SVThreadBase;
 };

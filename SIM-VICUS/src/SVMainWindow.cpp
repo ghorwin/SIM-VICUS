@@ -99,6 +99,8 @@
 #include "SVDBZoneTemplateEditDialog.h"
 #include "SVDBDuplicatesDialog.h"
 #include "SVLogFileDialog.h"
+#include "SVStructuralUnitCreationDialog.h"
+
 
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
@@ -411,6 +413,12 @@ SVDatabaseEditDialog * SVMainWindow::dbSurfaceHeatingSystemEditDialog() {
 	if (m_dbVSurfaceHeatingSystemEditDialog == nullptr)
 		m_dbVSurfaceHeatingSystemEditDialog = SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog(this);
 	return m_dbVSurfaceHeatingSystemEditDialog;
+}
+
+SVStructuralUnitCreationDialog * SVMainWindow::createStructuralUnitDialog() {
+	if (m_structuralUnitCreationDialog == nullptr)
+		m_structuralUnitCreationDialog = new SVStructuralUnitCreationDialog(this);
+	return m_structuralUnitCreationDialog;
 }
 
 

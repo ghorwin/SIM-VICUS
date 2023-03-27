@@ -79,6 +79,7 @@ HEADERS += \
 	../../src/VICUS_RotationMatrix.h \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
+	../../src/VICUS_StructuralUnit.h \
 	../../src/VICUS_SubNetwork.h \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
@@ -140,6 +141,7 @@ SOURCES += \
 	../../src/VICUS_Room.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
+    ../../src/VICUS_StructuralUnit.cpp \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \

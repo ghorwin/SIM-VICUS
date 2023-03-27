@@ -222,11 +222,16 @@ SOURCES += \
 	../../src/SVSimulationStartNandrad.cpp \
 	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVSmartSelectDialog.cpp \
+	../../src/SVStructuralUnitCreationDialog.cpp \
 	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVUndoAddStructuralUnit.cpp \
+	../../src/SVUndoDeleteStructuralUnit.cpp \
+	../../src/SVUndoModifyStructuralUnit.cpp \
+	../../src/SVUndoModifyStructuralUnitRoomAssociation.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DDialog.cpp \
@@ -425,11 +430,16 @@ HEADERS  += \
 	../../src/SVSimulationStartNandrad.h \
 	../../src/SVSmartIntersectionDialog.h \
 	../../src/SVSmartSelectDialog.h \
+	../../src/SVStructuralUnitCreationDialog.h \
 	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
+	../../src/SVUndoAddStructuralUnit.h \
+	../../src/SVUndoDeleteStructuralUnit.h \
+	../../src/SVUndoModifyStructuralUnit.h \
+	../../src/SVUndoModifyStructuralUnitRoomAssociation.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DDialog.h \
@@ -583,6 +593,7 @@ FORMS    += \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
+	../../src/SVStructuralUnitCreationDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \
 	../../src/SVWelcomeScreen.ui \

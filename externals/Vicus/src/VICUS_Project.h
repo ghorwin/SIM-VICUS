@@ -52,6 +52,8 @@
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
 #include "VICUS_PlainGeometry.h"
+#include "VICUS_StructuralUnit.h"
+
 
 
 namespace VICUS {
@@ -295,6 +297,11 @@ public:
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
 	std::vector<Building>								m_buildings;				// XML:E
+
+	/*! Store structural units */
+	std::vector<StructuralUnit>							m_structuralUnits;			// XML:E
+
+
 
 	/*! All components actually placed in the geometry.
 		This vector is outside buildings, so that two building parts can be connected with
