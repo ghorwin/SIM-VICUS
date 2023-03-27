@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
-    <height>279</height>
+    <width>742</width>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Autosaved Files have been found! Please select a file to recover...</string>
+      <string>Autosaved Files have been found! Please select an autosaved file from below, or remove them.</string>
      </property>
     </widget>
    </item>
@@ -29,14 +29,22 @@
      <item>
       <widget class="QPushButton" name="pushButtonRecoverFile">
        <property name="text">
-        <string>Recover file</string>
+        <string>Recover autosave</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonRemoveAutoSave">
        <property name="text">
-        <string>Remove</string>
+        <string>Delete autosave</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
        </property>
       </widget>
      </item>
@@ -64,6 +72,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

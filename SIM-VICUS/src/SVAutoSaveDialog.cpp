@@ -289,8 +289,10 @@ void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
 
 	// copy file
 	file.copy(restoredFileName);
-
 	close();
+
+	// Remove current auto saves
+	on_pushButtonRemoveAutoSave_clicked();
 }
 
 
@@ -302,9 +304,24 @@ void SVAutoSaveDialog::on_pushButtonRemoveAutoSave_clicked() {
 
 	for(unsigned int i = (unsigned int)cb->count(); i > 0; --i) {
 		unsigned int idx = cb->itemData(i-1).toUInt();
+
+		const AutoSaveData &data = m_autoSaveData[idx];
+
+		QString tempName = data.m_fileName;
+
+		if(tempName.endsWith(".vicus"))
+			tempName = tempName.remove(".vicus");
+
+		QString filename = QtExt::Directories::userDataDir() + "/autosaves/" + tempName + "(" + data.m_hash + ").vicus.bak";
+		// remove file
+		QFile::remove(filename);
+
 		m_autoSaveData.erase(m_autoSaveData.begin() + idx);
 	}
 
 	updateAutoSavesInTable();
+
+	// write updated file
+	writeAutoSaveData();
 }
 
