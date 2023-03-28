@@ -600,5 +600,6 @@ void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
     // reverse construction layers
     std::reverse(m_current->m_materialLayers.begin(), m_current->m_materialLayers.end());
     // update preview
+	// ToDO Maik: Flip also coloring!
     updateConstructionView();
 }
