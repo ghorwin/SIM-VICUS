@@ -56,6 +56,7 @@
 #include "SVLogFileDialog.h"
 #include "SVViewStateHandler.h"
 #include "SVUndoModifyProject.h"
+#include "SVMainWindow.h"
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
@@ -180,6 +181,9 @@ bool SVProjectHandler::closeProject(QWidget * parent) {
 		}
 
 	} // if (isModified())
+
+	// Remove all auto-saves
+	emit removeProjectAutoSaves(m_projectFile);
 
 	// saving succeeded, now we can close the project
 	destroyProject();
@@ -429,14 +433,11 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	FUNCID(SVProjectHandler::autoSave);
 
-	if(m_projectFile.isEmpty()) {
-		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file since project file is not valid."),
-						 IBK::MSG_ERROR, FUNC_ID);
+	// Project name
+	QString projectName = m_projectFile.isEmpty() ? "UnnamedProject" : m_projectFile;
 
-		return SVProjectHandler::SaveCancelled;
-	}
-
-	IBK::Path path(m_projectFile.toStdString());
+	// Path
+	IBK::Path path(projectName.toStdString());
 
 	// Get baseName
 	QString originName = QString::fromStdString(path.filename().str());
@@ -457,20 +458,12 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	// Append ".vicus.bak"
 	fname.append(SVSettings::instance().m_projectFileAutoSaveSuffix);
 
-	// Copy our current project
-	VICUS::Project prj = *m_project;
-
-	// updated created and lastEdited tags
-	if (prj.m_projectInfo.m_created.empty())
-		prj.m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toStdString();
-	prj.m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toStdString();
-
 	// update standard placeholders in project file
-	prj.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]		= QtExt::Directories::databasesDir().toStdString();
-	prj.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
+	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]		= QtExt::Directories::databasesDir().toStdString();
+	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
 
 	// update embedded database
-	SVSettings::instance().m_db.updateEmbeddedDatabase(prj);
+	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
 
 	// Auto-Save directories
 	QString autoSaveBase = QtExt::Directories::userDataDir() + "/autosaves/";
@@ -490,7 +483,7 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	file.close();
 
 	try {
-		prj.writeXML(IBK::Path(autoSaveName.toStdString()));
+		m_project->writeXML(IBK::Path(autoSaveName.toStdString()));
 	}
 	catch(IBK::Exception &ex) {
 		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1'. Exception in writing xml.")
@@ -503,15 +496,15 @@ SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
 	unsigned int size = autoSaveInformation.size();
 
 	if(!autoSaveInformation.open(QIODevice::Append | QIODevice::Text)) {
-		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1' (path does not exist or missing permissions).")
-						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+		IBK::IBK_Message(IBK::FormatString("Cannot create autosave metadata-file '%1' (path does not exist or missing permissions).")
+						 .arg(info.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 		return SVProjectHandler::SaveCancelled;
 	}
 
 	// Check whether file is empty
 	QTextStream out(&autoSaveInformation);
 	if(size == 0) { // empty and add header data
-		out << "FileName\tHash\tTimestamp\tPath\n";
+		out << "Filename\tHash\tTimestamp\tPath\n";
 	}
 
 	QString basePath;

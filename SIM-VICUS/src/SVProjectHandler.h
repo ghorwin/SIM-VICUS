@@ -301,6 +301,11 @@ signals:
 	*/
 	void fixProjectAfterRead();
 
+	/*! Emitted when auto-saves of projects need to be removed.
+		\param projectPath path of current project
+	*/
+	void removeProjectAutoSaves(const QString &projectPath);
+
 private:
 
 	/*! Creates a new project instance (must not have one already) and resets project file name.
