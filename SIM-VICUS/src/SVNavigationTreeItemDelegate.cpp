@@ -122,7 +122,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 					case (TT_Building):			painter->setPen(QColor(150, 140, 190)); break;
 					case (TT_BuildingLevel):	painter->setPen(QColor(255, 200, 120)); break;
 					case (TT_Room):				painter->setPen(QColor(250, 140, 140));	break;
-					case (TT_Subsurface):		painter->setPen(QColor(100, 150, 200)); break;
+					case (TT_Subsurface):		painter->setPen(QColor(120, 180, 200)); break;
 					default:					painter->setPen(QColor(240, 240, 240)); break;
 				}
 
