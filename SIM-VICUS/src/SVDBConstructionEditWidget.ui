@@ -169,6 +169,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="pushButtonFlipConstruction">
+          <property name="text">
+           <string>Flip Construction</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QSplitter" name="splitter">
           <property name="orientation">
            <enum>Qt::Vertical</enum>

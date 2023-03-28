@@ -39,6 +39,7 @@ public:
 		ColId,
 		ColCheck,
 		ColName,
+        ColDataSource,
 		ColUsageType,
 		ColInsulationKind,
 		ColMaterialKind,
