@@ -109,21 +109,21 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 			case SVSettings::NUM_TT:
 			case SVSettings::TT_White:
 				switch (t) {
-					case (TT_Building):			painter->setPen(QColor(78, 87, 135)); break;
-					case (TT_BuildingLevel):	painter->setPen(QColor(219, 108, 0)); break;
-					case (TT_Room):				painter->setPen(QColor(150, 20, 20)); break;
-					case (TT_Subsurface):		painter->setPen(QColor(70, 80, 125)); break;
+					case (TT_Building):			painter->setPen(QColor( 78,  87, 135)); break;
+					case (TT_BuildingLevel):	painter->setPen(QColor(219, 108,   0)); break;
+					case (TT_Room):				painter->setPen(QColor(150,  20,  20)); break;
+					case (TT_Subsurface):		painter->setPen(QColor( 70,  80, 125)); break;
 					default:					painter->setPen(Qt::black); break;
 				}
 
 			break;
 			case SVSettings::TT_Dark:
 				switch (t) {
-					case (TT_Building):			painter->setPen(QColor(150,140,190)); break;
+					case (TT_Building):			painter->setPen(QColor(150, 140, 190)); break;
 					case (TT_BuildingLevel):	painter->setPen(QColor(255, 200, 120)); break;
 					case (TT_Room):				painter->setPen(QColor(250, 140, 140));	break;
-					case (TT_Subsurface):		painter->setPen(QColor(120,110,170)); break;
-					default:					painter->setPen(QColor(240,240,240)); break;
+					case (TT_Subsurface):		painter->setPen(QColor(100, 150, 200)); break;
+					default:					painter->setPen(QColor(240, 240, 240)); break;
 				}
 
 			break;
