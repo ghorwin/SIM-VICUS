@@ -594,9 +594,10 @@ void SVDBConstructionEditWidget::modelModify() {
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
-void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked()
-{
-    std::reverse(m_current->m_materialLayers.begin(), m_current->m_materialLayers.end());
 
+void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
+    // reverse construction layers
+    std::reverse(m_current->m_materialLayers.begin(), m_current->m_materialLayers.end());
+    // update preview
     updateConstructionView();
 }
