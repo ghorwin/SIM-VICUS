@@ -136,7 +136,10 @@ void Network::addEdge(const NetworkEdge &edge) {
 
 
 void Network::updateNodeEdgeConnectionPointers() {
+	FUNCID(Network::updateNodeEdgeConnectionPointers);
+
 	// resolve all node and edge pointers
+	// check for valid node IDs and throws exceptions, if any check fails
 
 	// first clear edge pointers in all nodes
 	for (NetworkNode & n : m_nodes)
@@ -144,9 +147,28 @@ void Network::updateNodeEdgeConnectionPointers() {
 
 	// loop over all edges
 	for (NetworkEdge & e : m_edges) {
+		// an edge must have 2 valid node IDs
+		if (e.nodeId1() == VICUS::INVALID_ID || e.nodeId2() == VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Network edge #%1 does not have to valid node IDs.").arg(e.m_id), FUNC_ID);
+
+		// an edge must not reference the same node twice
+		if (e.nodeId1() == e.nodeId2())
+			throw IBK::Exception(IBK::FormatString("Network edge #%1 referenced the same node #%2 on both sides.")
+								 .arg(e.m_id).arg(e.nodeId1()), FUNC_ID);
+
 		// store pointers to connected nodes
-		e.m_node1 = nodeById(e.nodeId1());
-		e.m_node2 = nodeById(e.nodeId2());
+		try {
+			e.m_node1 = nodeById(e.nodeId1());
+		} catch (...) {
+			throw IBK::Exception(IBK::FormatString("Network edge #%1 references invalid node #%2.")
+								 .arg(e.m_id).arg(e.nodeId1()), FUNC_ID);
+		}
+		try {
+			e.m_node2 = nodeById(e.nodeId2());
+		} catch (...) {
+			throw IBK::Exception(IBK::FormatString("Network edge #%1 references invalid node #%2.")
+								 .arg(e.m_id).arg(e.nodeId2()), FUNC_ID);
+		}
 
 		// now also store pointer to this edge into connected nodes
 		e.m_node1->m_edges.push_back(&e);
@@ -232,32 +254,32 @@ void Network::setVisible(bool visible) {
 
 
 NetworkNode *Network::nodeById(unsigned int id) {
+	FUNCID(Network::nodeById);
 	for (NetworkNode &n: m_nodes){
 		if (n.m_id == id)
 			return &n;
 	}
-	IBK_ASSERT(false);
-	return nullptr;
+	throw IBK::Exception(IBK::FormatString("Invalid/unknown node ID #%1").arg(id), FUNC_ID);
 }
 
 
 const NetworkNode *Network::nodeById(unsigned int id) const {
+	FUNCID(Network::nodeById() const);
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_id == id)
 			return &n;
 	}
-	IBK_ASSERT(false);
-	return nullptr;
+	throw IBK::Exception(IBK::FormatString("Invalid/unknown node ID #%1").arg(id), FUNC_ID);
 }
 
 
 unsigned int Network::indexOfNode(unsigned int id) const {
+	FUNCID(Network::indexOfNode);
 	for (unsigned int i=0; i<m_nodes.size(); ++i){
 		if (m_nodes[i].m_id == id)
 			return i;
 	}
-	IBK_ASSERT(false);
-	return 99999;
+	throw IBK::Exception(IBK::FormatString("Invalid/unknown node ID #%1").arg(id), FUNC_ID);
 }
 
 

@@ -1083,10 +1083,6 @@ bool SVProjectHandler::read(const QString & fname) {
 
 		m_lastReadTime = QFileInfo(fname).lastModified();
 
-		// update the colors
-		// if project has invalid colors nothing is drawn ...
-		updateSurfaceColors();
-
 		// after reading the project file, we should update the views
 		// this is done in a subsequent call to setModified() from the calling function
 		return true;
@@ -1195,32 +1191,6 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 
 	// update recent project list
 	emit updateRecentProjects();
-}
-
-
-void SVProjectHandler::updateSurfaceColors() {
-	for (VICUS::Building &b : m_project->m_buildings) {
-		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			for (VICUS::Room &r : bl.m_rooms) {
-				for (VICUS::Surface &s : r.m_surfaces) {
-					if (!s.m_displayColor.isValid())
-						s.initializeColorBasedOnInclination();
-					s.m_color = s.m_displayColor;
-					for (const VICUS::SubSurface &sub : s.subSurfaces()) {
-						const_cast<VICUS::SubSurface &>(sub).updateColor();
-					}
-				}
-			}
-		}
-	}
-
-	// plain geometry surfaces will be silver
-	for (VICUS::Surface &s : m_project->m_plainGeometry.m_surfaces) {
-		if (s.m_color == QColor::Invalid) {
-			s.m_color = QColor("#C0C0C0");
-		}
-	}
-
 }
 
 

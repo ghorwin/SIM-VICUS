@@ -71,7 +71,7 @@ TiXmlElement * openXMLFile(const std::map<std::string,IBK::Path> & pathPlaceHold
 TiXmlElement * openXMLText(const std::string & xmltext,
 						   const std::string & parentXmlTag, TiXmlDocument & doc) {
 	FUNCID(NANDRAD::openXMLFile);
-	if (!doc.Parse(xmltext.c_str(), 0, TIXML_ENCODING_UTF8)) {
+	if (!doc.Parse(xmltext.c_str(), nullptr, TIXML_ENCODING_UTF8)) {
 		throw IBK::Exception(IBK::FormatString("Error in line %1 of project text \n%2")
 				.arg(doc.ErrorRow())
 				.arg(doc.ErrorDesc()), FUNC_ID);

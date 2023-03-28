@@ -717,10 +717,12 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	return true;
 }
 
+
 bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<RoomMapping> &mappings,
-								 bool addFloorAreaAndVolume) const {
+								 bool addFloorAreaAndVolume) const
+{
 	FUNCID(Project::exportMappingTable);
-	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
+	IBK::Path basePath(filepath.parentPath() / "mappingTable.txt");
 
 	std::ofstream out;
 	// write file
@@ -731,7 +733,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 #endif
 
 	if (!out.is_open()) {
-		IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
+		IBK::IBK_Message(IBK::FormatString("Error writing mapping file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
 
@@ -1620,6 +1622,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 
 	unsigned int idSubTempInf = INVALID_ID;
 	unsigned int idSubTempVent = INVALID_ID;
+	unsigned int idSubTempCtrl = INVALID_ID;
 
 	try {
 		infiltration = dynamic_cast<const Infiltration*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_Infiltration));
@@ -1660,12 +1663,18 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 						   .arg(zoneTemplate->m_id)
 						   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
 
+	if(ctrlVentilation != nullptr)
+		idSubTempCtrl = ctrlVentilation->m_id;
 
+	if(ventilation == nullptr && ctrlVentilation != nullptr)
+		// ToDo Stephan wie komm ich jetzt hier an das Haupttemplate da hier die Kombi nicht stimmt.
+		errorStack.append( qApp->tr("A template %1 with a ventilation control must contain a ventilation model!.")
+						   .arg("Hier muss die ID des Haupttemplates rein..."));
 
 	// only continue if there were no errors so far
 	if (!errorStack.isEmpty())
-		return;
 
+		return;
 	//which system we have?
 	//1. only infiltration
 	//2. only ventilation
@@ -1743,8 +1752,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	if(ventiType == V_Infiltration) {
 		if(ctrlVentilation != nullptr) {
 			// check values
-			double val = infiltration->m_para[Infiltration::P_AirChangeRate].value;
-			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].value;
+			double val = infiltration->m_para[Infiltration::P_AirChangeRate].get_value("1/h");
+			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
 			if(val > maxVal)  {
 
 				QString errmsg = QString("Error in infiltration model #%1. "
@@ -1761,7 +1770,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	else {
 		const Schedule * ventSched = m_scheduleDB[ventilation->m_idSchedule];
 		ventilationSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].get_value("1/h"));
-		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
+		if(ventiType == V_InfAndVenti){
 			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].get_value("1/h");
 			if(infiltration->m_airChangeType == Infiltration::AC_n50)
 				infVal *= infiltration->m_para[Infiltration::P_ShieldingCoefficient].value;
@@ -1772,6 +1781,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		if(ctrlVentilation != nullptr) {
 			// check schedule values
 			std::vector<double> timepoints, values;
+
 			ventilationSchedule.createYearDataVector(timepoints, values);
 
 			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");

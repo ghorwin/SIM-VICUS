@@ -1,5 +1,5 @@
-#ifndef NANDRAD_IDVECTORMAPH
-#define NANDRAD_IDVECTORMAPH
+#ifndef NANDRAD_IDVectorMapH
+#define NANDRAD_IDVectorMapH
 
 #include <map>
 #include <vector>
@@ -12,17 +12,18 @@
 
 namespace NANDRAD {
 
-template<typename t>
 
-/*! Data structure that contains a map, where keys are ids and values are vectors of ids */
-class IDVectorMap
-{
+/*! Data structure that contains a map, where keys are ids and values are vectors of values, for example other IDs.
+	For each id (key) there can be a different number of associated values in the vector.
+*/
+template<typename t>
+class IDVectorMap {
 public:
+
 	/*! Inequility operator. */
 	bool operator!=(const IDVectorMap & other) const {
 		return m_values != other.m_values;
 	}
-
 
 	/*! Sets content of vector map from encoded string.
 		Setting the following string "id1:1 5 3;id2:7 2 2" is equivalent to executing
@@ -31,9 +32,8 @@ public:
 		m_values[id1] = std::vector<unsigned int>{1,5,3};
 		m_values[id2] = std::vector<unsigned int>{7,2,2};
 		\endcode
-		Throws an IBK::Exception, if number of rows in columns mismatches.
 
-		\note It is possible to use , and a whitespace (space or tab) character as number separator.
+		\note It is possible to use "," and a whitespace (space or tab) character as number separator.
 	*/
 	void setEncodedString(const std::string & str) {
 		FUNCID(IDVectorMap::setEncodedString);
@@ -58,7 +58,7 @@ public:
 			// check that column name isn't duplicated
 			unsigned int keyId = IBK::string2val<unsigned int>(parts[0]);
 			if (m_values.find(keyId) != m_values.end())
-				throw IBK::Exception(IBK::FormatString("Duplicate column ID '%1' in table.").arg(keyId), FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("Duplicate ID '%1' for map keys.").arg(keyId), FUNC_ID);
 			// create new vector
 			m_values[keyId] = std::vector<t>();
 			for (const double & val: valVector)
@@ -66,7 +66,9 @@ public:
 		}
 	}
 
-	/*! Returns content of data table as encoded string using tab a value separator. */
+	/*! Returns content of data table as encoded string using tab a value separator.
+		\note Values are written with default number formatting.
+	*/
 	std::string encodedString() const {
 		std::stringstream strm;
 		for (const std::pair<const unsigned int, std::vector<t> > & column : m_values) {
@@ -83,11 +85,12 @@ public:
 	}
 
 
-	/*! The actual data member. */
-
+	/*! The actual data member.
+		\warning Do not expect vectors to have the same size!
+	*/
 	std::map<unsigned int, std::vector<t> >		m_values;
 };
 
 } // namespace NANDRAD
 
-#endif // NANDRAD_IDVECTORMAPH
+#endif // NANDRAD_IDVectorMapH

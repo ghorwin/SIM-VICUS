@@ -347,37 +347,3 @@ void SVPropBuildingSurfaceConnectionWidget::on_comboBoxHighlightingMode_currentI
 	emit updatedHighlightingMode(m);
 }
 
-
-void SVPropBuildingSurfaceConnectionWidget::on_pushButtonClean_clicked() {
-	std::vector<VICUS::ComponentInstance> cis;
-	std::set<unsigned int> handledIds;
-
-	unsigned int nextId = project().nextUnusedID();
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-
-		bool foundSameCI = false;
-		for (const VICUS::ComponentInstance & ciTest : cis) {
-			if(ci.compare(ciTest)) {
-				foundSameCI = true;
-				break;
-			}
-		}
-
-		if(foundSameCI)
-			continue;
-
-		// finding next free id in set
-		while (handledIds.count(nextId) != 0)
-			nextId++;
-
-		const_cast<VICUS::ComponentInstance &>(ci).m_id = nextId;
-		// store already used id
-		handledIds.insert(nextId);
-		// add component instance
-		cis.push_back(ci);
-	}
-
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Cleaned component-instances."), cis);
-	undo->push();
-}
-

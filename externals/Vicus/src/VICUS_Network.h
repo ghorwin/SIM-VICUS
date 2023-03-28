@@ -119,7 +119,9 @@ public:
 	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
 	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & addedNodes, std::vector<unsigned int> & addedEdges);
 
-	/*! Should be called whenever m_nodes or m_edges has been modified. */
+	/*! Should be called whenever m_nodes or m_edges has been modified.
+		Checks for correct node/edge IDs and throws IBK::Exceptions, if invalid IDs are found.
+	*/
 	void updateNodeEdgeConnectionPointers();
 
 	/*! Checks that all edges and nodes are connected with each other (i.e. single graph network). */
@@ -216,19 +218,19 @@ public:
 	/*! sets the network object as well as all edges and nodes visible */
 	void setVisible(bool visible);
 
-	/*! identifies node by its id (in m_nodes vector) and returns according pointer
-	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
-	 */
+	/*! Identifies node by its id (in m_nodes vector) and returns according pointer.
+		Throws an IBK::Exception if node ID doesn't exist (call this function only on consistent data model).
+	*/
 	NetworkNode *nodeById(unsigned int id);
 
-	/*! identifies node by its id (in m_nodes vector) and returns according const pointer
-	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
-	 */
+	/*! Identifies node by its id (in m_nodes vector) and returns according const pointer.
+		Throws an IBK::Exception if node ID doesn't exist (call this function only on consistent data model).
+	*/
 	const NetworkNode *nodeById(unsigned int id) const;
 
-	/*! identifies node by its id and returns according index in m_nodes vector
-	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return an index >= m_nodes.size() !
-	 */
+	/*! Identifies node by its id and returns according index in m_nodes vector.
+		Throws an IBK::Exception if node ID doesn't exist (call this function only on consistent data model).
+	*/
 	unsigned int indexOfNode(unsigned int id) const;
 
 

@@ -82,7 +82,12 @@ void Zone::readXML(const TiXmlElement * element) {
 			// determine data based on element name
 			std::string cname = c->Value();
 
-			// Read view factors
+			// Read view factors, format:
+			//
+			//			<ViewFactors>
+			//						4001 4002:0.5;
+			//						4002 4001:0.5
+			//			</ViewFactors>
 			if (cname == "ViewFactors") {
 				std::string content = c->GetText();
 
@@ -90,9 +95,9 @@ void Zone::readXML(const TiXmlElement * element) {
 
 				IBK::explode(content, viewFactorTripels, ';', false);
 
-				for(std::string tripel : viewFactorTripels){
+				for (std::string tripel : viewFactorTripels) {
 					IBK::trim(tripel, "\t\r\n");
-					if(tripel.empty())
+					if (tripel.empty())
 						continue;
 
 					std::vector<std::string> tokens;
@@ -100,20 +105,23 @@ void Zone::readXML(const TiXmlElement * element) {
 
 					std::vector<std::string> ids;
 					IBK::explode(tokens[0], ids, ' ', true);
+					if (tokens.size() != 2 || ids.size() != 2) {
+						throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+							IBK::FormatString("Invalid format for view factor definition line, expected to surface IDs, got '%1'").arg(tripel)
+							),FUNC_ID);
+					}
 
 					std::vector<unsigned int> intIds;
 
 					intIds.push_back(IBK::string2val<unsigned int>(ids[0]));
 					intIds.push_back(IBK::string2val<unsigned int>(ids[1]));
 
-					if(intIds[0] == intIds[1])
-						continue;
-
-					if(tokens.size() != 2 || ids.size() != 2){
+					if (intIds[0] == intIds[1]) {
 						throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-							IBK::FormatString("Wrong ViewFactor format!")
+							IBK::FormatString("Invalid view factor definition line, got two identical surface IDs: '%1'").arg(tripel)
 							),FUNC_ID);
 					}
+
 					double viewFactor = IBK::string2val<double>(tokens[1]);
 					viewFactorPair idPair(intIds[0],intIds[1]);
 					m_viewFactors.push_back(std::make_pair

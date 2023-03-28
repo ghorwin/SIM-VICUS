@@ -169,7 +169,7 @@ void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_itemSelectionChanged
 		assigningEnabled = true;
 
 		// we only can remove an existing supply system
-		if(ci.m_supplySystem != nullptr) {
+		if (ci.m_idSupplySystem != VICUS::INVALID_ID) {
 			removingEnabled = true;
 			break;
 		}
@@ -253,7 +253,6 @@ void SVPropSupplySystemsWidget::on_pushButtonExchangeSupplySystem_clicked()
 			continue;
 
 		ci.m_idSupplySystem = selectedID;
-		ci.m_supplySystem = supplySys;
 	}
 
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
@@ -322,7 +321,6 @@ void SVPropSupplySystemsWidget::on_pushButtonAssignSupplySystem_clicked() {
 			continue;
 
 		ci.m_idSupplySystem = selectedID;
-		ci.m_supplySystem = supplySys;
 	}
 
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
@@ -330,8 +328,7 @@ void SVPropSupplySystemsWidget::on_pushButtonAssignSupplySystem_clicked() {
 }
 
 
-void SVPropSupplySystemsWidget::on_pushButtonRemoveSupplySystem_clicked()
-{
+void SVPropSupplySystemsWidget::on_pushButtonRemoveSupplySystem_clicked() {
 	// popup supply system DB dialog and if user selects one, assign it to all selected component instances
 	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
 
@@ -356,12 +353,14 @@ void SVPropSupplySystemsWidget::on_pushButtonRemoveSupplySystem_clicked()
 		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
 			continue;
 		// check if no surface heating is assigned
-		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
+		if (ci.m_idSurfaceHeating == VICUS::INVALID_ID)
 			continue;
 
 		ci.m_idSupplySystem = VICUS::INVALID_ID;
-		ci.m_supplySystem = nullptr;
 	}
+
+	// TODO : Feedback to user, if one/none of the selected components could have the supply system removed. Otherwise
+	//        the user clicks on the button and nothing happens....
 
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed supply systems"), cis);
 	undo->push();
