@@ -1,0 +1,127 @@
+#The MIT License (MIT)
+
+#Copyright © 2021-2023 Antonio Dias (https://github.com/antonypro)
+
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
+QT += core gui widgets
+
+win32:equals(QT_MAJOR_VERSION, 5){
+QT += winextras
+}
+
+CONFIG += c++11
+
+SOURCES += \
+    ../../src/qgoodwindow.cpp \
+    ../../src/darkstyle.cpp \
+    ../../src/lightstyle.cpp \
+    ../../src/stylecommon.cpp \
+    ../../src/qgoodstateholder.cpp
+
+HEADERS += \
+    ../../src/qgoodwindow.h \
+    ../../src/darkstyle.h \
+    ../../src/lightstyle.h \
+    ../../src/stylecommon.h \
+    ../../src/qgoodstateholder.h \
+    ../../src/qgoodwindow_global.h
+
+RESOURCES += \
+    ../../src/qgoodwindow_style.qrc
+
+INCLUDEPATH += $$PWD #include <QGoodWindow>
+
+equals(QT_MAJOR_VERSION, 5){
+DEFINES += QT_VERSION_QT5
+}
+equals(QT_MAJOR_VERSION, 6) {
+DEFINES += QT_VERSION_QT6
+}
+
+win32 {
+LIBS += -lUser32 -lGdi32
+}
+
+!no_qgoodwindow{
+
+win32 { #Windows
+SOURCES += \
+    ../../src/shadow.cpp \
+    ../../src/qgooddialog.cpp
+
+HEADERS += \
+    ../../src/common.h \
+    ../../src/shadow.h \
+    ../../src/qgooddialog.h
+
+DEFINES += QGOODWINDOW
+CONFIG += qgoodwindow
+} #Windows
+
+unix:!mac:!android { #Linux
+QT += testlib
+
+equals(QT_MAJOR_VERSION, 5){
+QT += x11extras
+}
+
+equals(QT_MAJOR_VERSION, 6){
+QT += gui-private
+}
+
+SOURCES += \
+    ../../src/shadow.cpp \
+    ../../src/qgooddialog.cpp
+
+HEADERS += \
+    ../../src/shadow.h \
+    ../../src/qgooddialog.h
+
+QMAKE_CXXFLAGS += -Wno-deprecated-declarations
+
+LIBS += -lX11
+
+CONFIG += link_pkgconfig
+PKGCONFIG += gtk+-2.0
+
+DEFINES += QGOODWINDOW
+CONFIG += qgoodwindow
+} #Linux
+
+mac { #macOS
+OBJECTIVE_SOURCES += \
+    ../../src/macosnative.mm
+
+SOURCES += \
+    ../../src/notification.cpp \
+    ../../src/qgooddialog.cpp
+
+HEADERS += \
+    ../../src/macosnative.h \
+    ../../src/notification.h \
+    ../../src/qgooddialog.h
+
+LIBS += -framework Foundation -framework Cocoa -framework AppKit
+
+DEFINES += QGOODWINDOW
+CONFIG += qgoodwindow
+} #macOS
+
+}#!no_qgoodwindow
