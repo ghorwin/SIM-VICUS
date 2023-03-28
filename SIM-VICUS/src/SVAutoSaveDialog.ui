@@ -26,7 +26,7 @@
      <item>
       <widget class="QRadioButton" name="radioButtonLatestAutoSave">
        <property name="text">
-        <string>Take latest auto-save</string>
+        <string>Recover latest autosaved version</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -38,7 +38,7 @@
        <item>
         <widget class="QRadioButton" name="radioButtonChooseTimestamp">
          <property name="text">
-          <string>Choose version with the following timestamp:</string>
+          <string>Recover autosaved version with the following timestamp:</string>
          </property>
         </widget>
        </item>

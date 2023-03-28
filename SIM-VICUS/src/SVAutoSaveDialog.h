@@ -107,8 +107,10 @@ public:
 	/*! Restarts the timer without doing any autosaving. */
 	void restartTimerWithoutAutosaving();
 
-	/*! Recover currently selected file. */
-	void recoverFile();
+	/*! Recover currently selected file with selected timestamp.
+		\returns true if wrong data was specified in saving dialog and false when recovering file is broken
+	*/
+	bool recoverFile();
 
 	/*! Removes auto-save file. */
 	void removeAutosave();
@@ -126,8 +128,6 @@ private slots:
 		\param projectName name of project for auto-saves to be removed.
 	*/
 	void onRemoveProjectSepcificAutoSaves(const QString &projectName);
-
-	void on_checkBoxOnlyLatestAutoSave_toggled(bool checked);
 
 	void on_radioButtonLatestAutoSave_toggled(bool checked);
 
