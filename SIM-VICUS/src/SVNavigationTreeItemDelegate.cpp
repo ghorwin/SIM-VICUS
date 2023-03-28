@@ -106,49 +106,28 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	else {
 		TopologyType t = static_cast<TopologyType>(index.data(ItemType).toInt());
 		switch (SVSettings::instance().m_theme) {
-					case SVSettings::NUM_TT:
-					case SVSettings::TT_White:
-						switch (t) {
-							case (TT_Building):
-								painter->setPen(QColor(78, 87, 135));
-							break;
-							case (TT_BuildingLevel):
-								painter->setPen(QColor(219, 108, 0));
-							break;
-							case (TT_Room):
-								painter->setPen(QColor(150, 20, 20));
-							break;
-							case (TT_Subsurface):
-								painter->setPen(QColor(70, 80, 125));
-							break;
-							default:
-								painter->setPen(Qt::black);
-							break;
-						}
-
-					break;
-
-					case SVSettings::TT_Dark:
-						switch (t) {
-							case (TT_Building):
-								painter->setPen(QColor(150,140,190));
-							break;
-							case (TT_BuildingLevel):
-								painter->setPen(QColor(255, 200, 120));
-							break;
-							case (TT_Room):
-								painter->setPen(QColor(250, 140, 140));
-							break;
-							case (TT_Subsurface):
-								painter->setPen(QColor(120,110,170));
-							break;
-							default:
-								painter->setPen(QColor(240,240,240));
-							break;
-						}
-
-					break;
+			case SVSettings::NUM_TT:
+			case SVSettings::TT_White:
+				switch (t) {
+					case (TT_Building):			painter->setPen(QColor(78, 87, 135)); break;
+					case (TT_BuildingLevel):	painter->setPen(QColor(219, 108, 0)); break;
+					case (TT_Room):				painter->setPen(QColor(150, 20, 20)); break;
+					case (TT_Subsurface):		painter->setPen(QColor(70, 80, 125)); break;
+					default:					painter->setPen(Qt::black); break;
 				}
+
+			break;
+			case SVSettings::TT_Dark:
+				switch (t) {
+					case (TT_Building):			painter->setPen(QColor(150,140,190)); break;
+					case (TT_BuildingLevel):	painter->setPen(QColor(255, 200, 120)); break;
+					case (TT_Room):				painter->setPen(QColor(250, 140, 140));	break;
+					case (TT_Subsurface):		painter->setPen(QColor(120,110,170)); break;
+					default:					painter->setPen(QColor(240,240,240)); break;
+				}
+
+			break;
+		}
 	}
 	painter->setFont(f);
 
@@ -175,10 +154,10 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 
 				// compose an undo action that shows/hides objects
 				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Visibility changed"),
-																	   SVUndoTreeNodeState::VisibilityState,
-																	   nodeID,
-																	   !withoutChildren,
-																	   !visible);
+																					 SVUndoTreeNodeState::VisibilityState,
+																					 nodeID,
+																					 !withoutChildren,
+																					 !visible);
 				action->push();
 				return false; // handled
 
@@ -191,10 +170,10 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				unsigned int nodeID = index.data(NodeID).toUInt();
 				// compose an undo action that selects/de-selects objects
 				SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
-																	   SVUndoTreeNodeState::SelectedState,
-																	   nodeID,
-																	   !withoutChildren,
-																	   !selected);
+																					 SVUndoTreeNodeState::SelectedState,
+																					 nodeID,
+																					 !withoutChildren,
+																					 !selected);
 				action->push();
 				return false; // handled
 
