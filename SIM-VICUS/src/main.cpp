@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
 		QString family = QFontDatabase::applicationFontFamilies(id).at(0);
 		QFont font(family);
 		font.setBold(true);
-		font.setPixelSize(16/ratio);
+		font.setPixelSize(22/ratio);
 
 		// Create painter
 		QPainter painter(&pixmap);
@@ -243,7 +243,7 @@ int main(int argc, char *argv[]) {
 
 		// draw "Version"
 		painter.setPen(Qt::white);
-		painter.drawText(615.0/ratio, 548.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::LONG_VERSION));
+		painter.drawText(615.0/ratio, 541.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("v %1").arg(VICUS::LONG_VERSION));
 
 		id = QFontDatabase::addApplicationFont(":/fonts/Manrope-Medium.otf");
 		family = QFontDatabase::applicationFontFamilies(id).at(0);
