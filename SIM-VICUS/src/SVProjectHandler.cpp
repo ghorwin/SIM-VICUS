@@ -37,6 +37,9 @@
 #include <QDialogButtonBox>
 #include <QInputDialog>
 #include <QTimer>
+#include <QCryptographicHash>
+
+#include <QtExt_Directories.h>
 
 #include <IBK_Exception.h>
 #include <IBK_FileUtils.h>
@@ -53,6 +56,7 @@
 #include "SVLogFileDialog.h"
 #include "SVViewStateHandler.h"
 #include "SVUndoModifyProject.h"
+#include "SVMainWindow.h"
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
@@ -177,6 +181,9 @@ bool SVProjectHandler::closeProject(QWidget * parent) {
 		}
 
 	} // if (isModified())
+
+	// Remove all auto-saves
+	emit removeProjectAutoSaves(m_projectFile);
 
 	// saving succeeded, now we can close the project
 	destroyProject();
@@ -421,6 +428,96 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 		return SaveFailed; // saving failed
 
 	return SaveOK;
+}
+
+SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
+	FUNCID(SVProjectHandler::autoSave);
+
+	// Project name
+	QString projectName = m_projectFile.isEmpty() ? "UnnamedProject" : m_projectFile;
+
+	// Path
+	IBK::Path path(projectName.toStdString());
+
+	// Get baseName
+	QString originName = QString::fromStdString(path.filename().str());
+
+	const QDateTime now = QDateTime::currentDateTime();
+	const QString timestamp = now.toString(QLatin1String("yyyyMMdd-hhmmss"));
+
+	QString metaData = timestamp + "_" + QString::fromStdString(path.parentPath().str());
+	const QString metaHash = QString(QCryptographicHash::hash(metaData.toStdString().c_str(), QCryptographicHash::Md5).toHex());
+	QString fname = originName;
+
+	// if the file already ends with ".vicus" it will be removed
+	if (fname.endsWith(SVSettings::instance().m_projectFileSuffix))
+		fname.remove(SVSettings::instance().m_projectFileSuffix);
+
+	fname += "(" + metaHash + ")";
+
+	// Append ".vicus.bak"
+	fname.append(SVSettings::instance().m_projectFileAutoSaveSuffix);
+
+	// update standard placeholders in project file
+	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]		= QtExt::Directories::databasesDir().toStdString();
+	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
+
+	// update embedded database
+	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
+
+	// Auto-Save directories
+	QString autoSaveBase = QtExt::Directories::userDataDir() + "/autosaves/";
+	QString autoSaveName = autoSaveBase + fname;
+
+	QDir baseDir(autoSaveBase);
+	if(!baseDir.exists())
+		QDir(QtExt::Directories::userDataDir()).mkdir("autosaves");
+
+	QFile file(autoSaveName);
+	// auto-save project file
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1' (path does not exist or missing permissions).")
+						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+		return SVProjectHandler::SaveCancelled;
+	}
+	file.close();
+
+	try {
+		m_project->writeXML(IBK::Path(autoSaveName.toStdString()));
+	}
+	catch(IBK::Exception &ex) {
+		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1'. Exception in writing xml.")
+						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+		return SVProjectHandler::SaveCancelled;
+	}
+
+	QString info(autoSaveBase + "/autosave-metadata.info");
+	QFile autoSaveInformation(info);
+	unsigned int size = autoSaveInformation.size();
+
+	if(!autoSaveInformation.open(QIODevice::Append | QIODevice::Text)) {
+		IBK::IBK_Message(IBK::FormatString("Cannot create autosave metadata-file '%1' (path does not exist or missing permissions).")
+						 .arg(info.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+		return SVProjectHandler::SaveCancelled;
+	}
+
+	// Check whether file is empty
+	QTextStream out(&autoSaveInformation);
+	if(size == 0) { // empty and add header data
+		out << "Filename\tHash\tTimestamp\tPath\n";
+	}
+
+	QString basePath;
+	if(!path.exists())
+		basePath = "-";
+	else
+		basePath = QString::fromStdString(path.parentPath().str());
+
+	out << originName << "\t" << metaHash << "\t" << timestamp << "\t" << basePath << "\n";
+
+	autoSaveInformation.close();
+
+	return SaveOK; // saving succeeded
 }
 
 
@@ -986,10 +1083,6 @@ bool SVProjectHandler::read(const QString & fname) {
 
 		m_lastReadTime = QFileInfo(fname).lastModified();
 
-		// update the colors
-		// if project has invalid colors nothing is drawn ...
-		updateSurfaceColors();
-
 		// after reading the project file, we should update the views
 		// this is done in a subsequent call to setModified() from the calling function
 		return true;
@@ -1098,32 +1191,6 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 
 	// update recent project list
 	emit updateRecentProjects();
-}
-
-
-void SVProjectHandler::updateSurfaceColors() {
-	for (VICUS::Building &b : m_project->m_buildings) {
-		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			for (VICUS::Room &r : bl.m_rooms) {
-				for (VICUS::Surface &s : r.m_surfaces) {
-					if (!s.m_displayColor.isValid())
-						s.initializeColorBasedOnInclination();
-					s.m_color = s.m_displayColor;
-					for (const VICUS::SubSurface &sub : s.subSurfaces()) {
-						const_cast<VICUS::SubSurface &>(sub).updateColor();
-					}
-				}
-			}
-		}
-	}
-
-	// plain geometry surfaces will be silver
-	for (VICUS::Surface &s : m_project->m_plainGeometry.m_surfaces) {
-		if (s.m_color == QColor::Invalid) {
-			s.m_color = QColor("#C0C0C0");
-		}
-	}
-
 }
 
 

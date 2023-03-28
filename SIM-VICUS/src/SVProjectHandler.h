@@ -180,6 +180,9 @@ public:
 	*/
 	SaveResult saveWithNewFilename(QWidget * parent);
 
+	/*! Auto-saves the current project in app data. */
+	SaveResult autoSave();
+
 	/*! Saves project with new filename into the template folder (interactive function, asks user to input filename).
 		Calls saveProject() internally.
 	*/
@@ -298,6 +301,11 @@ signals:
 	*/
 	void fixProjectAfterRead();
 
+	/*! Emitted when auto-saves of projects need to be removed.
+		\param projectPath path of current project
+	*/
+	void removeProjectAutoSaves(const QString &projectPath);
+
 private:
 
 	/*! Creates a new project instance (must not have one already) and resets project file name.
@@ -335,9 +343,6 @@ private:
 		\sa updateRecentProjects()
 	*/
 	void addToRecentFiles(const QString& fname);
-
-	/*! Set new colors for each invalid color in the surface data. */
-	void updateSurfaceColors();
 
 	/*! This function is called once a project has been read and the internal databases have been updated.
 		Here, all clearly invalid data elements are removed so that the project retains a meaningful state.

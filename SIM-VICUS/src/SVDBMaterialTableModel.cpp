@@ -65,67 +65,67 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 	std::advance(it, row);
 
 	switch (role) {
-	case Qt::DisplayRole : {
+		case Qt::DisplayRole : {
 
-		switch (index.column()) {
-		case ColId					: return it->first;
-		case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
-		case ColCategory			:
-			try {
-			return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
-		} catch (...) {
-			return "";
+			switch (index.column()) {
+				case ColId					: return it->first;
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
+				case ColCategory			:
+					try {
+					return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
+				} catch (...) {
+					return "";
+				}
+				case ColProductID			: return "--";
+				case ColProducer			: return QtExt::MultiLangString2QString(it->second.m_manufacturer);
+				case ColSource				: return QtExt::MultiLangString2QString(it->second.m_dataSource);
+				case ColRho					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Density].value, 0, 'f', 1);
+				case ColCet					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_HeatCapacity].value, 0, 'f', 0);
+				case ColLambda				: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Conductivity].value, 0, 'f', 3);
+			}
+		} break;
+
+		case Qt::DecorationRole : {
+			if (index.column() == ColCheck) {
+				if (it->second.isValid(false)) // for now just check the thermal properties
+					return QIcon(":/gfx/actions/16x16/ok.png");
+				else
+					return QIcon(":/gfx/actions/16x16/error.png");
+			}
+		} break;
+
+		case Qt::TextAlignmentRole :
+			if (index.column() >= ColRho && index.column() < NumColumns)
+				return int(Qt::AlignRight | Qt::AlignVCenter);
+			break;
+
+		case Qt::SizeHintRole :
+			switch (index.column()) {
+			case ColCheck :
+				return QSize(22, 16);
+			} // switch
+			break;
+
+		case Role_Id :
+			return it->first;
+
+		case Role_BuiltIn :
+			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
+
+		case Qt::ToolTipRole: {
+			if(index.column() == ColCheck) {
+				std::string errorMsg = "";
+				if (!it->second.isValid(false))
+					return QString::fromStdString(it->second.m_errorMsg);
+			}
 		}
-		case ColProductID			: return "--";
-		case ColProducer			: return QtExt::MultiLangString2QString(it->second.m_manufacturer);
-		case ColSource				: return QtExt::MultiLangString2QString(it->second.m_dataSource);
-		case ColRho					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Density].value, 0, 'f', 1);
-		case ColCet					: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_HeatCapacity].value, 0, 'f', 0);
-		case ColLambda				: return QString("%L1").arg(it->second.m_para[VICUS::Material::P_Conductivity].value, 0, 'f', 3);
-		}
-	} break;
-
-	case Qt::DecorationRole : {
-		if (index.column() == ColCheck) {
-			if (it->second.isValid(false)) // for now just check the thermal properties
-				return QIcon(":/gfx/actions/16x16/ok.png");
-			else
-				return QIcon(":/gfx/actions/16x16/error.png");
-		}
-	} break;
-
-	case Qt::TextAlignmentRole :
-		if (index.column() >= ColRho && index.column() < NumColumns)
-			return int(Qt::AlignRight | Qt::AlignVCenter);
-		break;
-
-	case Qt::SizeHintRole :
-		switch (index.column()) {
-		case ColCheck :
-			return QSize(22, 16);
-		} // switch
-		break;
-
-	case Role_Id :
-		return it->first;
-
-	case Role_BuiltIn :
-		return it->second.m_builtIn;
-
-	case Role_Local :
-		return it->second.m_local;
-
-	case Role_Referenced:
-		return it->second.m_isReferenced;
-
-	case Qt::ToolTipRole: {
-		if(index.column() == ColCheck) {
-			std::string errorMsg = "";
-			if (!it->second.isValid(false))
-				return QString::fromStdString(it->second.m_errorMsg);
-		}
-	}
-	}
+	} // switch
 
 	return QVariant();
 }

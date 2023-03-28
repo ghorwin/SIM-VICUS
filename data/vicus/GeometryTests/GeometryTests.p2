@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.3.0">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="0">Network</SubDir>
+			<SubDir Color="#d02000" Checked="1">SingleZoneWithWindowInvertedConstructionTest</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SingleZoneWithWindowInvertedConstructionTest/results/states.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SingleZoneWithWindowInvertedConstructionTest/results/states.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#2e3436</PenColor>
+						<MarkerColor>#2e3436</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

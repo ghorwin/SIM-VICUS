@@ -180,6 +180,8 @@ bool SVOutputGridEditDialog::checkIntervals() {
 
 
 void SVOutputGridEditDialog::storeIntervals(std::vector<NANDRAD::Interval> & intervals) const {
+	// Note: we have checked parseTable() results before allowing to save data, so
+	//       the parseTable() call must return true
 	int success = parseTable(intervals, false);
 	Q_ASSERT(success);
 }
@@ -269,6 +271,16 @@ bool SVOutputGridEditDialog::parseTable(std::vector<NANDRAD::Interval> & interva
 					showError(0,(int)i,tr("Invalid interval definition, start point not preceed last interval's end point."));
 				return false;
 			}
+		}
+		if (intervals[i-1].m_para[NANDRAD::Interval::P_Start].value >= intervals[i].m_para[NANDRAD::Interval::P_Start].value) {
+			if (showMessageOnError)
+				showError(0,(int)i,tr("Invalid interval definition, start point of successive interval must be a later time than start point of preceeding interval."));
+			return false;
+		}
+		if (intervals[i].m_para[NANDRAD::Interval::P_Start].value > intervals[i-1].endTime()) {
+			if (showMessageOnError)
+				showError(0,(int)i,tr("Output interval must not start prior to previous output interval end."));
+			return false;
 		}
 	}
 

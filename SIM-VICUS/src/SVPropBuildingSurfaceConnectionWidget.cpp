@@ -74,7 +74,31 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi(bool /*onlySelectionModifie
 	// process all component instances
 	std::set<int> selectedRows;
 	std::set<const VICUS::Surface*> referencedSurfaces;
+	std::set<unsigned int>	handledIds;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		unsigned int counter = 1;
+		for (const VICUS::ComponentInstance & ciTest : project().m_componentInstances) {
+			if(handledIds.find(ci.m_id) != handledIds.end())
+				break; // skip already handled ci ids with doublings
+			// Not very smart comperission of component instance
+			// TODO add == operator
+
+			if(ciTest.m_idSideASurface == ci.m_idSideASurface && ci.m_idSideBSurface == ciTest.m_idSideBSurface)
+				continue;
+
+			// Give user feedback, when several component instances exist.
+			if(ci.m_id == ciTest.m_id &&
+					(ciTest.m_idSideASurface != ci.m_idSideASurface || ci.m_idSideBSurface != ciTest.m_idSideBSurface)) {
+				++counter;
+			}
+		}
+
+		if(counter > 1)
+			IBK::IBK_Message(IBK::FormatString("Unfortunately the project contains %2 component instances with the same id #%1 "
+											   "but different connected surfaces.").arg(ci.m_id).arg(counter), IBK::MSG_ERROR);
+
+		handledIds.insert(ci.m_id);
+
 		// skip all without two surfaces
 		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
 			continue;

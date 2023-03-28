@@ -356,8 +356,8 @@ bool Polygon3D::smallerVectZero(const IBKMK::Vector3D& vect) {
 	return false;
 }
 
-IBKMK::Vector3D Polygon3D::getNormal(const std::vector<IBKMK::Vector3D>& polygon) {
-	FUNCID(Polygon3D::getNormal);
+IBKMK::Vector3D Polygon3D::computeNormal(const std::vector<IBKMK::Vector3D>& polygon) {
+	FUNCID(Polygon3D::computeNormal);
 
 	if (polygon.size() < 3)
 		return IBKMK::Vector3D(1,0,0);
@@ -447,7 +447,7 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 	// calculate normal with first 3 points
 	m_localX = verts[1] - verts[0];
 //	IBKMK::Vector3D y = verts.back() - verts[0];
-	IBKMK::Vector3D n1 = getNormal(verts);
+	IBKMK::Vector3D n1 = computeNormal(verts);
 //	IBKMK::Vector3D n2;
 
 //	m_localX.crossProduct(y, n2);

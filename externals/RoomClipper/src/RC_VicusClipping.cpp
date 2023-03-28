@@ -27,6 +27,7 @@
 
 #include "RC_VicusClipping.h"
 #include "RC_ClippingSurface.h"
+#include "RC_Constants.h"
 
 #if defined(_OPENMP)
 #include <omp.h> // needed for omp_get_num_threads()
@@ -105,6 +106,14 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 	unsigned int currentCount = 0;
 
 	for(const VICUS::Surface *s1 : surfaces){
+
+		for (const VICUS::ComponentInstance &ci : m_vicusCompInstances) {
+			if (ci.m_idSideASurface == s1->m_id)
+				m_compInstOriginSurfId[s1->m_id] = ci.m_idComponent;
+			if (ci.m_idSideBSurface == s1->m_id)
+				m_compInstOriginSurfId[s1->m_id] = ci.m_idComponent;
+		}
+
 
 		// Skip already coupled surfaces
 		if(alreadyCoupledSurfaces.find(s1->m_id) != alreadyCoupledSurfaces.end())
@@ -356,7 +365,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		if(cs.m_clippingObjects.empty()){
 			if(originSurf.m_componentInstance == nullptr)
 				continue;
-			m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_id;
+			m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_idComponent;
 			continue;
 		}
 
@@ -472,7 +481,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 				// save id origin
 				if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
-					m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_id;
+					m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
 
 				r->updateParents();
 				//#if defined(_OPENMP)
@@ -519,7 +528,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				r->m_surfaces.push_back(originSurfCopy);
 				r->updateParents();
 				if(originSurf.m_componentInstance != nullptr)
-					m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_id;
+					m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_idComponent;
 				continue;
 			}
 			//#if defined(_OPENMP)
@@ -646,7 +655,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 			// save id origin
 			if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
-				m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_id;
+				m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
 			//#if defined(_OPENMP)
 			//#pragma omp critical
 			//#endif
@@ -659,7 +668,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 unsigned int VicusClipper::findComponentInstanceForSurface(unsigned int id){
 	for(unsigned int i=0; i<m_vicusCompInstances.size(); ++i){
 		VICUS::ComponentInstance& ci = m_vicusCompInstances[i];
-		if(ci.m_id == id){
+		if(ci.m_idSideASurface == id){
 			return ci.m_idComponent;
 		}
 	}
@@ -764,33 +773,37 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end())
 			continue;
 
-		// get old construction instance properties -> component id
-		// qDebug() << "Surface " << surfA->m_displayName << " is cut.";
+#ifdef DETAILED_INFO
+		qDebug() << "-----------------------------";
+#endif
+		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end() )
+			continue;
 
+		unsigned int compId = m_compInstOriginSurfId[surfA->m_id];
+		VICUS::ComponentInstance ci(nextUnusedId++, compId, surfA->m_id, VICUS::INVALID_ID);
+
+		// get old construction instance properties and replace old id
 		if(m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end()){
 			for(const VICUS::ComponentInstance &ciObj : m_vicusCompInstances){
-				if(ciObj.m_idSideASurface == surfA->m_id || ciObj.m_idSideBSurface == surfA->m_id){
+				unsigned int idA = ciObj.m_idSideASurface;
+				unsigned int idB = ciObj.m_idSideBSurface;
 
-					unsigned int idA = ciObj.m_idSideASurface;
-					unsigned int idB = ciObj.m_idSideBSurface;
+				if(idA != surfA->m_id && idB != surfA->m_id)
+					continue;
 
-					if(idB != VICUS::INVALID_ID) {
-						if(m_compInstOriginSurfId.find(idB) != m_compInstOriginSurfId.end())
-							handledSurfaces.insert(m_compInstOriginSurfId[idB]);
-						else
-							handledSurfaces.insert(idB);
-					}
-
+				if(idA != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idA) != m_compInstOriginSurfId.end()) {
 					handledSurfaces.insert(idA);
-					cis.push_back(ciObj);
-					break;
+					ci.m_idSideASurface = idA;
 				}
-			}
-			// continue;
-		}
 
-		unsigned int compId = findComponentInstanceForSurface(m_compInstOriginSurfId[surfA->m_id]);
-		VICUS::ComponentInstance ci(nextUnusedId++, compId, surfA->m_id, VICUS::INVALID_ID);
+				if(idB != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idB) != m_compInstOriginSurfId.end()) {
+					handledSurfaces.insert(idB);
+					ci.m_idSideASurface = idB;
+				}
+
+				break;
+			}
+		}
 
 		// We only couple surfaces when we want to create new connections
 		if(createConnections)
@@ -799,11 +812,16 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 				// do some checks so that we have no nullptr, already handled, adiabatic surfaces, etc...
 				if(surfA == surfB || surfA == nullptr || surfB == nullptr)
 					continue;
+
+				// Skip plain or broken surfaces
 				if(surfA->m_parent == nullptr || surfB->m_parent == nullptr)
 					continue;
+
+				// Skip surfaces in the same room
 				if(surfA->m_parent == surfB->m_parent)
 					continue;
 
+				// Skip all already handled surfaces
 				if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end() ||
 						handledSurfaces.find(surfB->m_id) != handledSurfaces.end())
 					continue;
@@ -832,10 +850,9 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 				}
 
 				// check area of both surfaces
+				// Areas should not deviate more than 5%
 				if(surfaceRatio > 0.05)
 					continue;
-
-				//qDebug() << "Fläche " << surfA->m_displayName << " wird mit Fläche " << surfB->m_displayName<< " geschnitten.";
 
 				// convert 3D points of surface B into 2D plane of surface A
 				VICUS::Surface * s1 = const_cast<VICUS::Surface*>(surfA);
@@ -845,12 +862,15 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 				const IBKMK::Vector3D &localY = s1->geometry().localY();
 				const IBKMK::Vector3D &offset = s1->geometry().offset();
 				double distance = 0;
+
 				// calculate distance of these two surfaces
 				// clipping object is for normalized directional vectors equal the distance of the two points
 				IBKMK::Vector3D rayEndPoint;
 				IBKMK::lineToPointDistance( s1->geometry().offset(), s1->geometry().normal().normalized(),
 											s2->geometry().offset(), distance, rayEndPoint);
-				if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0)
+
+				// Skip surfaces outside of the range
+				if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0 - EPSILON)
 					continue;
 
 				std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
@@ -913,6 +933,10 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		if(handledSurfaces.find(surfA->m_id) == handledSurfaces.end()) {
 			cis.push_back(ci);
 			handledSurfaces.insert(surfA->m_id);
+
+#ifdef DETAILED_INFO
+		qDebug() << "Surface '" << surfA->m_displayName << "' contains component #" << ci.m_idComponent << " after connection.";
+#endif
 		}
 	}
 

@@ -54,6 +54,18 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	bool compare(const VICUS::ComponentInstance &ci) const {
+		if(m_idComponent != ci.m_idComponent)
+			return false;
+		if(m_idSideASurface != ci.m_idSideASurface)
+			return false;
+		if(m_idSideBSurface != ci.m_idSideBSurface)
+			return false;
+
+		// For now we ignore the other members during comparison
+		return true;
+	}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of component instance (will be used for NANDRAD::ConstructionInstance). */
@@ -82,7 +94,6 @@ public:
 	VICUS::Surface			*m_sideBSurface					= nullptr;
 
 	VICUS::Room				*m_surfaceHeatingControlZone	= nullptr;
-	VICUS::SupplySystem		*m_supplySystem					= nullptr;
 };
 
 } // namespace VICUS

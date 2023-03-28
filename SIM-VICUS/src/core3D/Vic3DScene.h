@@ -160,7 +160,7 @@ public:
 
 private:
 	void generateBuildingGeometry();
-    void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_ColoredSurfaces);
+	void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_TransparentWithBoxes);
 	void generateNetworkGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
