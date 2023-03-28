@@ -190,6 +190,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxConstructionUsage->setEnabled(!con->m_builtIn);
+	m_ui->pushButtonFlipConstruction->setEnabled(!con->m_builtIn);
 
 	// set palette
 	QPalette pal;
