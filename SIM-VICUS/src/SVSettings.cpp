@@ -176,6 +176,8 @@ void SVSettings::read() {
 	m_navigationSplitterSize = (int)settings.value("NavigationSplitterSize", 250).toUInt();
 	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
 	m_terminalEmulator = (TerminalEmulators)settings.value("TerminalEmulator", TE_XTerm).toInt();
+	m_autosaveInterval = settings.value("AutosaveInterval", 60000).toInt();
+	m_enableAutosaving = settings.value("EnableAutosaving", true).toBool();
 
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
 	m_theme = tmpTheme;
@@ -208,7 +210,6 @@ void SVSettings::read() {
 void SVSettings::write(QByteArray geometry, QByteArray state) {
 	QtExt::Settings::write(geometry, state);
 
-
 	QSettings settings( m_organization, m_appName );
 	settings.setValue("VersionIdentifier", m_versionIdentifier);
 	settings.setValue("VisibleDockWidgets", m_visibleDockWidgets.join(","));
@@ -219,6 +220,8 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("TerminalEmulator", m_terminalEmulator);
 	settings.setValue("UseHighDPIScaling", m_useHighDPIScaling);
 	settings.setValue("NavigationSplitterSize", m_navigationSplitterSize);
+	settings.setValue("AutosaveInterval", m_autosaveInterval);
+	settings.setValue("EnableAutosaving", m_enableAutosaving);
 
 	settings.setValue("Theme", m_theme);
 
