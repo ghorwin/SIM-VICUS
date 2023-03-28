@@ -13,29 +13,60 @@
 
 #include <QtExt_Directories.h>
 
+SVAutoSaveDialog * SVAutoSaveDialog::m_self = nullptr;
+
+SVAutoSaveDialog & SVAutoSaveDialog::instance() {
+	Q_ASSERT_X(m_self != nullptr, "[SVAutoSaveDialog::instance]",
+			   "You must not access SVAutoSaveDialog::instance() when there is no SVAutoSaveDialog "
+			   "instance (anylonger).");
+	return *m_self;
+}
+
 SVAutoSaveDialog::SVAutoSaveDialog(QDialog *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVAutoSaveDialog)
 {
+	m_self = this;
+
 	m_ui->setupUi(this);
 
+	// Set and start timer
 	m_timer = new QTimer;
-	//m_timer->setInterval(AUTO_SAVE_INTERVALL);
+	m_timer->start(SVSettings::instance().m_autosaveInterval);
 
-	connect(m_timer, &QTimer::timeout, this, &SVAutoSaveDialog::onTimerFinished);
-
-	m_timer->start(AUTO_SAVE_INTERVALL);
-
+	// Format database
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetFiles);
 
-	m_ui->tableWidgetFiles->setColumnCount(4);
-	m_ui->tableWidgetFiles->setHorizontalHeaderLabels(QStringList() << "Filename" << "Hash" << "Basepath" << "Savetime");
+	m_ui->tableWidgetFiles->setColumnCount(2);
+	m_ui->tableWidgetFiles->setHorizontalHeaderLabels(QStringList() << "Filename" << "Basepath");
+
+	m_ui->tableWidgetFiles->setColumnWidth(AC_BasePath, 280);
+	m_ui->tableWidgetFiles->setColumnWidth(AC_FileName, 200);
+	m_ui->tableWidgetFiles->horizontalHeader()->setStretchLastSection(true);
+
+
+	// Connect Signal / Slots
+	connect(m_timer, &QTimer::timeout, this, &SVAutoSaveDialog::onTimerFinished);
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::removeProjectAutoSaves, this, &SVAutoSaveDialog::onRemoveProjectSepcificAutoSaves);
+
+	// Update ui
+	updateUi();
 }
 
-SVAutoSaveDialog::~SVAutoSaveDialog() {}
+
+SVAutoSaveDialog::~SVAutoSaveDialog() {
+	delete m_ui;
+	delete m_timer;
+
+	m_self = nullptr;
+}
+
 
 bool SVAutoSaveDialog::checkForAutoSaves() {
 	FUNCID(SVAutoSaveDialog::checkForAutoSaves);
+
+	// Clear all current auto saves.
+	m_autoSaveData.clear();
 
 	QString userDir = QtExt::Directories::userDataDir();
 
@@ -65,7 +96,7 @@ bool SVAutoSaveDialog::checkForAutoSaves() {
 	std::vector<std::string> lines;
 	IBK::FileReader::readAll(metaData, lines, std::vector<std::string>());
 
-	if(lines.empty())
+	if(lines.size() < 2)
 		return false;
 
 	// Remove header
@@ -74,28 +105,34 @@ bool SVAutoSaveDialog::checkForAutoSaves() {
 	// QStringList files = autoSavesDir.entryList(QDir::Files);
 
 	std::vector<std::string> tokens;
-	for(unsigned int i=0; i < lines.size(); ++i) {
+	for (unsigned int i=0; i < lines.size(); ++i) {
 		// Current line
 		const std::string &line = lines[i];
 
 		// split columns
 		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags | IBK::EF_TrimTokens | IBK::EF_KeepEmptyTokens);
 
-		// FileName
-		const QString fileName = autoSavesDirName + "/" + QString::fromStdString(tokens[AC_FileName]);
-		QFile file(fileName);
-
-		// Check if file can be opened
-		if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-			IBK::IBK_Message(IBK::FormatString("Cannot read auto-save file '%1' (path does not exist or missing permissions).")
-							 .arg(fileName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-			continue;
-		}
-
+		// fast access
 		const QString projectName = QString::fromStdString(tokens[0]);
 		const QString hash        = QString::fromStdString(tokens[1]);
 		const QString timeStamp   = QString::fromStdString(tokens[2]);
 		const QString basePath    = QString::fromStdString(tokens[3]);
+
+		// FileName
+		QString fileName = QString::fromStdString(tokens[AC_FileName]);
+
+		if(fileName.endsWith(".vicus"))
+			fileName.remove(".vicus");
+
+		const QString autoSaveFile = autoSavesDirName + "/" + fileName + "(" + hash + ").vicus.bak" ;
+		QFile autoSavefile(autoSaveFile);
+
+		// Check if file can be opened
+		if(!autoSavefile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+			IBK::IBK_Message(IBK::FormatString("Cannot read auto-save file '%1' (path does not exist or missing permissions).")
+							 .arg(fileName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+			continue;
+		}
 
 		m_autoSaveData.push_back(AutoSaveData(projectName, hash, timeStamp, basePath));
 	}
@@ -103,28 +140,35 @@ bool SVAutoSaveDialog::checkForAutoSaves() {
 	return true;
 }
 
-void SVAutoSaveDialog::removeProjectSepcificAutoSaves(const QString &projectName) {
-	QString userDir = QtExt::Directories::userDataDir();
 
-	// Path to autosaves
-	QString autoSavesDir = userDir + "/autosaves/";
+void SVAutoSaveDialog::onRemoveProjectSepcificAutoSaves(const QString &projectName) {
+	IBK::Path path(projectName.toStdString());
 
-	// Construct Directory
-	QDir autoSavesDirectory(autoSavesDir);
+	QString basePath, projectFile;
+	if(projectName.isEmpty()) {
+		basePath = "";
+		projectFile = "UnnamedProject";
+	}
+	else {
+		basePath = QString::fromStdString(path.parentPath().str() );
+		projectFile = QString::fromStdString(path.filename().str() );
+	}
 
-	// Remove all autosaves
-	autoSavesDirectory.removeRecursively();
+	removeProjectFiles(basePath, projectFile);
 }
+
 
 void SVAutoSaveDialog::handleAutoSaves() {
 	if(!checkForAutoSaves())
-		return; // no aute-saves have been found
+		return; // no auto-saves have been found
 
 	// Read meta-data
-	updateAutoSavesInTable();
+	updateUi();
 
+	// Exec dialog
 	exec();
 }
+
 
 void SVAutoSaveDialog::updateAutoSavesInTable() {
 
@@ -153,8 +197,6 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 				QDateTime dt = QDateTime::fromString(data.m_timeStamp, "yyyyMMdd-hhmmss");
 				dateTimes.push_back(std::pair<QDateTime, unsigned int>(dt, j));
 				handledLines.insert(j);
-
-
 			}
 		}
 
@@ -167,17 +209,13 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 		font.setBold(true);
 		itemFileName->setFont(font);
 
-		QTableWidgetItem *itemHash = new QTableWidgetItem(filename.m_hash);
-		m_ui->tableWidgetFiles->setItem(0, AC_Hash, itemHash);
-
-		QComboBox *cb = new QComboBox;
+		QComboBox *cb = m_ui->comboBoxTimestamps;
+		cb->clear();
 		for (const std::pair<QDateTime, unsigned int> &dt : dateTimes) {
 			cb->addItem(dt.first.toString());
 			cb->setItemData(cb->count()-1, dt.second, Qt::UserRole); // cache the current vector idx
 		}
-
-		cb->setCurrentIndex(cb->count()-1);
-		m_ui->tableWidgetFiles->setCellWidget(0, AC_TimeStamp, cb);
+		cb->setEnabled(m_ui->radioButtonChooseTimestamp->isChecked());
 
 		QTableWidgetItem *itemBasePath = new QTableWidgetItem(filename.m_basePath);
 		m_ui->tableWidgetFiles->setItem(0, AC_BasePath, itemBasePath);
@@ -188,11 +226,8 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 	}
 
 	m_ui->tableWidgetFiles->setCurrentCell(0,0);
-
-	m_ui->tableWidgetFiles->hideColumn(AC_Hash);
-	m_ui->tableWidgetFiles->resizeColumnsToContents();
-	m_ui->tableWidgetFiles->horizontalHeader()->setStretchLastSection(true);
 }
+
 
 void SVAutoSaveDialog::writeAutoSaveData() {
 	FUNCID(SVAutoSaveDialog::writeAutoSaveData);
@@ -204,7 +239,6 @@ void SVAutoSaveDialog::writeAutoSaveData() {
 
 	QString info(autoSavesMetaDataName);
 	QFile autoSaveInformation(info);
-	unsigned int size = autoSaveInformation.size();
 
 	if(!autoSaveInformation.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		IBK::IBK_Message(IBK::FormatString("Cannot create autosave metadata file '%1' (path does not exist or missing permissions).")
@@ -223,20 +257,60 @@ void SVAutoSaveDialog::writeAutoSaveData() {
 	autoSaveInformation.close();
 }
 
-void SVAutoSaveDialog::onTimerFinished() {
-	m_timer->start(AUTO_SAVE_INTERVALL);
-	emit autoSave();
+void SVAutoSaveDialog::updateUi() {
+	// Update Auto-saves in tables
+	updateAutoSavesInTable();
+
+	int rowCount = m_ui->tableWidgetFiles->rowCount();
+
+	m_ui->pushButtonRecoverFile->setEnabled(rowCount != 0);
+	m_ui->pushButtonRemoveAutoSave->setEnabled(rowCount != 0);
 }
 
-void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
-	SVProjectHandler::instance();
+void SVAutoSaveDialog::removeProjectFiles(const QString &basePath, const QString &projectName) {
+	if(!checkForAutoSaves())
+		return;
 
-	int currentRow = m_ui->tableWidgetFiles->currentRow();
+	for (unsigned int i=m_autoSaveData.size(); i > 0; --i) {
+		const AutoSaveData &data = m_autoSaveData[i-1];
 
-	QComboBox *cb = dynamic_cast<QComboBox*>(m_ui->tableWidgetFiles->cellWidget(currentRow, AC_TimeStamp));
+		if((data.m_fileName != "UnnamedProject" &&
+			(data.m_basePath != basePath)) || (data.m_fileName != projectName))
+			continue;
+
+		QString tempName = data.m_fileName;
+
+		if(tempName.endsWith(".vicus"))
+			tempName = tempName.remove(".vicus");
+
+		QString filename = QtExt::Directories::userDataDir() + "/autosaves/" + tempName + "(" + data.m_hash + ").vicus.bak";
+		// remove file
+		QFile::remove(filename);
+		// delete idx in vector
+		m_autoSaveData.erase(m_autoSaveData.begin() + i);
+	}
+
+	writeAutoSaveData();
+}
+
+void SVAutoSaveDialog::restartTimerWithoutAutosaving() {
+	m_timer->start(SVSettings::instance().m_autosaveInterval);
+}
+
+void SVAutoSaveDialog::recoverFile(){
+	FUNCID(SVAutoSaveDialog::recoverFile);
+
+	unsigned int currentIdx = 0;
+	bool ok = false;
+	QComboBox *cb = m_ui->comboBoxTimestamps;
 	Q_ASSERT(cb != nullptr);
+	currentIdx = cb->currentData().toUInt(&ok);
 
-	unsigned int currentIdx = cb->currentData().toUInt();
+	// Conversion error
+	if(!ok) {
+		IBK::IBK_Message(IBK::FormatString("Error in converting timestamp data."), IBK::MSG_ERROR, FUNC_ID);
+		return;
+	}
 
 	Q_ASSERT(currentIdx < m_autoSaveData.size());
 
@@ -269,13 +343,13 @@ void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
 
 	// ask user for filename
 	QString restoredFileName = QFileDialog::getSaveFileName(
-			this,
-			tr("Specify SIM-VICUS project file"),
-			newFilename,
-			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix),
-			nullptr,
-			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-		);
+				this,
+				tr("Specify SIM-VICUS project file"),
+				newFilename,
+				tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix),
+				nullptr,
+				SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+															);
 
 	// check if we have an existing and valid filename
 	if (restoredFileName.isEmpty())
@@ -289,17 +363,14 @@ void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
 
 	// copy file
 	file.copy(restoredFileName);
+	file.remove();
 	close();
-
-	// Remove current auto saves
-	on_pushButtonRemoveAutoSave_clicked();
 }
 
-
-void SVAutoSaveDialog::on_pushButtonRemoveAutoSave_clicked() {
+void SVAutoSaveDialog::removeAutosave() {
 	int currentRow = m_ui->tableWidgetFiles->currentRow();
 
-	QComboBox *cb = dynamic_cast<QComboBox*>(m_ui->tableWidgetFiles->cellWidget(currentRow, AC_TimeStamp));
+	QComboBox *cb = m_ui->comboBoxTimestamps;
 	Q_ASSERT(cb != nullptr);
 
 	for(unsigned int i = (unsigned int)cb->count(); i > 0; --i) {
@@ -315,13 +386,54 @@ void SVAutoSaveDialog::on_pushButtonRemoveAutoSave_clicked() {
 		QString filename = QtExt::Directories::userDataDir() + "/autosaves/" + tempName + "(" + data.m_hash + ").vicus.bak";
 		// remove file
 		QFile::remove(filename);
-
+		// delete idx in vector
 		m_autoSaveData.erase(m_autoSaveData.begin() + idx);
 	}
+}
 
-	updateAutoSavesInTable();
+void SVAutoSaveDialog::onTimerFinished() {
+	if(!SVSettings::instance().m_enableAutosaving)
+		return;
+
+	m_timer->start(SVSettings::instance().m_autosaveInterval);
+	emit autoSave();
+}
+
+void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
+	// Recovers file
+	recoverFile();
+
+	// Remove current auto saves
+	removeAutosave();
+}
+
+
+void SVAutoSaveDialog::on_pushButtonRemoveAutoSave_clicked() {
+	// Remove auto-save file
+	removeAutosave();
+
+	// update ui
+	updateUi();
 
 	// write updated file
 	writeAutoSaveData();
+}
+
+
+void SVAutoSaveDialog::on_pushButtonDiscard_clicked() {
+	reject();
+}
+
+
+void SVAutoSaveDialog::on_checkBoxOnlyLatestAutoSave_toggled(bool checked){
+	m_showOnlyLatestAutosave = checked;
+
+	// Update Ui
+	updateUi();
+}
+
+
+void SVAutoSaveDialog::on_radioButtonLatestAutoSave_toggled(bool checked) {
+	updateUi();
 }
 

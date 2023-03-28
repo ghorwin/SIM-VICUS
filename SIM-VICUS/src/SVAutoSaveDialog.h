@@ -43,6 +43,13 @@ class SVAutoSaveDialog : public QDialog {
 Q_OBJECT
 public:
 
+
+	/*! Returns a pointer to the SVAutoSaveDialog instance.
+		Only access this function during the lifetime of the
+		SVAutoSaveDialog instance.
+	*/
+	static SVAutoSaveDialog & instance();
+
 	/*! Struct to encapsulate all meta-data from auto-save. */
 	struct AutoSaveData {
 
@@ -64,9 +71,7 @@ public:
 
 	enum AutosaveColumns {
 		AC_FileName,
-		AC_Hash,
 		AC_BasePath,
-		AC_TimeStamp,
 	};
 
 	explicit SVAutoSaveDialog(QDialog *parent = nullptr);
@@ -78,8 +83,6 @@ public:
 	*/
 	bool checkForAutoSaves();
 
-	/*! Removes all auto-saves when project will be closed. */
-	void removeProjectSepcificAutoSaves(const QString &projectName);
 
 	/*! Starts auto-save dialog on start-up, when auto-saves have been found.
 		Shows all information about auto-saved files (Name, time, folder)
@@ -92,6 +95,24 @@ public:
 	/*! Writes updated auto-save data to "autosave-metadata.info". */
 	void writeAutoSaveData();
 
+	/*! Updates Ui with current data. */
+	void updateUi();
+
+	/*! Removes all auto-saved project files.
+		\param basePath base path of project
+		\param projectName name of project file
+	*/
+	void removeProjectFiles(const QString &basePath, const QString &projectName);
+
+	/*! Restarts the timer without doing any autosaving. */
+	void restartTimerWithoutAutosaving();
+
+	/*! Recover currently selected file. */
+	void recoverFile();
+
+	/*! Removes auto-save file. */
+	void removeAutosave();
+
 private slots:
 	void onTimerFinished();
 
@@ -99,9 +120,21 @@ private slots:
 
 	void on_pushButtonRemoveAutoSave_clicked();
 
+	void on_pushButtonDiscard_clicked();
+
+	/*! Removes all auto-saves when project will be closed.
+		\param projectName name of project for auto-saves to be removed.
+	*/
+	void onRemoveProjectSepcificAutoSaves(const QString &projectName);
+
+	void on_checkBoxOnlyLatestAutoSave_toggled(bool checked);
+
+	void on_radioButtonLatestAutoSave_toggled(bool checked);
+
 signals:
 	/*! Is always emitted, when an auto-save has to be done. */
 	void autoSave();
+
 
 private:
 	/*! Pointer to Ui. */
@@ -112,6 +145,18 @@ private:
 
 	/*! Cashed auto-save data. */
 	std::vector<AutoSaveData>	m_autoSaveData;
+
+	/*! Current index in m_autoSaveData. */
+	unsigned int				m_currenIdx;
+
+	/*! To currently selected line connected lines. */
+	std::vector<unsigned int>	m_correspondingLines;
+
+	/*! Shows only latest autosave. */
+	bool						m_showOnlyLatestAutosave = true;
+
+	/*! Pointer to AutoSaveDialog. */
+	static	SVAutoSaveDialog	*m_self;
 };
 
 #endif // SVAutoSaveDialogH
