@@ -1650,7 +1650,7 @@ void SVMainWindow::onUpdateActions() {
 		updateWindowTitle();
 	}
 	else {
-		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::VERSION));
+		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 		m_welcomeScreen->updateWelcomePage();
 	}
 }
