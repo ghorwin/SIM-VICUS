@@ -56,6 +56,10 @@ private slots:
 
 	void on_pushButtonResetDoNotShowAgainDialogs_clicked();
 
+	void on_spinBoxAutosaveInterval_valueChanged(int value);
+
+	void on_groupBoxAutoSaving_toggled(bool isEnabled);
+
 private:
 	Ui::SVPreferencesPageMisc *m_ui;
 };
