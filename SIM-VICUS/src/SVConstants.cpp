@@ -37,7 +37,7 @@ const char * const THIRD_LANGUAGE	= "fr";
 
 const char * const SUPPORT_EMAIL	= "sim-vicus@listserv.dfn.de";
 
-const int AUTO_SAVE_INTERVALL		= 10000;
+const int AUTO_SAVE_INTERVALL		= 300000;
 
 #if defined(Q_OS_MAC) // Q_OS_UNIX
 
