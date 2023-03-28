@@ -1,4 +1,4 @@
-#include "SVAutoSaveDialog.h"
+﻿#include "SVAutoSaveDialog.h"
 #include "ui_SVAutoSaveDialog.h"
 
 #include <SVConstants.h>
@@ -372,6 +372,7 @@ bool SVAutoSaveDialog::recoverFile(){
 	SVProjectHandler::instance().loadProject(this, restoredFileName, true);
 	close();
 }
+
 
 void SVAutoSaveDialog::removeAutosave() {
 	int currentRow = m_ui->tableWidgetFiles->currentRow();
