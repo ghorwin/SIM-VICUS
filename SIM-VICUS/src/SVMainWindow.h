@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QUndoStack>
 #include <QProcess>
+#include <QTimer>
 
 #include <map>
 
@@ -64,7 +65,6 @@ class SVCoSimCO2VentilationDialog;
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
 class SVDBDuplicatesDialog;
-
 class SVPluginLoader;
 
 
@@ -123,6 +123,10 @@ public:
 
 	*/
 	bool exportProjectPackage(const QString & exportFilePath, bool withTopLevelDir);
+
+
+	/*! Restarts the autosave-timer without doing any autosaving. */
+	void restartTimerWithoutAutosaving();
 
 	/*! Returns the material edit dialog. */
 	SVDatabaseEditDialog * dbMaterialEditDialog();
@@ -187,11 +191,6 @@ public slots:
 
 	void on_actionDBComponents_triggered();
 	void on_actionDBSubSurfaceComponents_triggered();
-
-	/*! Public access function to auto-save project file (called from simulation view).
-		\return Returns true if auto-save has been done successfully.
-	*/
-	void onAutoSaveProject();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -265,6 +264,8 @@ private slots:
 	/*! Updates the device pixel ratio. */
 	void onScreenChanged(QScreen *screen);
 
+	/*! Autosave timer finished and autosave is done. */
+	void onAutosaveTimerFinished();
 
 	// all menu action slots below
 
@@ -503,7 +504,7 @@ private:
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
-	SVAutoSaveDialog					*m_autoSave												= nullptr;
+	SVAutoSaveDialog					*m_autoSave										= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
@@ -537,6 +538,9 @@ private:
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
 
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
+
+	/*! Timer for auto-save periods. */
+	QTimer								*m_autoSaveTimer = nullptr;
 
 	friend class SVThreadBase;
 };
