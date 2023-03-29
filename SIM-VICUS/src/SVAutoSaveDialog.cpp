@@ -13,26 +13,12 @@
 
 #include <QtExt_Directories.h>
 
-SVAutoSaveDialog * SVAutoSaveDialog::m_self = nullptr;
-
-SVAutoSaveDialog & SVAutoSaveDialog::instance() {
-	Q_ASSERT_X(m_self != nullptr, "[SVAutoSaveDialog::instance]",
-			   "You must not access SVAutoSaveDialog::instance() when there is no SVAutoSaveDialog "
-			   "instance (anylonger).");
-	return *m_self;
-}
 
 SVAutoSaveDialog::SVAutoSaveDialog(QDialog *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVAutoSaveDialog)
 {
-	m_self = this;
-
 	m_ui->setupUi(this);
-
-	// Set and start timer
-	m_timer = new QTimer;
-	m_timer->start(SVSettings::instance().m_autosaveInterval);
 
 	// Format database
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetFiles);
@@ -44,9 +30,7 @@ SVAutoSaveDialog::SVAutoSaveDialog(QDialog *parent) :
 	m_ui->tableWidgetFiles->setColumnWidth(AC_FileName, 200);
 	m_ui->tableWidgetFiles->horizontalHeader()->setStretchLastSection(true);
 
-
 	// Connect Signal / Slots
-	connect(m_timer, &QTimer::timeout, this, &SVAutoSaveDialog::onTimerFinished);
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::removeProjectAutoSaves, this, &SVAutoSaveDialog::onRemoveProjectSepcificAutoSaves);
 
 	// Update ui
@@ -56,9 +40,6 @@ SVAutoSaveDialog::SVAutoSaveDialog(QDialog *parent) :
 
 SVAutoSaveDialog::~SVAutoSaveDialog() {
 	delete m_ui;
-	delete m_timer;
-
-	m_self = nullptr;
 }
 
 
@@ -300,10 +281,6 @@ void SVAutoSaveDialog::removeProjectFiles(const QString &basePath, const QString
 	writeAutoSaveData();
 }
 
-void SVAutoSaveDialog::restartTimerWithoutAutosaving() {
-	m_timer->start(SVSettings::instance().m_autosaveInterval);
-}
-
 bool SVAutoSaveDialog::recoverFile(){
 	FUNCID(SVAutoSaveDialog::recoverFile);
 
@@ -347,7 +324,14 @@ bool SVAutoSaveDialog::recoverFile(){
 	}
 
 	// strip ending
-	QString newFilename = data.m_basePath + "/" +data.m_fileName;
+	QString newProjectName = "(Autosaved)" + data.m_fileName;
+
+	if (newProjectName.endsWith(".vicus"))
+		newProjectName.remove(".vicus");
+
+	newProjectName += ".vicus";
+
+	QString newFilename = data.m_basePath + "/" + newProjectName;
 	file.rename(newFilename);
 
 	// ask user for filename
@@ -362,7 +346,7 @@ bool SVAutoSaveDialog::recoverFile(){
 	QString fnamebase = QFileInfo(restoredFileName).baseName();
 	if (fnamebase.isEmpty()) {
 		QMessageBox::critical(this, tr("Invalid file name"), tr("Please enter a valid file name!"));
-		return true;
+		recoverFile(); // reenter correct name
 	}
 
 	// copy file
@@ -370,13 +354,14 @@ bool SVAutoSaveDialog::recoverFile(){
 	file.remove();
 
 	SVProjectHandler::instance().loadProject(this, restoredFileName, true);
-	close();
+	accept();
+
+	// to make compiler happy
+	return true;
 }
 
 
 void SVAutoSaveDialog::removeAutosave() {
-	int currentRow = m_ui->tableWidgetFiles->currentRow();
-
 	QComboBox *cb = m_ui->comboBoxTimestamps;
 	Q_ASSERT(cb != nullptr);
 
@@ -398,13 +383,6 @@ void SVAutoSaveDialog::removeAutosave() {
 	}
 }
 
-void SVAutoSaveDialog::onTimerFinished() {
-	if(!SVSettings::instance().m_enableAutosaving)
-		return;
-
-	m_timer->start(SVSettings::instance().m_autosaveInterval);
-	emit autoSave();
-}
 
 void SVAutoSaveDialog::on_pushButtonRecoverFile_pressed() {
 	// Recovers file and cloes

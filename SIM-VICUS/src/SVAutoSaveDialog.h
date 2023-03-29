@@ -43,13 +43,6 @@ class SVAutoSaveDialog : public QDialog {
 Q_OBJECT
 public:
 
-
-	/*! Returns a pointer to the SVAutoSaveDialog instance.
-		Only access this function during the lifetime of the
-		SVAutoSaveDialog instance.
-	*/
-	static SVAutoSaveDialog & instance();
-
 	/*! Struct to encapsulate all meta-data from auto-save. */
 	struct AutoSaveData {
 
@@ -104,9 +97,6 @@ public:
 	*/
 	void removeProjectFiles(const QString &basePath, const QString &projectName);
 
-	/*! Restarts the timer without doing any autosaving. */
-	void restartTimerWithoutAutosaving();
-
 	/*! Recover currently selected file with selected timestamp.
 		\returns true if wrong data was specified in saving dialog and false when recovering file is broken
 	*/
@@ -116,8 +106,6 @@ public:
 	void removeAutosave();
 
 private slots:
-	void onTimerFinished();
-
 	void on_pushButtonRecoverFile_pressed();
 
 	void on_pushButtonRemoveAutoSave_clicked();
@@ -140,9 +128,6 @@ private:
 	/*! Pointer to Ui. */
 	Ui::SVAutoSaveDialog		*m_ui;
 
-	/*! Timer for auto-save periods. */
-	QTimer						*m_timer = nullptr;
-
 	/*! Cashed auto-save data. */
 	std::vector<AutoSaveData>	m_autoSaveData;
 
@@ -154,9 +139,6 @@ private:
 
 	/*! Shows only latest autosave. */
 	bool						m_showOnlyLatestAutosave = true;
-
-	/*! Pointer to AutoSaveDialog. */
-	static	SVAutoSaveDialog	*m_self;
 };
 
 #endif // SVAutoSaveDialogH
