@@ -709,7 +709,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	IBK::Path exportFile;
 	// remove any existing shading files with the same name
-	std::string exportFileBaseName = projectDir.absoluteFilePath(m_shadingFactorBaseName).toStdString();
+	std::string exportFileBaseName = projectDir.relativeFilePath(m_shadingFactorBaseName).toStdString();
 	if (IBK::Path(exportFileBaseName + ".tsv").exists())
 		IBK::Path::remove(IBK::Path(exportFileBaseName + ".tsv"));
 	if (IBK::Path(exportFileBaseName + ".d6o").exists())
