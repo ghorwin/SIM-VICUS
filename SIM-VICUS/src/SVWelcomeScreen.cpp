@@ -131,17 +131,19 @@ void SVWelcomeScreen::updateWelcomePage() {
 				else
 					lastModified = QString::fromStdString(pro.m_projectInfo.m_lastEdited);
 				description = tr("<i>Created: %1</i><br><i>Last modified: %2</i><br>%3")
-									  .arg(created)
-									  .arg(lastModified)
-									  .arg(QString::fromStdString(pro.m_projectInfo.m_comment));
+									  .arg(created, lastModified, QString::fromStdString(pro.m_projectInfo.m_comment));
 			}
 			else {
 				description = tr("<i><font color=\"${STYLE_H3_COLOR}\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
 				SVStyle::formatWelcomePage(description);
 			}
 
-			// thumb name is <filename>_<parent directory>
-			QString thumbName = finfo.fileName() + "_" + finfo.dir().dirName();
+			// thumb name is full file path with replces
+			QString thumbName = SVSettings::instance().m_recentProjects[i];
+			thumbName.replace("/", "_");
+			thumbName.replace("\\", "_");
+			thumbName.replace(":", "_");
+			thumbName.replace(".vicus", "");
 			QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 
 			QFileInfo thumbFileInfo(thumbPath);

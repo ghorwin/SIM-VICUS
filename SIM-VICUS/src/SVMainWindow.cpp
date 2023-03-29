@@ -1997,9 +1997,12 @@ QString SVMainWindow::saveThumbNail() {
 	if (!QDir(thumbNailPath).exists())
 		QDir().mkpath(thumbNailPath);
 	// compose temporary file path
-	// thumb name is <filename>_<parent directory>
-	QFileInfo prjFinfo(m_projectHandler.projectFile());
-	QString thumbName = prjFinfo.fileName() + "_" + prjFinfo.dir().dirName();
+	// thumb name is full filepath with replaces / \ and :
+	QString thumbName = m_projectHandler.projectFile();
+	thumbName.replace("/", "_");
+	thumbName.replace("\\", "_");
+	thumbName.replace(":", "_");
+	thumbName.replace(".vicus", "");
 	QString thumbPath = QtExt::Directories::userDataDir()  + "/thumbs/" + thumbName + ".png";
 	QFileInfo finfo(thumbPath);
 	if (finfo.exists()) {
