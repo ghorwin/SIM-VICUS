@@ -28,6 +28,7 @@
 
 #include "SVAutoSaveDialog.h"
 #include "SVSettings.h"
+#include "SVMainWindow.h"
 
 SVPreferencesPageMisc::SVPreferencesPageMisc(QWidget *parent) :
 	QWidget(parent),
@@ -76,7 +77,7 @@ void SVPreferencesPageMisc::on_pushButtonResetDoNotShowAgainDialogs_clicked() {
 
 void SVPreferencesPageMisc::on_spinBoxAutosaveInterval_valueChanged(int value) {
 	SVSettings::instance().m_autosaveInterval = value * 60 * 1000; // in milliseconds
-	SVAutoSaveDialog::instance().restartTimerWithoutAutosaving();
+	SVMainWindow::instance().restartTimerWithoutAutosaving();
 }
 
 
