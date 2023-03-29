@@ -179,6 +179,7 @@ public:
 		*/
 		OCM_SelectedSurfacesHighlighted,
 		OCM_AcousticRoomType,
+		OCM_StructuralUnit,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,

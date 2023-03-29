@@ -40,6 +40,8 @@ private slots:
 
 	void on_pushButtonRemoveStructuralUnit_clicked();
 
+	void on_pushButtonRemoveAssignment_clicked();
+
 private:
 	const VICUS::StructuralUnit * currentlySelectedStructuralUnit() const;
 

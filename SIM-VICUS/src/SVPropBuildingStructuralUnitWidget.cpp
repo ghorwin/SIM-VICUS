@@ -119,12 +119,14 @@ void SVPropBuildingStructuralUnitWidget::updateUi() {
 
 	// update selection-related info
 	std::set<const VICUS::StructuralUnit *> selectedStructuralUnit;
+	std::set<const VICUS::Room *> selectedRoomsWithStructuralUnit;
 
 	for(const VICUS::StructuralUnit & unit : project().m_structuralUnits){
 		for(unsigned int id : unit.m_roomIds){
 			for(const VICUS::Room * r : rooms){
 				if(r->m_id == id){
 					selectedStructuralUnit.insert(&unit);
+					selectedRoomsWithStructuralUnit.insert(r);
 				}
 			}
 		}
@@ -135,7 +137,8 @@ void SVPropBuildingStructuralUnitWidget::updateUi() {
 	if (selectedStructuralUnit.empty()) {
 		m_ui->labelSelectedStructuralUnit->setText(tr("None"));
 	}
-	else if (selectedStructuralUnit.size() == 1) {
+	// display information about selected structural unit when only is selected and no rooms without one
+	else if (selectedStructuralUnit.size() == 1 && selectedRoomsWithStructuralUnit.size() == rooms.size()) {
 		const VICUS::StructuralUnit * unit = *selectedStructuralUnit.begin();
 		// special handling: exactly one room with invalid zone template ID is selected
 		if (unit == nullptr)
@@ -145,8 +148,12 @@ void SVPropBuildingStructuralUnitWidget::updateUi() {
 													   .arg(unit->m_displayName).arg(unit->m_id) );
 	}
 	else {
-		m_ui->labelSelectedStructuralUnit->setText(tr("%1 different templates")
-												   .arg(selectedStructuralUnit.size()));
+		if(selectedRoomsWithStructuralUnit.size() != rooms.size()){
+			m_ui->labelSelectedStructuralUnit->setText(tr("Room without structural unit selected"));
+		} else {
+			m_ui->labelSelectedStructuralUnit->setText(tr("%1 different templates")
+													   .arg(selectedStructuralUnit.size()));
+		}
 	}
 
 
@@ -204,14 +211,10 @@ void SVPropBuildingStructuralUnitWidget::on_pushButtonAssignStructuralUnit_click
 		roomIDs.insert(ro->m_id);
 
 	// now create an undo action for modifying zone template assignments
-	SVUndoModifyStructuralUnitRoomAssociation * undo = new SVUndoModifyStructuralUnitRoomAssociation(
+	SVUndoAddStructuralUnitRoomAssociation * undo = new SVUndoAddStructuralUnitRoomAssociation(
 				tr("Assigned Structural Unit"),
-				roomIDs, const_cast<VICUS::StructuralUnit * >(currentlySelectedStructuralUnit()), false);
+				roomIDs, const_cast<VICUS::StructuralUnit * >(currentlySelectedStructuralUnit()));
 	undo->push();
-	//TODO Anton trigger updateUi at undo
-	updateUi();
-
-
 }
 
 
@@ -230,6 +233,32 @@ void SVPropBuildingStructuralUnitWidget::on_pushButtonRemoveStructuralUnit_click
 				tr("Deleting Structural Unit [%1]").arg(selectedUnit->m_id),
 				*selectedUnit);
 	undo->push();
-	updateUi();
+}
+
+
+void SVPropBuildingStructuralUnitWidget::on_pushButtonRemoveAssignment_clicked() {
+	// get all ids of the selected rooms
+	std::set<unsigned int> roomIDs;
+	std::vector<const VICUS::Room*> rooms;
+	project().selectedRooms(rooms);
+	// loop over all rooms and store acoustic template associations
+	for (const VICUS::Room * ro : rooms)
+		roomIDs.insert(ro->m_id);
+
+	// insert the ids that need to be removed (the structural unit does not matter)
+	std::set<unsigned int> removedIds;
+	//check which units need to modified when these rooms get deselected
+	for(const VICUS::StructuralUnit & unit : project().m_structuralUnits){
+		for(unsigned int id : unit.m_roomIds){
+			for(unsigned int selectedId : roomIDs){
+				if(id == selectedId){
+					removedIds.insert(id);
+				}
+			}
+		}
+	}
+	SVUndoRemoveStructuralUnitRoomAssociation * undo = new SVUndoRemoveStructuralUnitRoomAssociation(
+				tr("Removing rooms associations"), removedIds);
+	undo->push();
 }
 

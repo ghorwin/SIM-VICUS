@@ -733,7 +733,7 @@ void SVGeometryView::on_actionStructuralUnitParametrization_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// show building properties widget
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
-	vs.m_objectColorMode = SVViewState::OCM_None;
+	vs.m_objectColorMode = SVViewState::OCM_StructuralUnit;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
