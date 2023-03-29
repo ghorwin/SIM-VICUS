@@ -722,7 +722,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 								 bool addFloorAreaAndVolume) const
 {
 	FUNCID(Project::exportMappingTable);
-	IBK::Path basePath(filepath.parentPath() / "mappingTable.txt");
+	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
 
 	std::ofstream out;
 	// write file
