@@ -975,7 +975,9 @@ void Table::paintCellText(unsigned int col, unsigned int row, QPainter* painter,
 		return;
 
 	QRectF cellRect = currentCell.cellRect();
+	// text rect depends on vertical setting
 	QRectF textRect =  currentCell.textRect();
+	// max rect is always horizontal
 	QRectF maxTextRect =  currentCell.maxTextRect();
 	int mindex = mergeIndex(col, row);
 	// if cell is part of merging area take cell and text rect from this
@@ -990,28 +992,48 @@ void Table::paintCellText(unsigned int col, unsigned int row, QPainter* painter,
 	qreal xpos(maxTextRect.left());
 	qreal xposRight = maxTextRect.right();
 	qreal ypos(maxTextRect.top());
+
 	qreal maxWidth = maxTextRect.width();
+	qreal maxHeight = maxTextRect.height();
+
 	qreal textWidth = textRect.width();
 	qreal textHeight = textRect.height();
 	bool tooLarge;
 	if(currentCell.verticalText())
-		tooLarge = textHeight > cellRect.height();
+		tooLarge = textHeight > cellRect.width();
 	else
 		tooLarge = textWidth > cellRect.width();
 
 	Qt::Alignment align = currentCell.alignment();
-	if( align.testFlag(Qt::AlignHCenter) || align.testFlag(Qt::AlignCenter))
-		xpos = xpos + (maxWidth - textWidth) / 2.0;
-	if( align.testFlag(Qt::AlignRight)) {
-		if(!tooLarge)
-			xpos = xposRight - textWidth;
-	}
-	if( align.testFlag(Qt::AlignBottom))
-		ypos = maxTextRect.bottom() - textHeight;
-	if( align.testFlag(Qt::AlignVCenter))
-		ypos = (maxTextRect.height() - textHeight) / 2.0 + maxTextRect.top();
+
 	if(currentCell.verticalText()) {
-		ypos += textHeight;
+		QRectF mrt = maxTextRect.transposed();
+		ypos += textHeight; // now top aligned
+
+		if( align.testFlag(Qt::AlignHCenter) || align.testFlag(Qt::AlignCenter))
+			xpos = xpos + (mrt.width() - textWidth) / 2.0;
+		if( align.testFlag(Qt::AlignRight)) {
+			if(!tooLarge)
+				xpos = xposRight - textWidth;
+		}
+		if( align.testFlag(Qt::AlignBottom))
+			ypos = mrt.bottom();
+
+		if( align.testFlag(Qt::AlignVCenter))
+			ypos = (mrt.height() - textHeight) / 2.0 + ypos;
+
+	}
+	else {
+		if( align.testFlag(Qt::AlignHCenter) || align.testFlag(Qt::AlignCenter))
+			xpos = xpos + (maxWidth - textWidth) / 2.0;
+		if( align.testFlag(Qt::AlignRight)) {
+			if(!tooLarge)
+				xpos = xposRight - textWidth;
+		}
+		if( align.testFlag(Qt::AlignBottom))
+			ypos = maxTextRect.bottom() - textHeight;
+		if( align.testFlag(Qt::AlignVCenter))
+			ypos = (maxTextRect.height() - textHeight) / 2.0 + maxTextRect.top();
 	}
 
 	// calculation of offset
@@ -1039,6 +1061,8 @@ void Table::paintCellText(unsigned int col, unsigned int row, QPainter* painter,
 	m_textDocument->setDefaultTextOption(option);
 	if(tooLarge) {
 		QRectF rect = maxTextRect.translated(-maxTextRect.x(), -maxTextRect.y());
+		if(currentCell.verticalText())
+			rect = rect.transposed();
 		m_textDocument->drawContents(painter, rect);
 	}
 	else
