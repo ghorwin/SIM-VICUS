@@ -988,29 +988,41 @@ void Table::paintCellText(unsigned int col, unsigned int row, QPainter* painter,
 
 	// calculate rect and positions
 	qreal xpos(maxTextRect.left());
+	qreal xposRight = maxTextRect.right();
 	qreal ypos(maxTextRect.top());
+	qreal maxWidth = maxTextRect.width();
+	qreal textWidth = textRect.width();
+	qreal textHeight = textRect.height();
+	bool tooLarge;
+	if(currentCell.verticalText())
+		tooLarge = textHeight > cellRect.height();
+	else
+		tooLarge = textWidth > cellRect.width();
+
 	Qt::Alignment align = currentCell.alignment();
 	if( align.testFlag(Qt::AlignHCenter) || align.testFlag(Qt::AlignCenter))
-		xpos = maxTextRect.left() + (maxTextRect.width() - textRect.width()) / 2.0;
-	if( align.testFlag(Qt::AlignRight))
-		xpos = maxTextRect.right() - textRect.width();
+		xpos = xpos + (maxWidth - textWidth) / 2.0;
+	if( align.testFlag(Qt::AlignRight)) {
+		if(!tooLarge)
+			xpos = xposRight - textWidth;
+	}
 	if( align.testFlag(Qt::AlignBottom))
-		ypos = maxTextRect.bottom() - textRect.height();
+		ypos = maxTextRect.bottom() - textHeight;
 	if( align.testFlag(Qt::AlignVCenter))
-		ypos = (maxTextRect.height() - textRect.height()) / 2.0 + maxTextRect.top();
+		ypos = (maxTextRect.height() - textHeight) / 2.0 + maxTextRect.top();
 	if(currentCell.verticalText()) {
-		ypos += textRect.height();
+		ypos += textHeight;
 	}
 
 	// calculation of offset
-	qreal voffset = currentCell.verticalOffset() * textRect.height();
+	qreal voffset = currentCell.verticalOffset() * textHeight;
 	ypos += voffset;
 
 	// set document properties
 	if(currentCell.verticalText())
-		m_textDocument->setTextWidth(textRect.height());
+		m_textDocument->setTextWidth(textHeight);
 	else
-		m_textDocument->setTextWidth(textRect.width());
+		m_textDocument->setTextWidth(textWidth);
 	m_textDocument->setDocumentMargin(0);
 	text = "<meta charset=\"utf-8\"/>" + text;
 	m_textDocument->setHtml(text);
@@ -1025,7 +1037,12 @@ void Table::paintCellText(unsigned int col, unsigned int row, QPainter* painter,
 	QTextOption optionOrg = option;
 	option.setAlignment(align);
 	m_textDocument->setDefaultTextOption(option);
-	m_textDocument->drawContents(painter);
+	if(tooLarge) {
+		QRectF rect = maxTextRect.translated(-maxTextRect.x(), -maxTextRect.y());
+		m_textDocument->drawContents(painter, rect);
+	}
+	else
+		m_textDocument->drawContents(painter);
 	m_textDocument->setDefaultTextOption(optionOrg);
 	painter->restore();
 }

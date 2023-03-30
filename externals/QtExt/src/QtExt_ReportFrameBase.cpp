@@ -39,6 +39,7 @@
 
 #include "QtExt_Report.h"
 #include "QtExt_TextProperties.h"
+#include "QtExt_Logger.h"
 
 namespace QtExt {
 
@@ -62,10 +63,12 @@ void ReportFrameBase::clearSubFrames() {
 }
 
 void ReportFrameBase::update(QPaintDevice* , double width) {
+	Logger::instance() << std::string("Frame: ") + typeid(*this).name();
 	qreal height = 0;
 	for(auto& item : m_items) {
 		if(item->isVisible()) {
 			height += item->rect().height();
+			Logger::instance() << item->posText();
 		}
 	}
 	m_wholeFrameRect = QRectF(0, 0, width, height);
@@ -119,15 +122,32 @@ std::vector<ReportFrameBase*> ReportFrameBase::subFrames(QPaintDevice* paintDevi
 	return m_currentSubFrames;
 }
 
+bool ReportFrameBase::drawItemRect() const {
+	return m_drawItemRect;
+}
+
+void ReportFrameBase::setDrawItemRect(bool newDrawItemRect) {
+	m_drawItemRect = newDrawItemRect;
+	for(auto item : m_items) {
+		item->setDrawItemRect(m_drawItemRect);
+	}
+}
+
 std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* , double heightFirst, double heightRest) const {
 	// create list of heights of sections between possible page breaks
 	// such a section can be called subframe
 	double currentHeight = 0;
 	double totalHeight = 0;
+	std::vector<qreal> itemHeights(m_items.size());
+	for(size_t i =0; i<m_items.size(); ++i) {
+		itemHeights[i] = m_items[i]->rect().height();
+	}
+
 	std::vector<std::pair<double,size_t>> heightList;
 	for(size_t i =0; i<m_items.size(); ++i) {
-		currentHeight += m_items[i]->rect().height();
-		totalHeight += m_items[i]->rect().height();
+		qreal currItemHeight = itemHeights[i];
+		currentHeight += currItemHeight;
+		totalHeight += currItemHeight;
 		if(m_items[i]->canPageBreakAfter()) {
 			heightList.push_back({currentHeight,i});
 			currentHeight = 0;
@@ -145,7 +165,7 @@ std::vector<size_t> ReportFrameBase::lastItemOnPageList(QPaintDevice* , double h
 		if(heightList.back().second < m_items.size() - 1) {
 			double lastHeight = 0;
 			for(size_t i=heightList.back().second+1; i<m_items.size(); ++i)
-				lastHeight += m_items[i]->rect().height();
+				lastHeight += itemHeights[i];
 			heightList.push_back({lastHeight,m_items.size()-1});
 		}
 	}

@@ -20,6 +20,7 @@ public:
 	};
 
 	ReportSettingsBase();
+	virtual ~ReportSettingsBase() = default;
 
 	/*! Reads the report settings from the registry/system config.*/
 	virtual void readSettings(QSettings & settings);

@@ -37,6 +37,7 @@
 
 #include <QMessageBox>
 #include <QLineEdit>
+#include <QKeyEvent>
 
 #include "QtExt_Style.h"
 #include "QtExt_Locale.h"
@@ -44,8 +45,20 @@
 
 namespace QtExt {
 
+bool ValueInputComboBox::eventFilter(QObject* obj, QEvent* event) {
+	if (event->type()==QEvent::KeyPress) {
+		QKeyEvent* key = static_cast<QKeyEvent*>(event);
+		if ( (key->key()==Qt::Key_Enter) || (key->key()==Qt::Key_Return) ) {
+			m_enterPressed = true;
+			return false;
+		}
+	}
+	return false;
+}
+
 ValueInputComboBox::ValueInputComboBox(QWidget *parent) :
-	QComboBox(parent)
+	QComboBox(parent),
+	m_enterPressed(false)
 {
 	QPalette palEdit;
 	palEdit.setColor(QPalette::Base, Style::EditFieldBackground);
@@ -61,6 +74,8 @@ ValueInputComboBox::ValueInputComboBox(QWidget *parent) :
 			this, SLOT(onActivated(int)));
 	connect(this, SIGNAL(currentTextChanged(QString)),
 			this, SLOT(onCurrentTextChanged(const QString&)));
+
+	installEventFilter(this);
 }
 
 
@@ -194,9 +209,14 @@ double ValueInputComboBox::value() const {
 		return value;
 }
 
-
 void ValueInputComboBox::onActivated(int index) {
-	setEditText( QString("%L1").arg( itemData(index).toDouble()) );
+	if(m_enterPressed) {
+		m_enterPressed = false;
+		return;
+	}
+	int itemCount = count();
+	if(index < itemCount)
+		setEditText( QString("%L1").arg( itemData(index).toDouble()) );
 }
 
 

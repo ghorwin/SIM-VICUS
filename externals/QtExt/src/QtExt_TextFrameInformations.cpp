@@ -192,15 +192,18 @@ TextFrameInformations::TextFrameInfo TextFrameInformations::sizeForMaximumWidth(
 	}
 
 	// look for existing size object which can be drawn into given width
+	int lastValidInfoIndex = -1;
 	for( size_t i=0, count=m_infoVect.size(); i<count; ++i) {
 		const TextFrameInfo& info = m_infoVect[i];
 		if(info.isValid()) {
-
+			lastValidInfoIndex = i;
 			if(info.m_maxWidth > maxWidth && info.m_minWidth <= maxWidth)
 				return info;
 
 		}
 	}
+	if(lastValidInfoIndex >= 0)
+		return m_infoVect[lastValidInfoIndex];
 
 	return TextFrameInformations::TextFrameInfo::nonValid(0);
 }

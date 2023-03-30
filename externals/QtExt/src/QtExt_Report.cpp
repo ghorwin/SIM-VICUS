@@ -55,6 +55,7 @@
 #include "QtExt_TextFrame.h"
 #include "QtExt_PainterSaver.h"
 #include "QtExt_ReportSettingsBase.h"
+#include "QtExt_Logger.h"
 
 namespace QtExt {
 
@@ -480,6 +481,24 @@ void Report::setCurrentFrameInfo(FrameInfo& frameInfo, QRect& currentFrame, int 
 	frameInfo.m_rect = QRect(0, y, m_effectivePageSize.width(), h);
 	currentFrame.setTop(y + h);
 	frameInfo.m_pageNumber = currentPage;
+}
+
+bool Report::drawItemRect() const {
+	return m_drawItemRect;
+}
+
+void Report::setDrawItemRect(bool newDrawItemRect) {
+	m_drawItemRect = newDrawItemRect;
+	m_headerFrame.setDrawItemRect(newDrawItemRect);
+	m_footerFrame.setDrawItemRect(newDrawItemRect);
+	for(auto& fi : m_reportFramesInfos) {
+		fi.m_frame->setDrawItemRect(newDrawItemRect);
+	}
+}
+
+void Report::setLogfile(const std::string& logfile) {
+	m_logfile = logfile;
+	Logger::instance().set(m_logfile);
 }
 
 
