@@ -28,6 +28,8 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
 	${PROJECT_SOURCE_DIR}/../../../externals/RoomClipper/src
 	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
+        ${PROJECT_SOURCE_DIR}/../../../externals/libdxfrw/src
+        ${PROJECT_SOURCE_DIR}/../../../externals/libdxfrw/src/intern
 	${PROJECT_SOURCE_DIR}/../../../externals/Shading/src
 	${PROJECT_SOURCE_DIR}/../../../externals/IDFReader/src
 	${PROJECT_SOURCE_DIR}/../../../externals/clipper/src
@@ -148,6 +150,7 @@ target_link_libraries( ${PROJECT_NAME}
 	QuaZIP
 	Nandrad
 	clipper
+        libdxfrw
 	Shading
 	DataIO
 	CCM

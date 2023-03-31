@@ -1,0 +1,25 @@
+libdxfrw is a free C++ library to read and write DXF files in both formats, ascii and binary form. It also has rudimentary capabilities to read DWG files. It is licensed under the terms of the GNU General Public License version 2 (or at you option any later version).
+
+libdxfrw was created by LibreCAD contributors in the process of making LibreCAD. As the original code at SourceForge was no longer supported by the orignal authors, this repo has become its successor.
+
+                      Copyright (C) 2014 LibreCAD
+
+LibreCAD 3 consists of several modules and these modules may have
+a different license than the application itself. 
+For specific licenses, check respective folders.
+LibreCAD 3 itself is under the GNU GPLv3 or later License.
+
+                      GNU GENERAL PUBLIC LICENSE
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

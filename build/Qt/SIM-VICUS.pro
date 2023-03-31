@@ -8,6 +8,7 @@ SUBDIRS = \
 		QuaZIP \
 		qwt \
 		clipper \
+                libdxfrw \
 		QtExt \
 		Vicus \
 		CCM \
@@ -56,6 +57,7 @@ QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 IDFReader.file = ../../externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = ../../NandradSolver/projects/Qt/NandradModel.pro
 clipper.file = ../../externals/clipper/projects/Qt/clipper.pro
+libdxfrw.file = ../../externals/libdxfrw/projects/Qt/libdxfrw.pro
 DummyDatabasePlugin.file = ../../plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
 DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
 RoomClipper.file  = ../../externals/RoomClipper/projects/Qt/RoomClipper.pro
@@ -65,7 +67,7 @@ RoomClipper.file  = ../../externals/RoomClipper/projects/Qt/RoomClipper.pro
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
-SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO clipper RoomClipper
+SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO clipper RoomClipper libdxfrw
 NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP

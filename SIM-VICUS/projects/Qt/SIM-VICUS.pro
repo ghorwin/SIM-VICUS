@@ -34,6 +34,7 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lDataIO \
 	-lCCM \
 	-lclipper \
+        -ldxfrw \
 	-lIBK \
 	-lIBKMK \
 	-lsundials \
@@ -61,6 +62,8 @@ INCLUDEPATH = \
 	../../../externals/Shading/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
+	../../../externals/libdxfrw/src \
+        ../../../externals/libdxfrw/src/intern \
 	../../../externals/Nandrad/src \
 	../../../externals/Nandrad/srcTranslations \
 	../../../externals/Vicus/src \
