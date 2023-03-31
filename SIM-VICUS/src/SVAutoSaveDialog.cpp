@@ -159,6 +159,8 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 	m_ui->comboBoxTimestamps->clear();
 
 	std::set<unsigned int> handledLines;
+	std::vector<QComboBox *> cbs;
+	std::vector<std::vector<std::pair<QDateTime, unsigned int>>> dateTimes;
 	for (unsigned int i=0; i<m_autoSaveData.size(); ++i) {
 
 		if(handledLines.find(i) != handledLines.end())
@@ -168,18 +170,20 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 
 		QDateTime dt = QDateTime::fromString(currentData.m_timeStamp, "yyyyMMdd-hhmmss");
 
-		std::vector<std::pair<QDateTime, unsigned int>> dateTimes;
-		dateTimes.push_back(std::pair<QDateTime, unsigned int>(dt, i));
+		dateTimes.push_back(std::vector<std::pair<QDateTime, unsigned int>>());
+
+		std::vector<std::pair<QDateTime, unsigned int>> &dateTime = dateTimes.back();
+		dateTime.push_back(std::pair<QDateTime, unsigned int>(dt, i));
 		// look for different time stamps
 		for(unsigned int j=0; j<m_autoSaveData.size(); ++j) {
 			if(i==j)
 				continue;
-
 			const AutoSaveData &data = m_autoSaveData[j];
+
 			if(currentData.m_basePath == data.m_basePath &&
 					currentData.m_fileName == data.m_fileName) {
 				QDateTime dt = QDateTime::fromString(data.m_timeStamp, "yyyyMMdd-hhmmss");
-				dateTimes.push_back(std::pair<QDateTime, unsigned int>(dt, j));
+				dateTime.push_back(std::pair<QDateTime, unsigned int>(dt, j));
 				handledLines.insert(j);
 			}
 		}
@@ -193,13 +197,6 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 		font.setBold(true);
 		itemFileName->setFont(font);
 
-		QComboBox *cb = m_ui->comboBoxTimestamps;
-		cb->clear();
-		for (const std::pair<QDateTime, unsigned int> &dt : dateTimes) {
-			cb->addItem(dt.first.toString());
-			cb->setItemData(cb->count()-1, dt.second, Qt::UserRole); // cache the current vector idx
-		}
-
 		QTableWidgetItem *itemBasePath = new QTableWidgetItem(filename.m_basePath);
 		m_ui->tableWidgetFiles->setItem(0, AC_BasePath, itemBasePath);
 
@@ -212,6 +209,20 @@ void SVAutoSaveDialog::updateAutoSavesInTable() {
 	m_ui->comboBoxTimestamps->setEnabled(!takeLatest && !m_autoSaveData.empty());
 	if(takeLatest)
 		m_ui->comboBoxTimestamps->setCurrentIndex(m_ui->comboBoxTimestamps->count()-1);
+
+	if(!m_autoSaveData.empty()) {
+		QComboBox *cb = m_ui->comboBoxTimestamps;
+		cb->clear();
+		std::reverse(dateTimes.begin(), dateTimes.end());
+		for (const std::pair<QDateTime, unsigned int> &dt : dateTimes[m_currentRow]) {
+			cb->addItem(dt.first.toString());
+			cb->setItemData(cb->count()-1, dt.second, Qt::UserRole); // cache the current vector idx
+		}
+
+		// always set last item
+		cb->setCurrentIndex(cb->count()-1);
+	}
+
 
 	m_ui->tableWidgetFiles->setCurrentCell(0,0);
 }
@@ -246,13 +257,15 @@ void SVAutoSaveDialog::writeAutoSaveData() {
 }
 
 void SVAutoSaveDialog::updateUi() {
+	unsigned int rowCount = (unsigned int)m_ui->tableWidgetFiles->rowCount();
+
 	// Update Auto-saves in tables
 	updateAutoSavesInTable();
 
-	int rowCount = m_ui->tableWidgetFiles->rowCount();
-
 	m_ui->pushButtonRecoverFile->setEnabled(rowCount != 0);
 	m_ui->pushButtonRemoveAutoSave->setEnabled(rowCount != 0);
+
+	m_ui->tableWidgetFiles->setCurrentCell(m_currentRow, 0);
 }
 
 void SVAutoSaveDialog::removeProjectFiles(const QString &basePath, const QString &projectName) {
@@ -332,7 +345,8 @@ bool SVAutoSaveDialog::recoverFile(){
 	newProjectName += ".vicus";
 
 	QString newFilename = data.m_basePath + "/" + newProjectName;
-	file.rename(newFilename);
+	file.copy(newFilename);
+	QFile newFile(newFilename);
 
 	// ask user for filename
 	QString restoredFileName = QFileDialog::getSaveFileName(
@@ -346,12 +360,13 @@ bool SVAutoSaveDialog::recoverFile(){
 	QString fnamebase = QFileInfo(restoredFileName).baseName();
 	if (fnamebase.isEmpty()) {
 		QMessageBox::critical(this, tr("Invalid file name"), tr("Please enter a valid file name!"));
-		recoverFile(); // reenter correct name
+		return true; // reenter correct name
 	}
 
 	// copy file
 	file.copy(restoredFileName);
 	file.remove();
+	newFile.remove();
 
 	SVProjectHandler::instance().loadProject(this, restoredFileName, true);
 	accept();
@@ -381,6 +396,10 @@ void SVAutoSaveDialog::removeAutosave() {
 		// delete idx in vector
 		m_autoSaveData.erase(m_autoSaveData.begin() + idx);
 	}
+
+	// update current row
+	if(m_currentRow > 0)
+		--m_currentRow;
 }
 
 
@@ -423,3 +442,11 @@ void SVAutoSaveDialog::on_radioButtonLatestAutoSave_toggled(bool checked){
 	// Update Ui
 	updateUi();
 }
+
+
+void SVAutoSaveDialog::on_tableWidgetFiles_cellClicked(int row, int) {
+	m_currentRow = row;
+
+	updateUi();
+}
+

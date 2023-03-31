@@ -119,10 +119,11 @@ private slots:
 
 	void on_radioButtonLatestAutoSave_toggled(bool checked);
 
+	void on_tableWidgetFiles_cellClicked(int row, int);
+
 signals:
 	/*! Is always emitted, when an auto-save has to be done. */
 	void autoSave();
-
 
 private:
 	/*! Pointer to Ui. */
@@ -133,6 +134,9 @@ private:
 
 	/*! Current index in m_autoSaveData. */
 	unsigned int				m_currenIdx;
+
+	/*! Current row index. */
+	unsigned int				m_currentRow = 0;
 
 	/*! To currently selected line connected lines. */
 	std::vector<unsigned int>	m_correspondingLines;
