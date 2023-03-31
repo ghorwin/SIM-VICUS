@@ -343,10 +343,7 @@ bool SVAutoSaveDialog::recoverFile(){
 		newProjectName.remove(".vicus");
 
 	newProjectName += ".vicus";
-
 	QString newFilename = data.m_basePath + "/" + newProjectName;
-	file.copy(newFilename);
-	QFile newFile(newFilename);
 
 	// ask user for filename
 	QString restoredFileName = QFileDialog::getSaveFileName(
@@ -362,11 +359,9 @@ bool SVAutoSaveDialog::recoverFile(){
 		QMessageBox::critical(this, tr("Invalid file name"), tr("Please enter a valid file name!"));
 		return true; // reenter correct name
 	}
-
 	// copy file
 	file.copy(restoredFileName);
 	file.remove();
-	newFile.remove();
 
 	SVProjectHandler::instance().loadProject(this, restoredFileName, true);
 	accept();
