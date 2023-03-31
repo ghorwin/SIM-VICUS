@@ -64,6 +64,18 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "StructuralUnits") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "StructuralUnit")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					StructuralUnit obj;
+					obj.readXML(c2);
+					m_structuralUnits.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ComponentInstances") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -153,6 +165,18 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Building>::const_iterator it = m_buildings.begin();
 			it != m_buildings.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_structuralUnits.empty()) {
+		TiXmlElement * child = new TiXmlElement("StructuralUnits");
+		e->LinkEndChild(child);
+
+		for (std::vector<StructuralUnit>::const_iterator it = m_structuralUnits.begin();
+			it != m_structuralUnits.end(); ++it)
 		{
 			it->writeXML(child);
 		}
