@@ -74,10 +74,10 @@ class Scene {
 	Q_DECLARE_TR_FUNCTIONS(Scene)
 public:
 
-    enum HighlightingMode {
-        HM_TransparentWithBoxes,
-        HM_ColoredSurfaces
-    };
+	enum HighlightingMode {
+		HM_TransparentWithBoxes,
+		HM_ColoredSurfaces
+	};
 
 	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
 
@@ -156,12 +156,14 @@ public:
 	/*! Getter for worldToView Matrix. */
 	const QMatrix4x4 & worldToView() const;
 
-    void updatedHighlightingMode(HighlightingMode mode);
+	void updatedHighlightingMode(HighlightingMode mode);
 
 private:
 	void generateBuildingGeometry();
-    void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_ColoredSurfaces);
+	void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_ColoredSurfaces);
 	void generateNetworkGeometry();
+
+	void generateDrawings();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
 	void recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const;
@@ -172,8 +174,8 @@ private:
 	*/
 	void pick(PickObject & pickObject);
 
-    /*! Pick all child surfaces. */
-    void pickChildSurfaces();
+	/*! Pick all child surfaces. */
+	void pickChildSurfaces();
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
@@ -293,8 +295,8 @@ private:
 	/// TODO Andreas, add vector of snap marker objects, stripped down coordinate system objects with just a single sphere.
 	OpaqueGeometryObject	m_rotationMarkerObject;
 
-    /*! Cached surface colors. */
-    std::map<unsigned int, QColor> m_surfaceColor;
+	/*! Cached surface colors. */
+	std::map<unsigned int, QColor> m_surfaceColor;
 
 	// *** Navigation stuff ***
 

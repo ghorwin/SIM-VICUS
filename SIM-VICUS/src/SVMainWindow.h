@@ -353,6 +353,8 @@ private slots:
 
 	void on_actionCalculateViewFactors_triggered();
 
+	void on_actionDXF_File_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

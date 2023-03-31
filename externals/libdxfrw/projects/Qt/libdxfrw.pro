@@ -5,10 +5,10 @@ TARGET = libdxfrw
 INCLUDEPATH += \
 
 HEADERS += \
-    $$files(../../src/*.h, true) \
-    $$files(../../src/intern/*.h, true)
+$$files(../../src/*.h, true) \
+	$$files(../../src/intern/*.h, true)
 
 SOURCES += \
-    $$files(../../src/*.cpp, true) \
+$$files(../../src/*.cpp, true) \
 
-QMAKE_CXXFLAGS += -Wall -Woverloaded-virtual
+QMAKE_CXXFLAGS += -Wall

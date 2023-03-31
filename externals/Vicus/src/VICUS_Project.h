@@ -52,6 +52,7 @@
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
 #include "VICUS_PlainGeometry.h"
+#include "VICUS_Drawing.h"
 
 
 namespace VICUS {
@@ -127,8 +128,8 @@ public:
 	*/
 	void updatePointers();
 
-    /*! Adds child surfaces to pointers of project. */
-    void addChildSurface(const VICUS::Surface &s);
+	/*! Adds child surfaces to pointers of project. */
+	void addChildSurface(const VICUS::Surface &s);
 
 	/*! Searches through all objects and determines the largest object ID (not unique ID!) used for buildings, buildingLevels, rooms, surface,
 		subsurfaces, networks, etc and returns the next ID to be used for new data elements. For example, if IDs 10, 11, 14 have been used already,
@@ -192,9 +193,9 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
-    /*! Select all child surfaces of surface. */
-    void selectChildSurfaces(std::set<const Object*> &selectedObjs, const VICUS::Surface & s,
-                             bool takeSelected, bool takeVisible) const;
+	/*! Select all child surfaces of surface. */
+	void selectChildSurfaces(std::set<const Object*> &selectedObjs, const VICUS::Surface & s,
+							 bool takeSelected, bool takeVisible) const;
 
 	/*! This function collects the pointers to all selected sub surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
@@ -305,6 +306,9 @@ public:
 
 	/*! Vector with plain (dumb) geometry. */
 	PlainGeometry										m_plainGeometry;			// XML:E
+
+	std::vector<Drawing>								m_drawings;
+
 
 	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
 		These placeholders are read from the path placeholders section of the project file and hold

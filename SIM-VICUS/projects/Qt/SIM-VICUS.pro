@@ -155,6 +155,7 @@ SOURCES += \
 	../../src/SVDatabaseEditDialog.cpp \
 	../../src/SVDebugApplication.cpp \
 	../../src/SVGeometryView.cpp \
+	../../src/SVImportDxfDialog.cpp \
 	../../src/SVImportIDFDialog.cpp \
 	../../src/SVLCA.cpp \
 	../../src/SVLocalCoordinateView.cpp \
@@ -229,6 +230,7 @@ SOURCES += \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVUndoAddDrawing.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DDialog.cpp \
@@ -357,6 +359,7 @@ HEADERS  += \
 	../../src/SVDatabaseEditDialog.h \
 	../../src/SVDebugApplication.h \
 	../../src/SVGeometryView.h \
+	../../src/SVImportDxfDialog.h \
 	../../src/SVImportIDFDialog.h \
 	../../src/SVLCA.h \
 	../../src/SVLocalCoordinateView.h \
@@ -431,6 +434,7 @@ HEADERS  += \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
+	../../src/SVUndoAddDrawing.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DDialog.h \
@@ -531,6 +535,7 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
 	../../src/SVGeometryView.ui \
+	../../src/SVImportDxfDialog.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \

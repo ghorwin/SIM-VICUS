@@ -46,6 +46,7 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
+	../../src/VICUS_Drawing.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
@@ -109,6 +110,7 @@ SOURCES += \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
+    ../../src/VICUS_Drawing.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \

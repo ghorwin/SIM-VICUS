@@ -4,11 +4,11 @@ SUBDIRS = \
 ../../FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVentilation.pro \
 # 		DummyDatabasePlugin \
 # 		DummyImportPlugin \
-		SIM-VICUS \
+SIM-VICUS \
 		QuaZIP \
 		qwt \
 		clipper \
-                libdxfrw \
+		libdxfrw \
 		QtExt \
 		Vicus \
 		CCM \

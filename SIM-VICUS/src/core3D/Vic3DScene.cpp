@@ -1819,6 +1819,17 @@ void Scene::generateNetworkGeometry() {
 }
 
 
+void Scene::generateDrawings() {
+	const VICUS::Project & p = project();
+
+	for (const VICUS::Drawing & drawing: p.m_drawings) {
+
+
+	}
+
+}
+
+
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
 
