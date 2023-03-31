@@ -257,10 +257,11 @@ void SVAutoSaveDialog::writeAutoSaveData() {
 }
 
 void SVAutoSaveDialog::updateUi() {
-	unsigned int rowCount = (unsigned int)m_ui->tableWidgetFiles->rowCount();
 
 	// Update Auto-saves in tables
 	updateAutoSavesInTable();
+
+	unsigned int rowCount = (unsigned int)m_ui->tableWidgetFiles->rowCount();
 
 	m_ui->pushButtonRecoverFile->setEnabled(rowCount != 0);
 	m_ui->pushButtonRemoveAutoSave->setEnabled(rowCount != 0);
