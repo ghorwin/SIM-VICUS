@@ -260,6 +260,10 @@ bool SVGeometryView::handleGlobalKeyRelease(QKeyEvent * ke) {
 
 
 void SVGeometryView::moveMeasurementWidget() {
+	// Note: this function is called from resizeEvent() and indirectly from showEvent(), but here the
+	//       widget wasn't created, yet. Hence, we need to protect against accessing the pointer.
+	if (SVViewStateHandler::instance().m_measurementWidget == nullptr)
+		return;
 	const QPoint &point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
 	SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
 }
