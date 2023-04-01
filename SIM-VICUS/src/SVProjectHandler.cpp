@@ -1013,9 +1013,12 @@ void SVProjectHandler::onAutoSave() {
 		return;
 
 	// save backup
-	if (saveProject(nullptr, m_projectFile, false, true) == SaveOK)
+	if (saveProject(nullptr, m_projectFile, false, true) == SaveOK) {
+		// remember to strip the trailing ~ again
+		m_projectFile.chop(1);
 		IBK::IBK_Message( IBK::FormatString("Auto-saved project in file %1\n").arg( (m_projectFile + "~").toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	}
 	else
 		IBK::IBK_Message("Error autosaving project", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 }
@@ -1117,7 +1120,6 @@ bool SVProjectHandler::write(const QString & fname) const {
 
 	try {
 		IBK::Path filename(fname.toStdString());
-		IBK::Path newProjectDir = filename.parentPath();
 		IBK::Path oldProjectDir(m_projectFile.toStdString());
 		std::map<std::string, IBK::Path> pmap;
 		try {
