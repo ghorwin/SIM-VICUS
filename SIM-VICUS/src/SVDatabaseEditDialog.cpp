@@ -182,9 +182,9 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 
 	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged, this, &SVDatabaseEditDialog::onStyleChanged);
 
-	for(unsigned int i=0; i<m_dbModel->columnCount(); ++i){
+	for (int i=0; i<m_dbModel->columnCount(); ++i){
 		QString name = m_dbModel->headerData(i, Qt::Horizontal).toString();
-		if(name == "") continue; // Skip valid column
+		if (name == "") continue; // Skip valid column
 		m_ui->comboBoxColumn->addItem(name, i);
 	}
 }

@@ -19,14 +19,14 @@ CONFIG(debug, debug|release) {
 CONFIG += console
 }
 
-unix {
-QMAKE_CXXFLAGS += -Wno-deprecated-copy
+linux {
+	QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
-LIBS += -L../../../lib$${DIR_PREFIX} \
--lNandrad \
--lQtExt \
--lQuaZIP \
+LIBS += \
+	-lNandrad \
+	-lQtExt \
+	-lQuaZIP \
 	-lTiCPP \
 	-lIDFReader \
 	-lVicus \
@@ -43,20 +43,20 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lqwt6
 
 win32 {
-LIBS += -luser32
-LIBS += -lopengl32
+	LIBS += -luser32
+	LIBS += -lopengl32
 }
 linux {
-LIBS += -lGLU -lGL
+	LIBS += -lGLU -lGL
 }
 mac {
-LIBS += -framework OpenGL
+	LIBS += -framework OpenGL
 }
 
 INCLUDEPATH = \
-../../src \
-../../src/actions \
-../../src/core3D \
+	../../src \
+	../../src/actions \
+	../../src/core3D \
 	../../../externals/CCM/src \
 	../../../externals/Shading/src \
 	../../../externals/IBK/src \
@@ -542,7 +542,7 @@ FORMS    += \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPluginManager.ui \
 	../../src/SVPreferencesDialog.ui \
-        ../../src/SVPreferencesPageMisc.ui \
+		../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddGeometry.ui \

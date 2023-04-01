@@ -73,7 +73,7 @@ NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 # library dependencies
 CCM.depends = IBK TiCPP
-Shading.depends = IBK TiCPP CCM IBKMK DataIO
+Shading.depends = IBK TiCPP CCM IBKMK DataIO RoomClipper
 DataIO.depends = IBK
 IBKMK.depends = IBK sundials
 TiCPP.depends = IBK

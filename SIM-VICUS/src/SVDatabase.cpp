@@ -36,8 +36,6 @@
 
 #include "SVProjectHandler.h"
 
-const unsigned int USER_ID_SPACE_START = 10000;
-
 /*
 - Materialien: 1010000-1020000
 - Constructions: 1020000-1030000
