@@ -26,7 +26,6 @@
 #include "SVPreferencesPageMisc.h"
 #include "ui_SVPreferencesPageMisc.h"
 
-#include "SVAutoSaveDialog.h"
 #include "SVSettings.h"
 #include "SVMainWindow.h"
 
@@ -54,7 +53,7 @@ void SVPreferencesPageMisc::updateUi() {
 	m_ui->spinBoxAutosaveInterval->setValue((int)((double)s.m_autosaveInterval/60.0/1000.0)); // from ms in min
 	m_ui->spinBoxAutosaveInterval->blockSignals(false);
 
-	m_ui->groupBoxAutoSaving->setChecked(s.m_enableAutosaving); // from ms in min
+	m_ui->groupBoxAutoSaving->setChecked(s.m_autosaveEnabled); // from ms in min
 }
 
 
@@ -75,13 +74,12 @@ void SVPreferencesPageMisc::on_pushButtonResetDoNotShowAgainDialogs_clicked() {
 
 
 void SVPreferencesPageMisc::on_spinBoxAutosaveInterval_valueChanged(int value) {
-	SVSettings::instance().m_autosaveInterval = value * 60 * 1000; // in milliseconds
-	SVMainWindow::instance().restartTimerWithoutAutosaving();
+	SVSettings::instance().m_autosaveInterval = value;
 }
 
 
 void SVPreferencesPageMisc::on_groupBoxAutoSaving_toggled(bool isEnabled) {
-	SVSettings::instance().m_enableAutosaving = isEnabled;
+	SVSettings::instance().m_autosaveEnabled = isEnabled;
 
 	updateUi();
 }

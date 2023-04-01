@@ -43,7 +43,6 @@ class QProgressDialog;
 class QSplitter;
 
 class SVThreadBase;
-class SVAutoSaveDialog;
 class SVWelcomeScreen;
 class SVNotesDialog;
 class SVButtonBar;
@@ -123,10 +122,6 @@ public:
 
 	*/
 	bool exportProjectPackage(const QString & exportFilePath, bool withTopLevelDir);
-
-
-	/*! Restarts the autosave-timer without doing any autosaving. */
-	void restartTimerWithoutAutosaving();
 
 	/*! Returns the material edit dialog. */
 	SVDatabaseEditDialog * dbMaterialEditDialog();
@@ -264,8 +259,6 @@ private slots:
 	/*! Updates the device pixel ratio. */
 	void onScreenChanged(QScreen *screen);
 
-	/*! Autosave timer finished and autosave is done. */
-	void onAutosaveTimerFinished();
 
 	// all menu action slots below
 
@@ -503,8 +496,6 @@ private:
 
 	/*! Central handler for the user interface state. */
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
-
-	SVAutoSaveDialog					*m_autoSave										= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;

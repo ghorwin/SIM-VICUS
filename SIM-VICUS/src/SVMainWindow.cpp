@@ -94,7 +94,6 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
-#include "SVAutoSaveDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -146,8 +145,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_undoStack(new QUndoStack(this)),
 	m_pluginLoader(new SVPluginLoader),
 	m_postProcHandler(new SVPostProcHandler),
-	m_viewStateHandler(new SVViewStateHandler),
-	m_autoSave(new SVAutoSaveDialog)
+	m_viewStateHandler(new SVViewStateHandler)
 {
 	// store pointer to this object for global access
 	m_self = this;
@@ -173,16 +171,6 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	setAttribute(Qt::WA_NativeWindow);
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
-
-
-	m_ui->actionDBZoneControlShading->setEnabled(true);
-
-	// Set and start timer
-	m_autoSaveTimer = new QTimer;
-	m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval);
-
-	// Connect time out to autosave
-	connect(m_autoSaveTimer, &QTimer::timeout, this, &SVMainWindow::onAutosaveTimerFinished);
 }
 
 
@@ -191,7 +179,6 @@ SVMainWindow::~SVMainWindow() {
 	delete m_undoStack;
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
-	delete m_autoSaveTimer;
 
 	m_self = nullptr;
 }
@@ -259,11 +246,6 @@ bool SVMainWindow::exportProjectPackage(const QString & exportFilePath, bool wit
 	// finally remove export directory
 	QtExt::Directories::removeDirRecursively(targetDirPath);
 	return true;
-}
-
-
-void SVMainWindow::restartTimerWithoutAutosaving() {
-	m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval);
 }
 
 
@@ -807,11 +789,19 @@ void SVMainWindow::setup() {
 	show();
 #endif
 
-	// finally setup plugins
+	// *** Plugins ***
 	setupPlugins();
 
-	// do auto-save handling
-	m_autoSave->handleAutoSaves();
+
+	// *** Auto-Save Timer ***
+
+	m_autoSaveTimer = new QTimer(this); // parent takes ownership
+	// Connect time out to autosave
+//	connect(m_autoSaveTimer, &QTimer::timeout, this, &SVProjectHandler::onAutosaveTimout);
+
+	if (SVSettings::instance().m_autosaveEnabled)
+		m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval*60*1000); // Mind: conversion to milliseconds
+
 }
 
 
@@ -2136,20 +2126,6 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 		filename = projectFile;
 	}
 	return true;
-}
-
-
-void SVMainWindow::onAutosaveTimerFinished() {
-	if(!SVSettings::instance().m_enableAutosaving)
-		return;
-
-	if(!m_projectHandler.isValid())
-		return;
-
-	qDebug() << "Performing autosave.";
-
-	m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval);
-	m_projectHandler.autoSave();
 }
 
 

@@ -847,11 +847,6 @@
     <string>Ctrl+7</string>
    </property>
   </action>
-  <action name="actionaa">
-   <property name="text">
-    <string>Export Network as GeoJson...</string>
-   </property>
-  </action>
   <action name="actionPluginsManager">
    <property name="text">
     <string>Plugin manager...</string>

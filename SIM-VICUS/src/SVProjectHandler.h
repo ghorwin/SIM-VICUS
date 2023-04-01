@@ -180,9 +180,6 @@ public:
 	*/
 	SaveResult saveWithNewFilename(QWidget * parent);
 
-	/*! Auto-saves the current project in app data. */
-	SaveResult autoSave();
-
 	/*! Saves project with new filename into the template folder (interactive function, asks user to input filename).
 		Calls saveProject() internally.
 	*/
@@ -300,11 +297,6 @@ signals:
 		In this slot you can implement any user-dialogs where you ask for optional project adjustments/fixes.
 	*/
 	void fixProjectAfterRead();
-
-	/*! Emitted when auto-saves of projects need to be removed.
-		\param projectPath path of current project
-	*/
-	void removeProjectAutoSaves(const QString &projectPath);
 
 private:
 
