@@ -55,7 +55,6 @@ void SVPreferencesPageMisc::updateUi() {
 	m_ui->spinBoxAutosaveInterval->blockSignals(false);
 
 	m_ui->groupBoxAutoSaving->setChecked(s.m_enableAutosaving); // from ms in min
-	m_ui->spinBoxAutosaveInterval->setEnabled(s.m_enableAutosaving);
 }
 
 
