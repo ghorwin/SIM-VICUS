@@ -798,7 +798,7 @@ void SVMainWindow::setup() {
 
 	m_autoSaveTimer = new QTimer(this); // parent takes ownership
 	// Connect time out to autosave
-//	connect(m_autoSaveTimer, &QTimer::timeout, this, &SVProjectHandler::onAutosaveTimout);
+	connect(m_autoSaveTimer, &QTimer::timeout, &SVProjectHandler::instance(), &SVProjectHandler::onAutoSave);
 
 	// apply settings
 	onAutosaveSettingsChanged();
@@ -828,12 +828,15 @@ void SVMainWindow::onStyleChanged() {
 
 
 void SVMainWindow::onAutosaveSettingsChanged() {
+	FUNCID(SVMainWindow::onAutosaveSettingsChanged);
 	if (SVSettings::instance().m_autosaveEnabled) {
 		m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval*60*1000); // Mind: conversion to milliseconds
 		// Note: time keeps autofiring every interval until stopped
+		IBK::IBK_Message(IBK::FormatString("Autosave enabled, interval = %1 min\n").arg(SVSettings::instance().m_autosaveInterval), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 	else {
 		m_autoSaveTimer->stop();
+		IBK::IBK_Message(IBK::FormatString("Autosave disabled\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 }
 

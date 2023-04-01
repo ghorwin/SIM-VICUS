@@ -156,13 +156,11 @@ public:
 		function returns with invalid state of project manager.
 		Emits updateActions() signal on success.
 		\param parent Parent widget, needed for QMessageBox
-		\param filename Filename of project file to read.
+		\param filename Filename of project file to read (NOTE: pass-by-value is needed here)
 		\param silent If true, error messages won't pop-up as dialog box but rather be
 					  sent to IBK::IBK_Message().
 	*/
-	void loadProject(	QWidget * parent,
-						const QString & filename,
-						bool silent);
+	void loadProject(QWidget * parent, QString filename, bool silent);
 
 	/*! Closes project (discarding modifications) and reopens the project.
 		Project must have a valid filename already.
@@ -190,8 +188,9 @@ public:
 		\param parent Pointe to parent widget. Used in MessageBox.
 		\param fileName Filepath for the project file. Should not contain placeholder. A missing project file extension will be added.
 		\param addToRecentFilesList If true file will be added to recent file list if save was successful.
+		\param autosave If true, create an autosave-copy of the project, i.e. appends ~ to filename, does not add to recent files, no error message in case of error.
 	*/
-	SaveResult saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList = true);
+	SaveResult saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList = true, bool autosave = false);
 
 	/*! Interface function for the user interface that allows
 		different levels of modifications to be signalled to the project.
@@ -259,6 +258,12 @@ public:
 	*/
 	bool importEmbeddedDB(VICUS::Project & pro);
 
+public slots:
+
+	/*! Creates autosave backup of current project.
+		Calls saveProject() internally.
+	*/
+	void onAutoSave();
 
 signals:
 	/*! Emitted when the project has been modified.

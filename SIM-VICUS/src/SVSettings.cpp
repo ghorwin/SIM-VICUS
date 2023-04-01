@@ -180,7 +180,10 @@ void SVSettings::read() {
 	m_navigationSplitterSize = (int)settings.value("NavigationSplitterSize", 250).toUInt();
 	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
 	m_terminalEmulator = (TerminalEmulators)settings.value("TerminalEmulator", TE_XTerm).toInt();
-	m_autosaveInterval = settings.value("AutosaveInterval", 60000).toInt();
+	m_autosaveInterval = settings.value("AutosaveInterval", 10).toInt(); // in minutes
+	// guard against old code with ms as autosave interval
+	if (m_autosaveInterval > 100)
+		m_autosaveInterval = 10; // reset to default
 	m_autosaveEnabled = settings.value("EnableAutosaving", true).toBool();
 
 	SVSettings::ThemeType tmpTheme = (SVSettings::ThemeType)settings.value("Theme", m_theme ).toInt();
