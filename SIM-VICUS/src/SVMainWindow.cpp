@@ -82,6 +82,7 @@
 #include "SVNetworkImportDialog.h"
 #include "SVNetworkExportDialog.h"
 #include "SVPreferencesPageStyle.h"
+#include "SVPreferencesPageMisc.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
@@ -799,8 +800,8 @@ void SVMainWindow::setup() {
 	// Connect time out to autosave
 //	connect(m_autoSaveTimer, &QTimer::timeout, this, &SVProjectHandler::onAutosaveTimout);
 
-	if (SVSettings::instance().m_autosaveEnabled)
-		m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval*60*1000); // Mind: conversion to milliseconds
+	// apply settings
+	onAutosaveSettingsChanged();
 
 }
 
@@ -823,6 +824,17 @@ void SVMainWindow::onStyleChanged() {
 		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
 	}
 #endif
+}
+
+
+void SVMainWindow::onAutosaveSettingsChanged() {
+	if (SVSettings::instance().m_autosaveEnabled) {
+		m_autoSaveTimer->start(SVSettings::instance().m_autosaveInterval*60*1000); // Mind: conversion to milliseconds
+		// Note: time keeps autofiring every interval until stopped
+	}
+	else {
+		m_autoSaveTimer->stop();
+	}
 }
 
 
@@ -1328,7 +1340,9 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 																	 "post processing in the preferences dialog!"));
 		// spawn preferences dialog
 		preferencesDialog()->edit(0);
-		return;
+		// still not postproc selected?
+		if (SVSettings::instance().m_postProcExecutable.isEmpty() || !QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
+			return;
 	}
 	// if we are using the new post-processing, generate a session file:
 	if (QFileInfo(SVSettings::instance().m_postProcExecutable).baseName() == "PostProcApp") {
@@ -1389,7 +1403,10 @@ void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 																	 "climate editor in the preferences dialog!"));
 		// spawn preferences dialog
 		preferencesDialog()->edit(0);
-		return;
+		// still not ccm editor selected?
+		ccmPath = SVSettings::instance().m_CCMEditorExecutable;
+		if (ccmPath.isEmpty() || !QFileInfo::exists(ccmPath))
+			return;
 	}
 	bool res = QProcess::startDetached(ccmPath, QStringList(), QString());
 	if (!res) {
@@ -2156,6 +2173,8 @@ SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 				this, &SVMainWindow::onStyleChanged);
 		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
 				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
+		connect(m_preferencesDialog->pageMisc(), &SVPreferencesPageMisc::autosaveSettingsChanged,
+				this, &SVMainWindow::onAutosaveSettingsChanged);
 	}
 	return m_preferencesDialog;
 }

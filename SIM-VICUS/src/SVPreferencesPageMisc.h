@@ -46,10 +46,8 @@ public:
 	void updateUi();
 
 signals:
-	/*! Emitted, when user has changed the style. */
-	void styleChanged();
-
-protected:
+	/*! Emitted, when user has modified autosave settings. */
+	void autosaveSettingsChanged();
 
 private slots:
 	void on_checkBoxDontUseNativeDialogs_toggled(bool checked);

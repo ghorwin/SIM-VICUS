@@ -247,7 +247,11 @@ private slots:
 
 	/*! Triggered whenever a project was read successfully. */
 	void onFixProjectAfterRead();
+
+	/*! Connected to SVPreferencesPageStyle */
 	void onStyleChanged();
+	/*! Connected to SVPreferencesPageMisc */
+	void onAutosaveSettingsChanged();
 
 	void onDockWidgetToggled(bool);
 
