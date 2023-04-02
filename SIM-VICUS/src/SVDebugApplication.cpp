@@ -70,12 +70,15 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 					}
 				}
 			}
-			if (e->type() == QEvent::KeyRelease) {
-		//			qDebug() << "KeyReleaseEvent from " << recv->objectName();
-				QKeyEvent * ke = dynamic_cast<QKeyEvent *>(e);
-				if (SVViewStateHandler::instance().m_geometryView != nullptr) {
-					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyRelease(ke))
-						return true;
+			else if (e->type() == QEvent::KeyRelease) {
+				QWidget * w = focusWidget();
+				if (qobject_cast<QLineEdit*>(w) == nullptr) {
+	//			qDebug() << "KeyReleaseEvent from " << recv->objectName();
+					QKeyEvent * ke = dynamic_cast<QKeyEvent *>(e);
+					if (SVViewStateHandler::instance().m_geometryView != nullptr) {
+						if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyRelease(ke))
+							return true;
+					}
 				}
 			}
 		}
