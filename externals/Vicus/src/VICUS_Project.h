@@ -301,8 +301,6 @@ public:
 	/*! Store structural units */
 	std::vector<StructuralUnit>							m_structuralUnits;			// XML:E
 
-
-
 	/*! All components actually placed in the geometry.
 		This vector is outside buildings, so that two building parts can be connected with
 		a component.
