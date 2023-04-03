@@ -15,36 +15,45 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="mainVerticalLayout">
      <item>
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Building:</string>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Filter</string>
        </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Building:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxBuildingFilter"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Building level:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxBuildingLevelFilter"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Room Name:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditNameFilter"/>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxBuildingFilter"/>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxBuildingLevelFilter"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Building level:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Room Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditNameFilter"/>
      </item>
      <item>
       <widget class="QLabel" name="label_8">
