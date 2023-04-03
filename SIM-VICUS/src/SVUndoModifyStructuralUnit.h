@@ -1,5 +1,5 @@
-#ifndef SVUNDOMODIFYSTRUCTURALUNIT_H
-#define SVUNDOMODIFYSTRUCTURALUNIT_H
+#ifndef SVUndoModifyStructuralUnitH
+#define SVUndoModifyStructuralUnitH
 
 #include <VICUS_StructuralUnit.h>
 
@@ -21,4 +21,4 @@ private:
 
 
 
-#endif // SVUNDOMODIFYSTRUCTURALUNIT_H
+#endif // SVUndoModifyStructuralUnitH

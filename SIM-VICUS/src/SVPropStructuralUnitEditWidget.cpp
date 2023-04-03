@@ -60,28 +60,28 @@ void SVPropStructuralUnitEditWidget::setPropertyType(int structuralUnitPropertyT
 
 
 
-void SVPropStructuralUnitEditWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+void SVPropStructuralUnitEditWidget::onModified(int modificationType, ModificationInfo */*data*/) {
 	// react on selection changes only, then update properties
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
-		// This is meant to update all widgets when e.g. a new project has been loaded
-		case SVProjectHandler::AllModified:
-		case SVProjectHandler::BuildingGeometryChanged:
-		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
-		case SVProjectHandler::ComponentInstancesModified:
-		case SVProjectHandler::SubSurfaceComponentInstancesModified:
-		case SVProjectHandler::StructuralUnitsModified:
-			updateUi();
+	// This is meant to update all widgets when e.g. a new project has been loaded
+	case SVProjectHandler::AllModified:
+	case SVProjectHandler::BuildingGeometryChanged:
+	case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
+	case SVProjectHandler::ComponentInstancesModified:
+	case SVProjectHandler::SubSurfaceComponentInstancesModified:
+	case SVProjectHandler::NodeStateModified:
+	case SVProjectHandler::StructuralUnitsModified:
+		updateUi();
 		break;
 
-// nothing to do for the remaining modification types
-		case SVProjectHandler::ObjectRenamed:
-		case SVProjectHandler::SolverParametersModified:
-		case SVProjectHandler::ClimateLocationModified:
-		case SVProjectHandler::GridModified:
-		case SVProjectHandler::NetworkGeometryChanged:
-		case SVProjectHandler::NetworkDataChanged:
-		case SVProjectHandler::NodeStateModified:
+		// nothing to do for the remaining modification types
+	case SVProjectHandler::ObjectRenamed:
+	case SVProjectHandler::SolverParametersModified:
+	case SVProjectHandler::ClimateLocationModified:
+	case SVProjectHandler::GridModified:
+	case SVProjectHandler::NetworkGeometryChanged:
+	case SVProjectHandler::NetworkDataChanged:
 		break;
 	}
 }

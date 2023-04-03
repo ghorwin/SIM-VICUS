@@ -736,6 +736,8 @@ void SVGeometryView::on_actionStructuralUnitParametrization_triggered() {
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
+	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
 

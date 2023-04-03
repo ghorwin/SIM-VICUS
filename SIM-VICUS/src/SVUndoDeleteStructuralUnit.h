@@ -1,5 +1,5 @@
-#ifndef SVUNDODELETESTRUCTURALUNIT_H
-#define SVUNDODELETESTRUCTURALUNIT_H
+#ifndef SVUndoDeleteStructuralUnitH
+#define SVUndoDeleteStructuralUnitH
 
 #include <VICUS_StructuralUnit.h>
 
@@ -21,4 +21,4 @@ private:
 
 };
 
-#endif // SVUNDODELETESTRUCTURALUNIT_H
+#endif // SVUndoDeleteStructuralUnitH

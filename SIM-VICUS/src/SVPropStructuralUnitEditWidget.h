@@ -1,5 +1,5 @@
-#ifndef SVPROPSTRUCTURALUNITEDITWIDGET_H
-#define SVPROPSTRUCTURALUNITEDITWIDGET_H
+#ifndef SVPropStructuralUnitEditWidgetH
+#define SVPropStructuralUnitEditWidgetH
 
 
 #include <QWidget>
@@ -58,4 +58,4 @@ private:
 	Ui::SVPropStructuralUnitEditWidget	*m_ui;
 };
 
-#endif // SVPROPSTRUCTURALUNITEDITWIDGET_H
+#endif // SVPropStructuralUnitEditWidgetH

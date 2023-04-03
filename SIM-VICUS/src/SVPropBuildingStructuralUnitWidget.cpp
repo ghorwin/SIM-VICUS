@@ -29,11 +29,8 @@ SVPropBuildingStructuralUnitWidget::SVPropBuildingStructuralUnitWidget(QWidget *
 	m_ui->tableWidgetStructuralUnit->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetStructuralUnit->horizontalHeader()->setStretchLastSection(true);
 
-	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVPropBuildingStructuralUnitWidget::onModified);
-
 	// update Ui initiallly
-	onModified(SVProjectHandler::AllModified, nullptr);
+	updateUi();
 }
 
 SVPropBuildingStructuralUnitWidget::~SVPropBuildingStructuralUnitWidget()
@@ -42,31 +39,7 @@ SVPropBuildingStructuralUnitWidget::~SVPropBuildingStructuralUnitWidget()
 }
 
 
-void SVPropBuildingStructuralUnitWidget::onModified(int modificationType, ModificationInfo */*data*/) {
-	// react on selection changes only, then update properties
-	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
-	switch (modType) {
-	// This is meant to update all widgets when e.g. a new project has been loaded
-	case SVProjectHandler::AllModified:
-	case SVProjectHandler::BuildingGeometryChanged:
-	case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
-	case SVProjectHandler::ComponentInstancesModified:
-	case SVProjectHandler::SubSurfaceComponentInstancesModified:
-	case SVProjectHandler::NodeStateModified:
-	case SVProjectHandler::StructuralUnitsModified:
-		updateUi();
-		break;
 
-		// nothing to do for the remaining modification types
-	case SVProjectHandler::ObjectRenamed:
-	case SVProjectHandler::SolverParametersModified:
-	case SVProjectHandler::ClimateLocationModified:
-	case SVProjectHandler::GridModified:
-	case SVProjectHandler::NetworkGeometryChanged:
-	case SVProjectHandler::NetworkDataChanged:
-		break;
-	}
-}
 
 void SVPropBuildingStructuralUnitWidget::updateUi() {
 

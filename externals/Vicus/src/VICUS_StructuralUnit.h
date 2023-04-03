@@ -1,5 +1,5 @@
-#ifndef VICUS_STRUCTURALUNIT_H
-#define VICUS_STRUCTURALUNIT_H
+#ifndef VICUS_StructuralUnitH
+#define VICUS_StructuralUnitH
 
 
 #include "VICUS_CodeGenMacros.h"
@@ -36,4 +36,4 @@ public:
 
 };
 }
-#endif // VICUS_STRUCTURALUNIT_H
+#endif // VICUS_StructuralUnitH

@@ -105,6 +105,11 @@ void SVPropertyWidget::updateColorMode() {
 			SVPropNetworkEditWidget *widget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
 			widget->setPropertyType((int)widget->currentPropertyType());
 		} break;
+		case SVViewState::PM_BuildingStructuralUnitProperties : {
+			// enforce color update
+			SVPropStructuralUnitEditWidget *widget = qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
 
 		default: break;
 	}

@@ -1,5 +1,5 @@
-#ifndef SVUNDOADDSTRUCTURALUNIT_H
-#define SVUNDOADDSTRUCTURALUNIT_H
+#ifndef SVUndoAddStructuralUnitH
+#define SVUndoAddStructuralUnitH
 
 #include <VICUS_StructuralUnit.h>
 
@@ -9,8 +9,8 @@ class SVUndoAddStructuralUnit: public SVUndoCommandBase {
 		Q_DECLARE_TR_FUNCTIONS(SVUndoAddStructuralUnit)
 public:
 	SVUndoAddStructuralUnit(const QString & label, const VICUS::StructuralUnit & addedUnit);
-	virtual void undo();
-	virtual void redo();
+	virtual void undo() override;
+	virtual void redo() override;
 
 private:
 
@@ -19,4 +19,4 @@ private:
 
 };
 
-#endif // SVUNDOADDSTRUCTURALUNIT_H
+#endif // SVUndoAddStructuralUnitH

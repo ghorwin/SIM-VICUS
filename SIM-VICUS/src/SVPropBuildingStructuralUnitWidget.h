@@ -1,5 +1,5 @@
-#ifndef SVPROPBUILDINGSTRUCTURALUNITWIDGET_H
-#define SVPROPBUILDINGSTRUCTURALUNITWIDGET_H
+#ifndef SVPropBuildingStructuralUnitWidgetH
+#define SVPropBuildingStructuralUnitWidgetH
 
 #include <QWidget>
 
@@ -27,19 +27,21 @@ public:
 	void updateUi();
 
 private slots:
-
+	/*! Triggered when user switches structural unit in table. */
 	void on_tableWidgetStructuralUnit_itemSelectionChanged();
-
-	void onModified(int modificationType, ModificationInfo * /*data*/);
 
 	void on_pushButtonAddStructuralUnit_clicked();
 
+	/*! Assigns structural unit from table to selected rooms. */
 	void on_pushButtonAssignStructuralUnit_clicked();
 
+	/*! Triggers the edit dialog. */
 	void on_tableWidgetStructuralUnit_cellDoubleClicked(/*int row, int column*/);
 
+	/*! Deletes the selected structural unit from the project. */
 	void on_pushButtonRemoveStructuralUnit_clicked();
 
+	/*! Removes the all assignments from the selected rooms. */
 	void on_pushButtonRemoveAssignment_clicked();
 
 private:
@@ -48,4 +50,4 @@ private:
 	Ui::SVPropBuildingStructuralUnitWidget *m_ui;
 };
 
-#endif // SVPROPBUILDINGSTRUCTURALUNITWIDGET_H
+#endif // SVPropBuildingStructuralUnitWidgetH
