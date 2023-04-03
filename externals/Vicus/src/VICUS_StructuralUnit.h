@@ -31,8 +31,6 @@ public:
 	std::set<unsigned int>							m_roomIds;				// XML:E
 
 
-	//TODO Anton: save color here, since its not a abstractDBelement
-	// ! displayname ist auch keine MultiLang String
 	QColor											m_color;				// XML:E
 
 };

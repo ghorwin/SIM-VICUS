@@ -43,7 +43,7 @@
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropBuildingAcousticTemplatesWidget.h"
-#include "SVPropBuildingStructuralUnitWidget.h"
+#include "SVPropStructuralUnitEditWidget.h"
 #include "SVPropResultsWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
@@ -78,6 +78,12 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 void SVPropertyWidget::setBuildingPropertyType(int buildingPropertyType) {
 	showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
 	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(buildingPropertyType);
+}
+
+
+void SVPropertyWidget::setStructuralUnitPropertyType(int buildingPropertyType) {
+	showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
+	qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties])->setPropertyType(buildingPropertyType);
 }
 
 
@@ -144,7 +150,7 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 			showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
 		} break;
 		case SVViewState::PM_BuildingStructuralUnitProperties : {
-			showPropertyWidget<SVPropBuildingStructuralUnitWidget>(M_BuildingStructuralUnit);
+			showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
 		} break;
 		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);

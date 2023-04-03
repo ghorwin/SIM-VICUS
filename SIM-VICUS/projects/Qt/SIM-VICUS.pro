@@ -203,6 +203,7 @@ SOURCES += \
 	../../src/SVPropNetworkSubStationWidget.cpp \
 	../../src/SVPropResultsWidget.cpp \
 	../../src/SVPropSiteWidget.cpp \
+	../../src/SVPropStructuralUnitEditWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropVertexListWidget.cpp \
@@ -411,6 +412,7 @@ HEADERS  += \
 	../../src/SVPropNetworkSubStationWidget.h \
 	../../src/SVPropResultsWidget.h \
 	../../src/SVPropSiteWidget.h \
+	../../src/SVPropStructuralUnitEditWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVPropVertexListWidget.h \
@@ -580,6 +582,7 @@ FORMS    += \
 	../../src/SVPropNetworkSubStationWidget.ui \
 	../../src/SVPropResultsWidget.ui \
 	../../src/SVPropSiteWidget.ui \
+	../../src/SVPropStructuralUnitEditWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
 	../../src/SVScheduleHolidayWidget.ui \

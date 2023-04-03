@@ -63,7 +63,7 @@ public:
 		M_NetworkProperties,
 		M_BuildingProperties,
 		M_BuildingAcousticProperties,
-		M_BuildingStructuralUnit,
+		M_BuildingStructuralUnitProperties,
 		M_AddWindowWidget,
 		M_ResultsWidget,
 		NUM_M
@@ -73,6 +73,9 @@ public:
 
 	/*! Shows the building property widget and sets the corresponding property type */
 	void setBuildingPropertyType(int buildingPropertyType);
+
+	/*! Shows the structural unit property widget and sets the corresponding property type */
+	void setStructuralUnitPropertyType(int buildingPropertyType);
 
 	/*! Shows the network property widget and sets the corresponding property type */
 	void setNetworkPropertyType(int networkPropertyType);

@@ -1518,6 +1518,7 @@ void CodeGenerator::generateReadWriteCode() {
 						// generate code for reading std::vector
 						handledVariables.insert(xmlInfo.varName);
 					}
+					// for std::set, create a vector and load the data into there and transfer to set
 					else if (xmlInfo.typeStr.find("std::set<") != std::string::npos) {
 
 						std::string::size_type pos1 = xmlInfo.typeStr.find("<");

@@ -1183,14 +1183,15 @@ void SVMainWindow::on_actionEditApplicationLog_triggered() {
 
 
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
+	m_geometryView->uncheckAllActionsInButtonBar();
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
 	SVViewStateHandler::instance().setViewState(vs);
 
 	// adjust appearance of selector widget
-	SVViewStateHandler::instance().m_propertyWidget->setBuildingPropertyType(BT_FloorManager);
+	SVViewStateHandler::instance().m_propertyWidget->setStructuralUnitPropertyType(ST_FloorManager);
 
 }
 
