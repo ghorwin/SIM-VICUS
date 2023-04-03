@@ -6,13 +6,13 @@
 #include "VICUS_Constants.h"
 #include "VICUS_Object.h"
 
-
 #include <QColor>
 
 
 namespace VICUS {
-class StructuralUnit : public VICUS::Object
-{
+
+/*! A structural unit combines several VICUS:Rooms. */
+class StructuralUnit : public VICUS::Object {
 public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
@@ -27,10 +27,10 @@ public:
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	QString							m_displayName;			// XML:A
 
-	/*! store the room ids of this structural unit*/
+	/*! Stores the room ids of this structural unit. */
 	std::set<unsigned int>							m_roomIds;				// XML:E
 
-
+	/*! Color of structural unit. */
 	QColor											m_color;				// XML:E
 
 };
