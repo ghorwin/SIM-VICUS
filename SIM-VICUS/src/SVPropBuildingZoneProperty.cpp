@@ -44,7 +44,7 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	m_zonePropertiesTableModel(new SVPropBuildingZonePropertyTableModel(this))
 {
 	m_ui->setupUi(this);
-	m_ui->mainGridLayout->setMargin(0);
+	m_ui->mainVerticalLayout->setMargin(0);
 
 	// create proxy model and link with table model and view
 	m_zonePropertiesProxyModel = new SVPropBuildingZonePropertyTableProxyModel(this);
