@@ -23,9 +23,9 @@ SVPropStructuralUnitEditWidget::SVPropStructuralUnitEditWidget(QWidget *parent) 
 	// add pages to tool box:
 	// Note: NEVER change the order, it must correspond to StructuralUnitPropertyType enum.
 	m_ui->toolBox->blockSignals(true);
-	m_ui->toolBox->addPage(tr("Structural unit"), new SVPropBuildingStructuralUnitWidget(this));
+	m_ui->toolBox->addPage(tr("Structural building units"), new SVPropBuildingStructuralUnitWidget(this));
 	m_ui->toolBox->addPage(tr("Room properties"), new SVPropBuildingZoneProperty(this));
-	m_ui->toolBox->addPage(tr("Building levels"), new SVPropFloorManagerWidget(this));
+	m_ui->toolBox->addPage(tr("Building structure"), new SVPropFloorManagerWidget(this));
 
 	m_ui->toolBox->blockSignals(false);
 	m_ui->toolBox->setCurrentIndex(ST_StructuralUnit);
