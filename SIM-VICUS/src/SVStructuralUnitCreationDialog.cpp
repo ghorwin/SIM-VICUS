@@ -17,8 +17,7 @@ SVStructuralUnitCreationDialog::SVStructuralUnitCreationDialog(QWidget *parent) 
 
 }
 
-SVStructuralUnitCreationDialog::~SVStructuralUnitCreationDialog()
-{
+SVStructuralUnitCreationDialog::~SVStructuralUnitCreationDialog() {
 	delete m_ui;
 }
 
@@ -43,8 +42,8 @@ bool SVStructuralUnitCreationDialog::create() {
 	return exec();
 }
 
-void SVStructuralUnitCreationDialog::on_buttonBoxCreateUnit_accepted()
-{
+void SVStructuralUnitCreationDialog::on_buttonBoxCreateUnit_accepted() {
+
 	QString name = m_ui->lineEditUnitName->text();
 	QColor color = m_ui->pushButtonColor->color();
 
