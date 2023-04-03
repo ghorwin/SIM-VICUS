@@ -82,13 +82,12 @@ void SVPropBuildingStructuralUnitWidget::updateUi() {
 	m_ui->tableWidgetStructuralUnit->setRowCount(0);
 	int row=0;
 
-
 	for(const VICUS::StructuralUnit & unit : project().m_structuralUnits){
 		m_ui->tableWidgetStructuralUnit->setRowCount(row + 1);
 
 		QTableWidgetItem * item = new QTableWidgetItem();
 		item->setBackground(unit.m_color);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
 		m_ui->tableWidgetStructuralUnit->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
