@@ -90,7 +90,6 @@ SVPropBuildingZoneProperty::~SVPropBuildingZoneProperty() {
 
 void SVPropBuildingZoneProperty::updateUi() {
 
-
 	// first update building and building level
 
 	m_ui->comboBoxBuildingFilter->blockSignals(true);
