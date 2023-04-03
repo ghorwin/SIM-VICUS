@@ -11,13 +11,14 @@
 
 namespace VICUS {
 
-/*! A structural unit combines several VICUS:Rooms. */
+/*! A structural unit combines several VICUS:Rooms for
+	acoustic calculation and several post-processings. */
 class StructuralUnit : public VICUS::Object {
 public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	StructuralUnit();
+	StructuralUnit() {}
 
 	/*! Type-info string. */
 	const char * typeinfo() const override { return "StructuralUnit"; }
