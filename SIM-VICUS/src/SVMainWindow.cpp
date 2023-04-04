@@ -94,6 +94,7 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
+#include "SVImportDxfDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -2193,14 +2194,9 @@ void SVMainWindow::on_actionCalculateViewFactors_triggered() {
 
 
 void SVMainWindow::on_actionDXF_File_triggered() {
-	QString filename = QFileDialog::getOpenFileName(
-				this,
-				tr("Select dxf file"),
-				"",
-				tr("dxf file (*.dxf);"),
-				nullptr,
-				SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options() );
 
+    SVImportDxfDialog* importDxf = new SVImportDxfDialog();
+    importDxf->run();
 
 }
 

@@ -85,7 +85,7 @@ IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
 Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
-Vicus.depends = IBK TiCPP Nandrad IBKMK CCM DataIO
+Vicus.depends = IBK TiCPP Nandrad IBKMK CCM DataIO libdxfrw
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 RoomClipper.depends = IBK Nandrad IBKMK TiCPP CCM clipper Vicus
 
