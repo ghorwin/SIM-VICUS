@@ -476,7 +476,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// qDebug() << "Camera translation";
 			m_camera.setTranslation(IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-			// qDebug() << "Adjust Dragging";
+//			qDebug() << "Adjust Dragging: " << mouseDelta << localMousePos << newLocalMousePos;
 			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
@@ -3047,28 +3047,40 @@ void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePosScaled.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
-		//						qDebug() << "Resetting mousepos to right side of window.";
+//		qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
-		//						qDebug() << "Resetting mousepos to right side of window.";
+//		qDebug() << "Resetting mousepos to left side of window.";
 		newLocalMousePos.setX(WINDOW_MOVE_MARGIN);
 	}
 
 	if (localMousePosScaled.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
-		qDebug() << "Resetting mousepos to bottom side of window.";
+//		qDebug() << "Resetting mousepos to bottom side of window.";
 		newLocalMousePos.setY(m_viewPort.height()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
-		qDebug() << "Resetting mousepos to top side of window.";
+//		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
 	// if panning is enabled, reset the pan start positions/variables
 	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
-		pickObject.m_localMousePos = newLocalMousePos * SVSettings::instance().m_ratio;
-		pick(pickObject);
-		panStart(newLocalMousePos, pickObject, true);
+		bool useMouseWarping = false;
+#ifdef Q_OS_LINUX
+#if HAVE_X11
+		if (QX11Info::isPlatformX11()) {
+			useMouseWarping = true;
+		}
+#endif
+#else
+		useMouseWarping = true;
+#endif
+		if (useMouseWarping) {
+			pickObject.m_localMousePos = newLocalMousePos * SVSettings::instance().m_ratio;
+			pick(pickObject);
+			panStart(newLocalMousePos, pickObject, true);
+		}
 	}
 }
 
