@@ -163,7 +163,7 @@ private:
 	void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_ColoredSurfaces);
 	void generateNetworkGeometry();
 
-	void generateDrawings();
+	void generate2DDrawingGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
 	void recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const;
@@ -259,6 +259,8 @@ private:
 	GridObject				m_gridObject;
 	/*! A geometry drawing object (transparency only for windows) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_buildingGeometryObject;
+	/*! todo */
+	OpaqueGeometryObject	m_drawingGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
 	/*! A geometry drawing object for building (room) surfaces.*/

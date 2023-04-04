@@ -76,17 +76,17 @@ public:
 
 	};
 
-	IBKMK::Vector3D																m_origin = IBKMK::Vector3D(0,0,0);
+	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
 
-	std::vector<Layer>                                                         m_layer;
+	std::vector<Layer>                                                      m_layer;
 
-	std::vector<Point>                                                         m_points;
+	std::vector<Point>                                                      m_points;
 
-	std::vector<Line>                                                          m_lines;
+	std::vector<Line>                                                       m_lines;
 
-	std::vector<PolyLine>                                                      m_polylines;
+	std::vector<PolyLine>                                                   m_polylines;
 
-	std::vector<LWPolyLine>                                                    m_lwpolylines;
+	std::vector<LWPolyLine>                                                 m_lwpolylines;
 
 	void updatePointer();
 

@@ -228,6 +228,10 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	} break;
 
+	case SVProjectHandler::DrawingModified: {
+		generate2DDrawingGeometry();
+	} break;
+
 	default:
 		return; // do nothing by default
 	} // switch
@@ -1819,15 +1823,17 @@ void Scene::generateNetworkGeometry() {
 }
 
 
-void Scene::generateDrawings() {
+void Scene::generate2DDrawingGeometry() {
+
 	const VICUS::Project & p = project();
 
 	for (const VICUS::Drawing & drawing: p.m_drawings) {
 
-
+		// analog zu generateBuildingGeometry()
 	}
-
 }
+
+
 
 
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
