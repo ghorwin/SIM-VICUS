@@ -60,7 +60,12 @@ EpdModuleDataset EpdModuleDataset::scaleByFactor(const double & factor) const {
 const EpdModuleDataset& EpdModuleDataset::operator+=(const EpdModuleDataset &otherEpd) {
 	FUNCID("EpdModuleDataset::operator+=");
 
-	if(m_modules.empty())
+	if(m_modules.empty()) {
+		*this = otherEpd;
+		return *this;
+	}
+
+	if(otherEpd.m_modules.empty())
 		return *this;
 
 	for(unsigned int i=0; i<NUM_P; ++i) {

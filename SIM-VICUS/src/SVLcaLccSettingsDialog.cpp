@@ -808,6 +808,9 @@ void SVLcaLccSettingsDialog::aggregateAggregatedComponentsByType() {
 		itAggregatedComp != m_compIdToAggregatedData.end(); ++itAggregatedComp)
 	{
 		const AggregatedComponentData &aggregatedData = itAggregatedComp->second;
+		if(aggregatedData.m_component == nullptr)
+			continue;
+
 		if(m_typeToAggregatedCompData.find(aggregatedData.m_component->m_type) == m_typeToAggregatedCompData.end())
 			m_typeToAggregatedCompData[aggregatedData.m_component->m_type] = aggregatedData;
 		else
@@ -1041,6 +1044,9 @@ void SVLcaLccSettingsDialog::calculateTotalLcaDataForComponents() {
 		double area = itAggregatedComp->second.m_area;
 		const VICUS::Component *comp = itAggregatedComp->second.m_component;
 
+		if(comp == nullptr)
+			continue;
+
 		qDebug() << QString::fromStdString(comp->m_displayName.string());
 		qDebug() << comp->m_idConstruction;
 
@@ -1151,7 +1157,12 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
 					const_cast<VICUS::Surface &>(s).m_visible = false;
-					VICUS::Component::ComponentType ct = m_db->m_components[s.m_componentInstance->m_idComponent]->m_type;
+
+					VICUS::Component *comp = m_db->m_components[s.m_componentInstance->m_idComponent];
+					if(comp == nullptr)
+						continue;
+
+					VICUS::Component::ComponentType ct = comp->m_type;
 					qDebug() << "Surface name:" << s.m_displayName;
 					if( ct == VICUS::Component::CT_Ceiling || ct == VICUS::Component::CT_FloorToAir || ct == VICUS::Component::CT_FloorToCellar
 							|| ct == VICUS::Component::CT_FloorToGround || ct == VICUS::Component::CT_Ceiling ) {
@@ -1200,7 +1211,7 @@ void SVLcaLccSettingsDialog::on_pushButtonLca_clicked() {
 
 		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
 
-		m_lcaResultDialog->exec();
+		m_lcaResultDialog->showFullScreen();
 	}
 	catch (IBK::Exception &ex) {
 		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
