@@ -27,14 +27,14 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 -lNandrad \
 -lQtExt \
 -lQuaZIP \
-	-lTiCPP \
-	-lIDFReader \
+-lTiCPP \
+-lIDFReader \
 	-lVicus \
 	-lShading \
 	-lDataIO \
 	-lCCM \
 	-lclipper \
-        -ldxfrw \
+	-llibdxfrw \
 	-lIBK \
 	-lIBKMK \
 	-lsundials \
@@ -58,12 +58,12 @@ INCLUDEPATH = \
 ../../src \
 ../../src/actions \
 ../../src/core3D \
-	../../../externals/CCM/src \
-	../../../externals/Shading/src \
+../../../externals/CCM/src \
+../../../externals/Shading/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
 	../../../externals/libdxfrw/src \
-        ../../../externals/libdxfrw/src/intern \
+	../../../externals/libdxfrw/src/intern \
 	../../../externals/Nandrad/src \
 	../../../externals/Nandrad/srcTranslations \
 	../../../externals/Vicus/src \
@@ -82,8 +82,8 @@ DEPENDPATH = $${INCLUDEPATH}
 
 
 SOURCES += \
-	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
-	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVAboutDialog.cpp \
 	../../src/SVAbstractDatabaseEditWidget.cpp \
 	../../src/SVChartUtils.cpp \
@@ -288,8 +288,8 @@ SOURCES += \
 	../../src/main.cpp
 
 HEADERS  += \
-	../../src/SVAboutDialog.h \
-	../../src/SVAbstractDatabaseEditWidget.h \
+../../src/SVAboutDialog.h \
+../../src/SVAbstractDatabaseEditWidget.h \
 	../../src/SVChartUtils.h \
 	../../src/SVClimateDataSortFilterProxyModel.h \
 	../../src/SVClimateDataTableModel.h \
@@ -499,8 +499,8 @@ HEADERS  += \
 	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
-	../../src/SVAboutDialog.ui \
-	../../src/SVCoSimCO2VentilationDialog.ui \
+../../src/SVAboutDialog.ui \
+../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \

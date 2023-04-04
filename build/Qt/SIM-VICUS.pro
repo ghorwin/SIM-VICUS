@@ -5,7 +5,7 @@ SUBDIRS = \
 # 		DummyDatabasePlugin \
 # 		DummyImportPlugin \
 SIM-VICUS \
-		QuaZIP \
+QuaZIP \
 		qwt \
 		clipper \
 		libdxfrw \
@@ -81,7 +81,7 @@ IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
 Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
-Vicus.depends = IBK TiCPP Nandrad IBKMK CCM
+Vicus.depends = IBK TiCPP Nandrad IBKMK CCM libdxfrw
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 DummyDatabasePlugin.depends = Vicus
 DummyImportPlugin.depends = Vicus
