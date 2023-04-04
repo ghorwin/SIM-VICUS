@@ -72,10 +72,9 @@ EpdModuleDataset EpdDataset::calcTotalEpdByCategory(const Category &cat, const L
 			const EpdModuleDataset::Module &mod = m_epdModuleDataset[i].m_modules[j];
 			QString modString = VICUS::KeywordList::Keyword("EpdModuleDataset::Module", mod);
 			if(settings.isLcaCategoryDefined(mod) && modString.startsWith(VICUS::KeywordList::Keyword("EpdDataset::Category", cat))) {
-				dataSet += m_epdModuleDataset[i];
+				dataSet += m_epdModuleDataset[i].scaleByFactor(1.0/(double)m_epdModuleDataset[i].m_modules.size());
 			}
 		}
-		dataSet = dataSet.scaleByFactor(1.0/(double)m_epdModuleDataset[i].m_modules.size());
 	}
 	return dataSet;
 }
