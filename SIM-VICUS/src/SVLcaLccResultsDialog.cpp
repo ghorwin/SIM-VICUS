@@ -57,9 +57,9 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 	double scaleFactor = 1.0;
 
 	if(category != VICUS::EpdDataset::C_CategoryB)
-		scaleFactor /= settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value();
-	scaleFactor /= settings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value();
-	scaleFactor *= settings.m_para[VICUS::LcaSettings::P_FactorBnbSimpleMode].get_value();
+		scaleFactor /= settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+	scaleFactor /= settings.m_para[VICUS::LcaSettings::P_NetUsageArea].value;
+	scaleFactor *= settings.m_para[VICUS::LcaSettings::P_FactorBnbSimpleMode].value;
 
 	QTreeWidgetItem *rootItem = new QTreeWidgetItem(m_ui->treeWidgetLcaResults);
 	rootItem->setText(ColCategory, VICUS::KeywordList::Description("EpdDataset::Category", category));
@@ -142,15 +142,25 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				if(epdMat == nullptr)
 					continue; // no epd defined
 
-				double renewingFactor = category == VICUS::EpdDataset::C_CategoryB ?
+				int usageTime = 0;
+
+				bool isEmpty = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].empty();
+				if(isEmpty){
+					IBK::IBK_Message(IBK::FormatString("No usage time is specified for material layer '%1' of construction '%2'. Skipping material calculation.").arg(i).arg(con.m_displayName));
+					continue;
+				}
+				usageTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
+
+
+				double constructionCount = category == VICUS::EpdDataset::C_CategoryB ?
 							1 :  // Usage is already normated
-							settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value();
+							std::ceil(settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a") / usageTime);
 
 				VICUS::EpdModuleDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
 				double conversionFactor = conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
 																		   matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value(),
 																		   aggregatedCompData.m_area);
-				VICUS::EpdModuleDataset scaledEpdCatData = epdCatData.scaleByFactor( renewingFactor * conversionFactor );
+				VICUS::EpdModuleDataset scaledEpdCatData = epdCatData.scaleByFactor( constructionCount  * conversionFactor );
 				epdChild += scaledEpdCatData;
 
 				QTreeWidgetItem *itemMatChild = new QTreeWidgetItem();
@@ -161,13 +171,6 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				itemMatChild->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
 				double totalCost = aggregatedCompData.m_area * matLayer.m_cost.value / 100;
-				int usageTime = 50;
-
-				try {
-					usageTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
-				} catch(IBK::Exception &ex) {
-					IBK::IBK_Message(IBK::FormatString("No usage time is specified for material layer '%1' of material '%2'. Taking 50 years.").arg(i).arg(mat.m_displayName));
-				}
 
 				itemMatChild->setText(ColInvestCost, QString( "%1 €" ).arg( totalCost, 7, 'f', 2 ) );
 				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
@@ -215,8 +218,6 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
-
-
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
@@ -227,10 +228,6 @@ void SVLcaLccResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
 												   const double &gasConsumption,
 												   const double &electricityConsumption,
 												   const double &coalConsumption) {
-
-	QTreeWidgetItem *itemGas		 = new QTreeWidgetItem();
-	QTreeWidgetItem *itemElectricity = new QTreeWidgetItem();
-	QTreeWidgetItem *itemCoal		 = new QTreeWidgetItem();
 
 	const SVDatabase &db = SVSettings::instance().m_db;
 
@@ -485,7 +482,7 @@ void SVLcaLccResultsDialog::setup() {
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
 	QStringList headersLca;
 	headersLca << tr("Category") << "" << tr("Type") << tr("Name") << tr("Name") << tr("EPD") << tr("Amount") << tr("Invest-Cost [€]") << tr("GWP (CO2-Äqu.) [kg/(m2a)");
-	headersLca << tr("ODP (R11-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("POCP (C2H4-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("AP (SO2-Äqu.) [kg/(m<SUP>2</SUP>a)]") << tr("EP (PO4-Äqu.) [kg/(m<SUP>2</SUP>a)]");
+	headersLca << tr("ODP (R11-Äqu.) [kg/(m2a)]") << tr("POCP (C2H4-Äqu.) [kg/(m2a)]") << tr("AP (SO2-Äqu.) [kg/(m2a)]") << tr("EP (PO4-Äqu.) [kg/(m2a)]");
 
 	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);
 	m_ui->treeWidgetLcaResults->setAlternatingRowColors(true);
@@ -524,5 +521,10 @@ void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetIte
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
 	m_ui->treeWidgetLcaResults->setColumnWidth(ColColor, 20);
+}
+
+
+void SVLcaLccResultsDialog::on_pushButtonClose_clicked() {
+	accept();
 }
 

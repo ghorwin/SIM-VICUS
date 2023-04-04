@@ -28,10 +28,17 @@ struct AggregatedComponentData {
 		m_additionalComponents.insert(m_component);
 
 		const SVDatabase &db = SVSettings::instance().m_db;
-		const VICUS::Component &comp = *db.m_components[compInst.m_idComponent];
-		const VICUS::Construction &con = *db.m_constructions[comp.m_idConstruction];
+		const VICUS::Component *comp = db.m_components[compInst.m_idComponent];
 
-		for(const VICUS::MaterialLayer &ml : con.m_materialLayers) {
+		if(comp == nullptr)
+			return;
+
+		const VICUS::Construction *con = db.m_constructions[comp->m_idConstruction];
+
+		if(con == nullptr)
+			return;
+
+		for(const VICUS::MaterialLayer &ml : con->m_materialLayers) {
 			m_totalCost.value += ml.m_cost.value;
 		}
 	}
@@ -103,8 +110,7 @@ namespace Ui {
 class SVLcaLccResultsDialog;
 }
 
-class SVLcaLccResultsDialog : public QDialog
-{
+class SVLcaLccResultsDialog : public QDialog {
 	Q_OBJECT
 
 	enum Cols {
@@ -175,6 +181,8 @@ private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
 
 	void on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item);
+
+	void on_pushButtonClose_clicked();
 
 private:
 
