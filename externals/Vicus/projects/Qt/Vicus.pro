@@ -19,7 +19,7 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO -ldxfrw
 
 INCLUDEPATH = \
 	../../src \
@@ -28,7 +28,8 @@ INCLUDEPATH = \
 	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../DataIO/src \
-	../../../TiCPP/src
+        ../../../TiCPP/src \
+        ../../../libdxfrw/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
