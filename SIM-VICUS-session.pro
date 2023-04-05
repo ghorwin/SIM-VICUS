@@ -87,8 +87,8 @@ Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
 Vicus.depends = IBK TiCPP Nandrad IBKMK CCM DataIO libdxfrw
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
-RoomClipper.depends = IBK Nandrad IBKMK TiCPP CCM clipper Vicus
+RoomClipper.depends = IBK Nandrad IBKMK TiCPP CCM clipper Vicus libdxfrw
 
-DummyDatabasePlugin.depends = Vicus
-DummyImportPlugin.depends = Vicus
+DummyDatabasePlugin.depends = Vicus libdxfrw
+DummyImportPlugin.depends = Vicus libdxfrw
 

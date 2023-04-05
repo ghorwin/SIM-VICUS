@@ -16,6 +16,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../Nandrad/src
 	${PROJECT_SOURCE_DIR}/../../../CCM/src
         ${PROJECT_SOURCE_DIR}/../../../libdxfrw/src
+        ${PROJECT_SOURCE_DIR}/../../../libdxfrw/src/intern
 	${Qt5Widgets_INCLUDE_DIRS}
 )
 
