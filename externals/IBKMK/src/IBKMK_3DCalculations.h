@@ -1,25 +1,18 @@
 /*	IBK Math Kernel Library
 	Copyright (c) 2001-today, Institut fuer Bauklimatik, TU Dresden, Germany
-
 	Written by A. Nicolai, A. Paepcke, H. Fechner, St. Vogelsang
 	All rights reserved.
-
 	This file is part of the IBKMK Library.
-
 	Redistribution and use in source and binary forms, with or without modification,
 	are permitted provided that the following conditions are met:
-
 	1. Redistributions of source code must retain the above copyright notice, this
 	   list of conditions and the following disclaimer.
-
 	2. Redistributions in binary form must reproduce the above copyright notice,
 	   this list of conditions and the following disclaimer in the documentation
 	   and/or other materials provided with the distribution.
-
 	3. Neither the name of the copyright holder nor the names of its contributors
 	   may be used to endorse or promote products derived from this software without
 	   specific prior written permission.
-
 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,10 +23,8 @@
 	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 	This library contains derivative work based on other open-source libraries,
 	see LICENSE and OTHER_LICENSES files.
-
 */
 
 #ifndef IBKMK_3DCalculationsH
@@ -48,9 +39,7 @@ namespace IBKMK {
 	The computed plane coordinates are stored in variables x and y (the factors for vectors a and b, respectively).
 	If no solution could be found (only possible if a and b are collinear or one of the vectors has length 0?),
 	the function returns false.
-
 	Note: when the point p is not in the plane, this function will still get a valid result.
-
 	Optional argument tolerance defines the allowed distance (magnitude of distance vector) of a point from
 	the projected point on the plane. This can be used to correct rounding errors. If the distance is larger than
 	the given tolerance, the function returns false (rounding error too large).
@@ -118,6 +107,32 @@ inline double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 
 /*! Takes the vector v and enlarges the current bounding box defined through 'minVec' and 'maxVec'. */
 void enlargeBoundingBox(const IBKMK::Vector3D & v, IBKMK::Vector3D & minVec, IBKMK::Vector3D & maxVec);
+
+/*! Transforms 3D Polygon to 2D by eliminating one dimension and applies 2D Point in Polygon.
+	It's assumed the point is already coplanar. This should previously be tested.
+	Point in Polygon function. Result:
+	-1 point not in polyline
+	0 point on polyline
+	1 point in polyline
+*/
+int coplanarPointInPolygon3D(const std::vector<Vector3D> poly, const IBK::point3D<double> point);
+
+/*! Determines if intersection occurs between polygon and other polygon.
+	Touching is not counted as intersecting.
+	Returns true in case of intersection.
+	Algorithm design:
+		 * first we test if planes actually intersect
+		 * if so, we have 2 consecutive concepts for detecting intersection:
+		 *
+		 *	 we iterate over all edges of both polygons and calculate the intersection points with the respective other polygon plane
+		 *   if these intersection points are contained within the other polygon, an intersection is detected (true)
+		 *
+		 *   then we calculate the intersection line between the two planes, and list all polygon vertices which lie on the line
+		 *   if there are >=2 (after duplicate elimination) we iterate over the center-points between each neighboring vertices on the line
+		 *   if any of the center points is contained within both polygons, an intersection is detected (true)
+	This 2-step algorithm ensures we won't miss any edge cases, e.g. polygons sharing intersection points or lines
+ */
+bool polyIntersect(const std::vector<IBKMK::Vector3D> & vertsA, const std::vector<IBKMK::Vector3D> & vertsB);
 
 } // namespace IBKMK
 
