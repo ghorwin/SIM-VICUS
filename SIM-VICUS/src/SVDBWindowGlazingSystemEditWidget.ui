@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>552</width>
-    <height>406</height>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -197,18 +197,18 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
