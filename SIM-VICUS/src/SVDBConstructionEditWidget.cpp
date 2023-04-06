@@ -54,6 +54,9 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));
 
+	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditDataSource->setDialog3Caption(tr("Construction data-source name"));
+
 	m_ui->tableWidget->setColumnCount(5);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
 	m_ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -148,6 +151,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 
 		// disable the line edits (they change background color)
 		m_ui->lineEditName->setEnabled(false);
+		m_ui->lineEditDataSource->setEnabled(false);
 
 		m_ui->comboBoxMaterialKind->setCurrentIndex(-1);
 		m_ui->comboBoxInsulationKind->setCurrentIndex(-1);
@@ -167,6 +171,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 
 	// construction name and layer count
 	m_ui->lineEditName->setString(con->m_displayName);
+	m_ui->lineEditDataSource->setString(con->m_dataSource);
 	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 
@@ -186,6 +191,7 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 
 	// update read-only/enabled states
 	m_ui->lineEditName->setEnabled(!con->m_builtIn);
+	m_ui->lineEditDataSource->setEnabled(!con->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
@@ -603,3 +609,13 @@ void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
 	// ToDO Maik: Flip also coloring!
     updateConstructionView();
 }
+
+void SVDBConstructionEditWidget::on_lineEditDataSource_editingFinished() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_dataSource != m_ui->lineEditDataSource->string()) {
+		m_current->m_dataSource = m_ui->lineEditDataSource->string();
+		modelModify();
+	}
+}
+
