@@ -116,6 +116,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	bool updateGrid = false;
 	bool updateNetwork = false;
 	bool updateBuilding = false;
+    bool updateDrawing = false;
 	bool updateCamera = false;
 	bool updateSelection = false;
 	// filter out all modification types that we handle
@@ -126,6 +127,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		updateBuilding = true;
 		updateNetwork = true;
 		updateCamera = true;
+        updateDrawing = true;
 		updateSelection = true;
 		// clear new polygon drawing object
 		m_newGeometryObject.clear();
@@ -204,6 +206,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		//        elements are selected, but at least this is very robust
 		updateBuilding = true;
 		updateNetwork = true;
+        updateDrawing = true;
 
 		// Now check if our new selection set is different from the previous selection set.
 		std::set<const VICUS::Object*> selectedObjects;
@@ -228,8 +231,12 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	} break;
 
-	case SVProjectHandler::DrawingModified: {
-		generate2DDrawingGeometry();
+    case SVProjectHandler::DrawingModified: {
+        updateBuilding = true;
+        updateDrawing = true;
+        updateSelection = true;
+
+        m_drawingGeometryObject.updateBuffers();
 	} break;
 
 	default:
@@ -285,6 +292,12 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		generateNetworkGeometry();
 	}
 
+    if(updateDrawing){
+        m_drawingGeometryObject.create(m_buildingShader->shaderProgram());
+        generate2DDrawingGeometry();
+    }
+
+
 	// update all GPU buffers (transfer cached data to GPU)
 	if (updateBuilding || updateSelection) {
 		m_buildingGeometryObject.updateBuffers();
@@ -294,6 +307,10 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	if (updateNetwork || updateSelection)
 		m_networkGeometryObject.updateBuffers();
+
+    if(updateDrawing){
+        m_drawingGeometryObject.updateBuffers();
+    }
 
 	// store current coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -307,6 +324,7 @@ void Scene::destroy() {
 	m_buildingGeometryObject.destroy();
 	m_transparentBuildingObject.destroy();
 	m_networkGeometryObject.destroy();
+    m_drawingGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
 	m_measurementObject.destroy();
 	m_coordinateSystemObject.destroy();
@@ -1141,6 +1159,10 @@ void Scene::render() {
 		// render opaque part of new sub-surface object
 		if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
 			m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
+
+        // render opaque part of drawing object
+        m_drawingGeometryObject.renderOpaque();
+
 	}
 
 	m_buildingShader->release();
@@ -1825,12 +1847,26 @@ void Scene::generateNetworkGeometry() {
 
 void Scene::generate2DDrawingGeometry() {
 
-	const VICUS::Project & p = project();
+    m_drawingGeometryObject.m_vertexBufferData.clear();
+    m_drawingGeometryObject.m_colorBufferData.clear();
+    m_drawingGeometryObject.m_indexBufferData.clear();
+    m_drawingGeometryObject.m_vertexStartMap.clear();
 
-	for (const VICUS::Drawing & drawing: p.m_drawings) {
+    m_drawingGeometryObject.m_vertexBufferData.reserve(100000);
+    m_drawingGeometryObject.m_colorBufferData.reserve(100000);
+    m_drawingGeometryObject.m_indexBufferData.reserve(100000);
 
-		// analog zu generateBuildingGeometry()
-	}
+    m_drawingGeometryObject.m_drawTriangleStrips = false;
+
+    unsigned int currentVertexIndex = 0;
+    unsigned int currentElementIndex = 0;
+
+    const VICUS::Project & p = project();
+
+    for (const VICUS::Drawing & drawing: p.m_drawings) {
+
+        // analog zu generateBuildingGeometry()
+    }
 }
 
 
