@@ -372,7 +372,7 @@ void SVDBConstructionEditWidget::on_spinBoxLayerCount_valueChanged(int val) {
 }
 
 
-void SVDBConstructionEditWidget::on_lineEditName_editingFinished() {
+void SVDBConstructionEditWidget::on_lineEditName_textChanged() {
 	Q_ASSERT(m_current != nullptr);
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
@@ -610,7 +610,7 @@ void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
     updateConstructionView();
 }
 
-void SVDBConstructionEditWidget::on_lineEditDataSource_editingFinished() {
+void SVDBConstructionEditWidget::on_lineEditDataSource_textChanged() {
 	Q_ASSERT(m_current != nullptr);
 
 	if (m_current->m_dataSource != m_ui->lineEditDataSource->string()) {
