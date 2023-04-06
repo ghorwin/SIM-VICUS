@@ -99,7 +99,8 @@ HEADERS += \
 	../../src/VICUS_ZoneIdealHeatingCooling.h \
 	../../src/VICUS_ZoneTemplate.h \
 	../../src/VICUS_utilities.h \
-	../../src/VICUS_NetworkBuriedPipeProperties.h
+	../../src/VICUS_NetworkBuriedPipeProperties.h \
+	AcousticComponent.h
 
 SOURCES += \
 	../../src/VICUS_AbstractDBElement.cpp \
@@ -210,3 +211,4 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
 	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp \
+    AcousticComponent.cpp
