@@ -100,7 +100,7 @@ private:
 	VICUS::Construction				*m_current;
 
 private slots:
-	void on_lineEditName_textChanged();
+	void on_lineEditName_editingFinished();
 	void on_comboBoxInsulationKind_currentIndexChanged(int index);
 	void on_comboBoxMaterialKind_currentIndexChanged(int index);
 	void on_comboBoxConstructionUsage_currentIndexChanged(int index);
@@ -129,7 +129,7 @@ private slots:
 	/*! Connected with construction view widget move layer signal.*/
 	void constructionViewMove_layer(int index, bool left);
 
-	void on_lineEditDataSource_textChanged();
+	void on_lineEditDataSource_editingFinished();
 };
 
 #endif // SVDBConstructionEditWidgetH
