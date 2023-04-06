@@ -405,6 +405,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		float transSpeed = TRANSLATION_SPEED;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed = 0.1f;
+		else if (keyboardHandler.keyDown(Qt::Key_Space))
+			transSpeed = 10.0f;
+
 		m_camera.translate(transSpeed * translation);
 		m_camera.rotate(transSpeed, rotationAxis);
 
