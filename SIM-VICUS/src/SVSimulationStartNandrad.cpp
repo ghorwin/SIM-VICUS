@@ -418,7 +418,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
-bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegroundProcess) {
+bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegroundProcess, bool waitForFinishedProcess) {
 	updateCmdLine();
 	QString resultPath;
 	if (!generateNANDRAD(resultPath, !testInit))
@@ -481,13 +481,24 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegrou
 #endif
 	// if foreground process is forced, ignore terminal settings and launch test-init directly
 	unsigned int exitCode = 0;
-	bool success;
+	bool success = false;
 	if (forceForegroundProcess) {
 		QProgressDialog dlg(tr("Running test-init on NANDRAD project"), tr("Cancel"), 0, 0, this);
+		dlg.setMinimumDuration(0);
+		dlg.setParent(this);
 		dlg.show();
+		qApp->processEvents();
 
 		commandLineArgs << m_nandradProjectFilePath;
-		success = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
+		QProcess p;
+		p.start(m_solverExecutable, commandLineArgs);
+		p.waitForFinished(-1);
+		exitCode = p.exitCode();
+		success = p.exitStatus() == 0 && exitCode == 0;
+
+		if(waitForFinishedProcess && success)
+			return true;
+
 	}
 	else
 		success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption, &exitCode);

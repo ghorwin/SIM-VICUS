@@ -70,7 +70,7 @@ public:
 	/*! Starts the simulation, either in test-init mode or regular mode.
 		Returns false if some error occurred during creation of the NANDRAD project.
 	*/
-	bool startSimulation(bool testInit, bool forceForegroundProcess = false);
+	bool startSimulation(bool testInit, bool forceForegroundProcess = false, bool waitForFinishedProcess = false);
 
 private slots:
 	void on_pushButtonClose_clicked();

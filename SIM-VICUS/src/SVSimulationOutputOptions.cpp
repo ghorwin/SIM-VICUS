@@ -305,7 +305,7 @@ void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionCha
 
 void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	// run test-init and if successful, update output list
-	if (!m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
+	if (!m_simStartDialog->startSimulation(true, true, true)) { // test-init and force background process and wait for it to finish
 		return; // failure, no change in dialog's state
 	}
 
@@ -337,7 +337,7 @@ void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
 
 	QList<QListWidgetItem*> sel = m_ui->listWidgetObjectIDs->selectedItems();
 
-	if (sel.count() > 1) {
+	if (sel.count() > 1 || sel.empty()) {
 		// do not show any vector IDs, since we have multi-selection in objects
 		m_ui->listWidgetVectorIndexes->setEnabled(false);
 		m_ui->listWidgetVectorIndexes->clear();
