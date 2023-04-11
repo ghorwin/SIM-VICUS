@@ -55,13 +55,11 @@ object_script.*
 *.odg\#
 *.ilk
 /release/
-/build/cmake/bb_VC_x64_Debug/
-/build/cmake/out/
-/bin/debug_x64/ifc_convert.log
+/release_x64/
 moc_*
-/bin/debug_x64/ResultsGenVICUS
 *.debian.tar.xz
 *.dsc
 *source.buildinfo
 *source.changes
 *source.ppa.upload
+*.so.*
