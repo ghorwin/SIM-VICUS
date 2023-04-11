@@ -250,7 +250,7 @@ void SVDBZoneControlThermostatEditWidget::updatePlot(){
 		m_curveHeating = addConfiguredCurve(m_ui->widgetPlot);
 		configureCurveTheme(m_curveHeating);
 		m_curveHeating->setRawSamples(m_xDataHeating.data(), m_yDataHeating.data(), (int)m_xDataHeating.size());
-		m_curveHeating->setTitle(tr("Heating Curve"));
+		m_curveHeating->setTitle(tr("Heating curve"));
 		m_curveHeating->setPen("#9a031e", 2);
 	}
 
@@ -259,7 +259,7 @@ void SVDBZoneControlThermostatEditWidget::updatePlot(){
 		m_curveCooling = addConfiguredCurve(m_ui->widgetPlot);
 		configureCurveTheme(m_curveCooling);
 		m_curveCooling->setRawSamples(m_xDataCooling.data(), m_yDataCooling.data(), (int)m_xDataCooling.size());
-		m_curveCooling->setTitle(tr("Cooling Curve"));
+		m_curveCooling->setTitle(tr("Cooling curve"));
 		m_curveCooling->setPen("#3d5a80", 2);
 	}
 
