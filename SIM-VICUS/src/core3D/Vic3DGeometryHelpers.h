@@ -155,8 +155,16 @@ void addSubSurface(const VICUS::Surface & s, unsigned int subSurfaceIndex,
 void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex,
 				  std::vector<ColorRGBA> & colorBufferData);
 
+/*! This function adds a line using addBox */
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const QColor & color,
+             unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+             std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData);
 
 
+void addPoint(const IBKMK::Vector3D &point, const QColor &color,
+            unsigned int &currentVertexIndex, unsigned int &currentElementIndex,
+            std::vector<Vertex> &vertexBufferData, std::vector<ColorRGBA> &colorBufferData,
+            std::vector<GLuint> &indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::NetworkNode & n,

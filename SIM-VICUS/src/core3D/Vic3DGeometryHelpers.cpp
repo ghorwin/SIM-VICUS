@@ -721,9 +721,70 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 #endif
 }
 
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const QColor & color,
+             unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
+    // Calculate the line vector and its length
+    IBKMK::Vector3D lineVector = endPoint - startPoint;
+    float length = lineVector.magnitude();
+    if(length == 0) return;
+
+    // Calculate the line width (1 pixel)
+    float width = 0.5f;
+
+    // Normalize the line vector
+    lineVector.normalize();
+
+    // Calculate a perpendicular vector for the line width
+    IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, 0);
+    perpendicularVector.normalize();
+    perpendicularVector *= width;
+
+    // Create an array of 8 vertices to define the box
+    std::vector<IBKMK::Vector3D> lineVertices = {
+        startPoint,
+        startPoint + lineVector * length,
+        startPoint + perpendicularVector + lineVector * length,
+        startPoint + perpendicularVector,
+        startPoint + IBKMK::Vector3D(0, 0, width),
+        startPoint + lineVector * length + IBKMK::Vector3D(0, 0, width),
+        startPoint + perpendicularVector + lineVector * length + IBKMK::Vector3D(0, 0, width),
+        startPoint + perpendicularVector + IBKMK::Vector3D(0, 0, width),
+    };
+
+
+    // Call the addBox function with the defined parameters
+    addBox(lineVertices, color, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+}
+
+void addPoint(const IBKMK::Vector3D & coordinate, const QColor & color,
+                                   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+                                   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+                                   std::vector<GLuint> & indexBufferData) {
+    // Calculate the point size (1 pixel)
+    float size = 0.1f;
+
+    // Create a half-size vector
+    float halfSize = size / 2;
+
+
+    // Calculate the vertices for the point
+    std::vector<IBKMK::Vector3D> pointVertices = {
+        IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, 0.0 ),
+        IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y - halfSize, 0.0 ),
+        IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y + halfSize, 0.0 ),
+        IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y + halfSize, 0.0 ),
+        IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, size),
+        IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y - halfSize, size),
+        IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y + halfSize, size),
+        IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y + halfSize, size),
+    };
 
 
 
+
+    // Call the addBox function with the defined parameters
+    addBox(pointVertices, color, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+}
 
 
 } // namespace Vic3D
