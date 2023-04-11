@@ -10,6 +10,9 @@ include( ../../../externals/IBK/projects/Qt/IBK.pri )
 
 # adjust default output paths
 DESTDIR = ../../../externals/lib$${DIR_PREFIX}
+linux-g++ {
+    LIBS += -L../../../externals/lib$${DIR_PREFIX}
+}
 
 unix|mac {
 	VER_MAJ = 2
