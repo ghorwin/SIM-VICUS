@@ -55,8 +55,9 @@ void VicusClipper::addClipperPolygons(const std::vector<ClippingPolygon> &polysT
 }
 
 
-void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS::Surface &s, bool onlySelected) {
+void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS::Surface &s, bool onlySelected, std::set<unsigned int> &surfaceIds) {
 	for(const VICUS::Surface &cs : s.childSurfaces()) {
+		surfaceIds.insert(cs.m_id);
 
 		bool selected = true;
 		if(onlySelected && !s.m_selected)
@@ -65,7 +66,7 @@ void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS:
 		if(selected)
 			surfaces.insert(&cs);
 
-		insertChildSurfaces(surfaces, cs, onlySelected);
+		insertChildSurfaces(surfaces, cs, onlySelected, surfaceIds);
 	}
 }
 
@@ -281,36 +282,12 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 	IBK::StopWatch w;
 	w.start();
 
-	//#if defined(_OPENMP)
-	//    int threadCount = 1;
-
-	//#pragma omp parallel
-	//    {
-	//        if (omp_get_thread_num() == 0) {
-	//            threadCount = omp_get_num_threads();
-	//            // we should leave one CPU free for the GUI update
-	//            if (threadCount > 4) {
-	//                --threadCount;
-	//                omp_set_num_threads(threadCount);
-	//            }
-	//            IBK::IBK_Message(IBK::FormatString("Running clipping calculation in parallel with %1 threads.\n").arg(threadCount));
-	//        }
-	//    }
-	//#endif
-
 	unsigned int connectionCount = m_surfaceConnections.size();
 	unsigned int currentConnectionCount = 0;
 
-	//#if defined(_OPENMP)
-	//#pragma omp parallel for schedule(dynamic, 1)
-	//#endif
 	for(std::map<unsigned int, std::set<unsigned int>>::const_iterator it = m_surfaceConnections.begin();
 		it != m_surfaceConnections.end(); ++it){
 
-		// master thread 0 updates the progress dialog; this should be good enough for longer runs
-		//#if defined(_OPENMP)
-		//        if ( omp_get_thread_num() == 0) {
-		//#endif
 		// only notify every second or so
 		if (!notify->m_aborted && w.difference() > 100) {
 			notify->notify(0.5 + 0.25*double(currentConnectionCount+1) / connectionCount);
@@ -319,20 +296,10 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 		if (notify->m_aborted)
 			throw IBK::Exception("Clipping canceled.", FUNC_ID);
-		//#if defined(_OPENMP)
-		//            }
-		//#endif
 
-		//#if defined(_OPENMP)
-		//#pragma omp critical
-		//#endif
 		++currentConnectionCount;
 
 		// look for clipping surface
-		//#if defined(_OPENMP)
-		//#pragma omp critical
-		//#endif
-
 		ClippingSurface &cs = findClippingSurface(it->first, m_vicusBuildings);
 
 		// original surface & 1 Copy
@@ -377,13 +344,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		}
 
 		// Erase origin surface
-		//#if defined(_OPENMP)
-		//#pragma omp critical
-		//#endif
 		r->m_surfaces.erase(r->m_surfaces.begin()+eraseIdx);
-		//#if defined(_OPENMP)
-		//#pragma omp critical
-		//#endif
 		r->updateParents();
 
 		// Store room surface count
@@ -465,7 +426,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					// Remove original window
 					originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), originSurf.childSurfaces());
 
-
 				}
 				catch (IBK::Exception &ex) {
 					IBK::IBK_Message(IBK::FormatString("Surface '%1 | %2' is broken after clipping, using the original surface geometry.")
@@ -474,9 +434,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					originSurf = originSurfCopy;
 				}
 
-				//#if defined(_OPENMP)
-				//#pragma omp critical {
-				//#endif
 				r->m_surfaces.push_back(originSurf);
 
 				// save id origin
@@ -484,9 +441,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
 
 				r->updateParents();
-				//#if defined(_OPENMP)
-				//}
-				//#endif
 			}
 
 			// check diff for valid ...
@@ -520,9 +474,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 			if(!poly.m_polygon.isValid())
 				continue;
-			//#if defined(_OPENMP)
-			//#pragma omp critical {
-			//#endif
+
 			// now we have an polygon, which is identical to the new clipping polygon -> so we take the old one
 			if(clippingPolygons.size() == 1 && poly.m_holePolygons.empty() && r->m_surfaces.size() == roomSurfaceCount){
 				r->m_surfaces.push_back(originSurfCopy);
@@ -531,9 +483,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_idComponent;
 				continue;
 			}
-			//#if defined(_OPENMP)
-			//}
-			//#endif
 
 			originSurf.m_id = ++m_nextVicusId;
 
@@ -642,23 +591,15 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				originSurf.setChildAndSubSurfaces(subs, childSurfaces);
 			}
 
-			//#if defined(_OPENMP)
-			//#pragma omp critical
-			//#endif
 			originSurf.updateParents();
 
 			// Add back holes to data structure
-			//#if defined(_OPENMP)
-			//#pragma omp critical
-			//#endif
 			r->m_surfaces.push_back(originSurf);
 
 			// save id origin
 			if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
 				m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
-			//#if defined(_OPENMP)
-			//#pragma omp critical
-			//#endif
+
 			r->updateParents();
 		}
 	}
@@ -709,19 +650,23 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 	// vector of new construction instances
 	std::vector<VICUS::ComponentInstance>	cis;
+	std::set<unsigned int>					surfaceIds;
+	unsigned int &nextId = ++m_nextVicusId;
 
 	// list all surfaces in a set
 	for(const VICUS::Building &b : m_vicusBuildings){
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels){
 			for(const VICUS::Room &r : bl.m_rooms){
 				for(const VICUS::Surface &s : r.m_surfaces){
+					surfaceIds.insert(s.m_id);
+
 					bool selected = true;
 					if(m_onlySelected && !s.m_selected)
 						selected = false;
 
 					if(selected)
 						surfaces.insert(&s);
-					insertChildSurfaces(surfaces, s, m_onlySelected);
+					insertChildSurfaces(surfaces, s, m_onlySelected, surfaceIds);
 				}
 			}
 		}
@@ -730,6 +675,15 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 	if(m_onlySelected) {
 		for(unsigned int i=0; i<m_vicusCompInstances.size(); ++i) {
 			VICUS::ComponentInstance &ci = m_vicusCompInstances[i];
+
+			if(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					surfaceIds.find(ci.m_idSideASurface) == surfaceIds.end())
+				continue;
+
+			if(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					surfaceIds.find(ci.m_idSideBSurface) == surfaceIds.end())
+				continue;
+
 			bool foundSurf = false;
 			for(const VICUS::Surface *s : surfaces) {
 				// We need to store untouched cis
@@ -738,12 +692,18 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					break;
 				}
 			}
-			if(!foundSurf)
+			if(!foundSurf) {
+				ci.m_id = ++nextId;
+
+#ifdef DETAILED_INFO
+				qDebug() << "Component instance #" << ci.m_id << " has been readded with surface A #" << ci.m_idSideASurface << " and surface B #" << ci.m_idSideBSurface;
+#endif
+
 				cis.push_back(ci);
+			}
 		}
 	}
 
-	unsigned int &nextUnusedId = ++m_nextVicusId;
 
 	// set for already handled surfaces
 	std::set<unsigned int>					handledSurfaces;
@@ -753,7 +713,6 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 	// the stop watch object and progress counter are used only in a critical section
 	IBK::StopWatch w;
 	w.start();
-	//notify->notify(0);
 
 	unsigned int Count = surfaces.size();
 	unsigned int currentCount = 0;
@@ -780,7 +739,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 			continue;
 
 		unsigned int compId = m_compInstOriginSurfId[surfA->m_id];
-		VICUS::ComponentInstance ci(nextUnusedId++, compId, surfA->m_id, VICUS::INVALID_ID);
+		VICUS::ComponentInstance ci(++nextId, compId, surfA->m_id, VICUS::INVALID_ID);
 
 		// get old construction instance properties and replace old id
 		if(m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end()){
@@ -924,7 +883,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 									 .arg(s2->m_displayName.toStdString(), 20, std::ios_base::left), IBK::MSG_PROGRESS);
 
 					// build new component
-					ci = VICUS::ComponentInstance(nextUnusedId++, compId, s1->m_id, s2->m_id);
+					ci = VICUS::ComponentInstance(++nextId, compId, s1->m_id, s2->m_id);
 					//handledSurfaces.insert(s1->m_id);
 					handledSurfaces.insert(s2->m_id);
 					break;
@@ -1103,15 +1062,12 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 
 	polyClp = convertVec2DToClipperPath(surf.m_polygon.vertexes());
 
-	bool orientationMainPoly = ClipperLib::Orientation(polyClp);
-
 	if(surf.m_haveRealHole) {
 		// set up hole polygon
 		for (unsigned int idxHole = 0; idxHole < surf.m_holePolygons.size(); ++idxHole) {
 			const IBKMK::Polygon2D &holePoly = surf.m_holePolygons[idxHole];
 			qDebug() << "Adding hole with Index " << idxHole << " to Clipper data structure";
 			mainPoly[1+idxHole] = convertVec2DToClipperPath(holePoly.vertexes());
-			bool orientationHolePoly = ClipperLib::Orientation(mainPoly[1+idxHole]);
 			// Init PolyNode
 			ClipperLib::PolyNode pnHole;
 			pnHole.Contour = convertVec2DToClipperPath(holePoly.vertexes());
