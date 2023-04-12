@@ -242,7 +242,7 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 		// swap old clipping objects with newly sorted and in range surfaces
 		cs.m_clippingObjects.swap(newClippingObjects);
 
-		IBK::IBK_Message(IBK::FormatString("Found %1 surfaces in range of surface '%2 | %3'")
+		IBK::IBK_Message(IBK::FormatString("Found %1 surfaces in range of surface '%3 | %2'")
 						 .arg(surfCounter, 4)
 						 .arg(s1.m_displayName.toStdString())
 						 .arg(s1.m_parent->m_displayName.toStdString()), IBK::MSG_PROGRESS);
