@@ -23,15 +23,10 @@
 #include <IBKMK_3DCalculations.h>
 #include <VICUS_Object.h>
 
-#include <IBK_StopWatch.h>
-
 #include "RC_VicusClipping.h"
 #include "RC_ClippingSurface.h"
 #include "RC_Constants.h"
 
-#if defined(_OPENMP)
-#include <omp.h> // needed for omp_get_num_threads()
-#endif
 
 namespace RC {
 
@@ -74,11 +69,8 @@ void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS:
 void VicusClipper::findParallelSurfaces(Notification *notify) {
 	FUNCID(VicusClipper::findParallelSurfaces);
 
-	IBK::StopWatch totalTimer;
-	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
-	IBK::StopWatch w;
-	w.start();
+	m_stopWatch.start();
 	notify->notify(0);
 
 	std::set<const VICUS::Surface*>	surfaces;
@@ -124,9 +116,9 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 
 			++currentCount;
 			// only notify every second or so
-			if (!notify->m_aborted && w.difference() > 100) {
+			if (!notify->m_aborted && m_stopWatch.difference() > STOPWATCH_INTERVAL) {
 				notify->notify(0.25 * double(currentCount+1) / Count);
-				w.start();
+				m_stopWatch.start();
 			}
 
 			if (notify->m_aborted)
@@ -184,11 +176,8 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 void VicusClipper::findSurfacesInRange(Notification *notify) {
 	FUNCID(VicusClipper::findSurfacesInRange);
 
-	IBK::StopWatch totalTimer;
-	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
-	IBK::StopWatch w;
-	w.start();
+	m_stopWatch.start();
 
 	unsigned int Count = m_surfaceConnections.size();
 	unsigned int currentCount = 0;
@@ -198,9 +187,9 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 
 		++currentCount;
 		// only notify every second or so
-		if (!notify->m_aborted && w.difference() > 100) {
+		if (!notify->m_aborted && m_stopWatch.difference() > STOPWATCH_INTERVAL) {
 			notify->notify(0.25 + 0.25 * double(currentCount+1) / Count);
-			w.start();
+			m_stopWatch.start();
 		}
 
 
@@ -273,14 +262,10 @@ const std::vector<VICUS::Building> VicusClipper::vicusBuildings() const {
 
 
 void VicusClipper::clipSurfaces(Notification * notify) {
-
 	FUNCID(VicusClipper::clipSurfaces);
 
-	IBK::StopWatch totalTimer;
-	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
-	IBK::StopWatch w;
-	w.start();
+	m_stopWatch.start();
 
 	unsigned int connectionCount = m_surfaceConnections.size();
 	unsigned int currentConnectionCount = 0;
@@ -289,9 +274,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		it != m_surfaceConnections.end(); ++it){
 
 		// only notify every second or so
-		if (!notify->m_aborted && w.difference() > 100) {
+		if (!notify->m_aborted && m_stopWatch.difference() > STOPWATCH_INTERVAL) {
 			notify->notify(0.5 + 0.25*double(currentConnectionCount+1) / connectionCount);
-			w.start();
+			m_stopWatch.start();
 		}
 
 		if (notify->m_aborted)
@@ -552,6 +537,8 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			/// We have to move the windows to the difference (rest) surfaces. Since connecting surfaces are not allowed right now
 			/// to contain windows.
 
+			// We copy our sub-surfaces
+			std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
 			if(!originSurfCopy.subSurfaces().empty()) {
 
 				// Cache original surface data
@@ -567,8 +554,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				const IBKMK::Vector3D &localY = originSurf.geometry().localY();
 				const IBKMK::Vector3D &offset = originSurf.geometry().offset();
 
-				// We copy our sub-surfaces
-				std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
 
 				// Now we should update all sub-surfaces
 				for(unsigned int idxSub=0; idxSub<originSurfCopy.subSurfaces().size(); ++idxSub) {
@@ -586,10 +571,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 					sub.m_polygon2D = points;
 				}
-
-				// Update all child and sub-surfaces
-				originSurf.setChildAndSubSurfaces(subs, childSurfaces);
 			}
+			// Update all child and sub-surfaces
+			originSurf.setChildAndSubSurfaces(subs, childSurfaces);
 
 			originSurf.updateParents();
 
@@ -708,11 +692,8 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 	// set for already handled surfaces
 	std::set<unsigned int>					handledSurfaces;
 
-	IBK::StopWatch totalTimer;
-	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
-	IBK::StopWatch w;
-	w.start();
+	m_stopWatch.start();
 
 	unsigned int Count = surfaces.size();
 	unsigned int currentCount = 0;
@@ -721,9 +702,9 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 		++currentCount;
 		// only notify every second or so
-		if (!notify->m_aborted && w.difference() > 100) {
+		if (!notify->m_aborted && m_stopWatch.difference() > STOPWATCH_INTERVAL) {
 			notify->notify(0.75 + 0.25 * double(currentCount+1) / Count);
-			w.start();
+			m_stopWatch.start();
 		}
 
 		if (notify->m_aborted)
@@ -873,8 +854,6 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					IBK::FormatString roomString = IBK::FormatString("'%1 | %2'")
 														 .arg(s1->m_displayName.toStdString())
 														 .arg(s1->m_parent->m_displayName.toStdString());
-
-					QString text = QString("%1").arg(QString::fromStdString(roomString.str()), 100);
 
 					IBK::IBK_Message(IBK::FormatString("%1 %2 <-> %3 %4")
 									 .arg(s1->m_parent->m_displayName.toStdString(), 20, std::ios_base::left)
@@ -1045,7 +1024,7 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 									 const ClippingPolygon &otherSurf,
 									 std::vector<ClippingPolygon> &mainDiffs,
 									 std::vector<ClippingPolygon> &mainIntersections,
-									 bool normalInterpolation) {
+									 bool /*normalInterpolation*/) {
 
 	ClipperLib::Paths	mainPoly(1+surf.m_holePolygons.size());
 	ClipperLib::Path	&polyClp = mainPoly[0];

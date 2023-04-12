@@ -27,6 +27,7 @@
 #include <clipper.hpp>
 
 #include <IBK_NotificationHandler.h>
+#include <IBK_StopWatch.h>
 
 #include "RC_ClippingSurface.h"
 #include "RC_ClippingPolygon.h"
@@ -94,10 +95,10 @@ private:
     const VICUS::Surface &findVicusSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
 
     /*! Performs the Clipping of the surfaces 'surf' and 'otherSurf' and returns intersection and difference polygons. */
-    void doClipperClipping(const ClippingPolygon &surf,
-                           const ClippingPolygon &otherSurf,
-                           std::vector<ClippingPolygon> &mainDiffs,
-                           std::vector<ClippingPolygon> &mainIntersections,
+	void doClipperClipping(const ClippingPolygon &surf,
+						   const ClippingPolygon &otherSurf,
+						   std::vector<ClippingPolygon> &mainDiffs,
+						   std::vector<ClippingPolygon> &mainIntersections,
 						   bool normalInterpolation = false);
 
 
@@ -148,6 +149,7 @@ private:
 
     std::map<unsigned int, unsigned int>			m_compInstOriginSurfId;		///< key is new created surface id, value is old surface ci id
 
+	IBK::StopWatch									m_stopWatch;				///< Stopwatch for updating progress-bar
 };
 }
 
