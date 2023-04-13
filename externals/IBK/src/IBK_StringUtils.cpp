@@ -911,7 +911,7 @@ bool isInCharType(char ch, unsigned int types) {
 }
 
 /*! Functor for creating a random character in the given chart type range.*/
-struct random_char : std::unary_function<void,char> {
+struct random_char {
 public:
 	/*! Constructor set the char type.*/
 	random_char(unsigned int charTypes) :
