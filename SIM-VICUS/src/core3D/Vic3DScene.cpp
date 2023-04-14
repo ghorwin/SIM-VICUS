@@ -33,10 +33,8 @@
 #include <QRandomGenerator>
 
 #include <VICUS_Project.h>
-#include <SVConversions.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
-#include <SVConversions.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -46,6 +44,7 @@
 #include "Vic3DConstants.h"
 #include "Vic3DSceneView.h"
 
+#include "SVConversions.h"
 #include "SVProjectHandler.h"
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
@@ -59,6 +58,7 @@
 #include "SVGeometryView.h"
 #include "SVPropertyWidget.h"
 #include "SVLocalCoordinateView.h"
+#include "SVStyle.h"
 
 
 const float TRANSLATION_SPEED = 1.2f;
@@ -1864,6 +1864,7 @@ void Scene::generate2DDrawingGeometry() {
 
 	const VICUS::Project & p = project();
 
+	// TODO Maik: remove
 	// initialise default values
 	QColor color = QColor(255,255,255);
 
@@ -1875,7 +1876,7 @@ void Scene::generate2DDrawingGeometry() {
 		for(const VICUS::Drawing::Line & line: drawing.m_lines){
 
 			qDebug() << "addLine" << std::to_string(line.m_line.m_p1.m_x).c_str() << std::to_string(line.m_line.m_p1.m_y).c_str();
-
+			// TODO Maik: transformation wie bei Punkt
 			addLine(IBKMK::Vector3D(line.m_line.m_p1.m_x, line.m_line.m_p1.m_y, 0.0), IBKMK::Vector3D(line.m_line.m_p2.m_x, line.m_line.m_p2.m_y, 0.0), defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
@@ -1884,13 +1885,29 @@ void Scene::generate2DDrawingGeometry() {
 
 			qDebug() << "addPoint" << std::to_string(point.m_point.m_x).c_str() << std::to_string(point.m_point.m_y).c_str();
 
-			addPoint(IBKMK::Vector3D(point.m_point.m_x, point.m_point.m_y, 0.0), defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			// translation with origin
+			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, drawing.m_origin.m_z);
+			// scaling
+			p *= drawing.m_scalingFactor;
+
+			// TODO Maik: calculate rectangle vertices here
+
+			// rotation
+			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
+
+			QColor col = SVStyle::instance().m_defaultDrawingColor;
+			if (point.color() != nullptr)
+				col = *point.color();
+
+			addPoint(QVector2IBKVector(vec), defaultLineWidth, col, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
 		for(const VICUS::Drawing::LWPolyLine & lwpolyline : drawing.m_lwpolylines){
 
 			std::vector<IBKMK::Vector3D> polyline;
+
+			// TODO Maik: transformation wie bei Punkt
 
 			// adds z-coordinate to polyline
 			for(int i = 0; i < lwpolyline.m_lwpolyline.size(); i++){
@@ -1904,6 +1921,9 @@ void Scene::generate2DDrawingGeometry() {
 		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
 
 			std::vector<IBKMK::Vector3D> polylinePoints;
+
+			// TODO Maik: transformation wie bei Punkt
+
 
 			// adds z-coordinate to polyline
 			for(int i = 0; i < polyline.m_polyline.size(); i++){

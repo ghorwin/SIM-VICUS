@@ -96,6 +96,8 @@ public:
 	QColor				m_logWarningText;
 	QColor				m_logDebugText;
 
+	QColor				m_defaultDrawingColor;
+
 private:
 	static SVStyle		*m_self;
 

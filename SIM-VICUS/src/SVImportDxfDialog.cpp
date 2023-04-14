@@ -12,6 +12,9 @@ SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 
 	m_ui->lineEditFileName->setup(m_lastFilePath, true, true, tr("DXF-Files (*.dxf)"),
 								  SVSettings::instance().m_dontUseNativeDialogs);
+
+	// TODO Maik: populate combobox unit
+
 }
 
 SVImportDxfDialog::~SVImportDxfDialog()
@@ -129,7 +132,7 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
 	//create new point, insert into vector m_points from drawing
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
-	newPoint.m_thickness = data.thickness;
+	newPoint.m_lineWidth = data.thickness;
 	newPoint.m_layername = QString::fromStdString(data.layer);
 
 	if(data.color != -1){
@@ -141,11 +144,11 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 }
 void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
-	struct VICUS::Drawing::Line newLine;
+	VICUS::Drawing::Line newLine;
 
 	//create new line, insert into vector m_lines from drawing
 	newLine.m_line = IBK::Line(data.basePoint.x, data.basePoint.y, data.secPoint.x, data.secPoint.y);
-	newLine.m_thickness = data.thickness;
+	newLine.m_lineWidth = data.thickness;
 	newLine.m_lineWidth = data.lWeight;
 	newLine.m_layername = QString::fromStdString(data.layer);
 

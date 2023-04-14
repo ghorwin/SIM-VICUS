@@ -24,6 +24,8 @@ public:
 
 	struct Layer {
 
+		// TODO Maik: dokustring
+		/*! here */
 		QString			m_name;
 
 		QColor			m_color = QColor(255, 255, 255);
@@ -34,60 +36,47 @@ public:
 
 	};
 
-	struct AbstractObject {
+	struct AbstractDrawingObject {
 
-		QString		         m_layername;
+		QString		        m_layername;
 
-		Layer               *m_parentLayer;
+		const Layer         *m_parentLayer;
 
 		QColor				m_color = QColor(255, 255, 255);
 
+		double				m_lineWidth = 0;
 
+		const QColor*		color() const;
 
-	public:
-
-		QColor color();
+		double				lineWidth() const;
 	};
 
-	struct Point : public AbstractObject {
+	struct Point : public AbstractDrawingObject {
 
 		IBKMK::Vector2D m_point;
-
-		// default thickness value is 0
-		double          m_thickness = 0;
-
 	};
 
-	struct Line : public AbstractObject {
+	struct Line : public AbstractDrawingObject {
 
 		IBK::Line       m_line;
 
-		// default thickness value is 0
-		double          m_thickness = 0;
-
-		double          m_lineWidth;
-
-		bool            m_visible;
-
 	};
 
-	struct LWPolyLine : public AbstractObject {
+	// TODO Maik: remove
+	struct LWPolyLine : public AbstractDrawingObject {
 
 		std::vector<IBKMK::Vector2D>    m_lwpolyline;
 
-		// default thickness value is 0
-		double                          m_thickness = 0;
 		// true if the end point connected to the start
 		int                            m_polyline_flag = 0;
 
 	};
 
-	struct PolyLine : public AbstractObject {
+	/*! Stores both LW and normal polyline */
+	struct PolyLine : public AbstractDrawingObject {
 
 		std::vector<IBKMK::Vector2D>    m_polyline;
 
-		// default thickness value is 0
-		double                          m_thickness = 0;
 		// true if the end point connected to the start
 		int                            m_polyline_flag = 0;
 
@@ -97,6 +86,9 @@ public:
 
 	RotationMatrix															m_rotationMatrix;
 
+	// scales in relation to meters
+	double																	m_scalingFactor = 1;
+
 	std::vector<Layer>                                                      m_layer;
 
 	std::vector<Point>                                                      m_points;
@@ -105,6 +97,7 @@ public:
 
 	std::vector<PolyLine>                                                   m_polylines;
 
+	// TODO Maik: remove
 	std::vector<LWPolyLine>                                                 m_lwpolylines;
 
 	void updatePointer();

@@ -614,10 +614,10 @@ void addSurface(const VICUS::Surface & s,
 	// then add the plane again inverted
 	addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
 
-    for(const VICUS::Surface &s : s.childSurfaces()) {
-        addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
-        addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
-    }
+	for(const VICUS::Surface &s : s.childSurfaces()) {
+		addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+		addSurface(s, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData);
+	}
 }
 
 
@@ -762,6 +762,7 @@ void addPoint(const IBKMK::Vector3D &coordinate, float size, const QColor & colo
 
 	float halfSize = size / 2;
 
+	// // TODO Maik: move to 3dscene
 	// Create an array of 4 vertices to define the box
 	std::vector<IBKMK::Vector3D> pointVertices = {
 		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, 0.0),
@@ -862,6 +863,8 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		previousVertices = lineVertices;
 	}
 
+
+	// TODO Maik: helper function
 
 	// repeats the code of the for loop for the last line and adds two triangles to fill out the lines
 	if(connectEndStart){
