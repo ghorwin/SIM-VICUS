@@ -717,13 +717,12 @@ void SVGeometryView::on_actionAcousticParametrization_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// show building properties widget
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingAcousticProperties;
-	vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
 //	// we need to manually update the color mode, since above we reset it to OCM_None.
 //	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
-//	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
+	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
 void SVGeometryView::on_actionStructuralUnitParametrization_triggered() {

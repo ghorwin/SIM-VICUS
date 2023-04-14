@@ -274,6 +274,14 @@ SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	return m_dbComponentEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbAcousticComponentEditDialog() {
+	if (m_dbAcousticComponentEditDialog == nullptr)
+		m_dbAcousticComponentEditDialog = SVDatabaseEditDialog::createAcousticComponentEditDialog(this);
+	return m_dbAcousticComponentEditDialog;
+}
+
+
+
 SVDatabaseEditDialog * SVMainWindow::dbSubSurfaceComponentEditDialog() {
 	if (m_dbSubSurfaceComponentEditDialog == nullptr)
 		m_dbSubSurfaceComponentEditDialog = SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(this);

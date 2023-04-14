@@ -130,6 +130,8 @@ public:
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
 	SVDatabaseEditDialog * dbComponentEditDialog();
+	/*! Returns the acoustic component edit dialog. */
+	SVDatabaseEditDialog * dbAcousticComponentEditDialog();
 	/*! Returns the subsurface component edit dialog. */
 	SVDatabaseEditDialog * dbSubSurfaceComponentEditDialog();
 	/*! Returns the boundary condition edit dialog. */
@@ -505,6 +507,7 @@ private:
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
+	SVDatabaseEditDialog				*m_dbAcousticComponentEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbSubSurfaceComponentEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;

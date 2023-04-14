@@ -92,6 +92,8 @@ SOURCES += \
 	../../src/SVColorLegend.cpp \
 	../../src/SVColorMap.cpp \
 	../../src/SVConstants.cpp \
+	../../src/SVDBAcousticComponentEditWidget.cpp \
+	../../src/SVDBAcousticComponentTableModel.cpp \
 	../../src/SVDBBoundaryConditionEditWidget.cpp \
 	../../src/SVDBBoundaryConditionTableModel.cpp \
 	../../src/SVDBComponentEditWidget.cpp \
@@ -177,8 +179,10 @@ SOURCES += \
 	../../src/SVPreferencesPageStyle.cpp \
 	../../src/SVPreferencesPageTools.cpp \
 	../../src/SVProjectHandler.cpp \
+	../../src/SVPropAcousticEditWidget.cpp \
 	../../src/SVPropAddGeometry.cpp \
 	../../src/SVPropAddWindowWidget.cpp \
+	../../src/SVPropBuildingAcousticComponentWidget.cpp \
 	../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
 	../../src/SVPropBuildingBoundaryConditionsWidget.cpp \
 	../../src/SVPropBuildingComponentOrientationWidget.cpp \
@@ -301,6 +305,8 @@ HEADERS  += \
 	../../src/SVColorLegend.h \
 	../../src/SVConstants.h \
 	../../src/SVConversions.h \
+	../../src/SVDBAcousticComponentEditWidget.h \
+	../../src/SVDBAcousticComponentTableModel.h \
 	../../src/SVDBBoundaryConditionEditWidget.h \
 	../../src/SVDBBoundaryConditionTableModel.h \
 	../../src/SVDBComponentEditWidget.h \
@@ -386,8 +392,10 @@ HEADERS  += \
 	../../src/SVPreferencesPageStyle.h \
 	../../src/SVPreferencesPageTools.h \
 	../../src/SVProjectHandler.h \
+	../../src/SVPropAcousticEditWidget.h \
 	../../src/SVPropAddGeometry.h \
 	../../src/SVPropAddWindowWidget.h \
+	../../src/SVPropBuildingAcousticComponentWidget.h \
 	../../src/SVPropBuildingAcousticTemplatesWidget.h \
 	../../src/SVPropBuildingBoundaryConditionsWidget.h \
 	../../src/SVPropBuildingComponentOrientationWidget.h \
@@ -509,6 +517,7 @@ FORMS    += \
 	../../src/SVAboutDialog.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
+	../../src/SVDBAcousticComponentEditWidget.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \
 	../../src/SVDBConstructionEditWidget.ui \
@@ -559,8 +568,10 @@ FORMS    += \
 	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
+	../../src/SVPropAcousticEditWidget.ui \
 	../../src/SVPropAddGeometry.ui \
 	../../src/SVPropAddWindowWidget.ui \
+	../../src/SVPropBuildingAcousticComponentWidget.ui \
 	../../src/SVPropBuildingAcousticTemplatesWidget.ui \
 	../../src/SVPropBuildingBoundaryConditionsWidget.ui \
 	../../src/SVPropBuildingComponentOrientationWidget.ui \

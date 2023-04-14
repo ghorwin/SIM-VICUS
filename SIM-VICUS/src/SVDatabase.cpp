@@ -89,7 +89,8 @@ SVDatabase::SVDatabase() :
 	m_ventilationNatural(1077500),
 	m_infiltration(1080000),
 	m_zoneTemplates(1082500),
-	m_acousticTemplates(1400100)
+	m_acousticTemplates(1400100),
+	m_acousticComponents(1500100)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
   //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
@@ -129,6 +130,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
+		m_acousticComponents.readXML(		dbDir / "db_acousticComponents.xml", "AcousticComponents", "AcousticComponent", true);
 
 	}
 
@@ -186,6 +188,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneTemplates.readXML(			userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
 	if (t == NUM_DT || t == DT_AcousticTemplates)
 		m_acousticTemplates.readXML(			userDbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", false);
+	if (t == NUM_DT || t == DT_AcousticComponents)
+		m_acousticComponents.readXML(		userDbDir / "db_acousticComponents.xml", "AcousticComponents", "AcousticComponent", false);
+
 
 }
 
@@ -221,6 +226,8 @@ void SVDatabase::writeDatabases() {
 	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
+	m_acousticComponents.writeXML(		userDbDir / "db_acousticComponents.xml", "AcousticComponents");
+
 }
 
 
@@ -250,6 +257,7 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_infiltration.import(db.m_infiltration);
 	m_zoneTemplates.import(db.m_zoneTemplates);
 	m_acousticTemplates.import(db.m_acousticTemplates);
+	m_acousticComponents.import(db.m_acousticComponents);
 
 }
 

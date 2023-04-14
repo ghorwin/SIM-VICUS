@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_StructuralUnit.h>
+#include <VICUS_AcousticComponent.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void StructuralUnit::readXML(const TiXmlElement * element) {
-	FUNCID(StructuralUnit::readXML);
+void AcousticComponent::readXML(const TiXmlElement * element) {
+	FUNCID(AcousticComponent::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -48,7 +48,9 @@ void StructuralUnit::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
+				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -59,16 +61,10 @@ void StructuralUnit::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-
-	//create a vector to read the data
-	std::vector<unsigned int> temp;
-			if (cName == "RoomIds"){
-				NANDRAD::readVector(c, "RoomIds", temp);
-				for (unsigned int &t: temp)
-					m_roomIds.insert(t);
-				}
-			else if (cName == "Color")
-				m_color.setNamedColor(QString::fromStdString(c->GetText()));
+			if (cName == "ImpactSoundValue")
+				m_impactSoundValue = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "AirSoundResistenceValue")
+				m_airSoundResistenceValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -76,28 +72,26 @@ void StructuralUnit::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'StructuralUnit' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticComponent' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'StructuralUnit' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'AcousticComponent' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * StructuralUnit::writeXML(TiXmlElement * parent) const {
+TiXmlElement * AcousticComponent::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("StructuralUnit");
+	TiXmlElement * e = new TiXmlElement("AcousticComponent");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
-
-	//convert into vector
-	std::vector<unsigned int> temp(m_roomIds.begin(), m_roomIds.end());
-	NANDRAD::writeVector(e, "RoomIds", temp);
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "Color", nullptr, std::string(), m_color.name().toStdString());
+		e->SetAttribute("color", m_color.name().toStdString());
+	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundValue", nullptr, std::string(), IBK::val2string<double>(m_impactSoundValue));
+	TiXmlElement::appendSingleAttributeElement(e, "AirSoundResistenceValue", nullptr, std::string(), IBK::val2string<double>(m_airSoundResistenceValue));
 	return e;
 }
 

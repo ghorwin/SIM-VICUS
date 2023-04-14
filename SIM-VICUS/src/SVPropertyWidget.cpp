@@ -42,7 +42,7 @@
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
-#include "SVPropBuildingAcousticTemplatesWidget.h"
+#include "SVPropAcousticEditWidget.h"
 #include "SVPropStructuralUnitEditWidget.h"
 #include "SVPropResultsWidget.h"
 
@@ -110,6 +110,13 @@ void SVPropertyWidget::updateColorMode() {
 			SVPropStructuralUnitEditWidget *widget = qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties]);
 			widget->setPropertyType((int)widget->currentPropertyType());
 		} break;
+		case SVViewState::PM_BuildingAcousticProperties : {
+			// enforce color update
+			SVPropAcousticEditWidget *widget = qobject_cast<SVPropAcousticEditWidget*>(m_propWidgets[M_BuildingAcousticProperties]);
+			widget->setPropertyType((int)widget->currentPropertyType());
+		} break;
+
+
 
 		default: break;
 	}
@@ -152,7 +159,7 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 		} break;
 
 		case SVViewState::PM_BuildingAcousticProperties : {
-			showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
+			showPropertyWidget<SVPropAcousticEditWidget>(M_BuildingAcousticProperties);
 		} break;
 		case SVViewState::PM_BuildingStructuralUnitProperties : {
 			showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);

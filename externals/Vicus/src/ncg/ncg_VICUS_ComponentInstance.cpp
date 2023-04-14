@@ -49,6 +49,8 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "idComponent")
 				m_idComponent = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idAcousticComponent")
+				m_idAcousticComponent = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "idSideASurface")
 				m_idSideASurface = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "idSideBSurface")
@@ -92,6 +94,8 @@ TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_idComponent != VICUS::INVALID_ID)
 		e->SetAttribute("idComponent", IBK::val2string<unsigned int>(m_idComponent));
+	if (m_idAcousticComponent != VICUS::INVALID_ID)
+		e->SetAttribute("idAcousticComponent", IBK::val2string<unsigned int>(m_idAcousticComponent));
 	if (m_idSideASurface != VICUS::INVALID_ID)
 		e->SetAttribute("idSideASurface", IBK::val2string<unsigned int>(m_idSideASurface));
 	if (m_idSideBSurface != VICUS::INVALID_ID)

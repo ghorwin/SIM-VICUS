@@ -50,6 +50,8 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
+#include "SVDBAcousticComponentTableModel.h"
+#include "SVDBAcousticComponentEditWidget.h"
 #include "SVDBSubSurfaceComponentTableModel.h"
 #include "SVDBSubSurfaceComponentEditWidget.h"
 #include "SVDBWindowTableModel.h"
@@ -385,6 +387,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
 		case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
 		case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
+		case SVDatabase::DT_AcousticComponents:		SVSettings::instance().m_db.m_acousticComponents.removeUserElements(); break;
 		case SVDatabase::DT_AcousticTemplates:		// currently ignoring acoustic templates
 			break;
 		case SVDatabase::NUM_DT:; // just to make compiler happy
@@ -514,6 +517,17 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticComponentEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+														  new SVDBAcousticComponentTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBAcousticComponentEditWidget(parent),
+														  tr("Acoustic Component Database"), tr("Acoustic Component properties"), true
+														  );
+	dlg->resize(1400,800);
+	return dlg;
+}
+
 
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(QWidget * parent) {

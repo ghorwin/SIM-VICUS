@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<AcousticComponents>
+	<AcousticComponent id="500000" displayName="de: Component 1" color="#000032">
+		<ImpactSoundValue>20</ImpactSoundValue>
+		<AirSoundResistenceValue>20</AirSoundResistenceValue>
+	</AcousticComponent>
+	<AcousticComponent id="500001" displayName="de: Component 2" color="#0B0AAA">
+		<ImpactSoundValue>20</ImpactSoundValue>
+		<AirSoundResistenceValue>20</AirSoundResistenceValue>
+	</AcousticComponent>
+	<AcousticComponent id="500002" displayName="de: Component 3" color="#FF0032">
+		<ImpactSoundValue>20</ImpactSoundValue>
+		<AirSoundResistenceValue>20</AirSoundResistenceValue>
+	</AcousticComponent>
+</AcousticComponents>

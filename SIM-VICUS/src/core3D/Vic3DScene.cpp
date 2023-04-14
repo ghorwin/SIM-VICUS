@@ -2145,6 +2145,28 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		}
 	} break;
 
+		// *** OCM_AcousticRoomType
+	case SVViewState::OCM_AcousticComponent: {
+		// now color all surfaces that appear somewhere in a ComponentInstance
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			QColor col;
+			if (ci.m_idComponent == VICUS::INVALID_ID)
+				col = QColor(96,0,0);
+			else {
+				// lookup component definition
+				const VICUS::AcousticComponent * acComp = db.m_acousticComponents[ci.m_idAcousticComponent];
+				if (acComp == nullptr)
+					col = QColor(148,64,64);
+				else
+					col = acComp->m_color;
+			}
+			if (ci.m_sideASurface != nullptr)
+				ci.m_sideASurface->m_color = col;
+			if (ci.m_sideBSurface != nullptr)
+				ci.m_sideBSurface->m_color = col;
+		}
+	} break;
+
 		// *** OCM_StructuralUnit
 	case SVViewState::OCM_StructuralUnit: {
 		// loop over all the units

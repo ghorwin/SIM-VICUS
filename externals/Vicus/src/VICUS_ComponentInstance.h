@@ -60,6 +60,8 @@ public:
 	unsigned int						m_id = INVALID_ID;					// XML:A:required
 	/*! ID of referenced component. */
 	unsigned int						m_idComponent = INVALID_ID;			// XML:A
+	/*! ID of referenced acoustic component. */
+	unsigned int						m_idAcousticComponent = INVALID_ID;	// XML:A
 	/*! ID of surface at side A (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
 	unsigned int						m_idSideASurface = INVALID_ID;		// XML:A
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */

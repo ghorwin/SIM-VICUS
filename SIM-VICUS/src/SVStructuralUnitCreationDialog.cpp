@@ -6,6 +6,7 @@
 #include "SVUndoModifyStructuralUnit.h"
 
 #include <VICUS_utilities.h>
+#include "SVStyle.h"
 
 
 
@@ -37,6 +38,7 @@ bool SVStructuralUnitCreationDialog::create() {
 		existingNames.insert(unit.m_displayName);
 	QString defaultName = VICUS::uniqueName(tr("Unit"), existingNames);
 	m_ui->lineEditUnitName->setText(defaultName);
+	m_ui->pushButtonColor->setColor(SVStyle::randomColor());
 	// reset structural unit
 	m_structuralUnit = nullptr;
 	return exec();

@@ -34,6 +34,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
 	../../src/VICUS_AbstractDBElement.h \
+	../../src/VICUS_AcousticComponent.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BoundaryCondition.h \
@@ -100,10 +101,10 @@ HEADERS += \
 	../../src/VICUS_ZoneTemplate.h \
 	../../src/VICUS_utilities.h \
 	../../src/VICUS_NetworkBuriedPipeProperties.h \
-	AcousticComponent.h
 
 SOURCES += \
-	../../src/VICUS_AbstractDBElement.cpp \
+    ../../src/VICUS_AbstractDBElement.cpp \
+    ../../src/VICUS_AcousticComponent.cpp \
     ../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
@@ -158,6 +159,7 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticComponent.cpp \
     ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
@@ -211,4 +213,3 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
 	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp \
-    AcousticComponent.cpp
