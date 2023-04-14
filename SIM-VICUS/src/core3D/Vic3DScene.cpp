@@ -116,7 +116,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	bool updateGrid = false;
 	bool updateNetwork = false;
 	bool updateBuilding = false;
-    bool updateDrawing = false;
+	bool updateDrawing = false;
 	bool updateCamera = false;
 	bool updateSelection = false;
 	// filter out all modification types that we handle
@@ -127,7 +127,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		updateBuilding = true;
 		updateNetwork = true;
 		updateCamera = true;
-        updateDrawing = true;
+		updateDrawing = true;
 		updateSelection = true;
 		// clear new polygon drawing object
 		m_newGeometryObject.clear();
@@ -206,7 +206,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		//        elements are selected, but at least this is very robust
 		updateBuilding = true;
 		updateNetwork = true;
-        updateDrawing = true;
+		updateDrawing = true;
 
 		// Now check if our new selection set is different from the previous selection set.
 		std::set<const VICUS::Object*> selectedObjects;
@@ -231,12 +231,12 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	} break;
 
-    case SVProjectHandler::DrawingModified: {
-        updateBuilding = true;
-        updateDrawing = true;
-        updateSelection = true;
+	case SVProjectHandler::DrawingModified: {
+		updateBuilding = true;
+		updateDrawing = true;
+		updateSelection = true;
 
-        m_drawingGeometryObject.updateBuffers();
+		m_drawingGeometryObject.updateBuffers();
 	} break;
 
 	default:
@@ -292,10 +292,10 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		generateNetworkGeometry();
 	}
 
-    if(updateDrawing){
-        m_drawingGeometryObject.create(m_buildingShader->shaderProgram());
-        generate2DDrawingGeometry();
-    }
+	if(updateDrawing){
+		m_drawingGeometryObject.create(m_buildingShader->shaderProgram());
+		generate2DDrawingGeometry();
+	}
 
 
 	// update all GPU buffers (transfer cached data to GPU)
@@ -308,9 +308,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	if (updateNetwork || updateSelection)
 		m_networkGeometryObject.updateBuffers();
 
-    if(updateDrawing){
-        m_drawingGeometryObject.updateBuffers();
-    }
+	if(updateDrawing){
+		m_drawingGeometryObject.updateBuffers();
+	}
 
 	// store current coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -324,7 +324,7 @@ void Scene::destroy() {
 	m_buildingGeometryObject.destroy();
 	m_transparentBuildingObject.destroy();
 	m_networkGeometryObject.destroy();
-    m_drawingGeometryObject.destroy();
+	m_drawingGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
 	m_measurementObject.destroy();
 	m_coordinateSystemObject.destroy();
@@ -1160,8 +1160,8 @@ void Scene::render() {
 		if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
 			m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
 
-        // render opaque part of drawing object
-        m_drawingGeometryObject.renderOpaque();
+		// render opaque part of drawing object
+		m_drawingGeometryObject.renderOpaque();
 
 	}
 
@@ -1847,26 +1847,76 @@ void Scene::generateNetworkGeometry() {
 
 void Scene::generate2DDrawingGeometry() {
 
-    m_drawingGeometryObject.m_vertexBufferData.clear();
-    m_drawingGeometryObject.m_colorBufferData.clear();
-    m_drawingGeometryObject.m_indexBufferData.clear();
-    m_drawingGeometryObject.m_vertexStartMap.clear();
+	// initialise necessary objects to draw OpaqueGeometryObject
+	m_drawingGeometryObject.m_vertexBufferData.clear();
+	m_drawingGeometryObject.m_colorBufferData.clear();
+	m_drawingGeometryObject.m_indexBufferData.clear();
+	m_drawingGeometryObject.m_vertexStartMap.clear();
 
-    m_drawingGeometryObject.m_vertexBufferData.reserve(100000);
-    m_drawingGeometryObject.m_colorBufferData.reserve(100000);
-    m_drawingGeometryObject.m_indexBufferData.reserve(100000);
+	m_drawingGeometryObject.m_vertexBufferData.reserve(500000);
+	m_drawingGeometryObject.m_colorBufferData.reserve(500000);
+	m_drawingGeometryObject.m_indexBufferData.reserve(500000);
 
-    m_drawingGeometryObject.m_drawTriangleStrips = false;
+	m_drawingGeometryObject.m_drawTriangleStrips = false;
 
-    unsigned int currentVertexIndex = 0;
-    unsigned int currentElementIndex = 0;
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
 
-    const VICUS::Project & p = project();
+	const VICUS::Project & p = project();
 
-    for (const VICUS::Drawing & drawing: p.m_drawings) {
+	// initialise default values
+	QColor color = QColor(255,255,255);
 
-        // analog zu generateBuildingGeometry()
-    }
+	float defaultLineWidth = 0.3f;
+
+	// iterate over all AbstractObjects and draw them
+	for (const VICUS::Drawing & drawing: p.m_drawings) {
+
+		for(const VICUS::Drawing::Line & line: drawing.m_lines){
+
+			qDebug() << "addLine" << std::to_string(line.m_line.m_p1.m_x).c_str() << std::to_string(line.m_line.m_p1.m_y).c_str();
+
+			addLine(IBKMK::Vector3D(line.m_line.m_p1.m_x, line.m_line.m_p1.m_y, 0.0), IBKMK::Vector3D(line.m_line.m_p2.m_x, line.m_line.m_p2.m_y, 0.0), defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+
+		}
+
+		for(const VICUS::Drawing::Point & point : drawing.m_points){
+
+			qDebug() << "addPoint" << std::to_string(point.m_point.m_x).c_str() << std::to_string(point.m_point.m_y).c_str();
+
+			addPoint(IBKMK::Vector3D(point.m_point.m_x, point.m_point.m_y, 0.0), defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+
+		}
+
+		for(const VICUS::Drawing::LWPolyLine & lwpolyline : drawing.m_lwpolylines){
+
+			std::vector<IBKMK::Vector3D> polyline;
+
+			// adds z-coordinate to polyline
+			for(int i = 0; i < lwpolyline.m_lwpolyline.size(); i++){
+				polyline.push_back(IBKMK::Vector3D(lwpolyline.m_lwpolyline[i].m_x, lwpolyline.m_lwpolyline[i].m_y, 0.0));
+			}
+
+			addPolyLine(polyline, lwpolyline.m_polyline_flag == 1, defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+
+		}
+
+		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
+
+			std::vector<IBKMK::Vector3D> polylinePoints;
+
+			// adds z-coordinate to polyline
+			for(int i = 0; i < polyline.m_polyline.size(); i++){
+				polylinePoints.push_back(IBKMK::Vector3D(polyline.m_polyline[i].m_x, polyline.m_polyline[i].m_y, 0.0));
+			}
+
+			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1, defaultLineWidth, color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+
+		}
+
+	}
+
+	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();
 }
 
 
