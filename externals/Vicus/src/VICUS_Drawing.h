@@ -5,6 +5,8 @@
 #include <IBKMK_Vector3D.h>
 #include <IBK_Line.h>
 
+#include <VICUS_RotationMatrix.h>
+
 #include <libdxfrw.h>
 #include <drw_interface.h>
 #include <drw_objects.h>
@@ -22,9 +24,9 @@ public:
 
 	struct Layer {
 
-		QString         m_name;
+		QString			m_name;
 
-		QColor			m_color;
+		QColor			m_color = QColor(255, 255, 255);
 
 		double			m_lineWidth;
 
@@ -34,10 +36,17 @@ public:
 
 	struct AbstractObject {
 
-		QString         m_layername;
+		QString		         m_layername;
 
-		Layer           *m_parentLayer;
+		Layer               *m_parentLayer;
 
+		QColor				m_color = QColor(255, 255, 255);
+
+
+
+	public:
+
+		QColor color();
 	};
 
 	struct Point : public AbstractObject {
@@ -56,6 +65,10 @@ public:
 		// default thickness value is 0
 		double          m_thickness = 0;
 
+		double          m_lineWidth;
+
+		bool            m_visible;
+
 	};
 
 	struct LWPolyLine : public AbstractObject {
@@ -64,6 +77,8 @@ public:
 
 		// default thickness value is 0
 		double                          m_thickness = 0;
+		// true if the end point connected to the start
+		int                            m_polyline_flag = 0;
 
 	};
 
@@ -73,10 +88,14 @@ public:
 
 		// default thickness value is 0
 		double                          m_thickness = 0;
+		// true if the end point connected to the start
+		int                            m_polyline_flag = 0;
 
 	};
 
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
+
+	RotationMatrix															m_rotationMatrix;
 
 	std::vector<Layer>                                                      m_layer;
 
@@ -89,6 +108,7 @@ public:
 	std::vector<LWPolyLine>                                                 m_lwpolylines;
 
 	void updatePointer();
+
 
 private:
 
