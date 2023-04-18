@@ -153,7 +153,7 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				usageTime = settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
 				double constructionCount = category == VICUS::EpdDataset::C_CategoryB ?
 							1 :  // Usage is already normated
-							std::ceil((float)usageTime / period);
+							std::ceil((float)usageTime / period - 1E-4); // to make it save
 
 				VICUS::EpdModuleDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
 				double conversionFactor = conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
