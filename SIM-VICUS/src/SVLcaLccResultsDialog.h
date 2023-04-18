@@ -24,19 +24,25 @@ struct AggregatedComponentData {
 		m_area(0.0),
 		m_totalCost(IBK::IntPara("TotalCost", 0))
 	{
+		FUNCID(AggregatedComponentData::AggregatedComponentData);
+
 		addArea(compInst);
 		m_additionalComponents.insert(m_component);
 
 		const SVDatabase &db = SVSettings::instance().m_db;
 		const VICUS::Component *comp = db.m_components[compInst.m_idComponent];
 
-		if(comp == nullptr)
+		if(comp == nullptr) {
+			IBK::IBK_Message(IBK::FormatString("Component #%1 has not been found.").arg(comp->m_id), IBK::MSG_ERROR, FUNC_ID);
 			return;
+		}
 
 		const VICUS::Construction *con = db.m_constructions[comp->m_idConstruction];
 
-		if(con == nullptr)
+		if(con == nullptr) {
+			IBK::IBK_Message(IBK::FormatString("Construction #%1 has not been found.").arg(comp->m_idConstruction), IBK::MSG_ERROR, FUNC_ID);
 			return;
+		}
 
 		for(const VICUS::MaterialLayer &ml : con->m_materialLayers) {
 			m_totalCost.value += ml.m_cost.value;
@@ -46,7 +52,7 @@ struct AggregatedComponentData {
 	/*! Adds area of an component instance to the aggregated component data. */
 	void addArea(const VICUS::ComponentInstance &compInst) {
 		const VICUS::Surface *surfA = compInst.m_sideASurface;
-		const VICUS::Surface *surfB = compInst.m_sideASurface;
+		const VICUS::Surface *surfB = compInst.m_sideBSurface;
 
 		if(surfA == nullptr && surfB == nullptr)
 			return;
@@ -56,12 +62,14 @@ struct AggregatedComponentData {
 			for(unsigned int i=0; i<surfA->subSurfaces().size(); ++i) {
 				m_area -= surfA->subSurfaces()[i].m_polygon2D.area();
 			}
+			return;
 		}
 		else if(surfB != nullptr) {
 			m_area += surfB->geometry().area();
 			for(unsigned int i=0; i<surfB->subSurfaces().size(); ++i) {
-				m_area -= surfA->subSurfaces()[i].m_polygon2D.area();
+				m_area -= surfB->subSurfaces()[i].m_polygon2D.area();
 			}
+			return;
 		}
 	}
 

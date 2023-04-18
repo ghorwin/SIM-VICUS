@@ -138,7 +138,6 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 
 				const VICUS::EpdDataset *epdMat = db.m_epdDatasets[mat.m_epdCategorySet.m_idCategory[category]];
 
-
 				if(epdMat == nullptr)
 					continue; // no epd defined
 

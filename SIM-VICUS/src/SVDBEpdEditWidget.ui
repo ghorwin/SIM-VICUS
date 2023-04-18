@@ -34,7 +34,7 @@
     </widget>
    </item>
    <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="lineEditUUID"/>
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditUUID"/>
    </item>
    <item row="1" column="0" colspan="3">
     <widget class="Line" name="line_2">
@@ -68,7 +68,7 @@
     </widget>
    </item>
    <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="lineEditManufacturer"/>
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditManufacturer"/>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="labelExpireYear">
@@ -78,7 +78,7 @@
     </widget>
    </item>
    <item row="6" column="1" colspan="2">
-    <widget class="QLineEdit" name="lineEditExpireYear"/>
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditExpireYear"/>
    </item>
    <item row="7" column="0">
     <widget class="QLabel" name="label_2">
@@ -92,7 +92,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>50</height>
+       <height>100</height>
       </size>
      </property>
     </widget>
@@ -112,7 +112,7 @@
     </widget>
    </item>
    <item row="9" column="1" colspan="2">
-    <widget class="QLineEdit" name="lineEditRefUnit"/>
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditRefUnit"/>
    </item>
    <item row="10" column="0">
     <widget class="QLabel" name="labelRefQuantity">
@@ -122,7 +122,7 @@
     </widget>
    </item>
    <item row="10" column="1" colspan="2">
-    <widget class="QLineEdit" name="lineEditRefQuantity"/>
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditRefQuantity"/>
    </item>
    <item row="11" column="0" colspan="3">
     <widget class="QTableWidget" name="tableWidgetEpdData"/>
@@ -138,6 +138,14 @@
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

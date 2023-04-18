@@ -80,6 +80,7 @@ void SVDBEpdEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * db
 	m_dbModel = dynamic_cast<SVDBEpdTableModel*>(dbModel);
 }
 
+
 void SVDBEpdEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
@@ -167,19 +168,22 @@ void SVDBEpdEditWidget::updateInput(int id) {
 
 	bool isEnabled = m_current->m_local;
 
-	m_ui->lineEditCategory->setEnabled(isEnabled);
-	m_ui->lineEditExpireYear->setEnabled(isEnabled);
-	m_ui->lineEditManufacturer->setEnabled(isEnabled);
-	m_ui->lineEditRefQuantity->setEnabled(isEnabled);
-	m_ui->lineEditUUID->setEnabled(isEnabled);
-	m_ui->lineEditRefUnit->setEnabled(isEnabled);
+	m_ui->lineEditExpireYear->setReadOnly(!isEnabled);
+	m_ui->lineEditManufacturer->setReadOnly(!isEnabled);
+	m_ui->lineEditRefQuantity->setReadOnly(!isEnabled);
+	m_ui->lineEditUUID->setReadOnly(!isEnabled);
+	m_ui->lineEditRefUnit->setReadOnly(!isEnabled);
+
 	m_ui->textBrowser->setEnabled(isEnabled);
+	m_ui->lineEditCategory->setEnabled(isEnabled);
 	m_ui->lineEditName->setEnabled(isEnabled);
 }
+
 
 SVDBEpdTableModel * SVDBEpdEditWidget::dbModel() const {
 	return m_dbModel;
 }
+
 
 void SVDBEpdEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
@@ -189,6 +193,7 @@ void SVDBEpdEditWidget::on_lineEditName_editingFinished() {
 		modelModify();
 	}
 }
+
 
 void SVDBEpdEditWidget::modelModify() {
 	m_db->m_epdDatasets.m_modified = true;
