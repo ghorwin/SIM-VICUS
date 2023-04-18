@@ -128,9 +128,7 @@ private slots:
 
 	void on_pushButtonAreaDetection_clicked();
 
-	void on_pushButtonLcc_clicked();
-
-	void on_pushButtonLca_clicked();
+	void on_pushButtonCalculate_clicked();
 
 	void on_lineEditArea_editingFinishedSuccessfully();
 

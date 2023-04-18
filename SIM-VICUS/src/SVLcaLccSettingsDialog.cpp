@@ -1183,16 +1183,11 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 }
 
 
-void SVLcaLccSettingsDialog::on_pushButtonLcc_clicked() {
-
-}
-
-
-void SVLcaLccSettingsDialog::on_pushButtonLca_clicked() {
+void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 	try {
-		double coalConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value;
-		double gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value;
-		double electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
+		const double &coalConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value;
+		const double &gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value;
+		const double &electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
 
 		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
 								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
@@ -1211,7 +1206,7 @@ void SVLcaLccSettingsDialog::on_pushButtonLca_clicked() {
 
 		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
 
-		m_lcaResultDialog->showFullScreen();
+		m_lcaResultDialog->showMaximized();
 	}
 	catch (IBK::Exception &ex) {
 		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
@@ -1228,10 +1223,12 @@ void SVLcaLccSettingsDialog::on_lineEditArea_editingFinishedSuccessfully() {
 
 
 void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully() {
-	if(m_ui->lineEditArea->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, m_ui->lineEditArea->value());
+	if(m_ui->lineEditTimePeriod->isValid()) {
+		float years = m_ui->lineEditTimePeriod->value();
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
+	}
 	else
-		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].value);
+		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
 }
 
 
