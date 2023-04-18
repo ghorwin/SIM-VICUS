@@ -148,12 +148,12 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 					IBK::IBK_Message(IBK::FormatString("No usage time is specified for material layer '%1' of construction '%2'. Skipping material calculation.").arg(i).arg(con.m_displayName));
 					continue;
 				}
-				usageTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
+				unsigned int period = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value("a");
 
-
+				usageTime = settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
 				double constructionCount = category == VICUS::EpdDataset::C_CategoryB ?
 							1 :  // Usage is already normated
-							std::ceil(settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a") / usageTime);
+							std::ceil((float)usageTime / period);
 
 				VICUS::EpdModuleDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
 				double conversionFactor = conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
@@ -179,6 +179,14 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				itemMatChild->setText(ColEP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
 				itemMatChild->setText(ColODP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 				itemMatChild->setText(ColPOCP, QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
+
+				itemMatChild->setTextAlignment(ColGWP,	Qt::AlignRight);
+				itemMatChild->setTextAlignment(ColAP,	Qt::AlignRight);
+				itemMatChild->setTextAlignment(ColEP,	Qt::AlignRight);
+				itemMatChild->setTextAlignment(ColODP,	Qt::AlignRight);
+				itemMatChild->setTextAlignment(ColPOCP,	Qt::AlignRight);
+
+				itemMatChild->setFlags(itemMatChild->flags() | Qt::ItemIsEditable);
 
 				itemChild->addChild(itemMatChild);
 
