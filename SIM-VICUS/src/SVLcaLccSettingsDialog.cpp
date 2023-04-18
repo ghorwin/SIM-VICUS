@@ -1234,7 +1234,7 @@ void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully()
 
 void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully() {
 	if(m_ui->lineEditPriceIncreaseGeneral->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
 	else
 		m_ui->lineEditPriceIncreaseGeneral->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
 }
@@ -1242,7 +1242,7 @@ void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseGeneral_editingFinishedSucc
 
 void SVLcaLccSettingsDialog::on_lineEditGasConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditGasConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
 	else
 		m_ui->lineEditGasConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value);
 }
@@ -1250,7 +1250,7 @@ void SVLcaLccSettingsDialog::on_lineEditGasConsumption_editingFinishedSuccessful
 
 void SVLcaLccSettingsDialog::on_lineEditElectricityConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditElectricityConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
 	else
 		m_ui->lineEditElectricityConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value);
 }
@@ -1258,7 +1258,7 @@ void SVLcaLccSettingsDialog::on_lineEditElectricityConsumption_editingFinishedSu
 
 void SVLcaLccSettingsDialog::on_lineEditCoalConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditCoalConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
 	else
 		m_ui->lineEditArea->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value);
 }
@@ -1266,7 +1266,7 @@ void SVLcaLccSettingsDialog::on_lineEditCoalConsumption_editingFinishedSuccessfu
 
 void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully() {
 	if(m_ui->lineEditPriceIncreaseEnergy->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
+		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
 	else
 		m_ui->lineEditPriceIncreaseEnergy->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value);
 
