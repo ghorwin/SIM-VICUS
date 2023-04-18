@@ -75,6 +75,8 @@ private slots:
 
 	void on_lineEditUUID_textEdited(const QString &arg1);
 
+	void on_toolButtonAddEpd_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

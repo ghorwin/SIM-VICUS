@@ -111,11 +111,11 @@ void SVDBEpdEditWidget::updateInput(int id) {
 	m_ui->lineEditRefUnit->setText(QString::fromStdString(m_current->m_referenceUnit.name()));
 
 	m_ui->lineEditUUID->setText(m_current->m_uuid);
-	m_ui->tableWidgetEpdData->setRowCount((int)m_current->m_epdModuleDataset.size());
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 
 	std::vector<VICUS::EpdModuleDataset> datasets = m_current->expandCategoryDatasets();
+	m_ui->tableWidgetEpdData->setRowCount((int)datasets.size());
 	for(unsigned int j=0; j<datasets.size(); ++j) {
 
 		QString moduleString = "";
@@ -211,8 +211,12 @@ void SVDBEpdEditWidget::on_lineEditUUID_editingFinished() {
 }
 
 
-void SVDBEpdEditWidget::on_lineEditUUID_textEdited(const QString &arg1)
-{
+void SVDBEpdEditWidget::on_lineEditUUID_textEdited(const QString &arg1) {
+
+}
+
+
+void SVDBEpdEditWidget::on_toolButtonAddEpd_clicked() {
 
 }
 
