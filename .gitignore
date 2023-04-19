@@ -37,10 +37,11 @@ Makefile*
 *.pyc
 *.pdb
 /build/build-*
+bin/release/
+bin/release_x64/
 
 # Mac-specific stuff
 .DS_Store
-
 
 # misc
 *.tlog
@@ -49,13 +50,6 @@ Makefile*
 *.autosave
 object_script.*
 *.png~
-
-*.lyx~
-*.lyx\#
-*.odg\#
-*.ilk
-/release/
-/release_x64/
 moc_*
 *.debian.tar.xz
 *.dsc
@@ -63,3 +57,9 @@ moc_*
 *source.changes
 *source.ppa.upload
 *.so.*
+
+# docu
+*.lyx~
+*.lyx\#
+*.odg\#
+*.ilk
