@@ -519,6 +519,7 @@ void Project::updatePointers() {
 	// also check, that backward referenced from surfaces to component instances are unique
 	// Note: invalid "component" is ok, as this does not affect model consistency (it is just meta-data)
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
+
 		// component instance must have at least one valid side ID
 		if (ci.m_idSideASurface == VICUS::INVALID_ID && ci.m_idSideBSurface == VICUS::INVALID_ID)
 			throw IBK::Exception(IBK::FormatString("Component instance #%1 has two invalid surface references.").arg(ci.m_id), FUNC_ID);
@@ -544,6 +545,8 @@ void Project::updatePointers() {
 			// store pointer to this component in referenced side
 			ci.m_sideASurface->m_componentInstance = &ci;
 		}
+		else
+			ci.m_sideASurface = nullptr; // set nullptr if now invalid id
 
 		if (ci.m_idSideBSurface != VICUS::INVALID_ID) {
 			ci.m_sideBSurface = surfaceByID(ci.m_idSideBSurface);
@@ -561,6 +564,8 @@ void Project::updatePointers() {
 			// store pointer to this component in referenced side
 			ci.m_sideBSurface->m_componentInstance = &ci;
 		}
+		else
+			ci.m_sideBSurface = nullptr; // set nullptr if now invalid id
 
 		// NOTE: surface heating control zone may be referenced by several component instances (forward reference)
 		if (ci.m_idSurfaceHeatingControlZone != VICUS::INVALID_ID) {
