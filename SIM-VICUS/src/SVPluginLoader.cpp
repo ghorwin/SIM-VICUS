@@ -7,6 +7,7 @@
 #include <IBK_Version.h>
 
 #include <QPluginLoader>
+#include <QCoreApplication>
 #include <QDir>
 
 #if defined(_WIN32)
@@ -129,8 +130,11 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 	}
 
 	QObject * plugin = nullptr;
+	QDir::setCurrent(pluginDir.absolutePath());
 	// add path to plugin to library search paths
 	qApp->addLibraryPath(pluginDir.absolutePath());
+	for (const QString &path : qApp->libraryPaths() )
+		qDebug() << path;
 	bool success = pd.m_loader->load(); // load the plugin
 	// and remove the path again, so that subsequent libs won't load wrong dll/so-files
 	qApp->removeLibraryPath(pluginDir.absolutePath());
