@@ -554,7 +554,6 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				const IBKMK::Vector3D &localY = originSurf.geometry().localY();
 				const IBKMK::Vector3D &offset = originSurf.geometry().offset();
 
-
 				// Now we should update all sub-surfaces
 				for(unsigned int idxSub=0; idxSub<originSurfCopy.subSurfaces().size(); ++idxSub) {
 					VICUS::SubSurface &sub = subs[idxSub];
