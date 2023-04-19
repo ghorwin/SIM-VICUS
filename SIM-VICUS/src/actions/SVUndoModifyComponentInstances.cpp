@@ -42,7 +42,7 @@ void SVUndoModifyComponentInstances::undo() {
 	theProject().updatePointers();
 
 	// tell project that the grid has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::ComponentInstancesModified);
+	SVProjectHandler::instance().setModified(SVProjectHandler::ComponentInstancesModified);
 }
 
 
