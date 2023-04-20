@@ -851,6 +851,8 @@ void SVMainWindow::onDockWidgetToggled(bool visible) {
 
 
 void SVMainWindow::onImportPluginTriggered() {
+	FUNCID(SVMainWindow::onImportPluginTriggered);
+
 	QAction * a = qobject_cast<QAction *>(sender());
 	if (a == nullptr) {
 		IBK::IBK_Message("Invalid call to onImportPluginTriggered()", IBK::MSG_ERROR);
@@ -870,8 +872,15 @@ void SVMainWindow::onImportPluginTriggered() {
 //		std::ofstream out("g:\\temp\\VicusImport.txt");
 //		out << projectText.toStdString();
 	}
-	catch(IBK::Exception& ) {
+	catch(IBK::Exception &ex) {
 		success = false;
+		// call of import plugin not successful
+		QMessageBox::critical(this, "Plugin Error", tr("Error while importing a project with plugin '%1'\n%2")
+							  .arg(importPlugin->title())
+							  .arg(ex.what()), IBK::MSG_ERROR, *FUNC_ID);
+
+		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
+						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
 	}
 
 	if (success) {
@@ -907,11 +916,7 @@ void SVMainWindow::onImportPluginTriggered() {
 			}
 		}
 	}
-	// call of import plugin not successful
-	else {
-		IBK::IBK_Message(IBK::FormatString("Error while importing a project with plugin '%1'")
-						 .arg(importPlugin->title().toStdString()), IBK::MSG_ERROR);
-	}
+
 //	m_geometryView->refreshSceneView();
 }
 
