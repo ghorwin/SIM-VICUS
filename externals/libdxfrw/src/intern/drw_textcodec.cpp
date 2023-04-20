@@ -3,8 +3,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <cstring>
-//#include <iconv.h>
-// TODO: Add iconv.h for win64
+#include <locale>
+#include <codecvt>
 
 #include "../drw_base.h"
 #include "drw_cptables.h"
@@ -477,23 +477,27 @@ std::string DRW_ExtConverter::convertByiconv(const char *in_encode,
 											 const char *out_encode,
 											 const std::string *s) {
 
-	// TODO: Add iconv.h for win64
+	const int BUF_SIZE = 1000;
+	static char in_buf[BUF_SIZE], out_buf[BUF_SIZE];
 
-//    const int BUF_SIZE = 1000;
-//    static char in_buf[BUF_SIZE], out_buf[BUF_SIZE];
+	char *in_ptr = in_buf;
+	strncpy(in_buf, s->c_str(), BUF_SIZE);
 
-//	char *in_ptr = in_buf;
-//	char *out_ptr = out_buf;
-//    strncpy(in_buf, s->c_str(), BUF_SIZE);
+	try {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		std::wstring intermediate = converter.from_bytes(in_ptr);
 
-//    iconv_t ic;
-//    ic = iconv_open(out_encode, in_encode);
-//    size_t il = BUF_SIZE-1, ol = BUF_SIZE-1;
-//    iconv(ic , (char**)&in_ptr, &il, &out_ptr, &ol);
-//    iconv_close(ic);
+		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> out_converter(out_encode);
+		std::string result = out_converter.to_bytes(intermediate);
 
-//    return std::string(out_buf);
-	return std::string();
+		strncpy(out_buf, result.c_str(), BUF_SIZE - 1);
+	} catch (const std::range_error &e) {
+		// Handle conversion error
+		// e.what() contains a message describing the error
+		return std::string();
+	}
+
+	return std::string(out_buf);
 }
 
 std::string DRW_ExtConverter::fromUtf8(std::string *s){
