@@ -288,6 +288,9 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 				for(const VICUS::Surface &s : r.m_surfaces) {
 
+					if(!s.m_visible)
+						continue;
+
 					// qDebug() << "------------------";
 					// qDebug() << s.m_displayName;
 					double intersectionArea = 0.0;
@@ -365,6 +368,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 	// TODO: Select Network Geometry.
 	for(const VICUS::Network &n : prj.m_geometricNetworks) {
 		for(const VICUS::NetworkEdge &ne : n.m_edges) {
+
+			if(!ne.m_visible)
+				continue;
+
 			const IBKMK::Vector3D &p1 = ne.m_node1->m_position;
 			const IBKMK::Vector3D &p2 = ne.m_node2->m_position;
 
@@ -405,6 +412,10 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 		}
 
 		for (const VICUS::NetworkNode &nn : n.m_nodes) {
+
+			if(!nn.m_visible)
+				continue;
+
 			// projected radius on NDC
 			const IBKMK::Vector3D &v3D = nn.m_position;
 
@@ -474,6 +485,9 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 	// Also select all plain geomerties
 	for(const VICUS::Surface &surf : prj.m_plainGeometry.m_surfaces) {
+
+		if(!surf.m_visible)
+			continue;
 
 		// qDebug() << "------------------";
 		// qDebug() << s.m_displayName;
