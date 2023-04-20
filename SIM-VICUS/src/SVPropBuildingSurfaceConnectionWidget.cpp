@@ -275,8 +275,6 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi(bool onlySelectionModified)
 		QItemSelection itemSelection;
 
 		for (int r : selectedRows) {
-			m_ui->tableWidgetInterlinkedSurfaces->selectRow(r);
-
 			// Create a selection for the first two rows
 			QModelIndex topLeft = m_ui->tableWidgetInterlinkedSurfaces->model()->index(r, 0);
 			QModelIndex bottomRight = m_ui->tableWidgetInterlinkedSurfaces->model()->index(r, 4);
