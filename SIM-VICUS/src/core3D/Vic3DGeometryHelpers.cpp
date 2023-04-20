@@ -765,10 +765,10 @@ void addPoint(const IBKMK::Vector3D &coordinate, float size, const QColor & colo
 	// // TODO Maik: move to 3dscene
 	// Create an array of 4 vertices to define the box
 	std::vector<IBKMK::Vector3D> pointVertices = {
-		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, 0.0),
-		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y - halfSize, 0.0),
-		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y + halfSize, 0.0),
-		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y + halfSize, 0.0),
+		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, coordinate.m_z),
+		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y - halfSize, coordinate.m_z),
+		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y + halfSize, coordinate.m_z),
+		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y + halfSize, coordinate.m_z),
 	};
 
 	// Call addPlane to create the box geometry twice so visible from both sides

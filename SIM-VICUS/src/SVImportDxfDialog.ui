@@ -27,7 +27,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBoxUnit"/>
+      <widget class="QComboBox" name="comboBoxUnit">
+       <item>
+        <property name="text">
+         <string>Meter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Centimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+      </widget>
      </item>
     </layout>
    </item>

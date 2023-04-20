@@ -3,6 +3,7 @@
 #include <libdxfrw.h>
 #include "SVSettings.h"
 #include "SVUndoAddDrawing.h"
+#include "SVStyle.h"
 
 SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 	QDialog(parent),
@@ -12,8 +13,6 @@ SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 
 	m_ui->lineEditFileName->setup(m_lastFilePath, true, true, tr("DXF-Files (*.dxf)"),
 								  SVSettings::instance().m_dontUseNativeDialogs);
-
-	// TODO Maik: populate combobox unit
 
 }
 
@@ -29,6 +28,17 @@ void SVImportDxfDialog::run() {
 		m_drawing = VICUS::Drawing();
 		readDxfFile(&m_drawing);
 		m_drawing.updatePointer();
+		switch(m_ui->comboBoxUnit->currentIndex()) {
+			case 0: // 10^0
+				m_drawing.m_scalingFactor = 1;
+				break;
+			case 1: // 10^-2
+				m_drawing.m_scalingFactor = 0.01;
+				break;
+			case 2: // 10^-3
+				m_drawing.m_scalingFactor = 0.001;
+				break;
+		}
 
 		SVUndoAddDrawing *undo = new SVUndoAddDrawing("", m_drawing);
 		undo->push();
@@ -47,13 +57,6 @@ void SVImportDxfDialog::run() {
 		qDebug() << "Points:";
 		for(size_t i = 0; i < m_drawing.m_points.size(); i++){
 			qDebug() << "x: " << QString::number(m_drawing.m_points[i].m_point.m_x) << " y: " << QString::number(m_drawing.m_points[i].m_point.m_y);
-		}
-
-		qDebug() << "LWPolyLines:";
-		for(size_t i = 0; i < m_drawing.m_lwpolylines.size(); i++){
-			for(size_t j = 0; j < m_drawing.m_lwpolylines[i].m_lwpolyline.size(); j++) {
-				qDebug() << "x: " << QString::number(m_drawing.m_lwpolylines[i].m_lwpolyline[j].m_x) << " y: " << QString::number(m_drawing.m_lwpolylines[i].m_lwpolyline[j].m_y);
-			}
 		}
 
 		qDebug() << "PolyLines:";
@@ -93,27 +96,15 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 	newLayer.m_name = QString::fromStdString(data.name);
 
 	// read linewidth from dxf file, convert to double using lineWidth2dxfInt from libdxfrw
-	newLayer.m_lineWidth = (double)DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-
-
-	// create QColor and fill with color value of layer
-	// there are two ways to store color in a dxf layer:
-	// color: integer value from 0-255, predefined color values from dxfColors in drw_objects.h
-	// color24: 24bit RGB coding
+	newLayer.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
 	newLayer.m_visible = true;
 
 
-	if(data.color != -1){
-
+	if(data.color != 256 && data.color != 7){
 		newLayer.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
-	}
-
-	if(data.color24 != -1){
-		int red = (data.color24 >> 16) & 0xFF;
-		int green = (data.color24 >> 8) & 0xFF;
-		int blue = data.color24 & 0xFF;
-		newLayer.m_color = QColor(red, green, blue);
+	}else{
+		newLayer.m_color = SVStyle::instance().m_defaultDrawingColor;
 	}
 
 	// Push new layer into vector<Layer*> m_layer
@@ -132,11 +123,13 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
 	//create new point, insert into vector m_points from drawing
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
-	newPoint.m_lineWidth = data.thickness;
+	newPoint.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newPoint.m_layername = QString::fromStdString(data.layer);
 
-	if(data.color != -1){
+	if(!(data.color == 256 || data.color == 7)) {
 		newPoint.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newPoint.m_color = QColor();
 	}
 
 	drawing->m_points.push_back(newPoint);
@@ -148,18 +141,13 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
 	//create new line, insert into vector m_lines from drawing
 	newLine.m_line = IBK::Line(data.basePoint.x, data.basePoint.y, data.secPoint.x, data.secPoint.y);
-	newLine.m_lineWidth = data.thickness;
-	newLine.m_lineWidth = data.lWeight;
+	newLine.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newLine.m_layername = QString::fromStdString(data.layer);
 
-	if(data.color > 0){
-		if(data.color == 256){
-			newLine.m_color = 256;
-		}
-		else{
-			newLine.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
-		}
-
+	if(!(data.color == 256 || data.color == 7)) {
+		newLine.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newLine.m_color = QColor();
 	}
 
 	drawing->m_lines.push_back(newLine);
@@ -167,29 +155,90 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
 void DRW_InterfaceImpl::addRay(const DRW_Ray& /*data*/){}
 void DRW_InterfaceImpl::addXline(const DRW_Xline& /*data*/){}
-void DRW_InterfaceImpl::addArc(const DRW_Arc& /*data*/){}
-void DRW_InterfaceImpl::addCircle(const DRW_Circle& /*data*/){}
-void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& /*data*/){}
+void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
+
+	VICUS::Drawing::Arc newArc;
+
+	//create new arc, insert into vector m_arcs from drawing
+	newArc.m_radius = data.radious;
+	newArc.m_startAngle = data.staangle;
+	newArc.m_endAngle = data.endangle;
+	newArc.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newArc.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newArc.m_layername = QString::fromStdString(data.layer);
+
+	if(!(data.color == 256 || data.color == 7)) {
+		newArc.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newArc.m_color = QColor();
+	}
+
+	drawing->m_arcs.push_back(newArc);
+
+}
+void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
+
+	VICUS::Drawing::Circle newCircle;
+	newCircle.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+
+	newCircle.m_radius = data.radious;
+	newCircle.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newCircle.m_layername = QString::fromStdString(data.layer);
+
+	if(!(data.color == 256 || data.color == 7)) {
+		newCircle.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newCircle.m_color = QColor();
+	}
+
+	drawing->m_circles.push_back(newCircle);
+
+
+}
+void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
+	VICUS::Drawing::Ellipse newEllipse;
+
+	newEllipse.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newEllipse.m_majorAxis = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
+	newEllipse.m_ratio = data.ratio;
+	newEllipse.m_startAngle = data.staparam;
+	newEllipse.m_endAngle = data.endparam;
+	newEllipse.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newEllipse.m_layername = QString::fromStdString(data.layer);
+
+	if(!(data.color == 256 || data.color == 7)) {
+		newEllipse.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newEllipse.m_color = QColor();
+	}
+
+	drawing->m_ellipses.push_back(newEllipse);
+
+
+}
 void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
-	struct VICUS::Drawing::LWPolyLine newlwpolyline;
-	newlwpolyline.m_lwpolyline = std::vector<IBKMK::Vector2D>();
+	VICUS::Drawing::PolyLine newpolyline;
+	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
+	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
 	// iterate over data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
-		newlwpolyline.m_lwpolyline.push_back(IBKMK::Vector2D(data.vertlist[i]->x, data.vertlist[i]->y));
+		newpolyline.m_polyline.push_back(IBKMK::Vector2D(data.vertlist[i]->x, data.vertlist[i]->y));
 	}
 
-	newlwpolyline.m_layername = QString::fromStdString(data.layer);
+	newpolyline.m_layername = QString::fromStdString(data.layer);
 
-	if(data.color != -1){
-		newlwpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	if(!(data.color == 256 || data.color == 7)) {
+		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newpolyline.m_color = QColor();
 	}
 
-	newlwpolyline.m_polyline_flag = data.flags;
+	newpolyline.m_polyline_flag = data.flags;
 
 	// insert vector into m_lines[data.layer] vector
-	drawing->m_lwpolylines.push_back(newlwpolyline);
+	drawing->m_polylines.push_back(newpolyline);
 }
 void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
@@ -202,9 +251,12 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 	}
 
 	newpolyline.m_layername = QString::fromStdString(data.layer);
+	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
-	if(data.color != -1){
+	if(!(data.color == 256 || data.color == 7)) {
 		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newpolyline.m_color = QColor();
 	}
 
 
@@ -246,3 +298,9 @@ void DRW_InterfaceImpl::writeTextstyles(){}
 void DRW_InterfaceImpl::writeVports(){}
 void DRW_InterfaceImpl::writeDimstyles(){}
 void DRW_InterfaceImpl::writeAppId(){}
+
+void SVImportDxfDialog::on_comboBoxUnit_activated(int index)
+{
+	m_ui->comboBoxUnit->setCurrentIndex(index);
+}
+

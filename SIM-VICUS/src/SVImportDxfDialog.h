@@ -27,6 +27,9 @@ public:
 	~SVImportDxfDialog();
 	void run();
 
+private slots:
+	void on_comboBoxUnit_activated(int index);
+
 private:
 
 	void readDxfFile(VICUS::Drawing *drawing);

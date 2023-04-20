@@ -6,6 +6,7 @@
 #include <IBK_Line.h>
 
 #include <VICUS_RotationMatrix.h>
+#include <QQuaternion>
 
 #include <libdxfrw.h>
 #include <drw_interface.h>
@@ -28,9 +29,9 @@ public:
 		/*! here */
 		QString			m_name;
 
-		QColor			m_color = QColor(255, 255, 255);
+		QColor			m_color = QColor();
 
-		double			m_lineWidth;
+		int				m_lineWeight;
 
 		bool			m_visible;
 
@@ -42,13 +43,13 @@ public:
 
 		const Layer         *m_parentLayer;
 
-		QColor				m_color = QColor(255, 255, 255);
+		QColor				m_color = QColor();
 
-		double				m_lineWidth = 0;
+		double				m_lineWeight = 0;
 
 		const QColor*		color() const;
 
-		double				lineWidth() const;
+		double				lineWeight() const;
 	};
 
 	struct Point : public AbstractDrawingObject {
@@ -62,16 +63,6 @@ public:
 
 	};
 
-	// TODO Maik: remove
-	struct LWPolyLine : public AbstractDrawingObject {
-
-		std::vector<IBKMK::Vector2D>    m_lwpolyline;
-
-		// true if the end point connected to the start
-		int                            m_polyline_flag = 0;
-
-	};
-
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
 
@@ -82,12 +73,52 @@ public:
 
 	};
 
+	/*! Stores both LW and normal polyline */
+	struct Circle : public AbstractDrawingObject {
+
+		IBKMK::Vector2D    m_center;
+
+		double             m_radius;
+
+		bool				m_clockwise;
+
+	};
+
+	struct Ellipse : public AbstractDrawingObject {
+
+		IBKMK::Vector2D    m_center;
+
+		IBKMK::Vector2D    m_majorAxis;
+
+		double             m_ratio;
+
+		double             m_startAngle;
+
+		double             m_endAngle;
+
+	};
+
+	struct Arc : public AbstractDrawingObject {
+
+		IBKMK::Vector2D    m_center;
+
+		double             m_radius;
+
+		double             m_startAngle;
+
+		double             m_endAngle;
+
+	};
+
+
+
+
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
 
-	RotationMatrix															m_rotationMatrix;
+	RotationMatrix															m_rotationMatrix = RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0));
 
 	// scales in relation to meters
-	double																	m_scalingFactor = 1;
+	double																	m_scalingFactor = 0.01;
 
 	std::vector<Layer>                                                      m_layer;
 
@@ -97,8 +128,11 @@ public:
 
 	std::vector<PolyLine>                                                   m_polylines;
 
-	// TODO Maik: remove
-	std::vector<LWPolyLine>                                                 m_lwpolylines;
+	std::vector<Circle>                                                     m_circles;
+
+	std::vector<Ellipse>                                                    m_ellipses;
+
+	std::vector<Arc>                                                        m_arcs;
 
 	void updatePointer();
 

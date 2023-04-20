@@ -9,7 +9,9 @@ Drawing::Drawing()
 	m_points = std::vector<Point>();
 	m_lines = std::vector<Line>();
 	m_polylines = std::vector<PolyLine>();
-	m_lwpolylines = std::vector<LWPolyLine>();
+	m_circles = std::vector<Circle>();
+	m_arcs = std::vector<Arc>();
+	m_ellipses = std::vector<Ellipse>();
 }
 
 
@@ -20,13 +22,18 @@ void Drawing::updatePointer(){
 	for(unsigned int i = 0; i < m_lines.size(); i++){
 		m_lines[i].m_parentLayer = findLayerPointer(m_lines[i].m_layername);
 	}
-	for(unsigned int i = 0; i < m_lwpolylines.size(); i++){
-		m_lwpolylines[i].m_parentLayer = findLayerPointer(m_lwpolylines[i].m_layername);
-	}
 	for(unsigned int i = 0; i < m_polylines.size(); i++){
 		m_polylines[i].m_parentLayer = findLayerPointer(m_polylines[i].m_layername);
 	}
-
+	for(unsigned int i = 0; i < m_circles.size(); i++){
+		m_circles[i].m_parentLayer = findLayerPointer(m_circles[i].m_layername);
+	}
+	for(unsigned int i = 0; i < m_arcs.size(); i++){
+		m_arcs[i].m_parentLayer = findLayerPointer(m_arcs[i].m_layername);
+	}
+	for(unsigned int i = 0; i < m_ellipses.size(); i++){
+		m_ellipses[i].m_parentLayer = findLayerPointer(m_ellipses[i].m_layername);
+	}
 }
 
 
@@ -36,7 +43,6 @@ Drawing::Layer* Drawing::findLayerPointer(const QString &layername){
 			return &m_layer[i];
 		}
 	}
-
 	return nullptr;
 }
 
@@ -44,10 +50,18 @@ Drawing::Layer* Drawing::findLayerPointer(const QString &layername){
 const QColor * Drawing::AbstractDrawingObject::color() const{
 	if (m_color.isValid()) {
 		return &m_color;
-	} else if (m_parentLayer != nullptr && m_parentLayer->m_color.isValid()) {
-		return &(m_parentLayer->m_color);
 	} else {
-		return nullptr;
+		return &(m_parentLayer->m_color);
+	}
+}
+
+double Drawing::AbstractDrawingObject::lineWeight() const{
+	if (m_lineWeight < 0) {
+		return m_lineWeight;
+	} else if (m_lineWeight == -1) {
+		return m_parentLayer->m_lineWeight;
+	} else {
+		return 0;
 	}
 }
 
