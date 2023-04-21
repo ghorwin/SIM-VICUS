@@ -189,37 +189,60 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 }
 
 
-void SVDatabase::writeDatabases() {
+void SVDatabase::writeDatabases(DatabaseTypes t) const {
 	// we only write user databases
-
-	// At this point the project is closed and we must not have any local DB elements anylonger.
-	// There is no easy way to test this.
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
-	m_materials.writeXML(			userDbDir / "db_materials.xml", "Materials");
-	m_constructions.writeXML(		userDbDir / "db_constructions.xml", "Constructions");
-	m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
-	m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
-	m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
-	m_components.writeXML(			userDbDir / "db_components.xml", "Components");
-	m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
-	m_surfaceHeatings.writeXML(		userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings");
-	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
-	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
-	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
-	m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
-	m_subNetworks.writeXML		(	userDbDir / "db_subNetworks.xml", "SubNetworks");
-	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
-	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
-	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
-	m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
-	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
-	m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
-	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
-	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
-	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
-	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
+	if (t == NUM_DT || t == DT_Materials)
+		m_materials.writeXML(			userDbDir / "db_materials.xml", "Materials");
+	if (t == NUM_DT || t == DT_Constructions)
+		m_constructions.writeXML(		userDbDir / "db_constructions.xml", "Constructions");
+	if (t == NUM_DT || t == DT_Windows)
+		m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
+	if (t == NUM_DT || t == DT_WindowGlazingSystems)
+		m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
+	if (t == NUM_DT || t == DT_BoundaryConditions)
+		m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
+	if (t == NUM_DT || t == DT_Components)
+		m_components.writeXML(			userDbDir / "db_components.xml", "Components");
+	if (t == NUM_DT || t == DT_SubSurfaceComponents)
+		m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
+	if (t == NUM_DT || t == DT_SurfaceHeating)
+		m_surfaceHeatings.writeXML(		userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings");
+	if (t == NUM_DT || t == DT_Pipes)
+		m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
+	if (t == NUM_DT || t == DT_Fluids)
+		m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
+	if (t == NUM_DT || t == DT_NetworkComponents)
+		m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
+	if (t == NUM_DT || t == DT_NetworkControllers)
+		m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
+	if (t == NUM_DT || t == DT_SubNetworks)
+		m_subNetworks.writeXML		(	userDbDir / "db_subNetworks.xml", "SubNetworks");
+	if (t == NUM_DT || t == DT_SupplySystems)
+		m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
+	if (t == NUM_DT || t == DT_Schedules)
+		m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
+	if (t == NUM_DT || t == DT_InternalLoads)
+		m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
+	if (t == NUM_DT || t == DT_ZoneControlThermostat)
+		m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
+	if (t == NUM_DT || t == DT_ZoneControlShading)
+		m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
+	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
+		m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
+	if (t == NUM_DT || t == DT_ZoneIdealHeatingCooling)
+		m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
+	if (t == NUM_DT || t == DT_VentilationNatural)
+		m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
+	if (t == NUM_DT || t == DT_Infiltration)
+		m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
+	if (t == NUM_DT || t == DT_ZoneTemplates)
+		m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
+//	if (t == NUM_DT || t == DT_AcousticTemplates)
+		// Acoustic templates are not written
+
 }
 
 

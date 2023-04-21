@@ -279,6 +279,7 @@ bool SVDatabaseEditDialog::eventFilter(QObject * obj, QEvent * event) {
 
 
 void SVDatabaseEditDialog::on_pushButtonSelect_clicked() {
+	writeUserDB();
 	accept();
 }
 
@@ -289,6 +290,7 @@ void SVDatabaseEditDialog::on_pushButtonCancel_clicked() {
 
 
 void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
+	writeUserDB();
 	accept();
 }
 
@@ -509,6 +511,35 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 }
 
 
+void SVDatabaseEditDialog::writeUserDB() {
+	// write db if modified
+	const SVDatabase &db = SVSettings::instance().m_db;
+	if ((m_dbModel->databaseType() == SVDatabase::DT_Materials && db.m_materials.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Constructions && db.m_constructions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Windows && db.m_windows.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_WindowGlazingSystems && db.m_windowGlazingSystems.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_BoundaryConditions && db.m_boundaryConditions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Components && db.m_components.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_SubSurfaceComponents && db.m_subSurfaceComponents.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_SurfaceHeating && db.m_surfaceHeatings.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Pipes && db.m_pipes.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Fluids && db.m_fluids.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_NetworkComponents && db.m_networkComponents.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_NetworkControllers && db.m_networkControllers.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_SubNetworks && db.m_subNetworks.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_SupplySystems && db.m_supplySystems.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Schedules && db.m_schedules.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_InternalLoads && db.m_internalLoads.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_ZoneControlThermostat && db.m_zoneControlThermostat.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_ZoneControlShading && db.m_zoneControlShading.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_ZoneControlNaturalVentilation && db.m_zoneControlVentilationNatural.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_ZoneIdealHeatingCooling && db.m_zoneIdealHeatingCooling.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_VentilationNatural && db.m_ventilationNatural.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_Infiltration && db.m_infiltration.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_ZoneTemplates && db.m_zoneTemplates.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_AcousticTemplates && db.m_acousticTemplates.m_modified) )
+	db.writeDatabases(m_dbModel->databaseType());
+}
 
 
 

@@ -29,7 +29,6 @@
 #include <VICUS_Project.h>
 
 #include "VICUS_AcousticTemplate.h"
-//TODO Anton Why the include?
 
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
@@ -79,7 +78,7 @@ public:
 	void readDatabases(DatabaseTypes t = NUM_DT);
 
 	/*! Writes user-defined database. */
-	void writeDatabases();
+	void writeDatabases(DatabaseTypes t = NUM_DT) const;
 
 	/*! Import DB elements from other database into our database, but only if the IDs of the imported
 		DB elements to not yet exist. Import errors are logged to IBK::IBK_message()

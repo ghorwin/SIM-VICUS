@@ -113,6 +113,9 @@ private:
 		Signals are blocked in this function.
 	*/
 	void selectItemById(unsigned int id);
+	/*! Writes the user DB in case it was modified
+	 */
+	void writeUserDB();
 
 
 	// Factory functions to create all the individual dialogs
@@ -140,7 +143,6 @@ private:
 	static SVDatabaseEditDialog * createSubNetworkEditDialog(QWidget * parent);
 
 	static void resizeDBDialog(QDialog *dlg);
-
 
 	Ui::SVDatabaseEditDialog *m_ui;
 
