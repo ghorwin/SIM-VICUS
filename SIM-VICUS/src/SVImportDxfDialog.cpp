@@ -119,7 +119,7 @@ void DRW_InterfaceImpl::setBlock(const int /*handle*/){}
 void DRW_InterfaceImpl::endBlock(){}
 void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
-	struct VICUS::Drawing::Point newPoint;
+	VICUS::Drawing::Point newPoint;
 
 	//create new point, insert into vector m_points from drawing
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
@@ -242,7 +242,7 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 }
 void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
-	struct VICUS::Drawing::PolyLine newpolyline;
+	VICUS::Drawing::PolyLine newpolyline;
 	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
 
 	// iterateover data.vertlist, insert all vertices of Polyline into vector
@@ -270,7 +270,25 @@ void DRW_InterfaceImpl::addKnot(const DRW_Entity & /*data*/){}
 void DRW_InterfaceImpl::addInsert(const DRW_Insert& /*data*/){}
 void DRW_InterfaceImpl::addTrace(const DRW_Trace& /*data*/){}
 void DRW_InterfaceImpl::add3dFace(const DRW_3Dface& /*data*/){}
-void DRW_InterfaceImpl::addSolid(const DRW_Solid& /*data*/){}
+void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
+
+	VICUS::Drawing::Solid newSolid;
+	newSolid.m_point1 = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newSolid.m_point2 = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
+	newSolid.m_point3 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);
+	newSolid.m_point4 = IBKMK::Vector2D(data.fourPoint.x, data.fourPoint.y);
+	newSolid.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newSolid.m_layername = QString::fromStdString(data.layer);
+
+	if(!(data.color == 256 || data.color == 7)) {
+		newSolid.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	}else{
+		newSolid.m_color = QColor();
+	}
+
+	drawing->m_solids.push_back(newSolid);
+
+}
 void DRW_InterfaceImpl::addMText(const DRW_MText& /*data*/){}
 void DRW_InterfaceImpl::addText(const DRW_Text& /*data*/){}
 void DRW_InterfaceImpl::addDimAlign(const DRW_DimAligned */*data*/){}

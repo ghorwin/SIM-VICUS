@@ -110,6 +110,19 @@ public:
 
 	};
 
+	struct Solid : public AbstractDrawingObject {
+
+		IBKMK::Vector2D    m_point1;
+
+		IBKMK::Vector2D    m_point2;
+
+		IBKMK::Vector2D    m_point3;
+
+		IBKMK::Vector2D    m_point4;
+
+	};
+
+
 
 
 
@@ -133,6 +146,8 @@ public:
 	std::vector<Ellipse>                                                    m_ellipses;
 
 	std::vector<Arc>                                                        m_arcs;
+
+	std::vector<Solid>                                                      m_solids;
 
 	void updatePointer();
 

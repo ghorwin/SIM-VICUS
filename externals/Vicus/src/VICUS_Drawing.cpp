@@ -12,6 +12,7 @@ Drawing::Drawing()
 	m_circles = std::vector<Circle>();
 	m_arcs = std::vector<Arc>();
 	m_ellipses = std::vector<Ellipse>();
+	m_solids = std::vector<Solid>();
 }
 
 
@@ -33,6 +34,9 @@ void Drawing::updatePointer(){
 	}
 	for(unsigned int i = 0; i < m_ellipses.size(); i++){
 		m_ellipses[i].m_parentLayer = findLayerPointer(m_ellipses[i].m_layername);
+	}
+	for(unsigned int i = 0; i < m_solids.size(); i++){
+		m_solids[i].m_parentLayer = findLayerPointer(m_solids[i].m_layername);
 	}
 }
 

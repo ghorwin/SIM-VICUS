@@ -2026,6 +2026,33 @@ void Scene::generate2DDrawingGeometry() {
 		}
 
 
+		for(const VICUS::Drawing::Solid solid : drawing.m_solids){
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x, solid.m_point1.m_y, 0.0);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x, solid.m_point2.m_y, 0.0);
+			IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x, solid.m_point3.m_y, 0.0);
+			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x, solid.m_point4.m_y, 0.0);
+
+			p1 *= drawing.m_scalingFactor;
+			p2 *= drawing.m_scalingFactor;
+			p3 *= drawing.m_scalingFactor;
+			p4 *= drawing.m_scalingFactor;
+
+			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
+			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
+			QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3);
+			QVector3D vec4 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p4);
+
+			IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));
+			VICUS::PlaneGeometry g1(p);
+
+			QColor color = *(solid.color());
+
+			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
+			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
+		}
+
+
+
 
 	}
 
