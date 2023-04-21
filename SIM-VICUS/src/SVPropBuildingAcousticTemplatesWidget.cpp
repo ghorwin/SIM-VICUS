@@ -28,6 +28,15 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingAcousticTemplatesWidget::onModified);
 
+	// init combo box in the order of acoustic building type enum
+	m_ui->comboBoxBuildingType->addItem(tr("Living"));
+	m_ui->comboBoxBuildingType->addItem(tr("Hotel"));
+	m_ui->comboBoxBuildingType->addItem(tr("Hospital"));
+	m_ui->comboBoxBuildingType->addItem(tr("School"));
+	m_ui->comboBoxBuildingType->addItem(tr("House"));
+	m_ui->comboBoxBuildingType->addItem(tr("Office"));
+
+
 	// update Ui initiallly
 	onModified(SVProjectHandler::AllModified, nullptr);
 }
@@ -78,28 +87,81 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
 	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
 	int row=0;
+	//dummy map
+	std::map<VICUS::Room::AcousticBuildingType, std::set<unsigned int>> dummyMap;
 
-	// loads all the templates from db and put them in the table
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400100);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400104);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400105);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400106);
+
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400119);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400126);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400124);
+	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].find(2);
+
+
+	VICUS::Room::AcousticBuildingType currentType = (VICUS::Room::AcousticBuildingType)m_ui->comboBoxBuildingType->currentIndex();
+
+
+	std::set<const VICUS::AcousticTemplate*> templatesNotInBuildingType;
+	// loads all the templates from db and put them in the table if the right building type is selected
 	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
-		 it = dbAt.begin(); it != dbAt.end(); ++it, ++row) {
+		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 
+		//check if the id is in the set of the current building type
+		if(dummyMap[currentType].find(it->second.m_id) != dummyMap[currentType].end()){
+
+			m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
+
+			QTableWidgetItem * item = new QTableWidgetItem();
+			item->setBackground(it->second.m_color);
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
+
+			item = new QTableWidgetItem();
+			item->setText(QtExt::MultiLangString2QString(it->second.m_displayName) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
+
+			item = new QTableWidgetItem();
+			item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
+
+			row++;
+		}
+		else {
+			templatesNotInBuildingType.insert(&(it->second));
+		}
+
+	}
+
+	//now append all the other templates with grey font and disabled
+
+	for(const VICUS::AcousticTemplate * at : templatesNotInBuildingType){
 		m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
 		QTableWidgetItem * item = new QTableWidgetItem();
-		item->setBackground(it->second.m_color);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setBackground(at->m_color);
+		item->setFlags(Qt::NoItemFlags);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(it->second.m_displayName) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(at->m_displayName) );
+		item->setFlags(Qt::NoItemFlags);
+		//item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(at->m_notes) );
+		item->setFlags(Qt::NoItemFlags);
+//		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
+
+		row++;
 	}
+
 	m_ui->tableWidgetAcousticTemplates->blockSignals(false);
 	m_ui->tableWidgetAcousticTemplates->selectRow(std::min(currentRow, m_ui->tableWidgetAcousticTemplates->rowCount()-1));
 
@@ -213,5 +275,11 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 				tr("Assigned acoustic template"),
 				modifiedRoomIDs, VICUS::INVALID_ID);
 	undo->push();
+}
+
+
+void SVPropBuildingAcousticTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
+	//update the ui
+	updateUi();
 }
 

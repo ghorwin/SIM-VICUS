@@ -34,6 +34,8 @@ private slots:
 
 	void on_pushButtonDeleteTemplate_clicked();
 
+	void on_comboBoxBuildingType_currentIndexChanged(int index);
+
 private:
 
 	/*! Returns a pointer to the currently selected acoustic template in the zone template table. */

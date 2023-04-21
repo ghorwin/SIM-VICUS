@@ -49,7 +49,7 @@
      <item>
       <widget class="QLabel" name="labelUValue">
        <property name="text">
-        <string>Impact Sound Value</string>
+        <string>Impact sound value:</string>
        </property>
       </widget>
      </item>
@@ -80,7 +80,7 @@
      <item>
       <widget class="QLabel" name="labelUValue_5">
        <property name="text">
-        <string>Air Sound Restistence Value</string>
+        <string>Air sound restistence value:</string>
        </property>
       </widget>
      </item>

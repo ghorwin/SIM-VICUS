@@ -22,7 +22,7 @@
      <item>
       <widget class="QPushButton" name="pushButtonAddStructuralUnit">
        <property name="text">
-        <string>Add Unit</string>
+        <string>Add unit</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/SIM-VICUS.qrc">
@@ -36,7 +36,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Remove Unit</string>
+        <string>Remove unit</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/SIM-VICUS.qrc">
@@ -62,7 +62,7 @@
    <item>
     <widget class="QGroupBox" name="groupBoxSelectedRooms">
      <property name="title">
-      <string>Selected Rooms</string>
+      <string>Selected rooms</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -70,7 +70,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Selected Structural Unit:</string>
+           <string>Selected structural unit:</string>
           </property>
          </widget>
         </item>

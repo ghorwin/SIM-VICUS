@@ -55,6 +55,15 @@ public:
 		NUM_P
 	};
 
+	enum AcousticBuildingType {ABT_Living,		//Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen
+							   ABT_Hotel,		//Hotels und Beherbergungsstätten
+							   ABT_Hospital,	//Krankenhäuser und Sanatorien
+							   ABT_School,		//Schulen und vergleichbaren Einrichtungen
+							   ABT_House,		//Einfamilien-Reihenhäusern und zwischen Doppelhäusern
+							   ABT_Office,		//Büro
+							   NUM_ABT
+							  };
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
@@ -88,6 +97,11 @@ public:
 
 	/*! Reference to assigned acoustic template (optional). */
 	IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
+
+	/*! Stores the building type */
+	AcousticBuildingType				m_idAcousticBuildingType = NUM_ABT;	// XML:E
+
+
 
 
 	/*! Zone parameters. */
