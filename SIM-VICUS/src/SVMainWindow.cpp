@@ -105,6 +105,7 @@
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVCoSimCO2VentilationDialog.h"
+#include "SVAcousticConstraintsCheckDialog.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -2207,5 +2208,15 @@ static bool copyRecursively(const QString &srcFilePath,
 			return false;
 	}
 	return true;
+}
+
+
+void SVMainWindow::on_actionAcoustic_Check_triggered() {
+	// opens a dialog that checks the sound constraints
+	if (m_acousticConstraintsCheckDialog == nullptr)
+		m_acousticConstraintsCheckDialog = new SVAcousticConstraintsCheckDialog(this);
+
+	m_acousticConstraintsCheckDialog->edit();
+
 }
 

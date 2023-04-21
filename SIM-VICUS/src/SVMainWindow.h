@@ -60,6 +60,7 @@ class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
 class SVStructuralUnitCreationDialog;
+class SVAcousticConstraintsCheckDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -358,6 +359,8 @@ private slots:
 
 	void on_actionExportNetworkAsGeoJSON_triggered();
 
+	void on_actionAcoustic_Check_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -537,6 +540,8 @@ private:
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
 
 	SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
+
+	SVAcousticConstraintsCheckDialog	*m_acousticConstraintsCheckDialog				= nullptr;
 
 	friend class SVThreadBase;
 };
