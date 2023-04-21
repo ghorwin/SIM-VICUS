@@ -36,6 +36,7 @@
 #include <QtExt_Settings.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_UTM.h>
 
 #include <IBK_physics.h>
 
@@ -503,15 +504,18 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 		double height = roofData.m_height;
 		double angle  = roofData.m_angle;
 		//calculate height
-		if (!roofData.m_isHeightPredefined)
-			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distAB;
+		if (!roofData.m_isHeightPredefined){
+			height = std::tan(angle * IBK::DEG2RAD) * distAB;
+			const_cast<RoofInputData*>(&roofData)->m_height = height;
+		}
 		//calculate angle
 		else{
 			///TODO Dirk->Andreas fehlerbehandlung?
-			if(distAB>0)
-				angle = std::atan(roofData.m_height/distAB);
-			else
-				angle = 0;
+			if(distAB>0){
+				angle = IBKMK::RadToDeg(std::atan(roofData.m_height/distAB));
+				//store the redundant value in the roofData for later display in ui
+				const_cast<RoofInputData*>(&roofData)->m_angle = angle;
+			}
 		}
 		// all polygons of the roof room are stored following vector
 		std::vector<std::vector<IBKMK::Vector3D> > polygons;

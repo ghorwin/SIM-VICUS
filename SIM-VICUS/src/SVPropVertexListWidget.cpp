@@ -970,9 +970,16 @@ void SVPropVertexListWidget::on_lineEditFlapTileHeight_editingFinishedSuccessful
 	on_lineEditRoofHeight_editingFinishedSuccessfully();
 }
 
-
-void SVPropVertexListWidget::on_comboBoxRoofType_currentIndexChanged(int /*index*/) {
+void SVPropVertexListWidget::on_comboBoxRoofType_currentIndexChanged(/*int index*/) {
 	updateRoofGeometry();
+	Vic3D::NewGeometryObject::RoofInputData::RoofType index = (Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex();
+	if(index == Vic3D::NewGeometryObject::RoofInputData::RoofType::Complex){
+		// if complex roof type is selected disable the angle radio button
+		m_ui->radioButtonRoofInclination->setDisabled(true);
+		m_ui->lineEditRoofInclination->setText("");
+	} else {
+		m_ui->radioButtonRoofInclination->setDisabled(false);
+	}
 }
 
 
@@ -1676,6 +1683,15 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 			polyline.push_back(m_roofPolygon[(i + m_currentIdxOfStartpoint)%4]);
 
 	po->setRoofGeometry(roofData, polyline);
+
+	// update the value that was not set
+	if(m_ui->radioButtonRoofHeight->isChecked()){
+		// update the angle
+		m_ui->lineEditRoofInclination->setText(QString("%1").arg(roofData.m_angle));
+	}else {
+		// update the height
+		m_ui->lineEditRoofHeight->setText(QString("%1").arg(roofData.m_height));
+	}
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
