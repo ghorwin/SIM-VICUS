@@ -60,12 +60,19 @@ const QColor * Drawing::AbstractDrawingObject::color() const{
 }
 
 double Drawing::AbstractDrawingObject::lineWeight() const{
-	if (m_lineWeight < 0) {
-		return m_lineWeight;
-	} else if (m_lineWeight == -1) {
-		return m_parentLayer->m_lineWeight;
-	} else {
+	if (m_lineWeight == -1 || m_lineWeight == -2) {
+		if(m_parentLayer->m_lineWeight < 0){
+			return 0;
+		}
+		else{
+			return m_parentLayer->m_lineWeight;
+		}
+	}
+	else if(m_lineWeight == -3){
 		return 0;
+	}
+	else {
+		return m_lineWeight;
 	}
 }
 

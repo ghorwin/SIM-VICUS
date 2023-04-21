@@ -1880,8 +1880,8 @@ void Scene::generate2DDrawingGeometry() {
 	// initialise default values
 	// default number of lines per circle/ellipse/arc
 	const int n = 50;
-
-	float defaultLineWidth = 0.05f;
+	float defaultLineWeight = 0.1f;
+	float defaultLineWeightScaling = 0.015f;
 
 	// iterate over all AbstractObjects and draw them
 	for (const VICUS::Drawing & drawing: p.m_drawings) {
@@ -1897,7 +1897,7 @@ void Scene::generate2DDrawingGeometry() {
 			QVector3D vec1 = QVector3D(p1.m_x, p1.m_y, p1.m_z);
 			QVector3D vec2 = QVector3D(p2.m_x, p2.m_y, p2.m_z);
 
-			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), defaultLineWidth, insertColor(line.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), defaultLineWeight + line.lineWeight() * defaultLineWeightScaling, insertColor(line.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -1917,7 +1917,7 @@ void Scene::generate2DDrawingGeometry() {
 
 			qDebug() << "addPoint" << std::to_string(p.m_x).c_str() << std::to_string(p.m_y).c_str();
 
-			addPoint(QVector2IBKVector(vec), defaultLineWidth, *(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPoint(QVector2IBKVector(vec), defaultLineWeight + point.lineWeight() * defaultLineWeightScaling, *(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -1934,7 +1934,7 @@ void Scene::generate2DDrawingGeometry() {
 				polylinePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1, defaultLineWidth, *(polyline.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1, defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling, *(polyline.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -1950,7 +1950,7 @@ void Scene::generate2DDrawingGeometry() {
 				circlePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			addPolyLine(circlePoints, true, defaultLineWidth, *(circle.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(circlePoints, true, defaultLineWeight + circle.lineWeight() * defaultLineWeightScaling, *(circle.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -1983,7 +1983,7 @@ void Scene::generate2DDrawingGeometry() {
 			}
 
 
-			addPolyLine(arcPoints, false, defaultLineWidth, *(arc.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(arcPoints, false, defaultLineWeight + arc.lineWeight() * defaultLineWeightScaling, *(arc.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -2022,7 +2022,7 @@ void Scene::generate2DDrawingGeometry() {
 			}
 
 			// Change this line to false, so it doesn't connect the last point to the first point
-			addPolyLine(ellipsePoints, false, defaultLineWidth, *(ellipse.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(ellipsePoints, false, defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling, *(ellipse.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 		}
 
 
