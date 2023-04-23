@@ -23,6 +23,16 @@ class Drawing
 public:
 	Drawing();
 
+	struct Block {
+
+		QString			m_name;
+
+		QColor m_color = QColor();
+
+		int m_lineWeight;
+
+	};
+
 	struct Layer {
 
 		// TODO Maik: dokustring
@@ -35,7 +45,10 @@ public:
 
 		bool			m_visible;
 
+		Block			*m_block = nullptr;
+
 	};
+
 
 	struct AbstractDrawingObject {
 
@@ -50,6 +63,11 @@ public:
 		const QColor*		color() const;
 
 		double				lineWeight() const;
+
+		int					m_zposition;
+
+		Block				*m_block = nullptr;
+
 	};
 
 	struct Point : public AbstractDrawingObject {
@@ -123,15 +141,14 @@ public:
 	};
 
 
-
-
-
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
 
 	RotationMatrix															m_rotationMatrix = RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0));
 
 	// scales in relation to meters
 	double																	m_scalingFactor = 0.01;
+
+	std::vector<Block>                                                      m_blocks;
 
 	std::vector<Layer>                                                      m_layer;
 
@@ -148,6 +165,8 @@ public:
 	std::vector<Arc>                                                        m_arcs;
 
 	std::vector<Solid>                                                      m_solids;
+
+	int																		m_zcounter;
 
 	void updatePointer();
 

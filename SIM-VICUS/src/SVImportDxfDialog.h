@@ -51,6 +51,8 @@ class DRW_InterfaceImpl : public DRW_Interface {
 
 	VICUS::Drawing *drawing;
 
+	VICUS::Drawing::Block *m_activeBlock = nullptr;
+
 public : DRW_InterfaceImpl(VICUS::Drawing *drawing);
 
 	/** Called when header is parsed.  */

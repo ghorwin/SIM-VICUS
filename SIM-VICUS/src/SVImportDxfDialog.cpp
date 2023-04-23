@@ -26,6 +26,7 @@ void SVImportDxfDialog::run() {
 	if (exec()) {
 
 		m_drawing = VICUS::Drawing();
+		m_drawing.m_zcounter = 0;
 		readDxfFile(&m_drawing);
 		m_drawing.updatePointer();
 		switch(m_ui->comboBoxUnit->currentIndex()) {
@@ -89,6 +90,8 @@ void DRW_InterfaceImpl::addHeader(const DRW_Header* /*data*/){}
 void DRW_InterfaceImpl::addLType(const DRW_LType& /*data*/){}
 void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	// initialise struct Layer and populate the attributes
 	VICUS::Drawing::Layer newLayer;
 
@@ -114,12 +117,35 @@ void DRW_InterfaceImpl::addDimStyle(const DRW_Dimstyle& /*data*/){}
 void DRW_InterfaceImpl::addVport(const DRW_Vport& /*data*/){}
 void DRW_InterfaceImpl::addTextStyle(const DRW_Textstyle& /*data*/){}
 void DRW_InterfaceImpl::addAppId(const DRW_AppId& /*data*/){}
-void DRW_InterfaceImpl::addBlock(const DRW_Block& /*data*/){}
+void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
+
+	VICUS::Drawing::Block newBlock;
+
+	newBlock.m_name = QString::fromStdString(data.name);
+
+	newBlock.m_color = QColor();
+
+	newBlock.m_lineWeight = 0;
+
+	drawing->m_blocks.push_back(newBlock);
+
+	m_activeBlock = &newBlock;
+
+}
 void DRW_InterfaceImpl::setBlock(const int /*handle*/){}
-void DRW_InterfaceImpl::endBlock(){}
+void DRW_InterfaceImpl::endBlock(){
+
+	m_activeBlock = nullptr;
+
+}
 void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::Point newPoint;
+	newPoint.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
+
 
 	//create new point, insert into vector m_points from drawing
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
@@ -137,7 +163,11 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 }
 void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::Line newLine;
+	newLine.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
 
 	//create new line, insert into vector m_lines from drawing
 	newLine.m_line = IBK::Line(data.basePoint.x, data.basePoint.y, data.secPoint.x, data.secPoint.y);
@@ -157,7 +187,11 @@ void DRW_InterfaceImpl::addRay(const DRW_Ray& /*data*/){}
 void DRW_InterfaceImpl::addXline(const DRW_Xline& /*data*/){}
 void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::Arc newArc;
+	newArc.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
 
 	//create new arc, insert into vector m_arcs from drawing
 	newArc.m_radius = data.radious;
@@ -178,7 +212,12 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 }
 void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::Circle newCircle;
+	newCircle.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
+
 	newCircle.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 
 	newCircle.m_radius = data.radious;
@@ -196,7 +235,12 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
 }
 void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
+
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::Ellipse newEllipse;
+	newEllipse.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
 
 	newEllipse.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newEllipse.m_majorAxis = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
@@ -218,7 +262,12 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 }
 void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::PolyLine newpolyline;
+	newpolyline.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
+
 	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
 	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
@@ -242,7 +291,11 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 }
 void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
+	if(m_activeBlock != nullptr) return;
+
 	VICUS::Drawing::PolyLine newpolyline;
+	newpolyline.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
 	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
 
 	// iterateover data.vertlist, insert all vertices of Polyline into vector
@@ -272,7 +325,13 @@ void DRW_InterfaceImpl::addTrace(const DRW_Trace& /*data*/){}
 void DRW_InterfaceImpl::add3dFace(const DRW_3Dface& /*data*/){}
 void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 
+	if(m_activeBlock != nullptr) return;
+
+
 	VICUS::Drawing::Solid newSolid;
+	newSolid.m_zposition = drawing->m_zcounter;
+	drawing->m_zcounter++;
+
 	newSolid.m_point1 = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newSolid.m_point2 = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
 	newSolid.m_point3 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);

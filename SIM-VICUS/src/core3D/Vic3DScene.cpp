@@ -1880,34 +1880,40 @@ void Scene::generate2DDrawingGeometry() {
 	// initialise default values
 	// default number of lines per circle/ellipse/arc
 	const int n = 50;
-	float defaultLineWeight = 0.1f;
-	float defaultLineWeightScaling = 0.015f;
+	// default line width
+	const float defaultLineWeight = 0.05f;
+	// multiplier to apply to width of entities
+	const float defaultLineWeightScaling = 0.015f;
+	// multiplier for z-coordinate. Multiplied with the z counter of an entity
+	const double zmultiplier = 0.00005f;
+
 
 	// iterate over all AbstractObjects and draw them
 	for (const VICUS::Drawing & drawing: p.m_drawings) {
 
 		for(const VICUS::Drawing::Line & line: drawing.m_lines){
+			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
+			double zCoordinate = line.m_zposition * zmultiplier + drawing.m_origin.m_z;
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing.m_origin.m_x, line.m_line.m_p1.m_y + drawing.m_origin.m_y, zCoordinate);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing.m_origin.m_x, line.m_line.m_p2.m_y + drawing.m_origin.m_y, zCoordinate);
 
-			qDebug() << "addLine" << std::to_string(line.m_line.m_p1.m_x).c_str() << std::to_string(line.m_line.m_p1.m_y).c_str();
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x, line.m_line.m_p1.m_y, 0.0);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x, line.m_line.m_p2.m_y, 0.0);
+			// scale Vector with selected unit
 			p1 *= drawing.m_scalingFactor;
 			p2 *= drawing.m_scalingFactor;
 
-			QVector3D vec1 = QVector3D(p1.m_x, p1.m_y, p1.m_z);
-			QVector3D vec2 = QVector3D(p2.m_x, p2.m_y, p2.m_z);
+			// rotate Vectors
+			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
+			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
 
+			// call addLine to draw line
 			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), defaultLineWeight + line.lineWeight() * defaultLineWeightScaling, insertColor(line.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
-
 		}
 
 		for(const VICUS::Drawing::Point & point : drawing.m_points){
+			// Create Vector from point, add point of origin to each coordinate and calculate z value
+			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, point.m_zposition * zmultiplier + drawing.m_origin.m_z);
 
-			qDebug() << "addPoint" << std::to_string(point.m_point.m_x).c_str() << std::to_string(point.m_point.m_y).c_str();
-
-			// translation with origin
-			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, drawing.m_origin.m_z);
-			// scaling
+			// scale Vector with selected unit
 			p *= drawing.m_scalingFactor;
 
 			// TODO Maik: calculate rectangle vertices here
@@ -1915,19 +1921,18 @@ void Scene::generate2DDrawingGeometry() {
 			// rotation
 			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 
-			qDebug() << "addPoint" << std::to_string(p.m_x).c_str() << std::to_string(p.m_y).c_str();
-
 			addPoint(QVector2IBKVector(vec), defaultLineWeight + point.lineWeight() * defaultLineWeightScaling, *(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
 		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
 
+			// Create Vector to store vertices of polyline
 			std::vector<IBKMK::Vector3D> polylinePoints;
 
 			// adds z-coordinate to polyline
 			for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x, polyline.m_polyline[i].m_y, 0.0);
+				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x, polyline.m_polyline[i].m_y + drawing.m_origin.m_y, polyline.m_zposition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1943,7 +1948,7 @@ void Scene::generate2DDrawingGeometry() {
 			std::vector<IBKMK::Vector3D> circlePoints;
 
 			for(int i = 0; i < n; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * PI * i / n), circle.m_center.m_y + circle.m_radius * sin(2 * PI * i / n), 0.0);
+				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * PI * i / n) + drawing.m_origin.m_x, circle.m_center.m_y + circle.m_radius * sin(2 * PI * i / n) + drawing.m_origin.m_y, circle.m_zposition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1975,7 +1980,7 @@ void Scene::generate2DDrawingGeometry() {
 
 
 			for(int i = 0; i < toCalcN; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle), arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle), 0.0);
+				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing.m_origin.m_x, arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing.m_origin.m_y, arc.m_zposition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2014,7 +2019,7 @@ void Scene::generate2DDrawingGeometry() {
 				rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
 				rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
 
-				IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x, rotated_y + ellipse.m_center.m_y, 0.0);
+				IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing.m_origin.m_x, rotated_y + ellipse.m_center.m_y + drawing.m_origin.m_y, ellipse.m_zposition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2027,19 +2032,19 @@ void Scene::generate2DDrawingGeometry() {
 
 
 		for(const VICUS::Drawing::Solid solid : drawing.m_solids){
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x, solid.m_point1.m_y, 0.0);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x, solid.m_point2.m_y, 0.0);
-			IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x, solid.m_point3.m_y, 0.0);
-			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x, solid.m_point4.m_y, 0.0);
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing.m_origin.m_x, solid.m_point1.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing.m_origin.m_x, solid.m_point2.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
+			/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z); */
+			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing.m_origin.m_x, solid.m_point4.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
 
 			p1 *= drawing.m_scalingFactor;
 			p2 *= drawing.m_scalingFactor;
-			p3 *= drawing.m_scalingFactor;
+			/* p3 *= drawing.m_scalingFactor; */
 			p4 *= drawing.m_scalingFactor;
 
 			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
 			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
-			QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3);
+			/* QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3); */
 			QVector3D vec4 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p4);
 
 			IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));

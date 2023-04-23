@@ -5,6 +5,7 @@ namespace VICUS {
 
 Drawing::Drawing()
 {
+	m_blocks = std::vector<Block>();
 	m_layer = std::vector<Layer>();
 	m_points = std::vector<Point>();
 	m_lines = std::vector<Line>();
