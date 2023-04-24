@@ -1876,7 +1876,6 @@ void Scene::generate2DDrawingGeometry() {
 
 	const VICUS::Project & p = project();
 
-	// TODO Maik: remove
 	// initialise default values
 	// default number of lines per circle/ellipse/arc
 	const int n = 50;
@@ -1918,10 +1917,24 @@ void Scene::generate2DDrawingGeometry() {
 
 			// TODO Maik: calculate rectangle vertices here
 
+			double pointWeight = (defaultLineWeight + point.lineWeight() * defaultLineWeightScaling) / 2;
+
 			// rotation
 			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
+			IBKMK::Vector3D p1 = QVector2IBKVector(vec);
 
-			addPoint(QVector2IBKVector(vec), defaultLineWeight + point.lineWeight() * defaultLineWeightScaling, *(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			std::vector<IBKMK::Vector3D> pointVertices = {
+				IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z),
+				IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z),
+				IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y + pointWeight, p1.m_z),
+				IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z),
+			};
+
+			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pointVertices[0], pointVertices[3], pointVertices[1]);
+			VICUS::PlaneGeometry g1(po);
+
+			addPlane(g1.triangulationData(), insertColor(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
+			addPlane(g1.triangulationData(), insertColor(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
 
 		}
 

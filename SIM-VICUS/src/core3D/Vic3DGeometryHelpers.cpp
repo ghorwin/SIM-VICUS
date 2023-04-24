@@ -733,7 +733,7 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 
 
 	// Calculate a perpendicular vector for the line width
-	IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, 0);
+	IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
 	perpendicularVector.normalize();
 	perpendicularVector *= halfWidth;
 
@@ -747,32 +747,6 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 
 	// Call addPlane to create the box geometry twice so visible from both sides
 	IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, lineVertices[0], lineVertices[3], lineVertices[1]);
-	VICUS::PlaneGeometry g1(p);
-	addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex,
-			 vertexBufferData, colorBufferData, indexBufferData, false);
-	addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex,
-			 vertexBufferData, colorBufferData, indexBufferData, true);
-
-}
-
-void addPoint(const IBKMK::Vector3D &coordinate, float size, const QColor & color,
-			  unsigned int &currentVertexIndex, unsigned int &currentElementIndex,
-			  std::vector<Vertex> &vertexBufferData, std::vector<ColorRGBA> &colorBufferData,
-			  std::vector<GLuint> &indexBufferData) {
-
-	float halfSize = size / 2;
-
-	// // TODO Maik: move to 3dscene
-	// Create an array of 4 vertices to define the box
-	std::vector<IBKMK::Vector3D> pointVertices = {
-		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y - halfSize, coordinate.m_z),
-		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y - halfSize, coordinate.m_z),
-		IBKMK::Vector3D(coordinate.m_x + halfSize, coordinate.m_y + halfSize, coordinate.m_z),
-		IBKMK::Vector3D(coordinate.m_x - halfSize, coordinate.m_y + halfSize, coordinate.m_z),
-	};
-
-	// Call addPlane to create the box geometry twice so visible from both sides
-	IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, pointVertices[0], pointVertices[3], pointVertices[1]);
 	VICUS::PlaneGeometry g1(p);
 	addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex,
 			 vertexBufferData, colorBufferData, indexBufferData, false);
