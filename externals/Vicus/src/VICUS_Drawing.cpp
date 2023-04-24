@@ -53,6 +53,7 @@ Drawing::Layer* Drawing::findLayerPointer(const QString &layername){
 
 
 const QColor * Drawing::AbstractDrawingObject::color() const{
+	/* If the object has a color, return it, else use color of parent */
 	if (m_color.isValid()) {
 		return &m_color;
 	} else {
@@ -61,7 +62,8 @@ const QColor * Drawing::AbstractDrawingObject::color() const{
 }
 
 double Drawing::AbstractDrawingObject::lineWeight() const{
-	if (m_lineWeight == -1 || m_lineWeight == -2) {
+	/* if -1: use weight of layer */
+	if (m_lineWeight == -1) {
 		if(m_parentLayer->m_lineWeight < 0){
 			return 0;
 		}
@@ -69,7 +71,10 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 			return m_parentLayer->m_lineWeight;
 		}
 	}
-	else if(m_lineWeight == -3){
+	/* if -3: default lineWeight is used
+		if -2: lineWeight of block is used. Needs to be modified when blocks
+		are implemented */
+	else if(m_lineWeight == -3 || m_lineWeight == -2){
 		return 0;
 	}
 	else {

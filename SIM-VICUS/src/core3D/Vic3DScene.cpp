@@ -2035,7 +2035,7 @@ void Scene::generate2DDrawingGeometry() {
 			}
 
 			// Change this line to false, so it doesn't connect the last point to the first point
-			addPolyLine(ellipsePoints, false, defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling, *(ellipse.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(ellipsePoints, startAngle == endAngle, defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling, *(ellipse.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 		}
 
 

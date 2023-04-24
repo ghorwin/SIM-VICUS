@@ -2194,9 +2194,9 @@ void SVMainWindow::on_actionCalculateViewFactors_triggered() {
 
 
 void SVMainWindow::on_actionDXF_File_triggered() {
-
-    SVImportDxfDialog* importDxf = new SVImportDxfDialog();
-    importDxf->run();
-
+	if(SVProjectHandler::instance().isValid()) {
+		SVImportDxfDialog* importDxf = new SVImportDxfDialog();
+		importDxf->run();
+	}
 }
 

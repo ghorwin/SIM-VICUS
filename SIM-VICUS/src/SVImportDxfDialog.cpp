@@ -26,9 +26,9 @@ SVImportDxfDialog::~SVImportDxfDialog()
 void SVImportDxfDialog::run() {
 
 	if (exec()) {
-
+		/* initialises the drawing and reads the values into drawing*/
 		m_drawing = VICUS::Drawing();
-		m_drawing.m_zcounter = 0;
+
 		if (readDxfFile(m_drawing)) {
 
 			m_drawing.updatePointer();
@@ -43,7 +43,7 @@ void SVImportDxfDialog::run() {
 					m_drawing.m_scalingFactor = 0.001;
 					break;
 			}
-
+			/* if file was read successfully, add drawing to project */
 			SVUndoAddDrawing *undo = new SVUndoAddDrawing("", m_drawing);
 			undo->push();
 
@@ -80,7 +80,7 @@ void SVImportDxfDialog::run() {
 
 bool SVImportDxfDialog::readDxfFile(VICUS::Drawing &drawing) {
 	DRW_InterfaceImpl *drwIntImpl = new DRW_InterfaceImpl(&drawing);
-	dxfRW *dxf = new dxfRW(m_ui->lineEditFileName->filename().toUtf8().data());
+	dxfRW *dxf = new dxfRW(m_ui->lineEditFileName->filename().toStdString().c_str());
 	bool read = false;
 
 	return dxf->read(drwIntImpl, read);
@@ -108,7 +108,7 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 
 	newLayer.m_visible = true;
 
-
+	/* value 256 means use defaultColor, value 7 is black */
 	if(data.color != 256 && data.color != 7){
 		newLayer.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -158,7 +158,7 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newPoint.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newPoint.m_layername = QString::fromStdString(data.layer);
-
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newPoint.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -181,6 +181,8 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 	newLine.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newLine.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newLine.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -208,6 +210,7 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	newArc.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newArc.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newArc.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -232,6 +235,7 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 	newCircle.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newCircle.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newCircle.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -258,6 +262,7 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	newEllipse.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newEllipse.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newEllipse.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -286,6 +291,7 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
 	newpolyline.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
@@ -316,12 +322,12 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 	newpolyline.m_layername = QString::fromStdString(data.layer);
 	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
 		newpolyline.m_color = QColor();
 	}
-
 
 	newpolyline.m_polyline_flag = data.flags;
 
@@ -349,6 +355,7 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 	newSolid.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newSolid.m_layername = QString::fromStdString(data.layer);
 
+	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7)) {
 		newSolid.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	}else{
