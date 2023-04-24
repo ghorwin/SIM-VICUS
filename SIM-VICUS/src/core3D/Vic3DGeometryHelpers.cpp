@@ -721,15 +721,15 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 #endif
 }
 
-void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, float width, const QColor & color,
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width, const QColor & color,
 			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
 	// Calculate the line vector and its length
 	IBKMK::Vector3D lineVector = endPoint - startPoint;
-	float length = lineVector.magnitude();
-	if(length == 0) return;
+	double length = lineVector.magnitude();
+	if(length <= 0) return;
 
 	// Calculate the line width (1 pixel)
-	float halfWidth = width / 2.0f;
+	double halfWidth = width / 2.0;
 
 
 	// Calculate a perpendicular vector for the line width
@@ -755,13 +755,14 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 
 }
 
-void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, float width, const QColor & color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
+
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, const QColor & color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
 
 	// initialise values
 	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
 	std::vector<IBKMK::Vector3D> previousVertices;
-	float halfWidth = width / 2;
-	float length;
+	double halfWidth = width / 2;
+	double length;
 
 	// if polyline is empty, return
 	if(polyline.size() < 2){
@@ -771,11 +772,12 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 	// initialise previousVector
 	previousVector = polyline[1] - polyline[0];
 
-	auto processSegment = [&](const IBKMK::Vector3D& startPoint, const IBKMK::Vector3D& endPoint) {
+	auto processSegment = [&](const IBKMK::Vector3D& startPoint, const IBKMK::Vector3D& endPoint)->void {
 		// calculate line vector
 		lineVector = endPoint - startPoint;
 		length = lineVector.magnitude();
-		if(length == 0) return;
+		if(length <= 0)
+			return;
 
 		// calculate perpendicular vector
 		perpendicularVector = IBKMK::Vector3D(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
@@ -801,15 +803,8 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		// Calculate the cross product between the current line Vector and previous to get the direction of the triangle
 		crossProduct = lineVector.crossProduct(previousVector);
 
-		// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
-		if(crossProduct.m_z == 0){
-			previousVector = lineVector;
-			previousVertices = lineVertices;
-			return;
-		}
-
 		// draws the triangle
-		else if(crossProduct.m_z < 0){
+		if(crossProduct.m_z < -1e-10){
 			// line is left
 			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), color, currentVertexIndex, currentElementIndex,
 					 vertexBufferData, colorBufferData, indexBufferData, false);
@@ -817,13 +812,20 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 					 vertexBufferData, colorBufferData, indexBufferData, true);
 
 		}
-		else{
+		else if(crossProduct.m_z > 1e-10){
 			// line is right
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), color, currentVertexIndex, currentElementIndex,
 					 vertexBufferData, colorBufferData, indexBufferData, false);
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), color, currentVertexIndex, currentElementIndex,
 					 vertexBufferData, colorBufferData, indexBufferData, true);
 		}
+		else {
+			// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
+			previousVector = lineVector;
+			previousVertices = lineVertices;
+			return;
+		}
+
 		// update previous values
 		previousVector = lineVector;
 		previousVertices = lineVertices;
@@ -836,7 +838,7 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 
 	// repeats the code of the for loop for the last line and adds two triangles to fill out the lines
 	if(connectEndStart){
-		int lastIndex = polyline.size() - 1;
+		unsigned int lastIndex = polyline.size() - 1;
 		processSegment(polyline[lastIndex], polyline[0]);
 		processSegment(polyline[0], polyline[1]);
 	}

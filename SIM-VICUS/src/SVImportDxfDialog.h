@@ -32,7 +32,7 @@ private slots:
 
 private:
 
-	void readDxfFile(VICUS::Drawing *drawing);
+	bool readDxfFile(VICUS::Drawing & drawing);
 
 	Ui::SVImportDxfDialog		*m_ui;
 
@@ -56,7 +56,7 @@ class DRW_InterfaceImpl : public DRW_Interface {
 public : DRW_InterfaceImpl(VICUS::Drawing *drawing);
 
 	/** Called when header is parsed.  */
-	void addHeader(const DRW_Header* data);
+	void addHeader(const DRW_Header* data) override;
 
 	/** Called for every line Type.  */
 	void addLType(const DRW_LType& data);

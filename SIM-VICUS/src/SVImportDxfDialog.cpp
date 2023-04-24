@@ -1,6 +1,8 @@
 #include "SVImportDxfDialog.h"
 #include "ui_SVImportDxfDialog.h"
+
 #include <libdxfrw.h>
+
 #include "SVSettings.h"
 #include "SVUndoAddDrawing.h"
 #include "SVStyle.h"
@@ -27,60 +29,63 @@ void SVImportDxfDialog::run() {
 
 		m_drawing = VICUS::Drawing();
 		m_drawing.m_zcounter = 0;
-		readDxfFile(&m_drawing);
-		m_drawing.updatePointer();
-		switch(m_ui->comboBoxUnit->currentIndex()) {
-			case 0: // 10^0
-				m_drawing.m_scalingFactor = 1;
-				break;
-			case 1: // 10^-2
-				m_drawing.m_scalingFactor = 0.01;
-				break;
-			case 2: // 10^-3
-				m_drawing.m_scalingFactor = 0.001;
-				break;
-		}
+		if (readDxfFile(m_drawing)) {
 
-		SVUndoAddDrawing *undo = new SVUndoAddDrawing("", m_drawing);
-		undo->push();
+			m_drawing.updatePointer();
+			switch(m_ui->comboBoxUnit->currentIndex()) {
+				case 0: // 10^0
+					m_drawing.m_scalingFactor = 1;
+					break;
+				case 1: // 10^-2
+					m_drawing.m_scalingFactor = 0.01;
+					break;
+				case 2: // 10^-3
+					m_drawing.m_scalingFactor = 0.001;
+					break;
+			}
 
-		qDebug() << "Layer:";
-		for(size_t i = 0; i < m_drawing.m_layer.size(); i++){
-			qDebug() << m_drawing.m_layer[i].m_name;
-		}
+			SVUndoAddDrawing *undo = new SVUndoAddDrawing("", m_drawing);
+			undo->push();
 
-		qDebug() << "Lines:";
-		for(size_t i = 0; i < m_drawing.m_lines.size(); i++){
-			qDebug() << "x1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_x) << " y1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_y);
-			qDebug() << "x2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_x) << " y2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_y);
-		}
+			qDebug() << "Layer:";
+			for(size_t i = 0; i < m_drawing.m_layer.size(); i++){
+				qDebug() << m_drawing.m_layer[i].m_name;
+			}
 
-		qDebug() << "Points:";
-		for(size_t i = 0; i < m_drawing.m_points.size(); i++){
-			qDebug() << "x: " << QString::number(m_drawing.m_points[i].m_point.m_x) << " y: " << QString::number(m_drawing.m_points[i].m_point.m_y);
-		}
+			qDebug() << "Lines:";
+			for(size_t i = 0; i < m_drawing.m_lines.size(); i++){
+				qDebug() << "x1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_x) << " y1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_y);
+				qDebug() << "x2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_x) << " y2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_y);
+			}
 
-		qDebug() << "PolyLines:";
-		for(size_t i = 0; i < m_drawing.m_polylines.size(); i++){
-			for(size_t j = 0; j < m_drawing.m_polylines[i].m_polyline.size(); j++) {
-				qDebug() << "x: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_x) << " y: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_y);
+			qDebug() << "Points:";
+			for(size_t i = 0; i < m_drawing.m_points.size(); i++){
+				qDebug() << "x: " << QString::number(m_drawing.m_points[i].m_point.m_x) << " y: " << QString::number(m_drawing.m_points[i].m_point.m_y);
+			}
+
+			qDebug() << "PolyLines:";
+			for(size_t i = 0; i < m_drawing.m_polylines.size(); i++){
+				for(size_t j = 0; j < m_drawing.m_polylines[i].m_polyline.size(); j++) {
+					qDebug() << "x: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_x) << " y: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_y);
+				}
 			}
 		}
+
+	}
+	else {
+		// TODO: write error to log text edit or show QMessageBox
 	}
 }
 
 
-void SVImportDxfDialog::readDxfFile(VICUS::Drawing *drawing) {
-	DRW_InterfaceImpl *drwIntImpl = new DRW_InterfaceImpl(drawing);
+bool SVImportDxfDialog::readDxfFile(VICUS::Drawing &drawing) {
+	DRW_InterfaceImpl *drwIntImpl = new DRW_InterfaceImpl(&drawing);
 	dxfRW *dxf = new dxfRW(m_ui->lineEditFileName->filename().toUtf8().data());
 	bool read = false;
 
-	if(!dxf->read(drwIntImpl, read))
-	{
-		qDebug() << "error while reading";
-		exit(0);
-	}
+	return dxf->read(drwIntImpl, read);
 }
+
 
 DRW_InterfaceImpl::DRW_InterfaceImpl(VICUS::Drawing *drawing){
 	this->drawing = drawing;
@@ -113,6 +118,8 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 	// Push new layer into vector<Layer*> m_layer
 	drawing->m_layer.push_back(newLayer);
 }
+
+
 void DRW_InterfaceImpl::addDimStyle(const DRW_Dimstyle& /*data*/){}
 void DRW_InterfaceImpl::addVport(const DRW_Vport& /*data*/){}
 void DRW_InterfaceImpl::addTextStyle(const DRW_Textstyle& /*data*/){}
@@ -208,8 +215,9 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	}
 
 	drawing->m_arcs.push_back(newArc);
-
 }
+
+
 void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
 	if(m_activeBlock != nullptr) return;
@@ -231,9 +239,9 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 	}
 
 	drawing->m_circles.push_back(newCircle);
-
-
 }
+
+
 void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 
 	if(m_activeBlock != nullptr) return;
@@ -257,9 +265,9 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	}
 
 	drawing->m_ellipses.push_back(newEllipse);
-
-
 }
+
+
 void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
 	if(m_activeBlock != nullptr) return;
@@ -289,6 +297,8 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 	// insert vector into m_lines[data.layer] vector
 	drawing->m_polylines.push_back(newpolyline);
 }
+
+
 void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
 	if(m_activeBlock != nullptr) return;

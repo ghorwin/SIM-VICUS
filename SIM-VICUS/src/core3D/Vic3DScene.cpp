@@ -1880,11 +1880,11 @@ void Scene::generate2DDrawingGeometry() {
 	// default number of lines per circle/ellipse/arc
 	const int n = 50;
 	// default line width
-	const float defaultLineWeight = 0.05f;
+	const double defaultLineWeight = 0.05;
 	// multiplier to apply to width of entities
-	const float defaultLineWeightScaling = 0.015f;
+	const double defaultLineWeightScaling = 0.015;
 	// multiplier for z-coordinate. Multiplied with the z counter of an entity
-	const double zmultiplier = 0.00005f;
+	const double zmultiplier = 0.00005;
 
 
 	// iterate over all AbstractObjects and draw them
@@ -1915,22 +1915,17 @@ void Scene::generate2DDrawingGeometry() {
 			// scale Vector with selected unit
 			p *= drawing.m_scalingFactor;
 
-			// TODO Maik: calculate rectangle vertices here
-
 			double pointWeight = (defaultLineWeight + point.lineWeight() * defaultLineWeightScaling) / 2;
 
 			// rotation
 			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 			IBKMK::Vector3D p1 = QVector2IBKVector(vec);
 
-			std::vector<IBKMK::Vector3D> pointVertices = {
-				IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z),
-				IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z),
-				IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y + pointWeight, p1.m_z),
-				IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z),
-			};
+			IBKMK::Vector3D pExt0 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z);
+			IBKMK::Vector3D pExt1 = IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z);
+			IBKMK::Vector3D pExt2 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z);
 
-			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pointVertices[0], pointVertices[3], pointVertices[1]);
+			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
 			VICUS::PlaneGeometry g1(po);
 
 			addPlane(g1.triangulationData(), insertColor(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
