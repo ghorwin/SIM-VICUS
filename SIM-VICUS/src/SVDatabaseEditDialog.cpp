@@ -279,7 +279,8 @@ bool SVDatabaseEditDialog::eventFilter(QObject * obj, QEvent * event) {
 
 
 void SVDatabaseEditDialog::on_pushButtonSelect_clicked() {
-	writeUserDB();
+	// TODO: check this, performance problem
+//	writeUserDB();
 	accept();
 }
 
@@ -290,7 +291,8 @@ void SVDatabaseEditDialog::on_pushButtonCancel_clicked() {
 
 
 void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
-	writeUserDB();
+	// TODO: check this, performance problem
+//	writeUserDB();
 	accept();
 }
 
