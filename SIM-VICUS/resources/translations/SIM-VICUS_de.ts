@@ -6551,257 +6551,257 @@ p, li { white-space: pre-wrap; }
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="385"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="387"/>
         <source>Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?</source>
         <translation>Durch das erneute Laden der Benutzerdatenbank aus einer Datei werden alle Änderungen rückgängig gemacht, die in diesem Dialog seit dem Start des Programms vorgenommen wurden. Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="475"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="477"/>
         <source>All elements that are currently not used in the project will be deleted. Continue?</source>
         <translation>Alle Elemente, die aktuell nicht im Projekt verwendet werden, werden gelöscht. Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="521"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="552"/>
         <source>Material Database</source>
         <translation>Materialdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="521"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="552"/>
         <source>Material properties</source>
         <translation>Materialeigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="532"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="563"/>
         <source>Construction Database</source>
         <translation>Konstruktionsdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="543"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="574"/>
         <source>Component Database</source>
         <translation>Bauteildatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="543"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="574"/>
         <source>Component properties</source>
         <translation>Bauteileigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="554"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="585"/>
         <source>Sub-Surface Component Database</source>
         <translation>Teilflächen-Bauteil-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="554"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="585"/>
         <source>Sub-Surface properties</source>
         <translation>Teilflächeneigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="565"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="596"/>
         <source>Window Database</source>
         <translation>Windows-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="565"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="596"/>
         <source>Window properties</source>
         <translation>Fenstereigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="575"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="606"/>
         <source>Window glazing system Database</source>
         <translation>Datenbank für Fensterverglasungssysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="575"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="606"/>
         <source>Window glazing system properties</source>
         <translation>Eigenschaften des Fensterverglasungssystems</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="585"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="616"/>
         <source>Boundary Condition Database</source>
         <translation>Randbedingungsdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="585"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="616"/>
         <source>Boundary condition properties</source>
         <translation>Randbedingungseigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="596"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="627"/>
         <source>Schedule Database</source>
         <translation>Zeitplan-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="596"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="627"/>
         <source>Schedule properties</source>
         <translation>Zeitplan Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="610"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="641"/>
         <source>Person Loads Database</source>
         <translation>Personenbelastungsdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="610"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="641"/>
         <source>Person load properties</source>
         <translation>Personenbelastungseigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="616"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="647"/>
         <source>Electric Equipment Loads Database</source>
         <translation>Datenbank für elektrische Gerätelasten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="616"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="647"/>
         <source>Electric equipment load properties</source>
         <translation>Lasteigenschaften von elektrischen Geräten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="622"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="653"/>
         <source>Lights Loads Database</source>
         <translation>Lights Loads-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="622"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="653"/>
         <source>Lights load properties</source>
         <translation>Lichtlasteigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="628"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="659"/>
         <source>Other Loads Database</source>
         <translation>Datenbank für andere Lasten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="628"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="659"/>
         <source>Other load properties</source>
         <translation>Andere Lasteigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="641"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="672"/>
         <source>Zone Control Thermostat Database</source>
         <translation>Zonenregelungs-Thermostat-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="641"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="672"/>
         <source>Zone control thermostat properties</source>
         <translation>Eigenschaften des Zonenregelungsthermostats</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="651"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="682"/>
         <source>Zone Control Natural Ventilation Database</source>
         <translation>Zonenreglungsdatenbank natürliche Lüftung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="651"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="682"/>
         <source>Zone Control Natural Ventilation properties</source>
         <translation>Eigenschaften der Zonensteuerung natürlich Lüftung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="661"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="692"/>
         <source>Zone Control Shading Database</source>
         <translation>Zonensteuerungs-Verschattungsdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="661"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="692"/>
         <source>Zone Control Shading properties</source>
         <translation>Verschattungseigenschaften der Zonensteuerung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="671"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="702"/>
         <source>Zone Ideal Heating/Cooling Database</source>
         <translation>Zone Ideale Heiz-/Kühldatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="671"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="702"/>
         <source>Zone Ideal Heating/Cooling properties</source>
         <translation>Zone Ideale Heiz-/Kühleigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="681"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="712"/>
         <source>Natural Ventilation Database</source>
         <translation>Datenbank für natürliche Belüftung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="681"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="712"/>
         <source>Natural Ventilation properties</source>
         <translation>Eigenschaften der natürlichen Belüftung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="691"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="722"/>
         <source>Infiltration Database</source>
         <translation>Infiltrationsdatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="691"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="722"/>
         <source>Infiltration properties</source>
         <translation>Infiltrationseigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="701"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="732"/>
         <source>Surface Heating/Cooling System Database</source>
         <translation>Datenbank für Flächenheiz-/Kühlsysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="702"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="733"/>
         <source>Surface Heating/Cooling System properties</source>
         <translation>Eigenschaften des Flächenheiz-/Kühlsystems</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="713"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="744"/>
         <source>Supply System Database</source>
         <translation>Versorgungssystem-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="713"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="744"/>
         <source>Supply system properties</source>
         <translation>Eigenschaften des Versorgungssystems</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="724"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="755"/>
         <source>Network Component Database</source>
         <translation>Netzwerkelemente-Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="724"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="755"/>
         <source>Network Component Properties</source>
         <translation>Eigenschaften von Netzwerkelemente</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="735"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="766"/>
         <source>Network Pipes Database</source>
         <translation>Rohr Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="735"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="766"/>
         <source>Network Pipes Properties</source>
         <translation>Rohreigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="746"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="777"/>
         <source>Network Fluids Database</source>
         <translation>Fluid Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="746"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="777"/>
         <source>Network Fluids Properties</source>
         <translation>Fluideigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="757"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="788"/>
         <source>Network Controllers Database</source>
         <translation>Netzwerkcontroller Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="757"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="788"/>
         <source>Network Controllers Properties</source>
         <translation>Eigenschaften Netzwerkcontroller</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="768"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="799"/>
         <source>Sub Networks Database</source>
         <translation>Anlagen Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVDatabaseEditDialog.cpp" line="768"/>
+        <location filename="../../src/SVDatabaseEditDialog.cpp" line="799"/>
         <source>Sub Networks Properties</source>
         <translation>Eigenschaften Anlagen</translation>
     </message>
@@ -7100,7 +7100,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.cpp" line="198"/>
+        <location filename="../../src/SVLocalCoordinateView.cpp" line="193"/>
         <source>Selection Information</source>
         <translation>Informationen zur Auswahl</translation>
     </message>
@@ -9653,32 +9653,42 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Randbedingungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="25"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="36"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="38"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="62"/>
         <source>Select...</source>
         <translation>Wählen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="21"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="75"/>
+        <source>view from inside</source>
+        <translation>Innensicht</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="82"/>
+        <source>view from outside</source>
+        <translation>Außensicht</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="23"/>
         <source>Boundary condition</source>
         <translation>Randbedingung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="93"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="121"/>
         <source>Invalid/missing boundary condition</source>
         <translation>Ungültige/fehlende Randbedingung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="175"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="211"/>
         <source>Select objects with boundary condition &apos;%1&apos;</source>
         <translation>Objekte mit Randbedingung &apos;%1&apos; auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="177"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.cpp" line="213"/>
         <source>Select objects with invalid boundary condition</source>
         <translation>Objekte mit ungültiger Randbedingung auswählen</translation>
     </message>
@@ -9691,58 +9701,57 @@ Projekt zuletzt gespeichert am %2.
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="20"/>
         <source>Component orientation</source>
-        <translation>Bauteilorientierung</translation>
+        <translation type="vanished">Bauteilorientierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="26"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="20"/>
         <source>Show all components</source>
         <translation>Alle Bauteile anzeigen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="36"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="30"/>
         <source>Component:</source>
         <translation>Bauteil:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="80"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="74"/>
         <source>Side A</source>
         <translation>Seite A</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="112"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="106"/>
         <source>Side B</source>
         <translation>Seite B</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="124"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="115"/>
         <source>Selected components</source>
         <translation>Ausgewählte Bauteile</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="130"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="121"/>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="90"/>
         <source>No surfaces with components selected</source>
         <translation>Keine Flächen mit ausgewählten Bauteilen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="137"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="128"/>
         <source>Component will be aligned so that side A of the component corresponds to the selected surface.</source>
         <translation>Das Bauteil wird so ausgerichtet, dass Seite A des Bauteils der ausgewählten Fläche entspricht.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="140"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="131"/>
         <source>Align to side A</source>
         <translation>An Seite A ausrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="147"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="138"/>
         <source>Component will be aligned so that side B of the component corresponds to the selected surface.</source>
         <translation>Das Bauteil wird so ausgerichtet, dass Seite B des Bauteils der ausgewählten Fläche entspricht.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="150"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="141"/>
         <source>Align to side B</source>
         <translation>An Seite B ausrichten</translation>
     </message>
@@ -14741,28 +14750,28 @@ Projekt zuletzt gespeichert am %2.
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2222"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2246"/>
         <source>All objects selected</source>
         <translation>Alle Objekte ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2291"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2315"/>
         <source>Selected cleared</source>
         <translation>Ausgewählt gelöscht</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2307"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2331"/>
         <source>Removing selected geometry</source>
         <translation>Ausgewählte Geometrie entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2325"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2343"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2349"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2367"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3203"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3227"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
