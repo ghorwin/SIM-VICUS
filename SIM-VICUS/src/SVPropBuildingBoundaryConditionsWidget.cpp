@@ -1,8 +1,8 @@
 #include "SVPropBuildingBoundaryConditionsWidget.h"
 #include "ui_SVPropBuildingBoundaryConditionsWidget.h"
 
-#include <SVConversions.h>
-
+#include "SVConversions.h"
+#include "SVViewStateHandler.h"
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
 #include "SVDatabase.h"
@@ -10,12 +10,14 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVUndoTreeNodeState.h"
 
+
+
 SVPropBuildingBoundaryConditionsWidget::SVPropBuildingBoundaryConditionsWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVPropBuildingBoundaryConditionsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->gridLayout->setMargin(0);
 
 	m_ui->tableWidgetBoundaryConditions->setColumnCount(2);
 	m_ui->tableWidgetBoundaryConditions->setHorizontalHeaderLabels(QStringList() << QString() << tr("Boundary condition"));
@@ -24,6 +26,8 @@ SVPropBuildingBoundaryConditionsWidget::SVPropBuildingBoundaryConditionsWidget(Q
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->radioButtonFromInside->setChecked(true);
 }
 
 
@@ -58,20 +62,44 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 		if (comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID)
 			bcSideB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 
-		// side A
-		if (ci.m_sideASurface != nullptr) {
-			// is this surface visible?
-			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-			if (it_A != objs.end()) {
-				m_bcSurfacesMap[bcSideA].insert(ci.m_sideASurface);
+		if (m_ui->radioButtonFromInside->isChecked()) {
+
+			// side A
+			if (ci.m_sideASurface != nullptr) {
+				// is this surface visible?
+				std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+				if (it_A != objs.end()) {
+					m_bcSurfacesMap[bcSideA].insert(ci.m_sideASurface);
+				}
+			}
+			// side B
+			if (ci.m_sideBSurface != nullptr) {
+				std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+				if (it_B != objs.end())
+					m_bcSurfacesMap[bcSideB].insert(ci.m_sideBSurface);
 			}
 		}
-		// side B
-		if (ci.m_sideBSurface != nullptr) {
-			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-			if (it_B != objs.end())
-				m_bcSurfacesMap[bcSideB].insert(ci.m_sideBSurface);
+
+		else {
+
+			// side A has outside boundary condition
+			if (ci.m_sideASurface == nullptr && ci.m_sideBSurface != nullptr && bcSideA != nullptr ) {
+				// is this surface visible?
+				std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+				if (it_B != objs.end()) {
+					m_bcSurfacesMap[bcSideA].insert(ci.m_sideBSurface);
+				}
+			}
+			// side B has outside boundary condition
+			if (ci.m_sideBSurface == nullptr && ci.m_sideASurface != nullptr && bcSideB != nullptr ) {
+				// is this surface visible?
+				std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+				if (it_A != objs.end()) {
+					m_bcSurfacesMap[bcSideB].insert(ci.m_sideASurface);
+				}
+			}
 		}
+
 	}
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
@@ -111,6 +139,14 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 
 	// enable/disable edit/select button based on current scene selection and selection in table view
 	on_tableWidgetBoundaryConditions_itemSelectionChanged();
+}
+
+
+unsigned int SVPropBuildingBoundaryConditionsWidget::currentObjectColorMode() {
+	if (m_ui->radioButtonFromInside->isChecked())
+		return SVViewState::OCM_BoundaryConditionsInside;
+	else
+		return SVViewState::OCM_BoundaryConditionsOutside;
 }
 
 
@@ -180,4 +216,19 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonSelectBoundaryConditio
 	undo->push();
 }
 
+
+void SVPropBuildingBoundaryConditionsWidget::on_radioButtonFromInside_clicked() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_objectColorMode = SVViewState::OCM_BoundaryConditionsInside;
+	SVViewStateHandler::instance().setViewState(vs);
+	updateUi();
+}
+
+
+void SVPropBuildingBoundaryConditionsWidget::on_radioButtonFromOutside_clicked() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_objectColorMode = SVViewState::OCM_BoundaryConditionsOutside;
+	SVViewStateHandler::instance().setViewState(vs);
+	updateUi();
+}
 

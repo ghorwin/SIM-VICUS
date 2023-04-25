@@ -145,7 +145,10 @@ void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 		case BT_Components				: vs.m_objectColorMode = SVViewState::OCM_Components ; break;
 		case BT_SubSurfaceComponents	: vs.m_objectColorMode = SVViewState::OCM_SubSurfaceComponents; break;
 		case BT_ComponentOrientation	: vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
-		case BT_BoundaryConditions		: vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
+		case BT_BoundaryConditions		: {
+				unsigned int ocm = dynamic_cast<SVPropBuildingBoundaryConditionsWidget*>(m_ui->toolBox->widget(BT_BoundaryConditions))->currentObjectColorMode();
+				vs.m_objectColorMode = SVViewState::ObjectColorMode(ocm);
+			} break;
 		case BT_SurfaceConnection		: vs.m_objectColorMode = SVViewState::OCM_InterlinkedSurfaces; break;
 		case BT_ZoneTemplates			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 		case BT_SurfaceHeating			: vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;

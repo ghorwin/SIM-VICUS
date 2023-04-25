@@ -2030,7 +2030,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 
 		// *** OCM_BoundaryConditions
-	case SVViewState::OCM_BoundaryConditions: {
+	case SVViewState::OCM_BoundaryConditionsInside: {
 		// now color all surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// lookup component definition
@@ -2050,6 +2050,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					ci.m_sideBSurface->m_color = bc->m_color;
 			}
 		}
+		// TODO: coloring sub-surfaces is unnecessary here?
 		// now color all sub-surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 			// lookup component definition
@@ -2071,6 +2072,29 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
 					ci.m_sideBSubSurface->m_color.setAlpha(128);
 				}
+			}
+		}
+	} break;
+
+
+	case SVViewState::OCM_BoundaryConditionsOutside: {
+		// now color all surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// lookup component definition
+			const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (gray) color
+			if (ci.m_sideASurface == nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID && ci.m_sideBSurface != nullptr ) {
+				// lookup boundary condition definition
+				const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+				if (bc != nullptr)
+					ci.m_sideBSurface->m_color = bc->m_color;
+			}
+			if (ci.m_sideBSurface == nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID && ci.m_sideASurface != nullptr ) {
+				// lookup boundary condition definition
+				const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+				if (bc != nullptr)
+					ci.m_sideASurface->m_color = bc->m_color;
 			}
 		}
 	} break;
