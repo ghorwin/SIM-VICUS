@@ -15,7 +15,7 @@ SVPropBuildingComponentOrientationWidget::SVPropBuildingComponentOrientationWidg
 	m_ui(new Ui::SVPropBuildingComponentOrientationWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->gridLayout->setMargin(0);
 
 	m_ui->frameSideA->setStyleSheet(".QFrame { background-color: #2f7dd4; }");
 	m_ui->frameSideB->setStyleSheet(".QFrame { background-color: #ffce30; }");
