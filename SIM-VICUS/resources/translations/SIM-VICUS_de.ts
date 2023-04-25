@@ -1667,7 +1667,7 @@
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="38"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="225"/>
         <source>Some other component type</source>
-        <translation>Ein anderer Komponententyp</translation>
+        <translation>Ein anderer Bauteiltyp</translation>
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="47"/>
@@ -2570,7 +2570,7 @@
     <message>
         <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1457"/>
         <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1466"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1508"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1501"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Start der externen Anwendung</translation>
     </message>
@@ -2591,7 +2591,7 @@
         <translation>Bitte wählen Sie zuerst den Pfad zu MASTERSIM im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1508"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1501"/>
         <source>MASTERSIM &apos;%1&apos; could not be started.</source>
         <translation>MASTERSIM &apos;%1&apos; konnte nicht gestartet werden.</translation>
     </message>
@@ -2657,7 +2657,7 @@
     <message>
         <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="607"/>
         <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="616"/>
-        <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="658"/>
+        <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="651"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten einer externen Anwendung</translation>
     </message>
@@ -2678,7 +2678,7 @@
         <translation>Bitte wählen Sie zuerst den Pfad zu MASTERSIM im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="658"/>
+        <location filename="../../src/SVCoSimSupplySystemDialog.cpp" line="651"/>
         <source>MASTERSIM &apos;%1&apos; could not be started.</source>
         <translation>MASTERSIM &apos;%1&apos; konnte nicht gestartet werden.</translation>
     </message>
@@ -2883,7 +2883,7 @@
     <message>
         <location filename="../../src/SVDBComponentEditWidget.cpp" line="49"/>
         <source>Component identification name</source>
-        <translation>Name der Komponente</translation>
+        <translation>Name des Bauteils</translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentEditWidget.cpp" line="53"/>
@@ -2918,7 +2918,7 @@
     <message>
         <location filename="../../src/SVDBComponentEditWidget.cpp" line="397"/>
         <source>Do you want to delete surface heating in component instances?</source>
-        <translation>Möchten Sie die Flächenheizung in Komponenteninstanzen löschen?</translation>
+        <translation>Möchten Sie die Flächenheizung in Bauteilinstanzen löschen?</translation>
     </message>
 </context>
 <context>
@@ -2952,37 +2952,47 @@
         <translation>Beschreibung der Konstruktion</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="56"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="51"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="40"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="66"/>
         <source>Construction usage:</source>
         <translation>Verwendung der Konstruktion:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="47"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="80"/>
         <source>Insulation type:</source>
         <translation>Art der Dämmung:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="68"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="200"/>
+        <source>Flip construction layers</source>
+        <translation>Konstruktionsschichten umdrehen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="73"/>
         <source>Main/load bearing material:</source>
         <translation>Tragstruktur:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="87"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="95"/>
+        <source>Data source:</source>
+        <translation>Datenquelle:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="113"/>
         <source>Material layers</source>
         <translation>Materialschichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="101"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="127"/>
         <source>Number of layers:</source>
         <translation>Anzahl der Schichten:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="138"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="164"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;U-Value &lt;span style=&quot; font-size:7pt;&quot;&gt;(assuming standard heat transfer coefficients)&lt;/span&gt;:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
@@ -2991,12 +3001,12 @@
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;U-Wert (unter Annahme von Standard-Wärmedurchgangskoeffizienten):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="145"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="171"/>
         <source>The U-value is calculated using standard inside/outside heat transfer surface resistances of 0.13 and 0.04 W/m2K.</source>
         <translation>Der U-Wert wird unter Verwendung von Standard-Wärmeübergangsflächenwiderständen von 0,13 und 0,04 W/m2K berechnet.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.ui" line="158"/>
+        <location filename="../../src/SVDBConstructionEditWidget.ui" line="184"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;W/m&lt;span style=&quot; vertical-align:super;&quot;&gt;2&lt;/span&gt;K&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
@@ -3006,55 +3016,60 @@
         <translation>Bezeichnung der Konstruktion</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="58"/>
+        <source>Construction data-source name</source>
+        <translation>Name der Konstruktionsdatenquelle</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="66"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="66"/>
         <source>Width [cm]</source>
         <translation>Breite [cm]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="66"/>
         <source>rho [kg/m3]</source>
         <translation>rho [kg/m3]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="66"/>
         <source>cT [J/kgK]</source>
         <translation>cT [J/kgK]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="63"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="66"/>
         <source>lambda [W/mK]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="222"/>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="340"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="229"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="347"/>
         <source>Side A</source>
         <translation>Seite A</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="270"/>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="327"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="277"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="334"/>
         <source>&lt;select material&gt;</source>
         <translation>&lt;Material wählen&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="297"/>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="340"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="304"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="347"/>
         <source>Side B</source>
         <translation>Seite B</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="423"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="430"/>
         <source>Invalid number format, please enter a valid decimal number!</source>
         <translation>Ungültiges Zahlenformat, bitte geben Sie eine gültige Dezimalzahl ein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="429"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="436"/>
         <source>Layer widths must be larger than 1 mm. Ignore smaller layers, they will not affect the thermal storage mass!</source>
         <translation>Die Schichtbreiten müssen größer als 1 mm sein. Kleinere Schichten sind zu vernachlässigen, sie haben keinen Einfluss auf die thermische Speichermasse!</translation>
     </message>
@@ -3062,42 +3077,47 @@
 <context>
     <name>SVDBConstructionTableModel</name>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="83"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="84"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="146"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="147"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="147"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="148"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="148"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="149"/>
+        <source>Source</source>
+        <translation>Quelle</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="150"/>
         <source>Insulation</source>
         <translation>Wärmedämmung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="149"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="151"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="150"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="152"/>
         <source>Usage</source>
         <translation>Verwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="151"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="153"/>
         <source>Layers</source>
         <translation>Schichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionTableModel.cpp" line="152"/>
+        <location filename="../../src/SVDBConstructionTableModel.cpp" line="154"/>
         <source>U [W/m2K]</source>
         <translation></translation>
     </message>
@@ -3261,12 +3281,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="399"/>
         <source>Components</source>
-        <translation>Komponenten</translation>
+        <translation>Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="404"/>
         <source>SubSurfaceComponents</source>
-        <translation>Teilflächenkomponenten</translation>
+        <translation>Teilflächenbauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="409"/>
@@ -3286,7 +3306,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="424"/>
         <source>NetworkComponents</source>
-        <translation>NetzwerkKomponenten</translation>
+        <translation>NetzwerkElemente</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDuplicatesDialog.cpp" line="429"/>
@@ -4066,7 +4086,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkComponentEditWidget.ui" line="20"/>
         <source>Component description</source>
-        <translation>Komponentenbeschreibung</translation>
+        <translation>Bauteilbeschreibung</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkComponentEditWidget.ui" line="32"/>
@@ -4118,7 +4138,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkComponentEditWidget.cpp" line="60"/>
         <source>Component identification name</source>
-        <translation>Identifikationsname der Komponente</translation>
+        <translation>Identifikationsname des Bauteils</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkComponentEditWidget.cpp" line="169"/>
@@ -4976,7 +4996,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSubNetworkEditWidget.ui" line="126"/>
         <source>Component</source>
-        <translation>Komponente</translation>
+        <translation>Bauteil</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSubNetworkEditWidget.ui" line="112"/>
@@ -5102,7 +5122,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSubSurfaceComponentEditWidget.cpp" line="51"/>
         <source>Sub-Surface component identification name</source>
-        <translation>Identifikationsname derTeilflächen-Komponente</translation>
+        <translation>Identifikationsname des Teilflächen-Bauteils</translation>
     </message>
 </context>
 <context>
@@ -5968,13 +5988,21 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="253"/>
-        <source>Heating Curve</source>
+        <source>Heating curve</source>
         <translation>Heizkurve</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="262"/>
-        <source>Cooling Curve</source>
+        <source>Cooling curve</source>
         <translation>Kühlkurve</translation>
+    </message>
+    <message>
+        <source>Heating Curve</source>
+        <translation type="vanished">Heizkurve</translation>
+    </message>
+    <message>
+        <source>Cooling Curve</source>
+        <translation type="vanished">Kühlkurve</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.cpp" line="268"/>
@@ -6545,22 +6573,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="532"/>
         <source>Construction Database</source>
-        <translation>Baudatenbank</translation>
+        <translation>Konstruktionsdatenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="543"/>
         <source>Component Database</source>
-        <translation>Komponentendatenbank</translation>
+        <translation>Bauteildatenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="543"/>
         <source>Component properties</source>
-        <translation>Komponenteneigenschaften</translation>
+        <translation>Bauteileigenschaften</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="554"/>
         <source>Sub-Surface Component Database</source>
-        <translation>Teilflächen-Komponenten-Datenbank</translation>
+        <translation>Teilflächen-Bauteil-Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="554"/>
@@ -6730,12 +6758,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="724"/>
         <source>Network Component Database</source>
-        <translation>Netzwerkkomponenten-Datenbank</translation>
+        <translation>Netzwerkelemente-Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="724"/>
         <source>Network Component Properties</source>
-        <translation>Eigenschaften von Netzwerkkomponenten</translation>
+        <translation>Eigenschaften von Netzwerkelemente</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="735"/>
@@ -6781,18 +6809,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVGeometryView</name>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="488"/>
-        <location filename="../../src/SVGeometryView.cpp" line="491"/>
+        <location filename="../../src/SVGeometryView.cpp" line="492"/>
+        <location filename="../../src/SVGeometryView.cpp" line="495"/>
         <source>Invalid polygon (must be planar and not winding).</source>
         <translation>Ungültiges Polygon (muss planar und nicht gewunden sein).</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="508"/>
+        <location filename="../../src/SVGeometryView.cpp" line="512"/>
         <source>Invalid number format. Cannot parse coordinate inputs.</source>
         <translation>Ungültiges Zahlenformat. Koordinateneingaben können nicht geparst werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="519"/>
+        <location filename="../../src/SVGeometryView.cpp" line="523"/>
         <source>Invalid coordinate input, expected only one coordinate for the locked axis.</source>
         <translation>Ungültige Koordinateneingabe, nur eine Koordinate für die gesperrte Achse erwartet.</translation>
     </message>
@@ -6936,7 +6964,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Netzwerkgeometrie bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="791"/>
+        <location filename="../../src/SVGeometryView.cpp" line="795"/>
         <source>Without axis lock, enter coordinates in format &lt;x&gt; &lt;y&gt; &lt;z&gt;. With axis lock enter only the offset in the respective axis direction.</source>
         <translation>Geben Sie ohne Achsensperre die Koordinaten im Format &lt;x&gt; &lt;y&gt; &lt;z&gt; ein. Bei Achssperre geben Sie nur den Offset in der jeweiligen Achsrichtung ein.</translation>
     </message>
@@ -7072,7 +7100,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.cpp" line="193"/>
+        <location filename="../../src/SVLocalCoordinateView.cpp" line="198"/>
         <source>Selection Information</source>
         <translation>Informationen zur Auswahl</translation>
     </message>
@@ -7335,7 +7363,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="423"/>
         <source>&amp;Components...</source>
-        <translation>&amp;Komponenten...</translation>
+        <translation>&amp;Bauteile...</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="428"/>
@@ -7355,12 +7383,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="441"/>
         <source>Hydraulic components...</source>
-        <translation>Hydraulische Komponenten...</translation>
+        <translation>Hydraulische Elemente...</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="444"/>
         <source>Network hydraulic components</source>
-        <translation>Hydraulische Netzwerkkomponenten</translation>
+        <translation>Hydraulische Netzwerkelemente</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="449"/>
@@ -7537,7 +7565,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.ui" line="645"/>
         <source>Window/Door (sub-surface) components...</source>
-        <translation>Fenster-/Türkomponenten (Teilflächen)...</translation>
+        <translation>Bauteile der Fenster/Türen (Teilflächen)...</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="650"/>
@@ -7620,12 +7648,12 @@ p, li { white-space: pre-wrap; }
         <translation>Netzwerk GIS Daten ...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="865"/>
+        <location filename="../../src/SVMainWindow.ui" line="860"/>
         <source>Export network as geoJSON...</source>
         <translation>Exportiere Netzwerk als geoJSON...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="870"/>
+        <location filename="../../src/SVMainWindow.ui" line="865"/>
         <source>Precalculate view factors</source>
         <translation>Sichtfaktoren vorberechnen</translation>
     </message>
@@ -7798,17 +7826,16 @@ p, li { white-space: pre-wrap; }
         <translation>Strg+7</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="852"/>
         <source>Export Network as GeoJson...</source>
-        <translation>Netzwerk als GeoJson exportieren...</translation>
+        <translation type="vanished">Netzwerk als GeoJson exportieren...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="857"/>
+        <location filename="../../src/SVMainWindow.ui" line="852"/>
         <source>Plugin manager...</source>
         <translation>Plugin Manager...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="860"/>
+        <location filename="../../src/SVMainWindow.ui" line="855"/>
         <source>Opens the plugin manager.</source>
         <translation>Öffne Plugin Manager.</translation>
     </message>
@@ -7878,13 +7905,13 @@ p, li { white-space: pre-wrap; }
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1395"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1428"/>
         <source>About Qt...</source>
         <translation>Über Qt...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1006"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1011"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1034"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1039"/>
         <source>Reload project</source>
         <translation>Projekt neu laden</translation>
     </message>
@@ -7894,242 +7921,249 @@ p, li { white-space: pre-wrap; }
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="721"/>
+        <location filename="../../src/SVMainWindow.cpp" line="719"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="724"/>
+        <location filename="../../src/SVMainWindow.cpp" line="722"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="207"/>
+        <location filename="../../src/SVMainWindow.cpp" line="205"/>
         <source>Export directory &apos;%1&apos; exists already. Overwrite?</source>
         <translation>Exportverzeichnis &apos;%1&apos; existiert bereits. Überschreiben?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="957"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1041"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1685"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1704"/>
+        <location filename="../../src/SVMainWindow.cpp" line="985"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1069"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1718"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1737"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="958"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1042"/>
+        <location filename="../../src/SVMainWindow.cpp" line="986"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1070"/>
         <source>The file &apos;%1&apos; does not exist or cannot be accessed.</source>
         <translation>Die Datei &apos;%1&apos; existiert nicht oder es kann nicht darauf zugegriffen werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1080"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1108"/>
         <source>Please save the project file first!</source>
         <translation>Bitte speichern Sie zuerst das Projekt!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="863"/>
+        <location filename="../../src/SVMainWindow.cpp" line="895"/>
         <source>Replace or merge projects</source>
         <translation>Projekt ersetzen oder zusammenführen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="863"/>
+        <location filename="../../src/SVMainWindow.cpp" line="878"/>
+        <source>Error while importing a project with plugin &apos;%1&apos;
+%2</source>
+        <translation>Fehler beim Importieren eines Projekts mit dem Plugin &apos;%1&apos;
+%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVMainWindow.cpp" line="895"/>
         <source>Would you like to replace the current project with the imported project, or would you like to combine both projects into one?</source>
         <translation>Möchten Sie gerne das aktuelle Projekt durch das importierte ersetzen, oder sollen beide Projekte zusammengeführt werden?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="865"/>
+        <location filename="../../src/SVMainWindow.cpp" line="897"/>
         <source>Replace</source>
         <translation>Ersetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="865"/>
+        <location filename="../../src/SVMainWindow.cpp" line="897"/>
         <source>Combine</source>
         <translation>Zusammenführen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="944"/>
+        <location filename="../../src/SVMainWindow.cpp" line="972"/>
         <source>Select SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="946"/>
+        <location filename="../../src/SVMainWindow.cpp" line="974"/>
         <source>SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte und Projektpakete (*%1 *%2);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1029"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1057"/>
         <source>Select IDF file</source>
         <translation>IDF-Datei auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1031"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1059"/>
         <source>EnergyPlus IDF files (*.idf);;All files (*.*)</source>
         <translation>EnergyPlus IDF Dateien (*.idf);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1107"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1135"/>
         <source>Specify SIM-VICUS project package</source>
         <translation>SIM-VICUS Projektpaket auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1109"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1137"/>
         <source>SIM-VICUS project packages (*.vicpac);;All files (*.*)</source>
         <translation>SIM-VICUS Projektpakete (*.vicpac);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1150"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1178"/>
         <source>Not implemented, yet.</source>
-        <translation type="unfinished">Noch nicht implementiert.</translation>
+        <translation>Noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1200"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1221"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1228"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1249"/>
         <source>The project must be saved, first!</source>
         <translation>Das Projekt muss zuerst gespeichert werden!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1212"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1240"/>
         <source>Updated simulation parameters</source>
         <translation>Simulationsparameter aktualisiert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1249"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1277"/>
         <source>Main grid visibility changed</source>
         <translation>Sichtbarkeit des Hauptgitters geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1338"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1368"/>
         <source>Postproc session files</source>
         <translation>PostProc Sitzungsdateien</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1350"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1357"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1367"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1380"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1387"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1397"/>
         <source>Error running PostProc</source>
         <translation>Fehler bei Starten von PostProc</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1351"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1368"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1381"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1398"/>
         <source>Could not start executable &apos;%1&apos;.</source>
         <translation>Kann ausführbare Datei &apos;%1&apos; nicht starten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1358"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1388"/>
         <source>Process already running.</source>
         <translation>Prozess läuft bereits.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1380"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1410"/>
         <source>Please select first the path to the external climate editor in the preferences dialog!</source>
         <translation>Bitte setzen sie zuerst den Pfad zum externen Klimaeditor im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1388"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1421"/>
         <source>Climate editor &apos;%1&apos; could not be started.</source>
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1829"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1862"/>
         <source>Remove/merge duplicates in database</source>
         <translation>Entferne/Verknüpfe Duplikate in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1830"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1863"/>
         <source>The database contains now some duplicate definitions. Do you want to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?</source>
         <translation>Die Datenbank enthält nun doppelte Definitionen. Möchten Sie diese nun durchsehen und unnötige Duplikate entfernen (dies kann man später auch in Datenbanken|Duplikate entfernen... machen)?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1895"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1926"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1928"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1959"/>
         <source>Configure %1</source>
         <translation>Konfiguriere %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1942"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1975"/>
         <source>unnamed%1</source>
         <translation>unbenannt %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2064"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2100"/>
         <source>Specify SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2066"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2102"/>
         <source>SIM-VICUS project files (%1);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2078"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2114"/>
         <source>Select target directory to extract project package into</source>
         <translation>Wähle das Zielverzeichnis, in das das Projektpaket entpackt werden soll</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2090"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2126"/>
         <source>Project package does not contain a SIM-VICUS project file (%1-file).</source>
         <translation>Projektpaket enthält kein valides SIM-VICUS Projekt (%1-Datei).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2098"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2134"/>
         <source>Cannot remove existing project file (maybe missing permissions?).</source>
         <translation>Kann die existierende Projektdatei nicht löschen (fehlen möglicherweise Zugriffsrechte, oder wird die Datei wird noch benutzt?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2105"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2141"/>
         <source>Cannot rename project file to target file (invalid file name?).</source>
         <translation>Kann die Projektdatei nicht in den Zieldateinamen umbenennen (ungültiger Dateiname?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1960"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2089"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1993"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2125"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1006"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1034"/>
         <source>The project has not yet been saved.</source>
         <translation>Das Projekt wurde noch nicht gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1011"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1039"/>
         <source>The project has been modified. Discard those changes?</source>
         <translation>Das Projekt wurde geändert. Diese Änderungen verwerfen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1128"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1156"/>
         <source>Export project package</source>
         <translation>Exportiere Projektpaket</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="215"/>
+        <location filename="../../src/SVMainWindow.cpp" line="213"/>
         <source>Export directory cannot be removed (are files within directory still being used?). Please remove directory manually and try again!</source>
         <translation>Das Exportverzeichnis kann nicht entfernt werden (werden Dateien im Verzeichnis noch verwendet?). Bitte entfernen Sie das Verzeichnis manuell und versuchen Sie den Export erneut!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="538"/>
+        <location filename="../../src/SVMainWindow.cpp" line="536"/>
         <source>Removing database duplicates</source>
         <translation>Entferne Datenbankduplikate</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="539"/>
+        <location filename="../../src/SVMainWindow.cpp" line="537"/>
         <source>When removing duplicate database elements that are used in the currently open project, the resulting change to the project data cannot be undone (and none of the earlier changes, either).</source>
         <translation>Wenn Duplikate entfernt werden, welche im aktuellen Projekt benutzt werden, dann kann man diese Änderung nicht rückgängig machen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="576"/>
+        <location filename="../../src/SVMainWindow.cpp" line="574"/>
         <source>The project file has been modified by an external application. When reloading this project file all unsaved changes will be lost. Reload modified project file?</source>
         <translation>Die Projektdatei wurde von einem externen Programm verändert. Beim erneuten Öffnen dieser Projektdatei gehen alle ungespeicherten Änderungen verloren. Projektdatei neu öffnen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1123"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1151"/>
         <source>Invalid file name</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1123"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1151"/>
         <source>Please enter a valid file name!</source>
         <translation>Bitte geben Sie einen gültigen Dateinamen an!</translation>
     </message>
@@ -8138,23 +8172,23 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Nicht zugewiesene Definitionen entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1483"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1516"/>
         <source>Languange changed</source>
         <translation>Sprache geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1483"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1516"/>
         <source>Please restart the software to activate the new language!</source>
         <translation>Bitte starten Sie die Software neu, um die neue Sprache zu aktivieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1853"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1886"/>
         <source>Application Log</source>
         <translation>Anwendungsmeldungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1685"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1704"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1718"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1737"/>
         <source>The file &apos;%1&apos; cannot be found or does not exist.</source>
         <translation>Die Datei &apos;%1&apos; kann nicht gefunden werden oder existiert nicht.</translation>
     </message>
@@ -8164,62 +8198,62 @@ p, li { white-space: pre-wrap; }
         <translation>Zeitpläne</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="206"/>
-        <location filename="../../src/SVMainWindow.cpp" line="214"/>
-        <location filename="../../src/SVMainWindow.cpp" line="242"/>
+        <location filename="../../src/SVMainWindow.cpp" line="204"/>
+        <location filename="../../src/SVMainWindow.cpp" line="212"/>
+        <location filename="../../src/SVMainWindow.cpp" line="240"/>
         <source>Export error</source>
         <translation>Exportfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="243"/>
+        <location filename="../../src/SVMainWindow.cpp" line="241"/>
         <source>Cannot create project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket nicht erstellen &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="575"/>
+        <location filename="../../src/SVMainWindow.cpp" line="573"/>
         <source>Reload project file</source>
         <translation>Projektdatei neu laden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1128"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1156"/>
         <source>Export of project package &apos;%1&apos; complete.</source>
         <translation>Export des Projektpakets &apos;%1&apos; fertig.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1319"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1380"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1347"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1410"/>
         <source>Setup external tool</source>
         <translation>Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1319"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1347"/>
         <source>Please select first the path to the external post processing in the preferences dialog!</source>
         <translation>Bitte wählen Sie zunächst den Pfad zum externen Postprozessing im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1388"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1421"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1712"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1745"/>
         <source>Select directory to copy example project into</source>
         <translation>Wähle Zielverzeichnis für das Beispielprojekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1724"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2098"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2105"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1757"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2134"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2141"/>
         <source>Write error</source>
         <translation>Schreibfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1724"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1757"/>
         <source>Cannot copy example, maybe missing permissions?</source>
         <translation>Kann das Beispiel nicht kopieren, eventuell fehlen Zugriffsrechte?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1961"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1994"/>
         <source>Cannot extract project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket &apos;%1&apos; nicht extrahieren.</translation>
     </message>
@@ -8265,12 +8299,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVNavigationTreeItemDelegate</name>
     <message>
-        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="159"/>
+        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="156"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="175"/>
+        <location filename="../../src/SVNavigationTreeItemDelegate.cpp" line="172"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
@@ -8388,58 +8422,58 @@ p, li { white-space: pre-wrap; }
         <translation>Strg+I</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="263"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="264"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="276"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="277"/>
         <source>Invalid polygon/hole geometry</source>
         <translation>Ungültige Polygon-/Lochgeometrie</translation>
     </message>
     <message>
         <location filename="../../src/SVNavigationTreeWidget.cpp" line="96"/>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="121"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="122"/>
         <source>Invalid polygon data</source>
         <translation>Ungültige Polygondaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="105"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="106"/>
         <source>Invalid sub-surface polygon</source>
         <translation>Ungültiges Teilflächen-Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="130"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="131"/>
         <source>Invalid child-surface polygon</source>
         <translation>Ungültiges Polygon in Unterfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="295"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="296"/>
         <source>Edges</source>
         <translation>Kanten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="314"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="315"/>
         <source>Nodes</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="333"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="334"/>
         <source>Obstacles/Shading Geometry</source>
         <translation>Hindernisse/Verschattungsgeometrie</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="449"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="450"/>
         <source>Renamed object to &apos;%1&apos;</source>
         <translation>Objekt in „%1“ umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="469"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="470"/>
         <source>Selecting objects</source>
         <translation>Auswählen von Objekten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNavigationTreeWidget.cpp" line="471"/>
+        <location filename="../../src/SVNavigationTreeWidget.cpp" line="472"/>
         <source>De-selecting objects</source>
         <translation>Objekte abwählen</translation>
     </message>
@@ -9000,12 +9034,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVOutputGridEditDialog.cpp" line="277"/>
         <source>Invalid interval definition, start point of successive interval must be a later time than start point of preceeding interval.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Intervalldefinition, der Startpunkt des nachfolgenden Intervalls muss zu einem späteren Zeitpunkt liegen als der Startpunkt des vorangegangenen Intervalls.</translation>
     </message>
     <message>
         <location filename="../../src/SVOutputGridEditDialog.cpp" line="282"/>
         <source>Output interval must not start prior to previous output interval end.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Ausgabeintervall darf nicht vor dem Ende des vorherigen Ausgabeintervalls beginnen.</translation>
     </message>
     <message>
         <location filename="../../src/SVOutputGridEditDialog.cpp" line="294"/>
@@ -9039,17 +9073,17 @@ p, li { white-space: pre-wrap; }
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="58"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="57"/>
         <source>External tools</source>
         <translation>Externe Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="59"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="58"/>
         <source>Style</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="60"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="59"/>
         <source>Miscellaneous</source>
         <translation>Sonstiges</translation>
     </message>
@@ -9073,21 +9107,41 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPreferencesPageMisc.ui" line="45"/>
+        <source>Enable Autosaving</source>
+        <translation>Aktiviere automatisches Speichern</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPreferencesPageMisc.ui" line="73"/>
+        <source>Interval:</source>
+        <translation>Speicher-Interval:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPreferencesPageMisc.ui" line="80"/>
+        <source>min</source>
+        <translation>min</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPreferencesPageMisc.ui" line="92"/>
+        <source>Backup files are placed alongside project files with extension &apos;.vicus~&apos;.</source>
+        <translation>Die Sicherungsdateien werden neben den Projektdateien mit der Erweiterung &apos;.vicus~&apos; abgelegt.</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPreferencesPageMisc.ui" line="105"/>
         <source>Reset Settings</source>
         <translation>Einstellungen zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesPageMisc.ui" line="51"/>
+        <location filename="../../src/SVPreferencesPageMisc.ui" line="111"/>
         <source>Reset all &quot;Do not show again&quot; dialog confirmations</source>
         <translation>Setzen Sie alle &quot;Nicht mehr anzeigen&quot;-Dialogbestätigungen zurück</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesPageMisc.cpp" line="58"/>
+        <location filename="../../src/SVPreferencesPageMisc.cpp" line="63"/>
         <source>Please restart application!</source>
         <translation>Bitte Anwendung neu starten!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesPageMisc.cpp" line="67"/>
+        <location filename="../../src/SVPreferencesPageMisc.cpp" line="72"/>
         <source>All confirmations have been disabled and information/confirmation dialogs will pop up again.</source>
         <translation>Alle Bestätigungen wurden deaktiviert und Informations-/Bestätigungsdialoge werden wieder angezeigt.</translation>
     </message>
@@ -9213,73 +9267,89 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVProjectHandler</name>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="101"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="106"/>
         <source>Building</source>
         <translation>Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="104"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="109"/>
         <source>Ground floor</source>
         <translation>Erdgeschoss</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="153"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="158"/>
         <source>Save project before closing</source>
         <translation>Projekt vor dem Schließen speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="154"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="159"/>
         <source>Would you like to save the project before closing it?</source>
         <translation>Möchten Sie das Projekt speichern, bevor Sie es schließen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="216"/>
-        <location filename="../../src/SVProjectHandler.cpp" line="260"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="217"/>
+        <source>Load autosave backup?</source>
+        <translation>Automatische Sicherung laden?</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVProjectHandler.cpp" line="217"/>
+        <source>There exists a backup file for the project.
+Backup file date %1,
+project last saved on %2.
+ Load backup file or discard autosave backup?</source>
+        <translation>Es existiert eine Sicherungsdatei für das Projekt.
+Datum der Sicherungsdatei %1,
+Projekt zuletzt gespeichert am %2.
+ Sicherungsdatei laden oder automatische Sicherung verwerfen?</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVProjectHandler.cpp" line="254"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="307"/>
         <source>Error loading project</source>
         <translation>Fehler beim Laden des Projekts</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="217"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="255"/>
         <source>Error loading project file &apos;%1&apos;, see error log file &apos;%2&apos; for details.</source>
         <translation>Fehler beim Laden der Projektdatei „%1“, Einzelheiten finden Sie in der Fehlerprotokolldatei „%2“.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="261"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="308"/>
         <source>Data in project was missing/invalid, see error log &apos;%1&apos; for details.</source>
         <translation>Daten im Projekt fehlten/ungültig, siehe Fehlerprotokoll „%1“ für Details.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="390"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="439"/>
         <source>Merged imported project</source>
         <translation>Importiertes Projekt zusammengeführt</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="403"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="452"/>
         <source>Specify SIM-VICUS project file</source>
         <translation>SIM-VICUS-Projektdatei angeben</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="405"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="454"/>
         <source>SIM-VICUS project files (*%1);;All files (*.*)</source>
         <translation>SIM-VICUS-Projektdateien (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="415"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="464"/>
         <source>Invalid file name</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="415"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="464"/>
         <source>Please enter a valid file name!</source>
         <translation>Bitte geben Sie einen gültigen Dateinamen ein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="451"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="513"/>
         <source>Saving failed</source>
         <translation>Speichern fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="452"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="514"/>
         <source>Error while saving project file, see error log file &apos;%1&apos; for details.</source>
         <translation>Fehler beim Speichern der Projektdatei, Einzelheiten finden Sie in der Fehlerprotokolldatei „%1“.</translation>
     </message>
@@ -9302,19 +9372,28 @@ p, li { white-space: pre-wrap; }
         <translation>Rechteck</translation>
     </message>
     <message>
+        <location filename="../../src/SVPropAddGeometry.ui" line="56"/>
+        <source>Add Building components</source>
+        <translation>Gebäudeelemente</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropAddGeometry.ui" line="99"/>
+        <source>Add Network elements</source>
+        <translation>Netzwerkelemente</translation>
+    </message>
+    <message>
         <location filename="../../src/SVPropAddGeometry.ui" line="26"/>
         <source>Polygon</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="56"/>
         <source>Physical Components</source>
-        <translation>Physikalische Komponenten</translation>
+        <translation type="vanished">Physikalische Komponenten</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddGeometry.ui" line="62"/>
         <source>Window/Door</source>
-        <translation>Fenster Tür</translation>
+        <translation>Fenster/Tür</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddGeometry.ui" line="89"/>
@@ -9327,9 +9406,8 @@ p, li { white-space: pre-wrap; }
         <translation>Zone</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddGeometry.ui" line="99"/>
         <source>Network</source>
-        <translation>Netzwerk</translation>
+        <translation type="vanished">Netzwerk</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddGeometry.ui" line="105"/>
@@ -9407,7 +9485,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="281"/>
         <source>Component:</source>
-        <translation>Komponente:</translation>
+        <translation>Bauteil:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="127"/>
@@ -9498,32 +9576,31 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="20"/>
         <source>Acoustic Templates</source>
-        <translation>Akustik Vorlagen</translation>
+        <translation type="vanished">Akustik Vorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="32"/>
+        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="23"/>
         <source>Selected Rooms</source>
         <translation>Ausgewählte Räume</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="40"/>
+        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="31"/>
         <source>Selected Acoustic Template:</source>
         <translation>Ausgewählte Akustik Vorlage:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="53"/>
+        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="44"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="64"/>
+        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="55"/>
         <source>Assign</source>
         <translation>Zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="84"/>
+        <location filename="../../src/SVPropBuildingAcousticTemplatesWidget.ui" line="75"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
@@ -9572,17 +9649,16 @@ p, li { white-space: pre-wrap; }
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="20"/>
         <source>Boundary conditions</source>
-        <translation>Randbedingungen</translation>
+        <translation type="vanished">Randbedingungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="39"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="25"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="55"/>
+        <location filename="../../src/SVPropBuildingBoundaryConditionsWidget.ui" line="38"/>
         <source>Select...</source>
         <translation>Wählen...</translation>
     </message>
@@ -9617,17 +9693,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="20"/>
         <source>Component orientation</source>
-        <translation>Komponentenorientierung</translation>
+        <translation>Bauteilorientierung</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="26"/>
         <source>Show all components</source>
-        <translation>Alle Komponenten anzeigen</translation>
+        <translation>Alle Bauteile anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="36"/>
         <source>Component:</source>
-        <translation>Komponente:</translation>
+        <translation>Bauteil:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="80"/>
@@ -9642,13 +9718,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="124"/>
         <source>Selected components</source>
-        <translation>Ausgewählte Komponenten</translation>
+        <translation>Ausgewählte Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="130"/>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="90"/>
         <source>No surfaces with components selected</source>
-        <translation>Keine Flächen mit ausgewählten Komponenten</translation>
+        <translation>Keine Flächen mit ausgewählten Bauteilen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.ui" line="137"/>
@@ -9673,7 +9749,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="95"/>
         <source>%1 surfaces with components selected</source>
-        <translation>%1 Flächen mit ausgewählten Komponenten</translation>
+        <translation>%1 Flächen mit ausgewählten Bauteilen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="152"/>
@@ -9681,17 +9757,17 @@ p, li { white-space: pre-wrap; }
         <translation>Sie dürfen nicht beide Flächen desselben Bauteils auswählen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="177"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="176"/>
         <source>All of the selected surfaces are already aligned as requested.</source>
         <translation>Alle ausgewählten Flächen sind bereits wie gewünscht ausgerichtet.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="182"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="181"/>
         <source>Aligning component sides</source>
         <translation>Bauteilseiten ausrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="186"/>
+        <location filename="../../src/SVPropBuildingComponentOrientationWidget.cpp" line="185"/>
         <source>Deselecting modified surfaces</source>
         <translation>Geänderte Flächen abwählen</translation>
     </message>
@@ -9704,82 +9780,93 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="20"/>
         <source>Building components used in current project</source>
-        <translation>Gebäudekomponenten, die im aktuellen Projekt verwendet werden</translation>
+        <translation type="vanished">Gebäudebauteile, die im aktuellen Projekt verwendet werden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="26"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="23"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="39"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="36"/>
         <source>Replaces the component association of all objects with the currently selected component.</source>
-        <translation>Ersetzt die Komponentenzuordnung aller Objekte durch die aktuell ausgewählte Komponente.</translation>
+        <translation>Ersetzt die Bauteilzuordnung aller Objekte durch das aktuell ausgewählte Bauteil.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="42"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="39"/>
         <source>Exchange...</source>
         <translation>Austausch...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="65"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="46"/>
         <source>Selects all objects/surfaces which are associated with the selected component.</source>
-        <translation>Wählt alle Objekte/Flächen aus, die der ausgewählten Komponente zugeordnet sind.</translation>
+        <translation>Wählt alle Objekte/Flächen aus, die dem ausgewählten Bauteil zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="68"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="84"/>
+        <source>Assign from DB...</source>
+        <translation>Weise aus DB zu...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="97"/>
+        <source>Connect surfaces...</source>
+        <translation>Flächen verbinden...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="120"/>
+        <source>Assign from table</source>
+        <translation>Aus Tabelle zuweisen</translation>
+    </message>
+    <message>
         <source>Select surfaces with selected component</source>
-        <translation>Auswählen</translation>
-    </message>
-    <message>
-        <source>Select</source>
         <translation type="vanished">Auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="78"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="49"/>
+        <source>Select</source>
+        <translation>Auswählen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="69"/>
         <source>Selected surface</source>
         <translation>Ausgewählte Oberfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="84"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="75"/>
         <source>Selected component:</source>
-        <translation>Ausgewählte Komponente:</translation>
+        <translation>Ausgewähltes Bauteil:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="93"/>
         <source>Assign component...</source>
-        <translation>Komponente zuweisen...</translation>
+        <translation type="vanished">Bauteil zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="126"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="117"/>
         <source>Assign the component selected in the table above to all currently selected surfaces.</source>
-        <translation>Weisen Sie allen aktuell ausgewählten Flächen die in der obigen Tabelle ausgewählte Komponente zu.</translation>
+        <translation>Weisen Sie allen aktuell ausgewählten Flächen das in der obigen Tabelle ausgewählte Bauteil zu.</translation>
     </message>
     <message>
         <source>Assign selected component</source>
-        <translation type="vanished">Ausgewählte Komponente zuweisen</translation>
+        <translation type="vanished">Ausgewählte Bauteile zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="106"/>
         <source>Connect surfaces with component...</source>
-        <translation>Flächen mit Bauteil verbinden...</translation>
+        <translation type="vanished">Flächen mit Bauteil verbinden...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="129"/>
         <source>Assign in table selected component</source>
-        <translation>Weise Komponente aus Tabelle zu</translation>
+        <translation type="vanished">Weise Bauteil aus Tabelle zu</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="144"/>
+        <location filename="../../src/SVPropBuildingComponentsWidget.ui" line="135"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="22"/>
         <source>Component</source>
-        <translation>Komponente</translation>
+        <translation>Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="159"/>
@@ -9799,7 +9886,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="210"/>
         <source>Component with invalid/unknown ID</source>
-        <translation>Komponente mit ungültiger/unbekannter ID</translation>
+        <translation>Bauteile mit ungültiger/unbekannter ID</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="212"/>
@@ -9809,42 +9896,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="216"/>
         <source>%1 different components</source>
-        <translation>%1 verschiedene Komponenten</translation>
+        <translation>%1 verschiedene Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="302"/>
         <source>This will replace all associations with component &apos;%1 [%2]&apos; with another component.</source>
-        <translation>Dadurch werden alle Zuordnungen mit der Komponente „%1 [%2]“ durch eine andere Komponente ersetzt.</translation>
+        <translation>Dadurch werden alle Zuordnungen mit dem Bauteil „%1 [%2]“ durch ein anderes Bauteil ersetzt.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="306"/>
         <source>You may now select a component to be assigned to the surfaces.</source>
-        <translation>Sie können nun eine Komponente auswählen, die den Flächen zugewiesen werden soll.</translation>
+        <translation>Sie können nun ein Bauteil auswählen, die den Flächen zugewiesen werden soll.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="310"/>
         <source>Replace component</source>
-        <translation>Komponente ersetzen</translation>
+        <translation>Bauteil ersetzen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="359"/>
         <source>Components exchanged</source>
-        <translation>Komponenten getauscht</translation>
+        <translation>Bauteile getauscht</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="374"/>
         <source>Select objects with component &apos;%1&apos;</source>
-        <translation>Objekte mit Komponente „%1“ auswählen</translation>
+        <translation>Objekte mit Bauteil „%1“ auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="376"/>
         <source>Select objects with invalid/missing component.</source>
-        <translation>Objekte mit ungültiger/fehlender Komponente auswählen.</translation>
+        <translation>Objekte mit ungültigem/fehlendem Bauteil auswählen.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="412"/>
         <source>Assign component</source>
-        <translation>Komponente zuweisen</translation>
+        <translation>Bauteile zuweisen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="412"/>
@@ -9859,7 +9946,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingComponentsWidget.cpp" line="559"/>
         <source>Components assigned</source>
-        <translation>Komponenten zugeordnet</translation>
+        <translation>Bauteile zugeordnet</translation>
     </message>
 </context>
 <context>
@@ -9871,17 +9958,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="58"/>
         <source>Component</source>
-        <translation>Komponente</translation>
+        <translation>Bauteil</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="59"/>
         <source>Sub-Surfaces</source>
-        <translation>Teilflächenkomponenten</translation>
+        <translation>Teilflächen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="60"/>
         <source>Construction orientation</source>
-        <translation>Bauteilorientierung</translation>
+        <translation>Bauteilausrichtung</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="61"/>
@@ -9891,7 +9978,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="62"/>
         <source>Surface connections/component instances</source>
-        <translation>Oberflächenverbindungen/Komponenteninstanzen</translation>
+        <translation>Bauteilverknüpfungen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingEditWidget.cpp" line="63"/>
@@ -9927,67 +10014,78 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="20"/>
         <source>Sub-surface components (Windows/Doors) used in current project</source>
-        <translation>Teilflächen Komponenten (Fenster/Türen), die im aktuellen Projekt verwendet werden</translation>
+        <translation type="vanished">Teilflächen Bauteile (Fenster/Türen), die im aktuellen Projekt verwendet werden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="26"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="23"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="39"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="36"/>
         <source>Replaces the component association of all objects with the currently selected component.</source>
-        <translation>Ersetzt die Komponentenzuordnung aller Objekte durch die aktuell ausgewählte Komponente.</translation>
+        <translation>Ersetzt die Bauteilzuordnung aller Objekte durch das aktuell ausgewählte Bauteil.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="42"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="39"/>
         <source>Exchange...</source>
         <translation>Austausch...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="65"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="46"/>
         <source>Selects all objects/surfaces which are associated with the selected component.</source>
-        <translation>Wählt alle Objekte/Flächen aus, die der ausgewählten Komponente zugeordnet sind.</translation>
+        <translation>Wählt alle Objekte/Flächen aus, die dem ausgewählten Bauteil zugeordnet sind.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="68"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="49"/>
         <source>Select</source>
         <translation>Auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="78"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="69"/>
         <source>Selected sub-surface components</source>
-        <translation>Ausgewählte Teilflächen-Komponenten</translation>
+        <translation>Ausgewählte Teilflächen-Bauteile</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="75"/>
+        <source>Selected sub-surface component:</source>
+        <translation>Ausgewählte Teilflächen-Bauteile:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="84"/>
-        <source>Selected sub-surface component:</source>
-        <translation>Ausgewählte Teilflächen-Komponente:</translation>
+        <source>Assign from DB...</source>
+        <translation>Weise aus DB zu...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="93"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="97"/>
+        <source>Connect sub-surfaces...</source>
+        <translation>Verbinde Teilflächen...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="120"/>
+        <source>Assign from table</source>
+        <translation>Weise aus Tabelle zu</translation>
+    </message>
+    <message>
         <source>Assign sub-surface...</source>
-        <translation>Teilfläche zuordnen...</translation>
+        <translation type="vanished">Teilfläche zuordnen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="106"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="117"/>
         <source>Assign the sub-surface component selected in the table above to all currently selected sub-surfaces.</source>
-        <translation>Ordnen Sie allen aktuell ausgewählten Teilflächen die in der obigen Tabelle ausgewählte Teilflächenkomponente zu.</translation>
+        <translation>Ordnen Sie allen aktuell ausgewählten Teilflächen das in der obigen Tabelle ausgewählte Teilflächenbauteil zu.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="109"/>
         <source>Assign selected component</source>
-        <translation>Ausgewählte Komponente zuweisen</translation>
+        <translation type="vanished">Ausgewählte Bauteile zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="116"/>
         <source>Connect sub-surfaces with component...</source>
-        <translation>Teilflächen mit Bauteil verbinden...</translation>
+        <translation type="vanished">Teilflächen mit Bauteil verbinden...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="144"/>
+        <location filename="../../src/SVPropBuildingSubComponentsWidget.ui" line="135"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
@@ -9999,7 +10097,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="22"/>
         <source>Sub-Surface Component</source>
-        <translation>Fenster-/Türenkomponente</translation>
+        <translation>Bauteile der Fenster-/Türen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="150"/>
@@ -10034,7 +10132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="217"/>
         <source>Component with invalid/unknown ID</source>
-        <translation>Komponente mit ungültiger/unbekannter ID</translation>
+        <translation>Bauteil mit ungültiger/unbekannter ID</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="219"/>
@@ -10044,47 +10142,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="223"/>
         <source>%1 different components</source>
-        <translation>%1 verschiedene Komponenten</translation>
+        <translation>%1 verschiedene Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="307"/>
         <source>This will replace all associations with sub-surface component &apos;%1 [%2]&apos; with another sub-surface component.</source>
-        <translation>Dadurch werden alle Zuordnungen zur Sub-Surface-Komponente „%1 [%2]“ durch eine andere Sub-Surface-Komponente ersetzt.</translation>
+        <translation>Dadurch werden alle Zuordnungen zum Teilflächen-Bauteil „%1 [%2]“ durch ein anderes Teilfächen-Bauteil ersetzt.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="311"/>
         <source>You may now select a sub-surface component to be assigned to the surfaces.</source>
-        <translation>Sie können nun eine Untergrundkomponente auswählen, die den Flächen zugewiesen werden soll.</translation>
+        <translation>Sie können nun ein Teilflächen-Bauteil auswählen, das den Flächen zugewiesen werden soll.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="315"/>
         <source>Replace sub-surface component</source>
-        <translation>Ersetzen Sie die unterirdische Komponente</translation>
+        <translation>Ersetze das Teilflächen-Bauteil</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="339"/>
         <source>Sub-surface components exchanged</source>
-        <translation>Unterirdische Komponenten ausgetauscht</translation>
+        <translation>Teilflächen-Bauteile ausgetauscht</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="354"/>
         <source>Select objects with sub-surface component &apos;%1&apos;</source>
-        <translation>Objekte mit Untergrundkomponente &apos;%1&apos; auswählen</translation>
+        <translation>Objekte mit Teilflächen-Bauteil &apos;%1&apos; auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="356"/>
         <source>Select objects with invalid/missing sub-surface component.</source>
-        <translation>Objekte mit ungültiger/fehlender Untergrundkomponente auswählen.</translation>
+        <translation>Objekte mit ungültigem/fehlendem Teilflächen-Bauteil auswählen.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="395"/>
         <source>Assign component</source>
-        <translation>Komponente zuweisen</translation>
+        <translation>Bauteil zuweisen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="395"/>
         <source>You may now select a sub-surface component from the database, which will then be assigned to the selected sub-surfaces.</source>
-        <translation>Sie können nun aus der Datenbank eine Untergrundkomponente auswählen, die dann den ausgewählten Untergrund zugeordnet wird.</translation>
+        <translation>Sie können nun aus der Datenbank ein Untergrund-Bauteil auswählen, die dann der ausgewählten Teilfläche zugeordnet wird.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="463"/>
@@ -10094,7 +10192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSubComponentsWidget.cpp" line="520"/>
         <source>Sub-Components assigned</source>
-        <translation>Unterkomponenten zugewiesen</translation>
+        <translation>Unter-Bauteile zugewiesen</translation>
     </message>
 </context>
 <context>
@@ -10105,27 +10203,26 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="20"/>
         <source>Interlinked surfaces</source>
-        <translation>Vernetzte Oberflächen</translation>
+        <translation type="vanished">Vernetzte Oberflächen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="42"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="33"/>
         <source>Remove connection</source>
         <translation>Verbindung entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="55"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="20"/>
         <source>Highlighting mode:</source>
         <translation>Anzeigemodus:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="68"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="59"/>
         <source>Smart Surface Connections</source>
         <translation>Automatische Oberflächenverbindungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="74"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.ui" line="65"/>
         <source>Open smart-clipping</source>
         <translation>Öffne smart clipping</translation>
     </message>
@@ -10146,32 +10243,32 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Verbindungen erzeugen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="30"/>
         <source>CI id</source>
         <translation>CI-ID</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="30"/>
         <source>Surface Side A</source>
         <translation>Oberflächenseite A</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="30"/>
         <source>Surface Side B</source>
         <translation>Oberfläche Seite B</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="29"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="30"/>
         <source>Component</source>
-        <translation>Komponente</translation>
+        <translation>Bauteil</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="44"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="45"/>
         <source>Colored surfaces</source>
         <translation>Farbige Oberflächen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="45"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="46"/>
         <source>Transparent surfaces</source>
         <translation>Transparente Oberflächen</translation>
     </message>
@@ -10184,7 +10281,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Maximaler Winkel zwischen Flächen, um eine Verbindung in [Grad] zu ermöglichen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="274"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="319"/>
         <source>Selected connected surfaces</source>
         <translation>Ausgewählte verbundene Flächen</translation>
     </message>
@@ -10201,7 +10298,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Mit den gegebenen Auswahl- und Algorithmusparametern konnten keine neuen Verbindungen erstellt werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="321"/>
+        <location filename="../../src/SVPropBuildingSurfaceConnectionWidget.cpp" line="368"/>
         <source>Removed surface-surface connection</source>
         <translation>Oberfläche-Oberflächen-Verbindung entfernt</translation>
     </message>
@@ -10214,52 +10311,55 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="26"/>
         <source>Surface heating</source>
-        <translation>Flächenheizung</translation>
+        <translation type="vanished">Flächenheizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="48"/>
         <source>Remove selected surface heating definitions</source>
-        <translation>Ausgewählte Oberflächenheizungsdefinitionen entfernen</translation>
+        <translation type="vanished">Ausgewählte Oberflächenheizungsdefinitionen entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="32"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="26"/>
         <source>Component filter:</source>
-        <translation>Komponentenfilter:</translation>
+        <translation>Bauteilfilter:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="83"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="40"/>
         <source>Components with active layers:</source>
         <translation>Bauteile mit aktiven Schichten:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="99"/>
-        <source>Selected component instances with active layers</source>
-        <translation>Ausgewählte Komponenteninstanzen mit aktiven Layern</translation>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="56"/>
+        <source>Remove surface-heating</source>
+        <translation>Entferne Flächenheizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="140"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="90"/>
+        <source>Selected component instances with active layers</source>
+        <translation>Ausgewählte Bauteile mit aktiven Layern</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="131"/>
         <source>Assign surface heating...</source>
         <translation>Flächenheizung zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="153"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="144"/>
         <source>Switch control zone</source>
         <translation>Kontrollzone tauschen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="120"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="111"/>
         <source>Set control zone...</source>
         <translation>Kontrollzone einstellen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="133"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="124"/>
         <source>Remove surface heating</source>
         <translation>Oberflächenheizung entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="111"/>
+        <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.ui" line="102"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
@@ -10286,7 +10386,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="74"/>
         <source>All components</source>
-        <translation>Alle Komponenten</translation>
+        <translation>Alle Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="231"/>
@@ -10296,7 +10396,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="237"/>
         <source>%1 component instance(s)</source>
-        <translation>%1 Komponenteninstanz(en)</translation>
+        <translation>%1 Bauteil(e)</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingSurfaceHeatingWidget.cpp" line="268"/>
@@ -10333,64 +10433,63 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="20"/>
         <source>Room Properties</source>
-        <translation>Raumeigenschaften</translation>
+        <translation type="vanished">Raumeigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="160"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="20"/>
         <source>Building:</source>
         <translation>Gebäude:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="62"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="67"/>
         <source>Update Floor Areas / Volumes</source>
         <translation>Grundflächen/Volumen aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="77"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="82"/>
         <source>Only selected rooms:</source>
         <translation>Nur ausgewählte Räume:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="103"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="141"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="108"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="146"/>
         <source>Floor area</source>
         <translation>Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="110"/>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="148"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="115"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="153"/>
         <source>Volume</source>
         <translation>Volumen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="121"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="126"/>
         <source>All rooms:</source>
         <translation>Alle Räume:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="26"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="40"/>
         <source>Room Name:</source>
         <translation>Raumname:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="55"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="30"/>
         <source>Building level:</source>
         <translation>Geschoss:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="39"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="165"/>
         <source>Other</source>
         <translation>Sonstiges</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="45"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="171"/>
         <source>Assign selected surfaces to room</source>
         <translation>Ausgewählte Flächen dem Raum zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="180"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="50"/>
         <source>Rooms/Zones:</source>
         <translation>Räume/Zonen:</translation>
     </message>
@@ -10456,32 +10555,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVPropBuildingZonePropertyTableModel</name>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="120"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="125"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="121"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="126"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="122"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="127"/>
         <source>Area [m2]</source>
         <translation>Fläche [m2]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="123"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="128"/>
         <source>Volume [m3]</source>
         <translation>Volumen [m3]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="181"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="186"/>
         <source>Modified floor area</source>
         <translation>Geänderte Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="187"/>
+        <location filename="../../src/SVPropBuildingZonePropertyTableModel.cpp" line="192"/>
         <source>Modified volume</source>
         <translation>Geändertes Volumen</translation>
     </message>
@@ -10494,18 +10593,16 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="20"/>
         <source>Zone templates</source>
-        <translation>Zonenvorlagen</translation>
+        <translation type="vanished">Zonenvorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="46"/>
         <source>Color only rooms with selected zone template</source>
-        <translation>Färbe nur Räume mit ausgewählter Zonenvorlage</translation>
+        <translation type="vanished">Färbe nur Räume mit ausgewählter Zonenvorlage</translation>
     </message>
     <message>
         <source>Replaces the component association of all objects with the currently selected component.</source>
-        <translation type="vanished">Ersetzt die Komponentenzuordnung aller Objekte durch die aktuell ausgewählte Komponente.</translation>
+        <translation type="vanished">Ersetzt die Bauteilzuordnung aller Objekte durch das aktuell ausgewählte Bauteil.</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="59"/>
@@ -10513,26 +10610,37 @@ p, li { white-space: pre-wrap; }
         <translation>Austauschen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="147"/>
         <source>Assign in table selected zone template</source>
-        <translation>Weise in Tabelle ausgewählte Zonenvorlage zu</translation>
+        <translation type="vanished">Weise in Tabelle ausgewählte Zonenvorlage zu</translation>
     </message>
     <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="36"/>
         <source>Show only selected</source>
-        <translation type="vanished">Nur ausgewählte anzeigen</translation>
+        <translation>Nur ausgewählte anzeigen</translation>
     </message>
     <message>
         <source>Assign selected zone template</source>
         <translation type="vanished">Ausgewählte Zonenvorlage zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="73"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="43"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="26"/>
         <source>Color only selected</source>
-        <translation type="vanished">Farbe nur ausgewählt</translation>
+        <translation>Farbe nur ausgewählt</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="23"/>
+        <source>Colors only rooms that are selected in zone template table</source>
+        <translation>Nur ausgewählte färben</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="33"/>
+        <source>Shows only rooms that are selected in zone template table</source>
+        <translation>Nur ausgewählte anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="66"/>
@@ -10540,32 +10648,40 @@ p, li { white-space: pre-wrap; }
         <translation>Auswählen</translation>
     </message>
     <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="118"/>
+        <source>Assign...</source>
+        <translation>Zuweisen...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="144"/>
+        <source>Assign from table</source>
+        <translation>Weise aus Tabelle zu</translation>
+    </message>
+    <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="56"/>
         <source>Replaces the zone template association of all selected zones with the currently selected zone template.</source>
         <translation>Ersetzt die Zonenvorlagenzuweisung durch die aktuell ausgewählte Zonenvorlage.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="26"/>
         <source>Show only rooms with selected zone template</source>
-        <translation>Zeige nur Räume mit ausgewählter Zonenvorlage</translation>
+        <translation type="vanished">Zeige nur Räume mit ausgewählter Zonenvorlage</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="89"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="86"/>
         <source>Selected rooms</source>
         <translation>Ausgewählte Räume</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="97"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="94"/>
         <source>Selected zone template:</source>
         <translation>Ausgewählte Zonenvorlage:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="121"/>
         <source>Assign zone template...</source>
-        <translation>Zonenvorlage zuweisen...</translation>
+        <translation type="vanished">Zonenvorlage zuweisen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="110"/>
+        <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="107"/>
         <source>TextLabel</source>
         <translation>Textlabel</translation>
     </message>
@@ -11073,150 +11189,149 @@ p, li { white-space: pre-wrap; }
         <translation>Abteilungsleiter</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="24"/>
         <source>Building structure</source>
-        <translation>Gebäudestruktur</translation>
+        <translation type="vanished">Gebäudestruktur</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="60"/>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="223"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="50"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="222"/>
         <source>Add building</source>
         <translation>Gebäude hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="71"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="89"/>
         <source>Add level</source>
         <translation>Geschoss hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="82"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="61"/>
         <source>Remove building</source>
         <translation>Gebäude entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="110"/>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="186"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="135"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="185"/>
         <source>Assign selected levels</source>
         <translation>Ausgewählte Geschoss zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="134"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="100"/>
         <source>Remove level</source>
         <translation>Geschoss entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.ui" line="145"/>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="210"/>
+        <location filename="../../src/SVPropFloorManagerWidget.ui" line="128"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="209"/>
         <source>Assign selected rooms</source>
         <translation>Ausgewählte Räume zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="61"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="60"/>
         <source>Building/Floor</source>
         <translation>Gebäude/Etage</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="61"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="60"/>
         <source>Elevation [m]</source>
         <translation>Höhe über Bodenbezug [m]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="61"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="60"/>
         <source>Height [m]</source>
         <translation>Raumhöhe [m]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="188"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="187"/>
         <source>Assign selected level</source>
         <translation>Ausgewähltes Geschoss zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="212"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="211"/>
         <source>Assign selected room</source>
         <translation>Ausgewählten Raum zuweisen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="222"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="221"/>
         <source>Building</source>
         <translation>Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="223"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="222"/>
         <source>New building name:</source>
         <translation>Name des neuen Gebäudes:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="229"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="228"/>
         <source>Adding building &apos;%1&apos;</source>
         <translation>Gebäude „%1“ wird hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="256"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="255"/>
         <source>Level</source>
         <translation>Geschoss</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="257"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="256"/>
         <source>Add building level</source>
         <translation>Geschoss hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="257"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="256"/>
         <source>New building level/floor name:</source>
         <translation>Neuer Geschoss/Etage Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="264"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="263"/>
         <source>Adding building level &apos;%1&apos;</source>
         <translation>Geschoss „%1“ wird hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="290"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="289"/>
         <source>The selected building still contains building levels, which will also be removed including all rooms they contain. Continue?</source>
         <translation>Das ausgewählte Gebäude enthält noch Geschosse, die ebenfalls mit allen darin enthaltenen Räumen entfernt werden. Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="300"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="299"/>
         <source>Removed building</source>
         <translation>Gebäude entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="312"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="311"/>
         <source>The selected building level still contains rooms, which will also be removed including all surfaces they contain. Continue?</source>
         <translation>Das ausgewählte Geschoss enthält noch Räume, die ebenfalls mit allen darin enthaltenen Flächen entfernt werden. Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="328"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="327"/>
         <source>Removed building level</source>
         <translation>Geschoss entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="380"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="379"/>
         <source>Assigned rooms to level</source>
         <translation>Zugewiesene Räume zun Geschoss</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="421"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="420"/>
         <source>Assigned levels to building</source>
         <translation>Dem Gebäude zugewiesene Geschosse</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="440"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="439"/>
         <source>Renamed building</source>
         <translation>Gebäude umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="462"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="461"/>
         <source>Renamed building level</source>
         <translation>Geschoss umbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="487"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="486"/>
         <source>Modified floor elevation</source>
         <translation>Geänderte Bodenhöhe</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="511"/>
+        <location filename="../../src/SVPropFloorManagerWidget.cpp" line="510"/>
         <source>Modified floor height</source>
         <translation>Geänderte Bodenhöhe</translation>
     </message>
@@ -11896,7 +12011,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropResultsWidget.ui" line="99"/>
         <source>convert to absolute values</source>
-        <translation type="unfinished">konvertiere zu absoluten Werten</translation>
+        <translation>konvertiere in absolute Werte</translation>
     </message>
     <message>
         <location filename="../../src/SVPropResultsWidget.ui" line="109"/>
@@ -12165,43 +12280,42 @@ p, li { white-space: pre-wrap; }
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="20"/>
         <location filename="../../src/SVPropSupplySystemsWidget.cpp" line="21"/>
         <source>Supply systems</source>
         <translation>Versorgungssysteme</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="26"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="49"/>
         <source>Select...</source>
         <translation>Auswählen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="39"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="23"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="68"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="36"/>
         <source>Exchange...</source>
         <translation>Austausch...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="84"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="75"/>
         <source>Assign</source>
         <translation>Zuordnen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="90"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="81"/>
         <source>Selected Supply System:</source>
         <translation>Ausgewähltes Versorgungssystem:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="106"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="97"/>
         <source>Assign supply system...</source>
         <translation>Versorgungssystem zuordnen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="126"/>
+        <location filename="../../src/SVPropSupplySystemsWidget.ui" line="117"/>
         <source>Remove supply system</source>
         <translation>Versorgungssystem entfernen</translation>
     </message>
@@ -12782,24 +12896,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVSettings</name>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="553"/>
-        <location filename="../../src/SVSettings.cpp" line="559"/>
-        <location filename="../../src/SVSettings.cpp" line="638"/>
+        <location filename="../../src/SVSettings.cpp" line="563"/>
+        <location filename="../../src/SVSettings.cpp" line="569"/>
+        <location filename="../../src/SVSettings.cpp" line="648"/>
         <source>Update Desktop Integration</source>
         <translation>Desktop-Integration aktualisieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="553"/>
+        <location filename="../../src/SVSettings.cpp" line="563"/>
         <source>Should the existing desktop integration and %2-file type association be updated?</source>
         <translation>Sollten die bestehende Desktop-Integration und die %2-Dateitypzuordnung aktualisiert werden?</translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="559"/>
+        <location filename="../../src/SVSettings.cpp" line="569"/>
         <source>Should %1 set up the desktop integration and associate %2-file types with %1?</source>
         <translation>Soll %1 die Desktop-Integration einrichten und %2-Dateitypen mit %1 verknüpfen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="638"/>
+        <location filename="../../src/SVSettings.cpp" line="648"/>
         <source>Created application shortcut and registered file association. Changes will take effect after next login.</source>
         <translation>Anwendungsverknüpfung erstellt und Dateizuordnung registriert. Die Änderungen werden nach der nächsten Anmeldung wirksam.</translation>
     </message>
@@ -13552,7 +13666,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="391"/>
         <source>Flat Surfaces</source>
-        <translation type="unfinished">Ebene Flächen</translation>
+        <translation>Ebene Flächen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.ui" line="398"/>
@@ -13697,12 +13811,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="573"/>
         <source>All surfaces have been filtered out because of invalid/missing components or boundary conditions, or because they are not facing the sky. Please check your model!</source>
-        <translation>Alle Flächen wurden herausgefiltert, weil Komponenten oder Randbedingungen ungültig sind oder fehlen oder weil sie nicht zum Himmel zeigen. Bitte überprüfen Sie Ihr Modell!</translation>
+        <translation>Alle Flächen wurden herausgefiltert, weil Bauteile oder Randbedingungen ungültig sind oder fehlen oder weil sie nicht zum Himmel zeigen. Bitte überprüfen Sie Ihr Modell!</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="581"/>
         <source>%1 surfaces were skipped, because they have no component assignment or have invalid boundary conditions assigned.</source>
-        <translation>%1 Flächen wurden übersprungen, weil sie keine Komponentenbelegung haben oder ihnen ungültige Randbedingungen zugewiesen wurden.</translation>
+        <translation>%1 Flächen wurden übersprungen, weil sie keine Bauteilbelegung haben oder ihnen ungültige Randbedingungen zugewiesen wurden.</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="617"/>
@@ -13949,17 +14063,17 @@ p, li { white-space: pre-wrap; }
         <translation>Passen Sie die Simulationsparameter in diesem Dialog nach Bedarf an, initialisieren Sie die Simulation testweise und starten Sie dann den FMU-Generierungsprozess indem Sie auf &quot;FMU exportieren ...&quot; klicken!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="496"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="507"/>
         <source>Error running NANDRAD solver executable or the selected terminal emulator.</source>
         <translation>Fehler bei Ausführung des NANDRAD-Solvers oder des ausgewählten Terminalemulators.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="501"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="512"/>
         <source>The simulation has been started as background process in a terminal window. You can close the window once the simulation has finished. Longer simulations will continue to run even if the SIM-VICUS application is closed.</source>
         <translation>Die Simulation wurde als Hintergrundprozess in einem Terminalfenster gestartet. Sie können das Fenster schließen, sobald die Simulation beendet ist. Längere Simulationen laufen weiter, auch wenn die SIM-VICUS-Anwendung geschlossen wird.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="507"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="518"/>
         <source>An error ocurred during simulation or initialization.</source>
         <translation>Bei der Simulation oder Initialisierung ist ein Fehler aufgetreten.</translation>
     </message>
@@ -14002,17 +14116,17 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Solver „%1“ konnte nicht ausgeführt werden</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="541"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="552"/>
         <source>An error occurred during NANDRAD project generation (see details below).</source>
         <translation>Während der Generierung des NANDRAD-Projekts ist ein Fehler aufgetreten (siehe Details unten).</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="542"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="553"/>
         <source>NANDRAD Project Generation Error</source>
         <translation>NANDRAD-Projektgenerierungsfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="580"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="591"/>
         <source>Could not run FMU Generator &apos;%1&apos;</source>
         <translation>Der FMU-Generator „%1“ konnte nicht ausgeführt werden</translation>
     </message>
@@ -14255,7 +14369,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVSmartSelectDialog.cpp" line="103"/>
         <source>Components</source>
-        <translation>Komponenten</translation>
+        <translation>Bauteile</translation>
     </message>
     <message>
         <location filename="../../src/SVSmartSelectDialog.cpp" line="112"/>
@@ -14501,7 +14615,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVView3DDialog.cpp" line="419"/>
         <source>Error running view-factor calculcation with View3D for room &apos;%2&apos;. See Error-log below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler bei der Berechnung des Sichtfaktors mittels View3D für Raum &apos;%2&apos;. Siehe Fehlerprotokoll unten.</translation>
     </message>
     <message>
         <source>Error running View3D program &apos;%1&apos;</source>
@@ -14510,7 +14624,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVView3DDialog.cpp" line="420"/>
         <source>View-factor generation error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler bei der Erzeugung des Sichtfaktors</translation>
     </message>
     <message>
         <location filename="../../src/SVView3DDialog.cpp" line="438"/>
@@ -14562,13 +14676,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVWelcomeScreen.cpp" line="100"/>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="225"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="227"/>
         <source>Examples/Validation cases</source>
         <translation>Beispiele/Validierungsfälle</translation>
     </message>
     <message>
         <location filename="../../src/SVWelcomeScreen.cpp" line="101"/>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="166"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="168"/>
         <source>Project templates</source>
         <translation>Projektvorlagen</translation>
     </message>
@@ -14578,27 +14692,27 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="139"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="137"/>
         <source>&lt;i&gt;&lt;font color=&quot;${STYLE_H3_COLOR}&quot;&gt;Project not accessible&lt;/font&gt;&lt;/i&gt; &lt;a href=&quot;premove:%1&quot;&gt;Remove %2 from list&lt;/a&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="366"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="368"/>
         <source>unable to download news content.</source>
         <translation>keine Nachrichteninhalte herunterladen können.</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="409"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="411"/>
         <source>&lt;h1&gt;&lt;font style=&quot;color:${STYLE_H1_COLOR}&quot;&gt;An update is available!&lt;/font&gt;&lt;/h1&gt;&lt;p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="410"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="412"/>
         <source>Current version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</source>
         <translation>aktuelle version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="411"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="413"/>
         <source>New Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</source>
         <translation>Neue Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</translation>
     </message>
@@ -14627,33 +14741,33 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2219"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2222"/>
         <source>All objects selected</source>
         <translation>Alle Objekte ausgewählt</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2288"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2291"/>
         <source>Selected cleared</source>
         <translation>Ausgewählt gelöscht</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2304"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2307"/>
         <source>Removing selected geometry</source>
         <translation>Ausgewählte Geometrie entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2322"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2340"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2325"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2343"/>
         <source>Visibility changed</source>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3188"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3203"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DRubberbandObject.cpp" line="493"/>
+        <location filename="../../src/core3D/Vic3DRubberbandObject.cpp" line="507"/>
         <source>Select objects</source>
         <translation>Wähle Objekte aus</translation>
     </message>
