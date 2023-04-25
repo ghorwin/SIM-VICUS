@@ -23,7 +23,7 @@ SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *
 	m_ui(new Ui::SVPropBuildingSurfaceHeatingWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->mainGridLayout->setMargin(0);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(6);
 	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B") << tr("Supply system"));

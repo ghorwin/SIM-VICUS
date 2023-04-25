@@ -56,7 +56,6 @@ SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	m_ui->verticalLayout->setMargin(0);
-	m_ui->verticalLayoutPage->setMargin(0);
 	QStringList header;
 	header << tr("Building/Floor") << tr("Elevation [m]") << tr("Height [m]");
 	m_ui->treeWidget->setHeaderLabels(header);

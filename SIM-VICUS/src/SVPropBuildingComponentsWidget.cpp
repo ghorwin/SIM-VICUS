@@ -16,7 +16,7 @@ SVPropBuildingComponentsWidget::SVPropBuildingComponentsWidget(QWidget *parent) 
 	m_ui(new Ui::SVPropBuildingComponentsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->mainGridLayout->setMargin(0);
 
 	m_ui->tableWidgetComponents->setColumnCount(2);
 	m_ui->tableWidgetComponents->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component"));

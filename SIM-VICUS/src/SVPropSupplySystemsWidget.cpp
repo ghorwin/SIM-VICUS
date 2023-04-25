@@ -15,7 +15,7 @@ SVPropSupplySystemsWidget::SVPropSupplySystemsWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropSupplySystemsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->mainGridLayout->setMargin(0);
 
 	m_ui->tableWidgetSupplySystems->setColumnCount(2);
 	m_ui->tableWidgetSupplySystems->setHorizontalHeaderLabels(QStringList() << QString() << tr("Supply systems"));

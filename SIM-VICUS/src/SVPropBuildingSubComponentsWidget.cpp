@@ -16,7 +16,7 @@ SVPropBuildingSubComponentsWidget::SVPropBuildingSubComponentsWidget(QWidget *pa
 	m_ui(new Ui::SVPropBuildingSubComponentsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	m_ui->gridLayout->setMargin(0);
 
 	m_ui->tableWidgetSubSurfaceComponents->setColumnCount(3);
 	m_ui->tableWidgetSubSurfaceComponents->setHorizontalHeaderLabels(QStringList() << QString() << tr("Type") << tr("Sub-Surface Component") );

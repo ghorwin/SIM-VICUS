@@ -24,7 +24,7 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 	m_ui(new Ui::SVPropBuildingSurfaceConnectionWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayoutMain->setMargin(0);
+	m_ui->mainGridLayout->setMargin(0);
 
 	m_ui->tableWidgetInterlinkedSurfaces->setColumnCount(5);
 	m_ui->tableWidgetInterlinkedSurfaces->setHorizontalHeaderLabels(QStringList() << tr("") << tr("CI id") << tr("Surface Side A") << tr("Surface Side B") << tr("Component") );
