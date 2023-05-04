@@ -1415,7 +1415,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			if(outputLists.find(key) != outputLists.end())
 				outputListName = outputLists.at(key);
 			else {
-				outputLists[key] = "Outputs-" + IBK::val2string(objectListCount++);
+				outputListName = "Outputs-" + IBK::val2string(objectListCount++);
+				outputLists[key] = outputListName;
 
 				ol.m_referenceType = type;
 				ol.m_name = outputListName;
