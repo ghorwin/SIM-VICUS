@@ -99,9 +99,8 @@ void ShadingCalculationProgress::notify(double percentage) {
 
 	QTime remainingTime (0,0,0);
 	remainingTime = remainingTime.addSecs(remainingSecs);
-	QString labelText = tr("Calculating Shading factors\nRemaining time: %1 h %2 min")
-							.arg(remainingTime.toString("hh"))
-							.arg(remainingTime.toString("mm"));
+	QString labelText = tr("Calculating Shading factors\nRemaining time: %1")
+							.arg(remainingTime.toString() );
 	m_dlg->setLabelText(labelText);
 	qApp->processEvents();
 	if (m_dlg->wasCanceled())
@@ -500,7 +499,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		}
 
 
-		IBKMK::Polygon3D poly = s->geometry().polygon3D().vertexes();
+		IBKMK::Polygon3D poly = s->geometry().polygon3D();
 		const IBKMK::Polygon3D obstaclePoly = s->geometry().polygon3D().vertexes();
 		if(m_geometryType == Extruded){
 
@@ -693,8 +692,11 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	// *** compute shading ***
 
+	SVProjectHandler &prj = SVProjectHandler::instance();
+	QDir projectDir = QFileInfo(prj.projectFile()).dir();
+
 	double gridSize = m_ui->lineEditGridSize->value();
-	m_shading->calculateShadingFactors(&progressNotifyer, gridSize, useClipping);
+	m_shading->calculateShadingFactors(&progressNotifyer, gridSize, useClipping, IBK::Path(projectDir.absolutePath().toStdString()));
 
 	if (progressNotifyer.m_aborted) {
 		QMessageBox::information(this, QString(), tr("Calculation of shading factors was aborted."));
@@ -702,9 +704,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	}
 
 	progressDialog.hide();
-
-	SVProjectHandler &prj = SVProjectHandler::instance();
-	QDir projectDir = QFileInfo(prj.projectFile()).dir();
 
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	IBK::Path exportFile;
