@@ -7,7 +7,7 @@ Um Gebäudekomponenten wie Wände, Decken und Böden usw. zu modellieren, ist es
 [[materials]]
 ## Materialien
 
-In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens `materials`. 
+In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens `Materials`. 
 
 .Materialien mit Parametern
 ====
@@ -34,7 +34,7 @@ In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-tag namens `
 [options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
-| `id` | Eindeutige ID des Materials. | > 0 |  _erforderlich_ Informations-/Fehlermeldungen verwendet). | string | _optional_
+| `id` | Eindeutige ID des Materials. | > 0 |  _erforderlich_ 
 | `displayName`  |  Name des Materials (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
 |====================
 
