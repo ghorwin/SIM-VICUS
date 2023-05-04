@@ -341,6 +341,8 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	if ( !tsvFile.is_open() )
 		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
 
+	if( tsvFile.fail() )
+		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
 
 	// we have a map of different sunConeNormals to sunPositions i.e. time points in vector m_indexesOfSimilarNormals
 	// we now generate the reverse mapping by creating a vector of sunConeNormal indexes corresponding to each sampling
