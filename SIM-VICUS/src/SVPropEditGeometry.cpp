@@ -953,7 +953,8 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 	if (SVViewStateHandler::instance().m_geometryView == nullptr)
 		return; // do nothing while initializing
 	// adjust appearance of local coordinate system
-	if (m_ui->stackedWidget->currentIndex() == MT_Align) {
+	if (m_ui->stackedWidget->currentIndex() == MT_Align ||
+			m_ui->stackedWidget->currentIndex() == MT_Copy) {
 		// put local coordinate system back into "plain" mode
 		if (cso->m_geometryTransformMode != 0) {
 			cso->m_geometryTransformMode = 0;
