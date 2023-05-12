@@ -184,8 +184,7 @@ void SVDBScheduleTableModel::resetModel() {
 
 QModelIndex SVDBScheduleTableModel::addNewItem() {
 	VICUS::Schedule sched;
-	sched.m_displayName.setEncodedString("en:<new schedule>");
-
+	sched.m_displayName.setString(tr("<new schedule>").toStdString(), IBK::MultiLanguageString::m_language);
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_schedules.add( sched );
 	endInsertRows();

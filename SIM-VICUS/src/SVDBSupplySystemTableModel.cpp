@@ -164,7 +164,7 @@ void SVDBSupplySystemTableModel::resetModel() {
 
 QModelIndex SVDBSupplySystemTableModel::addNewItem() {
 	VICUS::SupplySystem supplySys;
-	supplySys.m_displayName.setEncodedString("en:<new supply system>");
+	supplySys.m_displayName.setString(tr("<new supply system>").toStdString(), IBK::MultiLanguageString::m_language);
 	supplySys.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());

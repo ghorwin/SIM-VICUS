@@ -132,7 +132,7 @@ void SVDBSubNetworkTableModel::resetModel() {
 
 QModelIndex SVDBSubNetworkTableModel::addNewItem() {
 	VICUS::SubNetwork bc;
-	bc.m_displayName.setEncodedString("en:<new sub network>");
+	bc.m_displayName.setString(tr("<new sub network>").toStdString(), IBK::MultiLanguageString::m_language);
 	bc.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
