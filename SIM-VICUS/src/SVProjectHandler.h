@@ -361,7 +361,7 @@ private:
 		Access to the project instance is strictly forbidden and should only be granted
 		to undo actions via a suitable mechanism.
 	*/
-	VICUS::Project		*m_project;
+	VICUS::Project			*m_project;
 
 	/*! Holds the time stamp of the last time the project was read.
 		This time stamp is updated in read() and used to check for external project modifications.

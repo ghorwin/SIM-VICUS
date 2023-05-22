@@ -81,7 +81,7 @@ AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * ot
 			return Different;
 	}
 
-	if (m_idEpds != otherMaterial->m_idEpds)
+	if (m_epdCategorySet != otherMaterial->m_epdCategorySet)
 		return Different;
 
 	// check meta data

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>399</height>
+    <height>747</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -137,6 +137,157 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="EPD">
+      <property name="accessibleName">
+       <string/>
+      </property>
+      <attribute name="title">
+       <string>EPD</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="3" column="0" colspan="2">
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>Assign EPD to all Categories</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QTabWidget" name="tabWidgetLca">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="production">
+          <attribute name="title">
+           <string>Production</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatA">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatA">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatA">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>300</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="usage">
+          <attribute name="title">
+           <string>Usage</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatB">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatB">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatB">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="disposal">
+          <attribute name="title">
+           <string>Disposal</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_12">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatC">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatC">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatC">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="deposit">
+          <attribute name="title">
+           <string>Deposit</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_13">
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditCatD">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonSelectCatD">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetCatD"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="Information">
       <attribute name="title">
        <string>Information</string>
@@ -216,6 +367,19 @@
    <header location="global">QtExt_ColorButton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineEditDensity</tabstop>
+  <tabstop>lineEditSpecHeatCapacity</tabstop>
+  <tabstop>graphicsViewCategoryPicture</tabstop>
+  <tabstop>lineEditManufacturer</tabstop>
+  <tabstop>lineEditDataSource</tabstop>
+  <tabstop>lineEditNotes</tabstop>
+  <tabstop>tabWidgetThermal</tabstop>
+  <tabstop>lineEditConductivity</tabstop>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>pushButtonColor</tabstop>
+  <tabstop>comboBoxCategory</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

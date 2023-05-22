@@ -328,7 +328,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* far */            farDistance
 				);
 	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
-
+//	m_projection.ortho(-.02*width, .02*width, -.02*height, .02*height, -farDistance, farDistance);
 	// the small view projection matrix is constant
 	m_smallViewProjection.setToIdentity();
 	// create projection matrix, i.e. camera lens

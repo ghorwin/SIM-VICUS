@@ -148,6 +148,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
+    <addaction name="actionDBEpdElements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
@@ -181,6 +182,7 @@
     </widget>
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="separator"/>
+    <addaction name="actionLccLcaAnalysis"/>
     <addaction name="actionCalculateViewFactors"/>
     <addaction name="actionSimulationExportFMI"/>
     <addaction name="separator"/>
@@ -859,6 +861,16 @@
    <property name="text">
     <string>Export network as geoJSON...</string>
    </property>
+  </action>
+  <action name="actionDBEpdElements">
+   <property name="text">
+    <string>EPD-Datasets...</string>
+   </property>
+  </action>
+  <action name="actionLccLcaAnalysis">
+   <property name="text">
+    <string>LCC / LCA - Analysis</string>
+      </property>
   </action>
   <action name="actionCalculateViewFactors">
    <property name="text">

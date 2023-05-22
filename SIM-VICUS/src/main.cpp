@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
 	// Compose program name using the always use the major.minor version variant,
 	// since this string is used to identify the registry/config file location.
-	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
+	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION);
 
 	// *** Create and initialize setting object ***
 
@@ -243,7 +243,7 @@ int main(int argc, char *argv[]) {
 
 		// draw "Version"
 		painter.setPen(Qt::white);
-		painter.drawText(615.0/ratio, 541.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("v %1").arg(VICUS::LONG_VERSION));
+		painter.drawText(615.0/ratio, 548.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::LONG_VERSION));
 
 		id = QFontDatabase::addApplicationFont(":/fonts/Manrope-Medium.otf");
 		family = QFontDatabase::applicationFontFamilies(id).at(0);

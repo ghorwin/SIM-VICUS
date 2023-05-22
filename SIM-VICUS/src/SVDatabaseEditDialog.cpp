@@ -36,6 +36,7 @@
 #include <QSplitter>
 #include <QScreen>
 
+
 #include "SVSettings.h"
 #include "SVStyle.h"
 #include "SVPreferencesPageStyle.h"
@@ -49,6 +50,8 @@
 
 #include "SVDBMaterialTableModel.h"
 #include "SVDBMaterialEditWidget.h"
+#include "SVDBEpdTableModel.h"
+#include "SVDBEpdEditWidget.h"
 #include "SVDBConstructionTableModel.h"
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
@@ -272,7 +275,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId, bool resetMode
 
 bool SVDatabaseEditDialog::eventFilter(QObject * obj, QEvent * event) {
 	if(obj == m_ui->tableView && event->type() == QEvent::Resize) {
-		m_ui->tableView->resizeRowsToContents();
+		// m_ui->tableView->resizeRowsToContents();
 	}
 	return QObject::eventFilter(obj, event);
 }
@@ -398,6 +401,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
 			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
+			case SVDatabase::DT_EpdDatasets:			SVSettings::instance().m_db.m_epdDatasets.removeUserElements(); break;
 			case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
 			case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
 			case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
@@ -554,6 +558,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 		tr("Material Database"), tr("Material properties"), true
 	);
 	resizeDBDialog(dlg);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createEpdEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBEpdTableModel(parent, SVSettings::instance().m_db),
+		new SVDBEpdEditWidget(parent),
+		tr("EPD Database"), tr("EPD properties"), true
+	);
+	dlg->resize(1400,600);
 	return dlg;
 }
 

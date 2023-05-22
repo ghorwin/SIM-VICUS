@@ -107,6 +107,10 @@ private slots:
 	void on_comboBoxColumn_currentIndexChanged(int /*index*/);
 
 	void on_lineEditFilter_returnPressed();
+	
+	void on_toolButtonApplyFilter_clicked();
+
+	void on_comboBoxColumn_currentIndexChanged(int index);
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.
@@ -120,6 +124,7 @@ private:
 
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createEpdEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSubSurfaceComponentEditDialog(QWidget * parent);

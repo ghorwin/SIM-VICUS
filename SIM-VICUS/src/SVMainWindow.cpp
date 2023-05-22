@@ -24,6 +24,7 @@
 */
 
 #include "SVMainWindow.h"
+#include "SVLcaLccSettingsDialog.h"
 #include "ui_SVMainWindow.h"
 
 #include <QCloseEvent>
@@ -95,6 +96,7 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
+#include "SVLcaLccResultsDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -255,6 +257,13 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 		m_dbMaterialEditDialog = SVDatabaseEditDialog::createMaterialEditDialog(this);
 	}
 	return m_dbMaterialEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbEpdEditDialog() {
+	if (m_dbEpdEditDialog == nullptr) {
+		m_dbEpdEditDialog = SVDatabaseEditDialog::createEpdEditDialog(this);
+	}
+	return m_dbEpdEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
@@ -1230,7 +1239,7 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 			return;
 	}
 	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
+		m_simulationStartNandrad = new SVSimulationStartNandrad(this);
 	// open simulation start dialog, with settings for climate location, simulation and
 	// solver settings and simulation start button
 	int res = m_simulationStartNandrad->edit();
@@ -2222,6 +2231,22 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
+
+void SVMainWindow::on_actionDBEpdElements_triggered() {
+	dbEpdEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionLccLcaAnalysis_triggered() {
+	VICUS::Project &prj = const_cast<VICUS::Project&>(SVProjectHandler::instance().project());
+
+	if(m_lcaLccSettingsDialog == nullptr)
+		m_lcaLccSettingsDialog = new SVLcaLccSettingsDialog(this, prj.m_lcaSettings, prj.m_lccSettings);
+
+	m_lcaLccSettingsDialog->exec();
+}
+
 
 void SVMainWindow::on_actionCalculateViewFactors_triggered() {
 	SVView3DDialog v3d;

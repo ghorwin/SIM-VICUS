@@ -329,7 +329,6 @@
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -359,7 +358,6 @@
               <property name="font">
                <font>
                 <pointsize>14</pointsize>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -419,6 +417,11 @@
      <widget class="QWidget" name="tabNetworkSettings">
       <attribute name="title">
        <string>Network Settings</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabLCASettings">
+      <attribute name="title">
+       <string>LCA/LCC Settings</string>
       </attribute>
      </widget>
     </widget>

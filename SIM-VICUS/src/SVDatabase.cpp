@@ -77,7 +77,7 @@ SVDatabase::SVDatabase() :
 	m_networkControllers(1107500),
 	m_subNetworks(1110000),
 	m_supplySystems(1085000),
-//	m_EPDElements(USER_ID_SPACE_START),
+	m_epdDatasets(1090000),
 	m_schedules(1060000),
 	m_internalLoads(1065000),
 	m_zoneControlThermostat(1067500),
@@ -87,7 +87,6 @@ SVDatabase::SVDatabase() :
 	m_ventilationNatural(1077500),
 	m_infiltration(1080000),
 	m_zoneTemplates(1082500),
-	//	SubNetworks: 1110000-1112500
 	m_acousticTemplates(1400100)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
@@ -128,6 +127,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
+		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
+		m_epdDatasets.readXML(				dbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", true);
 
 	}
 
@@ -164,7 +165,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	if (t == NUM_DT || t == DT_SubNetworks)
 		m_subNetworks.readXML(				userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
 	if (t == NUM_DT || t == DT_SupplySystems)
-		m_supplySystems.readXML(				userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", false);
+		m_supplySystems.readXML(			userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", false);
+	if (t == NUM_DT || t == DT_EpdDatasets)
+		m_epdDatasets.readXML(				userDbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -194,55 +197,30 @@ void SVDatabase::writeDatabases(DatabaseTypes t) const {
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
-	if (t == NUM_DT || t == DT_Materials)
-		m_materials.writeXML(			userDbDir / "db_materials.xml", "Materials");
-	if (t == NUM_DT || t == DT_Constructions)
-		m_constructions.writeXML(		userDbDir / "db_constructions.xml", "Constructions");
-	if (t == NUM_DT || t == DT_Windows)
-		m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
-	if (t == NUM_DT || t == DT_WindowGlazingSystems)
-		m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
-	if (t == NUM_DT || t == DT_BoundaryConditions)
-		m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
-	if (t == NUM_DT || t == DT_Components)
-		m_components.writeXML(			userDbDir / "db_components.xml", "Components");
-	if (t == NUM_DT || t == DT_SubSurfaceComponents)
-		m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
-	if (t == NUM_DT || t == DT_SurfaceHeating)
-		m_surfaceHeatings.writeXML(		userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings");
-	if (t == NUM_DT || t == DT_Pipes)
-		m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
-	if (t == NUM_DT || t == DT_Fluids)
-		m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
-	if (t == NUM_DT || t == DT_NetworkComponents)
-		m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
-	if (t == NUM_DT || t == DT_NetworkControllers)
-		m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
-	if (t == NUM_DT || t == DT_SubNetworks)
-		m_subNetworks.writeXML		(	userDbDir / "db_subNetworks.xml", "SubNetworks");
-	if (t == NUM_DT || t == DT_SupplySystems)
-		m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
-	if (t == NUM_DT || t == DT_Schedules)
-		m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
-	if (t == NUM_DT || t == DT_InternalLoads)
-		m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
-	if (t == NUM_DT || t == DT_ZoneControlThermostat)
-		m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
-	if (t == NUM_DT || t == DT_ZoneControlShading)
-		m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
-	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
-		m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
-	if (t == NUM_DT || t == DT_ZoneIdealHeatingCooling)
-		m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
-	if (t == NUM_DT || t == DT_VentilationNatural)
-		m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
-	if (t == NUM_DT || t == DT_Infiltration)
-		m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
-	if (t == NUM_DT || t == DT_ZoneTemplates)
-		m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
-//	if (t == NUM_DT || t == DT_AcousticTemplates)
-		// Acoustic templates are not written
-
+	m_materials.writeXML(			userDbDir / "db_materials.xml", "Materials");
+	m_constructions.writeXML(		userDbDir / "db_constructions.xml", "Constructions");
+	m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
+	m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
+	m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
+	m_components.writeXML(			userDbDir / "db_components.xml", "Components");
+	m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
+	m_surfaceHeatings.writeXML(		userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings");
+	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
+	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
+	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
+	m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
+	m_subNetworks.writeXML		(	userDbDir / "db_subNetworks.xml", "SubNetworks");
+	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
+	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
+	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
+	m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
+	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
+	m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
+	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
+	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
+	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
+	m_supplySystems.writeXML(		userDbDir / "db_supplySystems.xml", "SupplySystems");
+	m_epdDatasets.writeXML(			userDbDir / "db_epdDatasets.xml", "EpdDatasets");
 }
 
 
@@ -334,6 +312,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_networkControllers, m_networkControllers);
 	storeVector(p.m_embeddedDB.m_subNetworks, m_subNetworks);
 	storeVector(p.m_embeddedDB.m_supplySystems, m_supplySystems);
+	storeVector(p.m_embeddedDB.m_EPDDatasets, m_epdDatasets);
 	storeVector(p.m_embeddedDB.m_schedules, m_schedules);
 	storeVector(p.m_embeddedDB.m_internalLoads, m_internalLoads);
 	storeVector(p.m_embeddedDB.m_zoneControlThermostats, m_zoneControlThermostat);
@@ -394,6 +373,8 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 	for (auto it=m_zoneTemplates.begin(); it!=m_zoneTemplates.end(); ++it)
 		it->second.m_isReferenced = false;
 	for (auto it=m_supplySystems.begin(); it!=m_supplySystems.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_epdDatasets.begin(); it!=m_epdDatasets.end(); ++it)
 		it->second.m_isReferenced = false;
 
 
@@ -480,6 +461,7 @@ void SVDatabase::updateElementChildren() {
 	m_infiltration.clearChildren();
 	m_zoneTemplates.clearChildren();
 	m_supplySystems.clearChildren();
+	m_epdDatasets.clearChildren();
 
 
 	// Now set all children relations
@@ -704,6 +686,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_networkControllers, duplicatePairs[DT_NetworkControllers]);
 	findDublicates(m_subNetworks, duplicatePairs[DT_SubNetworks]);
 	findDublicates(m_supplySystems, duplicatePairs[DT_SupplySystems]);
+	//findDublicates(m_epdDatasets, duplicatePairs[DT_EPDDatasets]);
 	findDublicates(m_schedules, duplicatePairs[DT_Schedules]);
 	findDublicates(m_internalLoads, duplicatePairs[DT_InternalLoads]);
 	findDublicates(m_zoneControlThermostat, duplicatePairs[DT_ZoneControlThermostat]);
@@ -924,6 +907,16 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		} break;
 
 
+		case SVDatabase::DT_EpdDatasets: {
+			for (const auto & p : m_epdDatasets) {
+				VICUS::EpdDataset & c = const_cast<VICUS::EpdDataset &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_id, m_epdDatasets);
+			}
+			m_epdDatasets.remove(elementID);
+			m_epdDatasets.m_modified = true;
+		} break;
+
+
 		case SVDatabase::DT_Schedules:
 			for (const auto & p : m_internalLoads) {
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
@@ -1050,6 +1043,7 @@ void SVDatabase::removeLocalElements() {
 	m_materials.removeLocalElements();
 	m_constructions.removeLocalElements();
 	m_windows.removeLocalElements();
+	m_epdDatasets.removeLocalElements();
 	m_windowGlazingSystems.removeLocalElements();
 	m_boundaryConditions.removeLocalElements();
 	m_components.removeLocalElements();
@@ -1100,6 +1094,8 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_subNetworks.removeNotReferencedLocalElements(); break;
 		case DT_SupplySystems:
 			m_supplySystems.removeNotReferencedLocalElements(); break;
+		case DT_EpdDatasets:
+			m_epdDatasets.removeNotReferencedLocalElements(); break;
 		case DT_NetworkControllers:
 			m_networkControllers.removeNotReferencedLocalElements();  break;
 		case DT_NetworkComponents:
@@ -1196,6 +1192,9 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_SupplySystems:
 			Q_ASSERT(m_supplySystems[id] != nullptr);
 			m_supplySystems[id]->collectLocalChildren(localChildren); break;
+		case DT_EpdDatasets:
+			Q_ASSERT(m_epdDatasets[id] != nullptr);
+			m_epdDatasets[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:
 			Q_ASSERT(m_networkControllers[id] != nullptr);
 			m_networkControllers[id]->collectLocalChildren(localChildren);  break;

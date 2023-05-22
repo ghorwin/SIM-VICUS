@@ -133,7 +133,7 @@ private:
 	SVSimulationShadingOptions		*m_simulationShadingOptions = nullptr;
 	/*! Page with network options. */
 	SVSimulationNetworkOptions		*m_simulationNetworkOptions = nullptr;
-
+	/*! Page with Run request options. */
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 };
 
