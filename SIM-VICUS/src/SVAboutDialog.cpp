@@ -41,7 +41,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+	setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
 
 	int imageCount = 6;
 
@@ -55,7 +55,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	int pixmapIdx = std::rand()*imageCount/RAND_MAX;
 #endif
 
-	pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
+	pixmap.load(QString(":/gfx/saint-gobain/logo-sg.png").arg(pixmapIdx));
 
 	// is needed for high dpi screens to prevent bluring
 	pixmap.setDevicePixelRatio(SVSettings::instance().m_ratio);

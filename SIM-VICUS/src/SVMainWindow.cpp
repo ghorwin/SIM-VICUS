@@ -978,9 +978,9 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 	// request file name
 	QString filename = QFileDialog::getOpenFileName(
 				this,
-				tr("Select SIM-VICUS project"),
+				tr("Select  project"),
 				SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-			tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
+			tr(" projects and project packages (*%1 *%2);;All files (*.*)")
 			.arg(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_projectPackageSuffix), nullptr,
 			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 															);
@@ -1141,9 +1141,9 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 	QString fnameSuggestion = finfo.absoluteDir().absolutePath() + "/" + finfo.baseName() + ".vicpac";
 	QString filename = QFileDialog::getSaveFileName(
 				this,
-				tr("Specify SIM-VICUS project package"),
+				tr("Specify  project package"),
 				fnameSuggestion,
-				tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr,
+				tr(" project packages (*.vicpac);;All files (*.*)"), nullptr,
 				SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 																);
 
@@ -1497,10 +1497,10 @@ void SVMainWindow::on_actionHelpLinuxDesktopIntegration_triggered() {
 
 	SVSettings::linuxDesktopIntegration(this,
 										iconLocation,
-										"SIM-VICUS",
+										"",
 										"simvicus",
 										"Building Energy Performance and District Simulation",
-										SVSettings::instance().m_installDir + "/SIM-VICUS",
+										SVSettings::instance().m_installDir + "/",
 										"vicus"
 										);
 }
@@ -1680,7 +1680,7 @@ void SVMainWindow::onUpdateActions() {
 		updateWindowTitle();
 	}
 	else {
-		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+		setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
 		m_welcomeScreen->updateWelcomePage();
 	}
 }
@@ -1990,7 +1990,7 @@ void SVMainWindow::updateWindowTitle() {
 	}
 	if (m_projectHandler.isModified())
 		shortFileName += "*";
-	setWindowTitle(QString("SIM-VICUS %1 - %2").arg(VICUS::LONG_VERSION).arg(shortFileName));
+	setWindowTitle(QString("HBO %1 - %2").arg(VICUS::LONG_VERSION).arg(shortFileName));
 }
 
 
@@ -2106,9 +2106,9 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 			recentPath += "/" + QFileInfo(filename).baseName();
 			targetFilePath = QFileDialog::getSaveFileName(
 						this,
-						tr("Specify SIM-VICUS project"),
+						tr("Specify HBO project"),
 						recentPath,
-						tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr,
+						tr("HBO project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr,
 						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 																		);
 			if (targetFilePath.isEmpty())
@@ -2132,7 +2132,7 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 			return false;
 		if (projectFile.isEmpty()) {
 			QMessageBox::critical(this, tr("Import error"),
-								  tr("Project package does not contain a SIM-VICUS project file (%1-file).").arg(SVSettings::instance().m_projectFileSuffix));
+								  tr("Project package does not contain a HBO project file (%1-file).").arg(SVSettings::instance().m_projectFileSuffix));
 			return false;
 		}
 		// if renaming is selected, perform the renaming

@@ -107,10 +107,6 @@ private slots:
 	void on_comboBoxColumn_currentIndexChanged(int /*index*/);
 
 	void on_lineEditFilter_returnPressed();
-	
-	void on_toolButtonApplyFilter_clicked();
-
-	void on_comboBoxColumn_currentIndexChanged(int index);
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.
