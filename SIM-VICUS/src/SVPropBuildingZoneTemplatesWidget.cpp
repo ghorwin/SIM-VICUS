@@ -38,7 +38,7 @@ SVPropBuildingZoneTemplatesWidget::~SVPropBuildingZoneTemplatesWidget() {
 void SVPropBuildingZoneTemplatesWidget::updateUi() {
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, false); // we always show all in table
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // we always show only visible in table
 
 	m_zoneTemplateAssignments.clear();
 	const VICUS::Database<VICUS::ZoneTemplate> & db_zt = SVSettings::instance().m_db.m_zoneTemplates;
@@ -305,6 +305,8 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 		for (const VICUS::Surface &s : r->m_surfaces) {
 			objIds.insert(s.m_id);
 			for (const VICUS::SubSurface &ss : s.subSurfaces())
+				objIds.insert(ss.m_id);
+			for (const VICUS::Surface &ss : s.childSurfaces())
 				objIds.insert(ss.m_id);
 		}
 	}

@@ -57,7 +57,7 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for(int i=0; i<VICUS::Component::NUM_CT; ++i)
-		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
+		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	m_ui->tabLCA->setEnabled(false);

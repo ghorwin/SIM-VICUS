@@ -166,7 +166,7 @@ void SVDBInternalLoadsTableModel::resetModel() {
 
 QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	VICUS::InternalLoad intLoad;
-	intLoad.m_displayName.setEncodedString("en:<new internal load model>");
+	intLoad.m_displayName.setString(tr("<new internal loads model>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 	//category dependent

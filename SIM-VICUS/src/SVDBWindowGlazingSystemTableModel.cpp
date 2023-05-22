@@ -150,7 +150,7 @@ void SVDBWindowGlazingSystemTableModel::resetModel() {
 
 QModelIndex SVDBWindowGlazingSystemTableModel::addNewItem() {
 	VICUS::WindowGlazingSystem c;
-	c.m_displayName.setEncodedString("en:<new Window Glazing System>");
+	c.m_displayName.setString(tr("<new window glazing system>").toStdString(), IBK::MultiLanguageString::m_language);
 	c.m_color = SVStyle::randomColor();
 	VICUS::KeywordList::setParameter(c.m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, 1);
 	c.m_modelType = VICUS::WindowGlazingSystem::MT_Simple;

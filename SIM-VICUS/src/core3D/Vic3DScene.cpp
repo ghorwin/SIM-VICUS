@@ -1821,6 +1821,14 @@ void Scene::generateNetworkGeometry() {
 		qDebug() << t.elapsed() << "ms for network generation";
 }
 
+// Helper to color all child surfaces (recursive)
+void colorSubSurfaces(const VICUS::Surface &surf, const QColor &color) {
+	for(const VICUS::Surface &cs : surf.childSurfaces()) {
+		cs.m_color = color;
+		colorSubSurfaces(cs, color);
+	}
+}
+
 
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
@@ -2143,10 +2151,10 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						if (zt == nullptr)
 							continue; // no definition - keep default (gray) color
 						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces)
+						for (const VICUS::Surface & s : r.m_surfaces) {
 							s.m_color = zt->m_color;
-						// TODO : subsurfaces
-
+							colorSubSurfaces(s, zt->m_color);
+						}
 					}
 				}
 			}

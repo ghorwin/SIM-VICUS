@@ -142,7 +142,7 @@ void SVDBZoneControlThermostatTableModel::resetModel() {
 
 QModelIndex SVDBZoneControlThermostatTableModel::addNewItem() {
 	VICUS::ZoneControlThermostat ctrl;
-	ctrl.m_displayName.setEncodedString("en:<new zone control thermostat model>");
+	ctrl.m_displayName.setString(tr("<new zone control control thermostat>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 	ctrl.m_controllerType = VICUS::ZoneControlThermostat::CT_Analog;

@@ -141,7 +141,7 @@ void SVDBSurfaceHeatingTableModel::resetModel() {
 
 QModelIndex SVDBSurfaceHeatingTableModel::addNewItem() {
 	VICUS::SurfaceHeating surfHeat;
-	surfHeat.m_displayName.setEncodedString("en:<new surface heating model>");
+	surfHeat.m_displayName.setString(tr("<new surface heating>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 

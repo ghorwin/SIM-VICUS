@@ -125,7 +125,7 @@ void SVDBNetworkControllerTableModel::resetModel() {
 
 QModelIndex SVDBNetworkControllerTableModel::addNewItem() {
 	VICUS::NetworkController c;
-	c.m_displayName.setEncodedString("en:<new controller>");
+	c.m_displayName.setString(tr("<new network controller>").toStdString(), IBK::MultiLanguageString::m_language);
 	c.m_modelType = VICUS::NetworkController::MT_Constant;
 	c.m_controlledProperty = VICUS::NetworkController::CP_TemperatureDifference;
 	c.m_controllerType = VICUS::NetworkController::CT_PController;

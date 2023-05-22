@@ -158,7 +158,7 @@ void SVDBComponentTableModel::resetModel() {
 
 QModelIndex SVDBComponentTableModel::addNewItem() {
 	VICUS::Component c;
-	c.m_displayName.setEncodedString("en:<new component type>");
+	c.m_displayName.setString(tr("<new component type>").toStdString(), IBK::MultiLanguageString::m_language);
 	c.m_color = SVStyle::randomColor();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_components.add( c );

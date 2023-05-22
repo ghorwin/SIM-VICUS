@@ -142,12 +142,12 @@ void SVDBZoneControlShadingTableModel::resetModel() {
 
 QModelIndex SVDBZoneControlShadingTableModel::addNewItem() {
 	VICUS::ZoneControlShading ctrl;
-	ctrl.m_displayName.setEncodedString("en:<new zone control Shading model>");
+	ctrl.m_displayName.setString(tr("<new zone control shading model>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 
 	ctrl.m_category = VICUS::ZoneControlShading::C_GlobalHorizontalSensor;
-    VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalEast, 150);
+	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalEast, 150);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalWest, 150);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalNorth, 150);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlShading::para_t", VICUS::ZoneControlShading::P_GlobalSouth, 150);

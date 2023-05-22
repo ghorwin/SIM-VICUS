@@ -150,7 +150,7 @@ void SVDBNetworkFluidTableModel::resetModel() {
 
 QModelIndex SVDBNetworkFluidTableModel::addNewItem() {
 	VICUS::NetworkFluid f;
-	f.m_displayName.setEncodedString("en:<new fluid>");
+	f.m_displayName.setString(tr("<new fluid>").toStdString(), IBK::MultiLanguageString::m_language);
 	f.m_kinematicViscosity.m_values.setValues({0,10},{2e-6, 1e-6}); // we always need at least 2 points!
 	f.m_kinematicViscosity.m_name = "KinematicViscosity"; // important for isValid()
 	f.m_kinematicViscosity.m_xUnit = IBK::Unit("C");

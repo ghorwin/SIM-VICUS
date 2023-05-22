@@ -136,7 +136,7 @@ Eine linearere Spline ist effektiv eine Datentabelle mit x- und y-Werten, wobei 
 ----
 <IBK:LinearSpline name="ThermalLoad">
   <X unit="-">0 6 8 10 17 18 19 20</X>
-  <Y unit="-">0 0,5 0,8 1,0 0,7 0,6 0,5 0</Y>
+  <Y unit="-">0 0.5 0.8 1.0 0.7 0.6 0.5 0</Y>
 </IBK:LinearSpline>
 ----
 ====
@@ -152,7 +152,7 @@ Ein LinearSpline-Parameter ist effektiv ein erweiterter `IBK:LinearSpline`-Param
 ----
 <LinearSplineParameter name="ThermalLoad" interpolationMethod="linear">
   <X unit="h">0 6 8 10 17 18 19 20</X>
-  <Y unit="W">0 0,5 0,8 1,0 0,7 0,6 0,5 0</Y>
+  <Y unit="W">0 0.5 0.8 1.0 0.7 0.6 0.5 0</Y>
 </LinearSplineParameter>
 ----
 ====

@@ -19,7 +19,7 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO #-lHL
 
 INCLUDEPATH = \
 	../../src \
@@ -28,6 +28,7 @@ INCLUDEPATH = \
 	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../DataIO/src \
+	#../../../HeatLoad/src \
 	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}
@@ -102,7 +103,7 @@ HEADERS += \
 
 SOURCES += \
 	../../src/VICUS_AbstractDBElement.cpp \
-    ../../src/VICUS_AcousticTemplate.cpp \
+	../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \
@@ -112,6 +113,7 @@ SOURCES += \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
+	../../src/VICUS_HeatLoad12831Export.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
 	../../src/VICUS_InternalLoad.cpp \
@@ -155,7 +157,7 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
+	../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
@@ -173,7 +175,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
-        ../../src/ncg/ncg_VICUS_NetworkController.cpp \
+		../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
 	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \

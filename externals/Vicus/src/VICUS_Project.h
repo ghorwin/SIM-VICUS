@@ -238,6 +238,7 @@ public:
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 
+	void generateHeatLoadExport();
 
 	// *** STATIC FUNCTIONS ***
 

@@ -147,7 +147,7 @@ void SVDBZoneControlVentilationNaturalTableModel::resetModel() {
 
 QModelIndex SVDBZoneControlVentilationNaturalTableModel::addNewItem() {
 	VICUS::ZoneControlNaturalVentilation venti;
-	venti.m_displayName.setEncodedString("en:<new zone control VentilationNatural model>");
+	venti.m_displayName.setString(tr("<new zone control ventilation model>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax, 24.0);
