@@ -250,7 +250,7 @@ int main(int argc, char *argv[]) {
 		font = QFont(family);
 		font.setPixelSize(25/ratio);
 		painter.setFont(font);
-		painter.drawText(630.0/ratio, 430.0/ratio, 150.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::LONG_VERSION));
+		painter.drawText(580.0/ratio, 430.0/ratio, 200.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::LONG_VERSION));
 		painter.end();
 
 		// show splash screen

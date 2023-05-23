@@ -502,7 +502,7 @@
      <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;About SIM-VICUS...</string>
+    <string>&amp;About HBO...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -870,7 +870,7 @@
   <action name="actionLccLcaAnalysis">
    <property name="text">
     <string>LCC / LCA - Analysis</string>
-      </property>
+   </property>
   </action>
   <action name="actionCalculateViewFactors">
    <property name="text">

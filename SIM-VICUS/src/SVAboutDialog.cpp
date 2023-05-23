@@ -55,7 +55,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	int pixmapIdx = std::rand()*imageCount/RAND_MAX;
 #endif
 
-	pixmap.load(QString(":/gfx/saint-gobain/logo-sg.png").arg(pixmapIdx));
+	pixmap.load(QString(":/gfx/saint-gobain/logo-sg.png"));
 
 	// is needed for high dpi screens to prevent bluring
 	pixmap.setDevicePixelRatio(SVSettings::instance().m_ratio);
@@ -63,12 +63,12 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	// Load custom font
 	m_ui->label->setPixmap(pixmap);
 	QString labelStyle(
-				"font-size:12pt; color: #3caed0; text-decoration:none"
+				"font-size:12pt; color: #000000; text-decoration:none"
 				);
 
 	SVStyle::formatWelcomePage(labelStyle);
 
-	QLabel * linkLabel = new QLabel( QString("<a href=\"https://sim-vicus.de\"><span style=\"%1\">https://sim-vicus.de</span></a>").arg(labelStyle));
+	QLabel * linkLabel = new QLabel( QString("HOME & BUILDING OPTIMIZATION"));
 	linkLabel->setParent(this);
 	linkLabel->resize(400,25);
 	linkLabel->setAutoFillBackground(false);

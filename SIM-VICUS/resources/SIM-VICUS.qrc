@@ -188,5 +188,6 @@
         <file>gfx/actions/colormap_viridis.png</file>
         <file>gfx/actions/search.png</file>
         <file>gfx/actions/sound-wave.png</file>
+        <file>gfx/saint-gobain/logo-sg.png</file>
     </qresource>
 </RCC>
