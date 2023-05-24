@@ -23,6 +23,7 @@
 #include <IBKMK_3DCalculations.h>
 #include <VICUS_Object.h>
 
+#include "IBKMK_2DCalculations.h"
 #include "RC_VicusClipping.h"
 #include "RC_ClippingSurface.h"
 #include "RC_Constants.h"
@@ -295,9 +296,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		unsigned int surfOriginId = originSurf.m_id;
 
 		// Hold data of orifinal surface
-		const IBKMK::Vector3D &localX = originSurf.geometry().localX();
-		const IBKMK::Vector3D &localY = originSurf.geometry().localY();
-		const IBKMK::Vector3D &offset = originSurf.geometry().offset();
+		const IBKMK::Vector3D &localX = originSurfCopy.geometry().localX();
+		const IBKMK::Vector3D &localY = originSurfCopy.geometry().localY();
+		const IBKMK::Vector3D &offset = originSurfCopy.geometry().offset();
 
 		// Hold display name
 		QString displayName = originSurf.m_displayName;
@@ -476,7 +477,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 			// calculate new offset 3D
 			IBKMK::Vector3D newOffset3D = offset	+ localX * poly.m_polygon.vertexes()[0].m_x
-					+ localY * poly.m_polygon.vertexes()[0].m_y;
+													+ localY * poly.m_polygon.vertexes()[0].m_y;
 			// calculate new ofsset 2D
 			IBKMK::Vector2D newOffset2D = poly.m_polygon.vertexes()[0];
 
@@ -532,13 +533,15 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 
 			/// ==========================
-			/// Update sub-surfaces ======
+			/// Update sub-surfaces
+			///
 			/// If we have outside surface with windows and partially covered surfaces, that have been connected by the clipper
 			/// We have to move the windows to the difference (rest) surfaces. Since connecting surfaces are not allowed right now
 			/// to contain windows.
+			/// ==========================
 
 			// We copy our sub-surfaces
-			std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
+			std::vector<VICUS::SubSurface> subs;
 			if(!originSurfCopy.subSurfaces().empty()) {
 
 				// Cache original surface data
@@ -556,7 +559,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 				// Now we should update all sub-surfaces
 				for(unsigned int idxSub=0; idxSub<originSurfCopy.subSurfaces().size(); ++idxSub) {
-					VICUS::SubSurface &sub = subs[idxSub];
+					VICUS::SubSurface sub = originSurfCopy.subSurfaces()[idxSub]; // copy
 
 					std::vector<IBKMK::Vector2D> points(sub.m_polygon2D.vertexes().size());
 
@@ -568,7 +571,19 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 						IBKMK::planeCoordinates(offset, localX, localY, v3D, points[i].m_x, points[i].m_y);
 					}
 
-					sub.m_polygon2D = points;
+					bool pointsInPolygon = true;
+					// We also have to check if all points are inside the polygon
+					for (const IBKMK::Vector2D &v2D : points) {
+						if (IBKMK::pointInPolygon(originSurf.geometry().polygon2D().vertexes(), v2D) == -1) {
+							pointsInPolygon = false;
+							break;
+						}
+					}
+
+					if(pointsInPolygon) {
+						sub.m_polygon2D = points;
+						subs.push_back(sub);
+					}
 				}
 			}
 			// Update all child and sub-surfaces
