@@ -22,6 +22,7 @@ unix|mac {
 }
 
 LIBS += \
+        -L../../../externals/lib$${DIR_PREFIX} \
 	-lIntegratorFramework \
 	-lNandrad \
 	-lZeppelin \
