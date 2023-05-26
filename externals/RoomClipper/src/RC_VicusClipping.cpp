@@ -615,6 +615,7 @@ unsigned int VicusClipper::findComponentInstanceForSurface(unsigned int id){
 	return VICUS::INVALID_ID;
 }
 
+
 QString VicusClipper::generateUniqueName(QString name) {
 	int idx1 = name.lastIndexOf("[");
 	int idx2 = name.lastIndexOf("]");
