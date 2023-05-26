@@ -329,7 +329,7 @@ void SVDBConstructionEditWidget::updateTable() {
 			m_ui->tableWidget->setItem(i+1,4,item);
 			item->setBackground(QBrush(SVStyle::instance().m_readOnlyEditFieldBackground));
 
-			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 1));
+			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 2));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,5,item);
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -553,6 +553,9 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
+
+	// Rounds the numbers inside the table for lifetime and cost
+	updateTable();
 }
 
 
