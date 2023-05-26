@@ -24,6 +24,7 @@
 */
 
 #include "SVPropEditGeometry.h"
+#include "IBKMK_2DCalculations.h"
 #include "ui_SVPropEditGeometry.h"
 
 #include <IBK_physics.h>
@@ -1264,3 +1265,93 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 				m_selBuildings, std::vector<const VICUS::Surface*>(), localCopyTranslationVector());
 	undo->push();
 }
+
+void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
+
+	/// 1) We take all surfaces from each room
+	/// 2) We calculate the surface weight point by points
+	/// 3) We take its normal from the middle point
+	/// 4) We construct a long ray (e.g. 1000m)
+	/// 5) We check if we cut other surfaces of the room
+	/// 6) If surface cutting count is 0 or even the normal points in correct direction
+	/// 7) If surface cutting count is uneven the normal should be inverted
+
+	VICUS::Project prj = SVProjectHandler::instance().project();
+
+	std::vector<VICUS::Surface> modifiedSurfaces;
+
+	for (const VICUS::Building &b : prj.m_buildings) {
+		for (const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
+			for (const VICUS::Room &r : bl.m_rooms) {
+				for (const VICUS::Surface &s : r.m_surfaces) {
+
+					if(!s.geometry().isValid())
+						continue;
+
+					unsigned int intersectionCount = 0;
+
+					IBKMK::Vector3D center;
+					for (const IBKMK::Vector3D &v3D : s.geometry().polygon3D().vertexes()) {
+						center += v3D;
+					}
+					center /= s.geometry().polygon3D().vertexes().size();
+
+					const IBKMK::Vector3D &normal = s.geometry().normal();
+
+					for (const VICUS::Surface &sTest : r.m_surfaces) {
+
+						if (s.m_id == sTest.m_id)
+							continue;
+
+						if(!sTest.geometry().isValid())
+							continue;
+
+						const IBKMK::Vector3D &offset = sTest.geometry().offset();
+						const IBKMK::Vector3D &localX = sTest.geometry().localX();
+						const IBKMK::Vector3D &localY = sTest.geometry().localY();
+						const IBKMK::Vector3D &normalTest = sTest.geometry().normal();
+
+						IBKMK::Vector3D v;
+						IBKMK::Vector2D p;
+						double dist;
+
+						if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, normalTest, center, normal, v, dist, false))
+							continue;
+
+						if (dist < 0)
+							continue;
+
+						if (!IBKMK::planeCoordinates(offset, localX, localY, v, p.m_x, p.m_y))
+							continue;
+
+						if(IBKMK::pointInPolygon(sTest.geometry().polygon2D().vertexes(), p) == -1)
+							continue;
+
+						++intersectionCount;
+					}
+
+					if (intersectionCount > 0 && intersectionCount % 2 == 1) {
+						const_cast<VICUS::Surface &>(s).flip();
+						modifiedSurfaces.push_back(s);
+					}
+				}
+			}
+		}
+	}
+
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	undo->push();
+
+	// also disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
+	// and update our inputs again
+	updateUi();
+
+}
+
