@@ -23,6 +23,7 @@
 #include <IBKMK_3DCalculations.h>
 #include <VICUS_Object.h>
 
+#include "IBKMK_2DCalculations.h"
 #include "RC_VicusClipping.h"
 #include "RC_ClippingSurface.h"
 #include "RC_Constants.h"
@@ -50,12 +51,14 @@ void VicusClipper::addClipperPolygons(const std::vector<ClippingPolygon> &polysT
 }
 
 
-void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS::Surface &s, bool onlySelected, std::set<unsigned int> &surfaceIds) {
+void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS::Surface &s, bool onlySelected, std::set<unsigned int> *surfaceIds = nullptr) {
 	for(const VICUS::Surface &cs : s.childSurfaces()) {
-		surfaceIds.insert(cs.m_id);
+
+		if(surfaceIds != nullptr)
+			surfaceIds->insert(cs.m_id);
 
 		bool selected = true;
-		if(onlySelected && !s.m_selected)
+		if(onlySelected && !cs.m_selected)
 			selected = false;
 
 		if(selected)
@@ -81,7 +84,10 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
 					if(m_onlySelected && !s.m_selected)
 						continue;
+
 					surfaces.insert(const_cast<VICUS::Surface*>(&s));
+
+					insertChildSurfaces(surfaces, s, m_onlySelected);
 				}
 			}
 		}
@@ -261,6 +267,14 @@ const std::vector<VICUS::Building> VicusClipper::vicusBuildings() const {
 }
 
 
+void saveChildOrigin(std::map<unsigned int, unsigned int> &compInstOriginSurfId, const VICUS::Surface &s) {
+	for (const VICUS::Surface &cs : s.childSurfaces()) {
+		compInstOriginSurfId[cs.m_id] = cs.m_componentInstance->m_idComponent;
+		saveChildOrigin(compInstOriginSurfId, cs);
+	}
+}
+
+
 void VicusClipper::clipSurfaces(Notification * notify) {
 	FUNCID(VicusClipper::clipSurfaces);
 
@@ -408,8 +422,38 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					poly3D.setTranslation(newOffset3D);
 					originSurf.setPolygon3D(poly3D);		// now marked dirty = true
 
+					const IBKMK::Vector3D &offset = poly3D.offset();
+					const IBKMK::Vector3D &localX = poly3D.localX();
+					const IBKMK::Vector3D &localY = poly3D.localY();
+
+					/// ============================================================
+					/// We have to check if the child is inside our new intersection
+					///
+					///
+					///
+					/// ============================================================
+					std::vector<VICUS::Surface> newChilds;
+					for (const VICUS::Surface &cs : originSurf.childSurfaces()) {
+						const IBKMK::Polygon3D &polyChild = cs.polygon3D();
+						bool inPoly = true;
+
+						for (const IBKMK::Vector3D &v3D : polyChild.vertexes()) {
+							IBKMK::Vector2D v2D;
+							if (!IBKMK::planeCoordinates(offset, localX, localY, v3D, v2D.m_x, v2D.m_y))
+								continue;
+
+							if (IBKMK::pointInPolygon(poly3D.polyline().vertexes(), v2D) == -1) {
+								inPoly = false;
+								break;
+							}
+						}
+
+						if(inPoly)
+							newChilds.push_back(cs);
+					}
+
 					// Remove original window
-					originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), originSurf.childSurfaces());
+					originSurf.setChildAndSubSurfaces(std::vector<VICUS::SubSurface>(), newChilds);
 
 				}
 				catch (IBK::Exception &ex) {
@@ -490,14 +534,17 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			poly3D.setTranslation(newOffset3D);
 			originSurf.setPolygon3D(poly3D);		// now marked dirty = true
 
+
+			// =================================
+			// CRAZY HOLE ACTION INCOMING
+			// Now we start to handle all holes
+			// =================================
+			std::vector<VICUS::Surface> childSurfaces /*= originSurf.childSurfaces()*/; // Do not store holes.
+
 			// Reset all child and sub-surfaces
 			originSurf.setChildAndSubSurfaces(originSurfCopy.subSurfaces(), std::vector<VICUS::Surface>());
 
-			// ==========================
-			// CRAZY HOLE ACTION INCOMING
-			// Now we start to handle all holes
-
-			std::vector<VICUS::Surface> childSurfaces = originSurf.childSurfaces();
+			// Convert all holes
 			if(poly.m_haveRealHole && poly.m_holePolygons.size() > 0) {
 
 				std::vector<VICUS::Polygon2D> holes(poly.m_holePolygons.size());
@@ -530,12 +577,13 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				}
 			}
 
-
-			/// ==========================
-			/// Update sub-surfaces ======
+			/// ==================================================================================================================
+			/// Update sub-surfaces
+			/// ------------------------------------------------------------------------------------------------------------------
 			/// If we have outside surface with windows and partially covered surfaces, that have been connected by the clipper
 			/// We have to move the windows to the difference (rest) surfaces. Since connecting surfaces are not allowed right now
 			/// to contain windows.
+			/// ==================================================================================================================
 
 			// We copy our sub-surfaces
 			std::vector<VICUS::SubSurface> subs = originSurfCopy.subSurfaces();
@@ -582,6 +630,9 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			// save id origin
 			if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
 				m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
+
+			// Save Child origin
+			saveChildOrigin(m_compInstOriginSurfId, originSurf);
 
 			r->updateParents();
 		}
@@ -649,7 +700,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 					if(selected)
 						surfaces.insert(&s);
-					insertChildSurfaces(surfaces, s, m_onlySelected, surfaceIds);
+					insertChildSurfaces(surfaces, s, m_onlySelected, &surfaceIds);
 				}
 			}
 		}
