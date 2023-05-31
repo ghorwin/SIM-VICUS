@@ -1285,16 +1285,45 @@ void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
 			for (const VICUS::Room &r : bl.m_rooms) {
 				for (const VICUS::Surface &s : r.m_surfaces) {
 
-					if(!s.geometry().isValid())
+					if (!s.geometry().isValid())
+						continue;
+
+					if (!s.m_visible || !s.m_selected)
 						continue;
 
 					unsigned int intersectionCount = 0;
 
+					// Find Intersection
+
+
 					IBKMK::Vector3D center;
-					for (const IBKMK::Vector3D &v3D : s.geometry().polygon3D().vertexes()) {
-						center += v3D;
+
+
+					const IBKMK::Vector3D &offset = s.geometry().offset();
+					const IBKMK::Vector3D &localX = s.geometry().localX();
+					const IBKMK::Vector3D &localY = s.geometry().localY();
+
+					for (unsigned int i=0; i<s.geometry().polygon3D().vertexes().size(); ++i) {
+						for(unsigned int j=0; j<3; ++j) {
+							unsigned int idx = (i+j)%s.geometry().polygon3D().vertexes().size();
+							const IBKMK::Vector3D &v3D = s.geometry().polygon3D().vertexes()[idx];
+
+							center += v3D;
+						}
+
+						center /= 3.;
+
+						IBKMK::Vector2D p;
+
+						// Check if point lies within polygon
+						if (!IBKMK::planeCoordinates(offset, localX, localY, center, p.m_x, p.m_y))
+							continue;
+
+						if(IBKMK::pointInPolygon(s.geometry().polygon2D().vertexes(), p) != -1)
+							break;
+
+						center = IBKMK::Vector3D();
 					}
-					center /= s.geometry().polygon3D().vertexes().size();
 
 					const IBKMK::Vector3D &normal = s.geometry().normal();
 
@@ -1318,7 +1347,7 @@ void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
 						if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, normalTest, center, normal, v, dist, false))
 							continue;
 
-						if (dist < 0)
+						if (dist < 1E-3)
 							continue;
 
 						if (!IBKMK::planeCoordinates(offset, localX, localY, v, p.m_x, p.m_y))
