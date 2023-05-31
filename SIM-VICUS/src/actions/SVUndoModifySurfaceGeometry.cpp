@@ -69,6 +69,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 	// tell project that geometry has changed
 	// NOTE: this may be slow for larger geometries...
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged );
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged );
 }
 
 

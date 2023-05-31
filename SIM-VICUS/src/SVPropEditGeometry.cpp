@@ -1267,13 +1267,14 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 }
 
 void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
+	FUNCID(on_pushButtonFixSurfaceOrientation_clicked);
 
 	/// 1) We take all surfaces from each room
 	/// 2) We calculate the surface weight point by points
 	/// 3) We take its normal from the middle point
 	/// 4) We construct a long ray (e.g. 1000m)
 	/// 5) We check if we cut other surfaces of the room
-	/// 6) If surface cutting count is 0 or even the normal points in correct direction
+	/// 6) If surface cutting count is 0 or even the normal points into correct direction
 	/// 7) If surface cutting count is uneven the normal should be inverted
 
 	VICUS::Project prj = SVProjectHandler::instance().project();
@@ -1294,10 +1295,7 @@ void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
 					unsigned int intersectionCount = 0;
 
 					// Find Intersection
-
-
 					IBKMK::Vector3D center;
-
 
 					const IBKMK::Vector3D &offset = s.geometry().offset();
 					const IBKMK::Vector3D &localX = s.geometry().localX();
@@ -1360,7 +1358,10 @@ void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
 					}
 
 					if (intersectionCount > 0 && intersectionCount % 2 == 1) {
+						IBK::IBK_Message(IBK::FormatString("Surface #%2 %1 is beeing flipped.").arg(s.m_displayName.toStdString()).arg(s.m_id), IBK::MSG_WARNING, FUNC_ID);
+
 						const_cast<VICUS::Surface &>(s).flip();
+						const_cast<VICUS::Surface &>(s).initializeColorBasedOnInclination(); // reset color
 						modifiedSurfaces.push_back(s);
 					}
 				}
