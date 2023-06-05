@@ -9,7 +9,10 @@
 
 #include <IBK_MessageHandler.h>
 
+#include <RC_VicusClipping.h>
+
 #include "SVMessageHandler.h"
+#include "SVDatabase.h"
 
 namespace Ui {
 class SVSmartIntersectionDialog;
@@ -24,7 +27,7 @@ public:
     enum ClippingResults {
         AcceptClipping,
         CancelledClipping
-    };
+	};
 
     explicit SVSmartIntersectionDialog(QWidget *parent = nullptr);
     ~SVSmartIntersectionDialog();
@@ -43,22 +46,49 @@ private slots:
 
     void on_pushButtonCancel_clicked();
 
+	void on_toolButtonSelectInteriorWall_clicked();
+
+	void on_toolButtonSelectExteriorWall_clicked();
+
+	void on_toolButtonSelectCeiling_clicked();
+
+	void on_toolButtonSelectFloor_clicked();
+
+	void on_toolButtonSelectRoof_clicked();
+
 private:
-    Ui::SVSmartIntersectionDialog *m_ui;
+	/*! Updated the standard construction with the specified component id. */
+	void updateStandardConstruction(const RC::VicusClipper::PredefinedComponentType &type);
+
+	/*! Updates the Ui with all specific data. */
+	void updateUi();
+
+	/*! Pointer to Ui. */
+	Ui::SVSmartIntersectionDialog			*m_ui;
 
     /*! Maximum distance between surfaces used for clipping. */
-    double                                   m_maxDistance;
+	double									m_maxDistance;
+
     /*! Maximum angle between normals of surfaces used for clipping. */
-    double                                   m_maxAngle;
+	double									m_maxAngle;
 
     /*! Copy of all buildings. */
-    std::vector<VICUS::Building>             m_buildings;
+	std::vector<VICUS::Building>			m_buildings;
 
     /*! Copy of all component instances. */
-	std::vector<VICUS::ComponentInstance>    m_componentInstances;
+	std::vector<VICUS::ComponentInstance>	m_componentInstances;
 
     /*! Return Code of Clipping. */
-    ClippingResults                          m_returnCode;
+	ClippingResults							m_returnCode;
+
+	/*! Cached pointer to database object. */
+	SVDatabase								*m_db;
+
+	/*! Predefined components for all clipping operations.
+		Will be taken if surfaces do not contain any component instance prior to
+		the clipping process.
+	*/
+	unsigned int							m_predefinedComponentIds[RC::VicusClipper::PredefinedComponentType::NUM_PDC];
 };
 
 
