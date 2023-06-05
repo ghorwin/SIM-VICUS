@@ -19,11 +19,12 @@
 	GNU General Public License for more details.
 */
 
-
-#include <IBKMK_3DCalculations.h>
 #include <VICUS_Object.h>
 
+#include <IBKMK_3DCalculations.h>
 #include "IBKMK_2DCalculations.h"
+#include "IBKMK_3DCalculations.h"
+
 #include "RC_VicusClipping.h"
 #include "RC_ClippingSurface.h"
 #include "RC_Constants.h"
@@ -258,6 +259,14 @@ void VicusClipper::addSurfaceToClippingPolygons(const VICUS::Surface &surf, std:
 	}
 }
 
+void VicusClipper::setPrj(const VICUS::Project &newPrj) {
+	m_prj = newPrj;
+}
+
+void VicusClipper::setStandardConstruction(PredefinedComponentType pdcType, unsigned int id) {
+	m_predefinedComponents[pdcType]	= id;
+}
+
 const std::vector<VICUS::ComponentInstance>* VicusClipper::vicusCompInstances() const {
 	return &m_vicusCompInstances;
 }
@@ -269,6 +278,8 @@ const std::vector<VICUS::Building> VicusClipper::vicusBuildings() const {
 
 void saveChildOrigin(std::map<unsigned int, unsigned int> &compInstOriginSurfId, const VICUS::Surface &s) {
 	for (const VICUS::Surface &cs : s.childSurfaces()) {
+		if(cs.m_componentInstance == nullptr)
+			continue; // skip invalid comp instances
 		compInstOriginSurfId[cs.m_id] = cs.m_componentInstance->m_idComponent;
 		saveChildOrigin(compInstOriginSurfId, cs);
 	}
@@ -652,12 +663,32 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 }
 
 
-unsigned int VicusClipper::findComponentInstanceForSurface(unsigned int id){
+unsigned int VicusClipper::findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface){
 	for(unsigned int i=0; i<m_vicusCompInstances.size(); ++i){
 		VICUS::ComponentInstance& ci = m_vicusCompInstances[i];
-		if(ci.m_idSideASurface == id){
+		if(ci.m_idSideASurface == s.m_id){
 			return ci.m_idComponent;
 		}
+	}
+
+	// Search for standard components
+	double angleZ = IBKMK::angleBetweenVectorsDeg(s.geometry().normal(), IBKMK::Vector3D(0,0,1));
+
+	if (coupledSurface) {
+		if (angleZ < 45 || angleZ > 315)
+			return m_predefinedComponents[PredefinedComponentType::PDC_Ceiling];
+		else if (angleZ > 45 && angleZ < 135)
+			return m_predefinedComponents[PredefinedComponentType::PDC_InteriorWall];
+		else if (angleZ > 135 && angleZ < 225)
+			return m_predefinedComponents[PredefinedComponentType::PDC_Ceiling];
+	}
+	else {
+		if (angleZ < 45 || angleZ > 315)
+			return m_predefinedComponents[PredefinedComponentType::PDC_Roof];
+		else if (angleZ > 45 && angleZ < 135)
+			return m_predefinedComponents[PredefinedComponentType::PDC_ExteriorWall];
+		else if (angleZ > 135 && angleZ < 225)
+			return m_predefinedComponents[PredefinedComponentType::PDC_Floor];
 	}
 
 	return VICUS::INVALID_ID;
@@ -779,10 +810,16 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 #ifdef DETAILED_INFO
 		qDebug() << "-----------------------------";
 #endif
-		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end() )
-			continue;
 
-		unsigned int compId = m_compInstOriginSurfId[surfA->m_id];
+		bool foundOriginCompInstance = false;
+		unsigned int compId;
+		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end())
+			compId = findComponentInstanceForSurface(*surfA);
+		else {
+			compId = m_compInstOriginSurfId[surfA->m_id];
+			foundOriginCompInstance = true;
+		}
+
 		VICUS::ComponentInstance ci(++nextId, compId, surfA->m_id, VICUS::INVALID_ID);
 
 		// get old construction instance properties and replace old id
@@ -906,10 +943,10 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 						intersections[0].m_polygon.isValid() &&
 						IBK::nearly_equal<1>(intersections[0].m_polygon.area(), surfA->geometry().area())){
 
-					unsigned int compIdB = findComponentInstanceForSurface(m_compInstOriginSurfId[s2->m_id]);
 					// find old components
-					if(compId == VICUS::INVALID_ID)
-						compId = compIdB;
+					if(!foundOriginCompInstance) {
+						compId = findComponentInstanceForSurface(*surfA, true);
+					}
 
 					// if both ids are invalid take invalid
 					// qDebug() << "Fläche " << surfA->m_displayName << " wird mit Fläche " << surfB->m_displayName<< " gekoppelt.";
@@ -924,8 +961,19 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 									 .arg(s2->m_parent->m_displayName.toStdString(), 20, std::ios_base::left)
 									 .arg(s2->m_displayName.toStdString(), 20, std::ios_base::left), IBK::MSG_PROGRESS);
 
+
+					VICUS::Surface *sA = s1;
+					VICUS::Surface *sB = s2;
+
+					// CHeck that ceiling is always pointing upwards
+					double angleZ2 = IBKMK::angleBetweenVectorsDeg(s2->geometry().normal(), IBKMK::Vector3D(0,0,1));
+					if (angleZ2 < 45 || angleZ2 > 315) {
+						sA = s2;
+						sB = s1;
+					}
+
 					// build new component
-					ci = VICUS::ComponentInstance(++nextId, compId, s1->m_id, s2->m_id);
+					ci = VICUS::ComponentInstance(++nextId, compId, sA->m_id, sB->m_id);
 					//handledSurfaces.insert(s1->m_id);
 					handledSurfaces.insert(s2->m_id);
 					break;
