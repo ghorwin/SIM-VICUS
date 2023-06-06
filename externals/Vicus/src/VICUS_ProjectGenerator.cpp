@@ -821,11 +821,11 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 				std::map<unsigned int, std::vector<double>>::const_iterator itSurf = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
 				if (itSurf == surfaces[i].m_viewFactors.m_values.end()) {
-					errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId2));
+					errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(surfaces[i].m_displayName).arg(surfaces[j].m_displayName));
 					return;
 				}
 				if (itSurf->second.empty()) {
-					errorStack.append(tr("Invalid view factor pairs!"));
+					errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(surfaces[i].m_displayName).arg(surfaces[j].m_displayName));
 					return;
 				}
 
@@ -854,12 +854,12 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 						std::map<unsigned int, std::vector<double>>::const_iterator itSubSurf2 = subSurf1.m_viewFactors.m_values.find(subSurf2.m_id);
 						if (itSubSurf2 == subSurf1.m_viewFactors.m_values.end()) {
-							errorStack.append(tr("Invalid view factor pairs!"));
+							errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(subSurf1.m_displayName).arg(subSurf2.m_displayName));
 							return;
 						}
 
 						if (itSubSurf2->second.empty()) {
-							errorStack.append(tr("Invalid view factor pairs!"));
+							errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(subSurf1.m_displayName).arg(subSurf2.m_displayName));
 							return;
 						}
 
@@ -874,11 +874,11 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 					std::map<unsigned int, std::vector<double>>::const_iterator  itSubSurf1 = surfaces[i].m_viewFactors.m_values.find(subSurf1.m_id);
 					if (itSubSurf1 == surfaces[i].m_viewFactors.m_values.end()) {
-						errorStack.append(tr("Invalid view factor pairs!"));
+						errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(surfaces[i].m_displayName).arg(subSurf1.m_displayName));
 						return;
 					}
 					if (itSubSurf1->second.empty()) {
-						errorStack.append(tr("Invalid view factor pairs!"));
+						errorStack.append(tr("Missing view-factors between surface %1 and surface %2").arg(surfaces[i].m_displayName).arg(subSurf1.m_displayName));
 						return;
 					}
 
