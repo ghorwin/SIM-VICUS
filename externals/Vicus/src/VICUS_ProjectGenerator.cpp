@@ -793,7 +793,7 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 			// get the nandrad ids
 			if(componentInstanceMapping.find(compInstId1) == componentInstanceMapping.end()) {
 				errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId1));
-				return;	 // Should not happen
+				return;
 			}
 
 			unsigned int constInstId1Nandrad = componentInstanceMapping.at(compInstId1);
@@ -816,20 +816,23 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 				if(surfaces[i].m_viewFactors.m_values.empty()) {
 					errorStack.append(tr("Invalid view factor pairs!"));
-					return;	 // Should not happen
-				}
+					return;
 
 				std::map<unsigned int, std::vector<double>>::const_iterator itSurf = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
-				if(itSurf == surfaces[i].m_viewFactors.m_values.end() && itSurf->second.empty()) {
+				if (itSurf == surfaces[i].m_viewFactors.m_values.end()) {
 					errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId2));
-					return;	 // Should not happen
+					return;
+				}
+				if (itSurf->second.empty()) {
+					errorStack.append(tr("Invalid view factor pairs!"));
+					return;
 				}
 
 				double vF = itSurf->second[0];
 
 				if(componentInstanceMapping.find(compInstId2) == componentInstanceMapping.end()) {
 					errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId2));
-					return;	 // Should not happen
+					return;
 				}
 
 				unsigned int constInstId2Nandrad = componentInstanceMapping.at(compInstId2);
