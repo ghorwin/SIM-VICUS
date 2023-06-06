@@ -510,7 +510,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 			m_surfNames.insert(s->m_displayName );
 			if (s->m_selected && s->m_visible)
 				m_selSurfaces.push_back(s);
-			//selectChildSurfaces(m_selSurfaces, *s);
+			selectChildSurfaces(m_selSurfaces, *s);
 		}
 		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(o);
 		if (r != nullptr ) {
@@ -1088,14 +1088,14 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 				// now set the new subsurface polygon
 				sub.m_polygon2D.setVertexes(polyVerts);
 			}
-			for (VICUS::Surface & child : modChilds) {
-				std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
-				for (IBKMK::Vector3D & v : verts) {
-					v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
-				}
-				// now set the new subsurface polygon
-				const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
-			}
+//			for (VICUS::Surface & child : modChilds) {
+//				std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
+//				for (IBKMK::Vector3D & v : verts) {
+//					v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+//				}
+//				// now set the new subsurface polygon
+//				const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
+//			}
 
 			modS.setPolygon3D((VICUS::Polygon3D)poly);
 			modS.setChildAndSubSurfaces(modSubs, modChilds);
