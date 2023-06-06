@@ -817,6 +817,7 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				if(surfaces[i].m_viewFactors.m_values.empty()) {
 					errorStack.append(tr("Invalid view factor pairs!"));
 					return;
+				}
 
 				std::map<unsigned int, std::vector<double>>::const_iterator itSurf = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
 				if (itSurf == surfaces[i].m_viewFactors.m_values.end()) {
