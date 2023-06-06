@@ -523,11 +523,9 @@ bool SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::hasVentilationCo
 	}
 
 	// retrieve zone remplate
-	const VICUS::ZoneTemplate * zoneTemplate = dynamic_cast<const VICUS::ZoneTemplate*>
-			(VICUS::element(project.m_embeddedDB.m_zoneTemplates,
-							 room.m_idZoneTemplate) );
+	const VICUS::ZoneTemplate * zoneTemplate = SVSettings::instance().m_db.m_zoneTemplates[room.m_idZoneTemplate];
 
-	// shouöd be checked in initialization
+	// should be checked in initialization
 	IBK_ASSERT(zoneTemplate != nullptr);
 
 	// find out id to corresponding person load and occupancy schedule:
