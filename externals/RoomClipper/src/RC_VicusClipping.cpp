@@ -965,7 +965,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					VICUS::Surface *sA = s1;
 					VICUS::Surface *sB = s2;
 
-					// CHeck that ceiling is always pointing upwards
+					// Check that ceiling is always pointing upwards (Side A on top and Side B on bottom)
 					double angleZ2 = IBKMK::angleBetweenVectorsDeg(s2->geometry().normal(), IBKMK::Vector3D(0,0,1));
 					if (angleZ2 < 45 || angleZ2 > 315) {
 						sA = s2;
