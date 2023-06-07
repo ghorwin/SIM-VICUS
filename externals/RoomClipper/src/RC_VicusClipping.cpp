@@ -1025,6 +1025,18 @@ ClippingSurface & VicusClipper::findClippingSurface(unsigned int id, const std::
 	return m_clippingSurfaces[idx];
 }
 
+
+void findChildSurfaces(unsigned int id, const VICUS::Surface &s, const VICUS::Surface* &surf) {
+	for (const VICUS::Surface &cs : s.childSurfaces()) {
+		if (id == cs.m_id) {
+			surf = &cs;
+			break;
+		}
+		findChildSurfaces(id, cs, surf);
+	}
+}
+
+
 const VICUS::Surface &VicusClipper::findVicusSurface(unsigned int id, const std::vector<VICUS::Building> &buildings) {
 	const VICUS::Surface *surf = nullptr;
 	for(const VICUS::Building & b : buildings) {
@@ -1035,6 +1047,7 @@ const VICUS::Surface &VicusClipper::findVicusSurface(unsigned int id, const std:
 						surf = &s;
 						break;
 					}
+					findChildSurfaces(id, s, surf);
 				}
 			}
 		}
