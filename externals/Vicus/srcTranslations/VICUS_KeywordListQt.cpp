@@ -24,6 +24,18 @@
 namespace VICUS {
 KeywordListQt::KeywordListQt() {
 
+	tr("Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen");
+	tr("Hotels und Beherbergungsstätten");
+	tr("Krankenhäuser und Sanatorien");
+	tr("Schulen und vergleichbaren Einrichtungen");
+	tr("Einfamilien-Reihenhäusern und zwischen Doppelhäusern");
+	tr("Büro");
+	tr("Normal sound requirements");
+	tr("Enhanced sound requirements");
+	tr("Ceiling");
+	tr("Wall");
+	tr("Door");
+	tr("Stairs");
 	tr("Outside wall construction");
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");

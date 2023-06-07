@@ -23,12 +23,12 @@ SVPropAcousticEditWidget::SVPropAcousticEditWidget(QWidget *parent) :
 	// add pages to tool box:
 	// Note: NEVER change the order, it must correspond to StructuralUnitPropertyType enum.
 	m_ui->toolBox->blockSignals(true);
-	m_ui->toolBox->addPage(tr("Acoustic Templates"), new SVPropBuildingAcousticTemplatesWidget(this));
 	m_ui->toolBox->addPage(tr("Acoustic Components"), new SVPropBuildingAcousticComponentWidget(this));
+	m_ui->toolBox->addPage(tr("Acoustic Templates"), new SVPropBuildingAcousticTemplatesWidget(this));
 
 
 	m_ui->toolBox->blockSignals(false);
-	m_ui->toolBox->setCurrentIndex(ST_StructuralUnit);
+	m_ui->toolBox->setCurrentIndex(AT_AcousticComponent);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropAcousticEditWidget::onModified);
@@ -95,7 +95,6 @@ void SVPropAcousticEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 	// set coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	switch (structuralUnitPropType) {
-	// TODO Anton change accordingly
 		case AT_AcousticComponent			: vs.m_objectColorMode = SVViewState::OCM_AcousticComponent ; break;
 		case AT_AcousticTemplate			: vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType; break;
 		}

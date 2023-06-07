@@ -110,10 +110,10 @@ enum StructuralUnitPropertyType {
 };
 
 enum AcousticPropertyType {
-	/*! Acoustic Template */
-	AT_AcousticTemplate,
 	/*! Acoustic Component */
 	AT_AcousticComponent,
+	/*! Acoustic Template */
+	AT_AcousticTemplate,
 };
 
 /*! Different edit/coloring modes. */

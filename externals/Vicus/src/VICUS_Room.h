@@ -30,6 +30,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_Surface.h"
 #include "VICUS_Object.h"
+#include "VICUS_AcousticReferenceComponent.h"
+#include "VICUS_StructuralUnit.h"
 
 #include <QString>
 
@@ -54,15 +56,6 @@ public:
 		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone'
 		NUM_P
 	};
-
-	enum AcousticBuildingType {ABT_Living,		//Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen
-							   ABT_Hotel,		//Hotels und Beherbergungsstätten
-							   ABT_Hospital,	//Krankenhäuser und Sanatorien
-							   ABT_School,		//Schulen und vergleichbaren Einrichtungen
-							   ABT_House,		//Einfamilien-Reihenhäusern und zwischen Doppelhäusern
-							   ABT_Office,		//Büro
-							   NUM_ABT
-							  };
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -99,10 +92,7 @@ public:
 	IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
 
 	/*! Stores the building type */
-	AcousticBuildingType				m_idAcousticBuildingType = NUM_ABT;	// XML:E
-
-
-
+	IDType								m_acousticBuildingTypeId = INVALID_ID;	// XML:E
 
 	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
@@ -123,6 +113,12 @@ public:
 		zone geometry. If the latter is not possible, user must enter a valid volume.
 	*/
 	double								m_volume = -1;
+
+	// These pointers are updated in VICUS::Project::updatePointers() and can be used
+	// to quicky travers the data model.
+
+	VICUS::StructuralUnit *				m_structuralUnit = nullptr;
+
 };
 
 

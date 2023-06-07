@@ -617,6 +617,11 @@ void Project::updatePointers() {
 	// TODO Anton: assign own adress space
 	for(VICUS::StructuralUnit & u : m_structuralUnits){
 		addAndCheckForUniqueness(&u);
+		for (VICUS::Building & b : m_buildings)
+			for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+				for (VICUS::Room & r : bl.m_rooms)
+					if (u.m_roomIds.find(r.m_id) != u.m_roomIds.end())
+						r.m_structuralUnit = &u;
 	}
 
 }

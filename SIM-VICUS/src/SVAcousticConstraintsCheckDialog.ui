@@ -17,13 +17,32 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Broken acoustic constraints</string>
+      <string>Acoustic constraints among walls</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTableWidget" name="tableWidget"/>
+       <widget class="QTableWidget" name="tableWidgetWalls"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Acoustic constraints among ceilings</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QTableWidget" name="tableWidgetCeilings"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonCheckConstraints">
+     <property name="text">
+      <string>Check constraints</string>
+     </property>
     </widget>
    </item>
    <item>

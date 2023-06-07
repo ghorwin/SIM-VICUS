@@ -90,7 +90,11 @@ SVDatabase::SVDatabase() :
 	m_infiltration(1080000),
 	m_zoneTemplates(1082500),
 	m_acousticTemplates(1400100),
-	m_acousticComponents(1500100)
+	m_acousticComponents(1500100),
+	m_acousticReferenceComponents(1600000),
+	m_acousticBuildingTemplates(407000)
+
+
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
   //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
@@ -131,6 +135,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
 		m_acousticComponents.readXML(		dbDir / "db_acousticComponents.xml", "AcousticComponents", "AcousticComponent", true);
+		m_acousticReferenceComponents.readXML(		dbDir / "db_acousticReferenceComponents.xml", "AcousticReferenceComponents", "AcousticReferenceComponent", true);
+		m_acousticBuildingTemplates.readXML(		dbDir / "db_acousticBuildingTemplates.xml", "AcousticBuildingTemplates", "AcousticBuildingTemplate", true);
 
 	}
 
@@ -190,6 +196,10 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_acousticTemplates.readXML(			userDbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", false);
 	if (t == NUM_DT || t == DT_AcousticComponents)
 		m_acousticComponents.readXML(		userDbDir / "db_acousticComponents.xml", "AcousticComponents", "AcousticComponent", false);
+	if (t == NUM_DT || t == DT_AcousticReferenceComponents)
+		m_acousticReferenceComponents.readXML(		userDbDir / "db_acousticReferenceComponents.xml", "AcousticReferenceComponents", "AcousticReferenceComponent", false);
+	if (t == NUM_DT || t == DT_AcousticBuildingTemplates)
+		m_acousticBuildingTemplates.readXML(		userDbDir / "db_acousticBuildingTemplates.xml", "AcousticBuildingTemplates", "AcousticBuildingTemplate", false);
 
 
 }
@@ -258,6 +268,8 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_zoneTemplates.import(db.m_zoneTemplates);
 	m_acousticTemplates.import(db.m_acousticTemplates);
 	m_acousticComponents.import(db.m_acousticComponents);
+	m_acousticReferenceComponents.import(db.m_acousticReferenceComponents);
+	m_acousticBuildingTemplates.import(db.m_acousticBuildingTemplates);
 
 }
 

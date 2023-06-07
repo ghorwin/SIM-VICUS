@@ -8,6 +8,8 @@
 #include "SVUndoModifyRoomAcousticTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 
+#include "VICUS_AcousticBuildingTemplate.h"
+
 
 SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWidget *parent) :
 	QWidget(parent),
@@ -28,13 +30,13 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingAcousticTemplatesWidget::onModified);
 
-	// init combo box in the order of acoustic building type enum
-	m_ui->comboBoxBuildingType->addItem(tr("Living"));
-	m_ui->comboBoxBuildingType->addItem(tr("Hotel"));
-	m_ui->comboBoxBuildingType->addItem(tr("Hospital"));
-	m_ui->comboBoxBuildingType->addItem(tr("School"));
-	m_ui->comboBoxBuildingType->addItem(tr("House"));
-	m_ui->comboBoxBuildingType->addItem(tr("Office"));
+	// init combo box based on the acoustic building template db
+	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
+
+	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
+		 it = dbBt.begin(); it != dbBt.end(); ++it) {
+		m_ui->comboBoxBuildingType->addItem(QtExt::MultiLangString2QString(it->second.m_displayName));
+	}
 
 
 	// update Ui initiallly
@@ -74,6 +76,7 @@ void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, Mod
 
 
 void SVPropBuildingAcousticTemplatesWidget::updateUi() {
+	FUNCID(SVPropBuildingAcousticTemplatesWidget::updateUi);
 
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
@@ -87,30 +90,30 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
 	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
 	int row=0;
-	//dummy map
-	std::map<VICUS::Room::AcousticBuildingType, std::set<unsigned int>> dummyMap;
 
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400100);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400104);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400105);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Living].insert(400106);
+	// get the current building type based on the selection in the combo box
+	VICUS::AcousticBuildingTemplate::AcousticBuildingType currentType = (VICUS::AcousticBuildingTemplate::AcousticBuildingType)m_ui->comboBoxBuildingType->currentIndex();
 
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400119);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400126);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].insert(400124);
-	dummyMap[VICUS::Room::AcousticBuildingType::ABT_Hotel].find(2);
+	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
 
-
-	VICUS::Room::AcousticBuildingType currentType = (VICUS::Room::AcousticBuildingType)m_ui->comboBoxBuildingType->currentIndex();
-
+	// get the ids that belong to the currently selected type
+	const std::vector<unsigned int> * idsOfBuildingType = nullptr;
+	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
+		 it = dbBt.begin(); it != dbBt.end(); ++it) {
+		if(it->second.m_buildingType == currentType){
+			idsOfBuildingType = &(it->second.m_idsTemplate);
+		}
+	}
+	if(idsOfBuildingType == nullptr)
+		throw IBK::Exception("Selected building type not found in datebase!", FUNC_ID);
 
 	std::set<const VICUS::AcousticTemplate*> templatesNotInBuildingType;
 	// loads all the templates from db and put them in the table if the right building type is selected
 	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
 		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 
-		//check if the id is in the set of the current building type
-		if(dummyMap[currentType].find(it->second.m_id) != dummyMap[currentType].end()){
+		//check if the id is in the id vector of the current type
+		if(std::find(idsOfBuildingType->begin(), idsOfBuildingType->end(), it->second.m_id) != idsOfBuildingType->end()){
 
 			m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
@@ -223,11 +226,17 @@ void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_item
 const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currentlySelectedAcousticTemplate() const {
 	// check if selected "template" is actually missing
 	int r = m_ui->tableWidgetAcousticTemplates->currentRow();
+
 	if (r == -1)
 		return nullptr;
 	const VICUS::Database<VICUS::AcousticTemplate> & db_at = SVSettings::instance().m_db.m_acousticTemplates;
 	std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator it = db_at.begin();
-	std::advance(it, r);
+	QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
+	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db_at.end())
+		std::advance(it, 1);
+	// if nothing was found
+	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db_at.end())
+		return nullptr;
 	return &(it->second);
 }
 

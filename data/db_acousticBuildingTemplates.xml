@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<AcousticBuildingTemplates>
+<AcousticBuildingTemplate id="407000" displayName="Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen" buildingType="MultiFamilyHouse">				<IdsTemplate>400103,400104,400105,400106,400107,400108,400109,400110,400111,400112,400114,400115,400116,400117,400119,400123,400126,400129,400130,400133</IdsTemplate></AcousticBuildingTemplate>
+
+<AcousticBuildingTemplate id="407001" displayName="Hotels und Beherbergungsstätten" buildingType="Hotel"><IdsTemplate>400116,400124,400125,400126,400123</IdsTemplate></AcousticBuildingTemplate>
+
+<AcousticBuildingTemplate id="407002" displayName="Krankenhäuser und Sanatorien" buildingType="Hospital">	<IdsTemplate>400102,400113,400116,400118,400120,400121,400122,400123,400125,400126,400128,400129,400132</IdsTemplate></AcousticBuildingTemplate>
+
+<AcousticBuildingTemplate id="407003" displayName="Schulen und vergleichbaren Einrichtungen" buildingType="School"><IdsTemplate>400100,400116,400127,400130,400131</IdsTemplate></AcousticBuildingTemplate>
+
+<AcousticBuildingTemplate id="407005" displayName="Einfamilien-Reihenhäusern und zwischen Doppelhäusern" buildingType="SingleFamilyHouse">		<IdsTemplate>400103,400114,400116,400117,400123,400133,400105,400106,400119,400108</IdsTemplate>
+</AcousticBuildingTemplate>
+
+</AcousticBuildingTemplates>

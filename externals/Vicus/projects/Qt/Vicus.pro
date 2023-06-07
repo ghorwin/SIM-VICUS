@@ -34,7 +34,9 @@ DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
 	../../src/VICUS_AbstractDBElement.h \
-	../../src/VICUS_AcousticComponent.h \
+    ../../src/VICUS_AcousticBuildingTemplate.h \
+        ../../src/VICUS_AcousticComponent.h \
+        ../../src/VICUS_AcousticReferenceComponent.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BoundaryCondition.h \
@@ -104,7 +106,9 @@ HEADERS += \
 
 SOURCES += \
     ../../src/VICUS_AbstractDBElement.cpp \
+    ../../src/VICUS_AcousticBuildingTemplate.cpp \
     ../../src/VICUS_AcousticComponent.cpp \
+    ../../src/VICUS_AcousticReferenceComponent.cpp \
     ../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
@@ -159,7 +163,9 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticBuildingTemplate.cpp \
     ../../src/ncg/ncg_VICUS_AcousticComponent.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticReferenceComponent.cpp \
     ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \

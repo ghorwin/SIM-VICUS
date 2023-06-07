@@ -30,6 +30,9 @@
 
 #include "VICUS_AcousticTemplate.h"
 #include "VICUS_AcousticComponent.h"
+#include "VICUS_AcousticReferenceComponent.h"
+#include "VICUS_AcousticBuildingTemplate.h"
+
 //TODO Anton Why the include?
 
 /*! Central provider of predefined and user defined construction, window, material... databases.
@@ -68,6 +71,8 @@ public:
 		DT_ZoneTemplates,
 		DT_AcousticTemplates,
 		DT_AcousticComponents,
+		DT_AcousticReferenceComponents,
+		DT_AcousticBuildingTemplates,
 		NUM_DT // used for "all"
 	};
 
@@ -221,6 +226,14 @@ public:
 
 	/*! Map of all database Acoustic components. */
 	VICUS::Database<VICUS::AcousticComponent>			m_acousticComponents;
+
+	/*! Map of all database Acoustic reference components. */
+	VICUS::Database<VICUS::AcousticReferenceComponent>	m_acousticReferenceComponents;
+
+	/*! Map of all database Acoustic Building Templates. */
+	VICUS::Database<VICUS::AcousticBuildingTemplate>	m_acousticBuildingTemplates;
+
+
 
 
 };
