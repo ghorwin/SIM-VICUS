@@ -52,6 +52,8 @@
 namespace VICUS {
 
 Project::Project() {
+	m_location.initDefaults();
+
 	// build test building
 
 #if 0
