@@ -468,7 +468,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			const IBKMK::Vector3D &lineOfSight = m_panObjectStart - m_panCameraStart;
 			double dampening = std::min(1.0, (80.0 / lineOfSight.magnitude()));
-//			qDebug() << "Dampening factor: " << dampening;
+			//			qDebug() << "Dampening factor: " << dampening;
 
 			if (keyboardHandler.keyDown(Qt::Key_Space))
 				dampening = 1;
@@ -479,7 +479,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// qDebug() << "Camera translation";
 			m_camera.setTranslation(IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-//			qDebug() << "Adjust Dragging: " << mouseDelta << localMousePos << newLocalMousePos;
+			//			qDebug() << "Adjust Dragging: " << mouseDelta << localMousePos << newLocalMousePos;
 			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
@@ -626,7 +626,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					if (keyboardHandler.keyDown(Qt::Key_Space))
 						dampening = 1;
 
-//					qDebug() << "Dampening factor: " << dampening;
+					//					qDebug() << "Dampening factor: " << dampening;
 
 					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
 					// set rotation around z axis for x-mouse-delta
@@ -1663,10 +1663,10 @@ void Scene::generateTransparentBuildingGeometry(const HighlightingMode &mode) {
 
 							// add geometry to buffer
 							QColor linkBoxColor = col;
-//                            if(mode == HM_ColoredSurfaces) {
-//                                linkBoxColor.setAlpha(255);
-//                            } else {
-//                            }
+							//                            if(mode == HM_ColoredSurfaces) {
+							//                                linkBoxColor.setAlpha(255);
+							//                            } else {
+							//                            }
 							linkBoxColor = QColor(196,0,0,226);
 							if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
 								linkBoxColor = QColor(255,64,32,226);
@@ -1829,6 +1829,14 @@ void colorSubSurfaces(const VICUS::Surface &surf, const QColor &color) {
 	}
 }
 
+void colorChildSurfaces(const VICUS::Surface &s, const QColor &color) {
+	// now the subsurfaces
+	for (const VICUS::Surface & cs : s.childSurfaces()) {
+		cs.m_color = color; // will be drawn opaque in most modes
+		colorChildSurfaces(cs, color);
+	}
+}
+
 
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
@@ -1881,6 +1889,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							sub.m_color = QColor(72,72,82,192); // will be drawn opaque in most modes
 						}
 					}
+
+					colorChildSurfaces(s, s.m_color.darker(120));
 				}
 			}
 		}
@@ -1915,6 +1925,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						// change color of selected surfaces
 						if (s.m_selected)
 							s.m_color = QColor(255,144,0,255); // nice orange
+
+						colorChildSurfaces(s, QColor(255,144,0,255));
 					}
 				}
 			}
@@ -2154,6 +2166,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						for (const VICUS::Surface & s : r.m_surfaces) {
 							s.m_color = zt->m_color;
 							colorSubSurfaces(s, zt->m_color);
+							colorChildSurfaces(s, zt->m_color);
 						}
 					}
 				}
@@ -2176,10 +2189,12 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						if (at == nullptr)
 							continue; // no definition - keep default (gray) color
 						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces)
+						for (const VICUS::Surface & s : r.m_surfaces) {
 							s.m_color = at->m_color;
-						// TODO : subsurfaces
-
+							// TODO : subsurfaces
+							colorSubSurfaces(s, at->m_color);
+							colorChildSurfaces(ocm, s, at->m_color);
+						}
 					}
 				}
 			}
@@ -2613,7 +2628,7 @@ void Scene::pick(PickObject & pickObject) {
 							obj = SVProjectHandler::instance().project().objectById(s.geometry().holes()[(unsigned int)holeIndex].m_idObject);
 							if (obj == nullptr) {// guard against dangling IDs
 								// Note: cannot use an assert/exception here, as hole ID is user-data from potentially corrupt data file
-//								(IBK::FormatString("Invalid hole ID #%1 in surface #%2")
+								//								(IBK::FormatString("Invalid hole ID #%1 in surface #%2")
 								continue;
 							}
 
@@ -3082,20 +3097,20 @@ void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePosScaled.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
-//		qDebug() << "Resetting mousepos to right side of window.";
+		//		qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
-//		qDebug() << "Resetting mousepos to left side of window.";
+		//		qDebug() << "Resetting mousepos to left side of window.";
 		newLocalMousePos.setX(WINDOW_MOVE_MARGIN);
 	}
 
 	if (localMousePosScaled.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
-//		qDebug() << "Resetting mousepos to bottom side of window.";
+		//		qDebug() << "Resetting mousepos to bottom side of window.";
 		newLocalMousePos.setY(m_viewPort.height()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
-//		qDebug() << "Resetting mousepos to top side of window.";
+		//		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
@@ -3323,35 +3338,35 @@ void Scene::setDefaultViewState() {
 	vs.m_locks = SVViewState::NUM_L; // no axis is locked
 
 	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_AddGeometry:
-		case SVViewState::PM_EditGeometry:
-		case SVViewState::PM_SiteProperties:
-		case SVViewState::PM_BuildingProperties:
-		case SVViewState::PM_ResultsProperties:
-		case SVViewState::PM_NetworkProperties: {
-			// do we have any selected geometries
-			std::set<const VICUS::Object *> sel;
-			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-			if (sel.empty()) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-			else
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+	case SVViewState::PM_AddGeometry:
+	case SVViewState::PM_EditGeometry:
+	case SVViewState::PM_SiteProperties:
+	case SVViewState::PM_BuildingProperties:
+	case SVViewState::PM_ResultsProperties:
+	case SVViewState::PM_NetworkProperties: {
+		// do we have any selected geometries
+		std::set<const VICUS::Object *> sel;
+		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+		if (sel.empty()) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		}
-
-		case SVViewState::PM_VertexList:
-			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
-
-		case SVViewState::PM_AddSubSurfaceGeometry:
+		else
 			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+	}
+
+	case SVViewState::PM_VertexList:
+		vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+
+	case SVViewState::PM_AddSubSurfaceGeometry:
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
 	} // switch
 }
 
