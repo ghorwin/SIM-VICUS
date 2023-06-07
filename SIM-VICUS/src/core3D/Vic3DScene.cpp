@@ -2193,7 +2193,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							s.m_color = at->m_color;
 							// TODO : subsurfaces
 							colorSubSurfaces(s, at->m_color);
-							colorChildSurfaces(ocm, s, at->m_color);
+							colorChildSurfaces(s, at->m_color);
 						}
 					}
 				}
