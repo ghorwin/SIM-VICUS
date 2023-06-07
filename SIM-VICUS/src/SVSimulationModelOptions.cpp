@@ -56,6 +56,7 @@ SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent,
 
 	m_ui->lineEditInitialTemperature->setup(-50,150,tr("Initial temperature to be used for zones/constructions etc."), true, true);
 
+	m_ui->checkBoxUsePerez->setEnabled(true);
 }
 
 
