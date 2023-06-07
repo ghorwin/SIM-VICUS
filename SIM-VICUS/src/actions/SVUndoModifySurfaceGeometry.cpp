@@ -45,6 +45,18 @@ SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
 	}
 }
 
+void updateParent(VICUS::Surface &s) {
+	VICUS::Surface *ps = dynamic_cast<VICUS::Surface *>(s.m_parent);
+	if (ps != nullptr) {
+		std::vector<VICUS::Surface>		childs = ps->childSurfaces();
+		std::vector<VICUS::SubSurface>	subs   = ps->subSurfaces();
+
+		ps->setChildAndSubSurfaces(subs, childs);
+
+		updateParent(*ps);
+	}
+}
+
 
 void SVUndoModifySurfaceGeometry::undo() {
 
@@ -55,8 +67,17 @@ void SVUndoModifySurfaceGeometry::undo() {
 		IBK_ASSERT(o != nullptr);
 		VICUS::Surface * s = dynamic_cast<VICUS::Surface *>(o);
 		Q_ASSERT(s != nullptr);
+
+		// We need to temporarily store the child surfaces
+		std::vector<VICUS::Surface>		childs = s->childSurfaces();
+
 		// exchange data between surfaces
 		std::swap(m_surfaces[i], *s);
+
+		std::vector<VICUS::SubSurface>	subs   = s->subSurfaces();
+		s->setChildAndSubSurfaces(subs, childs);
+
+		updateParent(*s);
 	}
 
 	// also modified sub-surface components, if needed
