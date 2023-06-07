@@ -71,7 +71,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Defines the way short wave radiation loads are distributed. */
-	distribution_t	m_distributionType = SWR_AreaWeighted;				// XML:E
+	distribution_t	m_distributionType = SWR_SurfaceTypeFactor;			// XML:E
 
 	/*! List of parameters. */
 	IBK::Parameter		m_para[NUM_P];									// XML:E

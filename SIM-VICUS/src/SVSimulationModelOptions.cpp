@@ -128,8 +128,6 @@ void SVSimulationModelOptions::updateUi() {
 	m_ui->spinBoxSolarRadiationToFloor->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToRoofCeiling->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToWalls->setEnabled(idx == 1);
-
-
 }
 
 

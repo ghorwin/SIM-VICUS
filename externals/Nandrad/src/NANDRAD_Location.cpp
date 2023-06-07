@@ -56,4 +56,8 @@ void Location::checkParameters() const {
 	}
 }
 
+void Location::initDefaults() {
+	m_flags[Location::F_PerezDiffuseRadiationModel].set("PerezDiffuseRadiationModel", true);
+}
+
 } // namespace NANDRAD

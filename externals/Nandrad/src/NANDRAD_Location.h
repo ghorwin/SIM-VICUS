@@ -64,6 +64,12 @@ public:
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters() const;
 
+	/*! Init default values (called before readXML()).
+		\note These values will be overwritten in readXML() when the respective property is set
+			  in the project file.
+	*/
+	void initDefaults();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter set. */
