@@ -118,6 +118,7 @@ void ValidatingLineEdit::setText(const QString& str) {
 	QLineEdit::setText(str.trimmed());
 	blockSignals(false);
 	onTextChanged(text()); // this will update the value and state of the line edit
+	setCursorPosition(0);
 }
 
 
