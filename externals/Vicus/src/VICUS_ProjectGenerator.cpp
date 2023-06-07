@@ -951,7 +951,18 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
-	addViewFactorsToNandradZones(p, roomMappings, componentInstanceMapping, constrInstaModelGenerator.m_surfaceIdsVicusToNandrad, errorStack);
+	bool haveLongWaveEmission = false;
+	for (NANDRAD::ConstructionInstance &ci : p.m_constructionInstances) {
+		double valueA = ci.m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+		double valueB = ci.m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+
+		if (valueA > 0.0 || valueB > 0.0) {
+			haveLongWaveEmission = true;
+			break;
+		}
+	}
+	if(haveLongWaveEmission)
+		addViewFactorsToNandradZones(p, roomMappings, componentInstanceMapping, constrInstaModelGenerator.m_surfaceIdsVicusToNandrad, errorStack);
 
 	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
 
