@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	ConstructionInstance(id=3002).ActiveLayerTemperature [C]	Room 1.AirTemperature [C]	Room 2.AirTemperature [C]
+Time [h]	Ground Floor.ActiveLayerTemperature [C]	Upper Floor.ActiveLayerTemperature [C]	Room 1.AirTemperature [C]	Room 2.AirTemperature [C]
 0	21.9	21.9	21.9	21.9
 1	21.9406	21.977	21.9176	21.9225
 2	22.0095	22.1013	21.9338	21.9453

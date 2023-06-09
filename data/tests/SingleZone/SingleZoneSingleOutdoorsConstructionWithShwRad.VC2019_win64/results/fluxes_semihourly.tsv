@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=101).FluxShortWaveRadiationA [W]	ConstructionInstance(id=101).FluxShortWaveRadiationB [W]	ConstructionInstance(id=101).SolarRadiationFluxA [W/m2]	ConstructionInstance(id=101).SolarRadiationFluxB [W/m2]
+Time [h]	South.FluxShortWaveRadiationA [W]	South.FluxShortWaveRadiationB [W]	South.SolarRadiationFluxA [W/m2]	South.SolarRadiationFluxB [W/m2]
 3840	0	0	0	0
 3840.5	0	0	0	0
 3841	0	0	0	0

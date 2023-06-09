@@ -1,4 +1,4 @@
-Time [h]	Room.WindowSolarRadiationFluxSum [W]	Room.WindowSolarRadiationLoad [W]	EmbeddedObject(id=1001).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1002).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1003).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1004).FluxShortWaveRadiationB [W]
+Time [h]	Room.WindowSolarRadiationFluxSum [W]	Room.WindowSolarRadiationLoad [W]	Simple window, no frame and divider.FluxShortWaveRadiationB [W]	Simple window, no frame and divider.FluxShortWaveRadiationB [W]	Simple window, no frame and divider.FluxShortWaveRadiationB [W]	Simple window, no frame and divider.FluxShortWaveRadiationB [W]
 4344	0	0	0	0	0	0
 4344.166667	0	0	0	0	0	0
 4344.333333	0	0	0	0	0	0

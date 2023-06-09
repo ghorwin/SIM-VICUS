@@ -1,4 +1,4 @@
-Time [h]	Room.AirTemperature [C]	EmbeddedObject(id=1001).ShadingFactor [---]	EmbeddedObject(id=1002).ShadingFactor [---]	EmbeddedObject(id=1003).ShadingFactor [---]	EmbeddedObject(id=1004).ShadingFactor [---]
+Time [h]	Room.AirTemperature [C]	Window with constant shading.ShadingFactor [---]	Simple window, no frame and divider.ShadingFactor [---]	Simple window, no frame and divider.ShadingFactor [---]	Simple window, no frame and divider.ShadingFactor [---]
 4344	20	1	1	1	1
 4344.166667	18.8841	1	1	1	1
 4344.333333	18.1121	1	1	1	1
