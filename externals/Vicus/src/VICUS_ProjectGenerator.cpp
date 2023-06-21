@@ -2096,6 +2096,10 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 	double area = surf->geometry().area();
 
 	for(const SubSurface &ss : subSurfs){
+
+		if(ss.m_polygon2D.area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
+			continue; // Skip too small surfaces
+
 		NANDRAD::EmbeddedObject emb;
 		emb.m_id = VICUS::uniqueId(idSet);
 		idSet.insert(emb.m_id);	//add new id to set

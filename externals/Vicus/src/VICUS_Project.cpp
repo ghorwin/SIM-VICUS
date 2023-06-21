@@ -462,7 +462,6 @@ void Project::addChildSurface(const VICUS::Surface &s) {
 	for (VICUS::Surface & childSurf : const_cast<std::vector<VICUS::Surface> &>(s.childSurfaces()) ) {
 		addAndCheckForUniqueness(&childSurf);
 		childSurf.m_componentInstance = nullptr;
-
 		addChildSurface(childSurf);
 	}
 }
@@ -502,7 +501,6 @@ void Project::updatePointers() {
 						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
-
 					addChildSurface(s);
 				}
 			}
