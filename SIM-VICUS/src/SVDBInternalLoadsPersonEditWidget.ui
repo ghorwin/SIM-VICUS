@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>761</width>
     <height>322</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayoutMaster">
+  <layout class="QGridLayout" name="gridLayoutMaster" columnstretch="0,1,0,0">
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
      <property name="minimumSize">
@@ -194,7 +194,7 @@
     <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
@@ -207,6 +207,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
@@ -218,12 +224,9 @@
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QwtPlot</class>
