@@ -77,7 +77,7 @@ void BTFReader::readData(const QString & fname, IBK::UnitVector &timePoints, std
 #if defined(_MSC_VER)
 	std::ifstream in( IBK::Path(fname.toStdString()).wstr().c_str(), std::ios_base::binary );
 #else // _WIN32
-	std::ifstream in( IBK::Path(filePath.toStdString()).c_str(), std::ios_base::binary );
+	std::ifstream in( IBK::Path(fname.toStdString()).c_str(), std::ios_base::binary );
 #endif // _WIN32
 
 	// accepts file already reads everything until and including header line, so that
@@ -146,7 +146,6 @@ void BTFReader::extractUnits(const std::vector<std::string> & columnHeaders,
 								 std::vector<std::string> & valueUnits)
 {
 	const char * const FUNC_ID = "[FileReaderBTF::extractUnits]";
-
 
 	// check that first column is a time column
 	std::string columnHeader = columnHeaders[0];
