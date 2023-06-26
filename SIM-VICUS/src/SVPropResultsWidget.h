@@ -93,6 +93,8 @@ private slots:
 
 	void on_pushButtonFindMinObject_clicked();
 
+	void on_resultsDir_editingFinished();
+
 private:
 
 	/*! Caches the content of a single output file. */
@@ -117,6 +119,13 @@ private:
 
 		/*! The file status. */
 		FileStatus	m_status = FS_Unread;
+	};
+
+
+	enum ResultFileType {
+		FT_TSV,
+		FT_BTF,
+		FT_None
 	};
 
 	/*! Parses the substitution file ('objectref_substitutions.txt') and the header of all tsv files in the currently selected results directory.
@@ -193,6 +202,8 @@ private:
 
 	/*! VICUS Object Id of currently selected object */
 	unsigned int									m_selectedObjectId = VICUS::INVALID_ID;
+
+	ResultFileType									m_resultFileType = FT_None;
 
 };
 
