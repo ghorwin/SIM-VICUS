@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="1.0">
+	<ProjectInfo>
+		<Created>Mo. Apr. 10 18:49:32 2023</Created>
+		<LastEdited>Mi. Juni 7 22:28:11 2023</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter />
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<CameraTranslation>14.0562 28.3623 16.4419</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.212847</Wp>
+				<X>0.166241</X>
+				<Y>0.592654</Y>
+				<Z>0.75881</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="500" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="2" displayName="Ground floor">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="3" displayName="Room">
+								<IdAcousticTemplate>400103</IdAcousticTemplate>
+								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">40.5</IBK:Parameter>
+								<Surfaces>
+									<Surface id="4" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="-3 0 0" normal="-0 -0 -1" localX="-1 0 0">0 0, 0 5, -3 5, -3 0</Polygon3D>
+									</Surface>
+									<Surface id="5" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="0 0 2.7" normal="0 0 1" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
+									</Surface>
+									<Surface id="6" displayName="Wall 1" displayColor="#c8c88c">
+										<Polygon3D offset="-3 5 0" normal="-1 0 0" localX="0 -1 0">0 0, 5 0, 5 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="7" displayName="Wall 2" displayColor="#c8c88c">
+										<Polygon3D offset="0 5 0" normal="0 1 0" localX="-1 0 0">0 0, 3 0, 3 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="8" displayName="Wall 3" displayColor="#c8c88c">
+										<Polygon3D offset="0 0 0" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="9" displayName="Wall 4" displayColor="#c8c88c">
+										<Polygon3D offset="-3 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2.7, 0 2.7</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10" displayName="Room">
+								<IdAcousticTemplate>400103</IdAcousticTemplate>
+								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">40.5</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="-7 0 0" normal="-0 -0 -1" localX="-1 0 0">0 0, 0 5, -3 5, -3 0</Polygon3D>
+									</Surface>
+									<Surface id="12" displayName="Ceiling" displayColor="#963214">
+										<Polygon3D offset="-4 0 2.7" normal="0 0 1" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
+									</Surface>
+									<Surface id="13" displayName="Wall 1" displayColor="#c8c88c">
+										<Polygon3D offset="-7 5 0" normal="-1 0 0" localX="0 -1 0">0 0, 5 0, 5 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="14" displayName="Wall 2" displayColor="#c8c88c">
+										<Polygon3D offset="-4 5 0" normal="0 1 0" localX="-1 0 0">0 0, 3 0, 3 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="15" displayName="Wall 3" displayColor="#c8c88c">
+										<Polygon3D offset="-4 0 0" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 2.7, 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="16" displayName="Wall 4" displayColor="#c8c88c">
+										<Polygon3D offset="-7 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2.7, 0 2.7</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="17" displayName="Roof">
+								<IdAcousticTemplate>400103</IdAcousticTemplate>
+								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">15</IBK:Parameter>
+								<Surfaces>
+									<Surface id="18" displayName="Floor" displayColor="#566094">
+										<Polygon3D offset="-7 0 3.1" normal="-0 -0 -1" localX="-1 0 0">0 0, 0 5, -3 5, -3 0</Polygon3D>
+									</Surface>
+									<Surface id="19" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="-4 0 3.1" normal="0 -0.371391 0.928477" localX="0 0.928477 0.371391">0 0, 5.38516 0, 5.38516 3, 0 3</Polygon3D>
+									</Surface>
+									<Surface id="20" displayName="Wall surface 1" displayColor="#c8c88c">
+										<Polygon3D offset="-4 0 3.1" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 2</Polygon3D>
+									</Surface>
+									<Surface id="21" displayName="Wall surface 2" displayColor="#c8c88c">
+										<Polygon3D offset="-4 5 3.1" normal="0 1 0" localX="-1 0 0">0 0, 3 0, 3 2, 0 2</Polygon3D>
+									</Surface>
+									<Surface id="22" displayName="Wall surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="-7 5 3.1" normal="-1 0 0" localX="0 -1 0">0 0, 5 0, 0 2</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" idComponent="130" idSideASurface="4" />
+			<ComponentInstance id="3" idComponent="11" idSideASurface="5" />
+			<ComponentInstance id="4" idComponent="1" idAcousticComponent="500000" idSideASurface="6" idSideBSurface="15" />
+			<ComponentInstance id="5" idComponent="1" idSideASurface="7" />
+			<ComponentInstance id="6" idComponent="1" idSideASurface="8" />
+			<ComponentInstance id="7" idComponent="1" idSideASurface="9" />
+			<ComponentInstance id="9" idComponent="130" idSideASurface="11" />
+			<ComponentInstance id="10" idComponent="11" idAcousticComponent="500000" idSideASurface="12" idSideBSurface="18" />
+			<ComponentInstance id="11" idComponent="1" idSideASurface="13" />
+			<ComponentInstance id="12" idComponent="1" idSideASurface="14" />
+			<ComponentInstance id="14" idComponent="1" idSideASurface="16" />
+			<ComponentInstance id="16" idComponent="11" idSideASurface="19" />
+			<ComponentInstance id="17" idComponent="1" idSideASurface="20" />
+			<ComponentInstance id="18" idComponent="1" idSideASurface="21" />
+			<ComponentInstance id="19" idComponent="1" idSideASurface="22" />
+		</ComponentInstances>
+		<PlainGeometry />
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10000" displayName="de:Beton|en:Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+				<Material id="10003" displayName="de:PUR|en:PUR" color="#a2b84b">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				</Material>
+				<Material id="10007" displayName="de:Gipsputz|en:Gypsum plaster" color="#cbb4b4">
+					<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
+				</Material>
+				<Material id="10009" displayName="de:Stahlbeton|en:reinforced concrete" color="#a29f2f">
+					<Notes>en:Contrete to be used in SimQuality test cases (TF12).|de:Beton zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
+				</Material>
+				<Material id="10010" displayName="de:Fließestrich|en:flowing screed" color="#a29f2f">
+					<Notes>en:Screed to be used in SimQuality test cases (TF12).|de:Estrich zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2060</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
+				</Material>
+				<Material id="10012" displayName="de:Teppichboden|en:Carpeting" color="#bf6e40">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+				</Material>
+				<Material id="10106" displayName="de:Kalkputz | en:lime plaster" color="#bf6e40">
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>TEASER</DataSource>
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1600</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+				</Material>
+				<Material id="10113" displayName="de:Holzbalken mit Luft und Lehm | en:wooden beams with air and clay" color="#bf6e40">
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>TEASER</DataSource>
+					<Category>Woodbased</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">736</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+				</Material>
+				<Material id="10136" displayName="de:Hartholz | en:hardwood" color="#bf6e40">
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>TEASER</DataSource>
+					<Category>Woodbased</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">650</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.13</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="20000" displayName="de:Einschalige Betonwand (20cm) |en:Single layer concrete wall (20cm)">
+					<UsageType>OutsideWall</UsageType>
+					<DataSource>SimQuality</DataSource>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20008" displayName="de: Deckenkonstuktion |en: Ceiling construction">
+					<UsageType>Ceiling</UsageType>
+					<DataSource>SimQuality</DataSource>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10007">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10003">
+							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10010">
+							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10012">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20130" displayName="Bodenplatte leicht 1919 bis 1968">
+					<UsageType>FloorToGround</UsageType>
+					<DataSource>Teaser</DataSource>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10136">
+							<IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10113">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10136">
+							<IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10106">
+							<IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="30000" displayName="EN: Outside conditions (only heat conduction) |DE: Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="30001" displayName="EN: Inside conditions (only heat conduction) |DE: Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="30005" displayName="DE: Innenbedingung EN ISO 6946 (vereinfachtes Verfahren, richtungsunabhängig) |EN: Inside conditions EN ISO 6946 (simplified method, direction-independent)" color="#ff0000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="30008" displayName="DE: Innenbedingung (Erdbodenkontakt, konst. 10 °C) |EN: Inside condition (ground contact, const. 10 °C)" color="#603808">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Constant</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+					<Type>OutsideWall</Type>
+					<IdConstruction>20000</IdConstruction>
+					<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="11" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
+					<Type>Ceiling</Type>
+					<IdConstruction>20008</IdConstruction>
+					<IdSideABoundaryCondition>30000</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>30001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="130" displayName="DE: [Teaser] Bodenplatte leicht 1919 bis 1968" color="#b05319">
+					<Type>FloorToGround</Type>
+					<IdConstruction>20130</IdConstruction>
+					<IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>30008</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
