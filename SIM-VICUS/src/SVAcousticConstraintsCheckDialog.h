@@ -37,6 +37,7 @@ private:
 		WTC_acousticTemplateA,
 		WTC_acousticTemplateB,
 		WTC_acousticComponent,
+		WTC_sameStructure,
 		WTC_actualAirSoundValue,
 		WTC_normalConstraints,
 		WTC_advancedConstraints,
@@ -46,6 +47,7 @@ private:
 
 	struct tableEntry{
 		bool isImpact;
+		bool isSameStructuralUnit;
 		QString acousticTemplateAInfo;
 		QString acousticTemplateBInfo;
 		QString acousticComponentInfo;
