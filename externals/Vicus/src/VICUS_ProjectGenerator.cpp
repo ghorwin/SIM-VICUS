@@ -4692,7 +4692,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			e.m_cumulativeTempChangeIndicator = -1;
 		}
 
-		// iterate over paths and cumTempChangeindicator and min/max values
+		// iterate over paths and calculate cumTempChangeindicator and min/max values
 		double cumTempChangeindicatorMax = 0;
 		double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
 		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){

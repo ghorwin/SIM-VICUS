@@ -58,8 +58,18 @@ public:
 
 	VICUS_READWRITE
 
+	/*! Deafult constructor.
+	 */
 	NetworkEdge() = default;
 
+	/*! Initializing constructor.
+		\param id id of this edge
+		\param nodeId1 id of node 1
+		\param nodeId2 id of node 2
+		\param supply specifies wether this is a 'supply' pipe, meaning that SubStation nodes can connect to this edge
+		\param length length of edge
+		\param pipeId id of pipe properties in database
+	*/
 	NetworkEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
 		m_supply(supply),
 		m_idPipe(pipeId),
@@ -70,44 +80,40 @@ public:
 		m_id = id;
 	}
 
+	/*! Check connectivity of graph trhough recursive search */
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 								std::set<const NetworkEdge*> & connectedEdge) const;
 
+	/*! Used in recursive search, starting from one node (should be the soruce node), and trying to collect all edges in an ordered vector.
+	 *  Thereby for each edge, one node is set as inlet and the other node is set as outlet. This should anticipate the expected flow direction. */
 	void setInletOutletNode(std::set<const NetworkNode*> & visitedNodes, std::vector<const NetworkEdge*> & orderedEdges);
 
-	// TODO Hauke, Vergleichsoperatoren sollten immer das ganze Objekt vergleichen - eher dann eine andere Funktion verwenden
-	//             mit eigenem Namen
-	bool operator==(NetworkEdge &e2) const{
-		return (m_idNode1 == e2.m_idNode1) && (m_idNode2 == e2.m_idNode2);
-	}
-
-	bool operator==(const NetworkEdge &e2) const{
-		return (m_idNode1 == e2.m_idNode1) && (m_idNode2 == e2.m_idNode2);
-	}
-
-	/*! returns opposite node of the given one */
+	/*! Returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
 
+	/*! Returns opposite node id of the given one */
 	unsigned neighbourNode(unsigned nodeId) const;
 
+	/*! Returns the edge length */
 	double length() const {	return m_length; }
 
+	/*! Re-set length, calculating it from coordinates of connected nodes */
 	void setLengthFromCoordinates();
 
 	unsigned int nodeId1() const { return m_idNode1; }
 
 	unsigned int nodeId2() const {return m_idNode2; }
 
-	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
+	/*! Swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge */
 	void changeNode1(NetworkNode *node);
 
-	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
+	/*! Swaps current nodeId2 with given node id, sets pointer and calculates the new length of this edge */
 	void changeNode2(NetworkNode *node);
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! If true, nodes of type Building can connect to this edge.
+	/*! If true, nodes of type SubStation can connect to this edge.
 		This is used for the automatic algorithm that connects buildings with the network */
 	bool												m_supply;						// XML:A
 
@@ -144,17 +150,22 @@ public:
 		Is dimensionless, but for interpretation, unit [K/K] can be used
 	*/
 	double												m_tempChangeIndicator = -1;
+	/*! The cumulative temperature change along a flow path */
 	double												m_cumulativeTempChangeIndicator = -1;
 
+	/*! Pointers to connected nodes */
 	NetworkNode											* m_node1 = nullptr;
 	NetworkNode											* m_node2 = nullptr;
 
+	/*! Specifiy which node is the 'inlet' and which is the 'outlet' node. This anticipates the nominal flow direction during simulation. */
 	unsigned int										m_idNodeInlet = INVALID_ID;
 	unsigned int										m_idNodeOutlet = INVALID_ID;
 
+	/*! Used to map the edge to the according Nandrad supply / return pipe.*/
 	unsigned int										m_idNandradSupplyPipe = INVALID_ID;
 	unsigned int										m_idNandradReturnPipe = INVALID_ID;
 
+	/*! Used to map the edge to a soil model.*/
 	unsigned int										m_idSoil = INVALID_ID;
 
 
@@ -165,7 +176,7 @@ private:
 	unsigned int										m_idNode1 = 0;					// XML:A:required
 	unsigned int										m_idNode2 = 0;					// XML:A:required
 
-	/*! Effective length [m], might be different than geometric length between nodes. */
+	/*! Effective length [m], might be different from geometric length between nodes. */
 	double												m_length = 0;					// XML:E
 };
 
