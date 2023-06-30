@@ -542,28 +542,12 @@ int ThermalNetworkStatesModel::setTime(double t) {
 
 
 
-void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> & /*weights*/) {
+void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> & weights) {
 
-	// This function might be implemented if required. An exemplary implementation is below
+	// by default weights are 1
+	weights = std::vector<double>(m_n, 1.0);
 
-	//	// by default weights are 1
-	//	weights = std::vector<double>(m_n, 1.0);
-
-	//	// iterate over flow elements and set weights
-	//	IBK_ASSERT(m_network->m_elements.size() == m_p->m_flowElements.size());
-	//	unsigned int i=0;
-	//	for (unsigned int n=0; n<m_p->m_flowElements.size(); ++n) {
-	//		const ThermalNetworkAbstractFlowElement *flowElem = m_p->m_flowElements[n];
-	//		unsigned int nStates = flowElem->nInternalStates();
-	//		// skip elements without states
-	//		if (nStates == 0)
-	//			continue;
-
-	//		// calculate weights here ...
-
-	//		// increment counter for number of unknowns
-	//		i += flowElem->nInternalStates();
-	//	}
+	// This function might be implemented if required. We could iterate over flow elements and set weights here.
 }
 
 
