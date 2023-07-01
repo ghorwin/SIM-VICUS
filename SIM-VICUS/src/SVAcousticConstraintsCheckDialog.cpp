@@ -282,6 +282,11 @@ void SVAcousticConstraintsCheckDialog::checkConstraints(){
 
 	for(tableEntry &  te : wallTes){
 
+		// if the hide walls selection box is check, skip all entries that dont have a violation
+		if(m_hideWalls && te.normalConstraintViolated != ViolationInfo::VI_Violated &&
+				te.advancedConstraintViolated != ViolationInfo::VI_Violated)
+			continue;
+
 		m_ui->tableWidgetWalls->setRowCount(row + 1);
 
 		QTableWidgetItem * item;
@@ -301,7 +306,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints(){
 		m_ui->tableWidgetWalls->setItem(row, WTC_acousticComponent, item);
 
 		item = new QTableWidgetItem();
-		item->setText(te.isSameStructuralUnit ? tr("yes") : tr("no"));
+		item->setIcon(QIcon(te.isSameStructuralUnit ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 		item->setFlags(Qt::ItemIsEnabled);
 		m_ui->tableWidgetWalls->setItem(row, WTC_sameStructure, item);
 
@@ -375,6 +380,11 @@ void SVAcousticConstraintsCheckDialog::checkConstraints(){
 
 	for(tableEntry &  te : ceilingTes){
 
+		// if the hide walls selection box is check, skip all entries that dont have a violation
+		if(m_hideCeilings && te.normalConstraintViolated != ViolationInfo::VI_Violated &&
+				te.advancedConstraintViolated != ViolationInfo::VI_Violated)
+			continue;
+
 		m_ui->tableWidgetCeilings->setRowCount(row + 1);
 
 		QTableWidgetItem * item;
@@ -394,10 +404,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints(){
 		m_ui->tableWidgetCeilings->setItem(row, WTC_acousticComponent, item);
 
 		item = new QTableWidgetItem();
-
-
-
-		item->setText(te.isSameStructuralUnit ? tr("yes") : tr("no"));
+		item->setIcon(QIcon(te.isSameStructuralUnit ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 		item->setFlags(Qt::ItemIsEnabled);
 		m_ui->tableWidgetCeilings->setItem(row, WTC_sameStructure, item);
 
@@ -469,5 +476,21 @@ void SVAcousticConstraintsCheckDialog::checkConstraints(){
 
 void SVAcousticConstraintsCheckDialog::on_pushButtonCheckConstraints_clicked() {
 		checkConstraints();
+}
+
+
+void SVAcousticConstraintsCheckDialog::on_checkBoxHideWalls_stateChanged(int arg1) {
+	m_hideWalls = arg1;
+	// execute the search again
+	checkConstraints();
+}
+
+
+
+
+void SVAcousticConstraintsCheckDialog::on_checkBoxHideCeilings_stateChanged(int arg1) {
+	m_hideCeilings = arg1;
+	// execute the search again
+	checkConstraints();
 }
 

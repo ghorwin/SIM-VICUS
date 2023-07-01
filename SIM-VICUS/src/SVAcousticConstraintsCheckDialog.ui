@@ -21,6 +21,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QCheckBox" name="checkBoxHideWalls">
+        <property name="text">
+         <string>Hide non violated instances</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QTableWidget" name="tableWidgetWalls"/>
       </item>
      </layout>
@@ -32,6 +45,16 @@
       <string>Acoustic constraints among ceilings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QCheckBox" name="checkBoxHideCeilings">
+        <property name="text">
+         <string>Hide non violated instances</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QTableWidget" name="tableWidgetCeilings"/>
       </item>

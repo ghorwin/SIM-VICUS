@@ -2214,7 +2214,7 @@ static bool copyRecursively(const QString &srcFilePath,
 void SVMainWindow::on_actionAcoustic_Check_triggered() {
 	// opens a dialog that checks the sound constraints
 	if (m_acousticConstraintsCheckDialog == nullptr)
-		m_acousticConstraintsCheckDialog = new SVAcousticConstraintsCheckDialog(this);
+		m_acousticConstraintsCheckDialog = new SVAcousticConstraintsCheckDialog;
 
 	m_acousticConstraintsCheckDialog->edit();
 

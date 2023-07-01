@@ -22,6 +22,10 @@ public:
 
 private slots:
 	void on_pushButtonCheckConstraints_clicked();
+	void on_checkBoxHideWalls_stateChanged(int arg1);
+
+	void on_checkBoxHideCeilings_stateChanged(int arg1);
+
 private:
 
 	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);
@@ -66,6 +70,9 @@ private:
 
 	/*! checks the acoustic constraints and outputs the results in the widgets table*/
 	void checkConstraints();
+
+	bool m_hideWalls = true;
+	bool m_hideCeilings = true;
 
 };
 
