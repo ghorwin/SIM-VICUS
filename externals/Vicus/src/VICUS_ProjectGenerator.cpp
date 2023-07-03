@@ -1035,8 +1035,10 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 
 	// *** InternalLoads ***
 	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
+	p.m_models.m_internalMoistureLoadsModels = internalLoads.m_internalMoistLoadObjects;
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intLoadObjLists.begin(), internalLoads.m_intLoadObjLists.end());
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intMoistLoadObjLists.begin(), internalLoads.m_intMoistLoadObjLists.end());
+
 	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
 	// Note: if moisture is not enabled, m_intMoistLoadSchedules will be empty
@@ -1410,9 +1412,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// we only need an all day schedule if we miss at least one of the schedules
 	if (!dc.m_values.m_values.empty()) {
 		loadScheds.push_back(allDays);
-		moistScheds.push_back(allDays);
 	}
-
 
 	// initialize load fractions with 0
 	double personRadiationFraction = 0;
