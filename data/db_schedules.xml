@@ -4323,4 +4323,1338 @@
 		</Periods>
 	</Schedule>
 
+	<Schedule id="60550" displayName="DE: H0 Lastprofil BDEW 1000 Wh |EN: H0 Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+			<ScheduleInterval displayName="Winter" intervalStartDay="0">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,5,4,6,7</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.058,0.043,0.04,0.039,0.039,0.047,0.09,0.129,0.134,0.123,0.116,0.118,0.131,0.129,0.115,0.105,0.105,0.129,0.166,0.187,0.168,0.141,0.117,0.086</Values>
+						</DailyCycle>
+						
+						<DailyCycle>
+						<DayTypes>8</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.067,0.053,0.042,0.04,0.038,0.04,0.053,0.082,0.12,0.142,0.148,0.155,0.167,0.166,0.153,0.144,0.145,0.181,0.209,0.21,0.172,0.134,0.123,0.104</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>9</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.078,0.056,0.045,0.041,0.039,0.039,0.041,0.05,0.089,0.139,0.174,0.203,0.207,0.173,0.136,0.117,0.107,0.126,0.156,0.176,0.16,0.136,0.115,0.085</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="Frühling" intervalStartDay="79">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,5,4,6,7</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.067,0.049,0.044,0.043,0.044,0.053,0.093,0.13,0.137,0.136,0.132,0.133,0.15,0.146,0.127,0.113,0.106,0.116,0.145,0.172,0.168,0.156,0.136,0.1</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>8</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.073,0.056,0.046,0.044,0.043,0.045,0.059,0.093,0.13,0.15,0.163,0.172,0.181,0.177,0.161,0.149,0.147,0.159,0.183,0.198,0.18,0.147,0.139,0.117</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>9</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.084,0.062,0.049,0.044,0.043,0.043,0.046,0.066,0.111,0.16,0.185,0.205,0.208,0.169,0.136,0.121,0.107,0.112,0.138,0.161,0.155,0.144,0.128,0.094</Values>
+					</DailyCycle>
+
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="Sommer" intervalStartDay="134">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,5,4,6,7</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.074,0.055,0.05,0.047,0.049,0.059,0.098,0.13,0.142,0.144,0.139,0.142,0.158,0.153,0.132,0.119,0.115,0.123,0.142,0.165,0.167,0.158,0.145,0.112</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>8</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.083,0.064,0.052,0.05,0.051,0.052,0.064,0.093,0.128,0.156,0.165,0.171,0.182,0.176,0.157,0.148,0.145,0.149,0.167,0.18,0.173,0.154,0.149,0.125</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>9</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.09,0.067,0.054,0.051,0.05,0.049,0.051,0.07,0.112,0.16,0.187,0.206,0.209,0.175,0.144,0.124,0.108,0.11,0.127,0.152,0.159,0.151,0.14,0.108</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="Herbst" intervalStartDay="257">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,5,4,6,7</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.067,0.049,0.044,0.043,0.044,0.053,0.093,0.13,0.137,0.136,0.132,0.133,0.15,0.146,0.127,0.113,0.106,0.116,0.145,0.172,0.168,0.156,0.136,0.1</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>8</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.073,0.056,0.046,0.044,0.043,0.045,0.059,0.093,0.13,0.15,0.163,0.172,0.181,0.177,0.161,0.149,0.147,0.159,0.183,0.198,0.18,0.147,0.139,0.117</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>9</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.084,0.062,0.049,0.044,0.043,0.043,0.046,0.066,0.111,0.16,0.185,0.205,0.208,0.169,0.136,0.121,0.107,0.112,0.138,0.161,0.155,0.144,0.128,0.094</Values>
+					</DailyCycle>
+
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="Winter" intervalStartDay="304">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,5,4,6,7</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.058,0.043,0.04,0.039,0.039,0.047,0.09,0.129,0.134,0.123,0.116,0.118,0.131,0.129,0.115,0.105,0.105,0.129,0.166,0.187,0.168,0.141,0.117,0.086</Values>
+						</DailyCycle>
+						
+						<DailyCycle>
+						<DayTypes>8</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.067,0.053,0.042,0.04,0.038,0.04,0.053,0.082,0.12,0.142,0.148,0.155,0.167,0.166,0.153,0.144,0.145,0.181,0.209,0.21,0.172,0.134,0.123,0.104</Values>
+						</DailyCycle>
+
+						<DailyCycle>
+						<DayTypes>9</DayTypes>
+						<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+						<Values>0.078,0.056,0.045,0.041,0.039,0.039,0.041,0.05,0.089,0.139,0.174,0.203,0.207,0.173,0.136,0.117,0.107,0.126,0.156,0.176,0.16,0.136,0.115,0.085</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+		</Periods>				
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G0 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G0 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+			<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.061,0.053,0.048,0.05,0.06,0.067,0.081,0.115,0.188,0.229,0.232,0.239,0.22,0.184,0.173,0.191,0.201,0.204,0.168,0.117,0.096,0.084,0.076,0.071</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.074,0.073,0.065,0.064,0.066,0.071,0.08,0.118,0.17,0.194,0.204,0.207,0.197,0.172,0.129,0.096,0.084,0.091,0.097,0.097,0.094,0.085,0.077,0.069</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.06,0.053,0.046,0.042,0.042,0.044,0.05,0.051,0.049,0.055,0.066,0.073,0.078,0.08,0.074,0.066,0.062,0.079,0.092,0.094,0.089,0.078,0.07,0.062</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.069,0.06,0.055,0.056,0.066,0.075,0.081,0.108,0.174,0.211,0.214,0.221,0.205,0.175,0.165,0.179,0.183,0.179,0.144,0.102,0.091,0.086,0.082,0.078</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.077,0.077,0.07,0.068,0.07,0.073,0.075,0.114,0.169,0.187,0.191,0.195,0.192,0.169,0.126,0.095,0.079,0.08,0.084,0.087,0.091,0.088,0.08,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.057,0.049,0.045,0.044,0.045,0.045,0.05,0.053,0.061,0.069,0.077,0.083,0.081,0.074,0.067,0.062,0.072,0.08,0.084,0.088,0.083,0.073,0.065</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.058,0.054,0.054,0.065,0.071,0.075,0.102,0.164,0.198,0.203,0.209,0.196,0.171,0.165,0.175,0.176,0.17,0.14,0.098,0.089,0.087,0.081,0.076</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.077,0.075,0.069,0.067,0.07,0.072,0.077,0.114,0.161,0.176,0.18,0.185,0.18,0.158,0.118,0.089,0.077,0.075,0.079,0.08,0.085,0.085,0.078,0.072</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.057,0.051,0.048,0.047,0.046,0.047,0.053,0.054,0.059,0.066,0.072,0.077,0.079,0.073,0.064,0.06,0.068,0.075,0.079,0.083,0.082,0.074,0.066</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.069,0.06,0.055,0.056,0.066,0.075,0.081,0.108,0.174,0.211,0.214,0.221,0.205,0.175,0.165,0.179,0.183,0.179,0.144,0.102,0.091,0.086,0.082,0.078</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.077,0.077,0.07,0.068,0.07,0.073,0.075,0.114,0.169,0.187,0.191,0.195,0.192,0.169,0.126,0.095,0.079,0.08,0.084,0.087,0.091,0.088,0.08,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.057,0.049,0.045,0.044,0.045,0.045,0.05,0.053,0.061,0.069,0.077,0.083,0.081,0.074,0.067,0.062,0.072,0.08,0.084,0.088,0.083,0.073,0.065</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.061,0.053,0.048,0.05,0.06,0.067,0.081,0.115,0.188,0.229,0.232,0.239,0.22,0.184,0.173,0.191,0.201,0.204,0.168,0.117,0.096,0.084,0.076,0.071</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.074,0.073,0.065,0.064,0.066,0.071,0.08,0.118,0.17,0.194,0.204,0.207,0.197,0.172,0.129,0.096,0.084,0.091,0.097,0.097,0.094,0.085,0.077,0.069</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.06,0.053,0.046,0.042,0.042,0.044,0.05,0.051,0.049,0.055,0.066,0.073,0.078,0.08,0.074,0.066,0.062,0.079,0.092,0.094,0.089,0.078,0.07,0.062</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G1 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G1 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.026,0.027,0.027,0.025,0.025,0.028,0.034,0.206,0.44,0.487,0.48,0.467,0.409,0.314,0.319,0.338,0.268,0.162,0.091,0.055,0.04,0.034,0.03,0.027</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.025,0.026,0.025,0.025,0.024,0.027,0.029,0.03,0.04,0.052,0.058,0.055,0.05,0.04,0.034,0.034,0.033,0.033,0.034,0.034,0.032,0.028,0.028,0.028</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.025,0.026,0.025,0.025,0.024,0.027,0.029,0.028,0.03,0.03,0.03,0.032,0.031,0.029,0.029,0.032,0.032,0.032,0.035,0.034,0.032,0.03,0.028,0.027</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.02,0.019,0.019,0.019,0.019,0.026,0.03,0.164,0.35,0.392,0.394,0.392,0.355,0.274,0.282,0.297,0.235,0.135,0.065,0.043,0.033,0.027,0.023,0.022</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.021,0.02,0.019,0.02,0.019,0.021,0.023,0.028,0.05,0.062,0.062,0.062,0.053,0.038,0.031,0.029,0.027,0.025,0.024,0.025,0.024,0.027,0.026,0.023</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.022,0.019,0.02,0.021,0.019,0.02,0.021,0.02,0.019,0.019,0.019,0.02,0.021,0.019,0.02,0.021,0.02,0.019,0.021,0.023,0.023,0.022,0.021,0.021</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.022,0.021,0.021,0.021,0.022,0.022,0.055,0.163,0.295,0.339,0.336,0.328,0.287,0.234,0.25,0.236,0.17,0.101,0.055,0.038,0.031,0.028,0.026,0.026</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.022,0.021,0.021,0.021,0.021,0.022,0.024,0.026,0.031,0.041,0.048,0.048,0.038,0.03,0.027,0.025,0.025,0.023,0.024,0.024,0.022,0.024,0.024,0.023</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.022,0.021,0.021,0.021,0.021,0.022,0.023,0.02,0.019,0.02,0.021,0.022,0.024,0.024,0.023,0.023,0.023,0.024,0.023,0.024,0.023,0.024,0.024,0.023</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.02,0.019,0.019,0.019,0.019,0.026,0.03,0.164,0.35,0.392,0.394,0.392,0.355,0.274,0.282,0.297,0.235,0.135,0.065,0.043,0.033,0.027,0.023,0.022</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.021,0.02,0.019,0.02,0.019,0.021,0.023,0.028,0.05,0.062,0.062,0.062,0.053,0.038,0.031,0.029,0.027,0.025,0.024,0.025,0.024,0.027,0.026,0.023</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.022,0.019,0.02,0.021,0.019,0.02,0.021,0.02,0.019,0.019,0.019,0.02,0.021,0.019,0.02,0.021,0.02,0.019,0.021,0.023,0.023,0.022,0.021,0.021</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.026,0.027,0.027,0.025,0.025,0.028,0.034,0.206,0.44,0.487,0.48,0.467,0.409,0.314,0.319,0.338,0.268,0.162,0.091,0.055,0.04,0.034,0.03,0.027</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.025,0.026,0.025,0.025,0.024,0.027,0.029,0.03,0.04,0.052,0.058,0.055,0.05,0.04,0.034,0.034,0.033,0.033,0.034,0.034,0.032,0.028,0.028,0.028</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.025,0.026,0.025,0.025,0.024,0.027,0.029,0.028,0.03,0.03,0.03,0.032,0.031,0.029,0.029,0.032,0.032,0.032,0.035,0.034,0.032,0.03,0.028,0.027</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G2 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G2 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.04,0.033,0.032,0.031,0.028,0.063,0.082,0.088,0.119,0.16,0.169,0.157,0.153,0.159,0.183,0.203,0.232,0.25,0.247,0.241,0.212,0.158,0.105</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.072,0.048,0.034,0.032,0.031,0.028,0.061,0.07,0.075,0.114,0.161,0.176,0.173,0.181,0.178,0.181,0.196,0.222,0.233,0.226,0.219,0.189,0.126,0.085</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.049,0.037,0.033,0.033,0.03,0.05,0.054,0.047,0.087,0.131,0.148,0.146,0.15,0.155,0.149,0.154,0.177,0.193,0.2,0.197,0.172,0.116,0.075</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.037,0.03,0.029,0.03,0.028,0.057,0.066,0.072,0.108,0.139,0.151,0.145,0.14,0.141,0.156,0.167,0.187,0.206,0.211,0.213,0.197,0.151,0.097</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.042,0.031,0.029,0.026,0.025,0.052,0.06,0.062,0.1,0.138,0.15,0.149,0.154,0.154,0.154,0.165,0.186,0.195,0.193,0.188,0.168,0.115,0.074</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.042,0.032,0.028,0.026,0.025,0.049,0.049,0.038,0.074,0.118,0.131,0.131,0.122,0.117,0.118,0.121,0.142,0.157,0.165,0.166,0.149,0.101,0.065</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.05,0.031,0.026,0.027,0.027,0.033,0.053,0.06,0.073,0.107,0.132,0.14,0.133,0.121,0.123,0.134,0.142,0.161,0.176,0.181,0.181,0.166,0.128,0.084</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.056,0.036,0.027,0.025,0.024,0.032,0.049,0.047,0.059,0.098,0.126,0.133,0.132,0.132,0.132,0.137,0.146,0.159,0.163,0.156,0.151,0.135,0.093,0.06</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.046,0.033,0.026,0.024,0.023,0.032,0.047,0.039,0.038,0.071,0.102,0.113,0.116,0.117,0.109,0.109,0.118,0.132,0.143,0.145,0.14,0.121,0.084,0.053</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.037,0.03,0.029,0.03,0.028,0.057,0.066,0.072,0.108,0.139,0.151,0.145,0.14,0.141,0.156,0.167,0.187,0.206,0.211,0.213,0.197,0.151,0.097</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.042,0.031,0.029,0.026,0.025,0.052,0.06,0.062,0.1,0.138,0.15,0.149,0.154,0.154,0.154,0.165,0.186,0.195,0.193,0.188,0.168,0.115,0.074</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.042,0.032,0.028,0.026,0.025,0.049,0.049,0.038,0.074,0.118,0.131,0.131,0.122,0.117,0.118,0.121,0.142,0.157,0.165,0.166,0.149,0.101,0.065</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.04,0.033,0.032,0.031,0.028,0.063,0.082,0.088,0.119,0.16,0.169,0.157,0.153,0.159,0.183,0.203,0.232,0.25,0.247,0.241,0.212,0.158,0.105</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.072,0.048,0.034,0.032,0.031,0.028,0.061,0.07,0.075,0.114,0.161,0.176,0.173,0.181,0.178,0.181,0.196,0.222,0.233,0.226,0.219,0.189,0.126,0.085</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.049,0.037,0.033,0.033,0.03,0.05,0.054,0.047,0.087,0.131,0.148,0.146,0.15,0.155,0.149,0.154,0.177,0.193,0.2,0.197,0.172,0.116,0.075</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G3 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G3 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.094,0.099,0.094,0.088,0.085,0.096,0.103,0.105,0.13,0.145,0.15,0.154,0.154,0.148,0.134,0.135,0.14,0.145,0.152,0.141,0.117,0.108,0.104,0.097</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.096,0.1,0.094,0.089,0.085,0.096,0.102,0.104,0.129,0.142,0.145,0.147,0.146,0.136,0.113,0.101,0.102,0.11,0.116,0.12,0.11,0.097,0.093,0.088</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.089,0.092,0.088,0.084,0.081,0.094,0.098,0.097,0.099,0.101,0.102,0.1,0.101,0.102,0.095,0.092,0.093,0.095,0.104,0.116,0.107,0.096,0.092,0.086</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.09,0.089,0.09,0.085,0.081,0.082,0.093,0.102,0.122,0.132,0.134,0.14,0.139,0.136,0.133,0.133,0.133,0.135,0.137,0.128,0.121,0.111,0.101,0.095</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.093,0.094,0.095,0.09,0.085,0.087,0.097,0.103,0.129,0.14,0.138,0.143,0.141,0.135,0.12,0.108,0.104,0.109,0.108,0.108,0.113,0.107,0.097,0.091</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.089,0.091,0.086,0.083,0.085,0.094,0.098,0.104,0.101,0.096,0.097,0.095,0.096,0.097,0.095,0.096,0.098,0.1,0.106,0.112,0.103,0.093,0.088</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.099,0.096,0.094,0.093,0.091,0.09,0.104,0.108,0.125,0.14,0.143,0.146,0.148,0.139,0.131,0.136,0.139,0.142,0.141,0.135,0.126,0.114,0.107,0.101</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.1,0.097,0.095,0.092,0.09,0.088,0.099,0.106,0.129,0.143,0.141,0.144,0.145,0.135,0.117,0.11,0.112,0.114,0.11,0.118,0.119,0.108,0.102,0.096</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.096,0.093,0.092,0.092,0.09,0.089,0.104,0.105,0.103,0.105,0.104,0.104,0.109,0.106,0.101,0.101,0.1,0.101,0.101,0.112,0.115,0.103,0.097,0.092</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.09,0.089,0.09,0.085,0.081,0.082,0.093,0.102,0.122,0.132,0.134,0.14,0.139,0.136,0.133,0.133,0.133,0.135,0.137,0.128,0.121,0.111,0.101,0.095</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.093,0.094,0.095,0.09,0.085,0.087,0.097,0.103,0.129,0.14,0.138,0.143,0.141,0.135,0.12,0.108,0.104,0.109,0.108,0.108,0.113,0.107,0.097,0.091</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.089,0.091,0.086,0.083,0.085,0.094,0.098,0.104,0.101,0.096,0.097,0.095,0.096,0.097,0.095,0.096,0.098,0.1,0.106,0.112,0.103,0.093,0.088</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.094,0.099,0.094,0.088,0.085,0.096,0.103,0.105,0.13,0.145,0.15,0.154,0.154,0.148,0.134,0.135,0.14,0.145,0.152,0.141,0.117,0.108,0.104,0.097</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.096,0.1,0.094,0.089,0.085,0.096,0.102,0.104,0.129,0.142,0.145,0.147,0.146,0.136,0.113,0.101,0.102,0.11,0.116,0.12,0.11,0.097,0.093,0.088</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.089,0.092,0.088,0.084,0.081,0.094,0.098,0.097,0.099,0.101,0.102,0.1,0.101,0.102,0.095,0.092,0.093,0.095,0.104,0.116,0.107,0.096,0.092,0.086</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G4 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G4 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.06,0.058,0.056,0.056,0.056,0.061,0.071,0.107,0.177,0.214,0.218,0.217,0.203,0.164,0.156,0.199,0.218,0.227,0.201,0.142,0.105,0.086,0.07,0.064</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.061,0.059,0.058,0.058,0.057,0.061,0.074,0.132,0.188,0.213,0.222,0.221,0.218,0.193,0.134,0.091,0.083,0.09,0.091,0.094,0.088,0.074,0.063,0.059</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.056,0.054,0.054,0.053,0.052,0.056,0.064,0.065,0.06,0.057,0.06,0.066,0.065,0.06,0.062,0.065,0.068,0.081,0.087,0.091,0.085,0.072,0.062,0.057</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.062,0.061,0.061,0.06,0.062,0.064,0.092,0.161,0.198,0.202,0.201,0.19,0.155,0.147,0.181,0.195,0.197,0.171,0.122,0.102,0.091,0.077,0.07</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.063,0.061,0.061,0.062,0.063,0.066,0.119,0.18,0.197,0.201,0.203,0.205,0.181,0.122,0.083,0.073,0.074,0.074,0.079,0.086,0.079,0.069,0.065</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.058,0.057,0.058,0.057,0.059,0.058,0.063,0.066,0.063,0.063,0.067,0.066,0.062,0.062,0.063,0.063,0.067,0.068,0.074,0.081,0.076,0.067,0.061</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.073,0.07,0.068,0.066,0.066,0.066,0.068,0.099,0.154,0.185,0.193,0.195,0.187,0.155,0.143,0.174,0.189,0.187,0.17,0.122,0.103,0.097,0.085,0.078</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.076,0.073,0.07,0.069,0.068,0.068,0.072,0.125,0.176,0.191,0.198,0.202,0.204,0.182,0.124,0.089,0.083,0.078,0.079,0.081,0.088,0.086,0.077,0.071</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.065,0.064,0.063,0.062,0.061,0.063,0.071,0.069,0.065,0.068,0.071,0.071,0.068,0.068,0.068,0.069,0.069,0.074,0.077,0.084,0.081,0.073,0.068</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.062,0.061,0.061,0.06,0.062,0.064,0.092,0.161,0.198,0.202,0.201,0.19,0.155,0.147,0.181,0.195,0.197,0.171,0.122,0.102,0.091,0.077,0.07</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.063,0.061,0.061,0.062,0.063,0.066,0.119,0.18,0.197,0.201,0.203,0.205,0.181,0.122,0.083,0.073,0.074,0.074,0.079,0.086,0.079,0.069,0.065</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.058,0.057,0.058,0.057,0.059,0.058,0.063,0.066,0.063,0.063,0.067,0.066,0.062,0.062,0.063,0.063,0.067,0.068,0.074,0.081,0.076,0.067,0.061</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.06,0.058,0.056,0.056,0.056,0.061,0.071,0.107,0.177,0.214,0.218,0.217,0.203,0.164,0.156,0.199,0.218,0.227,0.201,0.142,0.105,0.086,0.07,0.064</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.061,0.059,0.058,0.058,0.057,0.061,0.074,0.132,0.188,0.213,0.222,0.221,0.218,0.193,0.134,0.091,0.083,0.09,0.091,0.094,0.088,0.074,0.063,0.059</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.056,0.054,0.054,0.053,0.052,0.056,0.064,0.065,0.06,0.057,0.06,0.066,0.065,0.06,0.062,0.065,0.068,0.081,0.087,0.091,0.085,0.072,0.062,0.057</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G5 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G5 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.046,0.045,0.052,0.09,0.197,0.24,0.231,0.237,0.234,0.226,0.207,0.184,0.151,0.117,0.109,0.108,0.104,0.114,0.111,0.085,0.067,0.058,0.054,0.054</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.101,0.185,0.196,0.199,0.232,0.253,0.252,0.238,0.189,0.155,0.139,0.123,0.125,0.099,0.07,0.063,0.062,0.072,0.075,0.066,0.058,0.051,0.043,0.039</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.038,0.041,0.04,0.037,0.04,0.044,0.052,0.057,0.055,0.056,0.064,0.07,0.072,0.065,0.058,0.057,0.059,0.068,0.073,0.063,0.054,0.049,0.041,0.036</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.049,0.043,0.044,0.11,0.194,0.216,0.222,0.226,0.216,0.209,0.193,0.171,0.14,0.114,0.112,0.112,0.107,0.105,0.094,0.075,0.063,0.06,0.057,0.06</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.109,0.172,0.183,0.192,0.221,0.232,0.229,0.228,0.184,0.145,0.128,0.118,0.123,0.097,0.068,0.066,0.064,0.07,0.074,0.064,0.057,0.052,0.048,0.045</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.042,0.041,0.043,0.042,0.039,0.043,0.052,0.054,0.051,0.055,0.065,0.073,0.074,0.065,0.059,0.06,0.059,0.062,0.063,0.056,0.05,0.047,0.044,0.04</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.058,0.046,0.051,0.135,0.2,0.207,0.211,0.21,0.21,0.204,0.185,0.167,0.14,0.116,0.122,0.121,0.111,0.107,0.092,0.07,0.06,0.057,0.059,0.07</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.131,0.187,0.183,0.196,0.219,0.232,0.235,0.227,0.181,0.136,0.125,0.123,0.125,0.101,0.076,0.078,0.078,0.07,0.061,0.059,0.057,0.05,0.047,0.049</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.047,0.043,0.042,0.044,0.045,0.048,0.053,0.056,0.056,0.057,0.066,0.077,0.079,0.071,0.064,0.066,0.066,0.065,0.059,0.052,0.051,0.048,0.047,0.048</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.049,0.043,0.044,0.11,0.194,0.216,0.222,0.226,0.216,0.209,0.193,0.171,0.14,0.114,0.112,0.112,0.107,0.105,0.094,0.075,0.063,0.06,0.057,0.06</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.109,0.172,0.183,0.192,0.221,0.232,0.229,0.228,0.184,0.145,0.128,0.118,0.123,0.097,0.068,0.066,0.064,0.07,0.074,0.064,0.057,0.052,0.048,0.045</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.042,0.041,0.043,0.042,0.039,0.043,0.052,0.054,0.051,0.055,0.065,0.073,0.074,0.065,0.059,0.06,0.059,0.062,0.063,0.056,0.05,0.047,0.044,0.04</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.046,0.045,0.052,0.09,0.197,0.24,0.231,0.237,0.234,0.226,0.207,0.184,0.151,0.117,0.109,0.108,0.104,0.114,0.111,0.085,0.067,0.058,0.054,0.054</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.101,0.185,0.196,0.199,0.232,0.253,0.252,0.238,0.189,0.155,0.139,0.123,0.125,0.099,0.07,0.063,0.062,0.072,0.075,0.066,0.058,0.051,0.043,0.039</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.038,0.041,0.04,0.037,0.04,0.044,0.052,0.057,0.055,0.056,0.064,0.07,0.072,0.065,0.058,0.057,0.059,0.068,0.073,0.063,0.054,0.049,0.041,0.036</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: G6 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: G6 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.054,0.043,0.041,0.04,0.04,0.042,0.044,0.055,0.083,0.105,0.13,0.177,0.188,0.175,0.138,0.115,0.119,0.149,0.181,0.193,0.194,0.175,0.127,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.059,0.048,0.046,0.044,0.045,0.044,0.054,0.07,0.086,0.14,0.185,0.183,0.177,0.181,0.185,0.19,0.229,0.281,0.296,0.268,0.226,0.18,0.129</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.07,0.062,0.055,0.047,0.044,0.043,0.053,0.074,0.135,0.21,0.251,0.255,0.246,0.201,0.152,0.139,0.187,0.252,0.247,0.219,0.191,0.133,0.081</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.053,0.042,0.039,0.038,0.037,0.038,0.041,0.05,0.07,0.091,0.117,0.163,0.181,0.167,0.131,0.105,0.106,0.133,0.169,0.184,0.188,0.174,0.129,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.063,0.056,0.045,0.04,0.038,0.038,0.037,0.051,0.067,0.09,0.131,0.158,0.161,0.162,0.173,0.181,0.182,0.204,0.245,0.27,0.259,0.227,0.177,0.124</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.066,0.053,0.044,0.038,0.037,0.035,0.054,0.084,0.139,0.206,0.259,0.265,0.251,0.218,0.167,0.135,0.164,0.225,0.243,0.227,0.19,0.133,0.08</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.05,0.042,0.039,0.038,0.037,0.039,0.042,0.051,0.072,0.087,0.108,0.145,0.158,0.144,0.114,0.098,0.102,0.119,0.139,0.153,0.155,0.147,0.113,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.053,0.045,0.043,0.039,0.039,0.043,0.055,0.069,0.089,0.124,0.146,0.146,0.143,0.158,0.18,0.181,0.187,0.217,0.236,0.228,0.201,0.157,0.109</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.077,0.062,0.05,0.042,0.038,0.039,0.038,0.053,0.083,0.122,0.18,0.211,0.212,0.209,0.177,0.139,0.125,0.149,0.194,0.211,0.204,0.177,0.133,0.082</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.053,0.042,0.039,0.038,0.037,0.038,0.041,0.05,0.07,0.091,0.117,0.163,0.181,0.167,0.131,0.105,0.106,0.133,0.169,0.184,0.188,0.174,0.129,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.063,0.056,0.045,0.04,0.038,0.038,0.037,0.051,0.067,0.09,0.131,0.158,0.161,0.162,0.173,0.181,0.182,0.204,0.245,0.27,0.259,0.227,0.177,0.124</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.066,0.053,0.044,0.038,0.037,0.035,0.054,0.084,0.139,0.206,0.259,0.265,0.251,0.218,0.167,0.135,0.164,0.225,0.243,0.227,0.19,0.133,0.08</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.054,0.043,0.041,0.04,0.04,0.042,0.044,0.055,0.083,0.105,0.13,0.177,0.188,0.175,0.138,0.115,0.119,0.149,0.181,0.193,0.194,0.175,0.127,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.059,0.048,0.046,0.044,0.045,0.044,0.054,0.07,0.086,0.14,0.185,0.183,0.177,0.181,0.185,0.19,0.229,0.281,0.296,0.268,0.226,0.18,0.129</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.088,0.07,0.062,0.055,0.047,0.044,0.043,0.053,0.074,0.135,0.21,0.251,0.255,0.246,0.201,0.152,0.139,0.187,0.252,0.247,0.219,0.191,0.133,0.081</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: L0 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: L0 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.062,0.059,0.057,0.057,0.063,0.085,0.14,0.205,0.205,0.161,0.155,0.138,0.112,0.109,0.109,0.116,0.154,0.217,0.233,0.176,0.122,0.1,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.073,0.07,0.064,0.059,0.057,0.06,0.071,0.119,0.187,0.211,0.181,0.172,0.148,0.114,0.096,0.088,0.091,0.126,0.19,0.222,0.171,0.117,0.096,0.077</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.061,0.058,0.057,0.057,0.063,0.09,0.147,0.212,0.211,0.164,0.159,0.14,0.117,0.112,0.106,0.113,0.15,0.21,0.232,0.176,0.121,0.1,0.079</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.059,0.056,0.054,0.054,0.059,0.084,0.14,0.196,0.178,0.139,0.141,0.127,0.106,0.102,0.1,0.101,0.122,0.177,0.204,0.165,0.123,0.1,0.081</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.069,0.063,0.059,0.056,0.055,0.057,0.068,0.122,0.186,0.189,0.158,0.159,0.141,0.111,0.094,0.087,0.089,0.112,0.163,0.189,0.157,0.116,0.093,0.074</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.058,0.055,0.055,0.054,0.059,0.086,0.145,0.198,0.186,0.145,0.146,0.133,0.108,0.1,0.096,0.096,0.121,0.176,0.199,0.167,0.127,0.1,0.079</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.055,0.053,0.051,0.05,0.054,0.072,0.123,0.175,0.16,0.129,0.138,0.124,0.1,0.096,0.097,0.097,0.11,0.155,0.176,0.143,0.11,0.092,0.075</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.059,0.054,0.052,0.05,0.051,0.061,0.106,0.166,0.17,0.143,0.145,0.128,0.099,0.086,0.081,0.082,0.097,0.141,0.161,0.133,0.102,0.083,0.069</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.06,0.055,0.053,0.051,0.05,0.055,0.079,0.133,0.181,0.166,0.136,0.146,0.13,0.104,0.1,0.098,0.098,0.111,0.155,0.178,0.145,0.112,0.093,0.073</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.059,0.056,0.054,0.054,0.059,0.084,0.14,0.196,0.178,0.139,0.141,0.127,0.106,0.102,0.1,0.101,0.122,0.177,0.204,0.165,0.123,0.1,0.081</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.069,0.063,0.059,0.056,0.055,0.057,0.068,0.122,0.186,0.189,0.158,0.159,0.141,0.111,0.094,0.087,0.089,0.112,0.163,0.189,0.157,0.116,0.093,0.074</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.058,0.055,0.055,0.054,0.059,0.086,0.145,0.198,0.186,0.145,0.146,0.133,0.108,0.1,0.096,0.096,0.121,0.176,0.199,0.167,0.127,0.1,0.079</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.062,0.059,0.057,0.057,0.063,0.085,0.14,0.205,0.205,0.161,0.155,0.138,0.112,0.109,0.109,0.116,0.154,0.217,0.233,0.176,0.122,0.1,0.082</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.073,0.07,0.064,0.059,0.057,0.06,0.071,0.119,0.187,0.211,0.181,0.172,0.148,0.114,0.096,0.088,0.091,0.126,0.19,0.222,0.171,0.117,0.096,0.077</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.065,0.061,0.058,0.057,0.057,0.063,0.09,0.147,0.212,0.211,0.164,0.159,0.14,0.117,0.112,0.106,0.113,0.15,0.21,0.232,0.176,0.121,0.1,0.079</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: L1 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: L1 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.06,0.058,0.057,0.056,0.062,0.094,0.186,0.275,0.217,0.133,0.13,0.114,0.095,0.096,0.096,0.104,0.143,0.255,0.273,0.172,0.105,0.085,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.066,0.062,0.059,0.057,0.061,0.082,0.171,0.279,0.235,0.134,0.126,0.114,0.094,0.087,0.08,0.084,0.12,0.244,0.282,0.175,0.098,0.081,0.07</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.059,0.056,0.056,0.055,0.062,0.099,0.194,0.28,0.213,0.133,0.139,0.12,0.097,0.102,0.105,0.11,0.145,0.256,0.285,0.176,0.102,0.085,0.071</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.057,0.058,0.055,0.052,0.058,0.091,0.182,0.256,0.187,0.116,0.119,0.104,0.087,0.086,0.086,0.086,0.107,0.212,0.242,0.16,0.102,0.082,0.071</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.063,0.059,0.058,0.055,0.051,0.054,0.075,0.16,0.251,0.194,0.117,0.12,0.104,0.084,0.076,0.075,0.077,0.104,0.206,0.237,0.157,0.098,0.079,0.066</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.056,0.057,0.054,0.051,0.061,0.094,0.187,0.254,0.185,0.119,0.122,0.108,0.087,0.086,0.085,0.083,0.105,0.212,0.245,0.164,0.103,0.082,0.069</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.056,0.051,0.05,0.049,0.047,0.053,0.08,0.17,0.227,0.162,0.111,0.119,0.105,0.084,0.085,0.085,0.083,0.095,0.194,0.215,0.14,0.093,0.074,0.063</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.057,0.054,0.052,0.049,0.048,0.05,0.065,0.151,0.233,0.176,0.108,0.11,0.094,0.074,0.069,0.065,0.064,0.083,0.176,0.205,0.134,0.084,0.069,0.059</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.053,0.05,0.05,0.048,0.046,0.054,0.085,0.182,0.228,0.158,0.112,0.119,0.105,0.084,0.085,0.085,0.084,0.094,0.187,0.223,0.147,0.091,0.073,0.061</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.057,0.058,0.055,0.052,0.058,0.091,0.182,0.256,0.187,0.116,0.119,0.104,0.087,0.086,0.086,0.086,0.107,0.212,0.242,0.16,0.102,0.082,0.071</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.063,0.059,0.058,0.055,0.051,0.054,0.075,0.16,0.251,0.194,0.117,0.12,0.104,0.084,0.076,0.075,0.077,0.104,0.206,0.237,0.157,0.098,0.079,0.066</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.059,0.056,0.057,0.054,0.051,0.061,0.094,0.187,0.254,0.185,0.119,0.122,0.108,0.087,0.086,0.085,0.083,0.105,0.212,0.245,0.164,0.103,0.082,0.069</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.06,0.058,0.057,0.056,0.062,0.094,0.186,0.275,0.217,0.133,0.13,0.114,0.095,0.096,0.096,0.104,0.143,0.255,0.273,0.172,0.105,0.085,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.066,0.062,0.059,0.057,0.061,0.082,0.171,0.279,0.235,0.134,0.126,0.114,0.094,0.087,0.08,0.084,0.12,0.244,0.282,0.175,0.098,0.081,0.07</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.062,0.059,0.056,0.056,0.055,0.062,0.099,0.194,0.28,0.213,0.133,0.139,0.12,0.097,0.102,0.105,0.11,0.145,0.256,0.285,0.176,0.102,0.085,0.071</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
+	<Schedule id="60550" displayName="DE: L2 Gewerbe allgemein Lastprofil BDEW 1000 Wh |EN: L2 ToDo Luisa Load profile BDEW 1000 Wh">
+		<UseLinearInterpolation>false</UseLinearInterpolation>
+		<HaveAnnualSchedule>false</HaveAnnualSchedule>
+		<Periods>
+		<ScheduleInterval displayName="Winter" intervalStartDay="0">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.071,0.063,0.06,0.058,0.057,0.064,0.085,0.124,0.171,0.191,0.167,0.164,0.148,0.121,0.116,0.116,0.122,0.157,0.2,0.211,0.174,0.13,0.106,0.086</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.076,0.073,0.065,0.06,0.059,0.062,0.069,0.098,0.148,0.194,0.195,0.191,0.163,0.125,0.103,0.093,0.095,0.127,0.167,0.195,0.167,0.126,0.103,0.08</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.067,0.063,0.06,0.058,0.058,0.066,0.091,0.133,0.18,0.201,0.174,0.167,0.15,0.127,0.118,0.109,0.116,0.152,0.191,0.208,0.173,0.128,0.106,0.083</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="79">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.06,0.057,0.055,0.055,0.061,0.084,0.125,0.166,0.168,0.146,0.15,0.137,0.114,0.109,0.107,0.109,0.129,0.162,0.184,0.163,0.129,0.107,0.085</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.072,0.066,0.061,0.057,0.056,0.058,0.067,0.106,0.156,0.181,0.171,0.175,0.157,0.124,0.102,0.092,0.093,0.113,0.145,0.166,0.151,0.121,0.098,0.077</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.059,0.056,0.055,0.055,0.062,0.087,0.13,0.171,0.178,0.151,0.155,0.144,0.117,0.108,0.103,0.102,0.126,0.161,0.179,0.164,0.133,0.106,0.083</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="134">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.066,0.058,0.055,0.053,0.052,0.057,0.073,0.108,0.149,0.154,0.136,0.147,0.135,0.109,0.104,0.105,0.105,0.118,0.141,0.159,0.142,0.117,0.1,0.08</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.069,0.062,0.056,0.054,0.052,0.053,0.061,0.09,0.138,0.165,0.156,0.16,0.143,0.111,0.094,0.088,0.089,0.101,0.127,0.141,0.131,0.108,0.088,0.073</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.063,0.057,0.055,0.053,0.052,0.058,0.081,0.118,0.158,0.163,0.144,0.157,0.141,0.115,0.109,0.106,0.105,0.12,0.145,0.16,0.144,0.121,0.101,0.077</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="257">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.068,0.06,0.057,0.055,0.055,0.061,0.084,0.125,0.166,0.168,0.146,0.15,0.137,0.114,0.109,0.107,0.109,0.129,0.162,0.184,0.163,0.129,0.107,0.085</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.072,0.066,0.061,0.057,0.056,0.058,0.067,0.106,0.156,0.181,0.171,0.175,0.157,0.124,0.102,0.092,0.093,0.113,0.145,0.166,0.151,0.121,0.098,0.077</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.064,0.059,0.056,0.055,0.055,0.062,0.087,0.13,0.171,0.178,0.151,0.155,0.144,0.117,0.108,0.103,0.102,0.126,0.161,0.179,0.164,0.133,0.106,0.083</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+<ScheduleInterval displayName="Winter" intervalStartDay="304">
+<DailyCycles>
+<DailyCycle>
+<DayTypes>3,5,4,6,7</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.071,0.063,0.06,0.058,0.057,0.064,0.085,0.124,0.171,0.191,0.167,0.164,0.148,0.121,0.116,0.116,0.122,0.157,0.2,0.211,0.174,0.13,0.106,0.086</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>8</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.076,0.073,0.065,0.06,0.059,0.062,0.069,0.098,0.148,0.194,0.195,0.191,0.163,0.125,0.103,0.093,0.095,0.127,0.167,0.195,0.167,0.126,0.103,0.08</Values>
+</DailyCycle>
+
+
+<DailyCycle>
+<DayTypes>9</DayTypes>
+<TimePoints>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+<Values>0.067,0.063,0.06,0.058,0.058,0.066,0.091,0.133,0.18,0.201,0.174,0.167,0.15,0.127,0.118,0.109,0.116,0.152,0.191,0.208,0.173,0.128,0.106,0.083</Values>
+</DailyCycle>
+</DailyCycles>
+</ScheduleInterval>
+
+		</Periods>
+	</Schedule>
 </Schedules>
