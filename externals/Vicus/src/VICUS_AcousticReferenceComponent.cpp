@@ -8,11 +8,11 @@ AbstractDBElement::ComparisonResult AcousticReferenceComponent::equal(const Abst
 		return Different;
 
 	if (m_buildingType != otherARC->m_buildingType || m_idAcousticTemplateA != otherARC->m_idAcousticTemplateA
-			|| m_idAcousticTemplateB != otherARC->m_idAcousticTemplateB || m_requirmentType != otherARC->m_requirmentType)
+			|| m_idAcousticTemplateB != otherARC->m_idAcousticTemplateB || m_requirementType != otherARC->m_requirementType)
 		return Different;
 
-	if(!IBK::near_equal(m_impactSoundOneStructureUnit, otherARC->m_impactSoundOneStructureUnit)|| !IBK::near_equal(m_impactSoundDifferentStructureUnits, otherARC->m_impactSoundDifferentStructureUnits) ||
-			!IBK::near_equal(m_airborneSoundOneStructureUnit, otherARC->m_airborneSoundOneStructureUnit) ||!IBK::near_equal( m_airborneSoundDifferentStructureUnits, otherARC->m_airborneSoundDifferentStructureUnits))
+	if(!IBK::near_equal(m_impactSoundOneStructureUnit, otherARC->m_impactSoundOneStructureUnit)|| !IBK::near_equal(m_impactSoundDifferentStructure, otherARC->m_impactSoundDifferentStructure) ||
+			!IBK::near_equal(m_airborneSoundOneStructureUnit, otherARC->m_airborneSoundOneStructureUnit) ||!IBK::near_equal( m_airborneSoundDifferentStructure, otherARC->m_airborneSoundDifferentStructure))
 		return Different;
 
 	if (m_displayName != otherARC->m_displayName)

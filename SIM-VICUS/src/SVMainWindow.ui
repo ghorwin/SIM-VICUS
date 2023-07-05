@@ -868,7 +868,7 @@
   </action>
   <action name="actionAcoustic_Check">
    <property name="text">
-    <string>Acoustic Check</string>
+    <string>Acoustic component check</string>
    </property>
   </action>
  </widget>

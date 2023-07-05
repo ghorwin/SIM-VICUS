@@ -25,7 +25,7 @@ public:
 
 
 	enum RequirementType	{
-								RT_Normal,			// Keyword: normal		'Normal sound requirements'
+								RT_Basic,			// Keyword: basic		'Normal sound requirements'
 								RT_Advanced,		// Keyword: advanced	'Enhanced sound requirements'
 								NUM_RT
 
@@ -48,17 +48,17 @@ public:
 	/*! Describes the acoustic type of the building*/
 	IDType								m_buildingType = VICUS::INVALID_ID;			// XML:A
 
-	RequirementType						m_requirmentType = NUM_RT;					// XML:A
+	RequirementType						m_requirementType = NUM_RT;					// XML:A
 
 	ComponentType						m_type = NUM_CT;							// XML:E
 
 	double								m_impactSoundOneStructureUnit = -1;			// XML:E
 
-	double								m_impactSoundDifferentStructureUnits = -1;	// XML:E
+	double								m_impactSoundDifferentStructure = -1;	// XML:E
 
 	double								m_airborneSoundOneStructureUnit = -1;		// XML:E
 
-	double								m_airborneSoundDifferentStructureUnits = -1;// XML:E
+	double								m_airborneSoundDifferentStructure = -1;// XML:E
 
 
 

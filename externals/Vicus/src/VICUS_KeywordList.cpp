@@ -124,7 +124,7 @@ namespace VICUS {
 			// AcousticReferenceComponent::RequirementType
 			case 1 :
 			switch (t) {
-				case 0 : return "normal";
+				case 0 : return "basic";
 				case 1 : return "advanced";
 			} break;
 			// AcousticReferenceComponent::ComponentType
@@ -645,7 +645,7 @@ namespace VICUS {
 			// AcousticReferenceComponent::RequirementType
 			case 1 :
 			switch (t) {
-				case 0 : return "normal";
+				case 0 : return "basic";
 				case 1 : return "advanced";
 			} break;
 			// AcousticReferenceComponent::ComponentType

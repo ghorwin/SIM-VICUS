@@ -67,7 +67,7 @@ void Room::readXML(const TiXmlElement * element) {
 				m_idZoneTemplate = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdAcousticTemplate")
 				m_idAcousticTemplate = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "AcousticBuildingType")
+			else if (cName == "AcousticBuildingTypeId")
 				m_acousticBuildingTypeId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
@@ -126,7 +126,7 @@ TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
 	if (m_idAcousticTemplate != VICUS::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "IdAcousticTemplate", nullptr, std::string(), IBK::val2string<unsigned int>(m_idAcousticTemplate));
 	if (m_acousticBuildingTypeId != VICUS::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "AcousticBuildingType", nullptr, std::string(), IBK::val2string<unsigned int>(m_acousticBuildingTypeId));
+			TiXmlElement::appendSingleAttributeElement(e, "AcousticBuildingTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_acousticBuildingTypeId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

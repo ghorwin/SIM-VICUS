@@ -54,9 +54,9 @@ void AcousticReferenceComponent::readXML(const TiXmlElement * element) {
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "buildingType")
 				m_buildingType = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "requirmentType")
+			else if (attribName == "requirementType")
 				try {
-					m_requirmentType = (RequirementType)KeywordList::Enumeration("AcousticReferenceComponent::RequirementType", attrib->ValueStr());
+					m_requirementType = (RequirementType)KeywordList::Enumeration("AcousticReferenceComponent::RequirementType", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -74,12 +74,12 @@ void AcousticReferenceComponent::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "ImpactSoundOneStructureUnit")
 				m_impactSoundOneStructureUnit = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "ImpactSoundDifferentStructureUnits")
-				m_impactSoundDifferentStructureUnits = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "ImpactSoundDifferentStructure")
+				m_impactSoundDifferentStructure = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "AirborneSoundOneStructureUnit")
 				m_airborneSoundOneStructureUnit = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "AirborneSoundDifferentStructureUnits")
-				m_airborneSoundDifferentStructureUnits = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "AirborneSoundDifferentStructure")
+				m_airborneSoundDifferentStructure = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IdAcousticTemplateA")
 				m_idAcousticTemplateA = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdAcousticTemplateB")
@@ -120,15 +120,15 @@ TiXmlElement * AcousticReferenceComponent::writeXML(TiXmlElement * parent) const
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_buildingType != VICUS::INVALID_ID)
 		e->SetAttribute("buildingType", IBK::val2string<IDType>(m_buildingType));
-	if (m_requirmentType != NUM_RT)
-		e->SetAttribute("requirmentType", KeywordList::Keyword("AcousticReferenceComponent::RequirementType",  m_requirmentType));
+	if (m_requirementType != NUM_RT)
+		e->SetAttribute("requirementType", KeywordList::Keyword("AcousticReferenceComponent::RequirementType",  m_requirementType));
 
 	if (m_type != NUM_CT)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("AcousticReferenceComponent::ComponentType",  m_type));
 	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundOneStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_impactSoundOneStructureUnit));
-	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundDifferentStructureUnits", nullptr, std::string(), IBK::val2string<double>(m_impactSoundDifferentStructureUnits));
+	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundDifferentStructure", nullptr, std::string(), IBK::val2string<double>(m_impactSoundDifferentStructure));
 	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundOneStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundOneStructureUnit));
-	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundDifferentStructureUnits", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundDifferentStructureUnits));
+	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundDifferentStructure", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundDifferentStructure));
 	if (m_idAcousticTemplateA != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdAcousticTemplateA", nullptr, std::string(), IBK::val2string<unsigned int>(m_idAcousticTemplateA));
 	if (m_idAcousticTemplateB != VICUS::INVALID_ID)

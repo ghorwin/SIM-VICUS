@@ -27,7 +27,9 @@ private slots:
 	void on_checkBoxHideCeilings_stateChanged(int arg1);
 
 private:
-
+	/*! fills the table widgets with the stored entries*/
+	void renderConstraints();
+	/*! gets triggered by an entry in the tableWidget and selects and focuses the corresponding surfaces */
 	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);
 	/*! tells if a constraint was violated or not or not even existing*/
 	enum ViolationInfo {
@@ -41,10 +43,10 @@ private:
 		WTC_acousticTemplateA,
 		WTC_acousticTemplateB,
 		WTC_acousticComponent,
-		WTC_sameStructure,
 		WTC_actualAirSoundValue,
 		WTC_normalConstraints,
 		WTC_advancedConstraints,
+		WTC_sameStructure,
 		WTC_showButton,
 
 	};
@@ -55,7 +57,7 @@ private:
 		QString acousticTemplateAInfo;
 		QString acousticTemplateBInfo;
 		QString acousticComponentInfo;
-		ViolationInfo normalConstraintViolated;
+		ViolationInfo basicConstraintViolated;
 		QString actualValue;
 		QString expectedNormalLimit;
 		ViolationInfo advancedConstraintViolated;
@@ -70,6 +72,13 @@ private:
 
 	/*! checks the acoustic constraints and outputs the results in the widgets table*/
 	void checkConstraints();
+
+	/*! stores all the table entries for walls*/
+	std::vector<tableEntry> m_wallTes;
+
+	/*! stores all the table entries for ceilings*/
+	std::vector<tableEntry> m_ceilingTes;
+
 
 	bool m_hideWalls = true;
 	bool m_hideCeilings = true;
