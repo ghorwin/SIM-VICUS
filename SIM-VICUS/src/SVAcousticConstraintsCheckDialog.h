@@ -69,7 +69,7 @@ private slots:
 
 private:
 	/*! fills the table widgets with the stored entries*/
-	void updateUi();
+	void updateTable();
 
 	/*! gets triggered by an entry in the tableWidget and selects and focuses the corresponding surfaces */
 	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);

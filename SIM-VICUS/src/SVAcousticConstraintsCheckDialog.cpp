@@ -28,7 +28,7 @@ SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *pare
 													  << tr("Actual air sound value")
 													  << tr("Normal constraints")
 													  << tr("Advanced constraints")
-													  << tr("Same Structure")
+													  << tr("Structure type")
 													  << "");
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetWalls);
 	m_ui->tableWidgetWalls->setSortingEnabled(false);
@@ -87,9 +87,6 @@ SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *pare
 	resize(1500, 800);
 
 	setWindowTitle(tr("Acoustic component check"));
-
-	// Check already on start-up
-	checkConstraints();
 }
 
 
@@ -99,9 +96,11 @@ SVAcousticConstraintsCheckDialog::~SVAcousticConstraintsCheckDialog() {
 
 
 bool SVAcousticConstraintsCheckDialog::edit(){
+	// Check already on start-up
+	checkConstraints();
+
 	int res = exec();
 	return res;
-
 }
 
 
@@ -135,6 +134,9 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 	// clear all the table entries for ceilings
 	m_ceilingTes.clear();
 
+	bool wallCheck = true;
+	bool ceilingCheck = true;
+
 	// iterate over all component instances
 	for(const VICUS::ComponentInstance & ci : project().m_componentInstances){
 		// struct that holds relevant data for the table
@@ -149,7 +151,6 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		teWall.advancedConstraintViolated = VI_No_Constraint;
 		teCeil.basicConstraintViolated = VI_No_Constraint;
 		teCeil.advancedConstraintViolated = VI_No_Constraint;
-
 
 		// skip all that dont have a valid acoustic component
 		if(ci.m_idAcousticComponent == VICUS::INVALID_ID)
@@ -171,8 +172,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		// check if they are in the same structural unit or not
 
 		// get the ids of the acoustic template of the corresponding room
-		IDType acousticTemplateAId = roomA->m_idAcousticTemplate;
-		IDType acousticTemplateBId = roomB->m_idAcousticTemplate;
+		unsigned int acousticTemplateAId = roomA->m_idAcousticTemplate;
+		unsigned int acousticTemplateBId = roomB->m_idAcousticTemplate;
 
 		// skip if one of them does not have an acoustic template
 		if(acousticTemplateAId == VICUS::INVALID_ID || acousticTemplateBId == VICUS::INVALID_ID)
@@ -286,14 +287,18 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 
 						if(acComp->m_airSoundResistenceValue < airSoundLimit || IBK::near_equal(airSoundLimit, -1))
 							teWall.basicConstraintViolated = VI_Not_Violated;
-						else
+						else {
 							teWall.basicConstraintViolated = VI_Violated;
+							wallCheck = false;
+						}
 						teWall.expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
 					} else {
 						if(acComp->m_airSoundResistenceValue < airSoundLimit)
 							teWall.advancedConstraintViolated = VI_Not_Violated;
-						else
+						else {
 							teWall.advancedConstraintViolated = VI_Violated;
+							wallCheck = false;
+						}
 						teWall.expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
 					}
 				}
@@ -327,14 +332,18 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 						if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
 							if(acComp->m_impactSoundValue < impactSoundLimit)
 								teCeil.basicConstraintViolated = VI_Not_Violated;
-							else
+							else {
 								teCeil.basicConstraintViolated = VI_Violated;
+								ceilingCheck = false;
+							}
 							teCeil.expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
 						} else {
 							if(acComp->m_impactSoundValue < impactSoundLimit)
 								teCeil.advancedConstraintViolated = VI_Not_Violated;
-							else
+							else {
 								teCeil.advancedConstraintViolated = VI_Violated;
+								ceilingCheck = false;
+							}
 							teCeil.expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
 						}
 					}
@@ -348,11 +357,27 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 			m_ceilingTes.push_back(teCeil);
 		}
 	}
-	updateUi();
+
+	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks for ceilings passed succesfully." : "Acoustic checks of ceilings not passed.");
+	m_ui->labelWallCheck->setText(wallCheck ? "All acoustic checks for walls passed succesfully." : "Acoustic checks of walls not passed.");
+
+	m_ui->labelIconWall->setPixmap(QPixmap(wallCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+	m_ui->labelIconCeiling->setPixmap(   QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+
+	QColor positive(Qt::darkGreen);
+	QColor negative(Qt::darkRed);
+
+	positive = SVSettings::instance().m_theme == SVSettings::TT_Dark ? positive.lighter() : positive;
+	negative = SVSettings::instance().m_theme == SVSettings::TT_Dark ? negative.lighter() : negative;
+
+	m_ui->labelCeilingCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(ceilingCheck ? positive.name() : negative.name()));
+	m_ui->labelWallCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(wallCheck ? positive.name() : negative.name()));
+
+	updateTable();
 }
 
 
-void SVAcousticConstraintsCheckDialog::updateUi() {
+void SVAcousticConstraintsCheckDialog::updateTable() {
 
 
 	QTableWidget * tableWidget = nullptr;
@@ -424,10 +449,10 @@ void SVAcousticConstraintsCheckDialog::updateUi() {
 			QColor normalColor;
 			switch (te.basicConstraintViolated) {
 			case VI_Violated:
-				normalColor = Qt::darkRed;
+				normalColor = Qt::red;
 				break;
 			case VI_Not_Violated:
-				normalColor = Qt::darkGreen;
+				normalColor = Qt::green;
 				break;
 			default:
 				break;
@@ -510,13 +535,13 @@ void SVAcousticConstraintsCheckDialog::on_pushButtonCheckConstraints_clicked() {
 void SVAcousticConstraintsCheckDialog::on_checkBoxHideWalls_stateChanged(int arg1) {
 	m_hideWalls = arg1;
 	// render constraints again
-	updateUi();
+	updateTable();
 }
 
 
 void SVAcousticConstraintsCheckDialog::on_checkBoxHideCeilings_stateChanged(int arg1) {
 	m_hideCeilings = arg1;
 	// render constraints again
-	updateUi();
+	updateTable();
 }
 
