@@ -83,8 +83,8 @@ void SVUndoAddStructuralUnitRoomAssociation::redo() {
 	//execute all sub modifications
 	executeSubModification();
 
+	theProject().updatePointers();
 	SVProjectHandler::instance().setModified(SVProjectHandler::StructuralUnitsModified);
-
 }
 
 // for removing assosiations
