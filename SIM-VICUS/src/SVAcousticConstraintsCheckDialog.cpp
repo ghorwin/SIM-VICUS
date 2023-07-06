@@ -474,7 +474,7 @@ void SVAcousticConstraintsCheckDialog::updateUi() {
 			item = new QTableWidgetItem();
 			item->setText(te.isSameStructuralUnit ? "same structure" : "different structure");
 			item->setFlags(Qt::ItemIsEnabled);
-			item->setTextAlignment(Qt::AlignHCenter);
+			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			tableWidget->setItem(row, ColSameStructure, item);
 
 			QPushButton * btn = new QPushButton(tr("Select components in scene..."));
