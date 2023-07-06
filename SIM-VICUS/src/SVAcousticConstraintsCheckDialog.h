@@ -7,31 +7,14 @@ namespace Ui {
 class SVAcousticConstraintsCheckDialog;
 }
 
-class SVAcousticConstraintsCheckDialog : public QDialog
-{
-    Q_OBJECT
+
+/*! Dialog for checking acoustic constrains dynamically. */
+class SVAcousticConstraintsCheckDialog : public QDialog {
+	Q_OBJECT
 
 public:
-    explicit SVAcousticConstraintsCheckDialog(QWidget *parent = nullptr);
-    ~SVAcousticConstraintsCheckDialog();
 
-	/*! Always start the dialog with this function.
-		\return Returns true if dialog was confirmed and data can be added to project.
-	*/
-	bool edit();
-
-private slots:
-	void on_pushButtonCheckConstraints_clicked();
-	void on_checkBoxHideWalls_stateChanged(int arg1);
-
-	void on_checkBoxHideCeilings_stateChanged(int arg1);
-
-private:
-	/*! fills the table widgets with the stored entries*/
-	void renderConstraints();
-	/*! gets triggered by an entry in the tableWidget and selects and focuses the corresponding surfaces */
-	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);
-	/*! tells if a constraint was violated or not or not even existing*/
+	/*! Violation information. */
 	enum ViolationInfo {
 		VI_Not_Violated,
 		VI_Violated,
@@ -39,18 +22,19 @@ private:
 		NUM_VI
 	};
 
-	enum wallTableColumn {
-		WTC_acousticTemplateA,
-		WTC_acousticTemplateB,
-		WTC_acousticComponent,
-		WTC_actualAirSoundValue,
-		WTC_normalConstraints,
-		WTC_advancedConstraints,
-		WTC_sameStructure,
-		WTC_showButton,
-
+	/*! Enum for columns. */
+	enum Columns {
+		ColAcousticTemplateA,
+		ColAcousticTemplateB,
+		ColAcousticComponent,
+		ColActualAirSoundValue,
+		ColNormalConstraints,
+		ColAdvancedConstraints,
+		ColSameStructure,
+		ColSelectButton,
 	};
 
+	/*! Struct for table entries. */
 	struct tableEntry{
 		bool isImpact;
 		bool isSameStructuralUnit;
@@ -68,10 +52,33 @@ private:
 	};
 
 
-	Ui::SVAcousticConstraintsCheckDialog *m_ui;
+	explicit SVAcousticConstraintsCheckDialog(QWidget *parent = nullptr);
+	~SVAcousticConstraintsCheckDialog();
 
+	/*! Always start the dialog with this function.
+		\return Returns true if dialog was confirmed and data can be added to project.
+	*/
+	bool edit();
+
+private slots:
+	void on_pushButtonCheckConstraints_clicked();
+
+	void on_checkBoxHideWalls_stateChanged(int arg1);
+
+	void on_checkBoxHideCeilings_stateChanged(int arg1);
+
+private:
+	/*! fills the table widgets with the stored entries*/
+	void updateUi();
+
+	/*! gets triggered by an entry in the tableWidget and selects and focuses the corresponding surfaces */
+	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);
+	/*! tells if a constraint was violated or not or not even existing*/
 	/*! checks the acoustic constraints and outputs the results in the widgets table*/
 	void checkConstraints();
+
+	/*! Pointer to Ui. */
+	Ui::SVAcousticConstraintsCheckDialog *m_ui;
 
 	/*! stores all the table entries for walls*/
 	std::vector<tableEntry> m_wallTes;
@@ -79,8 +86,10 @@ private:
 	/*! stores all the table entries for ceilings*/
 	std::vector<tableEntry> m_ceilingTes;
 
-
+	/*! Indicates wheather walls should be hidden. */
 	bool m_hideWalls = true;
+
+	/*! Indicates wheather walls should be hidden. */
 	bool m_hideCeilings = true;
 
 };
