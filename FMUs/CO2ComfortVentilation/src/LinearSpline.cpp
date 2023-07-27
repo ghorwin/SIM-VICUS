@@ -104,9 +104,15 @@ void LinearSpline::readTsv(const Path &fpath) {
 	std::vector<std::vector<double> > rowData;
 	// this is now the path without column indicator
 	try {
-#if defined(_WIN32) && !defined(__MINGW32__)
-		std::ifstream in(tsvFilePath.wstr().c_str());
-#else // _WIN32
+#if defined(_WIN32)
+
+#if defined(_MSC_VER)
+		std::ifstream in(tsvFilePath.wstr());
+#else
+		std::string filenameAnsi = IBK::WstringToANSI(tsvFilePath.wstr(), false);
+		std::ifstream in(filenameAnsi.c_str());
+#endif
+#else // defined(_WIN32)
 		std::ifstream in(tsvFilePath.c_str());
 #endif
 		if (!in)
