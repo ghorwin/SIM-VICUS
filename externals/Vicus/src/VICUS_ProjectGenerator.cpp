@@ -10,6 +10,7 @@
 #include <IBK_FluidPhysics.h>
 #include <IBK_UnitVector.h>
 #include <IBK_StringUtils.h>
+#include <IBK_FileUtils.h>
 
 #include <DataIO>
 
@@ -632,9 +633,7 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 
 		// write file
 		std::ofstream out;
-		out.open(shadingFactorFilePath.str());
-
-		if (!out.is_open()) {
+		if (!IBK::open_ofstream(out, shadingFactorFilePath) ) {
 			IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(shadingFactorFilePath), IBK::MSG_ERROR, FUNC_ID);
 			return false;
 		}
@@ -725,14 +724,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
 
 	std::ofstream out;
-	// write file
-#if defined(_WIN32)
-	out.open(IBK::WstringToANSI(basePath.wstr(), false));
-#else
-	out.open(basePath.str());
-#endif
-
-	if (!out.is_open()) {
+	if (!IBK::open_ofstream(out, basePath)) {
 		IBK::IBK_Message(IBK::FormatString("Error writing mapping file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
@@ -4753,37 +4745,37 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		if (!additionalFilesDir.exists())
 			IBK::Path::makePath(additionalFilesDir);
 
-		std::ofstream f;
+		std::ofstream out;
 		IBK::Path filePath = additionalFilesDir / projectName + ".mapping";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
-		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+		IBK::open_ofstream(out, filePath);
+		out << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
 		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
 			unsigned int soilId = it->first;
-			f << soilId << "\t";
+			out << soilId << "\t";
 			for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
-				f << supplyId << ",";
-			f << "\t";
+				out << supplyId << ",";
+			out << "\t";
 			for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
-				f << returnId << ",";
-			f << std::endl;
+				out << returnId << ",";
+			out << std::endl;
 		}
-		f.close();
+		out.close();
 
 		vicusNetwork.writeNetworkNodesCSV(additionalFilesDir / projectName + "_NetworkNodes.csv");
 		vicusNetwork.writeNetworkEdgesCSV(additionalFilesDir / projectName + "_NetworkEdges.csv");
 
 		// write NANDRAD ids for the path of each building
 		filePath = additionalFilesDir / projectName + ".paths";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
+		IBK::open_ofstream(out, filePath);
 		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+			out << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
 			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
 			for (const NetworkEdge * edge: shortestPath){
-				f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+				out << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
 			}
-			f << std::endl;
+			out << std::endl;
 		}
-		f.close();
+		out.close();
 
 	}
 

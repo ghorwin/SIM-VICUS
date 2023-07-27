@@ -3040,31 +3040,13 @@ void NandradModel::initStatistics(SOLFRA::ModelInterface * modelInterface, bool 
 		// m_simTimeAtStart is set in setRestart()
 
 		// re-open progressLog file for writing
-#ifdef _WIN32
-	#if defined(_MSC_VER)
-		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").wstr().c_str(), std::ios_base::app);
-	#else
-		std::string dirStrAnsi = IBK::WstringToANSI((m_dirs.m_logDir / "progress.tsv").wstr(), false);
-		m_progressLog = new std::ofstream(dirStrAnsi.c_str(), std::ios_base::app);
-	#endif
-#else
-		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").str().c_str(), std::ios_base::app);
-#endif
+		m_progressLog = IBK::create_ofstream(m_dirs.m_logDir / "progress.tsv", std::ios_base::app);
 	}
 	else {
 		m_elapsedSecondsAtStart = 0;
 		m_elapsedSimTimeAtStart = t0();
 		// open progressLog file for writing and write header
-#ifdef _WIN32
-	#if defined(_MSC_VER)
-		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").wstr().c_str());
-	#else
-		std::string dirStrAnsi = IBK::WstringToANSI((m_dirs.m_logDir / "progress.tsv").wstr(), false);
-		m_progressLog = new std::ofstream(dirStrAnsi.c_str());
-	#endif
-#else
-		m_progressLog = new std::ofstream( (m_dirs.m_logDir / "progress.tsv").str().c_str());
-#endif
+		m_progressLog = IBK::create_ofstream(m_dirs.m_logDir / "progress.tsv");
 	}
 
 	// setup feedback object, this also starts the stopwatch
