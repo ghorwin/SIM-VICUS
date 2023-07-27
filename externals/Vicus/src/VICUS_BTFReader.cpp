@@ -42,11 +42,9 @@ void BTFReader::parseHeaderData(const QString & fname, std::vector<std::string> 
 	// ok, may be our file, start analysing filename in more detail
 	// read first line in file
 	IBK::Path filePath(fname.toStdString());
-#if defined(_MSC_VER)
-	std::ifstream in( filePath.wstr().c_str(), std::ios_base::binary  );
-#else // _WIN32
-	std::ifstream in( filePath.c_str(), std::ios_base::binary  );
-#endif // _WIN32
+	// open file in binary mode and check if file exists
+	std::ifstream in;
+	IBK::open_ifstream(in, filePath); // TODO : Error handling
 
 	// accepts file already reads everything until and including header line, so that
 	// should be safe
@@ -69,16 +67,12 @@ void BTFReader::parseHeaderData(const QString & fname, std::vector<std::string> 
 
 
 void BTFReader::readData(const QString & fname, IBK::UnitVector &timePoints, std::vector<std::vector<double> > & values,
-						 std::vector<std::string> & captions, std::vector<std::string> & valueUnits) {
+						 std::vector<std::string> & captions, std::vector<std::string> & valueUnits)
+{
+	FUNCID(BTFReader::readData);
 
-	const char * const FUNC_ID = "[FileReaderBTF::updateDataIO]";
-
-
-#if defined(_MSC_VER)
-	std::ifstream in( IBK::Path(fname.toStdString()).wstr().c_str(), std::ios_base::binary );
-#else // _WIN32
-	std::ifstream in( IBK::Path(fname.toStdString()).c_str(), std::ios_base::binary );
-#endif // _WIN32
+	std::ifstream in;
+	IBK::open_ifstream(in, IBK::Path(fname.toStdString())); // TODO : Error handling
 
 	// accepts file already reads everything until and including header line, so that
 	// should be safe

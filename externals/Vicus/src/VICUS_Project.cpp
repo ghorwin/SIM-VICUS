@@ -34,6 +34,7 @@
 #include <IBK_messages.h>
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -219,17 +220,7 @@ void Project::parseHeader(const IBK::Path & filename) {
 	FUNCID(Project::parseHeader);
 
 	std::ifstream inputStream;
-#if defined(_WIN32)
-#if defined(_MSC_VER)
-	inputStream.open(filename.wstr().c_str(), std::ios_base::binary);
-#else
-	std::string filenameAnsi = IBK::WstringToANSI(filename.wstr(), false);
-	inputStream.open(filenameAnsi.c_str(), std::ios_base::binary);
-#endif
-#else // _WIN32
-	inputStream.open(filename.c_str(), std::ios_base::binary);
-#endif
-	if (!inputStream.is_open()) {
+	if (!IBK::open_ifstream(inputStream, filename, std::ios_base::binary)) {
 		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename.c_str()), FUNC_ID);
 	}
 	std::string line;
