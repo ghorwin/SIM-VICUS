@@ -155,6 +155,7 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 
 	const VICUS::Project &prj = SVProjectHandler::instance().project();
 	m_componentInstances = std::vector<VICUS::ComponentInstance>();
+	m_subSurfaceComponentInstances = std::vector<VICUS::SubSurfaceComponentInstance>();
 
 	SmartClippingProgress progressNotifyer;
 	progressNotifyer.m_prgDlg = new QProgressDialog(tr("Smart-Clipping"), tr("Cancel"), 0, 100, this);
@@ -175,6 +176,7 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 
 		vicusClipper.createComponentInstances(&progressNotifyer, m_ui->checkBoxCreateComp->isChecked());
 		m_componentInstances = *vicusClipper.vicusCompInstances();
+		m_subSurfaceComponentInstances = *vicusClipper.vicusSubSurfCompInstances();
 		m_buildings = vicusClipper.vicusBuildings();
 
 		QMessageBox::information(this, tr("Smart-Clipping"),
@@ -250,6 +252,10 @@ void SVSmartIntersectionDialog::updateUi() {
 	comp = m_db->m_components[m_predefinedComponentIds[RC::VicusClipper::PDC_Floor]];
 	Q_ASSERT(comp != nullptr);
 	m_ui->lineEditFloorName->setText(QtExt::MultiLangString2QString(comp->m_displayName));
+}
+
+const std::vector<VICUS::SubSurfaceComponentInstance> &SVSmartIntersectionDialog::subSurfaceComponentInstances() const {
+	return m_subSurfaceComponentInstances;
 }
 
 

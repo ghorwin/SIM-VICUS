@@ -39,6 +39,8 @@ public:
 
 	const std::vector<VICUS::ComponentInstance> &componentInstances() const;
 
+	const std::vector<VICUS::SubSurfaceComponentInstance> &subSurfaceComponentInstances() const;
+
 private slots:
     void on_pushButtonStartClipping_clicked();
 
@@ -77,6 +79,9 @@ private:
 
     /*! Copy of all component instances. */
 	std::vector<VICUS::ComponentInstance>	m_componentInstances;
+
+	/*! Copy of all sub-surface component instances. */
+	std::vector<VICUS::SubSurfaceComponentInstance>	m_subSurfaceComponentInstances;
 
     /*! Return Code of Clipping. */
 	ClippingResults							m_returnCode;
