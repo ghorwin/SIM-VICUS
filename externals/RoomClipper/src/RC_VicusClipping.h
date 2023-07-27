@@ -102,6 +102,8 @@ public:
 
 	void setPrj(const VICUS::Project &newPrj);
 
+	const std::vector<VICUS::SubSurfaceComponentInstance> *vicusSubSurfCompInstances() const;
+
 private:
 
     /*! Returns the containing Clipping Surface with VICUS Surface from m_clippingSurfaces. */
@@ -144,6 +146,8 @@ private:
 
 
     std::vector<VICUS::ComponentInstance>           m_vicusCompInstances;       ///< VICUS component instances
+
+	std::vector<VICUS::SubSurfaceComponentInstance> m_vicusSubSurfCompInstances;///< VICUS Sub surface component instances
 
 	double											m_normalDeviationInDeg;		///< normal deviation in DEG
 
