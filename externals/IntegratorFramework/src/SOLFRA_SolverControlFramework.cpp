@@ -551,9 +551,6 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 	if (m_restartMode == RestartFromAll)
 		IBK::open_ofstream(out, m_restartFilename, std::ios_base::app | std::ios_base::binary);
 	else {
-		// if restart file exists, rename it to bak
-		if (m_restartFilename.isFile())
-			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
 		IBK::open_ofstream(out, m_restartFilename, std::ios_base::trunc | std::ios_base::binary);
 	}
 	if (!out)
