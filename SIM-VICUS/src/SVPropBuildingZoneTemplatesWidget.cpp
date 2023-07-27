@@ -18,7 +18,8 @@ SVPropBuildingZoneTemplatesWidget::SVPropBuildingZoneTemplatesWidget(QWidget *pa
 	m_ui(new Ui::SVPropBuildingZoneTemplatesWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout_2->setContentsMargins(0,0,0,0);
+	//m_ui->verticalLayout_2->setContentsMargins(0,0,0,0);
+	m_ui->groupBoxSelectedRooms->setContentsMargins(9,9,9,9);
 
 	m_ui->tableWidgetZoneTemplates->setColumnCount(2);
 	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Zone template"));
