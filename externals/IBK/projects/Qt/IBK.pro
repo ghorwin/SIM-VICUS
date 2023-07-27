@@ -25,6 +25,7 @@ SOURCES += \
 	../../src/IBK_Color.cpp \
 	../../src/IBK_Constants.cpp \
 	../../src/IBK_FluidPhysics.cpp \
+	../../src/IBK_Isopleths.cpp \
 	../../src/IBK_crypt.cpp \
 	../../src/IBK_EOLStreamBuffer.cpp \
 	../../src/IBK_Exception.cpp \
@@ -64,6 +65,7 @@ OTHER_FILES +=
 HEADERS += \
 	../../src/IBK_Differ.h \
 	../../src/IBK_FluidPhysics.h \
+	../../src/IBK_Isopleths.h \
 	../../src/IBK_algorithm.h \
 	../../src/IBK_ArgParser.h \
 	../../src/IBK_array.h \

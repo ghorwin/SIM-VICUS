@@ -668,7 +668,7 @@ private:
 	struct sblock {
 		sblock(unsigned int l=0, unsigned int r=0) : m_uil(l), m_uir(r) {}
 		sblock(const sblock& roBlock) : m_uil(roBlock.m_uil), m_uir(roBlock.m_uir) {}
-		sblock& operator=(const sblock& b) = default;
+		sblock& operator=(const sblock& roBlock) { m_uil = roBlock.m_uil; m_uir = roBlock.m_uir; return *this; }
 		sblock& operator^=(sblock& b) { m_uil ^= b.m_uil; m_uir ^= b.m_uir; return *this; }
 		unsigned int m_uil, m_uir;
 		void BytesToBlock(std::vector<unsigned char>::const_iterator p);

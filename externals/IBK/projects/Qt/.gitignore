@@ -1,3 +1,8 @@
 /.qmake.stash
-/Makefile
-/Makefile.IBK
+/Makefile.*
+/debug/
+/debug_x64/
+/release/
+/release_x64/
+*.Debug
+*.Release
