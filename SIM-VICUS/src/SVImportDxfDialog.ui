@@ -13,11 +13,11 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="0">
     <widget class="QtExt::BrowseFilenameWidget" name="lineEditFileName"/>
    </item>
-   <item>
+   <item row="5" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -47,10 +47,7 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QPlainTextEdit" name="plainTextEditLogWindow"/>
-   </item>
-   <item>
+   <item row="7" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -59,6 +56,23 @@
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPlainTextEdit" name="plainTextEditLogWindow"/>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditDrawingName"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

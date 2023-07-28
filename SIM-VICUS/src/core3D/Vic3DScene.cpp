@@ -1868,10 +1868,11 @@ void Scene::generate2DDrawingGeometry() {
 
 	// lambda function to replace nullptr of a dxf entity's color with default color
 	auto insertColor = [](const QColor *color) -> QColor {
-		if (!((*color).isValid()))
+		if (true/*!((*color).isValid())*/)
 			return SVStyle::instance().m_defaultDrawingColor;
 		else
-			return *color;
+			return SVStyle::instance().m_defaultDrawingColor;
+			//return *color;
 	};
 
 	const VICUS::Project & p = project();

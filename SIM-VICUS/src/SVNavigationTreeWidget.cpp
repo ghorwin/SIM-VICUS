@@ -145,8 +145,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	switch (mod) {
 	case SVProjectHandler::AllModified :
 	case SVProjectHandler::NetworkGeometryChanged :
+	case SVProjectHandler::DrawingModified :
 	case SVProjectHandler::BuildingGeometryChanged :
-
 		break;
 	case SVProjectHandler::BuildingTopologyChanged : {
 		/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
@@ -329,6 +329,32 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		}
 	}
 
+	// DXF Drawings
+
+	for (const VICUS::Drawing & d : prj.m_drawings) {
+		// TODO should drawing have name & id
+		QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
+		//m_treeItemMap[d.m_id] = drawingItem;
+		root->addChild(drawingItem);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::NodeID, d.m_id);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, d.m_visible);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, d.m_selected);
+		// add child nodes for each edge in the network
+
+
+		for (const VICUS::Drawing::Layer & l : d.m_layers) {
+			QString name = l.m_name;
+			QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
+			//m_treeItemMap[e.m_id] = en;
+			// first fill with dummy data
+			ln->setData(0, SVNavigationTreeItemDelegate::NodeID, 890);
+			ln->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, l.m_visible);
+			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
+			drawingItem->addChild(ln);
+		}
+
+
+	}
 	// Dumb plain geometry
 	if (!prj.m_plainGeometry.m_surfaces.empty()) {
 		QTreeWidgetItem * plainGeo = new QTreeWidgetItem(QStringList() << tr("Obstacles/Shading Geometry"), QTreeWidgetItem::Type);

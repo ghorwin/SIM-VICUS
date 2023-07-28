@@ -1,12 +1,13 @@
 #include "VICUS_Drawing.h"
 
 
+
 namespace VICUS {
 
 Drawing::Drawing()
 {
 	m_blocks = std::vector<Block>();
-	m_layer = std::vector<Layer>();
+	m_layers = std::vector<Layer>();
 	m_points = std::vector<Point>();
 	m_lines = std::vector<Line>();
 	m_polylines = std::vector<PolyLine>();
@@ -43,9 +44,9 @@ void Drawing::updatePointer(){
 
 
 Drawing::Layer* Drawing::findLayerPointer(const QString &layername){
-	for(unsigned int i = 0; i < m_layer.size(); i++){
-		if(m_layer[i].m_name == layername){
-			return &m_layer[i];
+	for(unsigned int i = 0; i < m_layers.size(); i++){
+		if(m_layers[i].m_name == layername){
+			return &m_layers[i];
 		}
 	}
 	return nullptr;
@@ -56,15 +57,19 @@ const QColor * Drawing::AbstractDrawingObject::color() const{
 	/* If the object has a color, return it, else use color of parent */
 	if (m_color.isValid()) {
 		return &m_color;
-	} else {
+	} else if (m_parentLayer){
 		return &(m_parentLayer->m_color);
+	} else {
+		return new QColor("white"); //&m_defaultColor;
 	}
 }
 
 double Drawing::AbstractDrawingObject::lineWeight() const{
 	/* if -1: use weight of layer */
+
+	// TODO: how to handle case where there is no parent layer
 	if (m_lineWeight == -1) {
-		if(m_parentLayer->m_lineWeight < 0){
+		if(m_parentLayer == nullptr || m_parentLayer->m_lineWeight < 0){
 			return 0;
 		}
 		else{

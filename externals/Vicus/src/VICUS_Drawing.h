@@ -12,16 +12,28 @@
 #include <drw_interface.h>
 #include <drw_objects.h>
 #include <drw_base.h>
+#include "VICUS_Object.h"
 
 #include <QColor>
 #include <QDebug>
 
+
 namespace VICUS {
 
-class Drawing
-{
+class Drawing : public Object {
+
 public:
+
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "Drawing"; }
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+
+
 	Drawing();
+
+
 
 	/*! Dummy Struct for Blocks */
 	struct Block {
@@ -56,7 +68,7 @@ public:
 		/*! name of Entity */
 		QString		        m_layername;
 		/*! Layer of Entity */
-		const Layer         *m_parentLayer;
+		const Layer         *m_parentLayer = nullptr;
 		/*! Color of Entity if defined, use getter color() instead */
 		QColor				m_color = QColor();
 		/*! Line weight of Entity, use getter lineWeight() instead */
@@ -152,7 +164,7 @@ public:
 	/*! list of blocks, dummy implementation */
 	std::vector<Block>                                                      m_blocks;
 	/*! list of layers */
-	std::vector<Layer>                                                      m_layer;
+	std::vector<Layer>                                                      m_layers;
 	/*! list of points */
 	std::vector<Point>                                                      m_points;
 	/*! list of lines */
@@ -170,6 +182,8 @@ public:
 	/*! Counter of entities, used to create a drawing hierarchy
 	 *   in a dxf file to avoid overlapping of entities */
 	int																		m_zcounter = 0;
+	/*! Is the default color when no other color was specified */
+	static QColor															m_defaultColor;
 	/* used to assign the correct layer to an entity */
 	void updatePointer();
 
@@ -180,8 +194,10 @@ private:
 
 };
 
-
+//QColor VICUS::Drawing::m_defaultColor;
 
 } // namespace VICUS
+
+
 
 #endif // VICUS_DRAWING_H

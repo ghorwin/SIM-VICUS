@@ -7,6 +7,10 @@
 #include "SVUndoAddDrawing.h"
 #include "SVStyle.h"
 
+#include "SVProjectHandler.h"
+#include <VICUS_utilities.h>
+
+
 SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVImportDxfDialog)
@@ -15,6 +19,13 @@ SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 
 	m_ui->lineEditFileName->setup(m_lastFilePath, true, true, tr("DXF-Files (*.dxf)"),
 								  SVSettings::instance().m_dontUseNativeDialogs);
+
+	std::set<QString> existingNames;
+	for (const VICUS::Drawing & b : project().m_drawings)
+		existingNames.insert(b.m_displayName);
+	QString defaultName = VICUS::uniqueName(tr("Drawing"), existingNames);
+
+	m_ui->lineEditDrawingName->setText(defaultName);
 
 }
 
@@ -27,7 +38,22 @@ void SVImportDxfDialog::run() {
 
 	if (exec()) {
 		/* initialises the drawing and reads the values into drawing*/
-		m_drawing = VICUS::Drawing();
+		// set a static default color for all drawings
+		//VICUS::Drawing::m_defaultColor = SVStyle::instance().m_defaultDrawingColor;
+
+		if (m_ui->lineEditDrawingName->text().trimmed().isEmpty()) {
+			QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
+			m_ui->lineEditDrawingName->selectAll();
+			m_ui->lineEditDrawingName->setFocus();
+			return;
+		}
+		VICUS::Drawing drawing;
+		unsigned int nextId = project().nextUnusedID();
+		drawing.m_id = nextId;
+		// set name for drawing from lineEdit
+		drawing.m_displayName = m_ui->lineEditDrawingName->text();
+
+		m_drawing = drawing;
 
 		if (readDxfFile(m_drawing)) {
 
@@ -48,8 +74,8 @@ void SVImportDxfDialog::run() {
 			undo->push();
 
 			qDebug() << "Layer:";
-			for(size_t i = 0; i < m_drawing.m_layer.size(); i++){
-				qDebug() << m_drawing.m_layer[i].m_name;
+			for(size_t i = 0; i < m_drawing.m_layers.size(); i++){
+				qDebug() << m_drawing.m_layers[i].m_name;
 			}
 
 			qDebug() << "Lines:";
@@ -116,7 +142,7 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 	}
 
 	// Push new layer into vector<Layer*> m_layer
-	drawing->m_layer.push_back(newLayer);
+	drawing->m_layers.push_back(newLayer);
 }
 
 
