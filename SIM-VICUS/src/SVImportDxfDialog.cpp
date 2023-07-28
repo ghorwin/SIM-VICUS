@@ -124,7 +124,7 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 	if(m_activeBlock != nullptr) return;
 
 	// initialise struct Layer and populate the attributes
-	VICUS::Drawing::Layer newLayer;
+	VICUS::Drawing::DrawingLayer newLayer;
 
 	// name of layer
 	newLayer.m_name = QString::fromStdString(data.name);

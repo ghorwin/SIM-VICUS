@@ -291,6 +291,8 @@ void SVUndoTreeNodeState::redo() {
 		}
 	}
 
+	// modify drawing state
+
 	// now swap the states
 	m_nodeStates.swap(m_otherNodeStates);
 	// tell project that the grid has changed

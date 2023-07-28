@@ -1866,15 +1866,6 @@ void Scene::generate2DDrawingGeometry() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	// lambda function to replace nullptr of a dxf entity's color with default color
-	auto insertColor = [](const QColor *color) -> QColor {
-		if (true/*!((*color).isValid())*/)
-			return SVStyle::instance().m_defaultDrawingColor;
-		else
-			return SVStyle::instance().m_defaultDrawingColor;
-			//return *color;
-	};
-
 	const VICUS::Project & p = project();
 
 	// initialise default values
@@ -1886,7 +1877,6 @@ void Scene::generate2DDrawingGeometry() {
 	const double defaultLineWeightScaling = 0.015;
 	// multiplier for z-coordinate. Multiplied with the z counter of an entity
 	const double zmultiplier = 0.00005;
-
 
 	// iterate over all AbstractObjects and draw them
 	for (const VICUS::Drawing & drawing: p.m_drawings) {
@@ -1905,8 +1895,15 @@ void Scene::generate2DDrawingGeometry() {
 			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
 			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
 
+			const QColor &color = line.color().isValid() ? line.color() : SVStyle::instance().m_defaultDrawingColor;
+
 			// call addLine to draw line
-			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), defaultLineWeight + line.lineWeight() * defaultLineWeightScaling, insertColor(line.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
+					defaultLineWeight + line.lineWeight() * defaultLineWeightScaling,
+					color, currentVertexIndex, currentElementIndex,
+					m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData,
+					m_drawingGeometryObject.m_indexBufferData);
 		}
 
 		for(const VICUS::Drawing::Point & point : drawing.m_points){
@@ -1929,9 +1926,17 @@ void Scene::generate2DDrawingGeometry() {
 			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
 			VICUS::PlaneGeometry g1(po);
 
-			addPlane(g1.triangulationData(), insertColor(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
-			addPlane(g1.triangulationData(), insertColor(point.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
+			const QColor &color = point.color().isValid() ? point.color() : SVStyle::instance().m_defaultDrawingColor;
 
+			addPlane(g1.triangulationData(), color, currentVertexIndex,
+					 currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+					 m_drawingGeometryObject.m_colorBufferData,
+					 m_drawingGeometryObject.m_indexBufferData, true);
+			addPlane(g1.triangulationData(), color,
+					 currentVertexIndex, currentElementIndex,
+					 m_drawingGeometryObject.m_vertexBufferData,
+					 m_drawingGeometryObject.m_colorBufferData,
+					 m_drawingGeometryObject.m_indexBufferData, false);
 		}
 
 		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
@@ -1948,8 +1953,13 @@ void Scene::generate2DDrawingGeometry() {
 				polylinePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1, defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling, *(polyline.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			const QColor &color = polyline.color().isValid() ? polyline.color() : SVStyle::instance().m_defaultDrawingColor;
 
+			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1,
+						defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling,
+						color, currentVertexIndex, currentElementIndex,
+						m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData,
+						m_drawingGeometryObject.m_indexBufferData);
 		}
 
 		for(const VICUS::Drawing::Circle & circle : drawing.m_circles){
@@ -1964,7 +1974,14 @@ void Scene::generate2DDrawingGeometry() {
 				circlePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			addPolyLine(circlePoints, true, defaultLineWeight + circle.lineWeight() * defaultLineWeightScaling, *(circle.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			const QColor &color = circle.color().isValid() ? circle.color() : SVStyle::instance().m_defaultDrawingColor;
+
+			addPolyLine(circlePoints, true,
+						defaultLineWeight + circle.lineWeight() * defaultLineWeightScaling,
+						color, currentVertexIndex, currentElementIndex,
+						m_drawingGeometryObject.m_vertexBufferData,
+						m_drawingGeometryObject.m_colorBufferData,
+						m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -1987,7 +2004,6 @@ void Scene::generate2DDrawingGeometry() {
 
 			double stepAngle = angleDifference / toCalcN;
 
-
 			for(int i = 0; i < toCalcN; i++){
 				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing.m_origin.m_x, arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing.m_origin.m_y, arc.m_zposition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
@@ -1996,8 +2012,13 @@ void Scene::generate2DDrawingGeometry() {
 				arcPoints.push_back(QVector2IBKVector(vec));
 			}
 
+			const QColor &color = arc.color().isValid() ? arc.color() : SVStyle::instance().m_defaultDrawingColor;
 
-			addPolyLine(arcPoints, false, defaultLineWeight + arc.lineWeight() * defaultLineWeightScaling, *(arc.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(arcPoints, false, defaultLineWeight + arc.lineWeight() * defaultLineWeightScaling,
+						color, currentVertexIndex, currentElementIndex,
+						m_drawingGeometryObject.m_vertexBufferData,
+						m_drawingGeometryObject.m_colorBufferData,
+						m_drawingGeometryObject.m_indexBufferData);
 
 		}
 
@@ -2035,8 +2056,15 @@ void Scene::generate2DDrawingGeometry() {
 				ellipsePoints.push_back(QVector2IBKVector(vec));
 			}
 
+			const QColor &color = ellipse.color().isValid() ? ellipse.color() : SVStyle::instance().m_defaultDrawingColor;
+
 			// Change this line to false, so it doesn't connect the last point to the first point
-			addPolyLine(ellipsePoints, startAngle == endAngle, defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling, *(ellipse.color()), currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			addPolyLine(ellipsePoints, startAngle == endAngle,
+						defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling,
+						color, currentVertexIndex,
+						currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+						m_drawingGeometryObject.m_colorBufferData,
+						m_drawingGeometryObject.m_indexBufferData);
 		}
 
 
@@ -2059,7 +2087,7 @@ void Scene::generate2DDrawingGeometry() {
 			IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));
 			VICUS::PlaneGeometry g1(p);
 
-			QColor color = *(solid.color());
+			const QColor &color = solid.color();
 
 			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
 			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);

@@ -29,11 +29,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-
-
 	Drawing();
-
-
 
 	/*! Dummy Struct for Blocks */
 	struct Block {
@@ -47,7 +43,13 @@ public:
 	};
 
 	/*! Layer struct with relevant attributes */
-	struct Layer {
+	struct DrawingLayer : public Object {
+
+		DrawingLayer() {}
+
+		const char * typeinfo() const override {
+			return "Layer";
+		}
 
 		// TODO Maik: dokustring
 		/*! Name of layer */
@@ -56,8 +58,6 @@ public:
 		QColor			m_color = QColor();
 		/*! Line weight of layer if defined */
 		int				m_lineWeight;
-		/*! Visibility */
-		bool			m_visible;
 		/*! If Layer belongs to a block, pointer to block is here, else nullptr */
 		Block			*m_block = nullptr;
 
@@ -68,13 +68,13 @@ public:
 		/*! name of Entity */
 		QString		        m_layername;
 		/*! Layer of Entity */
-		const Layer         *m_parentLayer = nullptr;
+		const DrawingLayer         *m_parentLayer = nullptr;
 		/*! Color of Entity if defined, use getter color() instead */
 		QColor				m_color = QColor();
 		/*! Line weight of Entity, use getter lineWeight() instead */
 		double				m_lineWeight = 0;
 		/* used to get correct color of entity */
-		const QColor*		color() const;
+		const QColor &color() const;
 		/* used to get correct lineWeight of entity */
 		double				lineWeight() const;
 		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
@@ -164,7 +164,7 @@ public:
 	/*! list of blocks, dummy implementation */
 	std::vector<Block>                                                      m_blocks;
 	/*! list of layers */
-	std::vector<Layer>                                                      m_layers;
+	std::vector<DrawingLayer>                                                      m_layers;
 	/*! list of points */
 	std::vector<Point>                                                      m_points;
 	/*! list of lines */
@@ -183,18 +183,16 @@ public:
 	 *   in a dxf file to avoid overlapping of entities */
 	int																		m_zcounter = 0;
 	/*! Is the default color when no other color was specified */
-	static QColor															m_defaultColor;
-	/* used to assign the correct layer to an entity */
+	QColor																	m_defaultColor;
+	/*! used to assign the correct layer to an entity */
 	void updatePointer();
 
 
 private:
 	/*! Helper function to assign the correct layer to an entity */
-	Layer *findLayerPointer(const QString &layername);
+	DrawingLayer *findLayerPointer(const QString &layername);
 
 };
-
-//QColor VICUS::Drawing::m_defaultColor;
 
 } // namespace VICUS
 

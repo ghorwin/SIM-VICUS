@@ -342,7 +342,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		// add child nodes for each edge in the network
 
 
-		for (const VICUS::Drawing::Layer & l : d.m_layers) {
+		for (const VICUS::Drawing::DrawingLayer & l : d.m_layers) {
 			QString name = l.m_name;
 			QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
 			//m_treeItemMap[e.m_id] = en;
