@@ -442,7 +442,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
-		if( !s->geometry().isValid() )
+		if ( !s->geometry().isValid() )
 			continue;
 
 		if ( s->m_componentInstance == nullptr )
@@ -464,6 +464,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// NOTE: we only include a surface in the calculation check, if it is not a ground surfaces.
 		//       Hence, if the surface has no component, or not a BC assigned, we skip the surface.
+
+		// Check whether the surface has a valid side A boundary condition
+		if (hasSideAValidId && comp->m_idSideABoundaryCondition == VICUS::INVALID_ID)
+			continue;
 
 		// find component and boundary condition to check if this is a surface with ground contact
 		if (comp != nullptr) {
