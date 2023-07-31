@@ -678,6 +678,11 @@ void ClimateDataLoader::readClimateDataEPW(const IBK::Path & fname, bool headerO
 			IBK::explode_csv(line, tokens);
 			if (m_startYear == DATA_NOT_VALID)
 				m_startYear = IBK::string2val<int>(tokens[0]);
+
+			if (tokens.size() < 22)
+				throw IBK::Exception(IBK::FormatString("Error in reading EPW weather file."),
+									 FUNC_ID);	// empty lines, such as in the end when lines are missing, prevents sigsev
+
 			double temperature = IBK::string2val<double>(tokens[6]);
 			if(IBK::near_equal(temperature, 99.9))
 				temperature = DATA_NOT_VALID;
