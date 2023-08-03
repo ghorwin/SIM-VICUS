@@ -1,0 +1,19 @@
+<map id="VICUS::ModelGeneratorBase" name="VICUS::ModelGeneratorBase">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,237,200,262"/>
+<area shape="rect" id="Node000002" href="$class_v_i_c_u_s_1_1_construction_instance_model_generator.html" title=" " alt="" coords="265,5,461,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="114,223,134,185,164,140,201,94,246,55,268,43,271,48,250,60,205,98,168,143,139,188,118,225"/>
+<area shape="rect" id="Node000003" href="$class_v_i_c_u_s_1_1_controlled_shading_model_generator.html" title=" " alt="" coords="274,69,453,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="122,224,175,171,209,143,247,119,273,107,276,112,249,124,213,147,179,175,126,228"/>
+<area shape="rect" id="Node000004" href="$class_v_i_c_u_s_1_1_ideal_heating_cooling_model_generator.html" title=" " alt="" coords="269,133,458,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="141,228,247,183,284,171,286,176,249,188,143,233"/>
+<area shape="rect" id="Node000005" href="$class_v_i_c_u_s_1_1_ideal_surface_heating_cooling_model_generator.html" title=" " alt="" coords="268,197,459,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="213,233,268,226,268,232,214,238"/>
+<area shape="rect" id="Node000006" href="$class_v_i_c_u_s_1_1_internal_loads_model_generator.html" title=" " alt="" coords="271,261,456,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="214,260,271,267,270,273,213,266"/>
+<area shape="rect" id="Node000007" href="$class_v_i_c_u_s_1_1_supply_system_network_model_generator.html" title=" " alt="" coords="260,325,467,365"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="143,266,249,311,286,323,284,328,247,316,141,270"/>
+<area shape="rect" id="Node000008" href="$class_v_i_c_u_s_1_1_thermostat_model_generator.html" title=" " alt="" coords="248,390,479,415"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="125,271,178,324,212,352,249,375,281,387,280,392,247,380,209,356,174,328,121,275"/>
+<area shape="rect" id="Node000009" href="$class_v_i_c_u_s_1_1_ventilation_model_generator.html" title=" " alt="" coords="251,439,476,465"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="119,273,140,308,169,349,206,390,249,424,276,437,274,442,247,429,203,394,165,352,136,311,115,276"/>
+</map>

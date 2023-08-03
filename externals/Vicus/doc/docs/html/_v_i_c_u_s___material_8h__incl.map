@@ -1,0 +1,25 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_Material.h" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_Material.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="471,5,661,60"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="5,108,185,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="471,54,172,108,171,103,470,49"/>
+<area shape="rect" id="Node000003" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="103,181,245,207"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="471,44,418,52,361,65,304,84,250,110,216,139,190,172,186,168,212,136,247,106,302,79,359,60,417,47,470,38"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___abstract_d_b_element_8h.html" title=" " alt="" coords="260,108,459,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="504,63,401,105,399,100,502,58"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="473,181,536,207"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="549,61,523,109,514,139,510,168,504,167,509,138,518,107,544,59"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="533,108,599,133"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="569,60,569,94,563,94,563,60"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="624,108,748,133"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="604,58,660,98,657,102,601,62"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="772,108,893,133"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="648,58,785,101,784,106,647,63"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="917,108,1156,133"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="662,49,961,103,960,108,661,54"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1181,108,1335,133"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="662,43,1167,105,1167,110,661,48"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="331,136,218,179,216,174,329,131"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="269,181,449,207"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="362,134,362,168,357,168,357,134"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="384,131,470,173,468,178,382,136"/>
+</map>

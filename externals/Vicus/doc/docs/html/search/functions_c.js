@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['namefromdata_0',['nameFromData',['../class_v_i_c_u_s_1_1_network_pipe.html#ad4246a5b328881ea9af91fa43de5d149',1,'VICUS::NetworkPipe']]],
+  ['nandradnetworkcomponentmodeltype_1',['nandradNetworkComponentModelType',['../class_v_i_c_u_s_1_1_network_component.html#a52d9256f56d436329cc35fac54dd384f',1,'VICUS::NetworkComponent']]],
+  ['nandradnetworkcomponentparameter_2',['nandradNetworkComponentParameter',['../class_v_i_c_u_s_1_1_network_component.html#aaeb68638fefbcb02f46f6e985f732e99',1,'VICUS::NetworkComponent']]],
+  ['neighboredge_3',['neighborEdge',['../class_v_i_c_u_s_1_1_network_node.html#a0e2973e5ac41bc8602649f27d7e68f97',1,'VICUS::NetworkNode']]],
+  ['neighbournode_4',['neighbourNode',['../class_v_i_c_u_s_1_1_network_edge.html#a70ce09b61ad9f25c3bfc59ed62920dad',1,'VICUS::NetworkEdge::neighbourNode(const NetworkNode *node) const'],['../class_v_i_c_u_s_1_1_network_edge.html#a6097b046ba6f67858430d06a0b71d1de',1,'VICUS::NetworkEdge::neighbourNode(unsigned nodeId) const']]],
+  ['network_5',['Network',['../class_v_i_c_u_s_1_1_network.html#a45bbd4065ee0d6e482e1483a2386a869',1,'VICUS::Network']]],
+  ['networkburiedpipeproperties_6',['NetworkBuriedPipeProperties',['../class_v_i_c_u_s_1_1_network_buried_pipe_properties.html#af198e5b4592694d28eec0cd7bd5bc272',1,'VICUS::NetworkBuriedPipeProperties']]],
+  ['networkcomponent_7',['NetworkComponent',['../class_v_i_c_u_s_1_1_network_component.html#ac5c2a9e0dd4745b85f0761c08ca9f604',1,'VICUS::NetworkComponent']]],
+  ['networkcontroller_8',['NetworkController',['../class_v_i_c_u_s_1_1_network_controller.html#ad977ef9da108860293f6548c329f8de6',1,'VICUS::NetworkController']]],
+  ['networkedge_9',['NetworkEdge',['../class_v_i_c_u_s_1_1_network_edge.html#a4addbf48bec9d8cc1973873750d87a1b',1,'VICUS::NetworkEdge::NetworkEdge()=default'],['../class_v_i_c_u_s_1_1_network_edge.html#a422ed7320bc34d5d2a24b6c4250e53aa',1,'VICUS::NetworkEdge::NetworkEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &amp;length, const unsigned pipeId)']]],
+  ['networkelement_10',['NetworkElement',['../class_v_i_c_u_s_1_1_network_element.html#adf7de6aedfe563e21c4df20b652fdf3d',1,'VICUS::NetworkElement::NetworkElement()=default'],['../class_v_i_c_u_s_1_1_network_element.html#ad7c6fad72285347ab683a0633fead76e',1,'VICUS::NetworkElement::NetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId, unsigned int componentId)']]],
+  ['networkline_11',['NetworkLine',['../class_v_i_c_u_s_1_1_network_line.html#a62451066f210dc34c864cb18b6fdc10a',1,'VICUS::NetworkLine::NetworkLine(const NetworkEdge &amp;e)'],['../class_v_i_c_u_s_1_1_network_line.html#a6533cfedb31989486b8e493150631e4d',1,'VICUS::NetworkLine::NetworkLine(const IBKMK::Vector3D &amp;p1, const IBKMK::Vector3D &amp;p2)']]],
+  ['networknode_12',['NetworkNode',['../class_v_i_c_u_s_1_1_network_node.html#aef0fa8643a009b1e0fb309a291d302ca',1,'VICUS::NetworkNode::NetworkNode()=default'],['../class_v_i_c_u_s_1_1_network_node.html#a41bc1650afc56e3cb2f057d4eda02b03',1,'VICUS::NetworkNode::NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &amp;v, const double heatDemand=0)']]],
+  ['newuniquebuildinglevelname_13',['newUniqueBuildingLevelName',['../class_v_i_c_u_s_1_1_project.html#ac8cbd78f4798cc5fc5cf7456626ec60c',1,'VICUS::Project']]],
+  ['newuniquebuildingname_14',['newUniqueBuildingName',['../class_v_i_c_u_s_1_1_project.html#a5584332aaa4a9d92f65cb0018c0cdfab',1,'VICUS::Project']]],
+  ['newuniqueroomname_15',['newUniqueRoomName',['../class_v_i_c_u_s_1_1_project.html#a476f822d22ecd24da9cd87d31681e2bc',1,'VICUS::Project']]],
+  ['newuniquesubsurfacename_16',['newUniqueSubSurfaceName',['../class_v_i_c_u_s_1_1_project.html#a631a755ab7544d03835e4b54e65289a8',1,'VICUS::Project']]],
+  ['newuniquesurfacename_17',['newUniqueSurfaceName',['../class_v_i_c_u_s_1_1_project.html#a505e1f17582a63dab94078df182f1452',1,'VICUS::Project']]],
+  ['nextunconnectedbuilding_18',['nextUnconnectedBuilding',['../class_v_i_c_u_s_1_1_network.html#a83c8dfcdfea9c8aeb41c61db718cadeb',1,'VICUS::Network']]],
+  ['nextunusedid_19',['nextUnusedID',['../class_v_i_c_u_s_1_1_project.html#a78301cc50dff4ca9cd4b30bbdcf09757',1,'VICUS::Project']]],
+  ['nodebyid_20',['nodeById',['../class_v_i_c_u_s_1_1_network.html#a76ea6bb047e3d0f19a6b4ff0249a65ca',1,'VICUS::Network::nodeById(unsigned int id)'],['../class_v_i_c_u_s_1_1_network.html#a13d1db853b9775bf0a8bcb457fba86a1',1,'VICUS::Network::nodeById(unsigned int id) const']]],
+  ['nodeid1_21',['nodeId1',['../class_v_i_c_u_s_1_1_network_edge.html#afe4248bf9377762c2828c9b834311c20',1,'VICUS::NetworkEdge']]],
+  ['nodeid2_22',['nodeId2',['../class_v_i_c_u_s_1_1_network_edge.html#a81e9b94e034efdde5f9f8924735b6121',1,'VICUS::NetworkEdge']]],
+  ['normal_23',['normal',['../class_v_i_c_u_s_1_1_plane_geometry.html#a71114fa2128c7248ec73e72a5959b38b',1,'VICUS::PlaneGeometry']]],
+  ['numberofbuildings_24',['numberOfBuildings',['../class_v_i_c_u_s_1_1_network.html#ad5e67b41e7053c792b13e2291eebd6be',1,'VICUS::Network']]]
+];

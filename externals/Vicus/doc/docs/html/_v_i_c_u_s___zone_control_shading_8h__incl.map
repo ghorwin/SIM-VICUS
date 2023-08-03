@@ -1,0 +1,16 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_ZoneControlShading.h" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_ZoneControlShading.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="40,5,303,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="125,181,188,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,62,39,82,14,109,8,123,11,135,19,146,33,156,71,172,112,182,111,188,69,177,31,161,16,150,6,138,3,123,9,107,36,78,69,58"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="24,108,145,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="147,62,108,100,104,96,143,58"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="169,108,349,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="200,58,240,96,236,100,196,62"/>
+<area shape="rect" id="Node000005" href="$_v_i_c_u_s___abstract_d_b_element_8h.html" title=" " alt="" coords="373,108,572,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="264,58,420,102,419,107,263,63"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="423,136,202,185,201,180,421,131"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="289,181,469,207"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="459,135,407,175,404,171,456,131"/>
+<area shape="rect" id="Node000007" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="493,181,636,207"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="489,131,541,171,537,175,486,135"/>
+</map>

@@ -1,0 +1,19 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_EPDDataset.h" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_EPDDataset.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="318,5,537,60"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="5,108,185,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="327,63,154,107,152,102,325,57"/>
+<area shape="rect" id="Node000003" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="103,181,245,207"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="343,63,296,83,250,110,217,140,191,172,187,169,213,137,247,106,293,79,341,58"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___abstract_d_b_element_8h.html" title=" " alt="" coords="260,108,459,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="409,62,379,99,375,95,404,58"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="473,181,536,207"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="446,59,472,107,498,167,493,169,468,109,441,62"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="533,108,599,133"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="471,58,537,98,534,103,468,62"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="624,108,745,133"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="507,58,638,101,637,106,505,63"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="331,136,218,179,216,174,329,131"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="269,181,449,207"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="362,134,362,168,357,168,357,134"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="384,131,470,173,468,178,382,136"/>
+</map>
