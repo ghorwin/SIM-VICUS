@@ -1,0 +1,7 @@
+<map id="VICUS::NetworkNode" name="VICUS::NetworkNode">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,80,157,105"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="172,85,184,93,176,99,158,102,157,97,174,95,179,93,170,90"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Object.html" title="Base class for all objects that have a parent and are shown in the navigation tree widget." alt="" coords="26,5,137,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,45,84,80,79,80,79,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="152,10,163,18,155,25,137,28,137,22,153,20,158,18,149,15"/>
+</map>

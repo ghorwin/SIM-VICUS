@@ -1,0 +1,13 @@
+<map id="VICUS::Project" name="VICUS::Project">
+<area shape="rect" id="Node000001" title="The project data structure for the SIM&#45;VICUS user interface." alt="" coords="280,181,393,207"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Outputs.html" title="Contains output definitions/specifications." alt="" coords="5,93,124,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,123,178,155,280,180,279,186,176,160,98,128"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1ViewSettings.html" title="Stores general settings about user interface appearance." alt="" coords="147,93,297,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="239,128,264,155,306,179,303,184,260,159,235,132"/>
+<area shape="rect" id="Node000004" href="$classVICUS_1_1RotationMatrix.html" title="This is a pretty dumb class and only used for the serialization code generator." alt="" coords="143,5,301,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="225,45,225,93,219,93,219,45"/>
+<area shape="rect" id="Node000005" href="$classVICUS_1_1PlainGeometry.html" title="Class PlainGeometry encapsulates all plain geometry objects and holds information,..." alt="" coords="321,93,480,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="386,131,348,182,343,179,382,128"/>
+<area shape="rect" id="Node000006" href="$classVICUS_1_1EmbeddedDatabase.html" title="This stores the database elements used in a project and are needed for transfering project data (with..." alt="" coords="504,93,695,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="565,127,484,160,394,184,393,179,482,155,563,122"/>
+</map>

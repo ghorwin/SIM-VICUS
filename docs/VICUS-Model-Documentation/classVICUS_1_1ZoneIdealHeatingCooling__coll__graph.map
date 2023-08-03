@@ -1,0 +1,5 @@
+<map id="VICUS::ZoneIdealHeatingCooling" name="VICUS::ZoneIdealHeatingCooling">
+<area shape="rect" id="Node000001" title="Zone control parameters for ideal heating/cooling models." alt="" coords="5,79,224,104"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1AbstractDBElement.html" title="Abstract base class of all database elements, needed to have generic DB table model implementations." alt="" coords="21,5,209,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,44,117,79,112,79,112,44"/>
+</map>
