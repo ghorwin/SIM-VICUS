@@ -385,6 +385,12 @@ void SVPropResultsWidget::readResultsDir() {
 				IBK::IBK_Message(IBK::FormatString("Error parsing file '%1").arg(tsvFilePath), IBK::MSG_ERROR);
 				continue; // skip this file
 			}
+
+			if (reader.m_captions.empty() || reader.m_units.empty()) {
+				IBK::IBK_Message(IBK::FormatString("Empty result file '%1").arg(tsvFilePath), IBK::MSG_ERROR);
+				continue;
+			}
+
 			// check captions, units, remove first column (which is the time)
 			captions = reader.m_captions;
 			units = reader.m_units;
