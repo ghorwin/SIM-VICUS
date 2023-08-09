@@ -14,6 +14,7 @@ void SVUndoAddDrawing::undo() {
 	Q_ASSERT(!theProject().m_drawings.empty());
 
 	theProject().m_drawings.pop_back();
+	theProject().updatePointers();
 
 	SVProjectHandler::instance().setModified( SVProjectHandler::DrawingModified);
 }
@@ -22,6 +23,7 @@ void SVUndoAddDrawing::undo() {
 void SVUndoAddDrawing::redo() {
 	// append drawing
 	theProject().m_drawings.push_back(m_addedDrawing);
+	theProject().updatePointers();
 
 	SVProjectHandler::instance().setModified( SVProjectHandler::DrawingModified);
 }
