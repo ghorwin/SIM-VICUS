@@ -90,7 +90,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	}
 
 	// we have a special handling for the parent node
-	if(!p.m_plainGeometry.m_surfaces.empty())
+	if (!p.m_plainGeometry.m_surfaces.empty())
 		if (exclusive || nodeIDs.find(0) != nodeIDs.end())
 			storeState(p.m_plainGeometry, m_nodeStates[0]);
 
@@ -107,6 +107,16 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 		for (const VICUS::NetworkEdge & ne : n.m_edges) {
 			if (exclusive || nodeIDs.find(ne.m_id) != nodeIDs.end())
 				storeState(ne, m_nodeStates[ne.m_id]);
+		}
+	}
+
+	for (const VICUS::Drawing & d : p.m_drawings) {
+		if (exclusive || nodeIDs.find(d.m_id) != nodeIDs.end())
+			storeState(d, m_nodeStates[d.m_id]);
+
+		for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+			if (exclusive || nodeIDs.find(dl.m_id) != nodeIDs.end())
+				storeState(dl, m_nodeStates[dl.m_id]);
 		}
 	}
 
@@ -292,6 +302,19 @@ void SVUndoTreeNodeState::redo() {
 	}
 
 	// modify drawing state
+	for (VICUS::Drawing &d : p.m_drawings) {
+		if ((it = m_nodeStates.find(d.m_id)) != m_nodeStates.end()) {
+			setState(d, it->second);
+			modifiedIDs.push_back(it->first);
+		}
+
+		for (VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+			if ((it = m_nodeStates.find(dl.m_id)) != m_nodeStates.end()) {
+				setState(dl, it->second);
+				modifiedIDs.push_back(it->first);
+			}
+		}
+	}
 
 	// now swap the states
 	m_nodeStates.swap(m_otherNodeStates);
