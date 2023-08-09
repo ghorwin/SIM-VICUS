@@ -160,6 +160,11 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData);
 
+/*! Add Line for wireframe object. */
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width,
+			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData,
+			 std::vector<GLuint> & indexBufferData);
+
 
 void addPoint(const IBKMK::Vector3D &point, float width, const QColor &color,
 			  unsigned int &currentVertexIndex, unsigned int &currentElementIndex,
@@ -170,6 +175,9 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 				 std::vector<GLuint> & indexBufferData);
+
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, unsigned int & currentVertexIndex,
+				 unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::NetworkNode & n,

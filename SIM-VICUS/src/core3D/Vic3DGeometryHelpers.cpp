@@ -755,6 +755,37 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 
 }
 
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width,
+			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData) {
+	// Calculate the line vector and its length
+	IBKMK::Vector3D lineVector = endPoint - startPoint;
+	double length = lineVector.magnitude();
+	if(length <= 0) return;
+
+	// Calculate the line width (1 pixel)
+	double halfWidth = width / 2.0;
+
+	// Calculate a perpendicular vector for the line width
+	IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+	perpendicularVector.normalize();
+	perpendicularVector *= halfWidth;
+
+	// Create an array of 4 vertices to define the box
+	std::vector<IBKMK::Vector3D> lineVertices = {
+		startPoint - perpendicularVector,
+		endPoint - perpendicularVector,
+		endPoint + perpendicularVector,
+		startPoint + perpendicularVector,
+	};
+
+	// Call addPlane to create the box geometry twice so visible from both sides
+	IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, lineVertices[0], lineVertices[3], lineVertices[1]);
+	VICUS::PlaneGeometry g1(p);
+	addPlane(g1.triangulationData(), currentVertexIndex, currentElementIndex,
+			 vertexBufferData, indexBufferData);
+
+}
+
 
 void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, const QColor & color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
 
@@ -818,6 +849,95 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 					 vertexBufferData, colorBufferData, indexBufferData, false);
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), color, currentVertexIndex, currentElementIndex,
 					 vertexBufferData, colorBufferData, indexBufferData, true);
+		}
+		else {
+			// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
+			previousVector = lineVector;
+			previousVertices = lineVertices;
+			return;
+		}
+
+		// update previous values
+		previousVector = lineVector;
+		previousVertices = lineVertices;
+	};
+
+	// loops through all points in polyline, draws a line between every two points, adds a triangle between two lines to fill out the gaps
+	for(unsigned int i = 0; i < polyline.size() - 1; i++){
+		processSegment(polyline[i], polyline[i+1]);
+	}
+
+	// repeats the code of the for loop for the last line and adds two triangles to fill out the lines
+	if(connectEndStart){
+		unsigned int lastIndex = polyline.size() - 1;
+		processSegment(polyline[lastIndex], polyline[0]);
+		processSegment(polyline[0], polyline[1]);
+	}
+}
+
+
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData) {
+
+	// initialise values
+	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
+	std::vector<IBKMK::Vector3D> previousVertices;
+	double halfWidth = width / 2;
+	double length;
+
+	// if polyline is empty, return
+	if(polyline.size() < 2){
+		return;
+	}
+
+	// initialise previousVector
+	previousVector = polyline[1] - polyline[0];
+
+	auto processSegment = [&](const IBKMK::Vector3D& startPoint, const IBKMK::Vector3D& endPoint)->void {
+		// calculate line vector
+		lineVector = endPoint - startPoint;
+		length = lineVector.magnitude();
+		if(length <= 0)
+			return;
+
+		// calculate perpendicular vector
+		perpendicularVector = IBKMK::Vector3D(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+		perpendicularVector.normalize();
+		perpendicularVector *= halfWidth;
+
+		// create vertices for the line
+		std::vector<IBKMK::Vector3D> lineVertices = {
+			startPoint - perpendicularVector,
+			endPoint - perpendicularVector,
+			endPoint + perpendicularVector,
+			startPoint + perpendicularVector,
+		};
+
+		// Draw the line
+		IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, lineVertices[0], lineVertices[3], lineVertices[1]);
+		VICUS::PlaneGeometry g1(p);
+		addPlane(g1.triangulationData(), currentVertexIndex, currentElementIndex,
+				 vertexBufferData, indexBufferData);
+		addPlane(g1.triangulationData(), currentVertexIndex, currentElementIndex,
+				 vertexBufferData, indexBufferData);
+
+		// Calculate the cross product between the current line Vector and previous to get the direction of the triangle
+		crossProduct = lineVector.crossProduct(previousVector);
+
+		// draws the triangle
+		if(crossProduct.m_z < -1e-10){
+			// line is left
+			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
+			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
+
+		}
+		else if(crossProduct.m_z > 1e-10){
+			// line is right
+			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
+			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
 		}
 		else {
 			// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
