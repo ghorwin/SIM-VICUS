@@ -2396,7 +2396,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 				// create a new ground zone
 				gze.m_groundZ.m_id = VICUS::uniqueId(gze.m_idSet);
 				gze.m_idSet.insert(gze.m_groundZ.m_id);
-				gze.m_groundZ.m_displayName = "GroundZone" + IBK::val2string(gze.m_groundZ.m_id);
+				gze.m_groundZ.m_displayName = "GroundZone(ID=" + IBK::val2string(gze.m_groundZ.m_id) + ")";
 				gze.m_groundZ.m_type = NANDRAD::Zone::ZT_Constant;
 				NANDRAD::KeywordList::setParameter(gze.m_groundZ.m_para, "Zone::para_t",
 												   NANDRAD::Zone::P_Temperature, temperature/10.0);
