@@ -330,31 +330,31 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	// DXF Drawings
-
+	QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
+	m_ui->treeWidget->addTopLevelItem(drawing);
 	for (const VICUS::Drawing & d : prj.m_drawings) {
 		// TODO should drawing have name & id
 		QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
+		m_treeItemMap[d.m_id] = drawingItem;
 		//m_treeItemMap[d.m_id] = drawingItem;
-		root->addChild(drawingItem);
+		drawing->addChild(drawingItem);
 		drawingItem->setData(0, SVNavigationTreeItemDelegate::NodeID, d.m_id);
 		drawingItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, d.m_visible);
 		drawingItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, d.m_selected);
+
 		// add child nodes for each edge in the network
-
-
 		for (const VICUS::Drawing::DrawingLayer & l : d.m_layers) {
-			QString name = l.m_name;
+			const QString &name = l.m_displayName;
 			QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
-			//m_treeItemMap[e.m_id] = en;
+			m_treeItemMap[l.m_id] = ln;
 			// first fill with dummy data
-			ln->setData(0, SVNavigationTreeItemDelegate::NodeID, 890);
+			ln->setData(0, SVNavigationTreeItemDelegate::NodeID, l.m_id);
 			ln->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, l.m_visible);
-			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, false);
+			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, l.m_selected);
 			drawingItem->addChild(ln);
 		}
-
-
 	}
+
 	// Dumb plain geometry
 	if (!prj.m_plainGeometry.m_surfaces.empty()) {
 		QTreeWidgetItem * plainGeo = new QTreeWidgetItem(QStringList() << tr("Obstacles/Shading Geometry"), QTreeWidgetItem::Type);
