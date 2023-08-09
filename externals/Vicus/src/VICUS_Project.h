@@ -71,7 +71,8 @@ public:
 		SG_Building			= 0x001,
 		SG_Network			= 0x002,
 		SG_Obstacle			= 0x004,
-		SG_All				= SG_Building | SG_Network | SG_Obstacle,
+		SG_Drawing			= 0x008,
+		SG_All				= SG_Building | SG_Network | SG_Obstacle | SG_Drawing,
 		NUM_SG
 	};
 
@@ -241,14 +242,15 @@ public:
 	/*! This function computes the global bounding box of all selected surfaces and the center point in global coordinates.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
 	*/
-	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces,
+	static IBKMK::Vector3D boundingBox(const std::vector<const Drawing *> &drawings, std::vector<const Surface*> &surfaces,
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
 
-	/*! This function computes the global bounding box of all selected surfaces and the center point in global coordinates.
+	/*! This function computes the global bounding box of all selected edges & nodes and the center point in global coordinates.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
 	*/
-	static IBKMK::Vector3D boundingBox(const std::vector<const NetworkEdge*> &edges,
+	static IBKMK::Vector3D boundingBox(const std::vector<const Drawing *> & drawings,
+									   const std::vector<const NetworkEdge*> &edges,
 									   const std::vector<const NetworkNode*> &nodes,
 									   IBKMK::Vector3D &center);
 
@@ -350,6 +352,11 @@ public:
 
 
 private:
+
+	/*! This function computes the global bounding box of all selected drawings and the center point in global coordinates.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.
+	*/
+	static void drawingBoundingBox(const std::vector<const Drawing *> &drawings, IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues);
 
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp

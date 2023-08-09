@@ -44,6 +44,7 @@
 
 #include "VICUS_Constants.h"
 #include "VICUS_utilities.h"
+#include "VICUS_Drawing.h"
 
 
 #define PI				3.141592653589793238
@@ -612,6 +613,16 @@ void Project::updatePointers() {
 		}
 		n.updateNodeEdgeConnectionPointers();
 	}
+
+	for (VICUS::Drawing &d : m_drawings) {
+		d.updateParents();
+		d.updatePointer();
+		addAndCheckForUniqueness(&d);
+		for (VICUS::Drawing::DrawingLayer &dl : d.m_layers) {
+			addAndCheckForUniqueness(&dl);
+		}
+	}
+
 }
 
 
@@ -693,13 +704,20 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 		}
 	}
 
-	// Dumb plain geometry
-	if (sg & SG_Obstacle) {
-		for (const VICUS::Surface & s : m_plainGeometry.m_surfaces) {
-			if (selectionCheck(s, takeSelected, takeVisible))
-				selectedObjs.insert(&s);
+	// Drawing objects
+	if (sg & SG_Drawing) {
+		for (const VICUS::Drawing & d : m_drawings) {
+
+			for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+				if (selectionCheck(dl, takeSelected, takeVisible))
+					selectedObjs.insert(&dl);
+			}
+
+			if (selectionCheck(d, takeSelected, takeVisible))
+				selectedObjs.insert(&d);
 		}
     }
+
 }
 
 void Project::selectChildSurfaces(std::set<const Object *> &selectedObjs, const Surface &s, bool takeSelected, bool takeVisible) const {
@@ -808,14 +826,15 @@ QString Project::newUniqueSubSurfaceName(const QString & baseName) const {
 }
 
 
-IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
+IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings,
+									 std::vector<const Surface*> &surfaces,
 									 std::vector<const SubSurface*> &subsurfaces,
 									 IBKMK::Vector3D &center)
 {
 	// NOTE: We do not reuse the other boundingBox() function, because this implementation is much faster.
 
 	// store selected surfaces
-	if ( surfaces.empty() && subsurfaces.empty())
+	if ( surfaces.empty() && subsurfaces.empty() && drawings.empty() )
 		return IBKMK::Vector3D ( 0,0,0 );
 
 	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
@@ -849,6 +868,8 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 		}
 	}
 
+	drawingBoundingBox(drawings, upperValues, lowerValues);
+
 	// center point of bounding box
 	center = 0.5*(lowerValues+upperValues);
 	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
@@ -856,9 +877,9 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 }
 
 
-IBKMK::Vector3D Project::boundingBox(const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
+IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings, const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
 
-	if (nodes.empty() && edges.empty())
+	if (nodes.empty() && edges.empty() && drawings.empty())
 		return IBKMK::Vector3D ( 0,0,0 );
 
 	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
@@ -890,11 +911,64 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const NetworkEdge *> & ed
 		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node2->m_position.m_z);
 	}
 
+	drawingBoundingBox(drawings, upperValues, lowerValues);
+
 	// center point of bounding box
 	center = 0.5*(lowerValues+upperValues);
 
 	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
 	return (upperValues-lowerValues);
+}
+
+
+void Project::drawingBoundingBox(const std::vector<const Drawing *> &drawings, IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues) {
+	FUNCID(Project::boundingBox);
+
+	// store selected surfaces
+	if (drawings.empty())
+		return;
+
+	// multiplier for z-coordinate. Multiplied with the z counter of an entity
+	const double zmultiplier = 0.00005;
+
+	// process all drawings
+	for (const VICUS::Drawing *d : drawings ) {
+
+		for (const VICUS::Drawing::Line &line : d->m_lines) {
+			if (!line.m_parentLayer->m_selected)
+				continue;
+
+			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
+			double zCoordinate = line.m_zPosition * zmultiplier + d->m_origin.m_z;
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + d->m_origin.m_x, line.m_line.m_p1.m_y + d->m_origin.m_y, zCoordinate);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + d->m_origin.m_x, line.m_line.m_p2.m_y + d->m_origin.m_y, zCoordinate);
+
+			// scale Vector with selected unit
+			p1 *= d->m_scalingFactor;
+			p2 *= d->m_scalingFactor;
+
+			// rotate Vectors
+			QVector3D vec1 = d->m_rotationMatrix.toQuaternion() * QVector3D(p1.m_x, p1.m_y, p1.m_z);
+			QVector3D vec2 = d->m_rotationMatrix.toQuaternion() * QVector3D(p2.m_x, p2.m_y, p2.m_z);
+
+			upperValues.m_x = std::max(upperValues.m_x, (double)vec1.x());
+			upperValues.m_y = std::max(upperValues.m_y, (double)vec1.y());
+			upperValues.m_z = std::max(upperValues.m_z, (double)vec1.z());
+
+			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec1.x());
+			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec1.y());
+			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec1.z());
+
+			upperValues.m_x = std::max(upperValues.m_x, (double)vec2.x());
+			upperValues.m_y = std::max(upperValues.m_y, (double)vec2.y());
+			upperValues.m_z = std::max(upperValues.m_z, (double)vec2.z());
+
+			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec2.x());
+			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec2.y());
+			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec2.z());
+
+		}
+	}
 }
 
 
