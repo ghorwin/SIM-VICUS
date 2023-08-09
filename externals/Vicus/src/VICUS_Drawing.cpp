@@ -4,8 +4,7 @@
 
 namespace VICUS {
 
-Drawing::Drawing()
-{
+Drawing::Drawing() {
 	m_blocks = std::vector<Block>();
 	m_layers = std::vector<DrawingLayer>();
 	m_points = std::vector<Point>();
@@ -15,6 +14,10 @@ Drawing::Drawing()
 	m_arcs = std::vector<Arc>();
 	m_ellipses = std::vector<Ellipse>();
 	m_solids = std::vector<Solid>();
+}
+
+const std::vector<Drawing::DrawingLayer>& Drawing::layers() const {
+	return m_layers;
 }
 
 
@@ -45,7 +48,7 @@ void Drawing::updatePointer(){
 
 Drawing::DrawingLayer* Drawing::findLayerPointer(const QString &layername){
 	for(unsigned int i = 0; i < m_layers.size(); i++){
-		if(m_layers[i].m_name == layername){
+		if(m_layers[i].m_displayName == layername){
 			return &m_layers[i];
 		}
 	}
@@ -62,6 +65,7 @@ const QColor & Drawing::AbstractDrawingObject::color() const{
 
 	return m_color;
 }
+
 
 double Drawing::AbstractDrawingObject::lineWeight() const{
 	/* if -1: use weight of layer */

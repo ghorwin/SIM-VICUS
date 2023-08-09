@@ -20,6 +20,10 @@
 
 namespace VICUS {
 
+/*!
+	Drawing class is data structure for all primitive drawing objects
+	such as Layer, Lines, Circles, ... .
+ */
 class Drawing : public Object {
 
 public:
@@ -31,15 +35,24 @@ public:
 
 	Drawing();
 
+	//VICUS_COMPARE_WITH_ID
+
+	void updateParents() {
+		m_children.clear();
+		for (DrawingLayer & dl : m_layers) {
+			m_children.push_back(&dl);
+			dl.m_parent = this;
+		}
+	}
+
 	/*! Dummy Struct for Blocks */
 	struct Block {
-
+		/*! Name of Block. */
 		QString			m_name;
-
-		QColor m_color = QColor();
-
-		int m_lineWeight;
-
+		/*! Block color. */
+		QColor			m_color = QColor();
+		/*! Line weight. */
+		unsigned		m_lineWeight;
 	};
 
 	/*! Layer struct with relevant attributes */
@@ -51,9 +64,10 @@ public:
 			return "Layer";
 		}
 
+		//VICUS_COMPARE_WITH_ID
+
 		// TODO Maik: dokustring
-		/*! Name of layer */
-		QString			m_name;
+
 		/*! Color of layer if defined */
 		QColor			m_color = QColor();
 		/*! Line weight of layer if defined */
@@ -65,23 +79,23 @@ public:
 
 	/* Abstract class for all directly drawable dxf entities */
 	struct AbstractDrawingObject {
-		/*! name of Entity */
-		QString		        m_layername;
-		/*! Layer of Entity */
-		const DrawingLayer         *m_parentLayer = nullptr;
-		/*! Color of Entity if defined, use getter color() instead */
-		QColor				m_color = QColor();
-		/*! Line weight of Entity, use getter lineWeight() instead */
-		double				m_lineWeight = 0;
 		/* used to get correct color of entity */
 		const QColor &color() const;
 		/* used to get correct lineWeight of entity */
-		double				lineWeight() const;
-		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
-		int					m_zposition;
-		/* Block Entity belongs to, if nullptr, no block is used */
-		Block				*m_block = nullptr;
+		double lineWeight() const;
 
+		/*! name of Entity */
+		QString						m_layername;
+		/*! Layer of Entity */
+		const DrawingLayer			*m_parentLayer = nullptr;
+		/*! Color of Entity if defined, use getter color() instead */
+		QColor						m_color = QColor();
+		/*! Line weight of Entity, use getter lineWeight() instead */
+		double						m_lineWeight = 0;
+		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
+		int							m_zPosition;
+		/* Block Entity belongs to, if nullptr, no block is used */
+		Block						*m_block = nullptr;
 	};
 
 	/*! Stores attributes of line */
@@ -94,7 +108,6 @@ public:
 	struct Line : public AbstractDrawingObject {
 		/*! line coordinates */
 		IBK::Line       m_line;
-
 	};
 
 	/*! Stores both LW and normal polyline */
@@ -103,7 +116,6 @@ public:
 		std::vector<IBKMK::Vector2D>    m_polyline;
 		/*! 1 if the end point connected to the start */
 		int                            m_polyline_flag = 0;
-
 	};
 
 	/* Stores attributes of circle */
@@ -144,15 +156,14 @@ public:
 
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
-
+		/*! Point 1 */
 		IBKMK::Vector2D    m_point1;
-
+		/*! Point 2 */
 		IBKMK::Vector2D    m_point2;
-
+		/*! Point 3 */
 		IBKMK::Vector2D    m_point3;
-
+		/*! Point 4 */
 		IBKMK::Vector2D    m_point4;
-
 	};
 
 	/*! point of origin */
@@ -164,7 +175,7 @@ public:
 	/*! list of blocks, dummy implementation */
 	std::vector<Block>                                                      m_blocks;
 	/*! list of layers */
-	std::vector<DrawingLayer>                                                      m_layers;
+	std::vector<DrawingLayer>                                               m_layers;
 	/*! list of points */
 	std::vector<Point>                                                      m_points;
 	/*! list of lines */
@@ -181,12 +192,14 @@ public:
 	std::vector<Solid>                                                      m_solids;
 	/*! Counter of entities, used to create a drawing hierarchy
 	 *   in a dxf file to avoid overlapping of entities */
-	int																		m_zcounter = 0;
+	unsigned int															m_zCounter = 0;
 	/*! Is the default color when no other color was specified */
-	QColor																	m_defaultColor;
+	QColor																	m_defaultColor = QColor();
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
 
+
+	const std::vector<DrawingLayer>& layers() const;
 
 private:
 	/*! Helper function to assign the correct layer to an entity */
