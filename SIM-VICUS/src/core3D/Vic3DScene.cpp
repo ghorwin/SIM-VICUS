@@ -1879,11 +1879,15 @@ void Scene::generate2DDrawingGeometry() {
 	const double zmultiplier = 0.00005;
 
 	// iterate over all AbstractObjects and draw them
-	for (const VICUS::Drawing & drawing: p.m_drawings) {
+	for (const VICUS::Drawing & drawing : p.m_drawings) {
 
-		for(const VICUS::Drawing::Line & line: drawing.m_lines){
+		for (const VICUS::Drawing::Line & line : drawing.m_lines){
+
+			if (!line.m_parentLayer->m_visible)
+				continue;
+
 			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
-			double zCoordinate = line.m_zposition * zmultiplier + drawing.m_origin.m_z;
+			double zCoordinate = line.m_zPosition * zmultiplier + drawing.m_origin.m_z;
 			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing.m_origin.m_x, line.m_line.m_p1.m_y + drawing.m_origin.m_y, zCoordinate);
 			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing.m_origin.m_x, line.m_line.m_p2.m_y + drawing.m_origin.m_y, zCoordinate);
 
@@ -1907,8 +1911,12 @@ void Scene::generate2DDrawingGeometry() {
 		}
 
 		for(const VICUS::Drawing::Point & point : drawing.m_points){
+
+			if (!point.m_parentLayer->m_visible)
+				continue;
+
 			// Create Vector from point, add point of origin to each coordinate and calculate z value
-			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, point.m_zposition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, point.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 
 			// scale Vector with selected unit
 			p *= drawing.m_scalingFactor;
@@ -1941,12 +1949,15 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
 
+			if (!polyline.m_parentLayer->m_visible)
+				continue;
+
 			// Create Vector to store vertices of polyline
 			std::vector<IBKMK::Vector3D> polylinePoints;
 
 			// adds z-coordinate to polyline
 			for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x, polyline.m_polyline[i].m_y + drawing.m_origin.m_y, polyline.m_zposition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x, polyline.m_polyline[i].m_y + drawing.m_origin.m_y, polyline.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1964,10 +1975,13 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::Circle & circle : drawing.m_circles){
 
+			if (!circle.m_parentLayer->m_visible)
+				continue;
+
 			std::vector<IBKMK::Vector3D> circlePoints;
 
 			for(int i = 0; i < n; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * PI * i / n) + drawing.m_origin.m_x, circle.m_center.m_y + circle.m_radius * sin(2 * PI * i / n) + drawing.m_origin.m_y, circle.m_zposition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * PI * i / n) + drawing.m_origin.m_x, circle.m_center.m_y + circle.m_radius * sin(2 * PI * i / n) + drawing.m_origin.m_y, circle.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1987,6 +2001,9 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::Arc & arc : drawing.m_arcs){
 
+			if (!arc.m_parentLayer->m_visible)
+				continue;
+
 			std::vector<IBKMK::Vector3D> arcPoints;
 
 			double startAngle = arc.m_startAngle;
@@ -2005,7 +2022,9 @@ void Scene::generate2DDrawingGeometry() {
 			double stepAngle = angleDifference / toCalcN;
 
 			for(int i = 0; i < toCalcN; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing.m_origin.m_x, arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing.m_origin.m_y, arc.m_zposition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing.m_origin.m_x,
+													arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing.m_origin.m_y,
+													arc.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2022,7 +2041,10 @@ void Scene::generate2DDrawingGeometry() {
 
 		}
 
-		for(const VICUS::Drawing::Ellipse & ellipse : drawing.m_ellipses){
+		for (const VICUS::Drawing::Ellipse & ellipse : drawing.m_ellipses){
+
+			if (!ellipse.m_parentLayer->m_visible)
+				continue;
 
 			std::vector<IBKMK::Vector3D> ellipsePoints;
 
@@ -2049,7 +2071,7 @@ void Scene::generate2DDrawingGeometry() {
 				rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
 				rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
 
-				IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing.m_origin.m_x, rotated_y + ellipse.m_center.m_y + drawing.m_origin.m_y, ellipse.m_zposition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing.m_origin.m_x, rotated_y + ellipse.m_center.m_y + drawing.m_origin.m_y, ellipse.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2068,11 +2090,16 @@ void Scene::generate2DDrawingGeometry() {
 		}
 
 
-		for(const VICUS::Drawing::Solid solid : drawing.m_solids){
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing.m_origin.m_x, solid.m_point1.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing.m_origin.m_x, solid.m_point2.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
+		for(const VICUS::Drawing::Solid &solid : drawing.m_solids){
+
+			if (!solid.m_parentLayer->m_visible)
+				continue;
+
+
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing.m_origin.m_x, solid.m_point1.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing.m_origin.m_x, solid.m_point2.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 			/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z); */
-			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing.m_origin.m_x, solid.m_point4.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing.m_origin.m_x, solid.m_point4.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 
 			p1 *= drawing.m_scalingFactor;
 			p2 *= drawing.m_scalingFactor;
