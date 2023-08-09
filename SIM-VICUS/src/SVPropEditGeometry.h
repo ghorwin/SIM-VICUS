@@ -30,6 +30,7 @@
 
 #include <IBKMK_Vector3D.h>
 
+#include <VICUS_Drawing.h>
 #include <Vic3DTransform3D.h>
 
 namespace VICUS {
@@ -268,6 +269,7 @@ private:
 	std::vector<const VICUS::Surface*>			m_selSurfaces;
 	std::vector<const VICUS::SubSurface*>		m_selSubSurfaces;
 
+	std::vector<const VICUS::Drawing*>			m_selDrawings;
 
 	std::set<QString>					m_subSurfNames;
 	std::set<QString>					m_surfNames;

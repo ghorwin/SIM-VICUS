@@ -209,8 +209,8 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 											  QVector2IBKVector(cso->localXAxis() ),
 											  QVector2IBKVector(cso->localYAxis() ),
 											  QVector2IBKVector(cso->localZAxis() ) );
-	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
+	m_bbDim[OM_Global] = project().boundingBox(m_selDrawings, m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	m_normal = QVector2IBKVector(cso->localZAxis());
 	updateInputs();
@@ -535,6 +535,16 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 			if (b->m_selected && b->m_visible)
 				m_selBuildings.push_back(b);
 		}
+
+		const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(o);
+		if (d != nullptr) {
+			if (d->m_selected && d->m_visible)
+				m_selDrawings.push_back(d);
+			for (const VICUS::Drawing::DrawingLayer &dl : d->m_layers) {
+				if (dl.m_selected && dl.m_visible)
+					m_selDrawings.push_back(d);
+			}
+		}
 	}
 
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
@@ -543,7 +553,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 											  QVector2IBKVector(cso->localXAxis() ),
 											  QVector2IBKVector(cso->localYAxis() ),
 											  QVector2IBKVector(cso->localZAxis() ) );
-	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+	m_bbDim[OM_Global] = project().boundingBox(m_selDrawings, m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	// NOTE: this function is being called even if edit geometry property widget is not
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[OM_Global]);
@@ -1209,6 +1219,42 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		// we update the 2D polyline
 		newSurf.setChildAndSubSurfaces(newSubSurfs, childs);
 		modifiedSurfaces.push_back(newSurf);
+	}
+
+	for (const VICUS::Drawing *d : m_selDrawings) {
+		if (haveScaling) {
+//			// get the transformation matrix
+//			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
+//			std::vector<IBKMK::Vector3D> verts = poly.vertexes();
+//			for (IBKMK::Vector3D & v : verts) {
+//				v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+//			}
+//			// reconstruct the polygon with new vertexes
+//			if (!poly.setVertexes(verts)) {
+//				IBK::IBK_Message("Error scaling polygon of surface.", IBK::MSG_WARNING, FUNC_ID);
+//				continue;
+//			}
+//			// now also scale all windows within the polygon
+//			// If the localX and localY vectors would not be normalized, we would already be finished.
+//			// But since we normalize the localX and localY vectors, we need to scale the local subsurface polygon coordinates
+
+//			// simplest way is to get the bounding box (in local coordinates) before the scaling and afterwards
+//			IBKMK::Vector2D lowerValuesOrig, upperValuesOrig;
+//			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
+//			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
+//			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
+
+//			IBKMK::Vector2D diffOrig, diffNew;
+//			diffOrig = upperValuesOrig - lowerValuesOrig;
+//			diffNew =  upperValuesNew  - lowerValuesNew;
+
+//			IBK_ASSERT(std::fabs(diffOrig.m_x) > 1e-4);
+//			IBK_ASSERT(std::fabs(diffOrig.m_y) > 1e-4);
+//			double scaleX = diffNew.m_x/diffOrig.m_x;
+//			double scaleY = diffNew.m_y/diffOrig.m_y;
+
+
+		}
 	}
 
 
