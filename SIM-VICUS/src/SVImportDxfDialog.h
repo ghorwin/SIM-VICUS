@@ -30,6 +30,9 @@ public:
 private slots:
 	void on_comboBoxUnit_activated(int index);
 
+	/*! Updates name when dxf file has been selected. */
+	void updateName();
+
 private:
 
 	bool readDxfFile(VICUS::Drawing & drawing);
@@ -40,6 +43,8 @@ private:
 
 	VICUS::Drawing				m_drawing;
 
+	/*! Next VICUS project ID. */
+	unsigned int				m_nextId;
 
 };
 
@@ -49,11 +54,16 @@ The objects are then inserted into drawing */
 
 class DRW_InterfaceImpl : public DRW_Interface {
 
-	VICUS::Drawing *drawing;
+	VICUS::Drawing			*m_drawing;
 
-	VICUS::Drawing::Block *m_activeBlock = nullptr;
+	VICUS::Drawing::Block	*m_activeBlock = nullptr;
 
-public : DRW_InterfaceImpl(VICUS::Drawing *drawing);
+	unsigned int			*m_nextId = nullptr;
+
+public :
+
+	/*! C'tor */
+	DRW_InterfaceImpl(VICUS::Drawing *drawing, unsigned int &nextId);
 
 	/** Called when header is parsed.  */
 	void addHeader(const DRW_Header* data) override;
