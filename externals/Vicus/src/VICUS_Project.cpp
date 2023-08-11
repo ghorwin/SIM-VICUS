@@ -616,7 +616,6 @@ void Project::updatePointers() {
 
 	for (VICUS::Drawing &d : m_drawings) {
 		d.updateParents();
-		d.updatePointer();
 		addAndCheckForUniqueness(&d);
 		for (VICUS::Drawing::DrawingLayer &dl : d.m_layers) {
 			addAndCheckForUniqueness(&dl);
@@ -922,7 +921,7 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 
 
 void Project::drawingBoundingBox(const std::vector<const Drawing *> &drawings, IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues) {
-	FUNCID(Project::boundingBox);
+	// FUNCID(Project::boundingBox);
 
 	// store selected surfaces
 	if (drawings.empty())
