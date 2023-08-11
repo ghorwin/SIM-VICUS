@@ -53,6 +53,7 @@ class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
 class SVNetworkExportDialog;
 class SVImportIDFDialog;
+class SVImportDXFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
@@ -355,6 +356,8 @@ private slots:
 
 	void on_actionDXF_File_triggered();
 
+	void on_actionFileImportDXF_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -469,6 +472,9 @@ private:
 
 	/*! IDF import dialog */
 	SVImportIDFDialog			*m_importIDFDialog										= nullptr;
+
+	/*! DXF import dialog */
+	SVImportDXFDialog			*m_importDXFDialog										= nullptr;
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;
