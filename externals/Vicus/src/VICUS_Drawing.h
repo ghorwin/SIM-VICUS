@@ -29,7 +29,9 @@ class Drawing : public Object {
 public:
 
 	/*! Type-info string. */
-	const char * typeinfo() const override { return "Drawing"; }
+	const char * typeinfo() const override {
+		return "Drawing";
+	}
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -43,6 +45,7 @@ public:
 			m_children.push_back(&dl);
 			dl.m_parent = this;
 		}
+		updatePointer();
 	}
 
 	/*! Dummy Struct for Blocks */
@@ -61,10 +64,10 @@ public:
 		DrawingLayer() {}
 
 		const char * typeinfo() const override {
-			return "Layer";
+			return "DrawingLayer";
 		}
 
-		//VICUS_COMPARE_WITH_ID
+		// VICUS_COMPARE_WITH_ID
 
 		// TODO Maik: dokustring
 
@@ -85,7 +88,7 @@ public:
 		double lineWeight() const;
 
 		/*! name of Entity */
-		QString						m_layername;
+		QString						m_layerName;
 		/*! Layer of Entity */
 		const DrawingLayer			*m_parentLayer = nullptr;
 		/*! Color of Entity if defined, use getter color() instead */
@@ -93,33 +96,43 @@ public:
 		/*! Line weight of Entity, use getter lineWeight() instead */
 		double						m_lineWeight = 0;
 		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
-		int							m_zPosition;
+		unsigned int				m_zPosition;
 		/* Block Entity belongs to, if nullptr, no block is used */
 		Block						*m_block = nullptr;
+
+		/*! ID of object. */
+		unsigned int				m_id;
+
+		/*! Points of objects. */
+		std::vector<IBKMK::Vector2D>	m_points;
 	};
 
 	/*! Stores attributes of line */
 	struct Point : public AbstractDrawingObject {
+
 		/*! Point coordinate */
 		IBKMK::Vector2D m_point;
 	};
 
 	/*! Stores attributes of line */
 	struct Line : public AbstractDrawingObject {
+
 		/*! line coordinates */
 		IBK::Line       m_line;
 	};
 
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
+
 		/*! polyline coordinates */
 		std::vector<IBKMK::Vector2D>    m_polyline;
-		/*! 1 if the end point connected to the start */
-		int                            m_polyline_flag = 0;
+		/*! When end point is connected to start */
+		bool							m_endConnected = false;
 	};
 
 	/* Stores attributes of circle */
 	struct Circle : public AbstractDrawingObject {
+
 		/*! Circle center */
 		IBKMK::Vector2D    m_center;
 		/*! Circle radius */
@@ -128,6 +141,7 @@ public:
 
 	/* Stores attributes of ellipse */
 	struct Ellipse : public AbstractDrawingObject {
+
 		/*! Ellipse center */
 		IBKMK::Vector2D    m_center;
 		/*! Ellipse major axis */
@@ -138,11 +152,11 @@ public:
 		double             m_startAngle;
 		/*! Ellipse end angle */
 		double             m_endAngle;
-
 	};
 
 	/* Stores attributes of arc */
 	struct Arc : public AbstractDrawingObject {
+
 		/*! Arc center */
 		IBKMK::Vector2D    m_center;
 		/*! Arc radius */
@@ -151,11 +165,11 @@ public:
 		double             m_startAngle;
 		/*! Arc end angle */
 		double             m_endAngle;
-
 	};
 
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
+
 		/*! Point 1 */
 		IBKMK::Vector2D    m_point1;
 		/*! Point 2 */
@@ -166,6 +180,9 @@ public:
 		IBKMK::Vector2D    m_point4;
 	};
 
+	/*! Returns the drawing object based on the ID. */
+	const AbstractDrawingObject* objectByID(unsigned int id) const;
+
 	/*! point of origin */
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
 	/*! rotation matrix */
@@ -173,37 +190,39 @@ public:
 	/*! scale factor */
 	double																	m_scalingFactor = 0.01;
 	/*! list of blocks, dummy implementation */
-	std::vector<Block>                                                      m_blocks;
+	std::vector<Block>														m_blocks;
 	/*! list of layers */
-	std::vector<DrawingLayer>                                               m_layers;
+	std::vector<DrawingLayer>												m_layers;
 	/*! list of points */
-	std::vector<Point>                                                      m_points;
+	std::vector<Point>														m_points;
 	/*! list of lines */
-	std::vector<Line>                                                       m_lines;
+	std::vector<Line>														m_lines;
 	/*! list of polylines */
-	std::vector<PolyLine>                                                   m_polylines;
+	std::vector<PolyLine>													m_polylines;
 	/*! list of circles */
-	std::vector<Circle>                                                     m_circles;
+	std::vector<Circle>														m_circles;
 	/*! list of ellipses */
-	std::vector<Ellipse>                                                    m_ellipses;
+	std::vector<Ellipse>													m_ellipses;
 	/*! list of arcs */
-	std::vector<Arc>                                                        m_arcs;
+	std::vector<Arc>														m_arcs;
 	/*! list of solids, dummy implementation */
-	std::vector<Solid>                                                      m_solids;
+	std::vector<Solid>														m_solids;
 	/*! Counter of entities, used to create a drawing hierarchy
-	 *   in a dxf file to avoid overlapping of entities */
+		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;
 	/*! Is the default color when no other color was specified */
 	QColor																	m_defaultColor = QColor();
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
 
-
-	const std::vector<DrawingLayer>& layers() const;
-
 private:
 	/*! Helper function to assign the correct layer to an entity */
 	DrawingLayer *findLayerPointer(const QString &layername);
+
+	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
+		This map is updated in updatePointers().
+	*/
+	std::map<unsigned int, VICUS::Drawing::AbstractDrawingObject*>			m_objectPtr;
 
 };
 
