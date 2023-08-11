@@ -268,7 +268,7 @@ void WireFrameObject::updateBuffers() {
 					polylinePoints.push_back(QVector2IBKVector(vec));
 				}
 
-				addPolyLine(polylinePoints, polyline.m_polyline_flag == 1,
+				addPolyLine(polylinePoints, polyline.m_endConnected,
 							defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling,
 							currentVertexIndex, currentElementIndex,
 							m_vertexBufferData,	m_indexBufferData);
@@ -403,7 +403,7 @@ void WireFrameObject::updateBuffers() {
 
 				p1 *= drawing->m_scalingFactor;
 				p2 *= drawing->m_scalingFactor;
-				/* p3 *= drawing.m_scalingFactor; */
+//				/* p3 *= drawing.m_scalingFactor; */
 				p4 *= drawing->m_scalingFactor;
 
 				QVector3D vec1 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
