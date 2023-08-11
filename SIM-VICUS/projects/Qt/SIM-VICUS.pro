@@ -155,7 +155,7 @@ SOURCES += \
 	../../src/SVDatabaseEditDialog.cpp \
 	../../src/SVDebugApplication.cpp \
 	../../src/SVGeometryView.cpp \
-	../../src/SVImportDxfDialog.cpp \
+	../../src/SVImportDXFDialog.cpp \
 	../../src/SVImportIDFDialog.cpp \
 	../../src/SVLCA.cpp \
 	../../src/SVLocalCoordinateView.cpp \
@@ -359,7 +359,7 @@ HEADERS  += \
 	../../src/SVDatabaseEditDialog.h \
 	../../src/SVDebugApplication.h \
 	../../src/SVGeometryView.h \
-	../../src/SVImportDxfDialog.h \
+	../../src/SVImportDXFDialog.h \
 	../../src/SVImportIDFDialog.h \
 	../../src/SVLCA.h \
 	../../src/SVLocalCoordinateView.h \
@@ -535,7 +535,7 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
 	../../src/SVGeometryView.ui \
-	../../src/SVImportDxfDialog.ui \
+	../../src/SVImportDXFDialog.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \
