@@ -15,36 +15,66 @@
 #include <drw_base.h>
 
 namespace Ui {
-class SVImportDxfDialog;
+class SVImportDXFDialog;
 }
 
-class SVImportDxfDialog : public QDialog
+class SVImportDXFDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit SVImportDxfDialog(QWidget *parent = nullptr);
-	~SVImportDxfDialog();
-	void run();
+	explicit SVImportDXFDialog(QWidget *parent = nullptr);
+
+	enum ImportResults {
+		AddDrawings,
+		ImportCancelled
+	};
+
+	enum ScaleUnit {
+		SU_Meter,
+		SU_Decimeter,
+		SU_Centimeter,
+		SU_Millimeter,
+		NUM_SU
+	};
+
+	ImportResults import(const QString & fname);
+
+	~SVImportDXFDialog();
+
+	const VICUS::Drawing &drawing() const;
 
 private slots:
 	void on_comboBoxUnit_activated(int index);
+	void on_pushButtonConvert_clicked();
 
-	/*! Updates name when dxf file has been selected. */
-	void updateName();
+	void on_pushButtonImport_clicked();
 
 private:
+	/*! Read a specified dxf file.
+		\param drawing VICUS Drawing, where all primitives are added
+		\param fname Filename that will be read
+		\returns true if reading has been successful
+	*/
+	bool readDxfFile(VICUS::Drawing & drawing, const QString &fname);
 
-	bool readDxfFile(VICUS::Drawing & drawing);
+	/*! Moves drawings to global coordinate center. */
+	void moveDrawings();
 
-	Ui::SVImportDxfDialog		*m_ui;
+	/*! Pointer to UI. */
+	Ui::SVImportDXFDialog		*m_ui;
 
-	QString						m_lastFilePath;
+	/*! Last file path. */
+	QString						m_filePath;
 
+	/*! VICUS Drawing with all drawing primitives. */
 	VICUS::Drawing				m_drawing;
 
 	/*! Next VICUS project ID. */
 	unsigned int				m_nextId;
+
+	/*! Return code. */
+	ImportResults				m_returnCode;
 
 };
 

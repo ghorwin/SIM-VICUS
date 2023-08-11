@@ -1,121 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVImportDxfDialog</class>
- <widget class="QDialog" name="SVImportDxfDialog">
+ <class>SVImportDXFDialog</class>
+ <widget class="QDialog" name="SVImportDXFDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>926</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>DXF Import </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
-    <widget class="QtExt::BrowseFilenameWidget" name="lineEditFileName"/>
+   <item row="0" column="4">
+    <widget class="QLineEdit" name="lineEditDrawingName"/>
    </item>
-   <item row="5" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="5" column="0" colspan="5">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Unit</string>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBoxUnit">
-       <item>
-        <property name="text">
-         <string>Meter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Centimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
+      <widget class="QPushButton" name="pushButtonImport">
+       <property name="text">
+        <string>Import drawings to project</string>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="7" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   <item row="3" column="0" colspan="5">
+    <widget class="QPushButton" name="pushButtonConvert">
+     <property name="text">
+      <string>Convert DXF-File</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="4" column="0" colspan="5">
     <widget class="QPlainTextEdit" name="plainTextEditLogWindow"/>
    </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditDrawingName"/>
-     </item>
-    </layout>
+   <item row="0" column="0" colspan="3">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Unit:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QComboBox" name="comboBoxUnit"/>
+   </item>
+   <item row="2" column="0" colspan="5">
+    <widget class="QCheckBox" name="checkBoxMove">
+     <property name="text">
+      <string>Move drawing to (0|0|0)</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_BrowseFilenameWidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>SVImportDxfDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>SVImportDxfDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

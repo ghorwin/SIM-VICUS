@@ -1,5 +1,7 @@
-#include "SVImportDxfDialog.h"
-#include "ui_SVImportDxfDialog.h"
+#include "SVImportDXFDialog.h"
+#include "IBK_physics.h"
+#include "SVConversions.h"
+#include "ui_SVImportDXFDialog.h"
 
 #include <libdxfrw.h>
 
@@ -11,14 +13,11 @@
 #include <VICUS_utilities.h>
 
 
-SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
+SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVImportDxfDialog)
+	m_ui(new Ui::SVImportDXFDialog)
 {
 	m_ui->setupUi(this);
-
-	m_ui->lineEditFileName->setup(m_lastFilePath, true, true, tr("DXF-Files (*.dxf)"),
-								  SVSettings::instance().m_dontUseNativeDialogs);
 
 	std::set<QString> existingNames;
 	for (const VICUS::Drawing & b : project().m_drawings)
@@ -27,89 +26,167 @@ SVImportDxfDialog::SVImportDxfDialog(QWidget *parent) :
 
 	m_ui->lineEditDrawingName->setText(defaultName);
 
-	connect(m_ui->lineEditFileName, &QtExt::BrowseFilenameWidget::editingFinished, this, &SVImportDxfDialog::updateName);
+	m_ui->comboBoxUnit->addItem("Meter", SU_Meter);
+	m_ui->comboBoxUnit->addItem("Decimeter", SU_Decimeter);
+	m_ui->comboBoxUnit->addItem("Centimeter", SU_Centimeter);
+	m_ui->comboBoxUnit->addItem("Millimeter", SU_Millimeter);
 }
 
-SVImportDxfDialog::~SVImportDxfDialog() {
+SVImportDXFDialog::ImportResults SVImportDXFDialog::import(const QString &fname) {
+
+	if (m_ui->lineEditDrawingName->text().trimmed().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
+		m_ui->lineEditDrawingName->selectAll();
+		m_ui->lineEditDrawingName->setFocus();
+	}
+
+	m_ui->pushButtonImport->setEnabled(false);
+	m_filePath = fname;
+
+	m_ui->lineEditDrawingName->setText(fname);
+
+	int res = exec();
+	if (res == QDialog::Rejected)
+		return ImportCancelled;
+
+	return m_returnCode;
+}
+
+SVImportDXFDialog::~SVImportDXFDialog() {
 	delete m_ui;
 }
 
-void SVImportDxfDialog::run() {
 
-	if (exec()) {
-		/* initialises the drawing and reads the values into drawing*/
-		// set a static default color for all drawings
-		//VICUS::Drawing::m_defaultColor = SVStyle::instance().m_defaultDrawingColor;
+bool SVImportDXFDialog::readDxfFile(VICUS::Drawing &drawing, const QString &fname) {
+	DRW_InterfaceImpl drwIntImpl(&drawing, m_nextId);
+	dxfRW dxf(fname.toStdString().c_str());
 
-		if (m_ui->lineEditDrawingName->text().trimmed().isEmpty()) {
-			QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
-			m_ui->lineEditDrawingName->selectAll();
-			m_ui->lineEditDrawingName->setFocus();
-			return;
-		}
-		VICUS::Drawing drawing;
-		m_nextId = project().nextUnusedID();
-		drawing.m_id = m_nextId++;
-		// set name for drawing from lineEdit
-		drawing.m_displayName = m_ui->lineEditDrawingName->text();
+	bool success = dxf.read(&drwIntImpl, false);
+	return success;
+}
 
-		m_drawing = drawing;
-
-		if (readDxfFile(m_drawing)) {
-			m_drawing.updatePointer();
-			m_drawing.updateParents();
-			switch(m_ui->comboBoxUnit->currentIndex()) {
-				case 0: // 10^0
-					m_drawing.m_scalingFactor = 1;
-					break;
-				case 1: // 10^-2
-					m_drawing.m_scalingFactor = 0.01;
-					break;
-				case 2: // 10^-3
-					m_drawing.m_scalingFactor = 0.001;
-					break;
-			}
-			/* if file was read successfully, add drawing to project */
-			SVUndoAddDrawing *undo = new SVUndoAddDrawing("", m_drawing);
-			undo->push();
-
-			qDebug() << "Layer:";
-			for(size_t i = 0; i < m_drawing.m_layers.size(); i++){
-				qDebug() << m_drawing.m_layers[i].m_displayName;
-			}
-
-			qDebug() << "Lines:";
-			for(size_t i = 0; i < m_drawing.m_lines.size(); i++){
-				qDebug() << "x1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_x) << " y1: " << QString::number(m_drawing.m_lines[i].m_line.m_p1.m_y);
-				qDebug() << "x2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_x) << " y2: " << QString::number(m_drawing.m_lines[i].m_line.m_p2.m_y);
-			}
-
-			qDebug() << "Points:";
-			for(size_t i = 0; i < m_drawing.m_points.size(); i++){
-				qDebug() << "x: " << QString::number(m_drawing.m_points[i].m_point.m_x) << " y: " << QString::number(m_drawing.m_points[i].m_point.m_y);
-			}
-
-			qDebug() << "PolyLines:";
-			for(size_t i = 0; i < m_drawing.m_polylines.size(); i++){
-				for(size_t j = 0; j < m_drawing.m_polylines[i].m_polyline.size(); j++) {
-					qDebug() << "x: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_x) << " y: " << QString::number(m_drawing.m_polylines[i].m_polyline[j].m_y);
-				}
-			}
-		}
-
+void addPoints(IBKMK::Vector2D &center, const VICUS::Drawing::AbstractDrawingObject &object) {
+	for (const IBKMK::Vector2D &v2D : object.m_points) {
+		center += v2D;
 	}
-	else {
-		// TODO: write error to log text edit or show QMessageBox
+	center /= 1 + object.m_points.size();
+}
+
+void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingObject &object) {
+	for (IBKMK::Vector2D &v2D : object.m_points) {
+		v2D -= center;
 	}
 }
 
+void SVImportDXFDialog::moveDrawings() {
+	IBKMK::Vector2D center;
 
-bool SVImportDxfDialog::readDxfFile(VICUS::Drawing &drawing) {
-	DRW_InterfaceImpl *drwIntImpl = new DRW_InterfaceImpl(&drawing, m_nextId);
-	dxfRW *dxf = new dxfRW(m_ui->lineEditFileName->filename().toStdString().c_str());
-	bool read = false;
+	for (const VICUS::Drawing::Point &d : m_drawing.m_points)
+		addPoints(center, d);
 
-	return dxf->read(drwIntImpl, read);
+	for (const VICUS::Drawing::Arc &d : m_drawing.m_arcs)
+		addPoints(center, d);
+
+	for (const VICUS::Drawing::Circle &d : m_drawing.m_circles)
+		addPoints(center, d);
+
+	for (const VICUS::Drawing::Ellipse &d : m_drawing.m_ellipses)
+		addPoints(center, d);
+
+	for (const VICUS::Drawing::Line &d : m_drawing.m_lines)
+		addPoints(center, d);
+
+	for (const VICUS::Drawing::PolyLine &d : m_drawing.m_polylines)
+		addPoints(center, d);
+
+	for (const VICUS::Drawing::Solid &d : m_drawing.m_solids)
+		addPoints(center, d);
+
+	IBKMK::Vector3D p(center.m_x,
+					  center.m_y,
+					  0.0); // we assume always in x-y axis
+
+	// scale Vector with selected unit
+	p *= m_drawing.m_scalingFactor;
+	// rotation
+	QVector3D vec = m_drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
+	m_drawing.m_origin = - 1.0 * QVector2IBKVector(vec);
+}
+
+const VICUS::Drawing& SVImportDXFDialog::drawing() const {
+	return m_drawing;
+}
+
+void SVImportDXFDialog::on_comboBoxUnit_activated(int index) {
+	m_ui->comboBoxUnit->setCurrentIndex(index);
+}
+
+void SVImportDXFDialog::on_pushButtonConvert_clicked() {
+	QString log;
+	QFile fileName(m_filePath);
+	if (!fileName.exists()) {
+		throw QMessageBox::warning(this, tr("DXF Conversion"), tr("File %1 does not exist.").arg(fileName.fileName()));
+		log += "File " + fileName.fileName() + " does not exist! Aborting Conversion.\n";
+	}
+
+	bool success;
+	try {
+		m_nextId = project().nextUnusedID(); // separate ID space
+		m_drawing = VICUS::Drawing();
+		m_drawing.m_id = m_nextId++;
+
+		success = readDxfFile(m_drawing, fileName.fileName());
+	} catch (IBK::Exception &ex) {
+		log += "Error in converting DXF-File. See Error below\n";
+		log += ex.what();
+		return;
+	}
+
+	m_ui->pushButtonImport->setEnabled(success);
+	if (success) {
+
+		// set name for drawing from lineEdit
+		m_drawing.m_displayName = m_ui->lineEditDrawingName->text();
+
+		log += "Import successful!\nThe following objects were imported:\n";
+		log += QString("Layers:\t%1\n").arg(m_drawing.m_layers.size());
+		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
+		log += QString("Polylines:\t%1\n").arg(m_drawing.m_polylines.size());
+		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
+		log += QString("Arcs:\t%1\n").arg(m_drawing.m_arcs.size());
+		log += QString("Circles:\t%1\n").arg(m_drawing.m_circles.size());
+		log += QString("Ellipses:\t%1\n").arg(m_drawing.m_ellipses.size());
+		log += QString("Points:\t%1\n").arg(m_drawing.m_points.size());
+
+		// m_drawing.updatePointer();
+		m_drawing.updateParents();
+
+		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
+
+		switch (su) {
+
+		case SU_Meter:		m_drawing.m_scalingFactor = 1;		break;
+		case SU_Decimeter:	m_drawing.m_scalingFactor = 0.1;	break;
+		case SU_Centimeter: m_drawing.m_scalingFactor = 0.01;	break;
+		case SU_Millimeter: m_drawing.m_scalingFactor = 0.001;	break;
+
+		case NUM_SU: break; // make compiler happy
+
+		}
+
+		if (m_ui->checkBoxMove)
+			moveDrawings();
+	}
+	else
+		log += "Import of DXF-File was not successful!";
+
+	m_ui->plainTextEditLogWindow->setPlainText(log);
+}
+
+
+void SVImportDXFDialog::on_pushButtonImport_clicked() {
+	m_returnCode = AddDrawings;
+	accept();
 }
 
 
@@ -131,7 +208,7 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 	VICUS::Drawing::DrawingLayer newLayer;
 
 	// Set ID
-	newLayer.m_id = ++*m_nextId;
+	newLayer.m_id = (*m_nextId)++;
 
 	// name of layer
 	newLayer.m_displayName = QString::fromStdString(data.name);
@@ -194,13 +271,17 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 	//create new point, insert into vector m_points from drawing
 	newPoint.m_point = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newPoint.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newPoint.m_layername = QString::fromStdString(data.layer);
+	newPoint.m_layerName = QString::fromStdString(data.layer);
+
+	newPoint.m_id = (*m_nextId)++;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
 		newPoint.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
 		newPoint.m_color = QColor();
+
+	newPoint.m_points.push_back(newPoint.m_point);
 
 	m_drawing->m_points.push_back(newPoint);
 
@@ -216,7 +297,9 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 	//create new line, insert into vector m_lines from drawing
 	newLine.m_line = IBK::Line(data.basePoint.x, data.basePoint.y, data.secPoint.x, data.secPoint.y);
 	newLine.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newLine.m_layername = QString::fromStdString(data.layer);
+	newLine.m_layerName = QString::fromStdString(data.layer);
+
+	newLine.m_id = (*m_nextId)++;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	/* value 256 means use defaultColor, value 7 is black */
@@ -224,6 +307,9 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 		newLine.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
 		newLine.m_color = QColor();
+
+	newLine.m_points.push_back(newLine.m_line.m_p1);
+	newLine.m_points.push_back(newLine.m_line.m_p2);
 
 	m_drawing->m_lines.push_back(newLine);
 }
@@ -244,13 +330,35 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	newArc.m_endAngle = data.endangle;
 	newArc.m_center = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newArc.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newArc.m_layername = QString::fromStdString(data.layer);
+	newArc.m_layerName = QString::fromStdString(data.layer);
+
+	newArc.m_id = (*m_nextId)++;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
 		newArc.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
 		newArc.m_color = QColor();
+
+	newArc.m_points.resize(VICUS::SEGMENT_COUNT_ARC);
+
+	double startAngle = newArc.m_startAngle;
+	double endAngle = newArc.m_endAngle;
+
+	double angleDifference;
+
+	if (startAngle > endAngle)
+		angleDifference = 2 * IBK::PI - startAngle + endAngle;
+	else
+		angleDifference = endAngle - startAngle;
+
+	unsigned int toCalcN = (int)(VICUS::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
+	double stepAngle = angleDifference / toCalcN;
+
+	for (unsigned int i = 0; i < toCalcN; i++){
+		newArc.m_points[i] = IBKMK::Vector2D(newArc.m_center.m_x + newArc.m_radius * cos(startAngle + i * stepAngle),
+											 newArc.m_center.m_y + newArc.m_radius * sin(startAngle + i * stepAngle));
+	}
 
 	m_drawing->m_arcs.push_back(newArc);
 }
@@ -268,13 +376,22 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
 	newCircle.m_radius = data.radious;
 	newCircle.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newCircle.m_layername = QString::fromStdString(data.layer);
+	newCircle.m_layerName = QString::fromStdString(data.layer);
+
+	newCircle.m_id = (*m_nextId)++;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
 		newCircle.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
 		newCircle.m_color = QColor();
+
+	newCircle.m_points.resize(VICUS::SEGMENT_COUNT_CIRCLE);
+
+	for(unsigned int i = 0; i < VICUS::SEGMENT_COUNT_CIRCLE; i++){
+		newCircle.m_points[i] =IBKMK::Vector2D(newCircle.m_center.m_x + newCircle.m_radius * cos(2 * IBK::PI * i / VICUS::SEGMENT_COUNT_CIRCLE),
+											   newCircle.m_center.m_y + newCircle.m_radius * sin(2 * IBK::PI * i / VICUS::SEGMENT_COUNT_CIRCLE));
+	}
 
 	m_drawing->m_circles.push_back(newCircle);
 }
@@ -294,7 +411,38 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	newEllipse.m_startAngle = data.staparam;
 	newEllipse.m_endAngle = data.endparam;
 	newEllipse.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newEllipse.m_layername = QString::fromStdString(data.layer);
+	newEllipse.m_layerName = QString::fromStdString(data.layer);
+
+	newEllipse.m_id = (*m_nextId)++;
+
+	double startAngle = newEllipse.m_startAngle;
+	double endAngle = newEllipse.m_endAngle;
+
+	double angleStep = (endAngle - startAngle) / VICUS::SEGMENT_COUNT_ELLIPSE;
+
+	double majorRadius = sqrt(pow(newEllipse.m_majorAxis.m_x, 2) + pow(newEllipse.m_majorAxis.m_y, 2));
+	double minorRadius = majorRadius * newEllipse.m_ratio;
+
+	double rotationAngle = atan2(newEllipse.m_majorAxis.m_y, newEllipse.m_majorAxis.m_x);
+
+	double x, y, rotated_x, rotated_y;
+
+	newEllipse.m_points.resize(VICUS::SEGMENT_COUNT_ELLIPSE);
+
+	for (unsigned int i = 0; i <= VICUS::SEGMENT_COUNT_ELLIPSE; i++) {
+
+		double currentAngle = startAngle + i * angleStep;
+
+		x = majorRadius * cos(currentAngle);
+		y = minorRadius * sin(currentAngle);
+
+		rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
+		rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
+
+		newEllipse.m_points[i] = IBKMK::Vector2D(rotated_x + newEllipse.m_center.m_x,
+												 rotated_y + newEllipse.m_center.m_y);
+
+	}
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -310,31 +458,35 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
 	if(m_activeBlock != nullptr) return;
 
-	VICUS::Drawing::PolyLine newpolyline;
-	newpolyline.m_zPosition = m_drawing->m_zCounter;
+	VICUS::Drawing::PolyLine newPolyline;
+	newPolyline.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 
-	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
-	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newPolyline.m_polyline = std::vector<IBKMK::Vector2D>();
+	newPolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+
+	newPolyline.m_id = (*m_nextId)++;
 
 	// iterate over data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
-		newpolyline.m_polyline.push_back(IBKMK::Vector2D(data.vertlist[i]->x, data.vertlist[i]->y));
+		IBKMK::Vector2D point(data.vertlist[i]->x, data.vertlist[i]->y);
+		newPolyline.m_points.push_back(point);
+		newPolyline.m_polyline.push_back(point);
 	}
 
-	newpolyline.m_layername = QString::fromStdString(data.layer);
+	newPolyline.m_layerName = QString::fromStdString(data.layer);
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
-		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+		newPolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
-		newpolyline.m_color = QColor();
+		newPolyline.m_color = QColor();
 
 
-	newpolyline.m_polyline_flag = data.flags;
+	newPolyline.m_endConnected = data.flags == 1;
 
 	// insert vector into m_lines[data.layer] vector
-	m_drawing->m_polylines.push_back(newpolyline);
+	m_drawing->m_polylines.push_back(newPolyline);
 }
 
 
@@ -342,30 +494,33 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
 	if(m_activeBlock != nullptr) return;
 
-	VICUS::Drawing::PolyLine newpolyline;
-	newpolyline.m_zPosition = m_drawing->m_zCounter;
+	VICUS::Drawing::PolyLine newPolyline;
+	newPolyline.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
-	newpolyline.m_polyline = std::vector<IBKMK::Vector2D>();
+	newPolyline.m_polyline = std::vector<IBKMK::Vector2D>();
 
 	// iterateover data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
-		newpolyline.m_polyline.push_back(IBKMK::Vector2D(data.vertlist[i]->basePoint.x, data.vertlist[i]->basePoint.y));
+		IBKMK::Vector2D point(data.vertlist[i]->basePoint.x, data.vertlist[i]->basePoint.y);
+		newPolyline.m_points.push_back(point);
+		newPolyline.m_polyline.push_back(point);
 	}
 
-	newpolyline.m_layername = QString::fromStdString(data.layer);
-	newpolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newPolyline.m_id = (*m_nextId)++;
+	newPolyline.m_layerName = QString::fromStdString(data.layer);
+	newPolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
-		newpolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+		newPolyline.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
-		newpolyline.m_color = QColor();
+		newPolyline.m_color = QColor();
 
 
-	newpolyline.m_polyline_flag = data.flags;
+	newPolyline.m_endConnected = data.flags == 1;
 
 	// insert vector into m_lines[data.layer] vector
-	m_drawing->m_polylines.push_back(newpolyline);
+	m_drawing->m_polylines.push_back(newPolyline);
 }
 void DRW_InterfaceImpl::addSpline(const DRW_Spline* /*data*/){}
 void DRW_InterfaceImpl::addKnot(const DRW_Entity & /*data*/){}
@@ -386,7 +541,8 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 	newSolid.m_point3 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);
 	newSolid.m_point4 = IBKMK::Vector2D(data.fourPoint.x, data.fourPoint.y);
 	newSolid.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
-	newSolid.m_layername = QString::fromStdString(data.layer);
+	newSolid.m_layerName = QString::fromStdString(data.layer);
+	newSolid.m_id = (*m_nextId)++;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -394,9 +550,16 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 	else
 		newSolid.m_color = QColor();
 
+	newSolid.m_points.resize(4);
+	newSolid.m_points.push_back(newSolid.m_point1);
+	newSolid.m_points.push_back(newSolid.m_point2);
+	newSolid.m_points.push_back(newSolid.m_point3);
+	newSolid.m_points.push_back(newSolid.m_point4);
+
 	m_drawing->m_solids.push_back(newSolid);
 
 }
+
 void DRW_InterfaceImpl::addMText(const DRW_MText& /*data*/){}
 void DRW_InterfaceImpl::addText(const DRW_Text& /*data*/){}
 void DRW_InterfaceImpl::addDimAlign(const DRW_DimAligned */*data*/){}
@@ -424,13 +587,4 @@ void DRW_InterfaceImpl::writeTextstyles(){}
 void DRW_InterfaceImpl::writeVports(){}
 void DRW_InterfaceImpl::writeDimstyles(){}
 void DRW_InterfaceImpl::writeAppId(){}
-
-void SVImportDxfDialog::on_comboBoxUnit_activated(int index)
-{
-	m_ui->comboBoxUnit->setCurrentIndex(index);
-}
-
-void SVImportDxfDialog::updateName() {
-	m_ui->lineEditDrawingName->setText(m_ui->lineEditFileName->filename());
-}
 
