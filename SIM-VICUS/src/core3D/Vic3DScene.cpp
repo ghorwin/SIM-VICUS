@@ -1874,7 +1874,7 @@ void Scene::generate2DDrawingGeometry() {
 	// default line width
 	const double defaultLineWeight = 0.05;
 	// multiplier to apply to width of entities
-	const double defaultLineWeightScaling = 0.015;
+	const double defaultLineWeightScaling = 0.005;
 	// multiplier for z-coordinate. Multiplied with the z counter of an entity
 	const double zmultiplier = 0.00005;
 
@@ -1957,7 +1957,9 @@ void Scene::generate2DDrawingGeometry() {
 
 			// adds z-coordinate to polyline
 			for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x, polyline.m_polyline[i].m_y + drawing.m_origin.m_y, polyline.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x,
+													polyline.m_polyline[i].m_y + drawing.m_origin.m_y,
+													polyline.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1966,7 +1968,7 @@ void Scene::generate2DDrawingGeometry() {
 
 			const QColor &color = polyline.color().isValid() ? polyline.color() : SVStyle::instance().m_defaultDrawingColor;
 
-			addPolyLine(polylinePoints, polyline.m_polyline_flag == 1,
+			addPolyLine(polylinePoints, polyline.m_endConnected,
 						defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling,
 						color, currentVertexIndex, currentElementIndex,
 						m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData,
@@ -1981,7 +1983,9 @@ void Scene::generate2DDrawingGeometry() {
 			std::vector<IBKMK::Vector3D> circlePoints;
 
 			for(int i = 0; i < n; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * PI * i / n) + drawing.m_origin.m_x, circle.m_center.m_y + circle.m_radius * sin(2 * PI * i / n) + drawing.m_origin.m_y, circle.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_points[i].m_x + drawing.m_origin.m_x,
+													circle.m_points[i].m_y + drawing.m_origin.m_y,
+													circle.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2005,25 +2009,9 @@ void Scene::generate2DDrawingGeometry() {
 				continue;
 
 			std::vector<IBKMK::Vector3D> arcPoints;
-
-			double startAngle = arc.m_startAngle;
-			double endAngle = arc.m_endAngle;
-
-			double angleDifference;
-
-			if(startAngle > endAngle){
-				angleDifference = 2 * PI - startAngle + endAngle;
-			} else{
-				angleDifference = endAngle - startAngle;
-			}
-
-			int toCalcN = (int)(n * (2 * PI / angleDifference));
-
-			double stepAngle = angleDifference / toCalcN;
-
-			for(int i = 0; i < toCalcN; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing.m_origin.m_x,
-													arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing.m_origin.m_y,
+			for(unsigned int i = 0; i < arc.m_points.size(); i++){
+				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_points[i].m_x + drawing.m_origin.m_x,
+													arc.m_points[i].m_y + drawing.m_origin.m_y,
 													arc.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
@@ -2047,31 +2035,11 @@ void Scene::generate2DDrawingGeometry() {
 				continue;
 
 			std::vector<IBKMK::Vector3D> ellipsePoints;
-
-			// Assuming startAngle and endAngle are in radians, provided by your ellipse object
-			double startAngle = ellipse.m_startAngle;
-			double endAngle = ellipse.m_endAngle;
-
-			double angleStep = (endAngle - startAngle) / n;
-
-			double majorRadius = sqrt(pow(ellipse.m_majorAxis.m_x, 2) + pow(ellipse.m_majorAxis.m_y, 2));
-			double minorRadius = majorRadius * ellipse.m_ratio;
-
-			double rotationAngle = atan2(ellipse.m_majorAxis.m_y, ellipse.m_majorAxis.m_x);
-
-			double x, y, rotated_x, rotated_y;
-
 			for (int i = 0; i <= n; i++) {
 
-				double currentAngle = startAngle + i * angleStep;
-
-				x = majorRadius * cos(currentAngle);
-				y = minorRadius * sin(currentAngle);
-
-				rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
-				rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
-
-				IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing.m_origin.m_x, rotated_y + ellipse.m_center.m_y + drawing.m_origin.m_y, ellipse.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+				IBKMK::Vector3D p = IBKMK::Vector3D(ellipse.m_points[i].m_x + drawing.m_origin.m_x,
+													ellipse.m_points[i].m_y + drawing.m_origin.m_y,
+													ellipse.m_zPosition * zmultiplier + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -2080,8 +2048,10 @@ void Scene::generate2DDrawingGeometry() {
 
 			const QColor &color = ellipse.color().isValid() ? ellipse.color() : SVStyle::instance().m_defaultDrawingColor;
 
+			bool connect = ellipse.m_points[0] == ellipse.m_points.back();
+
 			// Change this line to false, so it doesn't connect the last point to the first point
-			addPolyLine(ellipsePoints, startAngle == endAngle,
+			addPolyLine(ellipsePoints, connect,
 						defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling,
 						color, currentVertexIndex,
 						currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
@@ -2985,6 +2955,8 @@ void Scene::pick(PickObject & pickObject) {
 		}
 	}
 
+	pickDrawings(pickObject, nearPoint, farPoint, direction);
+
 	// *** local coordinate system pick points ***
 
 	// only do this when not panning/orbiting/first-person-viewing etc.
@@ -3025,6 +2997,121 @@ void Scene::pick(PickObject & pickObject) {
 #endif
 
 	pickObject.m_pickPerformed = true;
+}
+
+void Scene::addPickPoint(PickObject &pickObject,
+				  const unsigned int zPosition, const IBKMK::Vector3D &origin, const double scalingFactor,
+				  const VICUS::RotationMatrix &matrix, const std::vector<IBKMK::Vector2D> &points,
+				  unsigned int layerId, unsigned int drawingId, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &direction) {
+
+	const float SNAP_DISTANCES_THRESHHOLD = 2; // in m, should be enough, right?
+
+	for (const IBKMK::Vector2D &v2D : points) {
+		double zCoordinate = zPosition * VICUS::Z_MULTIPLYER + origin.m_z;
+		IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + origin.m_x,
+											  v2D.m_y + origin.m_y,
+											  zCoordinate);
+
+		v3D *= scalingFactor;
+
+		QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
+
+		IBKMK::Vector3D closestPoint;
+		double dist;
+		double lineToPointDist = IBKMK::lineToPointDistance(nearPoint, direction,
+															QVector2IBKVector(qV3D),
+															dist, closestPoint);
+		// check distance against radius of sphere
+		if (lineToPointDist < SNAP_DISTANCES_THRESHHOLD) {
+			PickObject::PickResult r;
+			r.m_resultType = PickObject::RT_Object;
+			r.m_depth = dist; // the depth to the point on the line-of-sight that is closest to the point
+			r.m_pickPoint = closestPoint; // this
+			r.m_objectID = layerId;
+			r.m_drawingID = drawingId;
+			pickObject.m_candidates.push_back(r);
+		}
+	}
+}
+
+void Scene::pickDrawings(PickObject &pickObject, const IBKMK::Vector3D &nearPoint,
+						 const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction) {
+
+	for (const VICUS::Drawing & d : project().m_drawings) {
+
+		// process all nodes
+		for (const VICUS::Drawing::Line &l : d.m_lines) {
+			// skip invisible nodes
+			if (!l.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, l.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 l.m_points, l.m_parentLayer->m_id, l.m_id, nearPoint, direction);
+		}
+
+		// process all nodes
+		for (const VICUS::Drawing::PolyLine &pl : d.m_polylines) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+		// process all nodes
+		for (const VICUS::Drawing::Arc &pl : d.m_arcs) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+		// process all nodes
+		for (const VICUS::Drawing::Circle &pl : d.m_circles) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+		// process all nodes
+		for (const VICUS::Drawing::Ellipse &pl : d.m_ellipses) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+		// process all nodes
+		for (const VICUS::Drawing::Point &pl : d.m_points) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+
+		// process all nodes
+		for (const VICUS::Drawing::Solid &pl : d.m_solids) {
+			// skip invisible nodes
+			if (!pl.m_parentLayer->m_visible)
+				continue;
+
+			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
+						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
+		}
+
+	}
+
 }
 
 void Scene::pickChildSurfaces() {
@@ -3324,6 +3411,92 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapInfo = "snap to object";
 			} // if (s != nullptr)
 
+
+			const VICUS::Drawing::DrawingLayer * dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(obj);
+			if (dl != nullptr) {
+
+				Q_ASSERT(dl->m_parent != nullptr);
+
+				const VICUS::Drawing *d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
+
+				// a surface object might have several snap points which we collect first in a vector
+				std::vector<SnapCandidate> snapCandidates;
+				float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+
+				// we always add the intersection point with the surface as fall-back snappoint,
+				// but with a large distance so that it is only used as last resort
+				SnapCandidate sc;
+				sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
+				sc.m_pickPoint = r.m_pickPoint;
+				snapCandidates.push_back(sc);
+
+				const VICUS::Drawing::AbstractDrawingObject *obj = d->objectByID(r.m_drawingID);
+
+				if (snapOptions & SVViewState::Snap_ObjectVertex) {
+					// insert distances to all vertexes of selected object
+					for (const IBKMK::Vector2D & v2D : obj->m_points) {
+
+						double zCoordinate = obj->m_zPosition * VICUS::Z_MULTIPLYER + d->m_origin.m_z;
+						IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + d->m_origin.m_x,
+															  v2D.m_y + d->m_origin.m_y,
+															  zCoordinate);
+
+						QVector3D qV3D = d->m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
+						qV3D *= d->m_scalingFactor;
+
+						float dist = (qV3D - pickPoint).lengthSquared();
+						// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+						// another snap point that's closer.
+						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+							// for now we snap to the vertexes of the outer polygon and all holes
+							sc.m_distToLineOfSight = (double)dist;
+							sc.m_pickPoint = v3D;
+							snapCandidates.push_back(sc);
+							closestDepthSoFar = dist;
+						}
+					}
+				}
+//				if (snapOptions & SVViewState::Snap_ObjectCenter) {
+//					// insert center point
+//					IBKMK::Vector3D center(0,0,0);
+//					for (const IBKMK::Vector3D & v : sVertexes)
+//						center += v;
+//					center /= sVertexes.size();
+//					QVector3D p = IBKVector2QVector(center);
+//					float dist = (p - pickPoint).lengthSquared();
+//					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+//						sc.m_distToLineOfSight = (double)dist;
+//						sc.m_pickPoint = center;
+//						snapCandidates.push_back(sc);
+//						closestDepthSoFar = dist;
+//					}
+//				}
+//				if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
+//					// process all edges
+//					IBKMK::Vector3D lastNode = sVertexes.front();
+//					for (unsigned int i=0; i<sVertexes.size()+1; ++i) {
+//						IBKMK::Vector3D center = lastNode;
+//						lastNode = sVertexes[i % sVertexes.size()];
+//						center += lastNode;
+//						center /= 2;
+//						QVector3D p = IBKVector2QVector(center);
+//						float dist = (p - pickPoint).lengthSquared();
+//						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+//							sc.m_distToLineOfSight = (double)dist;
+//							sc.m_pickPoint = center;
+//							snapCandidates.push_back(sc);
+//							closestDepthSoFar = dist;
+//						}
+//					}
+//				}
+
+				// now we take the snap point that's closest - even if all the snap options of an object are
+				// turned off, we still get the intersection point as last straw to pick.
+				std::sort(snapCandidates.begin(), snapCandidates.end());
+				snapPoint = snapCandidates.front().m_pickPoint;
+				snapInfo = "snap to object";
+
+			}
 
 			// currently there is such snapping to nodes, yet
 

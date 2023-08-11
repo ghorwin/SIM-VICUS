@@ -34,6 +34,7 @@
 
 #include <VICUS_GridPlane.h>
 
+#include "VICUS_RotationMatrix.h"
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
@@ -174,8 +175,16 @@ private:
 	*/
 	void pick(PickObject & pickObject);
 
+	/*! Pick drawings. */
+	void pickDrawings(PickObject & pickObject, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction);
+
 	/*! Pick all child surfaces. */
 	void pickChildSurfaces();
+
+	/*! Add Pick points of drawing objects. */
+	void addPickPoint(PickObject &pickObject, const unsigned int zPosition, const IBKMK::Vector3D &origin, const double scalingFactor,
+					  const VICUS::RotationMatrix &matrix, const std::vector<IBKMK::Vector2D> &points, unsigned int layerId,
+					  unsigned int drawingId, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &direction);
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
