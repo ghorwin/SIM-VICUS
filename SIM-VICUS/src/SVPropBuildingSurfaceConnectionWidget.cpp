@@ -378,9 +378,12 @@ void SVPropBuildingSurfaceConnectionWidget::on_pushButtonSmartClipping_clicked()
 	SVSmartIntersectionDialog::ClippingResults res = m_smartClippingDialog->clipProject();
 	if(res == SVSmartIntersectionDialog::AcceptClipping) {
 		const std::vector<VICUS::ComponentInstance> *cis = nullptr;
+		const std::vector<VICUS::SubSurfaceComponentInstance> *subCis = nullptr;
 		if(!m_smartClippingDialog->componentInstances().empty())
 			cis = &m_smartClippingDialog->componentInstances();
-		SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology("Smart-clipping applied to project.", m_smartClippingDialog->buildings(), cis);
+		if(!m_smartClippingDialog->subSurfaceComponentInstances().empty())
+			subCis = &m_smartClippingDialog->subSurfaceComponentInstances();
+		SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology("Smart-clipping applied to project.", m_smartClippingDialog->buildings(), cis, subCis);
 		undo->push();
 	}
 	else if (res == SVSmartIntersectionDialog::CancelledClipping) {

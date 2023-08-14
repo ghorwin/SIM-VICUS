@@ -59,6 +59,16 @@ public:
         m_vicusBuildingsClipped = m_vicusBuildings;
     }
 
+	/*! Enum to hold all predefined components. */
+	enum PredefinedComponentType {
+		PDC_Ceiling,
+		PDC_Floor,
+		PDC_Roof,
+		PDC_InteriorWall,
+		PDC_ExteriorWall,
+		NUM_PDC
+	};
+
     /*! Add Polygons to Main Diffs or Intersections. */
     void addClipperPolygons(const std::vector<ClippingPolygon> &polysTemp, std::vector<ClippingPolygon> &mainDiffsTemp);
 
@@ -75,17 +85,24 @@ public:
 	void createComponentInstances(Notification * notify, bool createConnections = true);
 
     /*! Finds the corresponding component instance of specified surface by id. */
-	unsigned int findComponentInstanceForSurface(unsigned int id);
+	unsigned int findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface = false);
 
 	/*! Generates a unique name for every Surface
 		Surf01 is cut into 3 pieces --> name will be Surf01 [1] Surf01 [2] Surf01 [3] */
 	QString generateUniqueName(QString name);
+
+	/*! Sets the Standard constructions. */
+	void setStandardConstruction(PredefinedComponentType pdcType, unsigned int id);
 
     const std::vector<VICUS::Building> vicusBuildings() const;
 
     const std::vector<VICUS::ComponentInstance> *vicusCompInstances() const;
 
     const std::vector<VICUS::Building> vicusBuildingsClipped() const;
+
+	void setPrj(const VICUS::Project &newPrj);
+
+	const std::vector<VICUS::SubSurfaceComponentInstance> *vicusSubSurfCompInstances() const;
 
 private:
 
@@ -102,6 +119,9 @@ private:
 						   bool normalInterpolation = false);
 
 
+	/*! Find corresponding component. */
+	void findCorrespondingComponent();
+
 	/*! Create a clipper lib path from a IBKMK polygon. */
 	ClipperLib::Path convertVec2DToClipperPath(const std::vector<IBKMK::Vector2D> &vertexes);
 
@@ -117,14 +137,17 @@ private:
     /*! Add Surfaces to Clipping Polygons. */
     void addSurfaceToClippingPolygons(const VICUS::Surface &surf, std::vector<ClippingPolygon> &clippingPolygons);
 
-    // ***** PUBLIC MEMBER VARIABLES *****
+	// ***** PRIVATE MEMBER VARIABLES *****
 
+	VICUS::Project									m_prj;						///< Copy of VICUS Project
 
     std::vector<VICUS::Building>                    m_vicusBuildings;           ///< Original VICUS buildings
     std::vector<VICUS::Building>                    m_vicusBuildingsClipped;    ///< VICUS buildings with newly added data
 
 
     std::vector<VICUS::ComponentInstance>           m_vicusCompInstances;       ///< VICUS component instances
+
+	std::vector<VICUS::SubSurfaceComponentInstance> m_vicusSubSurfCompInstances;///< VICUS Sub surface component instances
 
 	double											m_normalDeviationInDeg;		///< normal deviation in DEG
 
@@ -150,6 +173,13 @@ private:
     std::map<unsigned int, unsigned int>			m_compInstOriginSurfId;		///< key is new created surface id, value is old surface ci id
 
 	IBK::StopWatch									m_stopWatch;				///< Stopwatch for updating progress-bar
+
+	/*! Predefined components for all clipping operations.
+		Will be taken if surfaces do not contain any component instance prior to
+		the clipping process.
+	*/
+	IDType											m_predefinedComponents[PredefinedComponentType::NUM_PDC];
+
 };
 }
 

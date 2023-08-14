@@ -5,6 +5,7 @@
 			<Comment>Test case with 4 unshaded windows</Comment>
 		</ProjectInfo>
 		<Location>
+			<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
 		</Location>
@@ -14,6 +15,13 @@
 				<IBK:Parameter name="Start" unit="d">181</IBK:Parameter>
 				<IBK:Parameter name="End" unit="d">191</IBK:Parameter>
 			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">30</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">20</IBK:Parameter>
+			</SolarLoadsDistributionModel>
   		</SimulationParameter>
 		<SolverParameter />
 		<Zones>

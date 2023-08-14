@@ -37,6 +37,7 @@ HEADERS += \
 	../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
+	../../src/VICUS_BTFReader.h \
 	../../src/VICUS_BoundaryCondition.h \
 	../../src/VICUS_Building.h \
 	../../src/VICUS_BuildingLevel.h \
@@ -108,6 +109,7 @@ SOURCES += \
 	../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
+    ../../src/VICUS_BTFReader.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \
 	../../src/VICUS_Constants.cpp \

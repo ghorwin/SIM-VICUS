@@ -59,6 +59,24 @@ Unit::Unit(const std::string& name) {
 #endif // IBK_ENABLE_UNIT_NAME
 }
 
+Unit::Unit(const Unit & src) {
+	if (src.m_id>=UnitList::instance().size())
+		throw IBK::Exception( FormatString("Unit index %1 out of range 0..%2.")
+			.arg(src.m_id).arg((int)UnitList::instance().size()-1),"[Unit::Unit]");
+	m_id=src.m_id;
+#ifdef IBK_ENABLE_UNIT_NAME
+	m_name = src.m_name;
+#endif // IBK_ENABLE_UNIT_NAME
+}
+
+Unit &Unit::operator=(Unit src) {
+	std::swap(src.m_id, m_id);
+#ifdef IBK_ENABLE_UNIT_NAME
+	m_name.swap(src.m_name);
+#endif // IBK_ENABLE_UNIT_NAME
+	return *this;
+}
+
 Unit::Unit(unsigned int unitid) {
 	if (unitid>=UnitList::instance().size())
 		throw IBK::Exception( FormatString("Unit index %1 out of range 0..%2.")

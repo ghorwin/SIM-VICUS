@@ -614,7 +614,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 		unsigned int oldId = e.m_id;
 		unsigned int newId = db.add(e, oldId); // e.m_id gets modified here!
 		IBK::IBK_Message( IBK::FormatString(importMsg)
-			.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+			.arg(e.m_displayName.string(),5,std::ios_base::left).arg(oldId).arg(newId),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		if (newId != oldId)
 			idSubstitutionMap[oldId] = newId;
@@ -625,7 +625,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 			// we need to adjust the ID name of material
 			idSubstitutionMap[e.m_id] = existingElement->m_id;
 			IBK::IBK_Message( IBK::FormatString(existingMsg)
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+				.arg(e.m_displayName.string(),5,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
 							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}

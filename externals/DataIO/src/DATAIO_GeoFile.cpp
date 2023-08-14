@@ -68,20 +68,9 @@ void GeoFile::read(const IBK::Path &fname, IBK::NotificationHandler * notify){
 	IBK_STATIC_ASSERT(sizeof(int) == 4);
 	IBK_STATIC_ASSERT(sizeof(double) == 8);
 
-	// open file in binary mode
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-			std::ifstream in(fname.wstr().c_str(), std::ios_base::binary);
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(fname.wstr(), false);
-			std::ifstream in(filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
-#else // _WIN32
-			std::ifstream in(fname.c_str(), std::ios_base::binary);
-#endif
-
-	// check if successful
-	if (!in)
+	// open file in binary mode and check if successful
+	std::ifstream in;
+	if (!IBK::open_ifstream(in, fname, std::ios_base::binary))
 		throw IBK::Exception( IBK::FormatString("Couldn't open geometry file '%1'.").arg(fname), FUNC_ID);
 
 	try {
@@ -200,19 +189,8 @@ void GeoFile::write(IBK::NotificationHandler * notify) const {
 	}
 
 	// open file
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-		std::ofstream out( m_filename.wstr().c_str(), std::ios_base::binary);
-	#else
-		std::string filenameAnsi = IBK::WstringToANSI(m_filename.wstr(), false);
-		std::ofstream out( filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
-#else
-	std::ofstream out( m_filename.c_str(), std::ios_base::binary);
-#endif
-
-	// check if successful
-	if (!out)
+	std::ofstream out;
+	if (!IBK::open_ofstream(out, m_filename, std::ios_base::binary))
 		throw IBK::Exception(IBK::FormatString("Couldn't open file '%1'.").arg(m_filename), FUNC_ID);
 
 	// write magic header and version number

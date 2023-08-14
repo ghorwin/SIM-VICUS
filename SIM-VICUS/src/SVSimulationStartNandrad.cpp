@@ -159,7 +159,7 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 		simParas.m_solarLoadsDistributionModel.m_distributionType = NANDRAD::SolarLoadsDistributionModel::SWR_AreaWeighted;
 		NANDRAD::KeywordList::setParameter(m_localProject.m_simulationParameter.m_solarLoadsDistributionModel.m_para,
 										   "SolarLoadsDistributionModel::para_t",
-										   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone, 50);
+										   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone, 10);
 	}
 	// initialize simulation parameters with meaningful defaults and fix possibly wrong values
 	// in project (wherever they come from)

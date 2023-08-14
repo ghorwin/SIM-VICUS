@@ -1,4 +1,4 @@
-Time [h]	dummy.VentilationHeatLoad [W]	dummy.ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]	Model(id=701).MassFlux(id=3001) [kg/s]
+Time [h]	dummy.VentilationHeatLoad [W]	dummy.ConstructionHeatConductionLoad [W]	Floor.ActiveLayerThermalLoad [W]	Model(id=701).MassFlux(id=3001) [kg/s]
 0	-704.609	0	3562.34	0.05
 0.5	-669.763	694.619	4943.93	0.1
 1	-680.171	727.974	4767.46	0.1

@@ -56,6 +56,7 @@ SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent,
 
 	m_ui->lineEditInitialTemperature->setup(-50,150,tr("Initial temperature to be used for zones/constructions etc."), true, true);
 
+	m_ui->checkBoxUsePerez->setEnabled(true);
 }
 
 
@@ -67,7 +68,7 @@ SVSimulationModelOptions::~SVSimulationModelOptions() {
 void SVSimulationModelOptions::updateUi() {
 
 	// values stored in same order as in NANDRAD::SimulationParameter::para_t
-	std::vector<double> values {20, 50, 0, 0.1, 0.07, 20};
+	std::vector<double> values {20, 10, 0, 0.1, 0.07, 20};
 	std::vector<std::string> unitStr {"C", "%", "---", "1/h", "---", "C"};
 
 	Q_ASSERT(values.size() == unitStr.size() && values.size() == NANDRAD::SimulationParameter::NUM_P);
@@ -127,8 +128,6 @@ void SVSimulationModelOptions::updateUi() {
 	m_ui->spinBoxSolarRadiationToFloor->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToRoofCeiling->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToWalls->setEnabled(idx == 1);
-
-
 }
 
 

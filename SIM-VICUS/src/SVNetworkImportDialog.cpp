@@ -625,7 +625,7 @@ void SVNetworkImportDialog::checkIfSubStationImportIsEnabled(){
 	// check if a filename is specified
 	if(!m_ui->lineEditSubStationFileName->filename().isEmpty()){
 		// check if the max Heating Demand is greater than 0
-		if(m_ui->lineEditMaxHeatingDemand->text().toInt() > 0){
+		if(m_ui->lineEditMaxHeatingDemand->value() > 0){
 			buttonEnabled = true;
 		}
 	}

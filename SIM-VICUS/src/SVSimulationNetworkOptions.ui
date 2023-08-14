@@ -30,10 +30,16 @@
       <string>Hydraulic network model options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBoxModelType"/>
+      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Reference pressure [bar]:</string>
+         <string>Reference pressure:</string>
         </property>
        </widget>
       </item>
@@ -44,10 +50,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Default/initial fluid temperature [C]:</string>
+         <string>Maximum pipe discretization length:</string>
         </property>
        </widget>
       </item>
@@ -58,6 +64,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Default/initial fluid temperature:</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditReferencePressure">
         <property name="text">
@@ -65,18 +78,26 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_6">
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Maximum pipe discretization length [m]:</string>
+         <string>C</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxModelType"/>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>bar</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>m</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -89,11 +110,11 @@
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Pipe spacing [m]:</string>
+         <string>Pipe spacing:</string>
         </property>
        </widget>
       </item>
@@ -104,10 +125,17 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>m</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Pipe depth below surface [m]:</string>
+         <string>Pipe depth below surface:</string>
         </property>
        </widget>
       </item>
@@ -115,6 +143,13 @@
        <widget class="QtExt::ValidatingLineEdit" name="lineEditPipeDepth">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>m</string>
         </property>
        </widget>
       </item>
@@ -132,7 +167,14 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>m</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
        <widget class="QLabel" name="label_10">
         <property name="font">
          <font>

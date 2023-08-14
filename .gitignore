@@ -63,3 +63,5 @@ moc_*
 *.lyx\#
 *.odg\#
 *.ilk
+*.txt
+/build/Qt/.qtc_clangd/

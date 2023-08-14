@@ -365,11 +365,11 @@ equals(TEMPLATE,app) {
 
 	CONFIG(debug, debug|release) {
 		OBJECTS_DIR = debug$${DIR_PREFIX}
-		DESTDIR = $$PWD/../../../../bin/debug$${DIR_PREFIX} # Mind: $$PWD points to externals/IBK/projects/Qt/IBK.pri
+		DESTDIR = ../../../bin/debug$${DIR_PREFIX}
 	}
 	else {
 		OBJECTS_DIR = release$${DIR_PREFIX}
-		DESTDIR = $$PWD/../../../../bin/release$${DIR_PREFIX}
+		DESTDIR = ../../../bin/release$${DIR_PREFIX}
 	}
 
 	MOC_DIR = moc
@@ -446,13 +446,23 @@ equals(TEMPLATE,lib) {
 	CONFIG(debug, debug|release) {
 		OBJECTS_DIR = debug$${DIR_PREFIX}
 		windows {
-			DLLDESTDIR = $$PWD/../../../../bin/debug$${DIR_PREFIX} # Mind: $$PWD points to externals/IBK/projects/Qt/IBK.pri
+			contains( OPTIONS, top_level_libs ) {
+				DLLDESTDIR = ../../../bin/debug$${DIR_PREFIX}
+			}
+			else {
+				DLLDESTDIR = ../../../../bin/debug$${DIR_PREFIX}
+			}
 		}
 	}
 	else {
 		OBJECTS_DIR = release$${DIR_PREFIX}
 		windows {
-			DLLDESTDIR = $$PWD/../../../../bin/release$${DIR_PREFIX} # Mind: $$PWD points to externals/IBK/projects/Qt/IBK.pri
+			contains( OPTIONS, top_level_libs ) {
+				DLLDESTDIR = ../../../bin/release$${DIR_PREFIX}
+			}
+			else {
+				DLLDESTDIR = ../../../../bin/release$${DIR_PREFIX}
+			}
 		}
 	}
 

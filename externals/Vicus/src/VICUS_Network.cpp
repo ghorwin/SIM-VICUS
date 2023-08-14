@@ -43,6 +43,7 @@
 #include <IBK_Path.h>
 #include <IBK_FileReader.h>
 #include <IBK_FluidPhysics.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMK_3DCalculations.h>
 #include <IBKMK_UTM.h>
@@ -918,52 +919,52 @@ size_t Network::numberOfBuildings() const {
 }
 
 void Network::writeNetworkNodesCSV(const IBK::Path &file) const {
-	std::ofstream f;
-	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
+	std::ofstream out;
+	IBK::open_ofstream(out, file);
 	for (const NetworkNode &n: m_nodes){
-		f.precision(0);
-		f << std::fixed << n.m_id << "\t";
-		f.precision(10);
-		f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << std::endl;
+		out.precision(0);
+		out << std::fixed << n.m_id << "\t";
+		out.precision(10);
+		out << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << std::endl;
 	}
-	f.close();
+	out.close();
 }
 
 void Network::writeNetworkEdgesCSV(const IBK::Path &file) const {
-	std::ofstream f;
-	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	f.precision(0);
+	std::ofstream out;
+	IBK::open_ofstream(out, file);
+	out.precision(0);
 	for (const NetworkEdge &e: m_edges){
-		f << std::fixed << e.m_idNodeInlet << "\t" <<e.m_idNodeOutlet << "\t" << e.m_idSoil;
-		f.precision(10);
-		f << "\t" << e.m_cumulativeTempChangeIndicator << "\t" << e.length() << std::endl;
+		out << std::fixed << e.m_idNodeInlet << "\t" <<e.m_idNodeOutlet << "\t" << e.m_idSoil;
+		out.precision(10);
+		out << "\t" << e.m_cumulativeTempChangeIndicator << "\t" << e.length() << std::endl;
 	}
-	f.close();
+	out.close();
 }
 
 
 void Network::writePathCSV(const IBK::Path &file, const NetworkNode & node, const std::vector<NetworkEdge *> &path) const {
-	std::ofstream f;
-	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	f.precision(10);
-	f << std::fixed << node.m_position.m_x << "\t" << node.m_position.m_y << std::endl;
+	std::ofstream out;
+	IBK::open_ofstream(out, file);
+	out.precision(10);
+	out << std::fixed << node.m_position.m_x << "\t" << node.m_position.m_y << std::endl;
 	for (const NetworkEdge *e: path){
-		f << std::fixed << e->m_node1->m_position.m_x << "\t" << e->m_node1->m_position.m_y << "\t"
+		out << std::fixed << e->m_node1->m_position.m_x << "\t" << e->m_node1->m_position.m_y << "\t"
 		  << e->m_node2->m_position.m_x << "\t" << e->m_node2->m_position.m_y << "\t" << e->length() << std::endl;
 	}
-	f.close();
+	out.close();
 }
 
 
 void Network::writeBuildingsCSV(const IBK::Path &file) const {
-	std::ofstream f;
-	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	f.precision(10);
+	std::ofstream out;
+	IBK::open_ofstream(out, file);
+	out.precision(10);
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_SubStation)
-			f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand.value << std::endl;
+			out << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand.value << std::endl;
 	}
-	f.close();
+	out.close();
 }
 
 

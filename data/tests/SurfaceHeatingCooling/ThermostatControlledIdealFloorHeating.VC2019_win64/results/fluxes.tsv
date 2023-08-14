@@ -1,4 +1,4 @@
-Time [h]	dummy.VentilationHeatLoad [W]	dummy.ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]
+Time [h]	dummy.VentilationHeatLoad [W]	dummy.ConstructionHeatConductionLoad [W]	Floor.ActiveLayerThermalLoad [W]
 0	-140.922	0	450
 0.5	-133.789	137.418	900
 1	-135.553	144.038	900

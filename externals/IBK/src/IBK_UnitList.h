@@ -59,8 +59,6 @@ class Unit;
 	convertible_units() can be used to create a vector of units that can be converted in
 	or from each other. The member functions relate_units() and convert() are useful
 	if you want to implement a container, such as UnitVector.
-
-	\todo Unify the function implementation of read_default() and read().
 */
 class UnitList : public ptr_list<UnitData> {
 public:
@@ -106,16 +104,16 @@ public:
 
 	/*! Creates a list of units, that can be converted in the unit given by 'src'.
 		The function clears the vector (first argument) and add all units to it, that
-		can be converted into 'src'. If the last (optional) parameter is true, the unit
-		'src' will not be contained in the vector (per default the unit 'src' will be
-		included in the vector).
+		can be converted into 'src'. If the last (optional) parameter 'removeSrcUnit'
+		is true, the unit 'src' will not be contained in the vector (per default the
+		unit 'src' will be included in the vector).
 		\return Returns 'false' if the vector is empty (meaning no convertible units
 				could be found), otherwise 'true'. If the parameter 'remove' is false
 				or not given the function will always return true.
 	*/
-	bool convertible_units(	std::vector<Unit>& list,
+	bool convertible_units(std::vector<Unit>& list,
 							const Unit& src,
-							const bool remove=false) const;
+							const bool removeSrcUnit=false) const;
 
 	/*! Initialises a list of all known units. */
 	void all_units( std::vector<Unit>& list ) const;
@@ -174,6 +172,11 @@ public:
 		OP_END
 	};
 
+	/*! Returns the number of built-in units.
+		This is updated in read() and read_default().
+	*/
+	unsigned int builtinUnitCount() const { return m_builtinUnitCount; }
+
 private:
 	/*! Hide constructor (initializes unit list with default units. */
 	UnitList();
@@ -183,6 +186,8 @@ private:
 	const UnitList & operator=(const UnitList&);
 
 	void convert_special(const UnitData* src, const UnitData* target, double& val);
+
+	unsigned int m_builtinUnitCount = 0;
 
 	friend class Unit;
 	friend class UnitVector;

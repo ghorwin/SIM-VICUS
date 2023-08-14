@@ -1,4 +1,4 @@
-Time [h]	Room.AirTemperature [C]	Room.OperativeTemperature [C]	ConstructionInstance(id=11).SurfaceTemperatureA [C]	ConstructionInstance(id=13).SurfaceTemperatureA [C]
+Time [h]	Room.AirTemperature [C]	Room.OperativeTemperature [C]	North.SurfaceTemperatureA [C]	South.SurfaceTemperatureA [C]
 2880	20	20	20	20
 2881	20.5774	20.3109	20.0444	20.0444
 2882	20.7088	20.3945	20.0803	20.0803

@@ -10,6 +10,7 @@
 #include <IBK_FluidPhysics.h>
 #include <IBK_UnitVector.h>
 #include <IBK_StringUtils.h>
+#include <IBK_FileUtils.h>
 
 #include <DataIO>
 
@@ -73,28 +74,28 @@ public:
 
 		const AbstractDBElement * subTemplate = nullptr;
 		switch (subType) {
-			case VICUS::ZoneTemplate::ST_IntLoadPerson:
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-			case VICUS::ZoneTemplate::ST_IntLoadLighting:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_IntLoadPerson:
+		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+		case VICUS::ZoneTemplate::ST_IntLoadLighting:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
 			break;
 
-			case VICUS::ZoneTemplate::ST_IntLoadOther:
+		case VICUS::ZoneTemplate::ST_IntLoadOther:
 			break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_ControlThermostat:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
-			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-			case VICUS::ZoneTemplate::ST_Infiltration:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_Infiltration:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
-			case VICUS::ZoneTemplate::ST_VentilationNatural:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_VentilationNatural:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
-			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
-				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
+		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
 			break;
 		case VICUS::ZoneTemplate::ST_ControlShading:
 			subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlShading, zoneTemplate->m_idReferences[subType]);
@@ -134,7 +135,7 @@ public:
 
 	std::vector<NANDRAD::InternalLoadsModel>		m_internalLoadObjects;
 	std::vector<NANDRAD::InternalMoistureLoadsModel>
-													m_internalMoistLoadObjects;
+	m_internalMoistLoadObjects;
 	std::vector<NANDRAD::ObjectList>				m_intLoadObjLists;
 	std::vector<std::string>						m_intLoadObjListNames;
 	std::vector<NANDRAD::ObjectList>				m_intMoistLoadObjLists;
@@ -632,9 +633,7 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 
 		// write file
 		std::ofstream out;
-		out.open(shadingFactorFilePath.str());
-
-		if (!out.is_open()) {
+		if (!IBK::open_ofstream(out, shadingFactorFilePath) ) {
 			IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(shadingFactorFilePath), IBK::MSG_ERROR, FUNC_ID);
 			return false;
 		}
@@ -725,14 +724,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ro
 	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
 
 	std::ofstream out;
-	// write file
-#if defined(_WIN32)
-	out.open(IBK::WstringToANSI(basePath.wstr(), false));
-#else
-	out.open(basePath.str());
-#endif
-
-	if (!out.is_open()) {
+	if (!IBK::open_ofstream(out, basePath)) {
 		IBK::IBK_Message(IBK::FormatString("Error writing mapping file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
@@ -776,7 +768,8 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 		// TODO Dirk: Replace these Mappings with maps
 		for(const RoomMapping & m : roomMappings){
 			if(m.m_idRoomNandrad == z.m_id){
-				rM = m; break;
+				rM = m;
+				break;
 			}
 		}
 		const VICUS::Room * room = roomByID(rM.m_idRoomVicus);
@@ -790,8 +783,10 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 			unsigned int compInstId1 = surfaces[i].m_componentInstance->m_id;
 			// get the nandrad ids
-			if(componentInstanceMapping.find(compInstId1) == componentInstanceMapping.end())
-				continue; // Should not happen
+			if(componentInstanceMapping.find(compInstId1) == componentInstanceMapping.end()) {
+				errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId1));
+				return;
+			}
 
 			unsigned int constInstId1Nandrad = componentInstanceMapping.at(compInstId1);
 
@@ -811,17 +806,27 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				if(compInstId1 == compInstId2)
 					continue;
 
-				if(surfaces[i].m_viewFactors.m_values.empty())
-					continue;
+				if(surfaces[i].m_viewFactors.m_values.empty()) {
+					errorStack.append(tr("Invalid view factors of surface '%1'. Please re-run view-factor generation.").arg(surfaces[i].m_displayName));
+					return;
+				}
 
 				std::map<unsigned int, std::vector<double>>::const_iterator itSurf = surfaces[i].m_viewFactors.m_values.find(surfaces[j].m_id);
-				if(itSurf == surfaces[i].m_viewFactors.m_values.end() && itSurf->second.empty())
-					continue;
+				if (itSurf == surfaces[i].m_viewFactors.m_values.end()) {
+					errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'! Please re-run view-factor generation!").arg(surfaces[i].m_displayName).arg(surfaces[j].m_displayName));
+					return;
+				}
+				if (itSurf->second.empty()) {
+					errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'! Please re-run view-factor generation!").arg(surfaces[i].m_displayName).arg(surfaces[j].m_displayName));
+					return;
+				}
 
 				double vF = itSurf->second[0];
 
-				if(componentInstanceMapping.find(compInstId2) == componentInstanceMapping.end())
-					continue; // Should not happen
+				if(componentInstanceMapping.find(compInstId2) == componentInstanceMapping.end()) {
+					errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId2));
+					return;
+				}
 
 				unsigned int constInstId2Nandrad = componentInstanceMapping.at(compInstId2);
 
@@ -833,15 +838,22 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				for(unsigned int l=0; l < surfaces[j].subSurfaces().size(); ++l) {
 					const VICUS::SubSurface &subSurf1 = surfaces[j].subSurfaces()[l];
 					// All sub-surfaces <-> sub-surfaces have to be connected
-					for(unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
+					for (unsigned int k=0; k < surfaces[i].subSurfaces().size(); ++k) {
 						const VICUS::SubSurface &subSurf2 = surfaces[i].subSurfaces()[k];
 
-						if(subSurf1.m_viewFactors.m_values.empty())
+						if (subSurf1.m_viewFactors.m_values.empty())
 							continue;
 
 						std::map<unsigned int, std::vector<double>>::const_iterator itSubSurf2 = subSurf1.m_viewFactors.m_values.find(subSurf2.m_id);
-						if(itSubSurf2 == subSurf1.m_viewFactors.m_values.end() && itSubSurf2->second.empty())
-							continue;
+						if (itSubSurf2 == subSurf1.m_viewFactors.m_values.end()) {
+							errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'. Please re-run view-factor generation.").arg(subSurf1.m_displayName).arg(subSurf2.m_displayName));
+							return;
+						}
+
+						if (itSubSurf2->second.empty()) {
+							errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'. Please re-run view-factor generation.").arg(subSurf1.m_displayName).arg(subSurf2.m_displayName));
+							return;
+						}
 
 						double vFSubSurf2 = itSubSurf2->second[0];
 
@@ -853,8 +865,14 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 						continue;
 
 					std::map<unsigned int, std::vector<double>>::const_iterator  itSubSurf1 = surfaces[i].m_viewFactors.m_values.find(subSurf1.m_id);
-					if(itSubSurf1 == surfaces[i].m_viewFactors.m_values.end() && itSubSurf1->second.empty())
-						continue;
+					if (itSubSurf1 == surfaces[i].m_viewFactors.m_values.end()) {
+						errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'. Please re-run view-factor generation.").arg(surfaces[i].m_displayName).arg(subSurf1.m_displayName));
+						return;
+					}
+					if (itSubSurf1->second.empty()) {
+						errorStack.append(tr("Missing view-factors between surface '%1' and surface '%2'. Please re-run view-factor generation.").arg(surfaces[i].m_displayName).arg(subSurf1.m_displayName));
+						return;
+					}
 
 					double vFSubSurf1 = itSubSurf1->second[0];
 
@@ -868,8 +886,8 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 
 
 void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
-											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-											 std::vector<RoomMapping> &roomMappings, std::map<unsigned int, unsigned int> componentInstanceMapping) const{
+										  std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+										  std::vector<RoomMapping> &roomMappings, std::map<unsigned int, unsigned int> componentInstanceMapping) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -925,7 +943,18 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
-	addViewFactorsToNandradZones(p, roomMappings, componentInstanceMapping, constrInstaModelGenerator.m_surfaceIdsVicusToNandrad, errorStack);
+	bool haveLongWaveEmission = false;
+	for (NANDRAD::ConstructionInstance &ci : p.m_constructionInstances) {
+		double valueA = ci.m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+		double valueB = ci.m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+
+		if (valueA > 0.0 || valueB > 0.0) {
+			haveLongWaveEmission = true;
+			break;
+		}
+	}
+	if(haveLongWaveEmission)
+		addViewFactorsToNandradZones(p, roomMappings, componentInstanceMapping, constrInstaModelGenerator.m_surfaceIdsVicusToNandrad, errorStack);
 
 	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
 
@@ -998,8 +1027,10 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 
 	// *** InternalLoads ***
 	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
+	p.m_models.m_internalMoistureLoadsModels = internalLoads.m_internalMoistLoadObjects;
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intLoadObjLists.begin(), internalLoads.m_intLoadObjLists.end());
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_intMoistLoadObjLists.begin(), internalLoads.m_intMoistLoadObjLists.end());
+
 	for (unsigned int i=0; i<internalLoads.m_intLoadSchedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_intLoadObjLists[i].m_name] = internalLoads.m_intLoadSchedules[i];
 	// Note: if moisture is not enabled, m_intMoistLoadSchedules will be empty
@@ -1373,9 +1404,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	// we only need an all day schedule if we miss at least one of the schedules
 	if (!dc.m_values.m_values.empty()) {
 		loadScheds.push_back(allDays);
-		moistScheds.push_back(allDays);
 	}
-
 
 	// initialize load fractions with 0
 	double personRadiationFraction = 0;
@@ -1542,7 +1571,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
 		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
-			NANDRAD::Schedules::equalSchedules(m_intLoadSchedules[i], loadScheds) ) {
+				NANDRAD::Schedules::equalSchedules(m_intLoadSchedules[i], loadScheds) ) {
 			// insert our zone ID in object list
 			m_intLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
@@ -1583,7 +1612,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 		bool foundModel = false;
 		for (unsigned int i=0; i<m_internalMoistLoadObjects.size(); ++i) {
 			if (m_internalMoistLoadObjects[i].equal(internalMoistLoadsModel) &&
-				NANDRAD::Schedules::equalSchedules(m_intMoistLoadSchedules[i], moistScheds) ) {
+					NANDRAD::Schedules::equalSchedules(m_intMoistLoadSchedules[i], moistScheds) ) {
 				// insert our zone ID in object list
 				m_intMoistLoadObjLists[i].m_filterID.m_ids.insert(r->m_id);
 				foundModel = true;
@@ -2059,6 +2088,10 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 	double area = surf->geometry().area();
 
 	for(const SubSurface &ss : subSurfs){
+
+		if(ss.m_polygon2D.area() < VICUS::MIN_AREA_FOR_EXPORTED_SURFACES)
+			continue; // Skip too small surfaces
+
 		NANDRAD::EmbeddedObject emb;
 		emb.m_id = VICUS::uniqueId(idSet);
 		idSet.insert(emb.m_id);	//add new id to set
@@ -2512,7 +2545,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 				constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideASurface->m_displayName.toStdString())
-																				.arg(compInstaVicus.m_idSideASurface).str();
+						.arg(compInstaVicus.m_idSideASurface).str();
 			}
 
 			if(area<MIN_AREA_FOR_EXPORTED_SURFACES){
@@ -2565,7 +2598,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			constrInstNandrad.m_displayName = IBK::FormatString("%1 (ID=%2)").arg(compInstaVicus.m_sideBSurface->m_displayName.toStdString())
-																		.arg(compInstaVicus.m_idSideBSurface).str();
+					.arg(compInstaVicus.m_idSideBSurface).str();
 
 			// sub surface
 			const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideBSurface->subSurfaces();
@@ -4340,7 +4373,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, nandradElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
 			IBK::FormatString name = IBK::FormatString("%1.%2(ID=%3)").arg(sub->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))
-																.arg(elem.m_displayName.toStdString()).arg(node.m_id);
+					.arg(elem.m_displayName.toStdString()).arg(node.m_id);
 			nandradElement.m_displayName = IBK::replace_string(name.str(), " ", "-");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
@@ -4512,16 +4545,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 
 		// create name
-//		std::string nodeInletName, nodeOutletName;
-//		if (vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.isEmpty())
-//			nodeInletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeInlet).str();
-//		else
-//			nodeInletName = vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.toStdString();
-//		if (vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.isEmpty())
-//			nodeOutletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeOutlet).str();
-//		else
-//			nodeOutletName = vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.toStdString();
-//		IBK::FormatString pipeName = IBK::FormatString("%1->%2(ID=%3)").arg(nodeInletName).arg(nodeOutletName).arg(edge->m_id);
+		//		std::string nodeInletName, nodeOutletName;
+		//		if (vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.isEmpty())
+		//			nodeInletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeInlet).str();
+		//		else
+		//			nodeInletName = vicusNetwork.nodeById(edge->m_idNodeInlet)->m_displayName.toStdString();
+		//		if (vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.isEmpty())
+		//			nodeOutletName = IBK::FormatString("Node#%1").arg(edge->m_idNodeOutlet).str();
+		//		else
+		//			nodeOutletName = vicusNetwork.nodeById(edge->m_idNodeOutlet)->m_displayName.toStdString();
+		//		IBK::FormatString pipeName = IBK::FormatString("%1->%2(ID=%3)").arg(nodeInletName).arg(nodeOutletName).arg(edge->m_id);
 
 		// add inlet pipe element
 		unsigned int inletNode = supplyNodeIdMap[edge->m_idNodeInlet];
@@ -4651,7 +4684,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			e.m_cumulativeTempChangeIndicator = -1;
 		}
 
-		// iterate over paths and cumTempChangeindicator and min/max values
+		// iterate over paths and calculate cumTempChangeindicator and min/max values
 		double cumTempChangeindicatorMax = 0;
 		double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
 		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
@@ -4712,37 +4745,37 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		if (!additionalFilesDir.exists())
 			IBK::Path::makePath(additionalFilesDir);
 
-		std::ofstream f;
+		std::ofstream out;
 		IBK::Path filePath = additionalFilesDir / projectName + ".mapping";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
-		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+		IBK::open_ofstream(out, filePath);
+		out << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
 		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
 			unsigned int soilId = it->first;
-			f << soilId << "\t";
+			out << soilId << "\t";
 			for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
-				f << supplyId << ",";
-			f << "\t";
+				out << supplyId << ",";
+			out << "\t";
 			for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
-				f << returnId << ",";
-			f << std::endl;
+				out << returnId << ",";
+			out << std::endl;
 		}
-		f.close();
+		out.close();
 
 		vicusNetwork.writeNetworkNodesCSV(additionalFilesDir / projectName + "_NetworkNodes.csv");
 		vicusNetwork.writeNetworkEdgesCSV(additionalFilesDir / projectName + "_NetworkEdges.csv");
 
 		// write NANDRAD ids for the path of each building
 		filePath = additionalFilesDir / projectName + ".paths";
-		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
+		IBK::open_ofstream(out, filePath);
 		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+			out << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
 			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
 			for (const NetworkEdge * edge: shortestPath){
-				f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+				out << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
 			}
-			f << std::endl;
+			out << std::endl;
 		}
-		f.close();
+		out.close();
 
 	}
 

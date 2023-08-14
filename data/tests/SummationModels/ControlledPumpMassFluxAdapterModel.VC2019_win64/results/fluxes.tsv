@@ -1,4 +1,4 @@
-Time [h]	Room 1.ConstructionHeatConductionLoad [W]	Room 2.ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]	ConstructionInstance(id=3002).ActiveLayerThermalLoad [W]	Model(id=801).TotalHeatLoad [W]
+Time [h]	Room 1.ConstructionHeatConductionLoad [W]	Room 2.ConstructionHeatConductionLoad [W]	Ground Floor.ActiveLayerThermalLoad [W]	Upper Floor.ActiveLayerThermalLoad [W]	Model(id=801).TotalHeatLoad [W]
 0	0	0	0	0	269.361
 1	1.3638	1.82765	73.8497	69.5166	241.737
 2	-0.969946	-1.36867	94.9859	87.3847	222.273

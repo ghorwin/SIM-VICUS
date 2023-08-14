@@ -25,6 +25,7 @@
 #include <IBK_physics.h>
 #include <IBK_StopWatch.h>
 #include <IBK_math.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMK_Vector3D.h>
 #include <IBKMK_3DCalculations.h>
@@ -339,9 +340,9 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 							 .arg(path).arg(fname_wo_ext), FUNC_ID);
 	}
 
-	std::ofstream tsvFile ( path.str() );
+	std::ofstream tsvFile;
 
-	if ( !tsvFile.is_open() )
+	if ( !IBK::open_ofstream(tsvFile, path) )
 		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
 
 	if( tsvFile.fail() )
