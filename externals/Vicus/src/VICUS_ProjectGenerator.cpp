@@ -1111,7 +1111,8 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 		double valueA = ci.m_interfaceA.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 		double valueB = ci.m_interfaceB.m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
 
-		if (valueA > 0.0 || valueB > 0.0) {
+		if ((ci.m_interfaceA.m_zoneId != 0 && valueA > 0.0) ||
+				(ci.m_interfaceB.m_zoneId != 0 && valueB > 0.0)) {
 			haveLongWaveEmission = true;
 			break;
 		}
