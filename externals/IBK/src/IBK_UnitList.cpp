@@ -737,10 +737,10 @@ const char * const DEFAULT_UNITS =
 "m2/Person    \n"
 "W/Person     / 1000 kW/Person    \n"
 "W/K          \n"
-"kWh/m2a\n"
-"kWh/a\n"
-"m2/m3\n"
-"Kh\n"
+"kWh/m2a      \n"
+"kWh/a        \n"
+"m2/m3        \n"
+"Kh           \n"
 ;
 
 
