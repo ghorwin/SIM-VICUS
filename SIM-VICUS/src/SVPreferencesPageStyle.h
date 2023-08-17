@@ -53,8 +53,6 @@ protected:
 
 private slots:
 
-	void on_comboBoxTheme_activated(const QString &theme);
-
 	void on_pushButtonSceneBackgroundColor_colorChanged();
 	void on_pushButtonMajorGridColor_colorChanged();
 	void on_pushButtonMinorGridColor_colorChanged();
@@ -63,6 +61,8 @@ private slots:
 	void on_pushButtonDefault_clicked();
 
 	void on_checkBoxScaling_toggled(bool checked);
+
+	void on_comboBoxTheme_currentIndexChanged(int currentIdx);
 
 private:
 	Ui::SVPreferencesPageStyle *m_ui;

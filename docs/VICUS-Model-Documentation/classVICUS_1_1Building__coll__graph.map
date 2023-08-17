@@ -1,0 +1,6 @@
+<map id="VICUS::Building" name="VICUS::Building">
+<area shape="rect" id="Node000001" title="Represents the building level node in the data hierarchy." alt="" coords="5,80,124,105"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Object.html" title="Base class for all objects that have a parent and are shown in the navigation tree widget." alt="" coords="9,5,120,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="67,45,67,80,62,80,62,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="135,10,147,18,138,25,121,28,120,22,136,20,141,18,132,15"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="VICUS::ViewSettings" name="VICUS::ViewSettings">
+<area shape="rect" id="Node000001" title="Stores general settings about user interface appearance." alt="" coords="9,93,159,119"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1RotationMatrix.html" title="This is a pretty dumb class and only used for the serialization code generator." alt="" coords="5,5,163,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,45,87,93,81,93,81,45"/>
+</map>

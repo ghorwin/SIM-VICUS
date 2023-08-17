@@ -1,0 +1,5 @@
+<map id="VICUS::ZoneControlThermostat" name="VICUS::ZoneControlThermostat">
+<area shape="rect" id="Node000001" title="Zone control parameters for thermostat model." alt="" coords="5,79,215,104"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1AbstractDBElement.html" title="Abstract base class of all database elements, needed to have generic DB table model implementations." alt="" coords="16,5,204,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,44,113,79,107,79,107,44"/>
+</map>

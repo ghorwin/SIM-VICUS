@@ -1,0 +1,9 @@
+<map id="VICUS::Window" name="VICUS::Window">
+<area shape="rect" id="Node000001" title="Data for a window (embedded object), defined through glazing system, frame a dividers." alt="" coords="236,93,355,119"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1AbstractDBElement.html" title="Abstract base class of all database elements, needed to have generic DB table model implementations." alt="" coords="5,5,193,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,34,270,91,268,96,137,39"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1WindowFrame.html" title="Window frame is a child of Window, but not a stand&#45;alone database element." alt="" coords="217,5,373,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="298,45,298,93,293,93,293,45"/>
+<area shape="rect" id="Node000004" href="$classVICUS_1_1WindowDivider.html" title="Window divider is a child of Window, but not a stand&#45;alone database element." alt="" coords="398,5,558,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="442,39,321,95,319,91,440,34"/>
+</map>

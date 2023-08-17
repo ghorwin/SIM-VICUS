@@ -1,0 +1,8 @@
+<map id="VICUS::SupplySystem" name="VICUS::SupplySystem">
+<area shape="rect" id="Node000001" title="Defines the base structure of a generic network: A generic network may be generated for surface heati..." alt="" coords="26,168,183,193"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1AbstractDBElement.html" title="Abstract base class of all database elements, needed to have generic DB table model implementations." alt="" coords="5,5,193,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,44,107,168,102,168,98,45"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1SubNetwork.html" title="Defines the structure of a sub&#45;network (e.g." alt="" coords="121,80,265,105"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="127,37,179,77,176,82,123,41"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,117,119,169,115,166,169,113"/>
+</map>

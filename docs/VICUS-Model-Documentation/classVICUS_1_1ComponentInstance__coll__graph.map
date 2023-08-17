@@ -1,0 +1,20 @@
+<map id="VICUS::ComponentInstance" name="VICUS::ComponentInstance">
+<area shape="rect" id="Node000001" title="Defines a construction/component of the building." alt="" coords="75,197,265,223"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Surface.html" title="Represents a surface and its associated properties." alt="" coords="107,300,225,325"/>
+<area shape="poly" id="edge4_Node000002_Node000001" title=" " alt="" coords="100,231,80,248,75,261,80,275,93,288,111,298,108,302,90,292,76,277,70,261,76,245,96,227"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,291,218,275,223,261,218,248,208,235,194,225,197,221,212,231,223,245,228,261,223,277,208,294"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1Object.html" title="Base class for all objects that have a parent and are shown in the navigation tree widget." alt="" coords="5,5,116,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="55,45,44,92,38,153,38,185,43,217,53,247,69,274,87,290,108,300,106,305,84,294,65,278,49,249,38,218,33,186,32,153,39,91,50,44"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="131,10,143,18,134,25,117,28,116,22,132,20,137,18,128,15"/>
+<area shape="rect" id="Node000008" href="$classVICUS_1_1Room.html" title="Stores all data for a room." alt="" coords="95,80,202,105"/>
+<area shape="poly" id="edge10_Node000008_Node000003" title=" " alt="" coords="87,38,136,77,133,82,84,42"/>
+<area shape="rect" id="Node000004" href="$classVICUS_1_1PlaneGeometry.html" title="Class PlaneGeometry encapsulates the vertex data and plane type of a single plane in the geometrical ..." alt="" coords="301,197,463,223"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="372,236,356,259,334,278,308,292,280,301,225,312,224,306,279,296,306,287,331,274,352,255,368,233"/>
+<area shape="rect" id="Node000005" href="$classVICUS_1_1Polygon3D.html" title="Class Polygon3D stores a planar polygon in 3D space." alt="" coords="231,80,367,105"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="334,111,352,128,372,164,382,196,377,198,367,166,348,131,331,115"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="231,5,367,31"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="302,45,302,80,297,80,297,45"/>
+<area shape="rect" id="Node000007" href="$classVICUS_1_1PlaneTriangulationData.html" title="Class PlaneTriangulationData holds data needed to draw a triangulated plane." alt="" coords="392,80,599,105"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="487,119,471,147,448,175,411,200,408,195,444,171,466,144,482,116"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="156,118,171,197,165,198,151,119"/>
+</map>

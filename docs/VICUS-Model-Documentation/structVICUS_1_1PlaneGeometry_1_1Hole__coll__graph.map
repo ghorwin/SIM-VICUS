@@ -1,0 +1,7 @@
+<map id="VICUS::PlaneGeometry::Hole" name="VICUS::PlaneGeometry::Hole">
+<area shape="rect" id="Node000001" title="Struct for Holes&#45;." alt="" coords="5,168,168,208"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Polygon2D.html" title="Class Polygon2D stores a polygon of 2D points." alt="" coords="19,80,155,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,119,89,168,84,168,84,119"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="19,5,155,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,45,89,80,84,80,84,45"/>
+</map>

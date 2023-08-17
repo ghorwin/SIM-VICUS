@@ -149,8 +149,8 @@ void CSVReader::parse(istream & in, bool headerOnly, bool extractUnits) {
 	if (extractUnits) {
 		for (unsigned int i=0; i<m_captions.size(); ++i) {
 			const std::string & c = m_captions[i];
-			std::size_t pos = c.find("[");
-			std::size_t pos2 = c.find("]");
+			std::size_t pos = c.find_last_of("[");
+			std::size_t pos2 = c.find_last_of("]");
 			if (pos != std::string::npos && pos != std::string::npos && pos < pos2) {
 				m_units.push_back(c.substr(pos+1, pos2-pos-1));
 				m_captions[i] = c.substr(0, pos);

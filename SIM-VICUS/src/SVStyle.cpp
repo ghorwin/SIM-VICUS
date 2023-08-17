@@ -229,13 +229,13 @@ void SVStyle::resizeTableColumnToContents(QTableView * v, int column, bool enlar
 
 
 void SVStyle::setStyle(SVSettings::ThemeType theme) {
-	QFile file(":/qdarkstyle/style.qss");
-	QFile fileWhite(":/qdarkstyle/whitestyle.qss");
+	QFile styleDark(":/qdarkstyle/style.qss");
+	QFile styleWhite(":/qdarkstyle/whitestyle.qss");
 
-	if ( theme == SVSettings::TT_Dark && file.exists()) {
+	if ( theme == SVSettings::TT_Dark && styleDark.exists()) {
 
-		file.open(QFile::ReadOnly);
-		m_styleSheet = QLatin1String(file.readAll());
+		styleDark.open(QFile::ReadOnly);
+		m_styleSheet = QLatin1String(styleDark.readAll());
 		qApp->setStyleSheet(m_styleSheet);
 		// set specific background/font colors
 		m_alternativeBackgroundBright				= "#73580e";
@@ -268,10 +268,10 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		QtExt::Style::ToolBoxPageBackground		= "#212124";
 		QtExt::Style::ToolBoxPageEdge			= "#3a3b3f";
 	}
-	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
+	else if ( theme == SVSettings::TT_White && styleWhite.exists()) {
 
-		fileWhite.open(QFile::ReadOnly);
-		m_styleSheet = QLatin1String(fileWhite.readAll());
+		styleWhite.open(QFile::ReadOnly);
+		m_styleSheet = QLatin1String(styleWhite.readAll());
 		qApp->setStyleSheet(m_styleSheet);
 
 		// set specific background/font colors

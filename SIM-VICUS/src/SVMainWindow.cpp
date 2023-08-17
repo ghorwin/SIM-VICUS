@@ -1678,6 +1678,14 @@ void SVMainWindow::onUpdateActions() {
 	// also update window caption and status bar
 	if (have_project) {
 		updateWindowTitle();
+
+		// Visibility setting of grid planes
+		const std::vector<VICUS::GridPlane> &gridPlanes = SVProjectHandler::instance().project().m_viewSettings.m_gridPlanes;
+		bool isVisible = true;
+		if (!gridPlanes.empty())
+			isVisible = gridPlanes[0].m_isVisible;
+
+		m_ui->actionViewShowGrid->setChecked(isVisible);
 	}
 	else {
 		setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));

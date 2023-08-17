@@ -1,0 +1,26 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_NetworkNode.h" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_NetworkNode.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="381,5,607,60"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="5,196,148,221"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="382,48,281,70,229,88,181,110,155,127,132,147,96,187,92,183,128,143,152,123,178,106,227,83,279,65,380,43"/>
+<area shape="rect" id="Node000003" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="404,115,584,141"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="497,60,497,101,491,101,491,60"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___object_8h.html" title=" " alt="" coords="209,115,329,141"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="432,63,310,113,308,108,430,58"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="173,196,231,221"/>
+<area shape="poly" id="edge9_Node000001_Node000005" title=" " alt="" coords="382,50,325,60,271,74,226,90,199,110,191,126,188,145,195,182,190,183,183,145,186,125,195,106,224,85,269,69,324,55,381,45"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="346,196,386,221"/>
+<area shape="poly" id="edge10_Node000001_Node000006" title=" " alt="" coords="447,62,419,83,395,109,378,146,371,183,365,182,373,145,390,107,415,79,443,58"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="608,108,809,148"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="555,58,654,100,652,105,553,63"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="834,115,887,141"/>
+<area shape="poly" id="edge11_Node000001_Node000009" title=" " alt="" coords="608,50,713,73,823,105,828,107,826,112,821,111,712,79,606,56"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="912,115,1049,141"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="607,51,900,105,920,110,919,115,899,111,606,56"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1073,115,1136,141"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="607,37,705,45,820,58,943,78,1063,105,1070,108,1068,113,1061,111,942,83,820,63,705,50,607,42"/>
+<area shape="poly" id="edge7_Node000004_Node000002" title=" " alt="" coords="242,143,118,193,116,188,240,138"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="261,143,223,187,219,184,257,139"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="285,139,343,185,339,189,281,143"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="255,196,322,221"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="274,140,285,182,280,183,269,142"/>
+</map>

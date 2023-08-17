@@ -1,0 +1,26 @@
+var classVICUS_1_1Database =
+[
+    [ "operator[]", "classVICUS_1_1Database.html#af724da853c1026cbfc636cd1791ee668", null ],
+    [ "operator[]", "classVICUS_1_1Database.html#a88593712a5fc84ab786a670e73480c5d", null ],
+    [ "findEqual", "classVICUS_1_1Database.html#a2daa48ad26bb93518fce2ed2f7d188e7", null ],
+    [ "begin", "classVICUS_1_1Database.html#a30783cb889d1ac7ee62540159f55f176", null ],
+    [ "end", "classVICUS_1_1Database.html#a1bdf45b7eb543b5ba2948579129ef847", null ],
+    [ "begin", "classVICUS_1_1Database.html#a501b1473db254ec15822c6e750938e6f", null ],
+    [ "end", "classVICUS_1_1Database.html#a71d499fc3608c7924b1666c6f1f8e344", null ],
+    [ "size", "classVICUS_1_1Database.html#a09cbe5dc16be508b8a69b601c7a2d931", null ],
+    [ "empty", "classVICUS_1_1Database.html#a39256bec25a2165182ccf107f68214fd", null ],
+    [ "setData", "classVICUS_1_1Database.html#a1fb00dcc3580f58a42e4576792de805c", null ],
+    [ "import", "classVICUS_1_1Database.html#adc991d4d6d0de6863fa1b97542c03b5e", null ],
+    [ "add", "classVICUS_1_1Database.html#a5ef81613e76043e76ef39b8dfde35a84", null ],
+    [ "remove", "classVICUS_1_1Database.html#a19720475fc0f979b4387e2fcc62f1b79", null ],
+    [ "removeUserElements", "classVICUS_1_1Database.html#afdad5dded20963f857960d5f14d6e395", null ],
+    [ "removeLocalElements", "classVICUS_1_1Database.html#a77116e1cccb508b6abe7655323246134", null ],
+    [ "removeNotReferencedLocalElements", "classVICUS_1_1Database.html#a0f08742e148cd431757fc26633bfdd71", null ],
+    [ "clearChildren", "classVICUS_1_1Database.html#aa1ec57525c0daae13d09f6424d7ad9e9", null ],
+    [ "readXML", "classVICUS_1_1Database.html#a5767a623e5df3a88a40404b5a9c7b1d3", null ],
+    [ "writeXML", "classVICUS_1_1Database.html#a31a3b3aa1312ba3c0598599f3634f4e5", null ],
+    [ "m_modified", "classVICUS_1_1Database.html#a4b76635da79da9ab6dd24df2d879fc43", null ],
+    [ "m_data", "classVICUS_1_1Database.html#a5976e914045a67926b275e528e353398", null ],
+    [ "USER_ID_SPACE_START", "classVICUS_1_1Database.html#a5684ed7cadb0138f3ae75d598cf5413d", null ],
+    [ "m_userIdCounter", "classVICUS_1_1Database.html#a740701e9b92e7a495ff9ef423c21c9eb", null ]
+];

@@ -1,0 +1,23 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_ScheduleInterval.cpp" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_ScheduleInterval.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="254,5,510,60"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___schedule_interval_8h.html" title=" " alt="" coords="159,108,338,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="343,62,279,103,276,98,340,58"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="362,108,402,133"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="385,60,385,94,379,94,379,60"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="426,108,589,133"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="422,58,481,98,478,102,419,62"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,181,185,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="225,136,134,178,132,173,223,131"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="87,255,267,280"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="245,135,191,243,186,241,240,133"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="291,255,350,280"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="257,133,311,241,306,243,252,135"/>
+<area shape="rect" id="Node000006" href="$_v_i_c_u_s___daily_cycle_8h.html" title=" " alt="" coords="311,181,458,207"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="272,131,352,173,349,177,269,136"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="352,209,224,253,223,248,350,204"/>
+<area shape="poly" id="edge8_Node000006_Node000005" title=" " alt="" coords="376,209,342,246,338,243,372,205"/>
+<area shape="rect" id="Node000007" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="375,255,517,280"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="397,205,429,242,425,246,393,209"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="541,255,596,280"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="415,204,529,248,527,253,413,209"/>
+</map>

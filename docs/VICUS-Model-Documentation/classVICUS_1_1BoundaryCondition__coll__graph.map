@@ -1,0 +1,7 @@
+<map id="VICUS::BoundaryCondition" name="VICUS::BoundaryCondition">
+<area shape="rect" id="Node000001" title="This is a template for boundary conditions, to be referenced by components." alt="" coords="121,93,304,119"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1AbstractDBElement.html" title="Abstract base class of all database elements, needed to have generic DB table model implementations." alt="" coords="5,5,193,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,37,199,91,196,95,124,41"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1InterfaceHeatConduction.html" title="Enhanced InterfaceHeatConduction definition." alt="" coords="217,5,435,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="302,41,230,95,226,91,298,37"/>
+</map>

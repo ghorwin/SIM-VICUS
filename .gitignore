@@ -65,3 +65,4 @@ moc_*
 *.ilk
 *.txt
 /build/Qt/.qtc_clangd/
+/release/
