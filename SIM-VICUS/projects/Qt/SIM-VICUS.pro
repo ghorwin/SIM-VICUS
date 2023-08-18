@@ -217,8 +217,9 @@ SOURCES += \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationPerformanceOptions.cpp \
 	../../src/SVSimulationRunRequestDialog.cpp \
+	../../src/SVSimulationSettingsView.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
-	../../src/SVSimulationStartNandrad.cpp \
+	../../src/SVSimulationStartOptions.cpp \
 	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVSmartSelectDialog.cpp \
 	../../src/SVStyle.cpp \
@@ -226,6 +227,9 @@ SOURCES += \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVUndoModifyClimate.cpp \
+	../../src/SVUndoModifyOutputs.cpp \
+	../../src/SVUndoModifySolverParameter.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DDialog.cpp \
@@ -419,8 +423,9 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationPerformanceOptions.h \
 	../../src/SVSimulationRunRequestDialog.h \
+	../../src/SVSimulationSettingsView.h \
 	../../src/SVSimulationShadingOptions.h \
-	../../src/SVSimulationStartNandrad.h \
+	../../src/SVSimulationStartOptions.h \
 	../../src/SVSmartIntersectionDialog.h \
 	../../src/SVSmartSelectDialog.h \
 	../../src/SVStyle.h \
@@ -428,6 +433,9 @@ HEADERS  += \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
+	../../src/SVUndoModifyClimate.h \
+	../../src/SVUndoModifyOutputs.h \
+	../../src/SVUndoModifySolverParameter.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DDialog.h \
@@ -576,8 +584,9 @@ FORMS    += \
 	../../src/SVSimulationOutputOptions.ui \
 	../../src/SVSimulationPerformanceOptions.ui \
 	../../src/SVSimulationRunRequestDialog.ui \
+    ../../src/SVSimulationSettingsView.ui \
 	../../src/SVSimulationShadingOptions.ui \
-	../../src/SVSimulationStartNandrad.ui \
+    ../../src/SVSimulationStartOptions.ui \
 	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \

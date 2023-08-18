@@ -42,7 +42,7 @@ public:
 	QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	void setEditorData(QWidget * editor, const QModelIndex & index) const override;
 
-	VICUS::Outputs	*m_outputs = nullptr;
+	const VICUS::Outputs	*m_outputs = nullptr;
 
 };
 

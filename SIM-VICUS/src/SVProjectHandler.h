@@ -63,8 +63,12 @@ public:
 	enum ModificationTypes {
 		/*! Used whenever a solver/model parameter (NANDRAD::SolverParameters) has changed. */
 		SolverParametersModified,
-		/*! Used when a climate location parameter (CCM file path, longitude, latitude, timezone) has changed. */
+		/*! Used when a climate location parameter (longitude, latitude, timezone) has changed. */
 		ClimateLocationModified,
+		/*! Used when a climate file path has changed. */
+		ClimateFileModified,
+		/*! Used when outouts have been changed. */
+		OutputsModified,
 		/*! Grid properties changed. */
 		GridModified,
 		/*! Network geometry has changed (e.g. modfied/added nodes or edges). */

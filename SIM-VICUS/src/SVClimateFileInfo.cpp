@@ -78,10 +78,10 @@ void SVClimateFileInfo::readInfo(const QString& databaseDir, const QString & abs
 	IBK::MultiLanguageString countryName(m_loader.m_country);
 	m_city = QString::fromStdString(cityName.string(langID.toStdString()));
 	if (m_city.isEmpty())
-		m_city = QString::fromStdString(cityName.string("en"));
+		m_city = QString::fromStdString(cityName.string("en", true));
 	m_country = QString::fromStdString(countryName.string(langID.toStdString()));
 	if (m_country.isEmpty())
-		m_country = QString::fromStdString(countryName.string("en"));
+		m_country = QString::fromStdString(countryName.string("en", true));
 	m_source = QString::fromStdString(m_loader.m_source);
 	m_comment = QString::fromStdString(m_loader.m_comment);
 	m_longitudeInDegree = m_loader.m_longitudeInDegree;

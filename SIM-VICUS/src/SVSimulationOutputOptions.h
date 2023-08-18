@@ -1,4 +1,4 @@
-/*	SIM-VICUS - Building and District Energy Simulation Tool.
+﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -42,7 +42,6 @@
 
 #include "SVSimulationOutputTableModel.h"
 
-class SVSimulationStartNandrad;
 
 namespace Ui {
 	class SVSimulationOutputOptions;
@@ -53,6 +52,8 @@ namespace VICUS {
 }
 
 class SVOutputGridEditDialog;
+class ModificationInfo;
+class SVSimulationStartOptions;
 
 /*! Widget for specifying simulation outputs.
 	The widget is split into two tabs - one for configuration of output grids and one for output definitions.
@@ -91,13 +92,20 @@ class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
 
 public:
-	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog);
+	SVSimulationOutputOptions(QWidget *parent);
 	~SVSimulationOutputOptions();
 
 	/*! Updates user interface with properties from the project data structure.
-		This function is called whenever the dialog is first shown.
 	*/
 	void updateUi();
+
+	/*! Pointer to simulation start widget */
+	const SVSimulationStartOptions					*m_simulationStartOptions = nullptr;
+
+public slots:
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified( int modificationType, ModificationInfo * /*data*/ );
 
 private slots:
 
@@ -139,21 +147,20 @@ private slots:
 
 	void on_lineEditQuantity_textEdited(const QString &filterText);
 
+	void on_checkBoxEnableSelectVectorIndices_clicked(bool checked);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();
+
+	/*! Updates the output definition table, using the model with available outputs. */
+	void updateOutputGridTable();
 
 	/*! Updates the visibility of the "outdated output list" widget. */
 	void updateOutdatedLabel();
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
-
-	/*! Pointer to VICUS::Outputs object in current project. */
-	VICUS::Outputs									*m_outputs = nullptr;
-
-	/*! Pointer to dialog with test-init button. */
-	SVSimulationStartNandrad						*m_simStartDialog = nullptr;
 
 	/*! Table model instance that provides list with available output variables. */
 	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;
@@ -163,6 +170,7 @@ private:
 
 	/*! Edit dialog for output grids. */
 	SVOutputGridEditDialog							*m_outputGridEditDialog = nullptr;
+
 };
 
 #endif // SVSimulationOutputOptionsH

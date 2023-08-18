@@ -51,6 +51,7 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include <QMessageBox>
+#include <QShortcut>
 
 #include <numeric>
 
@@ -91,7 +92,6 @@
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
-#include "SVView3DDialog.h"
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
@@ -101,7 +101,6 @@
 #include "SVDBDuplicatesDialog.h"
 #include "SVLogFileDialog.h"
 
-#include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVCoSimCO2VentilationDialog.h"
 
@@ -113,6 +112,8 @@
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddProject.h"
 #include "SVUndoModifySiteData.h"
+
+#include "SVSimulationSettingsView.h"
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
@@ -167,6 +168,12 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// when setting up UI
 	m_ui->actionFileClose->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_W));
 	m_ui->actionViewFindSelectedGeometry->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_F));
+
+	// connect "F9" with showing the start simulation page
+	QShortcut *shortCutStartSim = new QShortcut(QKeySequence((int)Qt::Key_F9), this);
+	connect(shortCutStartSim, &QShortcut::activated, this, &SVMainWindow::onShortCutStartSimulation);
+
+//	on_shortCutStartSimulation().set
 
 	// enforce using a native window; we need this so we can call window() and retrieve scaling information
 	setAttribute(Qt::WA_NativeWindow);
@@ -658,12 +665,12 @@ void SVMainWindow::setup() {
 
 	// *** setup welcome widget ***
 
-	QHBoxLayout * lay = new QHBoxLayout;
+	QHBoxLayout * mainLayout = new QHBoxLayout;
 	m_welcomeScreen = new SVWelcomeScreen(this);
-	lay->addWidget(m_welcomeScreen);
-	lay->setMargin(0);
-	lay->setSpacing(0);
-	m_ui->centralWidget->setLayout(lay);
+	mainLayout->addWidget(m_welcomeScreen);
+	mainLayout->setMargin(0);
+	mainLayout->setSpacing(0);
+	m_ui->centralWidget->setLayout(mainLayout);
 	m_welcomeScreen->updateWelcomePage();
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
@@ -690,7 +697,7 @@ void SVMainWindow::setup() {
 	// *** Create splitter that holds navigation tree view and geometry view
 
 	m_geometryViewSplitter = new QSplitter(this);
-	lay->addWidget(m_geometryViewSplitter);
+	mainLayout->addWidget(m_geometryViewSplitter);
 
 	// *** Navigation tree
 
@@ -704,6 +711,12 @@ void SVMainWindow::setup() {
 	m_geometryView->m_focusRootWidgets.insert(m_navigationTreeWidget); // remember as possible focus widget for events
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
+
+	// *** Simulation Settings View
+
+	m_simulationSettingsView = new SVSimulationSettingsView(this);
+	mainLayout->addWidget(m_simulationSettingsView);
+
 
 	// *** Signal/slot connections ***
 
@@ -727,9 +740,12 @@ void SVMainWindow::setup() {
 	QList<QAction*> acts = m_ui->menuEdit->actions();
 	m_ui->menuEdit->addAction(m_undoAction);
 	m_ui->menuEdit->addAction(m_redoAction);
+
+	// TODO: Hauke re-arrange actions
+
 	// now move all the actions to bottom
-	for (int i=0; i<acts.count(); ++i)
-		m_ui->menuEdit->addAction(acts[i]);
+//	for (int i=0; i<acts.count(); ++i)
+//		m_ui->menuEdit->addAction(acts[i]);
 
 	m_ui->toolBar->addAction(m_undoAction);
 	m_ui->toolBar->addAction(m_redoAction);
@@ -1221,42 +1237,6 @@ void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 }
 
 
-void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
-	// we need a saved project, before we can start the simulation
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		if (!saveProject())
-			return;
-	}
-	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
-	// open simulation start dialog, with settings for climate location, simulation and
-	// solver settings and simulation start button
-	int res = m_simulationStartNandrad->edit();
-	if (res == QDialog::Accepted) {
-		// transfer data to VICUS project
-		// create an undo action for modification of the (entire) project
-		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
-		undo->push();
-	}
-}
-
-
-void SVMainWindow::on_actionSimulationExportFMI_triggered() {
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		if (!saveProject())
-			return;
-	}
-	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
-	// open simulation start dialog with FMI export option
-	m_simulationStartNandrad->edit(true);
-}
-
-
 void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
 	if (m_coSimCO2VentilationDialog == nullptr)
 		m_coSimCO2VentilationDialog = new SVCoSimCO2VentilationDialog(this);
@@ -1335,71 +1315,6 @@ void SVMainWindow::on_actionViewBirdsEyeViewSouthEast_triggered(){
 
 void SVMainWindow::on_actionViewBirdsEyeViewNorthEast_triggered(){
 	SVViewStateHandler::instance().m_geometryView->resetCamera(Vic3D::SceneView::CP_BirdEyeNorthEast);
-}
-
-
-void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
-	// configure PostProc session, save parallel to project and open session in post
-
-	if (SVSettings::instance().m_postProcExecutable.isEmpty() ||
-			!QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
-	{
-		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
-																	 "post processing in the preferences dialog!"));
-		// spawn preferences dialog
-		preferencesDialog()->edit(0);
-		// still not postproc selected?
-		if (SVSettings::instance().m_postProcExecutable.isEmpty() || !QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
-			return;
-	}
-	// if we are using the new post-processing, generate a session file:
-	if (QFileInfo(SVSettings::instance().m_postProcExecutable).baseName() == "PostProcApp") {
-
-		QString sessionFile;
-		if (m_projectHandler.isValid()) {
-			IBK::Path sessionFilePath = SVPostProcBindings::defaultSessionFilePath(m_projectHandler.projectFile());
-			if(sessionFilePath.isValid()) {
-				if (!sessionFilePath.exists())
-					SVPostProcBindings::generateDefaultSessionFile(m_projectHandler.projectFile());
-				sessionFile = QString::fromStdString(sessionFilePath.str());
-			}
-			// some session files exist in project directory - look for the right one
-			else {
-				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
-														   QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-														   QString("*.p2"), nullptr,
-														   SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
-			}
-		}
-
-		// check, if already an instance of PostProc is running
-		int res = m_postProcHandler->reopenIfActive();
-		if (res != 0) {
-			// try to spawn new postprocessing
-			if (!m_postProcHandler->spawnPostProc(sessionFile.toStdString())) {
-				QMessageBox::critical(this, tr("Error running PostProc"),
-									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
-				return;
-			}
-		}
-#if !defined(Q_OS_WIN)
-		else {
-			QMessageBox::information(this, tr("Error running PostProc"),
-									 tr("Process already running."));
-		}
-#endif
-	}
-	else {
-		// check, if already an instance of PostProc is running
-		int res = m_postProcHandler->reopenIfActive();
-		if (res != 0) {
-			if (!m_postProcHandler->spawnPostProc(std::string())) {
-				QMessageBox::critical(this, tr("Error running PostProc"),
-									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
-				return;
-			}
-		}
-	}
 }
 
 
@@ -1567,7 +1482,6 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
 	m_ui->actionExportNetworkAsGeoJSON->setEnabled(have_project);
-	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
@@ -1575,9 +1489,6 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionBuildingFloorManager->setEnabled(have_project);
 	m_ui->actionBuildingSurfaceHeatings->setEnabled(have_project);
-
-	m_ui->actionNetworkImport->setEnabled(have_project);
-	m_ui->actionNetworkEdit->setEnabled(have_project);
 
 	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
@@ -1593,33 +1504,8 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionViewBirdsEyeViewSouthEast->setEnabled(have_project);
 	m_ui->actionViewBirdsEyeViewSouthWest->setEnabled(have_project);
 
-	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
-	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
-	m_ui->actionSimulationExportFMI->setEnabled(have_project);
 	m_ui->actionSimulationCO2Balance->setEnabled(have_project);
 
-	// no project, no undo actions -> clearing undostack also disables undo actions
-	if (!have_project)
-		m_undoStack->clear();
-
-	// *** Geometry view ***
-
-	// turn off geometry view first when project is gone
-	if (!have_project) {
-		m_geometryViewSplitter->setVisible(false);
-	}
-
-	// *** Dock widgets ***
-
-	// Dock-Widgets are only visible when project is there
-	if (!have_project) {
-		m_logDockWidget->toggleViewAction()->setEnabled(false);
-
-		m_logDockWidget->toggleViewAction()->blockSignals(true);
-		m_logDockWidget->setVisible(false);
-		m_logDockWidget->toggleViewAction()->blockSignals(false);
-	}
-	// Note: in case of a project, the dock widgets visibility is set in onNavigationBarViewChanged() below
 
 	// *** View configuration ***
 
@@ -1628,19 +1514,42 @@ void SVMainWindow::onUpdateActions() {
 	// navigation bar is only visible when we have a project
 	m_ui->toolBar->setVisible(have_project);
 	m_ui->toolBar->setEnabled(have_project);
+	m_ui->toolBar->toggleViewAction()->setEnabled(have_project);
 
-	// Note: in case of a project, the current view widget is set visible onNavigationBarViewChanged() below
 
-	// when we have a project
-	if (have_project) {
+	// We dont have NO PROJECT
+	if (!have_project) {
+
+		// no project, no undo actions -> clearing undostack also disables undo actions
+		m_undoStack->clear();
+
+		// turn off main view first when project is gone
+		m_mainViewMode = MV_None;
+		updateMainView();
+
+		// Dock-Widgets are only visible when project is there
+		m_logDockWidget->toggleViewAction()->setEnabled(false);
+		m_logDockWidget->toggleViewAction()->blockSignals(true);
+		m_logDockWidget->setVisible(false);
+		m_logDockWidget->toggleViewAction()->blockSignals(false);
+
+		// window caption
+		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+		m_welcomeScreen->updateWelcomePage();
+	}
+
+	// when we have A PROJECT
+	else {
+
+		updateWindowTitle();
+
+		if (m_mainViewMode == MV_None)
+			m_mainViewMode = MV_GeometryView;
+		updateMainView();
+
 		// select the current view, this also enables (in case of ConstructionView) the visibility of the dock widgets
 		m_logDockWidget->setVisible(m_dockWidgetVisibility[m_logDockWidget]);
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
-
-		m_geometryViewSplitter->setVisible(true);
-		m_geometryView->setFocus();
-		m_ui->toolBar->setVisible(true);
-		m_ui->toolBar->toggleViewAction()->setEnabled(true);
 
 		// restore navigation tree width on first call
 		if (SVSettings::instance().m_navigationSplitterSize != 0) {
@@ -1659,6 +1568,33 @@ void SVMainWindow::onUpdateActions() {
 			SVSettings::instance().m_navigationSplitterSize = 0; // will be set again when the app is being closed
 		}
 	}
+}
+
+
+void SVMainWindow::updateMainView() {
+
+	// uncheck all button bar actions
+	m_ui->actionGeometryView->setChecked(false);
+	m_ui->actionSimulationSettings->setChecked(false);
+
+	switch (m_mainViewMode) {
+		case MV_None: {
+			m_geometryViewSplitter->setVisible(false);
+			m_simulationSettingsView->setVisible(false);
+		} break;
+		case MV_GeometryView: {
+			m_ui->actionGeometryView->setChecked(true);
+			m_geometryViewSplitter->setVisible(true);
+			m_simulationSettingsView->setVisible(false);
+		} break;
+		case MV_SimulationView: {
+			m_ui->actionSimulationSettings->setChecked(true);
+			m_geometryViewSplitter->setVisible(false);
+			m_simulationSettingsView->setVisible(true);
+		} break;
+
+	}
+
 	else {
 		m_ui->toolBar->setVisible(false);
 		m_ui->toolBar->toggleViewAction()->setEnabled(false);
@@ -1668,21 +1604,21 @@ void SVMainWindow::onUpdateActions() {
 
 	// also update window caption and status bar
 	if (have_project) {
-		updateWindowTitle();
-
-		// Visibility setting of grid planes
-		const std::vector<VICUS::GridPlane> &gridPlanes = SVProjectHandler::instance().project().m_viewSettings.m_gridPlanes;
-		bool isVisible = true;
-		if (!gridPlanes.empty())
-			isVisible = gridPlanes[0].m_isVisible;
-
-		m_ui->actionViewShowGrid->setChecked(isVisible);
-	}
-	else {
-		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
-		m_welcomeScreen->updateWelcomePage();
-	}
 }
+
+
+void SVMainWindow::on_actionGeometryView_triggered() {
+	m_mainViewMode = MV_GeometryView;
+	updateMainView();
+}
+
+
+void SVMainWindow::on_actionSimulationSettings_triggered() {
+	m_mainViewMode = MV_SimulationView;
+
+	updateMainView();
+}
+
 
 
 void SVMainWindow::onUpdateRecentProjects() {
@@ -2177,11 +2113,6 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 }
 
 
-SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
-	return m_simulationStartNandrad;
-}
-
-
 SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 	if (m_preferencesDialog == nullptr) {
 		m_preferencesDialog = new SVPreferencesDialog(this);
@@ -2231,8 +2162,74 @@ static bool copyRecursively(const QString &srcFilePath,
 	return true;
 }
 
-void SVMainWindow::on_actionCalculateViewFactors_triggered() {
-	SVView3DDialog v3d;
-	v3d.exportView3d();
+
+void SVMainWindow::on_actionOpenPostProcessing_triggered() {
+	// configure PostProc session, save parallel to project and open session in post
+
+	if (SVSettings::instance().m_postProcExecutable.isEmpty() ||
+			!QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
+	{
+		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
+																	 "post processing in the preferences dialog!"));
+		// spawn preferences dialog
+		preferencesDialog()->edit(0);
+		// still not postproc selected?
+		if (SVSettings::instance().m_postProcExecutable.isEmpty() || !QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
+			return;
+	}
+	// if we are using the new post-processing, generate a session file:
+	if (QFileInfo(SVSettings::instance().m_postProcExecutable).baseName() == "PostProcApp") {
+
+		QString sessionFile;
+		if (m_projectHandler.isValid()) {
+			IBK::Path sessionFilePath = SVPostProcBindings::defaultSessionFilePath(m_projectHandler.projectFile());
+			if(sessionFilePath.isValid()) {
+				if (!sessionFilePath.exists())
+					SVPostProcBindings::generateDefaultSessionFile(m_projectHandler.projectFile());
+				sessionFile = QString::fromStdString(sessionFilePath.str());
+			}
+			// some session files exist in project directory - look for the right one
+			else {
+				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
+														   QFileInfo(m_projectHandler.projectFile()).absolutePath(),
+														   QString("*.p2"), nullptr,
+														   SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
+			}
+		}
+
+		// check, if already an instance of PostProc is running
+		int res = m_postProcHandler->reopenIfActive();
+		if (res != 0) {
+			// try to spawn new postprocessing
+			if (!m_postProcHandler->spawnPostProc(sessionFile.toStdString())) {
+				QMessageBox::critical(this, tr("Error running PostProc"),
+									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
+				return;
+			}
+		}
+#if !defined(Q_OS_WIN)
+		else {
+			QMessageBox::information(this, tr("Error running PostProc"),
+									 tr("Process already running."));
+		}
+#endif
+	}
+	else {
+		// check, if already an instance of PostProc is running
+		int res = m_postProcHandler->reopenIfActive();
+		if (res != 0) {
+			if (!m_postProcHandler->spawnPostProc(std::string())) {
+				QMessageBox::critical(this, tr("Error running PostProc"),
+									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
+				return;
+			}
+		}
+	}
+}
+
+
+void SVMainWindow::onShortCutStartSimulation() {
+	on_actionSimulationSettings_triggered();
+	m_simulationSettingsView->setCurrentPage(2); // page 2 is simulation start
 }
 

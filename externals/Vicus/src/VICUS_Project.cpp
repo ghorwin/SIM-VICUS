@@ -53,7 +53,11 @@
 namespace VICUS {
 
 Project::Project() {
+
 	m_location.initDefaults();
+	m_simulationParameter.initDefaults();
+	m_solverParameter.initDefaults();
+
 
 	// build test building
 
@@ -1148,8 +1152,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	if (!m_geometricNetworks.empty()) {
-		generateNetworkProjectData(p, errorStack, nandradProjectPath);
+	for (const VICUS::Network &net: m_geometricNetworks) {
+		generateNetworkProjectData(p, errorStack, nandradProjectPath, net.m_id);
 		if (!errorStack.isEmpty())
 			throw IBK::Exception("Error during network data conversion.", FUNC_ID);
 	}

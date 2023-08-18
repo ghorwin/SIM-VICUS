@@ -28,18 +28,20 @@
 
 #include <QWidget>
 
+#include <NANDRAD_Location.h>
+
+#include "SVClimateFileInfo.h"
+
+#include <qwt_plot.h>
+
 namespace Ui {
 	class SVSimulationLocationOptions;
 }
 
-namespace NANDRAD {
-	class Location;
-}
-
 class SVClimateDataTableModel;
 class SVClimateDataSortFilterProxyModel;
-
-#include "SVClimateFileInfo.h"
+class ModificationInfo;
+class QwtPlotZoomer;
 
 
 /*! Widget with settings related to location. */
@@ -47,37 +49,75 @@ class SVSimulationLocationOptions : public QWidget {
 	Q_OBJECT
 
 public:
-	SVSimulationLocationOptions(QWidget *parent, NANDRAD::Location & location);
+	SVSimulationLocationOptions(QWidget *parent);
 	~SVSimulationLocationOptions();
 
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/
-	void updateUi();
+	void updateUi(bool updatePlots);
+
+public slots:
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified(int modificationType, ModificationInfo *);
 
 private slots:
-	void on_radioButtonFromDB_toggled(bool checked);
 	void on_lineEditTextFilter_editingFinished();
 	void on_lineEditTextFilter_textChanged(const QString &arg1);
-	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/);
-	void on_checkBoxCustomLocation_toggled(bool checked);
 	void on_filepathClimateDataFile_editingFinished();
 
 	void on_radioButtonUserPathAbsolute_toggled(bool checked);
 
-private:
-	void updateLocationInfo(const SVClimateFileInfo * dataPtr, bool databaseFile);
-	void updateUserClimateFileInfo();
+	void on_lineEditLatitude_editingFinishedSuccessfully();
 
-	void storeCustomLocationInputs();
+	void on_lineEditLongitude_editingFinishedSuccessfully();
+
+	void on_comboBoxTimeZone_activated(int);
+
+	void on_comboBoxAlbedo_activated(int);
+
+	void on_tableViewClimateFiles_clicked(const QModelIndex &index);
+
+	void on_radioButtonCustomFilePath_toggled(bool checked);
+
+private:
+
+	void updateLocationInfoText(const SVClimateFileInfo * dataPtr);
+
+	void readUserClimateFileInfo();
+
+	void modifyClimateFileAndLocation(const SVClimateFileInfo * climateInfoPtr);
+
+	void modifyLocationFromLineEdits();
+
+	void updatePlots(const SVClimateFileInfo * climateInfoPtr);
+
+	void formatPlots(const QDateTime & start, const QDateTime &end, bool init);
+
+	void formatQwtPlot(bool init, QwtPlot & plot, QDateTime start, QDateTime end, QString title, QString leftYAxisTitle, double yLeftMin, double yLeftMax, unsigned int yNumSteps=5,
+					   bool hasRightAxis = false, QString rightYAxisTitle = "", double yRightMin = 0, double yRightMax = 100, double yRightStepSize = 0);
+
+
 
 	Ui::SVSimulationLocationOptions		*m_ui;
 	SVClimateDataTableModel				*m_climateDataModel = nullptr;
 	SVClimateDataSortFilterProxyModel	*m_filterModel		= nullptr;
-	NANDRAD::Location					*m_location;
 
 	/*! Climate data file info, used to store the data when user climate was selected. */
-	SVClimateFileInfo					m_userClimateFile;
+	SVClimateFileInfo					m_userClimateFileInfo;
+
+	/*! Holds climate data */
+	CCM::ClimateDataLoader				m_loader;
+
+	std::vector<double>					m_climateTimePoints;
+
+	QwtPlotZoomer						*m_zoomerRelHum = nullptr;
+	QwtPlotZoomer						*m_zoomerTemp = nullptr;
+	QwtPlotZoomer						*m_zoomerWind = nullptr;
+	QwtPlotZoomer						*m_zoomerRadShortWave = nullptr;
+	QwtPlotZoomer						*m_zoomerRadLongWave = nullptr;
+
 };
 
 #endif // SVSimulationLocationOptionsH

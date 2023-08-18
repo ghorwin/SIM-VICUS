@@ -386,13 +386,9 @@ void OutputFile::createInputReferences() {
 			inref.m_referenceType = ol->m_referenceType;
 			// check that we haven't added that input reference already
 			UniqueOutputVar uniqueVar(inref, od.m_timeType);
-			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end()) {
-				throw IBK::Exception(IBK::FormatString("Duplicate output definition found for '%1.%2' and file '%3' with time type '%4' as a "
-													   "after resolving object lists (this may be caused by overlapping object lists).")
-						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inref.m_referenceType))
-						.arg(od.m_quantity).arg(m_filename)
-						.arg(NANDRAD::KeywordList::Keyword("OutputDefinition::timeType_t", od.m_timeType)) , FUNC_ID);
-			}
+			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end())
+				// Duplicate output definition found: We don't throw an exception, but just skip this definition
+				continue;
 			m_inputRefs.push_back(inref);
 			uniqueOutputVars.push_back(uniqueVar);
 			m_outputDefMap.push_back( std::make_pair(i, false) );
@@ -407,13 +403,9 @@ void OutputFile::createInputReferences() {
 			inref.m_referenceType = ol->m_referenceType;
 			// check that we haven't added that input reference already
 			UniqueOutputVar uniqueVar(inref, od.m_timeType);
-			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end()) {
-				throw IBK::Exception(IBK::FormatString("Duplicate output definition found for '%1[%4].%2' and file '%3' with time type '%5' "
-													   "as a result of resolving object lists (this may be caused by overlapping object lists).")
-						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inref.m_referenceType))
-						.arg(od.m_quantity).arg(m_filename).arg(id)
-						.arg(NANDRAD::KeywordList::Keyword("OutputDefinition::timeType_t", od.m_timeType)) , FUNC_ID);
-			}
+			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end())
+				// Duplicate output definition found: We don't throw an exception, but just skip this definition
+				continue;
 			m_inputRefs.push_back(inref);
 			uniqueOutputVars.push_back(uniqueVar);
 			m_outputDefMap.push_back(std::make_pair(i, ol->m_filterID.m_allIDs) );

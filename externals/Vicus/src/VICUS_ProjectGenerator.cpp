@@ -4030,18 +4030,8 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 // *** NETWORK STUFF ***
 
-void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath) const {
+void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath, unsigned int networkId) const {
 	FUNCID(Project::generateNetworkProjectData);
-
-	// get selected Vicus Network
-	unsigned int networkId = VICUS::INVALID_ID;
-	for (const VICUS::Network &net: m_geometricNetworks) {
-		if (net.m_selectedForSimulation) {
-			networkId = net.m_id;
-			// TODO Hauke, multiple (connected) networks?
-			break;
-		}
-	}
 
 	// if there is no network selected return - this is not an error, but the usual case for simple building energy
 	// simulations

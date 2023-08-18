@@ -236,7 +236,7 @@ public:
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath, unsigned int networkId) const;
 
 	void generateHeatLoadExport();
 

@@ -13,191 +13,280 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Time integration method</string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="22" column="1">
+    <widget class="QtExt::ParameterEdit" name="lineEditMinDT">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelIntegrator">
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Integrator:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxIntegrator"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelMaxOrder">
-        <property name="text">
-         <string>Maximum Method Order (1-5):</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxOrder"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelNonLin">
-        <property name="text">
-         <string>Non-linear Iteration Convergence Coefficient:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNonLin"/>
-      </item>
-     </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
+   <item row="5" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditNonLin">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="23" column="0">
+    <widget class="QLabel" name="labelRelTol">
+     <property name="text">
+      <string>Relative Tolerance:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
       <string>Linear equation system solver</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,0">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelLesSolver">
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Linear Equation System Solver:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxLesSolver"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelMaxKry">
-        <property name="text">
-         <string>Maximum Dimension for Krylov Subspace:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxKry"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelIterative">
-        <property name="text">
-         <string>Linear Iteration Convergence Coefficient:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditIterative"/>
-      </item>
-     </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Preconditioner for iterative equation system solvers</string>
+   <item row="21" column="0">
+    <widget class="QLabel" name="labelInitialDT">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelPreCond">
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Preconditioner:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxPreCond"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelPreILU">
-        <property name="text">
-         <string>Level of fill-in (ILU):</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditPreILU"/>
-      </item>
-     </layout>
+     <property name="text">
+      <string>Initial time step:</string>
+     </property>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_4">
-     <property name="title">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Time integration method</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
       <string>General options</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelInitialDT">
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Initial time step:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QtExt::ParameterEdit" name="lineEditInitialDT"/>
-      </item>
-      <item row="0" column="2">
-       <widget class="QComboBox" name="comboBoxInitialDT"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelMinDT">
-        <property name="text">
-         <string>Time step size limit (model consistency):</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ParameterEdit" name="lineEditMinDT"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="comboBoxMinDT"/>
-      </item>
-      <item row="2" column="0" colspan="3">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelRelTol">
-        <property name="text">
-         <string>Relative Tolerance:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ParameterEdit" name="lineEditRelTol"/>
-      </item>
-     </layout>
     </widget>
    </item>
-   <item>
+   <item row="22" column="2">
+    <widget class="QComboBox" name="comboBoxMinDT">
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelMaxOrder">
+     <property name="text">
+      <string>Maximum Method Order (1-5):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="23" column="1">
+    <widget class="QtExt::ParameterEdit" name="lineEditRelTol">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="comboBoxIntegrator">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxKry">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="0">
+    <widget class="QLabel" name="labelPreILU">
+     <property name="text">
+      <string>Level of fill-in (ILU):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelNonLin">
+     <property name="text">
+      <string>Non-linear Iteration Convergence Coefficient:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="QComboBox" name="comboBoxPreCond">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="labelPreCond">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Preconditioner:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditPreILU">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QComboBox" name="comboBoxLesSolver">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Preconditioner for iterative equation system solvers</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="9">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="0">
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="22" column="0">
+    <widget class="QLabel" name="labelMinDT">
+     <property name="text">
+      <string>Time step size limit (model consistency):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="labelLesSolver">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Linear Equation System Solver:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxOrder">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelIntegrator">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Integrator:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="24" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -210,13 +299,90 @@
      </property>
     </spacer>
    </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;The options in this page only have an impact on simulation performance, not on results.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   <item row="14" column="0" colspan="9">
+    <widget class="Line" name="line_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="2">
+    <widget class="QComboBox" name="comboBoxInitialDT">
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditIterative">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="21" column="1">
+    <widget class="QtExt::ParameterEdit" name="lineEditInitialDT">
+     <property name="maximumSize">
+      <size>
+       <width>400</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="9">
+    <widget class="Line" name="line_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="labelIterative">
+     <property name="text">
+      <string>Linear Iteration Convergence Coefficient:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="labelMaxKry">
+     <property name="text">
+      <string>Maximum Dimension for Krylov Subspace:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="0" rowspan="2" colspan="9">
+    <widget class="Line" name="line_5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -237,20 +403,6 @@
    <header location="global">QtExt_ParameterEdit.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>comboBoxIntegrator</tabstop>
-  <tabstop>lineEditMaxOrder</tabstop>
-  <tabstop>lineEditNonLin</tabstop>
-  <tabstop>comboBoxLesSolver</tabstop>
-  <tabstop>lineEditMaxKry</tabstop>
-  <tabstop>lineEditIterative</tabstop>
-  <tabstop>comboBoxPreCond</tabstop>
-  <tabstop>lineEditPreILU</tabstop>
-  <tabstop>lineEditInitialDT</tabstop>
-  <tabstop>comboBoxInitialDT</tabstop>
-  <tabstop>lineEditMinDT</tabstop>
-  <tabstop>comboBoxMinDT</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>
