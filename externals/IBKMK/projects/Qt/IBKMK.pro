@@ -50,6 +50,7 @@ SOURCES += \
 	../../src/IBKMK_DenseMatrix.cpp \
 	../../src/IBKMK_IndexGenerator.cpp \
 	../../src/IBKMK_UTM.cpp \
+	../../src/IBKMK_Vector2D.cpp \
 	../../src/IBKMK_Vector3D.cpp \
 	../../src/IBKMK_numerics.cpp \
 	../../src/IBKMK_Polygon2D.cpp \
