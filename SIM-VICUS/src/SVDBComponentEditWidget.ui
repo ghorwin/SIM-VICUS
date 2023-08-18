@@ -114,7 +114,7 @@
      <item>
       <widget class="QToolButton" name="toolButtonRemoveConstruction">
        <property name="icon">
-        <iconset resource="../resources/SIM-VICUS.qrc">
+        <iconset>
          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
        </property>
       </widget>
@@ -192,7 +192,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="tabWidgetLca">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -200,7 +200,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabConstructionType">
       <attribute name="title">
@@ -233,7 +233,7 @@
           <item row="0" column="2">
            <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideA">
             <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
+             <iconset>
               <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
             </property>
            </widget>
@@ -264,7 +264,7 @@
           <item row="0" column="2">
            <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideB">
             <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
+             <iconset>
               <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
             </property>
            </widget>
@@ -281,6 +281,11 @@
       <attribute name="title">
        <string>LCA Properties</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTableWidget" name="tableWidgetLca"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabSurface">
       <attribute name="title">
@@ -371,15 +376,18 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ConstructionView</class>
@@ -387,8 +395,6 @@
    <header>QtExt_ConstructionView.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
