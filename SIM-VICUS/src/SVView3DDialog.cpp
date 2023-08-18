@@ -437,7 +437,9 @@ void SVView3DDialog::exportView3d() {
 	if(!dlg.wasCanceled()){
 		QMessageBox::information(&SVMainWindow::instance(), QString(), tr("View factors have been calculated for all selected rooms."));
 		// trigger the undo action with the modified surfaces
-		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), m_modifiedSurfaces );
+		std::vector<VICUS::Drawing> drawings;
+
+		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), m_modifiedSurfaces, drawings);
 		undo->push();
 	} else {
 		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("Calculation of View factors was canceled."));
