@@ -22,8 +22,8 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	// populate list widget
 	// Note: Whitespace before label looks better, no simple workaround possible,
 	// only if separate QLabels and QIcons are added, but that brings other problems...
-	addCustomWidgetToListWidget(tr(" Climate & Location"), ":/gfx/actions/32x32/CCMEditor_32.png");
-	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/copy_building.png");
+	addCustomWidgetToListWidget(tr(" Climate & Location"), ":/gfx/actions/Location_Climate_32x32.svg");
+	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/shades.png");
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/32x32/sim_start.png");
 	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
 

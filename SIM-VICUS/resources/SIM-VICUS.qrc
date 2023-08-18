@@ -189,5 +189,8 @@
         <file>gfx/actions/search.png</file>
         <file>gfx/actions/sound-wave.png</file>
         <file>gfx/actions/leaf.png</file>
+        <file>gfx/actions/shades.png</file>
+        <file>gfx/actions/Location_Climate_32x32.svg</file>
+        <file>gfx/actions/play_simstart.png</file>
     </qresource>
 </RCC>

@@ -575,7 +575,6 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 
 		default:;
 	}
-
 }
 
 
