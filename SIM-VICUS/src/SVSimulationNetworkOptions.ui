@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1148</width>
-    <height>438</height>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -266,7 +266,7 @@
       <item row="2" column="2">
        <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>m</string>
+         <string>-</string>
         </property>
        </widget>
       </item>
@@ -312,7 +312,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Number of different soil models</string>
+         <string>Number of different soil models:</string>
         </property>
        </widget>
       </item>

@@ -2708,9 +2708,13 @@
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="72"/>
         <source> W/m2K</source>
-        <translation> W/m2K</translation>
+        <translation type="obsolete">W/m2K</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="72"/>
+        <source>W/m2K</source>
+        <translation>W/m2K</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="79"/>
@@ -2720,33 +2724,33 @@
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="86"/>
         <source>Coefficient:</source>
-        <translation type="unfinished"></translation>
+        <translation>Koeffizient:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="96"/>
         <source>Zone temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zonentemperatur:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="103"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="172"/>
         <source>Emissivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Emissionsgrad:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="182"/>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="229"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation>---</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionEditWidget.ui" line="222"/>
         <source>Absorption coefficient:</source>
-        <translation type="unfinished"></translation>
+        <translation>Absorptionskoeffizient:</translation>
     </message>
     <message>
         <source>Coefficient [W/m2K]:</source>
@@ -3842,7 +3846,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBInternalLoadsPersonEditWidget.ui" line="68"/>
         <source>Max. person count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale Personenanzahl:</translation>
     </message>
     <message>
         <source>Max. person count [Person]:</source>
@@ -4409,32 +4413,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="58"/>
         <source>Thermal conductivity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wärmeleitfähigkeit:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="68"/>
         <source>Spec. heat capacity:</source>
-        <translation type="unfinished">Spez. Wärmekapazität:</translation>
+        <translation>Spez. Wärmekapazität:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="75"/>
         <source>Density:</source>
-        <translation type="unfinished">Dichte:</translation>
+        <translation>Dichte:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="124"/>
         <source>kg/m3</source>
-        <translation type="unfinished">kg/m3</translation>
+        <translation>kg/m3</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="131"/>
         <source>J/kg K</source>
-        <translation type="unfinished"></translation>
+        <translation>J/kg K</translation>
     </message>
     <message>
         <location filename="../../src/SVDBNetworkFluidEditWidget.ui" line="138"/>
         <source>W/mK</source>
-        <translation type="unfinished">W/mK</translation>
+        <translation>W/mK</translation>
     </message>
     <message>
         <source>Density [kg/m3]</source>
@@ -7713,24 +7717,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/SVMainWindow.ui" line="813"/>
         <location filename="../../src/SVMainWindow.ui" line="816"/>
         <source>Geometry View</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometriedarstellung</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="828"/>
         <location filename="../../src/SVMainWindow.ui" line="831"/>
         <source>Simulation Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulationseinstellungen</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="834"/>
         <source>F10</source>
-        <translation type="unfinished">F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="843"/>
         <location filename="../../src/SVMainWindow.ui" line="846"/>
         <source>External post processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Externes Postprozessing</translation>
     </message>
     <message>
         <source>Export Functional Mock-Up Unit (NANDRAD FMU)...</source>
@@ -8872,17 +8876,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="109"/>
         <source>Sub Station Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Anlage:</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="119"/>
         <source>Installed power (maximum load):</source>
-        <translation type="unfinished"></translation>
+        <translation>Installierte Leistung (Maximallast):</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="142"/>
         <source>kW</source>
-        <translation type="unfinished"></translation>
+        <translation>kW</translation>
     </message>
     <message>
         <location filename="../../src/SVNetworkImportDialog.ui" line="213"/>
@@ -9654,12 +9658,12 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="76"/>
         <source>Percentage of surface area:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozentualer Oberflächenanteil:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="83"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="107"/>
@@ -9669,32 +9673,32 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="114"/>
         <source>Offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Versatz:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="121"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="134"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="151"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="187"/>
         <source>Window-sill height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe der Fensterbank:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="207"/>
         <source>Distance in-between:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwischenabstand:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="237"/>
@@ -9704,7 +9708,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="244"/>
         <source>Values in m</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabewerte in m</translation>
     </message>
     <message>
         <location filename="../../src/SVPropAddWindowWidget.ui" line="275"/>
@@ -11156,7 +11160,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="558"/>
         <source>Fix surface orientation (pointing outside)</source>
-        <translation type="unfinished"></translation>
+        <translation>Oberflächenausrichtung reparieren (Außenausrichtung)</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="588"/>
@@ -11313,12 +11317,12 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="203"/>
         <source>threshold:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schwellwert:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="217"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="234"/>
@@ -11349,7 +11353,7 @@ Projekt zuletzt gespeichert am %2.
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="197"/>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="224"/>
         <source>remove short edges</source>
-        <translation>kurze Kanten entfernen</translation>
+        <translation>Kurze Kanten entfernen</translation>
     </message>
     <message>
         <source>threshold [m]</source>
@@ -11626,7 +11630,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkEdgesWidget.ui" line="33"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkEdgesWidget.ui" line="50"/>
@@ -11951,47 +11955,47 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="35"/>
         <source>External heat transfer coefficient:</source>
-        <translation type="unfinished"></translation>
+        <translation>Externer Wärmeübergangskoeffizient:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="42"/>
         <source>Zone Id:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zonen ID:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="52"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="80"/>
         <source>Heat flux:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wärmestrom:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="87"/>
         <source>Temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temperatur:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="94"/>
         <source>Data spline:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datenspline:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="101"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="108"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkHeatExchangeWidget.ui" line="115"/>
         <source>W/m²K</source>
-        <translation type="unfinished"></translation>
+        <translation>W/m2K</translation>
     </message>
     <message>
         <source>Temperature [C]</source>
@@ -12093,27 +12097,27 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="26"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="36"/>
         <source>Node id:</source>
-        <translation type="unfinished"></translation>
+        <translation>Knoten ID:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="50"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="64"/>
         <source>Installed power (maximum load):</source>
-        <translation type="unfinished"></translation>
+        <translation>Installierte Leistung (Maximallast):</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="78"/>
         <source>kW</source>
-        <translation type="unfinished"></translation>
+        <translation>kW</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkNodesWidget.ui" line="88"/>
@@ -12577,22 +12581,22 @@ Projekt zuletzt gespeichert am %2.
         <location filename="../../src/SVPropSiteWidget.ui" line="63"/>
         <location filename="../../src/SVPropSiteWidget.ui" line="70"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../../src/SVPropSiteWidget.ui" line="39"/>
         <source>Dimensions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdehnung:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropSiteWidget.ui" line="46"/>
         <source>View depth:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansichtstiefe:</translation>
     </message>
     <message>
         <location filename="../../src/SVPropSiteWidget.ui" line="56"/>
         <source>Major grid line spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand der Hauptgitterlinien:</translation>
     </message>
     <message>
         <source>Dimensions [m]:</source>
@@ -13318,12 +13322,12 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationLocationOptions.ui" line="59"/>
         <source>Custom file path</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierter Dateipfad</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.ui" line="283"/>
         <source>Edit location</source>
-        <translation type="unfinished"></translation>
+        <translation>Standort bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.ui" line="292"/>
@@ -13402,27 +13406,27 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="109"/>
         <source>Albedo of ambient ground surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Albedo der umgebenden Bodenfläche</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="113"/>
         <source>Climate data container files (*.c6b *.epw *.wac *dat);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiformate Klimadaten(*.c6b *.epw *.wac *dat);;Alle Dateien (*.*)</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="237"/>
         <source>Reading ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Einlesen ...</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="237"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="238"/>
         <source>Reading climate file</source>
-        <translation type="unfinished"></translation>
+        <translation>Klimadatei einlesen</translation>
     </message>
     <message>
         <source>Climate data container files (*.c6b *.epw *.wac);;All files (*.*)</source>
@@ -13451,7 +13455,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="617"/>
         <source>City/Country</source>
-        <translation>Stadt Land</translation>
+        <translation>Stadt/Land</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="619"/>
@@ -13466,12 +13470,12 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="621"/>
         <source>Latitude</source>
-        <translation>Breite</translation>
+        <translation>Breitengrad</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationLocationOptions.cpp" line="622"/>
         <source>Elevation</source>
-        <translation>Elevation</translation>
+        <translation>Höhenlage</translation>
     </message>
 </context>
 <context>
@@ -13503,22 +13507,22 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="64"/>
         <source>Long Wave Radiation Heat Exchange</source>
-        <translation type="unfinished"></translation>
+        <translation>Langwelliger Strahlungswärmeaustausch</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="84"/>
         <source>Precalculate View Factors</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorberechnete Sichtfaktoren</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="109"/>
         <source>Initial temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Startwert Temperatur:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="142"/>
         <source>Initial relative humidity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Startwert relative Luftfeuchtigkeit:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="162"/>
@@ -13527,17 +13531,18 @@ Projekt zuletzt gespeichert am %2.
         <location filename="../../src/SVSimulationModelOptions.ui" line="895"/>
         <location filename="../../src/SVSimulationModelOptions.ui" line="916"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="779"/>
         <source>Radiation load fractions for walls, ceiling and floor must add up to 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anteile der Strahlungslasten für Wände, Decke und Fußboden müssen kommuliert 1 ergeben.</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="788"/>
         <source>Percentage of surface solar radiation attributed to floor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozentualer Anteil der Sonneneinstrahlung
+an der Oberfläche des Fußbodens:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="795"/>
@@ -13547,22 +13552,24 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="868"/>
         <source>DIN EN ISO 13791 G.2: no furniture 0 % | small amount of furniture 10 % | large amount of furniture 20 %</source>
-        <translation type="unfinished"></translation>
+        <translation>DIN EN ISO 13791 G.2: keine Möbel 0 % | geringe Möblierung 10 % | umfangreiche Möblierung 20 %</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="888"/>
         <source>Percentage of solar radiation gains attributed direcly to room node:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozentualer Anteil der solaren Strahlungsgewinne, 
+mit direkter Zuordnung zum Raumknoten:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="902"/>
         <source>Percentage of surface solar radiation attributed to walls:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozentualer Anteil der Sonneneinstrahlung an der Oberfläche,
+der auf Wände entfällt:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="909"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="930"/>
@@ -13572,7 +13579,8 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationModelOptions.ui" line="937"/>
         <source>Percentage of surface solar radiation attributed to roof/ceiling:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozentualer Anteil der Sonneneinstrahlung an der Oberfläche,
+der auf das Dach oder auf die Decke entfällt:</translation>
     </message>
     <message>
         <source>Percentage of solar radiation gains attributed direcly to room node [%]:</source>
@@ -13621,55 +13629,64 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="29"/>
         <source>Network </source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerk </translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="72"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="79"/>
         <source>Maximum pipe discretization length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale Diskretisierunglänge der Rohleitung:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="93"/>
         <source>Select network</source>
-        <translation type="unfinished">Netzwerk auswählen</translation>
+        <translation>Netzwerk auswählen</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="113"/>
         <source>Reference pressure:</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenzdruck:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="130"/>
         <source>bar</source>
-        <translation type="unfinished"></translation>
+        <translation>bar</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="137"/>
         <source>Default/initial fluid temperature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Startwert Fluidtemperatur:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="179"/>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="242"/>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="249"/>
-        <location filename="../../src/SVSimulationNetworkOptions.ui" line="269"/>
         <source>m</source>
-        <translation type="unfinished">m</translation>
+        <translation>m</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationNetworkOptions.ui" line="269"/>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationNetworkOptions.ui" line="315"/>
+        <source>Number of different soil models:</source>
+        <translation>Anzahl verschiedener Bodenmodelle:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="322"/>
         <source>Pipe depth below surface:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlegetiefe unter der Oberfläche:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="329"/>
         <source>Pipe spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rohrleitungsabstand:</translation>
     </message>
     <message>
         <source>Reference pressure [Pa]:</source>
@@ -13714,9 +13731,8 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Rohrtiefe unter Oberfläche [m]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationNetworkOptions.ui" line="315"/>
         <source>Number of different soil models</source>
-        <translation>Anzahl verschiedener Bodenmodelle</translation>
+        <translation type="obsolete">Anzahl verschiedener Bodenmodelle:</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationNetworkOptions.ui" line="235"/>
@@ -15610,7 +15626,8 @@ Verbleibende Zeit %1 h %2 min</translation>
         <location filename="../../src/SVSimulationShadingOptions.cpp" line="104"/>
         <source>Calculating Shading factors
 Remaining time: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechne Verschattungsfaktor
+Verbleibende Zeit %1</translation>
     </message>
 </context>
 </TS>

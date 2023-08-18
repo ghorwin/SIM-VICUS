@@ -69,7 +69,7 @@
       <item row="2" column="3">
        <widget class="QLabel" name="labelHeatTransferCoefficient_2">
         <property name="text">
-         <string> W/m2K</string>
+         <string>W/m2K</string>
         </property>
        </widget>
       </item>
