@@ -1,21 +1,25 @@
 #ifndef VICUS_DRAWING_H
 #define VICUS_DRAWING_H
 
+#include "tinyxml.h"
 #include <IBKMK_Vector2D.h>
 #include <IBKMK_Vector3D.h>
 #include <IBK_Line.h>
 
 #include <VICUS_RotationMatrix.h>
+#include <VICUS_CodeGenMacros.h>
+#include <VICUS_Object.h>
+
 #include <QQuaternion>
+#include <QColor>
+#include <QDebug>
 
 #include <libdxfrw.h>
+
 #include <drw_interface.h>
 #include <drw_objects.h>
 #include <drw_base.h>
-#include "VICUS_Object.h"
 
-#include <QColor>
-#include <QDebug>
 
 
 namespace VICUS {
@@ -67,8 +71,6 @@ public:
 			return "DrawingLayer";
 		}
 
-		// VICUS_COMPARE_WITH_ID
-
 		// TODO Maik: dokustring
 
 		/*! Color of layer if defined */
@@ -82,6 +84,12 @@ public:
 
 	/* Abstract class for all directly drawable dxf entities */
 	struct AbstractDrawingObject {
+		/*! Standard C'tor. */
+		AbstractDrawingObject() = default;
+
+		/*! D'tor. */
+		virtual ~AbstractDrawingObject() {}
+
 		/* used to get correct color of entity */
 		const QColor &color() const;
 		/* used to get correct lineWeight of entity */
@@ -110,6 +118,9 @@ public:
 	/*! Stores attributes of line */
 	struct Point : public AbstractDrawingObject {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
 		/*! Point coordinate */
 		IBKMK::Vector2D m_point;
 	};
@@ -117,12 +128,18 @@ public:
 	/*! Stores attributes of line */
 	struct Line : public AbstractDrawingObject {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
 		/*! line coordinates */
-		IBK::Line       m_line;
+		IBK::Line						m_line;
 	};
 
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
+
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
 
 		/*! polyline coordinates */
 		std::vector<IBKMK::Vector2D>    m_polyline;
@@ -133,6 +150,9 @@ public:
 	/* Stores attributes of circle */
 	struct Circle : public AbstractDrawingObject {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
 		/*! Circle center */
 		IBKMK::Vector2D    m_center;
 		/*! Circle radius */
@@ -141,6 +161,9 @@ public:
 
 	/* Stores attributes of ellipse */
 	struct Ellipse : public AbstractDrawingObject {
+
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
 
 		/*! Ellipse center */
 		IBKMK::Vector2D    m_center;
@@ -157,6 +180,9 @@ public:
 	/* Stores attributes of arc */
 	struct Arc : public AbstractDrawingObject {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
 		/*! Arc center */
 		IBKMK::Vector2D    m_center;
 		/*! Arc radius */
@@ -170,6 +196,9 @@ public:
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
 		/*! Point 1 */
 		IBKMK::Vector2D    m_point1;
 		/*! Point 2 */
@@ -180,40 +209,69 @@ public:
 		IBKMK::Vector2D    m_point4;
 	};
 
+	/* Stores attributes of text, dummy struct */
+	struct Text : public AbstractDrawingObject {
+
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXMLPrivate(const TiXmlElement * element);
+
+		/*! Base point. */
+		IBKMK::Vector2D		m_basePoint;
+		/*! Text */
+		std::string			m_text;
+	};
+
+
+	// *** PUBLIC MEMBER FUNCTIONS ***
+	VICUS_READWRITE_PRIVATE
+	VICUS_READWRITE
+
 	/*! Returns the drawing object based on the ID. */
 	const AbstractDrawingObject* objectByID(unsigned int id) const;
 
-	/*! point of origin */
-	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);
-	/*! rotation matrix */
-	RotationMatrix															m_rotationMatrix = RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0));
-	/*! scale factor */
-	double																	m_scalingFactor = 0.01;
-	/*! list of blocks, dummy implementation */
-	std::vector<Block>														m_blocks;
-	/*! list of layers */
-	std::vector<DrawingLayer>												m_layers;
-	/*! list of points */
-	std::vector<Point>														m_points;
-	/*! list of lines */
-	std::vector<Line>														m_lines;
-	/*! list of polylines */
-	std::vector<PolyLine>													m_polylines;
-	/*! list of circles */
-	std::vector<Circle>														m_circles;
-	/*! list of ellipses */
-	std::vector<Ellipse>													m_ellipses;
-	/*! list of arcs */
-	std::vector<Arc>														m_arcs;
-	/*! list of solids, dummy implementation */
-	std::vector<Solid>														m_solids;
-	/*! Counter of entities, used to create a drawing hierarchy
-		in a dxf file to avoid overlapping of entities */
-	unsigned int															m_zCounter = 0;
-	/*! Is the default color when no other color was specified */
-	QColor																	m_defaultColor = QColor();
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	QColor							m_color;				// XML:A
+
+
+	/*! point of origin */
+	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);	// XML:E
+	/*! rotation matrix */
+	RotationMatrix															m_rotationMatrix = RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0)); // XML:E
+	/*! scale factor */
+	double																	m_scalingFactor = 0.01;	// XML:E
+
+	/*! list of blocks, dummy implementation */
+	std::vector<Block>														m_blocks;		// XML:E
+	/*! list of layers */
+	std::vector<DrawingLayer>												m_layers;		// XML:E
+	/*! list of points */
+	std::vector<Point>														m_points;		// XML:E
+	/*! list of lines */
+	std::vector<Line>														m_lines;		// XML:E
+	/*! list of polylines */
+	std::vector<PolyLine>													m_polylines;	// XML:E
+	/*! list of circles */
+	std::vector<Circle>														m_circles;		// XML:E
+	/*! list of ellipses */
+	std::vector<Ellipse>													m_ellipses;		// XML:E
+	/*! list of arcs */
+	std::vector<Arc>														m_arcs;			// XML:E
+	/*! list of solids, dummy implementation */
+	std::vector<Solid>														m_solids;		// XML:E
+	/*! list of texts, dummy implementation */
+	std::vector<Text>														m_texts;		// XML:E
+	/*! Counter of entities, used to create a drawing hierarchy
+		in a dxf file to avoid overlapping of entities */
+	unsigned int															m_zCounter = 0;	// XML:E
+	/*! Is the default color when no other color was specified */
+	QColor																	m_defaultColor = QColor(); // XML:E
+
 
 private:
 	/*! Helper function to assign the correct layer to an entity */

@@ -1,4 +1,8 @@
 #include "VICUS_Drawing.h"
+#include "IBK_MessageHandler.h"
+#include "IBK_messages.h"
+#include "NANDRAD_Utilities.h"
+#include "tinyxml.h"
 
 
 
@@ -13,8 +17,69 @@ Drawing::Drawing() :
 	m_circles(std::vector<Circle>()),
 	m_ellipses(std::vector<Ellipse>()),
 	m_arcs(std::vector<Arc>()),
-	m_solids(std::vector<Solid>())
+	m_solids(std::vector<Solid>()),
+	m_texts(std::vector<Text>())
 {}
+
+TiXmlElement * Drawing::Arc::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
+
+	TiXmlElement * e = new TiXmlElement("Drawing");
+	parent->LinkEndChild(e);
+
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
+
+	TiXmlElement::appendSingleAttributeElement(e, "Center", nullptr, std::string(), m_center.toString());
+	TiXmlElement::appendSingleAttributeElement(e, "Radius", nullptr, std::string(), IBK::val2string<double>(m_radius));
+	TiXmlElement::appendSingleAttributeElement(e, "StartAngle", nullptr, std::string(), IBK::val2string<double>(m_startAngle));
+	TiXmlElement::appendSingleAttributeElement(e, "EndAngle", nullptr, std::string(), IBK::val2string<double>(m_endAngle));
+
+	return e;
+}
+
+void Drawing::Arc::readXMLPrivate(const TiXmlElement *element){
+	FUNCID(Drawing::Arc::readXMLPrivate);
+
+	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+									  IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Radius")
+				m_radius = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "StartAngle")
+				m_startAngle = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "EndAngle")
+				m_endAngle = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "Center") {
+				try {
+					m_center = IBKMK::Vector3D::fromString(c->GetText());
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										  .arg("Invalid vector data."), FUNC_ID);
+				}
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Drawing::Arc' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Drawing::Arc' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
 
 const Drawing::AbstractDrawingObject *Drawing::objectByID(unsigned int id) const {
 	FUNCID(Drawing::objectByID);
@@ -57,6 +122,10 @@ void Drawing::updatePointer(){
 	for(unsigned int i=0; i < m_solids.size(); i++){
 		m_solids[i].m_parentLayer = findLayerPointer(m_solids[i].m_layerName);
 		m_objectPtr[m_solids[i].m_id] = &m_solids[i];
+	}
+	for(unsigned int i=0; i < m_texts.size(); i++){
+		m_texts[i].m_parentLayer = findLayerPointer(m_texts[i].m_layerName);
+		m_objectPtr[m_texts[i].m_id] = &m_solids[i];
 	}
 }
 
@@ -106,7 +175,22 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 		return m_lineWeight;
 }
 
+void Drawing::readXML(const TiXmlElement * element) {
+	FUNCID(Drawing::readXML);
+	// read 3D geometry
 
+}
+
+
+TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = writeXMLPrivate(parent);
+	// now add Polygon3D
+}
+
+TiXmlElement *Drawing::PolyLine::writeXML(TiXmlElement *element) const
+{
+
+}
 
 
 } // namespace VICUS
