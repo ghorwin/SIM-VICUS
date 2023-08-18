@@ -42,12 +42,5 @@ const char * XML_READ_UNKNOWN_NAME = "Name '%1' for tag '%2' in line %3 is inval
 const char * DATABASE_PLACEHOLDER_NAME			= "Database";
 const char * USER_DATABASE_PLACEHOLDER_NAME		= "User Database";
 
-
-const unsigned int SEGMENT_COUNT_ARC		= 50;
-const unsigned int SEGMENT_COUNT_CIRCLE		= 50;
-const unsigned int SEGMENT_COUNT_ELLIPSE	= 50;
-
-const double Z_MULTIPLYER				= 0.00005;
-
 } // namespace VICUS
 
