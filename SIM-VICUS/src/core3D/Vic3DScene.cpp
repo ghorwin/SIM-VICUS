@@ -491,7 +491,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			const IBKMK::Vector3D &lineOfSight = m_panObjectStart - m_panCameraStart;
 			double dampening = std::min(1.0, (80.0 / lineOfSight.magnitude()));
-//			qDebug() << "Dampening factor: " << dampening;
+			//			qDebug() << "Dampening factor: " << dampening;
 
 			if (keyboardHandler.keyDown(Qt::Key_Space))
 				dampening = 1;
@@ -649,7 +649,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					if (keyboardHandler.keyDown(Qt::Key_Space))
 						dampening = 1;
 
-//					qDebug() << "Dampening factor: " << dampening;
+					//					qDebug() << "Dampening factor: " << dampening;
 
 					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
 					// set rotation around z axis for x-mouse-delta
@@ -1690,10 +1690,10 @@ void Scene::generateTransparentBuildingGeometry(const HighlightingMode &mode) {
 
 							// add geometry to buffer
 							QColor linkBoxColor = col;
-//                            if(mode == HM_ColoredSurfaces) {
-//                                linkBoxColor.setAlpha(255);
-//                            } else {
-//                            }
+							//                            if(mode == HM_ColoredSurfaces) {
+							//                                linkBoxColor.setAlpha(255);
+							//                            } else {
+							//                            }
 							linkBoxColor = QColor(196,0,0,226);
 							if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
 								linkBoxColor = QColor(255,64,32,226);
@@ -1848,6 +1848,18 @@ void Scene::generateNetworkGeometry() {
 		qDebug() << t.elapsed() << "ms for network generation";
 }
 
+const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
+	const VICUS::Drawing::DrawingLayer *layer = obj.m_parentLayer;
+
+	Q_ASSERT(layer != nullptr);
+
+	QColor color = obj.color().isValid() ? obj.color() : SVStyle::instance().m_defaultDrawingColor;
+	if (!layer->m_visible || layer->m_selected)
+		color.setAlpha(0);
+
+	return color;
+}
+
 
 void Scene::generate2DDrawingGeometry() {
 
@@ -1868,26 +1880,18 @@ void Scene::generate2DDrawingGeometry() {
 
 	const VICUS::Project & p = project();
 
-	// initialise default values
-	// default number of lines per circle/ellipse/arc
-	const int n = 50;
-	// default line width
-	const double defaultLineWeight = 0.05;
-	// multiplier to apply to width of entities
-	const double defaultLineWeightScaling = 0.005;
-	// multiplier for z-coordinate. Multiplied with the z counter of an entity
-	const double zmultiplier = 0.00005;
-
 	// iterate over all AbstractObjects and draw them
 	for (const VICUS::Drawing & drawing : p.m_drawings) {
 
 		for (const VICUS::Drawing::Line & line : drawing.m_lines){
 
-			if (!line.m_parentLayer->m_visible)
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(line.m_parentLayer);
+
+			if (dl == nullptr)
 				continue;
 
 			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
-			double zCoordinate = line.m_zPosition * zmultiplier + drawing.m_origin.m_z;
+			double zCoordinate = line.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
 			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing.m_origin.m_x, line.m_line.m_p1.m_y + drawing.m_origin.m_y, zCoordinate);
 			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing.m_origin.m_x, line.m_line.m_p2.m_y + drawing.m_origin.m_y, zCoordinate);
 
@@ -1899,11 +1903,11 @@ void Scene::generate2DDrawingGeometry() {
 			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
 			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
 
-			const QColor &color = line.color().isValid() ? line.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(line);
 
 			// call addLine to draw line
-			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
-					defaultLineWeight + line.lineWeight() * defaultLineWeightScaling,
+			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing.m_rotationMatrix,
+					DEFAULT_LINE_WEIGHT + line.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 					color, currentVertexIndex, currentElementIndex,
 					m_drawingGeometryObject.m_vertexBufferData,
 					m_drawingGeometryObject.m_colorBufferData,
@@ -1912,16 +1916,19 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::Point & point : drawing.m_points){
 
-			if (!point.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(point.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
 
 			// Create Vector from point, add point of origin to each coordinate and calculate z value
-			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x, point.m_point.m_y + drawing.m_origin.m_y, point.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p(point.m_point.m_x + drawing.m_origin.m_x,
+							  point.m_point.m_y + drawing.m_origin.m_y,
+							  point.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 
 			// scale Vector with selected unit
 			p *= drawing.m_scalingFactor;
 
-			double pointWeight = (defaultLineWeight + point.lineWeight() * defaultLineWeightScaling) / 2;
+			double pointWeight = (DEFAULT_LINE_WEIGHT + point.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
 
 			// rotation
 			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -1934,7 +1941,7 @@ void Scene::generate2DDrawingGeometry() {
 			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
 			VICUS::PlaneGeometry g1(po);
 
-			const QColor &color = point.color().isValid() ? point.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(point);
 
 			addPlane(g1.triangulationData(), color, currentVertexIndex,
 					 currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
@@ -1949,8 +1956,9 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
 
-			if (!polyline.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(polyline.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
 
 			// Create Vector to store vertices of polyline
 			std::vector<IBKMK::Vector3D> polylinePoints;
@@ -1959,17 +1967,17 @@ void Scene::generate2DDrawingGeometry() {
 			for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
 				IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing.m_origin.m_x,
 													polyline.m_polyline[i].m_y + drawing.m_origin.m_y,
-													polyline.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+													polyline.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 				polylinePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			const QColor &color = polyline.color().isValid() ? polyline.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(polyline);
 
-			addPolyLine(polylinePoints, polyline.m_endConnected,
-						defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling,
+			addPolyLine(polylinePoints, drawing.m_rotationMatrix, polyline.m_endConnected,
+						DEFAULT_LINE_WEIGHT + polyline.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 						color, currentVertexIndex, currentElementIndex,
 						m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData,
 						m_drawingGeometryObject.m_indexBufferData);
@@ -1977,25 +1985,26 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::Circle & circle : drawing.m_circles){
 
-			if (!circle.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(circle.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> circlePoints;
 
-			for(int i = 0; i < n; i++){
+			for(int i = 0; i < SEGMENT_COUNT_CIRCLE; i++){
 				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_points[i].m_x + drawing.m_origin.m_x,
 													circle.m_points[i].m_y + drawing.m_origin.m_y,
-													circle.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+													circle.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 				circlePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			const QColor &color = circle.color().isValid() ? circle.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(circle);
 
-			addPolyLine(circlePoints, true,
-						defaultLineWeight + circle.lineWeight() * defaultLineWeightScaling,
+			addPolyLine(circlePoints, drawing.m_rotationMatrix, true,
+						DEFAULT_LINE_WEIGHT + circle.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 						color, currentVertexIndex, currentElementIndex,
 						m_drawingGeometryObject.m_vertexBufferData,
 						m_drawingGeometryObject.m_colorBufferData,
@@ -2005,23 +2014,24 @@ void Scene::generate2DDrawingGeometry() {
 
 		for(const VICUS::Drawing::Arc & arc : drawing.m_arcs){
 
-			if (!arc.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(arc.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> arcPoints;
 			for(unsigned int i = 0; i < arc.m_points.size(); i++){
 				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_points[i].m_x + drawing.m_origin.m_x,
 													arc.m_points[i].m_y + drawing.m_origin.m_y,
-													arc.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+													arc.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 				arcPoints.push_back(QVector2IBKVector(vec));
 			}
 
-			const QColor &color = arc.color().isValid() ? arc.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(arc);
 
-			addPolyLine(arcPoints, false, defaultLineWeight + arc.lineWeight() * defaultLineWeightScaling,
+			addPolyLine(arcPoints, drawing.m_rotationMatrix, false, DEFAULT_LINE_WEIGHT + arc.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 						color, currentVertexIndex, currentElementIndex,
 						m_drawingGeometryObject.m_vertexBufferData,
 						m_drawingGeometryObject.m_colorBufferData,
@@ -2031,28 +2041,31 @@ void Scene::generate2DDrawingGeometry() {
 
 		for (const VICUS::Drawing::Ellipse & ellipse : drawing.m_ellipses){
 
-			if (!ellipse.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(ellipse.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> ellipsePoints;
-			for (int i = 0; i <= n; i++) {
+			for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; i++) {
 
 				IBKMK::Vector3D p = IBKMK::Vector3D(ellipse.m_points[i].m_x + drawing.m_origin.m_x,
 													ellipse.m_points[i].m_y + drawing.m_origin.m_y,
-													ellipse.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+													ellipse.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
 				QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 				ellipsePoints.push_back(QVector2IBKVector(vec));
 			}
 
-			const QColor &color = ellipse.color().isValid() ? ellipse.color() : SVStyle::instance().m_defaultDrawingColor;
+			const QColor color = objectColor(ellipse);
+
+			Q_ASSERT(ellipse.m_points.size() > 0);
 
 			bool connect = ellipse.m_points[0] == ellipse.m_points.back();
 
 			// Change this line to false, so it doesn't connect the last point to the first point
-			addPolyLine(ellipsePoints, connect,
-						defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling,
+			addPolyLine(ellipsePoints, drawing.m_rotationMatrix, connect,
+						DEFAULT_LINE_WEIGHT + ellipse.m_lineWeight * DEFAULT_LINE_WEIGHT_SCALING,
 						color, currentVertexIndex,
 						currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
 						m_drawingGeometryObject.m_colorBufferData,
@@ -2060,16 +2073,22 @@ void Scene::generate2DDrawingGeometry() {
 		}
 
 
-		for(const VICUS::Drawing::Solid &solid : drawing.m_solids){
+		for (const VICUS::Drawing::Solid &solid : drawing.m_solids){
 
-			if (!solid.m_parentLayer->m_visible)
-				continue;
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(solid.m_parentLayer);
 
+			Q_ASSERT(dl != nullptr);
 
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing.m_origin.m_x, solid.m_point1.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing.m_origin.m_x, solid.m_point2.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
-			/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z); */
-			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing.m_origin.m_x, solid.m_point4.m_y + drawing.m_origin.m_y, solid.m_zPosition * zmultiplier + drawing.m_origin.m_z);
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing.m_origin.m_x,
+												 solid.m_point1.m_y + drawing.m_origin.m_y,
+												 solid.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing.m_origin.m_x,
+												 solid.m_point2.m_y + drawing.m_origin.m_y,
+												 solid.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
+			/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * VICUS::Z_MULTIPLYER + drawing.m_origin.m_z); */
+			IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing.m_origin.m_x,
+												 solid.m_point4.m_y + drawing.m_origin.m_y,
+												 solid.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 
 			p1 *= drawing.m_scalingFactor;
 			p2 *= drawing.m_scalingFactor;
@@ -2084,14 +2103,23 @@ void Scene::generate2DDrawingGeometry() {
 			IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));
 			VICUS::PlaneGeometry g1(p);
 
-			const QColor &color = solid.color();
+			const QColor color = objectColor(solid);
 
 			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
 			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
 		}
 
+		for (const VICUS::Drawing::Text &text : drawing.m_texts){
+
+			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(text.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
+
+			addText(text.m_text, Qt::AlignCenter, 2, drawing.m_rotationMatrix, drawing.m_origin, text.m_basePoint, drawing.m_scalingFactor, text.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
+					text.m_color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 
+		}
 
 	}
 
@@ -2564,6 +2592,17 @@ void Scene::deselectAll() {
 			objIDs.insert(network.m_id);
 	}
 
+	// now the plain geometry
+	for (const VICUS::Drawing & d : p.m_drawings) {
+		if (d.m_selected)
+			objIDs.insert(d.m_id);
+
+		for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+			if (dl.m_selected)
+				objIDs.insert(dl.m_id);
+		}
+	}
+
 	// if nothing is selected, do nothing
 	if (objIDs.empty())
 		return;
@@ -2812,6 +2851,9 @@ void Scene::pick(PickObject & pickObject) {
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
+		if (!project().m_viewSettings.m_gridPlanes[i].m_isVisible)
+			continue;
+
 		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
@@ -2860,7 +2902,7 @@ void Scene::pick(PickObject & pickObject) {
 							obj = SVProjectHandler::instance().project().objectById(s.geometry().holes()[(unsigned int)holeIndex].m_idObject);
 							if (obj == nullptr) {// guard against dangling IDs
 								// Note: cannot use an assert/exception here, as hole ID is user-data from potentially corrupt data file
-//								(IBK::FormatString("Invalid hole ID #%1 in surface #%2")
+								//								(IBK::FormatString("Invalid hole ID #%1 in surface #%2")
 								continue;
 							}
 
@@ -2999,120 +3041,90 @@ void Scene::pick(PickObject & pickObject) {
 	pickObject.m_pickPerformed = true;
 }
 
-void Scene::addPickPoint(PickObject &pickObject,
-				  const unsigned int zPosition, const IBKMK::Vector3D &origin, const double scalingFactor,
-				  const VICUS::RotationMatrix &matrix, const std::vector<IBKMK::Vector2D> &points,
-				  unsigned int layerId, unsigned int drawingId, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &direction) {
+/*! Add Pick points of drawing objects. */
+template <typename t>
+void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
+				  const VICUS::Drawing &drawing, const IBKMK::Vector3D &nearPoint,
+				  const IBKMK::Vector3D &direction, bool pickLine = false) {
 
-	const float SNAP_DISTANCES_THRESHHOLD = 2; // in m, should be enough, right?
+	// process all objects
+	for (const t &abstrObj : objs) {
+		// skip invisible drawing objects
+		Q_ASSERT(abstrObj.m_parentLayer != nullptr);
+		if (!abstrObj.m_parentLayer->m_visible)
+			continue;
 
-	for (const IBKMK::Vector2D &v2D : points) {
-		double zCoordinate = zPosition * VICUS::Z_MULTIPLYER + origin.m_z;
-		IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + origin.m_x,
-											  v2D.m_y + origin.m_y,
-											  zCoordinate);
+		const std::vector<IBKMK::Vector2D> &points = abstrObj.m_points;
 
-		v3D *= scalingFactor;
+		std::vector<IBKMK::Vector3D> points3d(points.size());
+		for (unsigned int i=0; i<points.size(); ++i) {
+			const IBKMK::Vector2D &v2D = points[i];
 
-		QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
+			double zCoordinate = abstrObj.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
+			IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + drawing.m_origin.m_x,
+												  v2D.m_y + drawing.m_origin.m_y,
+												  zCoordinate);
 
-		IBKMK::Vector3D closestPoint;
-		double dist;
-		double lineToPointDist = IBKMK::lineToPointDistance(nearPoint, direction,
-															QVector2IBKVector(qV3D),
-															dist, closestPoint);
-		// check distance against radius of sphere
-		if (lineToPointDist < SNAP_DISTANCES_THRESHHOLD) {
-			PickObject::PickResult r;
-			r.m_resultType = PickObject::RT_Object;
-			r.m_depth = dist; // the depth to the point on the line-of-sight that is closest to the point
-			r.m_pickPoint = closestPoint; // this
-			r.m_objectID = layerId;
-			r.m_drawingID = drawingId;
-			pickObject.m_candidates.push_back(r);
+			v3D *= drawing.m_scalingFactor;
+			QVector3D qV3D = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
+			points3d[i] = QVector2IBKVector(qV3D);
+		}
+
+		for (unsigned int i=0; i<points3d.size(); ++i) {
+
+			const IBKMK::Vector3D &v  = points3d[      i                     ];
+			const IBKMK::Vector3D &vB = points3d[((int)i - 1) % points.size()];
+
+			double depth = 0., depth2 = 0., dist = 0., dist2 = 0., lineFactor;
+			IBKMK::Vector3D closestPoint, closestPoint2;
+
+			if (pickLine) {
+				dist2 = IBKMK::lineToLineDistance(nearPoint, direction, v, vB - v, depth2, closestPoint2, lineFactor);
+
+				// check distance to line
+				if (dist2 < SNAP_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
+					PickObject::PickResult r;
+					r.m_resultType = PickObject::RT_Object;
+					r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
+					r.m_pickPoint = closestPoint2; // this
+					r.m_objectID = drawing.m_id;
+					r.m_drawingID = abstrObj.m_id;
+					pickObject.m_candidates.push_back(r);
+				}
+			}
+
+			dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
+
+			// check distance against radius of sphere
+			if (dist < SNAP_DISTANCES_THRESHHOLD) {
+				PickObject::PickResult r;
+				r.m_resultType = PickObject::RT_Object;
+				r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
+				r.m_pickPoint = closestPoint; // this
+				r.m_objectID = drawing.m_id;
+				r.m_drawingID = abstrObj.m_id;
+				pickObject.m_candidates.push_back(r);
+			}
 		}
 	}
 }
 
-void Scene::pickDrawings(PickObject &pickObject, const IBKMK::Vector3D &nearPoint,
-						 const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction) {
+void Scene::pickDrawings(PickObject &pickObject,
+						 const IBKMK::Vector3D &nearPoint,
+						 const IBKMK::Vector3D &/*farPoint*/,
+						 const IBKMK::Vector3D &direction) {
 
 	for (const VICUS::Drawing & d : project().m_drawings) {
-
-		// process all nodes
-		for (const VICUS::Drawing::Line &l : d.m_lines) {
-			// skip invisible nodes
-			if (!l.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, l.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 l.m_points, l.m_parentLayer->m_id, l.m_id, nearPoint, direction);
-		}
-
-		// process all nodes
-		for (const VICUS::Drawing::PolyLine &pl : d.m_polylines) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
-		// process all nodes
-		for (const VICUS::Drawing::Arc &pl : d.m_arcs) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
-		// process all nodes
-		for (const VICUS::Drawing::Circle &pl : d.m_circles) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
-		// process all nodes
-		for (const VICUS::Drawing::Ellipse &pl : d.m_ellipses) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
-		// process all nodes
-		for (const VICUS::Drawing::Point &pl : d.m_points) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
-
-		// process all nodes
-		for (const VICUS::Drawing::Solid &pl : d.m_solids) {
-			// skip invisible nodes
-			if (!pl.m_parentLayer->m_visible)
-				continue;
-
-			addPickPoint(pickObject, pl.m_zPosition, d.m_origin, d.m_scalingFactor, d.m_rotationMatrix,
-						 pl.m_points, pl.m_parentLayer->m_id, pl.m_id, nearPoint, direction);
-		}
-
+		addPickPoint<VICUS::Drawing::Point>(pickObject, d.m_points, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Arc>(pickObject, d.m_arcs, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Circle>(pickObject, d.m_circles, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Ellipse>(pickObject, d.m_ellipses, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Line>(pickObject, d.m_lines, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Solid>(pickObject, d.m_solids, d, nearPoint, direction, true);
 	}
-
 }
+
 
 void Scene::pickChildSurfaces() {
 
@@ -3134,7 +3146,7 @@ struct SnapCandidate {
 void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	const float SNAP_DISTANCES_THRESHHOLD = 2; // in m, should be enough, right?
+	const float SNAP_DISTANCES_THRESHHOLD = 1.5; // in m, should be enough, right?
 
 
 	SVViewState::Locks actualLockOption = vs.m_locks;
@@ -3412,12 +3424,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			} // if (s != nullptr)
 
 
-			const VICUS::Drawing::DrawingLayer * dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(obj);
-			if (dl != nullptr) {
-
-				Q_ASSERT(dl->m_parent != nullptr);
-
-				const VICUS::Drawing *d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
+			const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(obj);
+			if (d != nullptr) {
 
 				// a surface object might have several snap points which we collect first in a vector
 				std::vector<SnapCandidate> snapCandidates;
@@ -3432,11 +3440,20 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 				const VICUS::Drawing::AbstractDrawingObject *obj = d->objectByID(r.m_drawingID);
 
-				if (snapOptions & SVViewState::Snap_ObjectVertex) {
-					// insert distances to all vertexes of selected object
-					for (const IBKMK::Vector2D & v2D : obj->m_points) {
+				bool linePick = false;
+				const VICUS::Drawing::Line *line = dynamic_cast<const VICUS::Drawing::Line *>(obj);
+				const VICUS::Drawing::PolyLine *polyline = dynamic_cast<const VICUS::Drawing::PolyLine *>(obj);
 
-						double zCoordinate = obj->m_zPosition * VICUS::Z_MULTIPLYER + d->m_origin.m_z;
+				if (line != nullptr || polyline != nullptr)
+					linePick = true;
+
+				if (snapOptions & SVViewState::Snap_ObjectVertex) {
+
+					std::vector<IBKMK::Vector3D> points3d(obj->m_points.size());
+					for (unsigned int i=0; i<obj->m_points.size(); ++i) {
+						const IBKMK::Vector2D &v2D = obj->m_points[i];
+
+						double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
 						IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + d->m_origin.m_x,
 															  v2D.m_y + d->m_origin.m_y,
 															  zCoordinate);
@@ -3444,7 +3461,14 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						QVector3D qV3D = d->m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
 						qV3D *= d->m_scalingFactor;
 
-						float dist = (qV3D - pickPoint).lengthSquared();
+						points3d[i] = QVector2IBKVector(qV3D);
+					}
+
+					for (unsigned int i=0; i<points3d.size(); ++i) {
+
+						const IBKMK::Vector3D & v3D  = points3d[i];
+
+						float dist = (IBKVector2QVector(v3D) - pickPoint).lengthSquared();
 						// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 						// another snap point that's closer.
 						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
@@ -3454,47 +3478,36 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							snapCandidates.push_back(sc);
 							closestDepthSoFar = dist;
 						}
+
+						if (linePick) {
+							const IBKMK::Vector3D & v3DB = points3d[((int)i - 1) % points3d.size()];
+
+							IBKMK::Vector3D pickPoint;
+							double lineFactor;
+							double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
+
+							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
+
+							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+							// another snap point that's closer.
+							if (dist2 < closestDepthSoFar && dist2 < SNAP_DISTANCES_THRESHHOLD && lineFactor > 0. && lineFactor < 1.) {
+								// for now we snap to the vertexes of the outer polygon and all holes
+								sc.m_distToLineOfSight = (double)dist2;
+								sc.m_pickPoint = pickPoint;
+								snapCandidates.push_back(sc);
+								closestDepthSoFar = dist2;
+
+								qDebug() << "PICKED";
+							}
+						}
 					}
 				}
-//				if (snapOptions & SVViewState::Snap_ObjectCenter) {
-//					// insert center point
-//					IBKMK::Vector3D center(0,0,0);
-//					for (const IBKMK::Vector3D & v : sVertexes)
-//						center += v;
-//					center /= sVertexes.size();
-//					QVector3D p = IBKVector2QVector(center);
-//					float dist = (p - pickPoint).lengthSquared();
-//					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-//						sc.m_distToLineOfSight = (double)dist;
-//						sc.m_pickPoint = center;
-//						snapCandidates.push_back(sc);
-//						closestDepthSoFar = dist;
-//					}
-//				}
-//				if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
-//					// process all edges
-//					IBKMK::Vector3D lastNode = sVertexes.front();
-//					for (unsigned int i=0; i<sVertexes.size()+1; ++i) {
-//						IBKMK::Vector3D center = lastNode;
-//						lastNode = sVertexes[i % sVertexes.size()];
-//						center += lastNode;
-//						center /= 2;
-//						QVector3D p = IBKVector2QVector(center);
-//						float dist = (p - pickPoint).lengthSquared();
-//						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-//							sc.m_distToLineOfSight = (double)dist;
-//							sc.m_pickPoint = center;
-//							snapCandidates.push_back(sc);
-//							closestDepthSoFar = dist;
-//						}
-//					}
-//				}
 
 				// now we take the snap point that's closest - even if all the snap options of an object are
 				// turned off, we still get the intersection point as last straw to pick.
 				std::sort(snapCandidates.begin(), snapCandidates.end());
 				snapPoint = snapCandidates.front().m_pickPoint;
-				snapInfo = "snap to object";
+				snapInfo = "snap to drawing object";
 
 			}
 
@@ -3761,35 +3774,35 @@ void Scene::setDefaultViewState() {
 	vs.m_locks = SVViewState::NUM_L; // no axis is locked
 
 	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_AddGeometry:
-		case SVViewState::PM_EditGeometry:
-		case SVViewState::PM_SiteProperties:
-		case SVViewState::PM_BuildingProperties:
-		case SVViewState::PM_ResultsProperties:
-		case SVViewState::PM_NetworkProperties: {
-			// do we have any selected geometries
-			std::set<const VICUS::Object *> sel;
-			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-			if (sel.empty()) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			}
-			else
-				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+	case SVViewState::PM_AddGeometry:
+	case SVViewState::PM_EditGeometry:
+	case SVViewState::PM_SiteProperties:
+	case SVViewState::PM_BuildingProperties:
+	case SVViewState::PM_ResultsProperties:
+	case SVViewState::PM_NetworkProperties: {
+		// do we have any selected geometries
+		std::set<const VICUS::Object *> sel;
+		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+		if (sel.empty()) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		}
-
-		case SVViewState::PM_VertexList:
-			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
-
-		case SVViewState::PM_AddSubSurfaceGeometry:
+		else
 			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-			return;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+	}
+
+	case SVViewState::PM_VertexList:
+		vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+
+	case SVViewState::PM_AddSubSurfaceGeometry:
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
 	} // switch
 }
 
