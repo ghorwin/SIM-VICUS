@@ -1117,7 +1117,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 			break;
 		}
 	}
-	if(haveLongWaveEmission)
+	if (haveLongWaveEmission)
 		addViewFactorsToNandradZones(p, roomMappings, componentInstanceMapping, surfaceIdsVicusToNandrad, errorStack);
 
 }
