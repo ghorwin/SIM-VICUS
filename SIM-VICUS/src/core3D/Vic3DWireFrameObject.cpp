@@ -37,6 +37,7 @@
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
 #include "SVSettings.h"
+#include "Vic3DConstants.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DShaderProgram.h"
 #include "qstyle.h"
@@ -181,15 +182,6 @@ void WireFrameObject::updateBuffers() {
 		const VICUS::Drawing::DrawingLayer * drawingLayer = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(o);
 		if (drawingLayer != nullptr) {
 
-			// default line width
-			const double defaultLineWeight = 0.05;
-			// multiplier to apply to width of entities
-			const double defaultLineWeightScaling = 0.015;
-			// multiplier for z-coordinate. Multiplied with the z counter of an entity
-			const double zmultiplier = 0.00005;
-			// default number of lines per circle/ellipse/arc
-			const int n = 50;
-
 			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(drawingLayer->m_parent);
 
 			Q_ASSERT(drawing != nullptr);
@@ -199,10 +191,10 @@ void WireFrameObject::updateBuffers() {
 				if (line.m_parentLayer != drawingLayer)
 					continue;
 
-				double width = defaultLineWeight + line.lineWeight() * defaultLineWeightScaling;
+				double width = DEFAULT_LINE_WEIGHT + line.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING;
 
 				// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
-				double zCoordinate = line.m_zPosition * zmultiplier + drawing->m_origin.m_z;
+				double zCoordinate = line.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z;
 				IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing->m_origin.m_x, line.m_line.m_p1.m_y + drawing->m_origin.m_y, zCoordinate);
 				IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing->m_origin.m_x, line.m_line.m_p2.m_y + drawing->m_origin.m_y, zCoordinate);
 
@@ -215,7 +207,8 @@ void WireFrameObject::updateBuffers() {
 				QVector3D vec2 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
 
 				// call addLine to draw line
-				addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), width, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+				addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing->m_rotationMatrix,
+						width, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			}
 
 			for(const VICUS::Drawing::Point & point : drawing->m_points){
@@ -226,12 +219,12 @@ void WireFrameObject::updateBuffers() {
 				// Create Vector from point, add point of origin to each coordinate and calculate z value
 				IBKMK::Vector3D p(point.m_point.m_x + drawing->m_origin.m_x,
 								  point.m_point.m_y + drawing->m_origin.m_y,
-								  point.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+								  point.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 
 				// scale Vector with selected unit
 				p *= drawing->m_scalingFactor;
 
-				double pointWeight = (defaultLineWeight + point.lineWeight() * defaultLineWeightScaling) / 2;
+				double pointWeight = (DEFAULT_LINE_WEIGHT + point.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
 
 				// rotation
 				QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -261,15 +254,15 @@ void WireFrameObject::updateBuffers() {
 				for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
 					IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing->m_origin.m_x,
 														polyline.m_polyline[i].m_y + drawing->m_origin.m_y,
-														polyline.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+														polyline.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 					p *= drawing->m_scalingFactor;
 
 					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 					polylinePoints.push_back(QVector2IBKVector(vec));
 				}
 
-				addPolyLine(polylinePoints, polyline.m_endConnected,
-							defaultLineWeight + polyline.lineWeight() * defaultLineWeightScaling,
+				addPolyLine(polylinePoints, drawing->m_rotationMatrix, polyline.m_endConnected,
+							DEFAULT_LINE_WEIGHT + polyline.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 							currentVertexIndex, currentElementIndex,
 							m_vertexBufferData,	m_indexBufferData);
 			}
@@ -281,18 +274,18 @@ void WireFrameObject::updateBuffers() {
 
 				std::vector<IBKMK::Vector3D> circlePoints;
 
-				for(int i = 0; i < n; i++){
-					IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * IBK::PI * i / n) + drawing->m_origin.m_x,
-														circle.m_center.m_y + circle.m_radius * sin(2 * IBK::PI * i / n) + drawing->m_origin.m_y,
-														circle.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+				for(int i = 0; i < Vic3D::SEGMENT_COUNT_CIRCLE; i++){
+					IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE) + drawing->m_origin.m_x,
+														circle.m_center.m_y + circle.m_radius * sin(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE) + drawing->m_origin.m_y,
+														circle.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 					p *= drawing->m_scalingFactor;
 
 					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 					circlePoints.push_back(QVector2IBKVector(vec));
 				}
 
-				addPolyLine(circlePoints, true,
-							defaultLineWeight + circle.lineWeight() * defaultLineWeightScaling,
+				addPolyLine(circlePoints, drawing->m_rotationMatrix, true,
+							DEFAULT_LINE_WEIGHT + circle.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 							currentVertexIndex, currentElementIndex,
 							m_vertexBufferData,
 							m_indexBufferData);
@@ -317,21 +310,21 @@ void WireFrameObject::updateBuffers() {
 					angleDifference = endAngle - startAngle;
 
 
-				int toCalcN = (int)(n * (2 * IBK::PI / angleDifference));
+				int toCalcN = (int)(Vic3D::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
 
 				double stepAngle = angleDifference / toCalcN;
 
 				for(int i = 0; i < toCalcN; i++){
 					IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing->m_origin.m_x,
 														arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing->m_origin.m_y,
-														arc.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+														arc.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 					p *= drawing->m_scalingFactor;
 
 					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
 					arcPoints.push_back(QVector2IBKVector(vec));
 				}
 
-				addPolyLine(arcPoints, false, defaultLineWeight + arc.lineWeight() * defaultLineWeightScaling,
+				addPolyLine(arcPoints, drawing->m_rotationMatrix, false, DEFAULT_LINE_WEIGHT + arc.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 							currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 
 			}
@@ -347,7 +340,7 @@ void WireFrameObject::updateBuffers() {
 				double startAngle = ellipse.m_startAngle;
 				double endAngle = ellipse.m_endAngle;
 
-				double angleStep = (endAngle - startAngle) / n;
+				double angleStep = (endAngle - startAngle) / Vic3D::SEGMENT_COUNT_ELLIPSE;
 
 				double majorRadius = sqrt(pow(ellipse.m_majorAxis.m_x, 2) + pow(ellipse.m_majorAxis.m_y, 2));
 				double minorRadius = majorRadius * ellipse.m_ratio;
@@ -356,7 +349,7 @@ void WireFrameObject::updateBuffers() {
 
 				double x, y, rotated_x, rotated_y;
 
-				for (int i = 0; i <= n; i++) {
+				for (unsigned int i = 0; i <= Vic3D::SEGMENT_COUNT_ELLIPSE; i++) {
 
 					double currentAngle = startAngle + i * angleStep;
 
@@ -368,7 +361,7 @@ void WireFrameObject::updateBuffers() {
 
 					IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing->m_origin.m_x,
 														rotated_y + ellipse.m_center.m_y + drawing->m_origin.m_y,
-														ellipse.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+														ellipse.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 					p *= drawing->m_scalingFactor;
 
 					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -376,8 +369,8 @@ void WireFrameObject::updateBuffers() {
 				}
 
 				// Change this line to false, so it doesn't connect the last point to the first point
-				addPolyLine(ellipsePoints, startAngle == endAngle,
-							defaultLineWeight + ellipse.m_lineWeight * defaultLineWeightScaling,
+				addPolyLine(ellipsePoints, drawing->m_rotationMatrix, startAngle == endAngle,
+							DEFAULT_LINE_WEIGHT + ellipse.m_lineWeight * DEFAULT_LINE_WEIGHT_SCALING,
 							currentVertexIndex,
 							currentElementIndex, m_vertexBufferData,
 							m_indexBufferData);
@@ -392,14 +385,14 @@ void WireFrameObject::updateBuffers() {
 
 				IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing->m_origin.m_x,
 													 solid.m_point1.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 				IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing->m_origin.m_x,
 													 solid.m_point2.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * zmultiplier + drawing->m_origin.m_z);
-				/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * zmultiplier + drawing.m_origin.m_z); */
+													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
+				/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * Z_MULTIPLYER + drawing.m_origin.m_z); */
 				IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing->m_origin.m_x,
 													 solid.m_point4.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * zmultiplier + drawing->m_origin.m_z);
+													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
 
 				p1 *= drawing->m_scalingFactor;
 				p2 *= drawing->m_scalingFactor;
