@@ -425,6 +425,7 @@ void CodeGenerator::generateReadWriteCode() {
 				//   unsigned int with special code that INVALID_ID values are not written
 				// - std::string
 				// - QString
+				// - IBKMK::Vector2D
 				// - IBKMK::Vector3D
 				// - IBK::Unit
 				// - IBK::Time
@@ -651,6 +652,11 @@ void CodeGenerator::generateReadWriteCode() {
 						includes.insert("NANDRAD_Utilities.h");
 						// we generate the parent element and afterwards the loop
 						elements += "	NANDRAD::writeVector3D(e, \""+tagName+"\", m_"+varName+");\n";
+					}
+					else if (childType == "IBKMK::Vector2D") {
+						includes.insert("NANDRAD_Utilities.h");
+						// we generate the parent element and afterwards the loop
+						elements += "	NANDRAD::writeVector2D(e, \""+tagName+"\", m_"+varName+");\n";
 					}
 					else {
 						// we generate the parent element and afterwards the loop
@@ -1093,6 +1099,19 @@ void CodeGenerator::generateReadWriteCode() {
 							"			}\n";
 						handledVariables.insert(varName);
 					}
+					else if (xmlInfo.typeStr == "IBKMK::Vector2D") {
+						includes.insert("IBKMK_Vector2D.h");
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
+							"				try {\n"
+							"					m_"+varName+" = IBKMK::Vector2D::fromString(c->GetText());\n"
+							"				} catch (IBK::Exception & ex) {\n"
+							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
+							"										  .arg(\"Invalid vector data.\"), FUNC_ID);\n"
+							"				}\n"
+							"			}\n";
+						handledVariables.insert(varName);
+					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
@@ -1456,6 +1475,12 @@ void CodeGenerator::generateReadWriteCode() {
 							elements +=
 									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 									"				NANDRAD::readVector3D(c, \""+tagName+"\", m_"+varName+");\n";
+						}
+						else if (childType == "IBKMK::Vector2D") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+									"				NANDRAD::readVector2D(c, \""+tagName+"\", m_"+varName+");\n";
 						}
 						else {
 							// *** SPECIAL HANDLING FOR NANDRAD AND VICUS NAMESPACES ***
