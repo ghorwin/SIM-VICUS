@@ -37,7 +37,7 @@ double SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit &
 
 
 SVLcaLccResultsDialog::SVLcaLccResultsDialog(QWidget *parent) :
-	QDialog(parent),
+	QWidget(parent),
 	m_ui(new Ui::SVLcaLccResultsDialog)
 {
 	m_ui->setupUi(this);
@@ -531,7 +531,4 @@ void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetIte
 }
 
 
-void SVLcaLccResultsDialog::on_pushButtonClose_clicked() {
-	accept();
-}
 

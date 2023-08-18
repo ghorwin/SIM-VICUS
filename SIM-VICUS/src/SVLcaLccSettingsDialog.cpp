@@ -35,7 +35,7 @@
 SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 											   VICUS::LcaSettings & lcaSettings,
 											   VICUS::LccSettings & lccSettings) :
-	QDialog(parent),
+	QWidget(parent),
 	m_ui(new Ui::SVLcaLccSettingsDialog),
 	m_lcaSettings(&lcaSettings),
 	m_lccSettings(&lccSettings),

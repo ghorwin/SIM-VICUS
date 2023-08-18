@@ -16,7 +16,7 @@ namespace Ui {
 class SVLcaLccSettingsDialog;
 }
 
-class SVLcaLccSettingsDialog : public QDialog {
+class SVLcaLccSettingsDialog : public QWidget {
 	Q_OBJECT
 
 public:

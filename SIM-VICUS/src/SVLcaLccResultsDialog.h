@@ -118,7 +118,7 @@ namespace Ui {
 class SVLcaLccResultsDialog;
 }
 
-class SVLcaLccResultsDialog : public QDialog {
+class SVLcaLccResultsDialog : public QWidget {
 	Q_OBJECT
 
 	enum Cols {
@@ -189,8 +189,6 @@ private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
 
 	void on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item);
-
-	void on_pushButtonClose_clicked();
 
 private:
 
