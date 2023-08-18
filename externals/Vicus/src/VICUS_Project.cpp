@@ -825,9 +825,58 @@ QString Project::newUniqueSubSurfaceName(const QString & baseName) const {
 }
 
 
+template <typename t>
+void drawingBoundingBox(const VICUS::Drawing &d,
+						const std::vector<t> &drawingObjects,
+						IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues) {
+	// FUNCID(Project::boundingBox);
+
+	// store selected surfaces
+	if (drawingObjects.empty())
+		return;
+
+	// multiplier for z-coordinate. Multiplied with the z counter of an entity
+	const double zmultiplier = 0.00005;
+
+
+	// process all drawings
+	for (const t &drawObj : drawingObjects) {
+		const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(drawObj.m_parentLayer);
+
+		Q_ASSERT(dl != nullptr);
+
+		if (!dl->m_visible)
+			continue;
+
+		for (const IBKMK::Vector2D &p : drawObj.m_points) {
+
+			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
+			double zCoordinate = drawObj.m_zPosition * zmultiplier + d.m_origin.m_z;
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(p.m_x + d.m_origin.m_x,
+												 p.m_y + d.m_origin.m_y,
+												 zCoordinate);
+
+			// scale Vector with selected unit
+			p1 *= d.m_scalingFactor;
+
+			// rotate Vectors
+			QVector3D vec1 = d.m_rotationMatrix.toQuaternion() * QVector3D(p1.m_x, p1.m_y, p1.m_z);
+
+			upperValues.m_x = std::max(upperValues.m_x, (double)vec1.x());
+			upperValues.m_y = std::max(upperValues.m_y, (double)vec1.y());
+			upperValues.m_z = std::max(upperValues.m_z, (double)vec1.z());
+
+			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec1.x());
+			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec1.y());
+			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec1.z());
+		}
+	}
+}
+
+
 IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings,
-									 std::vector<const Surface*> &surfaces,
-									 std::vector<const SubSurface*> &subsurfaces,
+									 const std::vector<const Surface*> &surfaces,
+									 const std::vector<const SubSurface*> &subsurfaces,
 									 IBKMK::Vector3D &center)
 {
 	// NOTE: We do not reuse the other boundingBox() function, because this implementation is much faster.
@@ -841,7 +890,8 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 
 	// process all surfaces
 	for (const VICUS::Surface *s : surfaces ) {
-		if (!s->geometry().polygon3D().isValid()) continue;
+		if (!s->geometry().polygon3D().isValid())
+			continue;
 		// TODO : also skip invisible surfaces?
 		s->geometry().polygon3D().enlargeBoundingBox(lowerValues, upperValues);
 	}
@@ -867,7 +917,15 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 		}
 	}
 
-	drawingBoundingBox(drawings, upperValues, lowerValues);
+	for (const VICUS::Drawing *drawing : drawings) {
+		drawingBoundingBox<VICUS::Drawing::Arc>(*drawing, drawing->m_arcs, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Circle>(*drawing, drawing->m_circles, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Ellipse>(*drawing, drawing->m_ellipses, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Line>(*drawing, drawing->m_lines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::PolyLine>(*drawing, drawing->m_polylines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Point>(*drawing, drawing->m_points, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Solid>(*drawing, drawing->m_solids, upperValues, lowerValues);
+	}
 
 	// center point of bounding box
 	center = 0.5*(lowerValues+upperValues);
@@ -910,64 +968,11 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 		lowerValues.m_z = std::min(lowerValues.m_z, edge->m_node2->m_position.m_z);
 	}
 
-	drawingBoundingBox(drawings, upperValues, lowerValues);
-
 	// center point of bounding box
 	center = 0.5*(lowerValues+upperValues);
 
 	// difference between upper and lower values gives bounding box (dimensions of selected geometry)
 	return (upperValues-lowerValues);
-}
-
-
-void Project::drawingBoundingBox(const std::vector<const Drawing *> &drawings, IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues) {
-	// FUNCID(Project::boundingBox);
-
-	// store selected surfaces
-	if (drawings.empty())
-		return;
-
-	// multiplier for z-coordinate. Multiplied with the z counter of an entity
-	const double zmultiplier = 0.00005;
-
-	// process all drawings
-	for (const VICUS::Drawing *d : drawings ) {
-
-		for (const VICUS::Drawing::Line &line : d->m_lines) {
-			if (!line.m_parentLayer->m_selected)
-				continue;
-
-			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
-			double zCoordinate = line.m_zPosition * zmultiplier + d->m_origin.m_z;
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + d->m_origin.m_x, line.m_line.m_p1.m_y + d->m_origin.m_y, zCoordinate);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + d->m_origin.m_x, line.m_line.m_p2.m_y + d->m_origin.m_y, zCoordinate);
-
-			// scale Vector with selected unit
-			p1 *= d->m_scalingFactor;
-			p2 *= d->m_scalingFactor;
-
-			// rotate Vectors
-			QVector3D vec1 = d->m_rotationMatrix.toQuaternion() * QVector3D(p1.m_x, p1.m_y, p1.m_z);
-			QVector3D vec2 = d->m_rotationMatrix.toQuaternion() * QVector3D(p2.m_x, p2.m_y, p2.m_z);
-
-			upperValues.m_x = std::max(upperValues.m_x, (double)vec1.x());
-			upperValues.m_y = std::max(upperValues.m_y, (double)vec1.y());
-			upperValues.m_z = std::max(upperValues.m_z, (double)vec1.z());
-
-			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec1.x());
-			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec1.y());
-			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec1.z());
-
-			upperValues.m_x = std::max(upperValues.m_x, (double)vec2.x());
-			upperValues.m_y = std::max(upperValues.m_y, (double)vec2.y());
-			upperValues.m_z = std::max(upperValues.m_z, (double)vec2.z());
-
-			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec2.x());
-			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec2.y());
-			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec2.z());
-
-		}
-	}
 }
 
 
