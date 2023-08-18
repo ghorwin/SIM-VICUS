@@ -12,6 +12,8 @@
 #include "SVProjectHandler.h"
 #include <VICUS_utilities.h>
 
+#include "Vic3DConstants.h"
+
 
 SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 	QDialog(parent),
@@ -49,6 +51,11 @@ SVImportDXFDialog::ImportResults SVImportDXFDialog::import(const QString &fname)
 	if (res == QDialog::Rejected)
 		return ImportCancelled;
 
+	if (m_ui->checkBoxMove->isChecked())
+		moveDrawings();
+
+	m_ui->plainTextEditLogWindow->clear();
+
 	return m_returnCode;
 }
 
@@ -79,38 +86,17 @@ void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingOb
 }
 
 void SVImportDXFDialog::moveDrawings() {
-	IBKMK::Vector2D center;
+	IBKMK::Vector3D center;
 
-	for (const VICUS::Drawing::Point &d : m_drawing.m_points)
-		addPoints(center, d);
+	std::vector<const VICUS::Drawing *> drawings;
+	drawings.push_back(&m_drawing);
 
-	for (const VICUS::Drawing::Arc &d : m_drawing.m_arcs)
-		addPoints(center, d);
+	std::vector<const VICUS::Surface*> surfaces;
+	std::vector<const VICUS::SubSurface*> subsurfaces;
 
-	for (const VICUS::Drawing::Circle &d : m_drawing.m_circles)
-		addPoints(center, d);
+	project().boundingBox(drawings, surfaces, subsurfaces, center);
 
-	for (const VICUS::Drawing::Ellipse &d : m_drawing.m_ellipses)
-		addPoints(center, d);
-
-	for (const VICUS::Drawing::Line &d : m_drawing.m_lines)
-		addPoints(center, d);
-
-	for (const VICUS::Drawing::PolyLine &d : m_drawing.m_polylines)
-		addPoints(center, d);
-
-	for (const VICUS::Drawing::Solid &d : m_drawing.m_solids)
-		addPoints(center, d);
-
-	IBKMK::Vector3D p(center.m_x,
-					  center.m_y,
-					  0.0); // we assume always in x-y axis
-
-	// scale Vector with selected unit
-	p *= m_drawing.m_scalingFactor;
-	// rotation
-	QVector3D vec = m_drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-	m_drawing.m_origin = - 1.0 * QVector2IBKVector(vec);
+	m_drawing.m_origin = - 1.0 * center;
 }
 
 const VICUS::Drawing& SVImportDXFDialog::drawing() const {
@@ -163,19 +149,20 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
+		double scalingFactor;
+
 		switch (su) {
 
-		case SU_Meter:		m_drawing.m_scalingFactor = 1;		break;
-		case SU_Decimeter:	m_drawing.m_scalingFactor = 0.1;	break;
-		case SU_Centimeter: m_drawing.m_scalingFactor = 0.01;	break;
-		case SU_Millimeter: m_drawing.m_scalingFactor = 0.001;	break;
+		case SU_Meter:		scalingFactor = 1;		break;
+		case SU_Decimeter:	scalingFactor = 0.1;	break;
+		case SU_Centimeter: scalingFactor = 0.01;	break;
+		case SU_Millimeter: scalingFactor = 0.001;	break;
 
 		case NUM_SU: break; // make compiler happy
 
 		}
 
-		if (m_ui->checkBoxMove)
-			moveDrawings();
+		m_drawing.m_scalingFactor = scalingFactor;
 	}
 	else
 		log += "Import of DXF-File was not successful!";
@@ -340,7 +327,7 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	else
 		newArc.m_color = QColor();
 
-	newArc.m_points.resize(VICUS::SEGMENT_COUNT_ARC);
+	newArc.m_points.resize(Vic3D::SEGMENT_COUNT_ARC);
 
 	double startAngle = newArc.m_startAngle;
 	double endAngle = newArc.m_endAngle;
@@ -352,7 +339,7 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	else
 		angleDifference = endAngle - startAngle;
 
-	unsigned int toCalcN = (int)(VICUS::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
+	unsigned int toCalcN = (int)(Vic3D::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
 	double stepAngle = angleDifference / toCalcN;
 
 	for (unsigned int i = 0; i < toCalcN; i++){
@@ -386,11 +373,11 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 	else
 		newCircle.m_color = QColor();
 
-	newCircle.m_points.resize(VICUS::SEGMENT_COUNT_CIRCLE);
+	newCircle.m_points.resize(Vic3D::SEGMENT_COUNT_CIRCLE);
 
-	for(unsigned int i = 0; i < VICUS::SEGMENT_COUNT_CIRCLE; i++){
-		newCircle.m_points[i] =IBKMK::Vector2D(newCircle.m_center.m_x + newCircle.m_radius * cos(2 * IBK::PI * i / VICUS::SEGMENT_COUNT_CIRCLE),
-											   newCircle.m_center.m_y + newCircle.m_radius * sin(2 * IBK::PI * i / VICUS::SEGMENT_COUNT_CIRCLE));
+	for(unsigned int i = 0; i < Vic3D::SEGMENT_COUNT_CIRCLE; i++){
+		newCircle.m_points[i] =IBKMK::Vector2D(newCircle.m_center.m_x + newCircle.m_radius * cos(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE),
+											   newCircle.m_center.m_y + newCircle.m_radius * sin(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE));
 	}
 
 	m_drawing->m_circles.push_back(newCircle);
@@ -418,7 +405,7 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	double startAngle = newEllipse.m_startAngle;
 	double endAngle = newEllipse.m_endAngle;
 
-	double angleStep = (endAngle - startAngle) / VICUS::SEGMENT_COUNT_ELLIPSE;
+	double angleStep = (endAngle - startAngle) / Vic3D::SEGMENT_COUNT_ELLIPSE;
 
 	double majorRadius = sqrt(pow(newEllipse.m_majorAxis.m_x, 2) + pow(newEllipse.m_majorAxis.m_y, 2));
 	double minorRadius = majorRadius * newEllipse.m_ratio;
@@ -427,9 +414,9 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 
 	double x, y, rotated_x, rotated_y;
 
-	newEllipse.m_points.resize(VICUS::SEGMENT_COUNT_ELLIPSE);
+	newEllipse.m_points.resize(Vic3D::SEGMENT_COUNT_ELLIPSE);
 
-	for (unsigned int i = 0; i <= VICUS::SEGMENT_COUNT_ELLIPSE; i++) {
+	for (unsigned int i = 0; i <= Vic3D::SEGMENT_COUNT_ELLIPSE; i++) {
 
 		double currentAngle = startAngle + i * angleStep;
 
@@ -560,8 +547,47 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 
 }
 
-void DRW_InterfaceImpl::addMText(const DRW_MText& /*data*/){}
-void DRW_InterfaceImpl::addText(const DRW_Text& /*data*/){}
+void DRW_InterfaceImpl::addMText(const DRW_MText& data){
+	if(m_activeBlock != nullptr) return;
+
+	VICUS::Drawing::Text newText;
+	newText.m_text = data.text;
+	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newText.m_zPosition = m_drawing->m_zCounter;
+	m_drawing->m_zCounter++;
+	newText.m_id = (*m_nextId)++;
+	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newText.m_layerName = QString::fromStdString(data.layer);
+
+	/* value 256 means use defaultColor, value 7 is black */
+	if(!(data.color == 256 || data.color == 7))
+		newText.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	else
+		newText.m_color = QColor();
+
+	m_drawing->m_texts.push_back(newText);
+}
+void DRW_InterfaceImpl::addText(const DRW_Text& data){
+
+	if(m_activeBlock != nullptr) return;
+
+	VICUS::Drawing::Text newText;
+	newText.m_text = data.text;
+	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newText.m_zPosition = m_drawing->m_zCounter;
+	m_drawing->m_zCounter++;
+	newText.m_id = (*m_nextId)++;
+	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
+	newText.m_layerName = QString::fromStdString(data.layer);
+
+	/* value 256 means use defaultColor, value 7 is black */
+	if(!(data.color == 256 || data.color == 7))
+		newText.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+	else
+		newText.m_color = QColor();
+
+	m_drawing->m_texts.push_back(newText);
+}
 void DRW_InterfaceImpl::addDimAlign(const DRW_DimAligned */*data*/){}
 void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear */*data*/){}
 void DRW_InterfaceImpl::addDimRadial(const DRW_DimRadial */*data*/){}
