@@ -142,6 +142,8 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditScaleY->installEventFilter(this);
 	m_ui->lineEditScaleZ->installEventFilter(this);
 
+	m_ui->lineEditScaleFactor->installEventFilter(this);
+
 	m_ui->lineEditCopyX->setText( QString("%L1").arg(m_copyTranslationVector.m_x,0,'f',3));
 	m_ui->lineEditCopyY->setText( QString("%L1").arg(m_copyTranslationVector.m_y,0,'f',3));
 	m_ui->lineEditCopyZ->setText( QString("%L1").arg(m_copyTranslationVector.m_z,0,'f',3));
@@ -164,6 +166,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(m_ui->lineEditScaleX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditScaleY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditScaleZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	connect(m_ui->lineEditScaleFactor, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
 	connect(m_ui->lineEditTranslateX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
@@ -433,6 +436,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// process all selected surfaces (not subsurfaces) and flip their normal vectors
 	// this is done directly, without use of apply/cancel buttons
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Drawing>			modifiedDrawings;
 	for (const VICUS::Surface* s : m_selSurfaces) {
 		// create a copy of the surface
 		VICUS::Surface modS(*s);
@@ -443,7 +447,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	if (modifiedSurfaces.empty())
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces, modifiedDrawings );
 	undo->push();
 
 	// also disable apply and cancel buttons
@@ -490,6 +494,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	project().selectObjects(sel, VICUS::Project::SG_All, false, false);
 
 	// we also have to cache all existing names, so we take alle existing objects
+	m_selDrawings.clear();
 	m_selSurfaces.clear();
 	m_selRooms.clear();
 	m_selSubSurfaces.clear();
@@ -500,7 +505,6 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	m_surfNames.clear();
 	m_buildingNames.clear();
 	m_buildingLevelNames.clear();
-
 
 	// process all selected objects and sort them into vectors
 	for (const VICUS::Object * o : sel) {
@@ -540,10 +544,10 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 		if (d != nullptr) {
 			if (d->m_selected && d->m_visible)
 				m_selDrawings.push_back(d);
-			for (const VICUS::Drawing::DrawingLayer &dl : d->m_layers) {
-				if (dl.m_selected && dl.m_visible)
-					m_selDrawings.push_back(d);
-			}
+//			for (const VICUS::Drawing::DrawingLayer &dl : d->m_layers) {
+//				if (dl.m_selected && dl.m_visible)
+//					m_selDrawings.push_back(d);
+//			}
 		}
 	}
 
@@ -578,10 +582,15 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	m_ui->pushButtonCopyBuildingLevel->setEnabled(!m_selBuildingLevels.empty());
 	m_ui->pushButtonCopyBuilding->setEnabled(!m_selBuildings.empty());
 
-	bool noSelection = m_selSurfaces.empty() && m_selSubSurfaces.empty() &&
+	bool noSelection = m_selDrawings.empty() && m_selSurfaces.empty() && m_selSubSurfaces.empty() &&
 			m_selRooms.empty() && m_selBuildingLevels.empty() && m_selBuildings.empty();
 
 	setEnabled(!noSelection);
+
+	if (m_selDrawings.size() == 1)
+		m_ui->lineEditScaleFactor->setValue(m_selDrawings.back()->m_scalingFactor);
+	else
+		m_ui->lineEditScaleFactor->setValue(1.0);
 }
 
 
@@ -811,6 +820,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 		on_lineEditScaleY_editingFinishedSuccessfully();
 	else if (lineEdit == m_ui->lineEditScaleZ)
 		on_lineEditScaleZ_editingFinishedSuccessfully();
+	else if (lineEdit == m_ui->lineEditScaleFactor)
+		;
+		//on_lineEditScale_editingFinishedSuccessfully();
 }
 
 
@@ -1041,6 +1053,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Drawing>			modifiedDrawings;
 	std::set<const VICUS::Surface*>		handledSurfaces;
 
 	// process all selected surfaces
@@ -1222,49 +1235,27 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	}
 
 	for (const VICUS::Drawing *d : m_selDrawings) {
-		if (haveScaling) {
-//			// get the transformation matrix
-//			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
-//			std::vector<IBKMK::Vector3D> verts = poly.vertexes();
-//			for (IBKMK::Vector3D & v : verts) {
-//				v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
-//			}
-//			// reconstruct the polygon with new vertexes
-//			if (!poly.setVertexes(verts)) {
-//				IBK::IBK_Message("Error scaling polygon of surface.", IBK::MSG_WARNING, FUNC_ID);
-//				continue;
-//			}
-//			// now also scale all windows within the polygon
-//			// If the localX and localY vectors would not be normalized, we would already be finished.
-//			// But since we normalize the localX and localY vectors, we need to scale the local subsurface polygon coordinates
-
-//			// simplest way is to get the bounding box (in local coordinates) before the scaling and afterwards
-//			IBKMK::Vector2D lowerValuesOrig, upperValuesOrig;
-//			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
-//			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
-//			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
-
-//			IBKMK::Vector2D diffOrig, diffNew;
-//			diffOrig = upperValuesOrig - lowerValuesOrig;
-//			diffNew =  upperValuesNew  - lowerValuesNew;
-
-//			IBK_ASSERT(std::fabs(diffOrig.m_x) > 1e-4);
-//			IBK_ASSERT(std::fabs(diffOrig.m_y) > 1e-4);
-//			double scaleX = diffNew.m_x/diffOrig.m_x;
-//			double scaleY = diffNew.m_y/diffOrig.m_y;
-
-
+		VICUS::Drawing newDrawing(*d);
+		newDrawing.m_origin += QVector2IBKVector(translation);
+		if (!haveScaling) {
+			// rotation
+			QQuaternion quaternion = rotation * newDrawing.m_rotationMatrix.toQuaternion();
+			newDrawing.m_rotationMatrix.setQuaternion(quaternion);
 		}
+		else {
+			double scaling = m_ui->lineEditScaleFactor->value();
+			newDrawing.m_scalingFactor = scaling;
+		}
+		modifiedDrawings.push_back(newDrawing);
 	}
-
 
 	// TODO : Netzwerk zeugs
 
 	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
+	if (modifiedSurfaces.empty() && modifiedDrawings.empty())
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modifiedSurfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modifiedSurfaces, modifiedDrawings );
 	undo->push();
 
 	// also disable apply and cancel buttons
