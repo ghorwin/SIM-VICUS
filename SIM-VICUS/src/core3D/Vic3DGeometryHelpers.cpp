@@ -31,8 +31,10 @@
 
 #include <QQuaternion>
 
+#include "IBKMK_3DCalculations.h"
 #include "SVSettings.h"
 #include "Vic3DConstants.h"
+#include "qpainterpath.h"
 
 namespace Vic3D {
 
@@ -49,6 +51,9 @@ void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & col,
 {
 	// add vertex data to buffers
 	unsigned int nVertexes = g.m_vertexes.size();
+
+	qDebug() << "Num of vertexes: " << nVertexes;
+
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
@@ -569,7 +574,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0)*radius + trans;//11
 
 	for (unsigned int i=0; i<12; ++i)
-	vertexBufferData[currentVertexIndex+i  ].m_colors = QtExt::QVector3DFromQColor(cols[i]);
+		vertexBufferData[currentVertexIndex+i  ].m_colors = QtExt::QVector3DFromQColor(cols[i]);
 
 	for (unsigned int i=0; i<v0.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
@@ -622,9 +627,9 @@ void addSurface(const VICUS::Surface & s,
 
 
 void addSubSurface(const VICUS::Surface & s, unsigned int subSurfaceIndex,
-				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-				std::vector<GLuint> & indexBufferData)
+				   unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				   std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+				   std::vector<GLuint> & indexBufferData)
 {
 	// skip invalid geometry
 	if (!s.geometry().isValid())
@@ -690,15 +695,15 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 #if 1
 	for (unsigned int i=0; i<3; ++i) {
 		addPlane(VICUS::PlaneTriangulationData(v[(0+i)%8], v[(1+i)%8], v[(5+i)%8]), c,
-			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+				currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 		addPlane(VICUS::PlaneTriangulationData(v[(0+i)%8], v[(5+i)%8], v[(4+i)%8]), c,
-			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+				currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	}
 	// last plane is special
 	addPlane(VICUS::PlaneTriangulationData(v[3], v[0], v[4]), c,
-		currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	addPlane(VICUS::PlaneTriangulationData(v[3], v[4], v[7]), c,
-		currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 
 #else
 
@@ -721,8 +726,9 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 #endif
 }
 
-void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width, const QColor & color,
-			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const VICUS::RotationMatrix &matrix, double width, const QColor & color,
+			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData,
+			 std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
 	// Calculate the line vector and its length
 	IBKMK::Vector3D lineVector = endPoint - startPoint;
 	double length = lineVector.magnitude();
@@ -731,9 +737,13 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 	// Calculate the line width (1 pixel)
 	double halfWidth = width / 2.0;
 
-
 	// Calculate a perpendicular vector for the line width
-	IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+	IBKMK::Vector3D normal(matrix.toQuaternion().toRotationMatrix()(0,2),
+						   matrix.toQuaternion().toRotationMatrix()(1,2),
+						   matrix.toQuaternion().toRotationMatrix()(2,2));
+
+	// calculate perpendicular vector
+	IBKMK::Vector3D perpendicularVector(lineVector.crossProduct(normal));
 	perpendicularVector.normalize();
 	perpendicularVector *= halfWidth;
 
@@ -755,7 +765,7 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 
 }
 
-void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width,
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const VICUS::RotationMatrix &matrix, double width,
 			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData) {
 	// Calculate the line vector and its length
 	IBKMK::Vector3D lineVector = endPoint - startPoint;
@@ -766,7 +776,12 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 	double halfWidth = width / 2.0;
 
 	// Calculate a perpendicular vector for the line width
-	IBKMK::Vector3D perpendicularVector(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+	IBKMK::Vector3D normal(matrix.toQuaternion().toRotationMatrix()(0,2),
+						   matrix.toQuaternion().toRotationMatrix()(1,2),
+						   matrix.toQuaternion().toRotationMatrix()(2,2));
+
+	// calculate perpendicular vector
+	IBKMK::Vector3D perpendicularVector(lineVector.crossProduct(normal));
 	perpendicularVector.normalize();
 	perpendicularVector *= halfWidth;
 
@@ -787,7 +802,10 @@ void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoin
 }
 
 
-void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, const QColor & color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix,
+				 bool connectEndStart, double width, const QColor & color,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData,
+				 std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData) {
 
 	// initialise values
 	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
@@ -810,8 +828,12 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		if(length <= 0)
 			return;
 
+		IBKMK::Vector3D normal(matrix.toQuaternion().toRotationMatrix()(0,2),
+							   matrix.toQuaternion().toRotationMatrix()(1,2),
+							   matrix.toQuaternion().toRotationMatrix()(2,2));
+
 		// calculate perpendicular vector
-		perpendicularVector = IBKMK::Vector3D(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+		perpendicularVector = lineVector.crossProduct(normal);
 		perpendicularVector.normalize();
 		perpendicularVector *= halfWidth;
 
@@ -838,20 +860,20 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		if(crossProduct.m_z < -1e-10){
 			// line is left
 			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), color, currentVertexIndex, currentElementIndex,
-					 vertexBufferData, colorBufferData, indexBufferData, false);
+					vertexBufferData, colorBufferData, indexBufferData, false);
 			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), color, currentVertexIndex, currentElementIndex,
-					 vertexBufferData, colorBufferData, indexBufferData, true);
+					vertexBufferData, colorBufferData, indexBufferData, true);
 
 		}
 		else if(crossProduct.m_z > 1e-10){
 			// line is right
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), color, currentVertexIndex, currentElementIndex,
-					 vertexBufferData, colorBufferData, indexBufferData, false);
+					vertexBufferData, colorBufferData, indexBufferData, false);
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), color, currentVertexIndex, currentElementIndex,
-					 vertexBufferData, colorBufferData, indexBufferData, true);
+					vertexBufferData, colorBufferData, indexBufferData, true);
 		}
 		else {
-			// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
+			// if z coordinate of cross product is 0, lines are parallel, no triangle needed (would crash anyway)
 			previousVector = lineVector;
 			previousVertices = lineVertices;
 			return;
@@ -876,7 +898,8 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 }
 
 
-void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData) {
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix &matrix, bool connectEndStart, double width,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData) {
 
 	// initialise values
 	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
@@ -899,8 +922,12 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		if(length <= 0)
 			return;
 
+		IBKMK::Vector3D normal(matrix.toQuaternion().toRotationMatrix()(0,2),
+							   matrix.toQuaternion().toRotationMatrix()(1,2),
+							   matrix.toQuaternion().toRotationMatrix()(2,2));
+
 		// calculate perpendicular vector
-		perpendicularVector = IBKMK::Vector3D(-lineVector.m_y, lineVector.m_x, lineVector.m_z);
+		perpendicularVector = lineVector.crossProduct(normal);
 		perpendicularVector.normalize();
 		perpendicularVector *= halfWidth;
 
@@ -927,17 +954,17 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		if(crossProduct.m_z < -1e-10){
 			// line is left
 			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), currentVertexIndex, currentElementIndex,
-					 vertexBufferData, indexBufferData);
+					vertexBufferData, indexBufferData);
 			addPlane(VICUS::PlaneTriangulationData(previousVertices[1], startPoint, lineVertices[0]), currentVertexIndex, currentElementIndex,
-					 vertexBufferData, indexBufferData);
+					vertexBufferData, indexBufferData);
 
 		}
 		else if(crossProduct.m_z > 1e-10){
 			// line is right
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), currentVertexIndex, currentElementIndex,
-					 vertexBufferData, indexBufferData);
+					vertexBufferData, indexBufferData);
 			addPlane(VICUS::PlaneTriangulationData(lineVertices[3], previousVertices[2], startPoint), currentVertexIndex, currentElementIndex,
-					 vertexBufferData, indexBufferData);
+					vertexBufferData, indexBufferData);
 		}
 		else {
 			// if z coordinate of cross product is 0 lines are parallel, no triangle needed (would crash anyway)
@@ -961,6 +988,94 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndS
 		unsigned int lastIndex = polyline.size() - 1;
 		processSegment(polyline[lastIndex], polyline[0]);
 		processSegment(polyline[0], polyline[1]);
+	}
+}
+
+bool isClockwise(const QPolygonF& polygon) {
+	double sum = 0.0;
+	for (int i = 0; i < polygon.count(); i++) {
+		QPointF p1 = polygon[i];
+		QPointF p2 = polygon[(i + 1) % polygon.count()]; // next point
+		sum += (p2.x() - p1.x()) * (p2.y() + p1.y());
+	}
+	return sum > 0.0;
+}
+
+void addText(const std::string &text, Qt::Alignment alignment, const unsigned int &textSize, const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
+			 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, const QColor &color,
+			 unsigned int &currentVertexIndex, unsigned int &currentElementIndex, std::vector<Vertex> &vertexBufferData,  std::vector<ColorRGBA> & colorBufferData,
+			 std::vector<GLuint> &indexBufferData) {
+
+	QFont font("Arial", textSize);
+
+	// Create a QPainterPath object
+	QPainterPath path;
+	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
+
+	QColor newColor = color;
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		qDebug() << "Lightness: " << color.lightness();
+		if (color.lightness() < 20)
+			newColor = Qt::white;
+	}
+
+	// Extract polygons from the path
+	QList<QPolygonF> polygons = path.toSubpathPolygons();
+
+	std::vector<VICUS::PlaneGeometry> planeGeometries;
+	for (int i=0; i < polygons.size(); ++i) {
+
+		const QPolygonF &polygon = polygons[i];
+
+		std::vector<IBKMK::Vector3D> poly(polygon.size());
+
+		for (unsigned int i=0; i<poly.size(); ++i) {
+			const QPointF &point = polygon[i];
+			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
+			IBKMK::Vector3D v3D = IBKMK::Vector3D( point.x() + basePoint.m_x + origin.m_x,
+												  -point.y() + basePoint.m_y + origin.m_y,
+												   zScale);
+
+			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
+			qV3D *= scalingFactor;
+
+			poly[i] = QVector2IBKVector(qV3D);
+		}
+
+		IBKMK::Polygon3D poly3D(poly);
+
+		if ( planeGeometries.size() > 0 && isClockwise(polygon) ) {
+			/// We need to use the hole triangulation of the plane geometry
+			/// in order to add holes to the letters. We now just assume, that
+			/// if the polygon is clockwise we have a hole and a parent plane geometry
+			/// we convert the coordinates back to plane coordinates
+			std::vector<IBKMK::Vector3D> verts = poly3D.vertexes();
+			std::vector<IBKMK::Vector2D> verts2D(poly3D.vertexes().size());
+
+			const IBKMK::Vector3D &offset = planeGeometries.back().offset();
+			const IBKMK::Vector3D &localX = planeGeometries.back().localX();
+			const IBKMK::Vector3D &localY = planeGeometries.back().localY();
+
+			for (unsigned int i=0; i<verts.size(); ++i) {
+				const IBKMK::Vector3D v3D = verts[i];
+				IBKMK::planeCoordinates(offset, localX, localY, v3D, verts2D[i].m_x, verts2D[i].m_y);
+			}
+
+			const std::vector<VICUS::PlaneGeometry::Hole> &holes = planeGeometries.back().holes();
+			const_cast<std::vector<VICUS::PlaneGeometry::Hole> &>(holes).push_back(
+						VICUS::PlaneGeometry::Hole(VICUS::INVALID_ID, verts2D, false));
+			planeGeometries.back().setHoles(holes);
+		}
+		else
+			planeGeometries.push_back(VICUS::PlaneGeometry(poly3D));
+	}
+
+	for (const VICUS::PlaneGeometry &plane : planeGeometries) {
+		addPlane(plane.triangulationData(), newColor, currentVertexIndex, currentElementIndex,
+				 vertexBufferData, colorBufferData, indexBufferData, true);
+
+		addPlane(plane.triangulationData(), newColor, currentVertexIndex, currentElementIndex,
+				 vertexBufferData, colorBufferData, indexBufferData, false);
 	}
 }
 

@@ -30,6 +30,7 @@
 #include <VICUS_NetworkEdge.h>
 #include <vector>
 #include "Vic3DVertex.h"
+#include <VICUS_RotationMatrix.h>
 #include <qopengl.h>
 
 namespace Vic3D {
@@ -156,12 +157,12 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex,
 				  std::vector<ColorRGBA> & colorBufferData);
 
 /*! This function adds a line using addBox */
-void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width, const QColor & color,
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const VICUS::RotationMatrix &matrix, double width, const QColor & color,
 			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! Add Line for wireframe object. */
-void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, double width,
+void addLine(const IBKMK::Vector3D & startPoint, const IBKMK::Vector3D & endPoint, const VICUS::RotationMatrix &matrix, double width,
 			 unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData,
 			 std::vector<GLuint> & indexBufferData);
 
@@ -171,13 +172,19 @@ void addPoint(const IBKMK::Vector3D &point, float width, const QColor &color,
 			  std::vector<Vertex> &vertexBufferData, std::vector<ColorRGBA> &colorBufferData,
 			  std::vector<GLuint> &indexBufferData);
 
-void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, const QColor & color,
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix, bool connectEndStart, double width, const QColor & color,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 				 std::vector<GLuint> & indexBufferData);
 
-void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, bool connectEndStart, double width, unsigned int & currentVertexIndex,
+void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix, bool connectEndStart, double width, unsigned int & currentVertexIndex,
 				 unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
+
+
+void addText(const std::string & text, Qt::Alignment alignment, const unsigned int &textSize, const VICUS::RotationMatrix & matrix, const IBKMK::Vector3D &origin, const IBKMK::Vector2D &basePoint,
+			 double scalingFactor, double zScale, const QColor &color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData,
+			 std::vector<ColorRGBA> &colorBufferData, std::vector<GLuint> & indexBufferData);
+
 
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::NetworkNode & n,
