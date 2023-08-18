@@ -726,8 +726,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			newSurf.setChildAndSubSurfaces(subSurfs, childs);
 			modSurfaces.push_back(newSurf);
 
+			std::vector<VICUS::Drawing>			modifiedDrawings;
 			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surface/window"),
-				modSurfaces, &subSurfaceComponentInstances);
+				modSurfaces, modifiedDrawings, &subSurfaceComponentInstances);
 			undo->push();
 		}
 		else {
