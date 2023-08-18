@@ -244,7 +244,7 @@ void SVDatabase::writeDatabases(DatabaseTypes t) const {
 		m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
-	if (t == NUM_DT || t == DT_EPD)
+	if (t == NUM_DT || t == DT_EpdDatasets)
 		m_epdDatasets.writeXML(			userDbDir / "db_epdDatasets.xml", "EpdDatasets");
 
 
