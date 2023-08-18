@@ -166,7 +166,10 @@ void SVSimulationShadingOptions::onModified(int modificationType, ModificationIn
 
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
-		case SVProjectHandler::AllModified: {
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::ClimateLocationModified:
+		case SVProjectHandler::ClimateLocationAndFileModified:
+		case SVProjectHandler::SolverParametersModified: {
 			updateUi();
 		} break;
 		default:;
@@ -229,6 +232,7 @@ void SVSimulationShadingOptions::updateUi() {
 										   "a valid climate data file and/or building location.</span>").arg(errorColor) );
 		return;
 	}
+
 	// we need longitude and latitude
 	m_longitudeInDeg = loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg");
 	m_latitudeInDeg = loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg");
@@ -245,7 +249,7 @@ void SVSimulationShadingOptions::updateUi() {
 }
 
 
-void SVSimulationShadingOptions::updateSimulationParameters(const DetailType & dt) {
+void SVSimulationShadingOptions::updateDefaultShadingSimulationParameters(const DetailType & dt) {
 
 	m_ui->lineEditSunCone->setReadOnly(true);
 	m_ui->lineEditGridSize->setReadOnly(true);
@@ -791,7 +795,7 @@ void SVSimulationShadingOptions::on_comboBoxCalculationMethod_activated(int /*in
 
 void SVSimulationShadingOptions::on_comboBoxPresets_activated(int /*index*/) {
 	DetailType detailType = (DetailType)m_ui->comboBoxPresets->currentData().toUInt();
-	updateSimulationParameters(detailType);
+	updateDefaultShadingSimulationParameters(detailType);
 }
 
 

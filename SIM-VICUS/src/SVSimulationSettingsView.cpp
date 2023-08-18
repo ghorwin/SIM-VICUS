@@ -25,7 +25,7 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	addCustomWidgetToListWidget(tr(" Climate & Location"), ":/gfx/actions/32x32/CCMEditor_32.png");
 	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/copy_building.png");
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/32x32/sim_start.png");
-	addCustomWidgetToListWidget(tr(" Life Cycle Analysis"), ":/gfx/actions/leaf.png");
+	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
 
 	QFont fnt;
 	fnt.setPixelSize(14);

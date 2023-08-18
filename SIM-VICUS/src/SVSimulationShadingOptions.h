@@ -130,9 +130,11 @@ private:
 	void calculateShadingFactors();
 
 	/*! Sets the simulation parameters grid size and cone deg */
-	void updateSimulationParameters(const DetailType &dt);
+	void updateDefaultShadingSimulationParameters(const DetailType &dt);
 
 	void updatePreviousSimulationFileValues();
+
+	void updateLocationAndTime();
 
 
 	Ui::SVSimulationShadingOptions			*m_ui;								///< pointer to UI

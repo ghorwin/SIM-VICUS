@@ -105,6 +105,11 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	m_ui->comboBoxAlbedo->setCompleter(nullptr); // no auto-completion, otherwise we have text in a value-only combo box
 	m_ui->comboBoxAlbedo->blockSignals(false);
 
+	// setup and connect combobox
+	m_ui->comboBoxAlbedo->setup(0, 1, tr("Albedo of ambient ground surface"), false, true);
+	connect(m_ui->comboBoxAlbedo, &QtExt::ValueInputComboBox::editingFinishedSuccessfully,
+			this, &SVSimulationLocationOptions::on_comboboxAlbedoEditingFinishedSuccessfully);
+
 	m_ui->filepathClimateDataFile->setup("", true, true, tr("Climate data container files (*.c6b *.epw *.wac *dat);;All files (*.*)"),
 										 SVSettings::instance().m_dontUseNativeDialogs);
 
@@ -171,7 +176,13 @@ void SVSimulationLocationOptions::updateUi(bool updatingPlotsRequired) {
 			break;
 		}
 	}
-	m_ui->comboBoxAlbedo->setCurrentIndex(index);
+	m_ui->comboBoxAlbedo->blockSignals(true);
+	if (index>-1)
+		m_ui->comboBoxAlbedo->setCurrentIndex(index);
+	else
+		m_ui->comboBoxAlbedo->setValue(albedo);
+	m_ui->comboBoxAlbedo->blockSignals(false);
+
 
 	// if no location: clear and return
 	if (climateInfoPtr == nullptr) {
@@ -473,6 +484,8 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 
 			// The following update needs to be done only when the project has changed
 
+			m_ui->filepathClimateDataFile->setFilename("");
+
 			bool climateFromDB;
 			m_ui->radioButtonCustomFilePath->blockSignals(true);
 			const VICUS::Project &p = project();
@@ -502,7 +515,6 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 				climateFromDB = idx.isValid();
 				if (climateFromDB) {
 					m_ui->radioButtonCustomFilePath->setChecked(false);
-					m_ui->filepathClimateDataFile->setFilename("");
 
 					// convert to proxy-index
 					QModelIndex proxy = m_filterModel->mapFromSource(idx);
@@ -557,7 +569,7 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 		} break;
 
 		// in case just the location was modified, only update ui
-		case SVProjectHandler::ClimateFileModified: {
+		case SVProjectHandler::ClimateLocationAndFileModified: {
 			updateUi(true);
 		} break;
 
@@ -740,7 +752,9 @@ void SVSimulationLocationOptions::on_comboBoxTimeZone_activated(int /*index*/) {
 }
 
 
-void SVSimulationLocationOptions::on_comboBoxAlbedo_activated(int /*index*/) {
+void SVSimulationLocationOptions::on_comboboxAlbedoEditingFinishedSuccessfully() {
+	double val = m_ui->comboBoxAlbedo->currentData().toDouble();
+	m_ui->comboBoxAlbedo->setValue(val);
 	NANDRAD::Location location = project().m_location;
 	NANDRAD::KeywordList::setParameter(location.m_para, "Location::para_t",
 									   NANDRAD::Location::P_Albedo, m_ui->comboBoxAlbedo->currentData().toDouble()*100);

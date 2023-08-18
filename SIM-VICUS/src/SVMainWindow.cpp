@@ -1586,24 +1586,14 @@ void SVMainWindow::updateMainView() {
 			m_ui->actionGeometryView->setChecked(true);
 			m_geometryViewSplitter->setVisible(true);
 			m_simulationSettingsView->setVisible(false);
+			m_geometryView->setFocus();
 		} break;
 		case MV_SimulationView: {
 			m_ui->actionSimulationSettings->setChecked(true);
 			m_geometryViewSplitter->setVisible(false);
 			m_simulationSettingsView->setVisible(true);
 		} break;
-
 	}
-
-	else {
-		m_ui->toolBar->setVisible(false);
-		m_ui->toolBar->toggleViewAction()->setEnabled(false);
-		m_logDockWidget->setVisible(false);
-		m_logDockWidget->toggleViewAction()->setEnabled(false);
-	}
-
-	// also update window caption and status bar
-	if (have_project) {
 }
 
 

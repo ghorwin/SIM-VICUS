@@ -20,7 +20,7 @@ void SVUndoModifyClimate::undo() {
 
 	// tell project that the climate has changed
 	if (m_climateFileModified)
-		SVProjectHandler::instance().setModified( SVProjectHandler::ClimateFileModified);
+		SVProjectHandler::instance().setModified( SVProjectHandler::ClimateLocationAndFileModified);
 	else
 		SVProjectHandler::instance().setModified( SVProjectHandler::ClimateLocationModified);
 }

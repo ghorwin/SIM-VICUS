@@ -75,7 +75,7 @@ private slots:
 
 	void on_comboBoxTimeZone_activated(int);
 
-	void on_comboBoxAlbedo_activated(int);
+	void on_comboboxAlbedoEditingFinishedSuccessfully();
 
 	void on_tableViewClimateFiles_clicked(const QModelIndex &index);
 

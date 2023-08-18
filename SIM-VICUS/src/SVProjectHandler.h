@@ -66,7 +66,7 @@ public:
 		/*! Used when a climate location parameter (longitude, latitude, timezone) has changed. */
 		ClimateLocationModified,
 		/*! Used when a climate file path has changed. */
-		ClimateFileModified,
+		ClimateLocationAndFileModified,
 		/*! Used when outouts have been changed. */
 		OutputsModified,
 		/*! Grid properties changed. */
