@@ -85,6 +85,8 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	void updateLcaTable();
+
 	Ui::SVDBComponentEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */

@@ -27,7 +27,7 @@
 #define SVLCAH
 
 #include <VICUS_Building.h>
-#include <VICUS_EPDDataset.h>
+#include <VICUS_EpdDataset.h>
 
 
 namespace SV {
@@ -41,37 +41,38 @@ public:
 	// cat set A - D with the results for this specific construction not multiplied by surface area
 	struct LCAComponentResult{
 
-		/*! adds all calculated parametervalus to the component (if called in combination with comp)
+		/*!
+			adds all calculated parametervalus to the component (if called in combination with comp)
 			depending on the category of the lifecycle.
 		*/
-		void addValue(unsigned int catIdx, VICUS::EPDDataset::para_t paraIdx, const IBK::Parameter &para){
-			switch (catIdx) {
-				case 0:
-					m_epdA.m_para[paraIdx].set(para.name, m_epdA.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 1:
-					m_epdB.m_para[paraIdx].set(para.name, m_epdB.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 2:
-					m_epdC.m_para[paraIdx].set(para.name, m_epdC.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				case 3:
-					m_epdD.m_para[paraIdx].set(para.name, m_epdD.m_para[paraIdx].get_value(para.unit())
-											   + para.get_value(para.unit()), para.unit());
-					break;
-				default:
-					break;
-			}
-		}
+//		void addValue(unsigned int catIdx, VICUS::EpdDataset::para_t paraIdx, const IBK::Parameter &para){
+//			switch (catIdx) {
+//				case 0:
+//					m_epdA.m_para[paraIdx].set(para.name, m_epdA.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 1:
+//					m_epdB.m_para[paraIdx].set(para.name, m_epdB.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 2:
+//					m_epdC.m_para[paraIdx].set(para.name, m_epdC.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				case 3:
+//					m_epdD.m_para[paraIdx].set(para.name, m_epdD.m_para[paraIdx].get_value(para.unit())
+//											   + para.get_value(para.unit()), para.unit());
+//					break;
+//				default:
+//					break;
+//			}
+//		}
 
 
-		VICUS::EPDDataset m_epdA;
-		VICUS::EPDDataset m_epdB;
-		VICUS::EPDDataset m_epdC;
-		VICUS::EPDDataset m_epdD;		// user epd of the specific construction
+		VICUS::EpdDataset m_epdA;
+		VICUS::EpdDataset m_epdB;
+		VICUS::EpdDataset m_epdC;
+		VICUS::EpdDataset m_epdD;		// user epd of the specific construction
 		 double									m_area;				// in m2
 	};
 
@@ -94,7 +95,7 @@ public:
 
 	/*! EPD results for
 		//for-Schleife über alle Materialienhole building. */
-	//VICUS::EPDCategroySet					m_results;							// XML:E
+	//VICUS::EPDCategorySet					m_results;							// XML:E
 
 	/*! the factor 1.2 is according to the use of simplified procedure. */
 	double									m_adjustment = 1.2;					// XML:E

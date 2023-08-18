@@ -61,10 +61,21 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
-				if (p.name == "Thickness") {
-					m_thickness = p; success = true;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("MaterialLayer::para_t", p.name);
+					m_para[ptype] = p; success = true;
 				}
-				if (!success) {
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				NANDRAD::readIntParaElement(c, p);
+				bool success = false;
+				if (p.name == "Cost") {
+					m_cost = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -89,9 +100,15 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 
 	if (m_idMaterial != VICUS::INVALID_ID)
 		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
-	if (!m_thickness.name.empty()) {
-		IBK_ASSERT("Thickness" == m_thickness.name);
-		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value(m_thickness.IO_unit));
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
+		}
+	}
+	if (!m_cost.name.empty()) {
+		IBK_ASSERT("Cost" == m_cost.name);
+		TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", "Cost", IBK::val2string(m_cost.value));
 	}
 	return e;
 }

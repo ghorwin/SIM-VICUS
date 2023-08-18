@@ -40,7 +40,7 @@ bool MaterialLayer::isValid(const VICUS::Database<VICUS::Material> & materials) 
 	}
 
 	try {
-		m_thickness.checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), false,
+		m_para[P_Thickness].checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), false,
 								 "Thickness > 0 is required.");
 	} catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();

@@ -535,7 +535,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			const VICUS::Construction *construction = db.m_constructions[comp->m_idConstruction];
 			for (const VICUS::MaterialLayer & layer : construction->m_materialLayers) {
 				// add all the thicknesses of the different MaterialLayers in meters
-				totalThickness += layer.m_thickness.get_value("m");
+				totalThickness += layer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m");
 			}
 
 			// modify the surface by extruding all surface vertexes
@@ -650,7 +650,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 				const VICUS::Construction * construction = db.m_constructions[comp->m_idConstruction];
 				for (const VICUS::MaterialLayer & layer : construction->m_materialLayers) {
 					// add all the thicknesses of the different MaterialLayers in meters
-					totalThickness += layer.m_thickness.get_value("m");
+					totalThickness += layer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m");
 				}
 
 				// extrude the window vertexes by half of the total thickness

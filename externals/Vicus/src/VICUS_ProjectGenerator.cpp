@@ -2749,7 +2749,7 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 			for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
 				NANDRAD::MaterialLayer mlayer;
 				mlayer.m_matId = ml.m_idMaterial;
-				mlayer.m_thickness = ml.m_thickness.value;
+				mlayer.m_thickness = ml.m_para[MaterialLayer::P_Thickness].value;
 				conType.m_materialLayers.push_back(mlayer);
 			}
 			if(actLayer.m_activeLayers[i] != -1)

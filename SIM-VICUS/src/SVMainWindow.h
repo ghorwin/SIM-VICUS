@@ -60,6 +60,7 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
+class SVLcaLccSettingsDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -136,6 +137,8 @@ public:
 
 	/*! Returns the material edit dialog. */
 	SVDatabaseEditDialog * dbMaterialEditDialog();
+	/*! Returns the EPD edit dialog. */
+	SVDatabaseEditDialog * dbEpdEditDialog();
 	/*! Returns the construction edit dialog. */
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
@@ -293,6 +296,7 @@ private slots:
 	void on_actionEditCleanProject_triggered();
 	void on_actionEditApplicationLog_triggered();
 
+	void on_actionDBEpdElements_triggered();
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
 	void on_actionDBWindowGlazingSystems_triggered();
@@ -362,6 +366,7 @@ private slots:
 
 	void on_actionExportNetworkAsGeoJSON_triggered();
 
+
 	void on_actionGeometryView_triggered();
 
 	void on_actionSimulationSettings_triggered();
@@ -369,6 +374,9 @@ private slots:
 	void on_actionOpenPostProcessing_triggered();
 
 	void onShortCutStartSimulation();
+
+	void on_actionLccLcaAnalysis_triggered();
+
 
 private:
 
@@ -511,9 +519,10 @@ private:
 	SVPostProcHandler			*m_postProcHandler										= nullptr;
 
 	/*! Central handler for the user interface state. */
-	SVViewStateHandler			*m_viewStateHandler										= nullptr;
+	SVViewStateHandler					*m_viewStateHandler								= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbEpdEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
@@ -547,7 +556,9 @@ private:
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
 
 	/*! Timer for auto-save periods. */
-	QTimer								*m_autoSaveTimer = nullptr;
+	QTimer								*m_autoSaveTimer 								= nullptr;
+
+	SVLcaLccSettingsDialog				*m_lcaLccSettingsDialog							= nullptr;
 
 	friend class SVThreadBase;
 };

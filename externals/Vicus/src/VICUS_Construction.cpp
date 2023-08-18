@@ -53,7 +53,7 @@ bool Construction::calculateUValue(double & UValue, const VICUS::Database<Materi
 		double lambda, thickness;
 		if ( (lambda = mat->m_para[Material::P_Conductivity].value) <= 0)
 			return false; // error, invalid lambda
-		if ( (thickness = m_materialLayers[i].m_thickness.value) <= 0)
+		if ( (thickness = m_materialLayers[i].m_para[MaterialLayer::P_Thickness].value) <= 0)
 			return false; // error, invalid layer thickness
 		R += thickness/lambda;
 	}

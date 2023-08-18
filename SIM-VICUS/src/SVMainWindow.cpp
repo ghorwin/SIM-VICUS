@@ -24,6 +24,7 @@
 */
 
 #include "SVMainWindow.h"
+#include "SVLcaLccSettingsDialog.h"
 #include "ui_SVMainWindow.h"
 
 #include <QCloseEvent>
@@ -95,6 +96,7 @@
 #include "SVNotesDialog.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
+#include "SVLcaLccResultsDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -262,6 +264,13 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 		m_dbMaterialEditDialog = SVDatabaseEditDialog::createMaterialEditDialog(this);
 	}
 	return m_dbMaterialEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbEpdEditDialog() {
+	if (m_dbEpdEditDialog == nullptr) {
+		m_dbEpdEditDialog = SVDatabaseEditDialog::createEpdEditDialog(this);
+	}
+	return m_dbEpdEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
@@ -2152,74 +2161,25 @@ static bool copyRecursively(const QString &srcFilePath,
 	return true;
 }
 
-
-void SVMainWindow::on_actionOpenPostProcessing_triggered() {
-	// configure PostProc session, save parallel to project and open session in post
-
-	if (SVSettings::instance().m_postProcExecutable.isEmpty() ||
-			!QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
-	{
-		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
-																	 "post processing in the preferences dialog!"));
-		// spawn preferences dialog
-		preferencesDialog()->edit(0);
-		// still not postproc selected?
-		if (SVSettings::instance().m_postProcExecutable.isEmpty() || !QFileInfo::exists(SVSettings::instance().m_postProcExecutable))
-			return;
-	}
-	// if we are using the new post-processing, generate a session file:
-	if (QFileInfo(SVSettings::instance().m_postProcExecutable).baseName() == "PostProcApp") {
-
-		QString sessionFile;
-		if (m_projectHandler.isValid()) {
-			IBK::Path sessionFilePath = SVPostProcBindings::defaultSessionFilePath(m_projectHandler.projectFile());
-			if(sessionFilePath.isValid()) {
-				if (!sessionFilePath.exists())
-					SVPostProcBindings::generateDefaultSessionFile(m_projectHandler.projectFile());
-				sessionFile = QString::fromStdString(sessionFilePath.str());
-			}
-			// some session files exist in project directory - look for the right one
-			else {
-				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
-														   QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-														   QString("*.p2"), nullptr,
-														   SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
-			}
-		}
-
-		// check, if already an instance of PostProc is running
-		int res = m_postProcHandler->reopenIfActive();
-		if (res != 0) {
-			// try to spawn new postprocessing
-			if (!m_postProcHandler->spawnPostProc(sessionFile.toStdString())) {
-				QMessageBox::critical(this, tr("Error running PostProc"),
-									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
-				return;
-			}
-		}
-#if !defined(Q_OS_WIN)
-		else {
-			QMessageBox::information(this, tr("Error running PostProc"),
-									 tr("Process already running."));
-		}
-#endif
-	}
-	else {
-		// check, if already an instance of PostProc is running
-		int res = m_postProcHandler->reopenIfActive();
-		if (res != 0) {
-			if (!m_postProcHandler->spawnPostProc(std::string())) {
-				QMessageBox::critical(this, tr("Error running PostProc"),
-									  tr("Could not start executable '%1'.").arg(SVSettings::instance().m_postProcExecutable));
-				return;
-			}
-		}
-	}
-}
-
-
 void SVMainWindow::onShortCutStartSimulation() {
 	on_actionSimulationSettings_triggered();
 	m_simulationSettingsView->setCurrentPage(2); // page 2 is simulation start
+}
+
+
+void SVMainWindow::on_actionDBEpdElements_triggered() {
+	dbEpdEditDialog()->edit();
+}
+
+
+
+void SVMainWindow::on_actionLccLcaAnalysis_triggered() {
+	VICUS::Project &prj = const_cast<VICUS::Project&>(SVProjectHandler::instance().project());
+
+	if(m_lcaLccSettingsDialog == nullptr)
+		m_lcaLccSettingsDialog = new SVLcaLccSettingsDialog(this, prj.m_lcaSettings, prj.m_lccSettings);
+
+	m_lcaLccSettingsDialog->exec();
+
 }
 

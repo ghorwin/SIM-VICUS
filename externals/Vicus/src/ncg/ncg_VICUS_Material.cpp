@@ -85,8 +85,6 @@ void Material::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "IdEpds")
-				NANDRAD::readVector(c, "IdEpds", m_idEpds);
 			else if (cName == "Category") {
 				try {
 					m_category = (Category)KeywordList::Enumeration("Material::Category", c->GetText());
@@ -96,6 +94,8 @@ void Material::readXML(const TiXmlElement * element) {
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
+			else if (cName == "EpdCategorySet")
+				m_epdCategorySet.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -136,7 +136,8 @@ TiXmlElement * Material::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
 		}
 	}
-	NANDRAD::writeVector(e, "IdEpds", m_idEpds);
+
+	m_epdCategorySet.writeXML(e);
 	return e;
 }
 
