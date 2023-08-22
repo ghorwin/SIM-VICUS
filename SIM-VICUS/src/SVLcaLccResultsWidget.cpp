@@ -1,4 +1,4 @@
-#include "SVLcaLccResultsDialog.h"
+#include "SVLcaLccResultsWidget.h"
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 #include "QtExt_Conversions.h"

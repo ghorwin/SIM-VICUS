@@ -4,7 +4,7 @@
 
 #include <QWidget>
 
-#include "SVLcaLccResultsDialog.h"
+#include "SVLcaLccResultsWidget.h"
 
 #include <SVSettings.h>
 
@@ -12,11 +12,14 @@
 #include <VICUS_LccSettings.h>
 #include <VICUS_Project.h>
 
+
+class ModificationInfo;
+
 namespace Ui {
 class SVLcaLccSettingsDialog;
 }
 
-class SVLcaLccSettingsDialog : public QWidget {
+class SVLcaLccSettingsWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -100,8 +103,8 @@ public:
 		ColA2WDP,
 	};
 
-	SVLcaLccSettingsDialog(QWidget *parent, VICUS::LcaSettings & lcaSettings, VICUS::LccSettings & lccSettings);
-	~SVLcaLccSettingsDialog();
+	SVLcaLccSettingsWidget(QWidget *parent);
+	~SVLcaLccSettingsWidget();
 
 	void calculateLCA();
 
@@ -111,6 +114,9 @@ public:
 	void updateUi();
 
 private slots:
+
+	void onModified(int modificationType, ModificationInfo */*data*/);
+
 	void on_pushButtonImportOkoebaudat_clicked();
 
 
@@ -119,12 +125,9 @@ private slots:
 	*/
 	void setModuleState(int state);
 
-
 	void on_comboBoxCalculationMode_currentIndexChanged(int index);
 
 	void on_comboBoxCertificationSystem_currentIndexChanged(int index);
-
-
 
 	void on_pushButtonAreaDetection_clicked();
 
@@ -196,17 +199,8 @@ private:
 	template<typename T>
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
-	/*! Returns the pointer to the Results Dialog. */
-	SVLcaLccResultsDialog								*lcaResultsDialog();
-
 	/*! Pointer to Ui */
 	Ui::SVLcaLccSettingsDialog							*m_ui;
-
-	/*! Pointer to LCA Settings. */
-	const VICUS::LcaSettings							*m_lcaSettings = nullptr;
-
-	/*! Pointer to LCC Settings. */
-	const VICUS::LccSettings							*m_lccSettings = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
@@ -227,12 +221,6 @@ private:
 	/*! Set with ids of components with undefined data, that we have to skip.
 	*/
 	std::set<unsigned int>								m_idComponentEpdUndefined;
-
-	/*! Pointer to LCA Result Dialog. */
-	SVLcaLccResultsDialog								*m_lcaResultDialog = nullptr;
-
-	/*! Reference to VICUS Project. */
-	const VICUS::Project								&m_prj;
 
 	/*! Store checked data. */
 	std::vector<IBK::Flag>								m_intParas[VICUS::EpdModuleDataset::NUM_M];

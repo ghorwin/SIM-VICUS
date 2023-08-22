@@ -112,7 +112,8 @@ SOURCES += \
 	../../src/SVDBSupplySystemTableModel.cpp \
 	#../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVDatabaseSortFilterProxyModel.cpp \
-    ../../src/SVLcaLccResultsDialog.cpp \
+    ../../src/SVLcaLccResultsWidget.cpp \
+    ../../src/SVLcaLccSettingsWidget.cpp \
     ../../src/SVNetworkExportDialog.cpp \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
@@ -151,6 +152,7 @@ SOURCES += \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
     ../../src/SVTimeSliderWidget.cpp \
+    ../../src/SVUndoModifyLcaLcc.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
@@ -307,7 +309,6 @@ SOURCES += \
 	../../src/SVUndoModifySolverParameter.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
-	 ../../src/SVLcaLccSettingsDialog.cpp \
 	../../src/SVView3DDialog.cpp \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
@@ -332,7 +333,8 @@ HEADERS  += \
 	../../src/SVDBSupplySystemTableModel.h \
 	#../../src/SVDatabaseSortFilterProxyModel.h \
     ../../src/SVDatabaseSortFilterProxyModel.h \
-    ../../src/SVLcaLccResultsDialog.h \
+    ../../src/SVLcaLccResultsWidget.h \
+    ../../src/SVLcaLccSettingsWidget.h \
     ../../src/SVNetworkExportDialog.h \
     ../../src/SVNonEquidistantSlider.h \
     ../../src/SVPluginLoader.h \
@@ -371,6 +373,7 @@ HEADERS  += \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
     ../../src/SVTimeSliderWidget.h \
+    ../../src/SVUndoModifyLcaLcc.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVZoneListModel.h \
@@ -532,7 +535,6 @@ HEADERS  += \
 	../../src/SVUndoModifySolverParameter.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
-	../../src/SVLcaLccSettingsDialog.h \
 	../../src/SVView3DDialog.h \
 	../../src/SVViewState.h \
 	../../src/SVViewStateHandler.h \
@@ -581,8 +583,8 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVGeometryView.ui \
 	../../src/SVImportIDFDialog.ui \
-    ../../src/SVLcaLccResultsDialog.ui \
-    ../../src/SVLcaLccSettingsDialog.ui \
+    ../../src/SVLcaLccResultsWidget.ui \
+    ../../src/SVLcaLccSettingsWidget.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \
 	../../src/SVMainWindow.ui \

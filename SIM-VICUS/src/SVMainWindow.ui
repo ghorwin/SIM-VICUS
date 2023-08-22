@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -147,6 +147,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
+    <addaction name="actionEPD_elements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
@@ -168,20 +169,6 @@
     <addaction name="separator"/>
     <addaction name="actionDBRemoveDuplicates"/>
    </widget>
-   <widget class="QMenu" name="menuSimulation">
-    <property name="title">
-     <string>&amp;Simulation</string>
-    </property>
-    <widget class="QMenu" name="menuCoSimulation">
-     <property name="title">
-      <string>Co-Simulation</string>
-     </property>
-     <addaction name="actionSimulationCO2Balance"/>
-    </widget>
-    <addaction name="separator"/>
-    <addaction name="separator"/>
-    <addaction name="menuCoSimulation"/>
-   </widget>
    <widget class="QMenu" name="menuBuildings">
     <property name="title">
      <string>&amp;Buildings</string>
@@ -200,7 +187,6 @@
    <addaction name="menuDatabases"/>
    <addaction name="menuBuildings"/>
    <addaction name="menuView"/>
-   <addaction name="menuSimulation"/>
    <addaction name="menuTools"/>
    <addaction name="menuPlugins"/>
    <addaction name="menuHelp"/>
@@ -844,6 +830,11 @@
    </property>
    <property name="toolTip">
     <string>External post processing</string>
+   </property>
+  </action>
+  <action name="actionEPD_elements">
+   <property name="text">
+    <string>EPD elements...</string>
    </property>
   </action>
  </widget>

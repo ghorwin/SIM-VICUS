@@ -449,11 +449,11 @@
         </font>
        </property>
        <property name="text">
-        <string>Start simulation</string>
+        <string> Start simulation</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/SIM-VICUS.qrc">
-         <normaloff>:/gfx/actions/play_simstart.png</normaloff>:/gfx/actions/play_simstart.png</iconset>
+         <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
        </property>
        <property name="iconSize">
         <size>

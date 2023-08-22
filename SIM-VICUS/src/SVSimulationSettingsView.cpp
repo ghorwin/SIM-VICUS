@@ -10,6 +10,7 @@
 #include "SVSimulationStartOptions.h"
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
+#include "SVLcaLccSettingsWidget.h"
 
 
 SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
@@ -33,6 +34,8 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	m_ui->listWidget->setIconSize(QSize(32,32));
 	m_ui->listWidget->setSpacing(5);
 
+
+
 	// *** add widgets to stacked widget
 
 	SVSimulationLocationOptions *locationOptions = new SVSimulationLocationOptions(this);
@@ -46,6 +49,14 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	lay2->addWidget(shadingOptions);
 	lay2->setContentsMargins(10,0,10,0);
 	m_ui->stackedWidget->widget(1)->setLayout(lay2);
+
+	SVLcaLccSettingsWidget *lcaSettings = new SVLcaLccSettingsWidget(this);
+	QHBoxLayout *lay3 = new QHBoxLayout;
+	lay3->addWidget(lcaSettings);
+	lay3->setContentsMargins(10,0,10,0);
+	m_ui->stackedWidget->widget(3)->setLayout(lay3);
+
+
 
 	// sim start widget
 

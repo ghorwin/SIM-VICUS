@@ -60,7 +60,7 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
-class SVLcaLccSettingsDialog;
+class SVLcaLccSettingsWidget;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -375,8 +375,7 @@ private slots:
 
 	void onShortCutStartSimulation();
 
-	void on_actionLccLcaAnalysis_triggered();
-
+	void on_actionEPD_elements_triggered();
 
 private:
 
@@ -558,7 +557,7 @@ private:
 	/*! Timer for auto-save periods. */
 	QTimer								*m_autoSaveTimer 								= nullptr;
 
-	SVLcaLccSettingsDialog				*m_lcaLccSettingsDialog							= nullptr;
+	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
 
 	friend class SVThreadBase;
 };

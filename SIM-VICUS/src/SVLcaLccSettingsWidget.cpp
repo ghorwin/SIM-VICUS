@@ -1,4 +1,4 @@
-#include "SVLcaLccSettingsDialog.h"
+#include "SVLcaLccSettingsWidget.h"
 #include "ui_SVLcaLccSettingsDialog.h"
 
 #include "IBKMK_3DCalculations.h"
@@ -10,6 +10,7 @@
 #include "SVDBEpdTableModel.h"
 #include "SVProjectHandler.h"
 #include "SVMainWindow.h"
+#include "SVUndoModifyLcaLcc.h"
 
 // IBK
 #include <IBK_Parameter.h>
@@ -32,19 +33,12 @@
 #include <fstream>
 
 
-SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
-											   VICUS::LcaSettings & lcaSettings,
-											   VICUS::LccSettings & lccSettings) :
+SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVLcaLccSettingsDialog),
-	m_lcaSettings(&lcaSettings),
-	m_lccSettings(&lccSettings),
-	m_prj(SVProjectHandler::instance().project())
+	m_ui(new Ui::SVLcaLccSettingsDialog)
 {
 	m_ui->setupUi(this);
-	// layout()->setMargin(0);
-
-	//	m_lcaSettings->initDefaults();
+	layout()->setContentsMargins(0,0,0,0);
 
 	m_db = &SVSettings::instance().m_db;
 
@@ -88,29 +82,33 @@ SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 
 	m_ui->checkBoxD->setText(VICUS::KeywordList::Description("EpdModuleDataset::Module", VICUS::EpdModuleDataset::M_D));
 
-	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxA3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxA4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxA5, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB5, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB6, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxB7, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxC1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxC2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxC3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxC4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
-	connect(m_ui->checkBoxD,  &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
+	connect(m_ui->checkBoxA1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxA2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxA3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxA4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxA5, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB5, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB6, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxB7, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxC1, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxC2, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxC3, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxC4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
+	connect(m_ui->checkBoxD,  &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
 
+	m_ui->comboBoxCalculationMode->blockSignals(true);
 	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
 		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::CalculationMode", i), i);
+	m_ui->comboBoxCalculationMode->blockSignals(false);
 
+	m_ui->comboBoxCertificationSystem->blockSignals(true);
 	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
 		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::CertificationSytem", i), i);
+	m_ui->comboBoxCertificationSystem->blockSignals(false);
 
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
 	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "Energy Price increase", true, true);
@@ -121,15 +119,16 @@ SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
 	m_ui->lineEditElectricityPrice->setup(0, 1e10, "Electricity price for evaluation in €/kWh", false, true);
 
-	updateUi();
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVLcaLccSettingsWidget::onModified);
 }
 
-SVLcaLccSettingsDialog::~SVLcaLccSettingsDialog() {
+SVLcaLccSettingsWidget::~SVLcaLccSettingsWidget() {
 	delete m_ui;
 }
 
-void SVLcaLccSettingsDialog::calculateLCA() {
-	FUNCID(SVLcaLccSettingsDialog::calculateLCA);
+void SVLcaLccSettingsWidget::calculateLCA() {
+	FUNCID(SVLcaLccSettingsWidget::calculateLCA);
 
 //	IBK::Path path(m_ui->filepathResults->filename().toStdString());
 //	QString filename = m_ui->lineEditResultName->text();
@@ -381,7 +380,7 @@ bool convertString2Val(double &val, const std::string &text, unsigned int row, u
 
 
 template<typename T>
-void SVLcaLccSettingsDialog::setValue(T &member, const T &value, bool foundExistingEpd) {
+void SVLcaLccSettingsWidget::setValue(T &member, const T &value, bool foundExistingEpd) {
 	if(!foundExistingEpd)
 		member = value;
 	else {
@@ -393,7 +392,7 @@ void SVLcaLccSettingsDialog::setValue(T &member, const T &value, bool foundExist
 
 
 
-void SVLcaLccSettingsDialog::importOkoebauDat(const IBK::Path & csvPath) {
+void SVLcaLccSettingsWidget::importOkoebauDat(const IBK::Path & csvPath) {
 	FUNCID(SVDBEPDEditWidget::importOkoebauDat);
 
 	// Read csv with ÖKOBAUDAT
@@ -744,7 +743,7 @@ void SVLcaLccSettingsDialog::importOkoebauDat(const IBK::Path & csvPath) {
 }
 
 
-void SVLcaLccSettingsDialog::addComponentInstance(const VICUS::ComponentInstance & compInstance) {
+void SVLcaLccSettingsWidget::addComponentInstance(const VICUS::ComponentInstance & compInstance) {
 	if(m_compIdToAggregatedData.find(compInstance.m_idComponent) == m_compIdToAggregatedData.end())
 		m_compIdToAggregatedData[compInstance.m_idComponent] = AggregatedComponentData(compInstance);
 	else
@@ -752,10 +751,10 @@ void SVLcaLccSettingsDialog::addComponentInstance(const VICUS::ComponentInstance
 }
 
 
-void SVLcaLccSettingsDialog::aggregateProjectComponents() {
+void SVLcaLccSettingsWidget::aggregateProjectComponents() {
 	QStringList lifetime, cost, epd;
 
-	for(const VICUS::ComponentInstance &ci : m_prj.m_componentInstances) {
+	for(const VICUS::ComponentInstance &ci : project().m_componentInstances) {
 		// Add CI to aggregated data map
 		addComponentInstance(ci);
 
@@ -803,7 +802,8 @@ void SVLcaLccSettingsDialog::aggregateProjectComponents() {
 //		return;
 }
 
-void SVLcaLccSettingsDialog::aggregateAggregatedComponentsByType() {
+
+void SVLcaLccSettingsWidget::aggregateAggregatedComponentsByType() {
 	for(std::map<unsigned int, AggregatedComponentData>::iterator itAggregatedComp = m_compIdToAggregatedData.begin();
 		itAggregatedComp != m_compIdToAggregatedData.end(); ++itAggregatedComp)
 	{
@@ -819,7 +819,7 @@ void SVLcaLccSettingsDialog::aggregateAggregatedComponentsByType() {
 }
 
 
-void SVLcaLccSettingsDialog::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
+void SVLcaLccSettingsWidget::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
 											   const VICUS::EpdDataset::Category &category) {
 
 	lcaStream << categoryText + "\t\t\t\t\t\t\t"  << std::endl;
@@ -879,51 +879,51 @@ void SVLcaLccSettingsDialog::writeDataToStream(std::ofstream &lcaStream, const s
 }
 
 
-void SVLcaLccSettingsDialog::setModuleState(int state) {
+void SVLcaLccSettingsWidget::setModuleState(int state) {
 
 	QCheckBox *cb = dynamic_cast<QCheckBox*>(sender());
-
 	Q_ASSERT(cb != nullptr);
-
 	VICUS::EpdModuleDataset::Module mod = static_cast<VICUS::EpdModuleDataset::Module>(cb->property("category").toInt());
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_flags[mod].set(m_lcaSettings->m_flags[mod].name(), state == Qt::Checked);
 
+	VICUS::Project p = project();
+	p.m_lcaSettings.m_flags[mod].set(p.m_lcaSettings.m_flags[mod].name(), state == Qt::Checked);
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", p.m_lcaSettings, p.m_lccSettings);
+	undo->push();
 }
 
-void SVLcaLccSettingsDialog::setCheckBoxState(QCheckBox *cb, int bitmask) {
+
+void SVLcaLccSettingsWidget::setCheckBoxState(QCheckBox *cb, int bitmask) {
 	cb->blockSignals(true);
-	cb->setChecked((m_lcaSettings->m_certificationModules & bitmask) == bitmask);
+	cb->setChecked((project().m_lcaSettings.m_certificationModules & bitmask) == bitmask);
 	cb->blockSignals(false);
 }
 
-SVLcaLccResultsDialog *SVLcaLccSettingsDialog::lcaResultsDialog() {
-	if(m_lcaResultDialog == nullptr)
-		m_lcaResultDialog = new SVLcaLccResultsDialog(this);
-	return m_lcaResultDialog;
-}
 
-void SVLcaLccSettingsDialog::updateUi() {
+void SVLcaLccSettingsWidget::updateUi() {
+
+	const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
+	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
+
 	m_ui->groupBoxLcaCalc->blockSignals(true);
 	m_ui->groupBoxLccSettings->blockSignals(true);
 	m_ui->groupBoxGeneral->blockSignals(true);
 
-	m_ui->lineEditArea->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
+	m_ui->lineEditArea->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
-	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
+	m_ui->lineEditTimePeriod->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
 
-	m_ui->lineEditInterestRate->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
-	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
-	m_ui->lineEditPriceIncreaseGeneral->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].get_value("%")));
+	m_ui->lineEditInterestRate->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
+	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
+	m_ui->lineEditPriceIncreaseGeneral->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].get_value("%")));
 
-	m_ui->lineEditCoalConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a")));
-	m_ui->lineEditGasConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a")));
-	m_ui->lineEditElectricityConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a")));
+	m_ui->lineEditCoalConsumption->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a")));
+	m_ui->lineEditGasConsumption->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a")));
+	m_ui->lineEditElectricityConsumption->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a")));
 
 	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
 									SVSettings::instance().m_dontUseNativeDialogs);
 
 	// m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
-
 
 	QObjectList ol;
 	ol.push_back(m_ui->checkBoxA1);
@@ -943,8 +943,6 @@ void SVLcaLccSettingsDialog::updateUi() {
 	ol.push_back(m_ui->checkBoxC3);
 	ol.push_back(m_ui->checkBoxC4);
 	ol.push_back(m_ui->checkBoxD);
-
-	//qDebug() << m_lcaSettings->m_lcaCertificationSystem;
 
 	setCheckBoxState(m_ui->checkBoxA1, VICUS::LcaSettings::M_A1);
 	setCheckBoxState(m_ui->checkBoxA2, VICUS::LcaSettings::M_A2);
@@ -967,18 +965,18 @@ void SVLcaLccSettingsDialog::updateUi() {
 
 	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
 
-	if(m_lcaSettings->m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
+	if(lcaSettings.m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
 		for(unsigned int i=0; i<ol.count(); ++i) {
 			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
 			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
-			cb->setChecked(m_lcaSettings->m_flags[mod].isEnabled());
+			cb->setChecked(lcaSettings.m_flags[mod].isEnabled());
 		}
 	}
 
-	m_ui->groupBoxCatA->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatB->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatC->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
-	m_ui->groupBoxCatD->setEnabled(m_lcaSettings->m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatA->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatB->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatC->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
+	m_ui->groupBoxCatD->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
 
 	m_ui->groupBoxLcaCalc->blockSignals(false);
 	m_ui->groupBoxLccSettings->blockSignals(false);
@@ -988,38 +986,48 @@ void SVLcaLccSettingsDialog::updateUi() {
 	VICUS::EpdDataset *epdGas = nullptr;
 	VICUS::EpdDataset *epdElectricity = nullptr;
 
-	epdCoal = m_db->m_epdDatasets[m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Coal]];
+	epdCoal = m_db->m_epdDatasets[lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Coal]];
 	if(epdCoal != nullptr)
 		m_ui->lineEditEpdCoal->setText(QtExt::MultiLangString2QString(epdCoal->m_displayName));
 	else
 		m_ui->lineEditEpdCoal->setText("-");
 
-	epdGas = m_db->m_epdDatasets[m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Gas]];
+	epdGas = m_db->m_epdDatasets[lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Gas]];
 	if(epdGas != nullptr)
 		m_ui->lineEditEpdGas->setText(QtExt::MultiLangString2QString(epdGas->m_displayName));
 	else
 		m_ui->lineEditEpdGas->setText("-");
 
-	epdElectricity = m_db->m_epdDatasets[m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Electricity]];
+	epdElectricity = m_db->m_epdDatasets[lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Electricity]];
 	if(epdElectricity != nullptr)
 		m_ui->lineEditEpdElectricity->setText(QtExt::MultiLangString2QString(epdElectricity->m_displayName));
 	else
 		m_ui->lineEditEpdElectricity->setText("-");
 
-	m_ui->lineEditCoalPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100, 7, 'f', 2 ) );
-	m_ui->lineEditElectricityPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100, 7, 'f', 2 ) );
-	m_ui->lineEditGasPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100, 7, 'f', 2 ) );
-
+	m_ui->lineEditCoalPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100, 7, 'f', 2 ) );
+	m_ui->lineEditElectricityPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100, 7, 'f', 2 ) );
+	m_ui->lineEditGasPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100, 7, 'f', 2 ) );
 }
 
 
-void SVLcaLccSettingsDialog::writeLcaDataToTxtFile(const IBK::Path &resultPath) {
+void SVLcaLccSettingsWidget::onModified(int modificationType, ModificationInfo *) {
+	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (modType) {
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::LcaLccModified:
+			updateUi();
+		break;
+		default:;
+	}
+}
+
+
+void SVLcaLccSettingsWidget::writeLcaDataToTxtFile(const IBK::Path &resultPath) {
 	std::ofstream lcaStream(resultPath.str());
 	// Write header
 	lcaStream << "Category\tComponent type\tComponent name\tArea [m2]\tGWP (CO2-Äqu.) [kg/(m2a)\tODP (R11-Äqu.) [kg/(m2a)]\tPOCP (C2H4-Äqu.) [kg/(m2a)]\tAP (SO2-Äqu.) [kg/(m2a)]\tEP (PO4-Äqu.) [kg/(m2a)]" << std::endl;
 
 	lcaStream << "Goal:\t\t\t\t24\t0.0000001010\t0.0063\t0.0662\t0.0086" << std::endl;
-
 
 	writeDataToStream(lcaStream, "Category A - Production", VICUS::EpdDataset::C_CategoryA);
 	// writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
@@ -1027,11 +1035,10 @@ void SVLcaLccSettingsDialog::writeLcaDataToTxtFile(const IBK::Path &resultPath) 
 	writeDataToStream(lcaStream, "Category D - Deposit", VICUS::EpdDataset::C_CategoryD);
 
 	lcaStream.close();
-
 }
 
 
-void SVLcaLccSettingsDialog::calculateTotalLcaDataForComponents() {
+void SVLcaLccSettingsWidget::calculateTotalLcaDataForComponents() {
 	// Go through all used components.
 	// Go through all used material layers in components.
 
@@ -1072,7 +1079,9 @@ void SVLcaLccSettingsDialog::calculateTotalLcaDataForComponents() {
 			else
 				lifeTime = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].get_value();
 
-			double renewingFactor = m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / lifeTime;
+			const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
+
+			double renewingFactor = lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value() / lifeTime;
 
 
 			// We do the unit conversion and handling to get all our reference units correctly managed
@@ -1102,14 +1111,14 @@ void SVLcaLccSettingsDialog::calculateTotalLcaDataForComponents() {
 }
 
 
-void SVLcaLccSettingsDialog::resetLcaData() {
+void SVLcaLccSettingsWidget::resetLcaData() {
 	m_compIdToAggregatedData.clear();
 	m_typeToAggregatedCompData.clear();
 	m_idComponentEpdUndefined.clear();
 }
 
 
-void SVLcaLccSettingsDialog::on_pushButtonImportOkoebaudat_clicked() {
+void SVLcaLccSettingsWidget::on_pushButtonImportOkoebaudat_clicked() {
 	FUNCID(SVDBEPDEditWidget::on_pushButtonImportOkoebaudat_clicked);
 
 	IBK::Path path(m_ui->filepathOekoBauDat->filename().toStdString());
@@ -1128,31 +1137,34 @@ void SVLcaLccSettingsDialog::on_pushButtonImportOkoebaudat_clicked() {
 }
 
 
-void SVLcaLccSettingsDialog::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
+void SVLcaLccSettingsWidget::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+
+	lcaSettings.m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
 	m_ui->comboBoxCertificationSystem->setEnabled(mode == 0);
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_certificationSystem = static_cast<VICUS::LcaSettings::CertificationSytem>(certiSystem);
+void SVLcaLccSettingsWidget::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
 
-	switch(m_lcaSettings->m_certificationSystem) {
-		case (VICUS::LcaSettings::CS_BNB) :	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
+	switch(lcaSettings.m_certificationSystem) {
+		case (VICUS::LcaSettings::CS_BNB) :	lcaSettings.m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
 		case (VICUS::LcaSettings::NUM_CS) : break;
 	}
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-
-void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
+void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 	double area = 0;
 
-	for(const VICUS::Building &b : m_prj.m_buildings) {
+	for(const VICUS::Building &b : project().m_buildings) {
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
@@ -1179,34 +1191,48 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 			}
 		}
 	}
-	m_ui->lineEditArea->setText(QString::number(area));
+
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+	VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, area);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
-	try {
-		const double &coalConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value;
-		const double &gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value;
-		const double &electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
+void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 
-		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
-								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
-								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
+	const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
+	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
+
+	try {
+		const double &coalConsumption			= lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].value;
+		const double &gasConsumption			= lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].value;
+		const double &electricityConsumption	= lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
+
+		double totalEnergyCost =  gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value
+								+ electricityConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
+								+ coalConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
 		totalEnergyCost /= 100; // Mind we store our Prices in cent --> convert to € by /100
 
 		calculateLCA();
 
-		std::vector<double> investCost(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"), 0.0);
+		std::vector<double> investCost(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"), 0.0);
 
-		lcaResultsDialog()->setup();
-		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings, investCost);
-		lcaResultsDialog()->setUsageResults(*m_lcaSettings, gasConsumption, coalConsumption, electricityConsumption);
-		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings, investCost);
-		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings, investCost);
+		// TODO:
 
-		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
+		// Results ??
 
-		m_lcaResultDialog->showMaximized();
+//		lcaResultsDialog()->setup();
+//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings, investCost);
+//		lcaResultsDialog()->setUsageResults(*m_lcaSettings, gasConsumption, coalConsumption, electricityConsumption);
+//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings, investCost);
+//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings, investCost);
+
+//		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
+
+//		m_lcaResultDialog->showMaximized();
+
 	}
 	catch (IBK::Exception &ex) {
 		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
@@ -1214,130 +1240,171 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditArea_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditArea_editingFinishedSuccessfully() {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
 	if(m_ui->lineEditArea->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
+		VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
 	else
-		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].value);
+		m_ui->lineEditArea->setValue(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].value);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditTimePeriod_editingFinishedSuccessfully() {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
 	if(m_ui->lineEditTimePeriod->isValid()) {
-		float years = m_ui->lineEditTimePeriod->value();
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
+		double years = m_ui->lineEditTimePeriod->value();
+		VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
 	}
 	else
-		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
+		m_ui->lineEditArea->setValue(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditPriceIncreaseGeneral->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
+		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
 	else
-		m_ui->lineEditPriceIncreaseGeneral->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
+		m_ui->lineEditPriceIncreaseGeneral->setValue(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditGasConsumption_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditGasConsumption_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditGasConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
+		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
 	else
-		m_ui->lineEditGasConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value);
+		m_ui->lineEditGasConsumption->setValue(lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].value);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditElectricityConsumption_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditElectricityConsumption_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditElectricityConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
+		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
 	else
-		m_ui->lineEditElectricityConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value);
+		m_ui->lineEditElectricityConsumption->setValue(lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].value);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditCoalConsumption_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditCoalConsumption_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditCoalConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
+		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
 	else
-		m_ui->lineEditArea->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value);
+		m_ui->lineEditArea->setValue(lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].value);
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditPriceIncreaseEnergy->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
+		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
 	else
-		m_ui->lineEditPriceIncreaseEnergy->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value);
+		m_ui->lineEditPriceIncreaseEnergy->setValue(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value);
 
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_toolButtonSelectGas_clicked() {
+void SVLcaLccSettingsWidget::on_toolButtonSelectGas_clicked() {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+
 	// get EPD edit dialog from mainwindow
 	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
 
-	unsigned int id = m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Gas];
+	unsigned int id = lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Gas];
 
 	unsigned int idGas = editDialog->select(id, false, "MJ", 5);
 	if (idGas != VICUS::INVALID_ID && idGas != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Gas] = idGas;
+		lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Gas] = idGas;
 	}
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_toolButtonSelectElectricity_clicked() {
+void SVLcaLccSettingsWidget::on_toolButtonSelectElectricity_clicked() {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+
 	// get EPD edit dialog from mainwindow
 	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
 
-	unsigned int id = m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Electricity];
+	unsigned int id = lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Electricity];
 
 	unsigned int idElectricity = editDialog->select(id, false, "MJ", 5);
 	if (idElectricity != VICUS::INVALID_ID && idElectricity != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Electricity] = idElectricity;
+		lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Electricity] = idElectricity;
 	}
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_toolButtonSelectCoal_clicked() {
+void SVLcaLccSettingsWidget::on_toolButtonSelectCoal_clicked() {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
 	// get EPD edit dialog from mainwindow
 	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbEpdEditDialog();
 
-	unsigned int id = m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Coal];
+	unsigned int id = lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Coal];
 
 	unsigned int idCoal = editDialog->select(id, false, "MJ", 5);
 	if (idCoal != VICUS::INVALID_ID && idCoal != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Coal] = idCoal;
+		lcaSettings.m_idUsage[VICUS::LcaSettings::UT_Coal] = idCoal;
 	}
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditCoalPrice_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditCoalPrice_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditCoalPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, m_ui->lineEditCoalPrice->value()*100);
+		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, (int)m_ui->lineEditCoalPrice->value()*100);
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditGasPrice_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditGasPrice_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditGasPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, m_ui->lineEditGasPrice->value()*100);
+		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, (int)m_ui->lineEditGasPrice->value()*100);
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
 
-void SVLcaLccSettingsDialog::on_lineEditElectricityPrice_editingFinishedSuccessfully() {
+void SVLcaLccSettingsWidget::on_lineEditElectricityPrice_editingFinishedSuccessfully() {
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
 	if(m_ui->lineEditElectricityPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, m_ui->lineEditElectricityPrice->value()*100);
+		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, (int)m_ui->lineEditElectricityPrice->value()*100);
 
-	updateUi();
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
 }
 
