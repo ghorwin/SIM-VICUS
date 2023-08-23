@@ -192,7 +192,6 @@
         <file>gfx/actions/shades.png</file>
         <file>gfx/actions/Location_Climate_32x32.svg</file>
         <file>gfx/actions/play_simstart.png</file>
-        <file>../../../../Users/Hauke/Downloads/play-button.png</file>
         <file>gfx/actions/play-button.png</file>
         <file>gfx/actions/simulation-temperature.png</file>
     </qresource>
