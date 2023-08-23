@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+#include <VICUS_Constants.h>
+
+
 namespace Ui {
 	class SVPropBuildingZoneTemplatesWidget;
 }
@@ -67,6 +70,9 @@ private:
 		Note: rooms without zone template ID are ignored.
 	*/
 	std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >			m_zoneTemplateAssignments;
+
+	/*! Zone template id currently selected in the scene. */
+	unsigned int																	m_selectedZoneTemplateId = VICUS::INVALID_ID;
 };
 
 #endif // SVPropBuildingZoneTemplatesWidgetH

@@ -64,6 +64,8 @@ public:
 public slots:
 	void on_toolButtonRemoveSubComponent_clicked();
 
+	void on_toolButtonSelectSubComponent_clicked();
+
 signals:
 	/*! Emitted when the action in the widget shall cause the tree view to change selection.
 		In case of removal of a sub-template, the subTemplateType matches ZoneTemplate::NUM_ST and
@@ -76,9 +78,6 @@ signals:
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
-
-	void on_toolButtonSelectSubComponent_clicked();
-
 
 	void on_pushButtonAddPersonLoad_clicked();
 	void on_pushButtonAddElectricLoad_clicked();

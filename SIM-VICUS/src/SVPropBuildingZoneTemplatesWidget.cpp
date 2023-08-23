@@ -105,6 +105,7 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 
 	// update selection-related info
 	std::set<const VICUS::ZoneTemplate *> selectedZoneTemplate;
+	m_selectedZoneTemplateId = VICUS::INVALID_ID;
 	// loop over all selected rooms and store pointer to assigned zone template
 	for (const VICUS::Room* r : rooms) {
 		if (r->m_idZoneTemplate != VICUS::INVALID_ID) {
@@ -120,9 +121,11 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 		// special handling: exactly one room with invalid zone template ID is selected
 		if (zt == nullptr)
 			m_ui->labelSelectedZoneTemplates->setText(tr("Zone template with invalid/unknown ID"));
-		else // otherwise show info about the selected zone template
+		else { // otherwise show info about the selected zone template
+			m_selectedZoneTemplateId = zt->m_id;
 			m_ui->labelSelectedZoneTemplates->setText(tr("%1 [%2]")
 			   .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id) );
+		}
 	}
 	else {
 		m_ui->labelSelectedZoneTemplates->setText(tr("%1 different templates")
@@ -168,14 +171,12 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateVisibleZonesSelectionChanged
 }
 
 
-
-
 void SVPropBuildingZoneTemplatesWidget::on_pushButtonAssignZoneTemplate_clicked() {
 	// ask user to select a the zone template to assign
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignZoneTemplate",
 		tr("Assign zone template"), tr("You may now select a zone template from the database, which will then be "
 								   "assigned to the selected rooms."));
-	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(0);
+	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(m_selectedZoneTemplateId);
 	if (selectedId == VICUS::INVALID_ID)
 		return; // user aborted the dialog
 

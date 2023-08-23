@@ -202,6 +202,7 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	// update selection-related info
 
 	std::set<const VICUS::SubSurfaceComponent *> selectedComponents;
+	m_sceneSelectedComponentId = VICUS::INVALID_ID;
 	const SVDatabase & db = SVSettings::instance().m_db;
 	for (const VICUS::SubSurface * s : m_selectedSurfaces) {
 		if (s->m_subSurfaceComponentInstance != nullptr) {
@@ -215,9 +216,11 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	else if (selectedComponents.size() == 1) {
 		if (*selectedComponents.begin() == nullptr)
 			m_ui->labelSelectedSubSurfaceComponents->setText(tr("Component with invalid/unknown ID"));
-		else
+		else {
+			m_sceneSelectedComponentId = (*selectedComponents.begin())->m_id;
 			m_ui->labelSelectedSubSurfaceComponents->setText(tr("%1 [%2]")
-				.arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+				.arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg(m_sceneSelectedComponentId));
+		}
 	}
 	else {
 		m_ui->labelSelectedSubSurfaceComponents->setText(tr("%1 different components")
@@ -394,7 +397,7 @@ void SVPropBuildingSubComponentsWidget::assignSubSurfaceComponent(bool insideWal
 		SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
 			tr("Assign component"), tr("You may now select a sub-surface component from the database, which will then be "
 									   "assigned to the selected sub-surfaces."));
-		selectedComponentId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(VICUS::INVALID_ID);
+		selectedComponentId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(m_sceneSelectedComponentId);
 		if (selectedComponentId == VICUS::INVALID_ID)
 			return; // user aborted the dialog
 	}

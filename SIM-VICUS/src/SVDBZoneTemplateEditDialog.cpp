@@ -318,6 +318,10 @@ void SVDBZoneTemplateEditDialog::on_treeView_doubleClicked(const QModelIndex &in
 		if (sourceIndex.internalPointer() == nullptr)
 			accept();
 	}
+	else {
+		// we can edit the current sub-template, onCurrentIndexChanged() has been excecuted already
+		m_editWidget->on_toolButtonSelectSubComponent_clicked();
+	}
 }
 
 
