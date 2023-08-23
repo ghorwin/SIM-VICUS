@@ -71,19 +71,18 @@ void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces,
 	for(unsigned int roomId : roomIds){
 		// for each room
 		const VICUS::Room * r = SVProjectHandler::instance().project().roomByID(roomId);
-		for(const VICUS::Surface & s : r->m_surfaces){
+		for (const VICUS::Surface & s : r->m_surfaces){
 			// check if the surface was selected
 			bool found = false;
-			for(const VICUS::Surface * selS : selSurfaces){
+			for (const VICUS::Surface * selS : m_selSurfaces){
 				if(s.m_id == selS->m_id){
 					found = true;
 				}
 			}
-			if(!found){
-				selSurfaces.push_back(&s);
-//				QMessageBox::critical(parent, QString(),
-//									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
-//				return;
+			if (!found) {
+				QMessageBox::critical(&SVMainWindow::instance(), QString(),
+									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
+				return;
 			}
 		}
 	}
@@ -118,9 +117,9 @@ void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces,
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
 		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().triangulationData().m_vertexes;
-		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
+		const std::vector<VICUS::PlaneTriangulationData> &holesTriangles = s.geometry().holeTriangulationData();	// we get all holes
 		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
-
+		const std::vector<VICUS::PlaneGeometry::Hole> &holes = s.geometry().holes();
 
 		// we skip all dump geometries
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
@@ -128,7 +127,9 @@ void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces,
 			continue;
 
 		// if we did not yet add a room object
-		if ( m_vicusRoomIdToView3dRoom.find(r->m_id) == m_vicusRoomIdToView3dRoom.end() ) { // we find the entry
+		std::map<unsigned int, view3dRoom>::const_iterator it = m_vicusRoomIdToView3dRoom.find(r->m_id);
+		if (it == m_vicusRoomIdToView3dRoom.end()) {
+			// we found no entry
 			m_vicusRoomIdToView3dRoom[r->m_id] = view3dRoom(r->m_id, r->m_displayName);
 		}
 
@@ -182,11 +183,13 @@ void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces,
 		// =====================================
 		// we take also all holes with windows
 		// =====================================
-		for (unsigned int i=0; i<holes.size(); ++i) {
+		for (unsigned int i=0; i<holesTriangles.size(); ++i) {
 			counter = 0;
 			offset = v3dRoom.m_vertexes.size()+1;
 
-			const VICUS::PlaneTriangulationData &planeTriangulation = holes[i];
+			const VICUS::PlaneTriangulationData &planeTriangulation = holesTriangles[i];
+			if (holes[i].m_isChildSurface)
+				continue;
 
 			const VICUS::SubSurface &subS = subSurfs[i];
 
