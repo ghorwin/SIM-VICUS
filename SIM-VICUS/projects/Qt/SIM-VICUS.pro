@@ -148,8 +148,7 @@ SOURCES += \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
-    ../../src/SVSmartIntersectionDialog.cpp \
-	../../src/SVTimeSeriesPreviewDialog.cpp \
+	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
     ../../src/SVTimeSliderWidget.cpp \
     ../../src/SVUndoModifyLcaLcc.cpp \
@@ -295,15 +294,11 @@ SOURCES += \
 	../../src/SVSimulationPerformanceOptions.cpp \
 	../../src/SVSimulationRunRequestDialog.cpp \
 	../../src/SVSimulationSettingsView.cpp \
-	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVSimulationStartOptions.cpp \
-	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVSmartSelectDialog.cpp \
 	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
-	../../src/SVTimeSeriesPreviewWidget.cpp \
-	../../src/SVTimeSliderWidget.cpp \
 	../../src/SVUndoModifyClimate.cpp \
 	../../src/SVUndoModifyOutputs.cpp \
 	../../src/SVUndoModifySolverParameter.cpp \
@@ -323,7 +318,7 @@ HEADERS  += \
 	../../src/SVConversions.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
-  ../../src/SVDBEpdEditWidget.h \
+	../../src/SVDBEpdEditWidget.h \
 	../../src/SVDBEpdTableModel.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
 	../../src/SVDBNetworkControllerTableModel.h \
@@ -521,15 +516,10 @@ HEADERS  += \
 	../../src/SVSimulationPerformanceOptions.h \
 	../../src/SVSimulationRunRequestDialog.h \
 	../../src/SVSimulationSettingsView.h \
-	../../src/SVSimulationShadingOptions.h \
 	../../src/SVSimulationStartOptions.h \
-	../../src/SVSmartIntersectionDialog.h \
 	../../src/SVSmartSelectDialog.h \
 	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
-	../../src/SVTimeSeriesPreviewDialog.h \
-	../../src/SVTimeSeriesPreviewWidget.h \
-	../../src/SVTimeSliderWidget.h \
 	../../src/SVUndoModifyClimate.h \
 	../../src/SVUndoModifyOutputs.h \
 	../../src/SVUndoModifySolverParameter.h \
@@ -648,5 +638,10 @@ CODECFORSRC = UTF-8
 RESOURCES += \
 	../../resources/SIM-VICUS.qrc \
 	../../resources/qdarkstyle/style.qrc \
+	../../resources/style/dark/darkstyle.qrc \
+	../../resources/style/light/lightstyle.qrc \
 	../../src/shaders/shaders.qrc
+
+DISTFILES += \
+    ../../resources/style/light/lightstyle.qss
 
