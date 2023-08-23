@@ -782,6 +782,7 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				continue; // skip too small surfaces
 
 			unsigned int compInstId1 = surfaces[i].m_componentInstance->m_id;
+
 			// get the nandrad ids
 			if(componentInstanceMapping.find(compInstId1) == componentInstanceMapping.end()) {
 				errorStack.append(tr("Could not find component instance #%1 for view-factor generation!").arg(compInstId1));
@@ -789,6 +790,27 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 			}
 
 			unsigned int constInstId1Nandrad = componentInstanceMapping.at(compInstId1);
+			const NANDRAD::ConstructionInstance *constInst1 = nullptr;
+			for (const NANDRAD::ConstructionInstance &ci : p.m_constructionInstances) {
+				if (ci.m_id == constInstId1Nandrad) {
+					constInst1 = &ci;
+					break;
+				}
+			}
+
+			if (constInst1 == nullptr)
+				continue;
+
+			const NANDRAD::Interface &interfaceA = constInst1->m_interfaceA;
+			const NANDRAD::Interface &interfaceB = constInst1->m_interfaceB;
+
+			bool hasA = (interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) &&
+					(interfaceA.m_zoneId != 0);
+			bool hasB = (interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) &&
+					(interfaceB.m_zoneId != 0);
+
+			if (!hasA && !hasB)
+				continue;
 
 			for(unsigned int j = 0; j < surfaces.size(); j++){
 
@@ -803,7 +825,31 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 				}
 				unsigned int compInstId2 = surfaces[j].m_componentInstance->m_id;
 
+
 				if(compInstId1 == compInstId2)
+					continue;
+
+				unsigned int constInstId2Nandrad = componentInstanceMapping.at(compInstId2);
+				const NANDRAD::ConstructionInstance *constInst2 = nullptr;
+				for (const NANDRAD::ConstructionInstance &ci : p.m_constructionInstances) {
+					if (ci.m_id == constInstId2Nandrad) {
+						constInst2 = &ci;
+						break;
+					}
+				}
+
+				if (constInst2 == nullptr)
+					continue;
+
+				const NANDRAD::Interface &interfaceA = constInst2->m_interfaceA;
+				const NANDRAD::Interface &interfaceB = constInst2->m_interfaceB;
+
+				bool hasA = (interfaceA.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) &&
+						(interfaceA.m_zoneId != 0);
+				bool hasB = (interfaceB.m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) &&
+						(interfaceB.m_zoneId != 0);
+
+				if (!hasA && !hasB)
 					continue;
 
 				if(surfaces[i].m_viewFactors.m_values.empty()) {
@@ -828,7 +874,6 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 					return;
 				}
 
-				unsigned int constInstId2Nandrad = componentInstanceMapping.at(compInstId2);
 
 				NANDRAD::Zone::viewFactorPair idPair1 = std::pair<unsigned int, unsigned int>(constInstId1Nandrad, constInstId2Nandrad);
 				z.m_viewFactors.push_back(std::pair<NANDRAD::Zone::viewFactorPair, double>(idPair1, vF));
