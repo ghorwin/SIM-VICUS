@@ -154,6 +154,7 @@ SOURCES += \
     ../../src/SVUndoModifyLcaLcc.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
+    ../../src/SVView3DCalculation.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -302,9 +303,6 @@ SOURCES += \
 	../../src/SVUndoModifyClimate.cpp \
 	../../src/SVUndoModifyOutputs.cpp \
 	../../src/SVUndoModifySolverParameter.cpp \
-	../../src/SVUndoNetworkAddNodes.cpp \
-	../../src/SVUndoNetworkAddPipeline.cpp \
-	../../src/SVView3DDialog.cpp \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
 	../../src/SVWelcomeScreen.cpp \
@@ -371,6 +369,7 @@ HEADERS  += \
     ../../src/SVUndoModifyLcaLcc.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
+    ../../src/SVView3DCalculation.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
@@ -523,9 +522,6 @@ HEADERS  += \
 	../../src/SVUndoModifyClimate.h \
 	../../src/SVUndoModifyOutputs.h \
 	../../src/SVUndoModifySolverParameter.h \
-	../../src/SVUndoNetworkAddNodes.h \
-	../../src/SVUndoNetworkAddPipeline.h \
-	../../src/SVView3DDialog.h \
 	../../src/SVViewState.h \
 	../../src/SVViewStateHandler.h \
 	../../src/SVWelcomeScreen.h \
