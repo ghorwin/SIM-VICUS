@@ -36,18 +36,13 @@ SVPreferencesPageStyle::SVPreferencesPageStyle(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->comboBoxTheme->blockSignals(true);
-	m_ui->comboBoxTheme->addItem("White", SVSettings::TT_White);
-	m_ui->comboBoxTheme->addItem("Dark", SVSettings::TT_Dark);
-
-	SVSettings & s = SVSettings::instance();
-	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
-	m_ui->comboBoxTheme->blockSignals(false);
-
 	m_ui->pushButtonMajorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMinorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonSceneBackgroundColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonSelectedSurfaceColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
+	m_ui->labelDarkPreview->setPixmap(QPixmap(":/gfx/style/dark.png").scaledToHeight(100, Qt::SmoothTransformation));
+	m_ui->labelWhitePreview->setPixmap(QPixmap(":/gfx/style/white.png").scaledToHeight(100, Qt::SmoothTransformation));
 }
 
 
@@ -59,7 +54,8 @@ SVPreferencesPageStyle::~SVPreferencesPageStyle() {
 void SVPreferencesPageStyle::updateUi() {
 	SVSettings & s = SVSettings::instance();
 	// transfer data to Ui
-	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
+	m_ui->radioButtonDark->setChecked(s.m_theme == SVSettings::TT_Dark);
+
 	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
 	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
 	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
@@ -123,20 +119,15 @@ void SVPreferencesPageStyle::on_checkBoxScaling_toggled(bool useScaling) {
 	QMessageBox::information(this, tr("High Resolution Scaling"), tr("Scaling of Interface will apply after program restart.") );
 }
 
-
-void SVPreferencesPageStyle::on_comboBoxTheme_currentIndexChanged(int currentIdx) {
+void SVPreferencesPageStyle::on_radioButtonDark_toggled(bool useDarkTheme) {
 	// no checks necessary
 	SVStyle & style = SVStyle::instance();
 	SVSettings & s = SVSettings::instance();
 
-	SVSettings::ThemeType type = (SVSettings::ThemeType)m_ui->comboBoxTheme->itemData(currentIdx).toInt();
-
-	switch (type) {
-	case SVSettings::TT_White: s.m_theme = SVSettings::TT_White; break;
-	case SVSettings::TT_Dark:  s.m_theme = SVSettings::TT_Dark; break;
-	case SVSettings::NUM_TT:
-		break;
-	}
+	if (useDarkTheme)
+		s.m_theme = SVSettings::TT_Dark;
+	else
+		s.m_theme = SVSettings::TT_White;
 
 	style.setStyle(s.m_theme);
 

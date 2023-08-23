@@ -16,34 +16,88 @@
      <property name="title">
       <string>Theme</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
-      <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
        <widget class="QLabel" name="labelTheme">
         <property name="text">
          <string>Choose Theme:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxTheme">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>3</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="minimumSize">
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>0</width>
-          <height>0</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
-       </widget>
+       </spacer>
       </item>
-      <item row="1" column="1">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="labelWhitePreview">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonWhite">
+          <property name="text">
+           <string>white</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QLabel" name="labelDarkPreview">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonDark">
+          <property name="text">
+           <string>dark</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>High DPI Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="checkBoxScaling">
         <property name="text">
-         <string>Use Scaling for high resolution displays</string>
+         <string>Use scaling for high resolution displays</string>
         </property>
        </widget>
       </item>
