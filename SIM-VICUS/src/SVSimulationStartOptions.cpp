@@ -8,7 +8,7 @@
 #include "SVMainWindow.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVSimulationOutputOptions.h"
-#include "SVView3DDialog.h"
+#include "SVView3DCalculation.h"
 
 #include <QProcess>
 #include <QProgressDialog>
@@ -261,6 +261,13 @@ void SVSimulationStartOptions::on_lineEditDuration_editingFinishedSuccessfully()
 	undo->push();
 }
 
+void selectChildSurfaces(const VICUS::Surface &s, std::vector<const VICUS::Surface*> &selectedSurfaces) {
+	for (const VICUS::Surface &cs : s.childSurfaces()) {
+		selectedSurfaces.push_back(&cs);
+		selectChildSurfaces(cs, selectedSurfaces);
+	}
+}
+
 
 bool SVSimulationStartOptions::startSimulation(bool testInit, bool forceForegroundProcess, bool waitForFinishedProcess) {
 
@@ -270,7 +277,7 @@ bool SVSimulationStartOptions::startSimulation(bool testInit, bool forceForegrou
 	// Calculate view factors if required
 
 	// we collect surfaces with long wave radiation on the inner side
-	std::list<const VICUS::Surface*> surfacesWithLWRad;
+	std::vector<const VICUS::Surface*> surfacesWithLWRad;
 
 	const SVDatabase &db = SVSettings::instance().m_db;
 
@@ -296,30 +303,18 @@ bool SVSimulationStartOptions::startSimulation(bool testInit, bool forceForegrou
 
 	// ask user if view factors shall be calculated
 	if (!surfacesWithLWRad.empty()) {
-
-		// TODO Stephan: hier nicht alle auswählen? Mit den oben ausgewählten bekomme ich aber einen Fehler
-
-		std::list<const VICUS::Surface*> surfaces;
-		for (const VICUS::Building &b: project().m_buildings) {
-			for (const VICUS::BuildingLevel &bl: b.m_buildingLevels) {
-				for (const VICUS::Room &r: bl.m_rooms) {
-					for (const VICUS::Surface &s: r.m_surfaces) {
-						surfaces.push_back(&s);
-					}
-				}
-			}
-		}
-
-		QMessageBox::StandardButton res = QMessageBox::question(this, "Calculate view factors",
-																"Long wave radiation was defined at some wall inner surfaces."
+		QMessageBox::StandardButton res = QMessageBox::question(this, "View-factor calculation with View3D",
+																"Long wave radiation boundary conditions have been defined at some surfaces."
+																" For correct energy calculation view-factors need to be pre-calculated."
 																" Calculate view factors now?"
-																"\n\nYou may skip, if view factors have been calculated with previously identical geometry.");
+																"\n\nYou may skip, if view-factors have been calculated previously with unchanged geometry. "
+																"If geometry changed please recalculate now.");
 		if (res == QMessageBox::Yes) {
 			try {
-				SVView3DDialog v3d;
-				v3d.exportView3d(surfaces, this);
+				SVView3DCalculation::calculateViewFactors(this, surfacesWithLWRad);
 			} catch (IBK::Exception &ex) {
-				QMessageBox::critical(this, "Error", ex.what());
+				QMessageBox::critical(this, tr("Error in view-factor calculation"),
+									  tr("View-factors could not be calculated. Please see error below\n%1").arg(ex.what()));
 			}
 		}
 	}
