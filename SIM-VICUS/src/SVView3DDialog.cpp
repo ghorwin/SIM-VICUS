@@ -39,8 +39,6 @@
 
 #include "SVUndoModifySurfaceGeometry.h"
 
-#include "SVMainWindow.h"
-
 #include "IBK_FileReader.h"
 
 #include <QString>
@@ -51,27 +49,16 @@
 
 #include <fstream>
 
-void SVView3DDialog::exportView3d() {
+
+void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces, QWidget * parent) {
 
 	FUNCID(SVView3DDialog::exportView3d);
 
-	// TODO : Stephan, revise error handling concept any error occurring in this function should result
-	//        in a QMessageBox::critical(), no exceptions must leave this function.
-
-	// We take all our selected surfaces
-	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_All);
-
-	//exit if no surfaces were selected
-
-	if(m_selSurfaces.size() == 0){
-		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("Please select at least one room in order to pre-calculate view factors´!"));
-		return;
-	}
-
+	// TODO Stephan: child surfaces ....
 
 	// calculate the number of rooms that will be processed
 	std::set<unsigned int> roomIds;
-	for (const VICUS::Surface *surf : m_selSurfaces) {
+	for (const VICUS::Surface *surf : selSurfaces) {
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(surf->m_parent);
 		if (r != nullptr){
 			roomIds.insert(r->m_id);
@@ -87,22 +74,23 @@ void SVView3DDialog::exportView3d() {
 		for(const VICUS::Surface & s : r->m_surfaces){
 			// check if the surface was selected
 			bool found = false;
-			for(const VICUS::Surface * selS : m_selSurfaces){
+			for(const VICUS::Surface * selS : selSurfaces){
 				if(s.m_id == selS->m_id){
 					found = true;
 				}
 			}
 			if(!found){
-				QMessageBox::critical(&SVMainWindow::instance(), QString(),
-									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
-				return;
+				selSurfaces.push_back(&s);
+//				QMessageBox::critical(parent, QString(),
+//									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
+//				return;
 			}
 		}
 	}
 
 
 	//show a progressDialog
-	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, &SVMainWindow::instance());
+	QProgressDialog dlg(tr("Calculating view factors"), tr("Abort"), 0, numberOfRooms, parent);
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setMinimumDuration(1000);
 
@@ -119,7 +107,9 @@ void SVView3DDialog::exportView3d() {
 	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFactorMap;
 
 
-	for (const VICUS::Surface *surf : m_selSurfaces) {
+	for (const VICUS::Surface *surf : selSurfaces) {
+
+		qDebug() << surf->m_id;
 
 		// We iterate through all selected surfaces
 		// then we triangulate them and compose our View3D Objects
@@ -413,7 +403,7 @@ void SVView3DDialog::exportView3d() {
 				log += in.readLine() + "\n";
 			}
 
-			QMessageBox box(&SVMainWindow::instance());
+			QMessageBox box(parent);
 			box.setDetailedText(QString::fromStdString(log.toStdString()));
 			box.setIcon(QMessageBox::Critical);
 			box.setText(tr("Error running view-factor calculcation with View3D for room '%2'. See Error-log below.").arg(room.m_displayName));
@@ -435,15 +425,16 @@ void SVView3DDialog::exportView3d() {
 
 	dlg.hide();
 	if(!dlg.wasCanceled()){
-		QMessageBox::information(&SVMainWindow::instance(), QString(), tr("View factors have been calculated for all selected rooms."));
+		QMessageBox::information(parent, QString(), tr("View factors have been calculated for all selected rooms."));
 		// trigger the undo action with the modified surfaces
 		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), m_modifiedSurfaces );
 		undo->push();
 	} else {
-		QMessageBox::critical(&SVMainWindow::instance(), QString(), tr("Calculation of View factors was canceled."));
+		QMessageBox::critical(parent, QString(), tr("Calculation of View factors was canceled."));
 	}
 
 }
+
 
 // return the object area depending if its a surface or subsurface
 double areaFromVicusObjectId(unsigned int id) {
@@ -460,6 +451,7 @@ double areaFromVicusObjectId(unsigned int id) {
 	return -1;
 }
 
+
 void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 	FUNCID(SVView3DDialog::readView3dResults);
 
@@ -471,7 +463,7 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 
 	}
 	catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Could not read View3D Results."), FUNC_ID);
+		throw IBK::Exception(ex, IBK::FormatString("Could not read View3D Results."), FUNC_ID);
 	}
 
 	std::vector<double> area(v3dRoom.m_extendedSurfaces.size() );

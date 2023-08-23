@@ -194,5 +194,6 @@
         <file>gfx/actions/play_simstart.png</file>
         <file>../../../../Users/Hauke/Downloads/play-button.png</file>
         <file>gfx/actions/play-button.png</file>
+        <file>gfx/actions/simulation-temperature.png</file>
     </qresource>
 </RCC>

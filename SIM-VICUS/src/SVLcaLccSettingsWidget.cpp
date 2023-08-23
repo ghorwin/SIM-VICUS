@@ -1,5 +1,5 @@
 #include "SVLcaLccSettingsWidget.h"
-#include "ui_SVLcaLccSettingsDialog.h"
+#include "ui_SVLcaLccSettingsWidget.h"
 
 #include "IBKMK_3DCalculations.h"
 

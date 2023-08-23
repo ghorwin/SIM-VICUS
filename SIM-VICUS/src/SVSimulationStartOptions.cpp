@@ -8,6 +8,7 @@
 #include "SVMainWindow.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVSimulationOutputOptions.h"
+#include "SVView3DDialog.h"
 
 #include <QProcess>
 #include <QProgressDialog>
@@ -265,6 +266,66 @@ bool SVSimulationStartOptions::startSimulation(bool testInit, bool forceForegrou
 
 	// we save the project before starting simulation, everything is up to date now
 	SVMainWindow::instance().saveProject();
+
+	// Calculate view factors if required
+
+	// we collect surfaces with long wave radiation on the inner side
+	std::list<const VICUS::Surface*> surfacesWithLWRad;
+
+	const SVDatabase &db = SVSettings::instance().m_db;
+
+	for (const VICUS::ComponentInstance &ci : project().m_componentInstances) {
+		const VICUS::Component *comp = db.m_components[ci.m_idComponent];
+		Q_ASSERT(comp!=nullptr);
+		const VICUS::BoundaryCondition *bcA = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+		if ( bcA != nullptr &&
+			 bcA->m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
+			 ci.m_sideASurface != nullptr )
+			surfacesWithLWRad.push_back(ci.m_sideASurface);
+
+		const VICUS::BoundaryCondition *bcB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+		if ( bcB != nullptr &&
+			 bcB->m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT &&
+			 ci.m_sideBSurface != nullptr )
+			surfacesWithLWRad.push_back(ci.m_sideBSurface);
+	}
+	qDebug() << "selected surfs";
+	qDebug() << surfacesWithLWRad.size();
+	for (const VICUS::Surface *surf: surfacesWithLWRad)
+		qDebug() << surf->m_displayName << "   "  << surf->m_id;
+
+	// ask user if view factors shall be calculated
+	if (!surfacesWithLWRad.empty()) {
+
+		// TODO Stephan: hier nicht alle auswählen? Mit den oben ausgewählten bekomme ich aber einen Fehler
+
+		std::list<const VICUS::Surface*> surfaces;
+		for (const VICUS::Building &b: project().m_buildings) {
+			for (const VICUS::BuildingLevel &bl: b.m_buildingLevels) {
+				for (const VICUS::Room &r: bl.m_rooms) {
+					for (const VICUS::Surface &s: r.m_surfaces) {
+						surfaces.push_back(&s);
+					}
+				}
+			}
+		}
+
+		QMessageBox::StandardButton res = QMessageBox::question(this, "Calculate view factors",
+																"Long wave radiation was defined at some wall inner surfaces."
+																" Calculate view factors now?"
+																"\n\nYou may skip, if view factors have been calculated with previously identical geometry.");
+		if (res == QMessageBox::Yes) {
+			try {
+				SVView3DDialog v3d;
+				v3d.exportView3d(surfaces, this);
+			} catch (IBK::Exception &ex) {
+				QMessageBox::critical(this, "Error", ex.what());
+			}
+		}
+	}
+
+
+	// Actual simulation start
 
 	QString resultPath;
 	if (!generateNANDRAD(resultPath))

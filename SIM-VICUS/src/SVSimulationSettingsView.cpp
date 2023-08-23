@@ -25,7 +25,7 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	// only if separate QLabels and QIcons are added, but that brings other problems...
 	addCustomWidgetToListWidget(tr(" Climate & Location"), ":/gfx/actions/Location_Climate_32x32.svg");
 	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/shades.png");
-	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/32x32/sim_start.png");
+	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/simulation-temperature.png");
 	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
 
 	QFont fnt;

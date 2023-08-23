@@ -32,6 +32,7 @@
 #include "SVMainWindow.h"
 #include "SVPreferencesDialog.h"
 #include "SVPreferencesPageStyle.h"
+#include "SVSettings.h"
 #include "SVView3DDialog.h"
 
 #include <VICUS_Project.h>
@@ -239,8 +240,23 @@ void SVSimulationModelOptions::onStyleChanged() {
 
 
 void SVSimulationModelOptions::on_pushButtonPrecalculateViewFactors_clicked() {
-	// TODO Stephan: select all surfaces that need view factors, or we calculate all surfaces?
-	SVView3DDialog v3d;
-	v3d.exportView3d();
+
+	std::list<const VICUS::Surface*> surfaces;
+	for (const VICUS::Building &b: project().m_buildings) {
+		for (const VICUS::BuildingLevel &bl: b.m_buildingLevels) {
+			for (const VICUS::Room &r: bl.m_rooms) {
+				for (const VICUS::Surface &s: r.m_surfaces) {
+					surfaces.push_back(&s);
+				}
+			}
+		}
+	}
+
+	try {
+		SVView3DDialog v3d;
+		v3d.exportView3d(surfaces, this);
+	} catch (IBK::Exception &ex) {
+		QMessageBox::critical(this, "Error", ex.what());
+	}
 }
 

@@ -39,7 +39,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_4"/>
      <widget class="QWidget" name="page_3"/>
@@ -74,14 +74,14 @@
            <string>Start Simulation</string>
           </attribute>
          </widget>
-         <widget class="QWidget" name="tabSimulationModelOptions">
-          <attribute name="title">
-           <string>Model settings</string>
-          </attribute>
-         </widget>
          <widget class="QWidget" name="tabSimulationOutputs">
           <attribute name="title">
            <string>Outputs</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tabSimulationModelOptions">
+          <attribute name="title">
+           <string>Model settings</string>
           </attribute>
          </widget>
          <widget class="QWidget" name="tabSimulationPerformanceOptions">

@@ -38,7 +38,7 @@
 #include <QDialog>
 
 /*! A dialog to export View3D data, run the external View3D tool and read back the results. */
-class SVView3DDialog : public QDialog {
+class SVView3DDialog : public QWidget {
 	Q_OBJECT
 public:
 
@@ -81,7 +81,7 @@ public:
 		{
 		}
 
-        unsigned int					m_id;			///> id of surface
+		unsigned int					m_id;			///> id of surface
 
 		unsigned int					m_vicusId;		///> corresponding vicus id
 
@@ -146,13 +146,10 @@ public:
 
 
 	/*! Exports a View3D File */
-	void exportView3d();
+	void exportView3d(std::list<const VICUS::Surface *> selSurfaces, QWidget *parent);
 
 	/*! Reads an View3D Log file with results */
 	void readView3dResults(IBK::Path fname, view3dRoom &v3dRoom);
-
-
-	std::vector<const VICUS::Surface*>						m_selSurfaces;					///> Vector with all selected surfaces in project
 
 
 	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms

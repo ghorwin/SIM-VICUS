@@ -1,11 +1,14 @@
 #include "SVLcaLccResultsWidget.h"
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
-#include "QtExt_Conversions.h"
-#include "ui_SVLcaLccResultsDialog.h"
+#include "ui_SVLcaLccResultsWidget.h"
+
+#include <QtExt_Conversions.h>
+
+#include <VICUS_KeywordList.h>
 
 #include <QTreeWidgetItem>
-#include <VICUS_KeywordList.h>
+
 
 /*! Converts the material to the referenced reference quantity from the epd.
 	\param layerThickness Thickness of layer in m
