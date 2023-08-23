@@ -277,7 +277,7 @@ void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	// we cast to non-const only here
 	SVSimulationStartOptions *simStart = const_cast<SVSimulationStartOptions*>(m_simulationStartOptions);
 	Q_ASSERT(simStart!=nullptr);
-	bool succ = simStart->startSimulation(true, true, true); // test-init and force background process and wait for it to finish
+	bool succ = simStart->startSimulation(true, true, true, false); // test-init and force background process and wait for it to finish, but don't calculate view factors
 	if (!succ) {
 		simStart->showScreenLog();
 		return; // failure, no change in dialog's state
