@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVView3DDialogH
-#define SVView3DDialogH
+#ifndef SVView3DCalculationH
+#define SVView3DCalculationH
 
 #include <vector>
 
@@ -38,7 +38,7 @@
 #include <QDialog>
 
 /*! A dialog to export View3D data, run the external View3D tool and read back the results. */
-class SVView3DDialog : public QWidget {
+class SVView3DCalculation : QWidget {
 	Q_OBJECT
 public:
 
@@ -130,7 +130,8 @@ public:
 
 		view3dRoom(unsigned int roomId, QString displayName) :
 			m_roomId(roomId),
-			m_displayName(displayName)
+			m_displayName(displayName),
+			m_offset(1)
 		{
 		}
 
@@ -142,21 +143,20 @@ public:
 		std::vector<view3dVertex>				m_vertexes;					///> Vector with all vertexes
 
 		std::vector<view3dExtendedSurfaces>		m_extendedSurfaces;			///> Extended surfaces with all data
+
+		unsigned int							m_offset;					///> offset needed for triangle combination in surfaces
 	};
 
 
-	/*! Exports a View3D File */
-	void exportView3d(std::vector<const VICUS::Surface *> selSurfaces, QWidget *parent);
+	/*! Calculates view-factors using View3D
+		\param parent parent widget, needed for modal progress bar and dialog
+		\param selSurfaces Vector with pointers to selected surfaces
+	*/
+	static void calculateViewFactors(QWidget *parent, std::vector<const VICUS::Surface *> selSurfaces);
 
+private:
 	/*! Reads an View3D Log file with results */
-	void readView3dResults(IBK::Path fname, view3dRoom &v3dRoom);
-
-
-	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
-
-
-	std::vector<VICUS::Surface>								m_modifiedSurfaces;				///>modified surfaces for the Undo Action
-
+	static void readView3dResults(std::vector<VICUS::Surface> &modifiedSurfaces, IBK::Path fname, view3dRoom &v3dRoom);
 };
 
-#endif // SVView3DDialogH
+#endif // SVView3DCalculationH
