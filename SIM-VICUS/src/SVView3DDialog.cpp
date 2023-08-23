@@ -50,7 +50,7 @@
 #include <fstream>
 
 
-void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces, QWidget * parent) {
+void SVView3DDialog::exportView3d(std::vector<const VICUS::Surface *> selSurfaces, QWidget * parent) {
 
 	FUNCID(SVView3DDialog::exportView3d);
 
@@ -74,15 +74,17 @@ void SVView3DDialog::exportView3d(std::list<const VICUS::Surface *> selSurfaces,
 		for (const VICUS::Surface & s : r->m_surfaces){
 			// check if the surface was selected
 			bool found = false;
-			for (const VICUS::Surface * selS : m_selSurfaces){
+			for (const VICUS::Surface * selS : selSurfaces){
 				if(s.m_id == selS->m_id){
 					found = true;
 				}
 			}
 			if (!found) {
-				QMessageBox::critical(&SVMainWindow::instance(), QString(),
-									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
-				return;
+				selSurfaces.push_back(&s);
+
+//				QMessageBox::critical(&SVMainWindow::instance(), QString(),
+//									  tr("All surfaces of a room must be selected for view factor calculation! Surface '%1' of room '%2' is not selected").arg(s.m_displayName).arg(r->m_displayName));
+//				return;
 			}
 		}
 	}

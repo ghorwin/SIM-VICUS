@@ -146,7 +146,7 @@ public:
 
 
 	/*! Exports a View3D File */
-	void exportView3d(std::list<const VICUS::Surface *> selSurfaces, QWidget *parent);
+	void exportView3d(std::vector<const VICUS::Surface *> selSurfaces, QWidget *parent);
 
 	/*! Reads an View3D Log file with results */
 	void readView3dResults(IBK::Path fname, view3dRoom &v3dRoom);
