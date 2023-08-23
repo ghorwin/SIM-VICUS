@@ -16,6 +16,12 @@
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
     <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>220</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maximumSize">
       <size>
        <width>200</width>
