@@ -33,7 +33,7 @@
 #include "SVPreferencesDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVSettings.h"
-#include "SVView3DDialog.h"
+#include "SVView3DCalculation.h"
 
 #include <VICUS_Project.h>
 
@@ -241,7 +241,7 @@ void SVSimulationModelOptions::onStyleChanged() {
 
 void SVSimulationModelOptions::on_pushButtonPrecalculateViewFactors_clicked() {
 
-	std::list<const VICUS::Surface*> surfaces;
+	std::vector<const VICUS::Surface*> surfaces;
 	for (const VICUS::Building &b: project().m_buildings) {
 		for (const VICUS::BuildingLevel &bl: b.m_buildingLevels) {
 			for (const VICUS::Room &r: bl.m_rooms) {
@@ -253,8 +253,7 @@ void SVSimulationModelOptions::on_pushButtonPrecalculateViewFactors_clicked() {
 	}
 
 	try {
-		SVView3DDialog v3d;
-		v3d.exportView3d(surfaces, this);
+		SVView3DCalculation::calculateViewFactors(this, surfaces);
 	} catch (IBK::Exception &ex) {
 		QMessageBox::critical(this, "Error", ex.what());
 	}
