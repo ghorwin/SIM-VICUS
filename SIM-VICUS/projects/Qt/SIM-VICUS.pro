@@ -634,7 +634,8 @@ CODECFORSRC = UTF-8
 RESOURCES += \
 	../../resources/SIM-VICUS.qrc \
 	../../resources/qdarkstyle/style.qrc \
-	../../src/shaders/shaders.qrc
+	../../src/shaders/shaders.qrc \
+	../../resources/icons.qrc
 
 DISTFILES += \
     ../../resources/style/light/lightstyle.qss

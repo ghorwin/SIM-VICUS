@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -223,8 +223,8 @@
   </widget>
   <action name="actionFileNew">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filenew_32x32.png</normaloff>:/gfx/actions/32x32/filenew_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-new-file-80.png</normaloff>:/gfx/icons8/icons8-new-file-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;New...</string>
@@ -235,8 +235,8 @@
   </action>
   <action name="actionFileOpen">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/fileopen_32x32.png</normaloff>:/gfx/actions/32x32/fileopen_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-ordner-öffnen-80.png</normaloff>:/gfx/icons8/icons8-ordner-öffnen-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -247,8 +247,8 @@
   </action>
   <action name="actionFileSave">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/filesave_32x32.png</normaloff>:/gfx/actions/32x32/filesave_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-save-80.png</normaloff>:/gfx/icons8/icons8-save-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -792,8 +792,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/3d-cube.png</normaloff>:/gfx/actions/3d-cube.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-3d-80.png</normaloff>:/gfx/icons8/icons8-3d-80.png</iconset>
    </property>
    <property name="text">
     <string>Geometry View</string>
@@ -807,8 +807,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/sim_start.png</normaloff>:/gfx/actions/32x32/sim_start.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-tune-80.png</normaloff>:/gfx/icons8/icons8-tune-80.png</iconset>
    </property>
    <property name="text">
     <string>Simulation Settings</string>
@@ -822,8 +822,8 @@
   </action>
   <action name="actionOpenPostProcessing">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-graph-80.png</normaloff>:/gfx/icons8/icons8-graph-80.png</iconset>
    </property>
    <property name="text">
     <string>External post processing</string>
@@ -841,6 +841,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

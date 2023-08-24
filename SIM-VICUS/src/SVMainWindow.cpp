@@ -739,11 +739,11 @@ void SVMainWindow::setup() {
 	// *** setup tool bar (add actions for undo and redo) ***
 
 	m_undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
-	m_undoAction->setIcon(QIcon(":/gfx/actions/24x24/undo.png"));
+	m_undoAction->setIcon(QIcon(":/gfx/icons8/icons8-back-80.png"));
 	m_undoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Z));
 	m_redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
 	m_redoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-	m_redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
+	m_redoAction->setIcon(QIcon(":/gfx/icons8/icons8-forward-80.png"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
 	QList<QAction*> acts = m_ui->menuEdit->actions();
