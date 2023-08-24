@@ -263,7 +263,7 @@ void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3
 }
 
 
-void Polygon3D::flip() {
+IBKMK::Vector2D Polygon3D::flip() {
 	IBK_ASSERT(isValid());
 	m_normal = -1.0*m_normal;
 	// we need to swap x and y axes to keep right-handed coordinate system
@@ -288,6 +288,8 @@ void Polygon3D::flip() {
 	m_polyline.setVertexes(vertexes2DNew);
 	m_dirty = true;
 	vertexes();
+
+	return offset2D;
 }
 
 

@@ -129,7 +129,7 @@ public:
 	/*! Inverts normal vector (this is a convenience function for setting a new orientation
 		with negated normal vector.
 	*/
-	void flip();
+	Vector2D flip();
 
 
 	// Calculation functions
