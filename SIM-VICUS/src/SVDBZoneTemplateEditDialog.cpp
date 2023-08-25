@@ -313,15 +313,20 @@ void SVDBZoneTemplateEditDialog::selectItemById(unsigned int id) {
 
 
 void SVDBZoneTemplateEditDialog::on_treeView_doubleClicked(const QModelIndex &index) {
-	if (m_ui->pushButtonSelect->isVisible() && index.isValid()) {
-		QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
-		if (sourceIndex.internalPointer() == nullptr)
+	if (!index.isValid())
+		return;
+
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
+	// if we are in "select" mode and have a top level template (identified through nullptr),
+	// then double click means accpt
+	if (sourceIndex.internalPointer() == nullptr) {
+		if (m_ui->pushButtonSelect->isVisible())
 			accept();
 	}
-	else {
-		// we can edit the current sub-template, onCurrentIndexChanged() has been excecuted already
-		m_editWidget->on_toolButtonSelectSubComponent_clicked();
-	}
+	// else if we have a sub template, then double click means open the sub template
+	else
+		m_editWidget->on_toolButtonSelectSubComponent_clicked(); // we can edit the current sub-template, onCurrentIndexChanged() has been excecuted already
+
 }
 
 

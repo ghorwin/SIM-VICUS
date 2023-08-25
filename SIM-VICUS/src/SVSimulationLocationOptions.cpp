@@ -156,6 +156,9 @@ void SVSimulationLocationOptions::updateUi(bool updatingPlotsRequired) {
 	m_ui->filepathClimateDataFile->setEnabled(!climateFromDB);
 	m_ui->widgetUserPathOptions->setEnabled(!climateFromDB);
 
+	m_ui->radioButtonUserPathAbsolute->setEnabled(!climateFromDB);
+	m_ui->radioButtonUserPathRelative->setEnabled(!climateFromDB);
+
 	const SVClimateFileInfo * climateInfoPtr = nullptr;
 	if (climateFromDB) {
 		QModelIndex srcIndex = m_filterModel->mapToSource(m_ui->tableViewClimateFiles->currentIndex());
@@ -377,11 +380,11 @@ void SVSimulationLocationOptions::updatePlots(const SVClimateFileInfo * climateI
 
 
 void SVSimulationLocationOptions::formatPlots(const QDateTime & start, const QDateTime & end, bool init){
-	formatQwtPlot(init, *m_ui->plotTemp, start, end, "Ambient Temperature", "Temperature [C]", -20, 40);
-	formatQwtPlot(init, *m_ui->plotRadLongWave, start, end, "Long Wave Radiation", "LW Radiation [W/m²]", 0, 1000);
-	formatQwtPlot(init, *m_ui->plotRadShortWave, start, end, "Shortwave Radiation", "SW Radiation [W/m²]", 0, 1400);
-	formatQwtPlot(init, *m_ui->plotWind, start, end, "Wind speed", "Velocity [m/s]", 0, 40);
-	formatQwtPlot(init, *m_ui->plotRelHum, start, end, "Relative Humidity", "Rel. Humidity [%]", 0, 100);
+	formatQwtPlot(init, *m_ui->plotTemp, start, end, "Ambient Temperature", "T [C]", -20, 40);
+	formatQwtPlot(init, *m_ui->plotRadLongWave, start, end, "Long Wave Radiation", "I [W/m²]", 0, 1000);
+	formatQwtPlot(init, *m_ui->plotRadShortWave, start, end, "Shortwave Radiation", "I [W/m²]", 0, 1400);
+	formatQwtPlot(init, *m_ui->plotWind, start, end, "Wind speed", "v [m/s]", 0, 40);
+	formatQwtPlot(init, *m_ui->plotRelHum, start, end, "Relative Humidity", "r.H. [%]", 0, 100);
 }
 
 
