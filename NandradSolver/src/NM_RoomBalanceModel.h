@@ -62,6 +62,9 @@ public:
 		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room'
 		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)'
 		R_NetworkHeatLoad,									// Keyword: NetworkHeatLoad								[W]		'Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume)'
+		R_EquipmentElectricalPower,							// Keyword: EquipmentElectricalPower					[W]		'Equipment electrical power inside the room'
+		R_LightingElectricalPower,							// Keyword: LightingElectricalPower						[W]		'Lighting electrical power inside the room'
+		R_TotalElectricalPower,								// Keyword: TotalElectricalPower						[W]		'Total electrical power from equipment and lighting inside the room'
 		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources'
 		NUM_R
 	};
@@ -183,6 +186,10 @@ private:
 	unsigned int									m_internalLoadsModelCount = 0;
 	/*! Number of internal moisture loads model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_internalMoistureLoadsModelCount = 0;
+	/*! Value reference for natural equipment loads in [W] (positive if into room). */
+	const double *									m_equipmentElPowerValueRef = nullptr;
+	/*! Value reference for natural equipment loads in [W] (positive if into room). */
+	const double *									m_lightingElPowerValueRef = nullptr;
 	/*! Value reference for natural equipment loads in [W] (positive if into room). */
 	const double *									m_equipmentLoadValueRef = nullptr;
 	/*! Value reference for natural person loads in [W] (positive if into room). */

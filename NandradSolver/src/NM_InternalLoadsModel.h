@@ -44,6 +44,9 @@ class InternalLoadsModel : public AbstractModel, public AbstractStateDependency 
 public:
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
+		VVR_TotalElectricalPower,				// Keyword: TotalElectricalPower				[W]		'Total electrical power from equipment and lighting per zone'
+		VVR_EquipmentElectricalPower,			// Keyword: EquipmentElectricalPower			[W]		'Electrical power due to electric equipment usage per zone'
+		VVR_LightingElectricalPower,			// Keyword: LightingElectricalPower				[W]		'Electrical power due to lighting per zone'
 		VVR_ConvectiveEquipmentHeatLoad,		// Keyword: ConvectiveEquipmentHeatLoad			[W]		'Convective heat load due to electric equipment usage per zone'
 		VVR_ConvectivePersonHeatLoad,			// Keyword: ConvectivePersonHeatLoad			[W]		'Convective heat load due to person occupance per zone'
 		VVR_ConvectiveLightingHeatLoad,			// Keyword: ConvectiveLightingHeatLoad			[W]		'Convective lighting heat load per zone'
