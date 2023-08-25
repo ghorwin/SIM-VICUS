@@ -177,8 +177,6 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 			case ZoneTemplate::NUM_ST: ; // just to make compiler happy
 		}
 	}
-	if (count == 0)
-		return false; // must have at least one subtype
 
 	return true;
 }
