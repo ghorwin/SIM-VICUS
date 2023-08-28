@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void Drawing::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(Drawing::readXMLPrivate);
+void Drawing::readXML(const TiXmlElement * element) {
+	FUNCID(Drawing::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -49,9 +49,9 @@ void Drawing::readXMLPrivate(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName.setEncodedString(attrib->ValueStr());
-			else if (attribName == "color")
-				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -62,13 +62,7 @@ void Drawing::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Radius")
-				m_radius = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "StartAngle")
-				m_startAngle = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "EndAngle")
-				m_endAngle = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "Origin") {
+			if (cName == "Origin") {
 				try {
 					m_origin = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
@@ -82,9 +76,9 @@ void Drawing::readXMLPrivate(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "Block")
+					if (c2Name != "DrawingLayer::Block")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Block obj;
+					DrawingLayer::Block obj;
 					obj.readXML(c2);
 					m_blocks.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -202,8 +196,6 @@ void Drawing::readXMLPrivate(const TiXmlElement * element) {
 				m_zCounter = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "DefaultColor")
 				m_defaultColor.setNamedColor(QString::fromStdString(c->GetText()));
-			else if (cName == "IBKMK::Vector2D")
-				m_center.readXML(c);
 			else if (cName == "RotationMatrix")
 				m_rotationMatrix.readXML(c);
 			else {
@@ -220,22 +212,17 @@ void Drawing::readXMLPrivate(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Drawing::writeXMLPrivate(TiXmlElement * parent) const {
+TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Drawing");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName.encodedString());
-	if (m_color.isValid())
-		e->SetAttribute("color", m_color.name().toStdString());
-
-	m_center.writeXML(e);
-	TiXmlElement::appendSingleAttributeElement(e, "Radius", nullptr, std::string(), IBK::val2string<double>(m_radius));
-	TiXmlElement::appendSingleAttributeElement(e, "StartAngle", nullptr, std::string(), IBK::val2string<double>(m_startAngle));
-	TiXmlElement::appendSingleAttributeElement(e, "EndAngle", nullptr, std::string(), IBK::val2string<double>(m_endAngle));
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_visible != Drawing().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), m_origin.toString());
 
 	m_rotationMatrix.writeXML(e);
@@ -245,7 +232,7 @@ TiXmlElement * Drawing::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Blocks");
 		e->LinkEndChild(child);
 
-		for (std::vector<Block>::const_iterator it = m_blocks.begin();
+		for (std::vector<DrawingLayer::Block>::const_iterator it = m_blocks.begin();
 			it != m_blocks.end(); ++it)
 		{
 			it->writeXML(child);
