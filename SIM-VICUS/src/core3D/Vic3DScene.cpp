@@ -1849,11 +1849,17 @@ void Scene::generateNetworkGeometry() {
 }
 
 const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
-	const VICUS::Drawing::DrawingLayer *layer = obj.m_parentLayer;
+	const VICUS::DrawingLayer *layer = obj.m_parentLayer;
 
 	Q_ASSERT(layer != nullptr);
-
 	QColor color = obj.color().isValid() ? obj.color() : SVStyle::instance().m_defaultDrawingColor;
+
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		qDebug() << "Lightness: " << color.lightness();
+		if (color.lightness() < 20)
+			color = Qt::white;
+	}
+
 	if (!layer->m_visible || layer->m_selected)
 		color.setAlpha(0);
 
@@ -1885,15 +1891,19 @@ void Scene::generate2DDrawingGeometry() {
 
 		for (const VICUS::Drawing::Line & line : drawing.m_lines){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(line.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(line.m_parentLayer);
 
 			if (dl == nullptr)
 				continue;
 
 			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
 			double zCoordinate = line.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing.m_origin.m_x, line.m_line.m_p1.m_y + drawing.m_origin.m_y, zCoordinate);
-			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing.m_origin.m_x, line.m_line.m_p2.m_y + drawing.m_origin.m_y, zCoordinate);
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_point1.m_x + drawing.m_origin.m_x,
+												 line.m_point1.m_y + drawing.m_origin.m_y,
+												 zCoordinate);
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_point2.m_x + drawing.m_origin.m_x,
+												 line.m_point2.m_y + drawing.m_origin.m_y,
+												 zCoordinate);
 
 			// scale Vector with selected unit
 			p1 *= drawing.m_scalingFactor;
@@ -1914,9 +1924,9 @@ void Scene::generate2DDrawingGeometry() {
 					m_drawingGeometryObject.m_indexBufferData);
 		}
 
-		for(const VICUS::Drawing::Point & point : drawing.m_points){
+		for (const VICUS::Drawing::Point & point : drawing.m_points){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(point.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(point.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
@@ -1954,9 +1964,9 @@ void Scene::generate2DDrawingGeometry() {
 					 m_drawingGeometryObject.m_indexBufferData, false);
 		}
 
-		for(const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
+		for (const VICUS::Drawing::PolyLine & polyline : drawing.m_polylines){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(polyline.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(polyline.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
@@ -1983,17 +1993,17 @@ void Scene::generate2DDrawingGeometry() {
 						m_drawingGeometryObject.m_indexBufferData);
 		}
 
-		for(const VICUS::Drawing::Circle & circle : drawing.m_circles){
+		for (const VICUS::Drawing::Circle & circle : drawing.m_circles){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(circle.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(circle.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> circlePoints;
 
-			for(int i = 0; i < SEGMENT_COUNT_CIRCLE; i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_points[i].m_x + drawing.m_origin.m_x,
-													circle.m_points[i].m_y + drawing.m_origin.m_y,
+			for(unsigned int i = 0; i < SEGMENT_COUNT_CIRCLE; i++){
+				IBKMK::Vector3D p = IBKMK::Vector3D(circle.points()[i].m_x + drawing.m_origin.m_x,
+													circle.points()[i].m_y + drawing.m_origin.m_y,
 													circle.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
@@ -2012,16 +2022,17 @@ void Scene::generate2DDrawingGeometry() {
 
 		}
 
-		for(const VICUS::Drawing::Arc & arc : drawing.m_arcs){
+		for (const VICUS::Drawing::Arc & arc : drawing.m_arcs){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(arc.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(arc.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> arcPoints;
-			for(unsigned int i = 0; i < arc.m_points.size(); i++){
-				IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_points[i].m_x + drawing.m_origin.m_x,
-													arc.m_points[i].m_y + drawing.m_origin.m_y,
+			const std::vector<IBKMK::Vector2D> arcPoints2D = arc.points();
+			for (unsigned int i = 0; i < arcPoints2D.size(); i++){
+				IBKMK::Vector3D p = IBKMK::Vector3D(arcPoints2D[i].m_x + drawing.m_origin.m_x,
+													arcPoints2D[i].m_y + drawing.m_origin.m_y,
 													arc.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
@@ -2041,15 +2052,15 @@ void Scene::generate2DDrawingGeometry() {
 
 		for (const VICUS::Drawing::Ellipse & ellipse : drawing.m_ellipses){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(ellipse.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(ellipse.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
 			std::vector<IBKMK::Vector3D> ellipsePoints;
 			for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; i++) {
 
-				IBKMK::Vector3D p = IBKMK::Vector3D(ellipse.m_points[i].m_x + drawing.m_origin.m_x,
-													ellipse.m_points[i].m_y + drawing.m_origin.m_y,
+				IBKMK::Vector3D p = IBKMK::Vector3D(ellipse.points()[i].m_x + drawing.m_origin.m_x,
+													ellipse.points()[i].m_y + drawing.m_origin.m_y,
 													ellipse.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 				p *= drawing.m_scalingFactor;
 
@@ -2059,9 +2070,9 @@ void Scene::generate2DDrawingGeometry() {
 
 			const QColor color = objectColor(ellipse);
 
-			Q_ASSERT(ellipse.m_points.size() > 0);
+			Q_ASSERT(ellipse.points().size() > 0);
 
-			bool connect = ellipse.m_points[0] == ellipse.m_points.back();
+			bool connect = ellipse.points()[0] == ellipse.points().back();
 
 			// Change this line to false, so it doesn't connect the last point to the first point
 			addPolyLine(ellipsePoints, drawing.m_rotationMatrix, connect,
@@ -2075,7 +2086,7 @@ void Scene::generate2DDrawingGeometry() {
 
 		for (const VICUS::Drawing::Solid &solid : drawing.m_solids){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(solid.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(solid.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
@@ -2105,18 +2116,164 @@ void Scene::generate2DDrawingGeometry() {
 
 			const QColor color = objectColor(solid);
 
-			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
-			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
+			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+					 m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, true);
+			addPlane(g1.triangulationData(), color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+					 m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData, false);
 		}
 
 		for (const VICUS::Drawing::Text &text : drawing.m_texts){
 
-			const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(text.m_parentLayer);
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(text.m_parentLayer);
 
 			Q_ASSERT(dl != nullptr);
 
-			addText(text.m_text, Qt::AlignCenter, 2, drawing.m_rotationMatrix, drawing.m_origin, text.m_basePoint, drawing.m_scalingFactor, text.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
-					text.m_color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData, m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+			const QColor color = objectColor(text);
+			addText(text.m_text.toStdString(), text.m_alignment, text.m_height, drawing.m_rotationMatrix, drawing.m_origin,
+					text.m_basePoint, drawing.m_scalingFactor, text.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
+					color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
+
+
+		}
+		for (const VICUS::Drawing::LinearDimension &linDem : drawing.m_linearDimensions){
+
+			const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(linDem.m_parentLayer);
+
+			Q_ASSERT(dl != nullptr);
+
+			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
+			double zCoordinate = linDem.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
+
+			IBKMK::Vector2D xAxis(1, 0);
+
+
+			IBKMK::Vector2D lineVec (std::cos(linDem.m_angle * IBK::DEG2RAD),
+									 std::sin(linDem.m_angle * IBK::DEG2RAD));
+
+			IBKMK::Vector2D lineVec2 (lineVec.m_y, -lineVec.m_x);
+
+			IBKMK::Vector2D measurePoint1 = linDem.m_point1 + 2000 * lineVec2;
+			IBKMK::Vector2D measurePoint2 = linDem.m_point2 + 2000 * lineVec2;
+
+			IBK::Line lineMeasure (linDem.m_dimensionPoint - 1000 * lineVec,
+								   linDem.m_dimensionPoint + 2000 * lineVec);
+
+			IBK::Line lineLeft  (linDem.m_point1 - 1000 * lineVec2, measurePoint1);
+			IBK::Line lineRight (linDem.m_point2 - 1000 * lineVec2, measurePoint2);
+
+			IBKMK::Vector2D intersection1Left, intersection2Left;
+			IBKMK::Vector2D intersection1Right, intersection2Right;
+			bool intersect1 = lineMeasure.intersects(lineLeft, intersection1Left, intersection2Left) == 1;
+			bool intersect2 = lineMeasure.intersects(lineRight, intersection1Right, intersection2Right) == 1;
+
+			if (!intersect1 && !intersect2)
+				continue;
+
+			IBKMK::Vector2D leftPoint, rightPoint;
+			if (intersect1 && (linDem.m_dimensionPoint - intersection1Left).magnitudeSquared() > 1E-3 ) {
+				leftPoint = intersection1Left;
+				rightPoint = linDem.m_dimensionPoint;
+
+			}
+			if (intersect2 && (linDem.m_dimensionPoint - intersection1Right).magnitudeSquared() > 1E-3 ) {
+				leftPoint = linDem.m_dimensionPoint;
+				rightPoint = intersection1Left;
+			}
+
+			// MEASURE LINE ================================================================
+
+			IBKMK::Vector3D p1 = IBKMK::Vector3D(leftPoint.m_x + drawing.m_origin.m_x,
+												 leftPoint.m_y + drawing.m_origin.m_y,
+												 zCoordinate);
+
+			IBKMK::Vector3D p2 = IBKMK::Vector3D(rightPoint.m_x + drawing.m_origin.m_x,
+												 rightPoint.m_y + drawing.m_origin.m_y,
+												 zCoordinate);
+
+			// scale Vector with selected unit
+			p1 *= drawing.m_scalingFactor;
+			p2 *= drawing.m_scalingFactor;
+
+			// rotate Vectors
+			QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
+			QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
+
+			const QColor color = objectColor(linDem);
+
+			// call addLine to draw line
+			addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing.m_rotationMatrix,
+					DEFAULT_LINE_WEIGHT + linDem.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+					color, currentVertexIndex, currentElementIndex,
+					m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData,
+					m_drawingGeometryObject.m_indexBufferData);
+
+
+			// LINE LEFT  ================================================================
+
+			IBKMK::Vector3D l (leftPoint - linDem.m_point1);
+
+			IBKMK::Vector3D p1Left = IBKMK::Vector3D(linDem.m_point1.m_x + drawing.m_origin.m_x,
+													 linDem.m_point1.m_y + drawing.m_origin.m_y,
+													 zCoordinate);
+			IBKMK::Vector3D p2Left = IBKMK::Vector3D(leftPoint.m_x + 10 * l.normalized().m_x + drawing.m_origin.m_x,
+													 leftPoint.m_y + 10 * l.normalized().m_y + drawing.m_origin.m_y,
+													 zCoordinate);
+
+			// scale Vector with selected unit
+			p1Left *= drawing.m_scalingFactor;
+			p2Left *= drawing.m_scalingFactor;
+
+			// rotate Vectors
+			QVector3D vec1Left = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1Left);
+			QVector3D vec2Left = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2Left);
+
+//			QQuaternion q = QQuaternion::fromAxisAndAngle(QVector3D(vec1Left.x(), vec1Left.y(), 1), linDem.m_angle);
+//			vec2Left = q * vec2Left;
+
+			// call addLine to draw line
+			addLine(QVector2IBKVector(vec1Left), QVector2IBKVector(vec2Left), drawing.m_rotationMatrix,
+					0.5 * DEFAULT_LINE_WEIGHT + linDem.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, // A bit smaller
+					color, currentVertexIndex, currentElementIndex,
+					m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData,
+					m_drawingGeometryObject.m_indexBufferData);
+
+			// LINE RIGHT ================================================================
+
+			IBKMK::Vector3D r (rightPoint - linDem.m_point2);
+
+			IBKMK::Vector3D p1Right = IBKMK::Vector3D(linDem.m_point2.m_x + drawing.m_origin.m_x,
+													  linDem.m_point2.m_y + drawing.m_origin.m_y,
+													  zCoordinate);
+			IBKMK::Vector3D p2Right = IBKMK::Vector3D(rightPoint.m_x + 10 * r.normalized().m_x + drawing.m_origin.m_x,
+													  rightPoint.m_y + 10 * r.normalized().m_y + drawing.m_origin.m_y,
+													  zCoordinate);
+
+			// scale Vector with selected unit
+			p1Right *= drawing.m_scalingFactor;
+			p2Right *= drawing.m_scalingFactor;
+
+			// rotate Vectors
+			QVector3D vec1Right = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1Right);
+			QVector3D vec2Right = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2Right);
+
+			// call addLine to draw line
+			addLine(QVector2IBKVector(vec1Right), QVector2IBKVector(vec2Right), drawing.m_rotationMatrix,
+					0.5 * DEFAULT_LINE_WEIGHT + linDem.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, // A bit smaller
+					color, currentVertexIndex, currentElementIndex,
+					m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData,
+					m_drawingGeometryObject.m_indexBufferData);
+
+			// Text ======================================================================
+			double length = (leftPoint - rightPoint).magnitude();
+
+			addText(QString("%1").arg(length).toStdString(), Qt::AlignHCenter, 1.0, drawing.m_rotationMatrix, drawing.m_origin,
+					linDem.m_textPoint, drawing.m_scalingFactor, linDem.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
+					color, currentVertexIndex, currentElementIndex, m_drawingGeometryObject.m_vertexBufferData,
+					m_drawingGeometryObject.m_colorBufferData, m_drawingGeometryObject.m_indexBufferData);
 
 
 		}
@@ -2125,8 +2282,6 @@ void Scene::generate2DDrawingGeometry() {
 
 	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();
 }
-
-
 
 
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
@@ -2597,7 +2752,7 @@ void Scene::deselectAll() {
 		if (d.m_selected)
 			objIDs.insert(d.m_id);
 
-		for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+		for (const VICUS::DrawingLayer & dl : d.m_layers) {
 			if (dl.m_selected)
 				objIDs.insert(dl.m_id);
 		}
@@ -3054,7 +3209,7 @@ void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
 		if (!abstrObj.m_parentLayer->m_visible)
 			continue;
 
-		const std::vector<IBKMK::Vector2D> &points = abstrObj.m_points;
+		const std::vector<IBKMK::Vector2D> &points = abstrObj.points();
 
 		std::vector<IBKMK::Vector3D> points3d(points.size());
 		for (unsigned int i=0; i<points.size(); ++i) {
@@ -3449,9 +3604,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 				if (snapOptions & SVViewState::Snap_ObjectVertex) {
 
-					std::vector<IBKMK::Vector3D> points3d(obj->m_points.size());
-					for (unsigned int i=0; i<obj->m_points.size(); ++i) {
-						const IBKMK::Vector2D &v2D = obj->m_points[i];
+					std::vector<IBKMK::Vector3D> points3d(obj->points().size());
+					for (unsigned int i=0; i<obj->points().size(); ++i) {
+						const IBKMK::Vector2D &v2D = obj->points()[i];
 
 						double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
 						IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + d->m_origin.m_x,
