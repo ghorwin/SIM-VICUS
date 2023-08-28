@@ -388,6 +388,34 @@ void SVSimulationLocationOptions::formatPlots(const QDateTime & start, const QDa
 }
 
 
+void SVSimulationLocationOptions::minMaxValuesInPlot(const QwtPlot & plot, double &minY, double &maxY) {
+	// Get the list of all attached items; could be curves, grids, etc.
+	QList<QwtPlotItem*> itemList = plot.itemList();
+	QwtPlotCurve *curve = nullptr;
+	// Iterate through the list to find your curve
+	for (QwtPlotItem *item : itemList) {
+		if (item->rtti() == QwtPlotItem::Rtti_PlotCurve) {  // Check if it's a curve
+			curve = static_cast<QwtPlotCurve*>(item);
+			break;
+		}
+	}
+
+	if (curve != nullptr) {
+		// Now myCurve points to your curve and you can do something with it
+		const QwtSeriesData<QPointF> * seriesData = curve->data();
+
+		minY = std::numeric_limits<double>::max();
+		maxY = std::numeric_limits<double>::min();
+		for (size_t i = 0; i < seriesData->size(); ++i) {
+			QPointF sample = seriesData->sample(i);
+			// Update min and max y-values
+			minY = std::min(minY, sample.y());
+			maxY = std::max(maxY, sample.y());
+		}
+	}
+}
+
+
 void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateTime start, QDateTime end, QString title, QString leftYAxisTitle, double yLeftMin, double yLeftMax, unsigned int yNumSteps,
 							   bool hasRightAxis, QString rightYAxisTitle, double yRightMin, double yRightMax, double yRightStepSize) {
 
@@ -417,6 +445,18 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 
 	// Set plot title
 	plot.setTitle(qwtTitle);
+
+	// try to find accurate min, max values
+	minMaxValuesInPlot(plot, yLeftMin, yLeftMax);
+
+	if (yLeftMin>0)
+		yLeftMin *= 0.9;
+	else
+		yLeftMin *= 1.1;
+	if (yLeftMax>0)
+		yLeftMax *= 1.1;
+	else
+		yLeftMax *= 0.9;
 
 	// Scale all y axises
 	double yLeftStepSize = (yLeftMax - yLeftMin) / double(yNumSteps);

@@ -98,6 +98,8 @@ private:
 	void formatQwtPlot(bool init, QwtPlot & plot, QDateTime start, QDateTime end, QString title, QString leftYAxisTitle, double yLeftMin, double yLeftMax, unsigned int yNumSteps=5,
 					   bool hasRightAxis = false, QString rightYAxisTitle = "", double yRightMin = 0, double yRightMax = 100, double yRightStepSize = 0);
 
+	void minMaxValuesInPlot(const QwtPlot & plot, double & minY, double & maxY);
+
 
 
 	Ui::SVSimulationLocationOptions		*m_ui;
