@@ -49,6 +49,7 @@ HEADERS += \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_Drawing.h \
+	../../src/VICUS_DrawingLayer.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
@@ -113,6 +114,7 @@ SOURCES += \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_Drawing.cpp \
+    ../../src/VICUS_DrawingLayer.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
@@ -168,6 +170,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
     ../../src/ncg/ncg_VICUS_Drawing.cpp \
+    ../../src/ncg/ncg_VICUS_DrawingLayer.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
