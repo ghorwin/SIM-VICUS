@@ -179,7 +179,7 @@ void WireFrameObject::updateBuffers() {
 			continue;
 		}
 
-		const VICUS::Drawing::DrawingLayer * drawingLayer = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(o);
+		const VICUS::DrawingLayer * drawingLayer = dynamic_cast<const VICUS::DrawingLayer *>(o);
 		if (drawingLayer != nullptr) {
 
 			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(drawingLayer->m_parent);
@@ -195,8 +195,8 @@ void WireFrameObject::updateBuffers() {
 
 				// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
 				double zCoordinate = line.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z;
-				IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_line.m_p1.m_x + drawing->m_origin.m_x, line.m_line.m_p1.m_y + drawing->m_origin.m_y, zCoordinate);
-				IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_line.m_p2.m_x + drawing->m_origin.m_x, line.m_line.m_p2.m_y + drawing->m_origin.m_y, zCoordinate);
+				IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_point1.m_x + drawing->m_origin.m_x, line.m_point1.m_y + drawing->m_origin.m_y, zCoordinate);
+				IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_point2.m_x + drawing->m_origin.m_x, line.m_point2.m_y + drawing->m_origin.m_y, zCoordinate);
 
 				// scale Vector with selected unit
 				p1 *= drawing->m_scalingFactor;
