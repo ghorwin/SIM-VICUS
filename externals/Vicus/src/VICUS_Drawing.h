@@ -9,6 +9,7 @@
 #include <VICUS_RotationMatrix.h>
 #include <VICUS_CodeGenMacros.h>
 #include <VICUS_Object.h>
+#include <VICUS_DrawingLayer.h>
 
 #include <QQuaternion>
 #include <QColor>
@@ -47,40 +48,10 @@ public:
 		m_children.clear();
 		for (DrawingLayer & dl : m_layers) {
 			m_children.push_back(&dl);
-			dl.m_parent = this;
+			dl.m_parent = dynamic_cast<VICUS::Object *>(this);
 		}
 		updatePointer();
 	}
-
-	/*! Dummy Struct for Blocks */
-	struct Block {
-		/*! Name of Block. */
-		QString			m_name;
-		/*! Block color. */
-		QColor			m_color = QColor();
-		/*! Line weight. */
-		unsigned		m_lineWeight;
-	};
-
-	/*! Layer struct with relevant attributes */
-	struct DrawingLayer : public Object {
-
-		DrawingLayer() {}
-
-		const char * typeinfo() const override {
-			return "DrawingLayer";
-		}
-
-		// TODO Maik: dokustring
-
-		/*! Color of layer if defined */
-		QColor			m_color = QColor();
-		/*! Line weight of layer if defined */
-		int				m_lineWeight;
-		/*! If Layer belongs to a block, pointer to block is here, else nullptr */
-		Block			*m_block = nullptr;
-
-	};
 
 	/* Abstract class for all directly drawable dxf entities */
 	struct AbstractDrawingObject {
@@ -90,56 +61,103 @@ public:
 		/*! D'tor. */
 		virtual ~AbstractDrawingObject() {}
 
+		virtual void readXML(const TiXmlElement * element) = 0;
+		virtual TiXmlElement * writeXML(TiXmlElement * parent) const = 0;
+
+		/*! Function to update points, needed for easier
+			handling of objects in scene3D to construct 3D
+			Objects and for picking operations.
+
+			Point will be recalculated when m_dirty is true;
+		*/
+		virtual const std::vector<IBKMK::Vector2D>& points() const = 0 ;
+
 		/* used to get correct color of entity */
 		const QColor &color() const;
 		/* used to get correct lineWeight of entity */
 		double lineWeight() const;
 
 		/*! name of Entity */
-		QString						m_layerName;
+		QString							m_layerName;
 		/*! Layer of Entity */
-		const DrawingLayer			*m_parentLayer = nullptr;
+		const DrawingLayer				*m_parentLayer = nullptr;
 		/*! Color of Entity if defined, use getter color() instead */
-		QColor						m_color = QColor();
+		QColor							m_color = QColor();
 		/*! Line weight of Entity, use getter lineWeight() instead */
-		double						m_lineWeight = 0;
+		double							m_lineWeight = 0;
 		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
-		unsigned int				m_zPosition;
+		unsigned int					m_zPosition;
 		/* Block Entity belongs to, if nullptr, no block is used */
-		Block						*m_block = nullptr;
+		DrawingLayer::Block				*m_block = nullptr;
+		/*! ID of object. */
+		unsigned int					m_id;
+
+	protected:
+		/*! Flag to indictate recalculation of points. */
+		mutable bool							m_dirty = true;
+		/*! Points of objects. */
+		mutable std::vector<IBKMK::Vector2D>	m_points = std::vector<IBKMK::Vector2D>();
+	};
+
+
+	struct DimStyle {
+		/*! https://ezdxf.readthedocs.io/en/stable/tutorials/linear_dimension.html */
+
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXML(const TiXmlElement * element);
+
+		/*! Name of Dim style. */
+		QString				m_name;
 
 		/*! ID of object. */
-		unsigned int				m_id;
+		unsigned int		m_id;
 
-		/*! Points of objects. */
-		std::vector<IBKMK::Vector2D>	m_points;
+		/*! Distance between measure line and uper point of
+			extension line */
+		double				m_dimexe;
+
+		/*!	Distance between extension line lower point and object. */
+		double				m_dimexo;
 	};
+
 
 	/*! Stores attributes of line */
 	struct Point : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		/*! Calculate points. */
+		const std::vector<IBKMK::Vector2D>& points() const override;
 
 		/*! Point coordinate */
-		IBKMK::Vector2D m_point;
+		IBKMK::Vector2D					m_point;
+
 	};
 
 	/*! Stores attributes of line */
 	struct Line : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
 
-		/*! line coordinates */
-		IBK::Line						m_line;
+		/*! Calculate points. */
+		const std::vector<IBKMK::Vector2D>& points() const override;
+
+		/*! Point coordinate */
+		IBKMK::Vector2D					m_point1;
+		/*! Point coordinate */
+		IBKMK::Vector2D					m_point2;
 	};
 
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		/*! Calculate points. */
+		const std::vector<IBKMK::Vector2D>& points() const override;
 
 		/*! polyline coordinates */
 		std::vector<IBKMK::Vector2D>    m_polyline;
@@ -150,20 +168,24 @@ public:
 	/* Stores attributes of circle */
 	struct Circle : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
 
 		/*! Circle center */
-		IBKMK::Vector2D    m_center;
+		IBKMK::Vector2D					m_center;
 		/*! Circle radius */
-		double             m_radius;
+		double							m_radius;
 	};
 
 	/* Stores attributes of ellipse */
 	struct Ellipse : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
 
 		/*! Ellipse center */
 		IBKMK::Vector2D    m_center;
@@ -180,8 +202,10 @@ public:
 	/* Stores attributes of arc */
 	struct Arc : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
 
 		/*! Arc center */
 		IBKMK::Vector2D    m_center;
@@ -196,8 +220,10 @@ public:
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
 
 		/*! Point 1 */
 		IBKMK::Vector2D    m_point1;
@@ -212,18 +238,58 @@ public:
 	/* Stores attributes of text, dummy struct */
 	struct Text : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const;
-		void readXMLPrivate(const TiXmlElement * element);
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
 
 		/*! Base point. */
 		IBKMK::Vector2D		m_basePoint;
+		/*! Height. */
+		double				m_height = 10;
+		/*! Alignment. */
+		Qt::Alignment		m_alignment;
 		/*! Text */
-		std::string			m_text;
+		QString				m_text;
+	};
+
+	/* Stores attributes of text, dummy struct */
+	struct LinearDimension : public AbstractDrawingObject {
+
+		TiXmlElement * writeXML(TiXmlElement * element) const override;
+		void readXML(const TiXmlElement * element) override;
+
+		const std::vector<IBKMK::Vector2D> &points() const override;
+
+		/*! Base point. */
+		IBKMK::Vector2D		m_dimensionPoint;
+
+		/*! Point 1 of Line. */
+		IBKMK::Vector2D		m_point1;
+
+		/*! Point 2 of Line. */
+		IBKMK::Vector2D		m_point2;
+
+		/*! Point 2 of Line. */
+		IBKMK::Vector2D		m_textPoint;
+
+		/*! Point 2 of Line. */
+		double				m_textHeight;
+
+		/*! Angle of rotation. */
+		double				m_angle;
+
+		/*! Name of Dim style. */
+		QString				m_styleName;
+
+		/*! Pointer to style object. Updated in
+			updatePointers();
+		*/
+		DimStyle			*m_style = nullptr;
 	};
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
-	VICUS_READWRITE_PRIVATE
 	VICUS_READWRITE
 
 	/*! Returns the drawing object based on the ID. */
@@ -234,10 +300,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
-	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
-	//:inherited	QColor							m_color;				// XML:A
-
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
+	//:inherited	QString				m_displayName;				// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! point of origin */
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);	// XML:E
@@ -247,7 +312,7 @@ public:
 	double																	m_scalingFactor = 0.01;	// XML:E
 
 	/*! list of blocks, dummy implementation */
-	std::vector<Block>														m_blocks;		// XML:E
+	std::vector<DrawingLayer::Block>										m_blocks;		// XML:E
 	/*! list of layers */
 	std::vector<DrawingLayer>												m_layers;		// XML:E
 	/*! list of points */
@@ -264,8 +329,12 @@ public:
 	std::vector<Arc>														m_arcs;			// XML:E
 	/*! list of solids, dummy implementation */
 	std::vector<Solid>														m_solids;		// XML:E
-	/*! list of texts, dummy implementation */
+	/*! list of texts */
 	std::vector<Text>														m_texts;		// XML:E
+	/*! list of texts */
+	std::vector<LinearDimension>											m_linearDimensions; // XML:E
+	/*! list of Dim Styles */
+	std::vector<DimStyle>													m_dimensionStyles; // XML:E
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;	// XML:E
