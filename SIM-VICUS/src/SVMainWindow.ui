@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -236,7 +236,7 @@
   <action name="actionFileOpen">
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-ordner-öffnen-80.png</normaloff>:/gfx/icons8/icons8-ordner-öffnen-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>

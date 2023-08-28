@@ -7,14 +7,13 @@
         <file>gfx/icons8/icons8-new-file-80.png</file>
         <file>gfx/icons8/icons8-save-80.png</file>
         <file>gfx/icons8/icons8-tune-80.png</file>
-        <file>gfx/icons8/icons8-ordner-öffnen-80.png</file>
-        <file>gfx/icons8/icons8-ausgefüllte-checkbox-80.png</file>
+        <file>gfx/icons8/icons8-ordner-oeffnen-80.png</file>
         <file>gfx/icons8/icons8-checkbox-markiert-2-80.png</file>
-        <file>gfx/icons8/icons8-löschen.svg</file>
+        <file>gfx/icons8/icons8-loeschen.svg</file>
         <file>gfx/icons8/icons8-sichtbar-80.png</file>
         <file>gfx/icons8/icons8-suche-80.png</file>
         <file>gfx/icons8/icons8-umkehren-80.png</file>
-        <file>gfx/icons8/icons8-unausgefüllte-checkbox-80.png</file>
+        <file>gfx/icons8/icons8-unausgefuellte-checkbox-80.png</file>
         <file>gfx/icons8/icons8-unsichtbar-80.png</file>
         <file>gfx/icons8/icons8-add-layer-80.png</file>
         <file>gfx/icons8/icons8-audiowelle-80.png</file>
@@ -25,7 +24,7 @@
         <file>gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</file>
         <file>gfx/icons8/icons8-kategorisieren-80.png</file>
         <file>gfx/icons8/icons8-skalieren-80.png</file>
-        <file>gfx/icons8/icons8-verfügbare-updates-80.png</file>
+        <file>gfx/icons8/icons8-verfuegbare-updates-80.png</file>
         <file>gfx/icons8/icons8-kopieren-80.png</file>
         <file>gfx/icons8/icons8-abscissa-80.png</file>
         <file>gfx/icons8/icons8-abscissa-80(1).png</file>
@@ -34,5 +33,6 @@
         <file>gfx/icons8/icons8-abscissa-80(2).png</file>
         <file>gfx/icons8/icons8-size-80.png</file>
         <file>gfx/icons8/icons8-info-80.png</file>
+        <file>gfx/icons8/icons8-ausgefuellte-checkbox-80.png</file>
     </qresource>
 </RCC>
