@@ -617,7 +617,7 @@ void Project::updatePointers() {
 	for (VICUS::Drawing &d : m_drawings) {
 		d.updateParents();
 		addAndCheckForUniqueness(&d);
-		for (VICUS::Drawing::DrawingLayer &dl : d.m_layers) {
+		for (VICUS::DrawingLayer &dl : d.m_layers) {
 			addAndCheckForUniqueness(&dl);
 		}
 	}
@@ -707,7 +707,7 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 	if (sg & SG_Drawing) {
 		for (const VICUS::Drawing & d : m_drawings) {
 
-			for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+			for (const VICUS::DrawingLayer & dl : d.m_layers) {
 				if (selectionCheck(dl, takeSelected, takeVisible))
 					selectedObjs.insert(&dl);
 			}
@@ -841,16 +841,18 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 
 	// process all drawings
 	for (const t &drawObj : drawingObjects) {
-		const VICUS::Drawing::DrawingLayer *dl = dynamic_cast<const VICUS::Drawing::DrawingLayer *>(drawObj.m_parentLayer);
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(drawObj.m_parentLayer);
 
 		Q_ASSERT(dl != nullptr);
 
 		if (!dl->m_visible)
 			continue;
 
-		for (const IBKMK::Vector2D &p : drawObj.m_points) {
+		std::vector<IBKMK::Vector2D> verts = drawObj.points();
+		for (const IBKMK::Vector2D &p : verts) {
 
-			// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
+			// Create Vector from start and end point of the line,
+			// add point of origin to each coordinate and calculate z value
 			double zCoordinate = drawObj.m_zPosition * zmultiplier + d.m_origin.m_z;
 			IBKMK::Vector3D p1 = IBKMK::Vector3D(p.m_x + d.m_origin.m_x,
 												 p.m_y + d.m_origin.m_y,

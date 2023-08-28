@@ -298,7 +298,7 @@ public:
 
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
-	std::vector<Building>								m_buildings;				// XML:E
+	std::vector<Building>								m_buildings;	 			// XML:E
 
 	/*! All components actually placed in the geometry.
 		This vector is outside buildings, so that two building parts can be connected with
@@ -310,7 +310,7 @@ public:
 	/*! Vector with plain (dumb) geometry. */
 	PlainGeometry										m_plainGeometry;			// XML:E
 
-	std::vector<Drawing>								m_drawings;
+	std::vector<Drawing>								m_drawings;					// XML:E
 
 
 	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
