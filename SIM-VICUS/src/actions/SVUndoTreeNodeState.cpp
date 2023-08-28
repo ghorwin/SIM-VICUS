@@ -114,7 +114,7 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 		if (exclusive || nodeIDs.find(d.m_id) != nodeIDs.end())
 			storeState(d, m_nodeStates[d.m_id]);
 
-		for (const VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+		for (const VICUS::DrawingLayer & dl : d.m_layers) {
 			if (exclusive || nodeIDs.find(dl.m_id) != nodeIDs.end())
 				storeState(dl, m_nodeStates[dl.m_id]);
 		}
@@ -308,7 +308,7 @@ void SVUndoTreeNodeState::redo() {
 			modifiedIDs.push_back(it->first);
 		}
 
-		for (VICUS::Drawing::DrawingLayer & dl : d.m_layers) {
+		for (VICUS::DrawingLayer & dl : d.m_layers) {
 			if ((it = m_nodeStates.find(dl.m_id)) != m_nodeStates.end()) {
 				setState(dl, it->second);
 				modifiedIDs.push_back(it->first);
