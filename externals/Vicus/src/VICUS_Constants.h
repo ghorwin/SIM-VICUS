@@ -47,6 +47,10 @@ extern const char * XML_READ_UNKNOWN_NAME;
 extern const char * DATABASE_PLACEHOLDER_NAME;
 extern const char * USER_DATABASE_PLACEHOLDER_NAME;
 
+const unsigned int SEGMENT_COUNT_ARC		= 30;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 30;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 30;
+
 #define VICUS_PLANE_PROJECTION_TOLERANCE 1e-3
 
 } // namespace VICUS
