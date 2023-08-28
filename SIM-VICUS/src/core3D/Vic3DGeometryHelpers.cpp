@@ -52,7 +52,7 @@ void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & col,
 	// add vertex data to buffers
 	unsigned int nVertexes = g.m_vertexes.size();
 
-	qDebug() << "Num of vertexes: " << nVertexes;
+	// qDebug() << "Num of vertexes: " << nVertexes;
 
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
@@ -1001,22 +1001,23 @@ bool isClockwise(const QPolygonF& polygon) {
 	return sum > 0.0;
 }
 
-void addText(const std::string &text, Qt::Alignment alignment, const unsigned int &textSize, const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
+void addText(const std::string &text, Qt::Alignment alignment, const double &textSize, const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 			 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, const QColor &color,
 			 unsigned int &currentVertexIndex, unsigned int &currentElementIndex, std::vector<Vertex> &vertexBufferData,  std::vector<ColorRGBA> & colorBufferData,
 			 std::vector<GLuint> &indexBufferData) {
 
-	QFont font("Arial", textSize);
+	QFont font("Arial");
+	font.setPointSizeF(textSize);
 
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
+	double width = path.boundingRect().width();
 
-	QColor newColor = color;
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		qDebug() << "Lightness: " << color.lightness();
-		if (color.lightness() < 20)
-			newColor = Qt::white;
+	if (alignment == Qt::AlignHCenter) {
+		QPointF center = path.boundingRect().center();
+		center.setX(center.x() - 0.5*width );
+		path.moveTo(center);
 	}
 
 	// Extract polygons from the path
@@ -1071,10 +1072,10 @@ void addText(const std::string &text, Qt::Alignment alignment, const unsigned in
 	}
 
 	for (const VICUS::PlaneGeometry &plane : planeGeometries) {
-		addPlane(plane.triangulationData(), newColor, currentVertexIndex, currentElementIndex,
+		addPlane(plane.triangulationData(), color, currentVertexIndex, currentElementIndex,
 				 vertexBufferData, colorBufferData, indexBufferData, true);
 
-		addPlane(plane.triangulationData(), newColor, currentVertexIndex, currentElementIndex,
+		addPlane(plane.triangulationData(), color, currentVertexIndex, currentElementIndex,
 				 vertexBufferData, colorBufferData, indexBufferData, false);
 	}
 }
