@@ -72,16 +72,16 @@ bool SVImportDXFDialog::readDxfFile(VICUS::Drawing &drawing, const QString &fnam
 	return success;
 }
 
-void addPoints(IBKMK::Vector2D &center, const VICUS::Drawing::AbstractDrawingObject &object) {
-	for (const IBKMK::Vector2D &v2D : object.m_points) {
+void addPoints(IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingObject &object) {
+	for (const IBKMK::Vector2D &v2D : object.points()) {
 		center += v2D;
 	}
-	center /= 1 + object.m_points.size();
+	center /= 1 + object.points().size();
 }
 
 void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingObject &object) {
-	for (IBKMK::Vector2D &v2D : object.m_points) {
-		v2D -= center;
+	for (const IBKMK::Vector2D &v2D : object.points()) {
+		const_cast<IBKMK::Vector2D &>(v2D) -= center;
 	}
 }
 
@@ -149,7 +149,7 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
-		double scalingFactor;
+		double scalingFactor = 0.0;
 
 		switch (su) {
 
@@ -192,7 +192,7 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 		return;
 
 	// initialise struct Layer and populate the attributes
-	VICUS::Drawing::DrawingLayer newLayer;
+	VICUS::DrawingLayer newLayer;
 
 	// Set ID
 	newLayer.m_id = (*m_nextId)++;
@@ -214,14 +214,23 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 }
 
 
-void DRW_InterfaceImpl::addDimStyle(const DRW_Dimstyle& /*data*/){}
+void DRW_InterfaceImpl::addDimStyle(const DRW_Dimstyle& data) {
+	VICUS::Drawing::DimStyle dimStyle;
+	dimStyle.m_name = QString::fromStdString(data.name);
+	dimStyle.m_dimexe = data.dimexe;
+	dimStyle.m_dimexo = data.dimexo;
+
+	dimStyle.m_id = (*m_nextId)++;
+}
+
+
 void DRW_InterfaceImpl::addVport(const DRW_Vport& /*data*/){}
 void DRW_InterfaceImpl::addTextStyle(const DRW_Textstyle& /*data*/){}
 void DRW_InterfaceImpl::addAppId(const DRW_AppId& /*data*/){}
 void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 
 	// New Block
-	VICUS::Drawing::Block newBlock;
+	VICUS::DrawingLayer::Block newBlock;
 
 	// Set name
 	newBlock.m_name = QString::fromStdString(data.name);
@@ -231,6 +240,9 @@ void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 
 	// Set line weight
 	newBlock.m_lineWeight = 0;
+
+	// ID
+	newBlock.m_id = (*m_nextId)++;
 
 	// Add blocks
 	m_drawing->m_blocks.push_back(newBlock);
@@ -268,8 +280,6 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 	else
 		newPoint.m_color = QColor();
 
-	newPoint.m_points.push_back(newPoint.m_point);
-
 	m_drawing->m_points.push_back(newPoint);
 
 }
@@ -282,7 +292,8 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 	m_drawing->m_zCounter++;
 
 	//create new line, insert into vector m_lines from drawing
-	newLine.m_line = IBK::Line(data.basePoint.x, data.basePoint.y, data.secPoint.x, data.secPoint.y);
+	newLine.m_point1 = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	newLine.m_point2 = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
 	newLine.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newLine.m_layerName = QString::fromStdString(data.layer);
 
@@ -294,9 +305,6 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 		newLine.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
 	else
 		newLine.m_color = QColor();
-
-	newLine.m_points.push_back(newLine.m_line.m_p1);
-	newLine.m_points.push_back(newLine.m_line.m_p2);
 
 	m_drawing->m_lines.push_back(newLine);
 }
@@ -327,26 +335,6 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	else
 		newArc.m_color = QColor();
 
-	newArc.m_points.resize(Vic3D::SEGMENT_COUNT_ARC);
-
-	double startAngle = newArc.m_startAngle;
-	double endAngle = newArc.m_endAngle;
-
-	double angleDifference;
-
-	if (startAngle > endAngle)
-		angleDifference = 2 * IBK::PI - startAngle + endAngle;
-	else
-		angleDifference = endAngle - startAngle;
-
-	unsigned int toCalcN = (int)(Vic3D::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
-	double stepAngle = angleDifference / toCalcN;
-
-	for (unsigned int i = 0; i < toCalcN; i++){
-		newArc.m_points[i] = IBKMK::Vector2D(newArc.m_center.m_x + newArc.m_radius * cos(startAngle + i * stepAngle),
-											 newArc.m_center.m_y + newArc.m_radius * sin(startAngle + i * stepAngle));
-	}
-
 	m_drawing->m_arcs.push_back(newArc);
 }
 
@@ -373,13 +361,6 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 	else
 		newCircle.m_color = QColor();
 
-	newCircle.m_points.resize(Vic3D::SEGMENT_COUNT_CIRCLE);
-
-	for(unsigned int i = 0; i < Vic3D::SEGMENT_COUNT_CIRCLE; i++){
-		newCircle.m_points[i] =IBKMK::Vector2D(newCircle.m_center.m_x + newCircle.m_radius * cos(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE),
-											   newCircle.m_center.m_y + newCircle.m_radius * sin(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE));
-	}
-
 	m_drawing->m_circles.push_back(newCircle);
 }
 
@@ -401,35 +382,6 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	newEllipse.m_layerName = QString::fromStdString(data.layer);
 
 	newEllipse.m_id = (*m_nextId)++;
-
-	double startAngle = newEllipse.m_startAngle;
-	double endAngle = newEllipse.m_endAngle;
-
-	double angleStep = (endAngle - startAngle) / Vic3D::SEGMENT_COUNT_ELLIPSE;
-
-	double majorRadius = sqrt(pow(newEllipse.m_majorAxis.m_x, 2) + pow(newEllipse.m_majorAxis.m_y, 2));
-	double minorRadius = majorRadius * newEllipse.m_ratio;
-
-	double rotationAngle = atan2(newEllipse.m_majorAxis.m_y, newEllipse.m_majorAxis.m_x);
-
-	double x, y, rotated_x, rotated_y;
-
-	newEllipse.m_points.resize(Vic3D::SEGMENT_COUNT_ELLIPSE);
-
-	for (unsigned int i = 0; i <= Vic3D::SEGMENT_COUNT_ELLIPSE; i++) {
-
-		double currentAngle = startAngle + i * angleStep;
-
-		x = majorRadius * cos(currentAngle);
-		y = minorRadius * sin(currentAngle);
-
-		rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
-		rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
-
-		newEllipse.m_points[i] = IBKMK::Vector2D(rotated_x + newEllipse.m_center.m_x,
-												 rotated_y + newEllipse.m_center.m_y);
-
-	}
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -457,7 +409,6 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 	// iterate over data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
 		IBKMK::Vector2D point(data.vertlist[i]->x, data.vertlist[i]->y);
-		newPolyline.m_points.push_back(point);
 		newPolyline.m_polyline.push_back(point);
 	}
 
@@ -489,7 +440,6 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 	// iterateover data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
 		IBKMK::Vector2D point(data.vertlist[i]->basePoint.x, data.vertlist[i]->basePoint.y);
-		newPolyline.m_points.push_back(point);
 		newPolyline.m_polyline.push_back(point);
 	}
 
@@ -537,12 +487,6 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 	else
 		newSolid.m_color = QColor();
 
-	newSolid.m_points.resize(4);
-	newSolid.m_points.push_back(newSolid.m_point1);
-	newSolid.m_points.push_back(newSolid.m_point2);
-	newSolid.m_points.push_back(newSolid.m_point3);
-	newSolid.m_points.push_back(newSolid.m_point4);
-
 	m_drawing->m_solids.push_back(newSolid);
 
 }
@@ -551,13 +495,15 @@ void DRW_InterfaceImpl::addMText(const DRW_MText& data){
 	if(m_activeBlock != nullptr) return;
 
 	VICUS::Drawing::Text newText;
-	newText.m_text = data.text;
+	newText.m_text = QString::fromStdString(data.text);
 	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newText.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 	newText.m_id = (*m_nextId)++;
 	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newText.m_layerName = QString::fromStdString(data.layer);
+	newText.m_height = data.height;
+	newText.m_alignment = data.alignH == DRW_Text::HCenter ? Qt::AlignHCenter : Qt::AlignLeft;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -572,24 +518,69 @@ void DRW_InterfaceImpl::addText(const DRW_Text& data){
 	if(m_activeBlock != nullptr) return;
 
 	VICUS::Drawing::Text newText;
-	newText.m_text = data.text;
+	newText.m_text = QString::fromStdString(data.text);
 	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newText.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 	newText.m_id = (*m_nextId)++;
 	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newText.m_layerName = QString::fromStdString(data.layer);
+	newText.m_height = data.height;
+	newText.m_alignment = data.alignH == DRW_Text::HCenter ? Qt::AlignHCenter : Qt::AlignLeft;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
-		newText.m_color = QColor(DRW::dxfColors[data.color][0], DRW::dxfColors[data.color][1], DRW::dxfColors[data.color][2]);
+		newText.m_color = QColor(DRW::dxfColors[data.color][0],
+								 DRW::dxfColors[data.color][1],
+								 DRW::dxfColors[data.color][2]);
 	else
 		newText.m_color = QColor();
 
 	m_drawing->m_texts.push_back(newText);
 }
 void DRW_InterfaceImpl::addDimAlign(const DRW_DimAligned */*data*/){}
-void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear */*data*/){}
+void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear *data){
+	if(m_activeBlock != nullptr) return;
+
+	// Line points
+	const DRW_Coord &def1Point = data->getDef1Point();
+	const DRW_Coord &def2Point = data->getDef2Point();
+	const DRW_Coord &defPoint = data->getDefPoint();
+	const DRW_Coord &textPoint = data->getTextPoint();
+
+	// Definitions
+	IBKMK::Vector2D def (defPoint.x, defPoint.y);
+	IBKMK::Vector2D def1 (def1Point.x, def1Point.y);
+	IBKMK::Vector2D def2 (def2Point.x, def2Point.y);
+	IBKMK::Vector2D text (textPoint.x, textPoint.y);
+
+	VICUS::Drawing::LinearDimension newLinearDimension;
+
+	newLinearDimension.m_zPosition = m_drawing->m_zCounter;
+	m_drawing->m_zCounter++;
+	newLinearDimension.m_id = (*m_nextId)++;
+	newLinearDimension.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data->lWeight);
+	newLinearDimension.m_layerName = QString::fromStdString(data->layer);
+	newLinearDimension.m_point1 = def1;
+	newLinearDimension.m_point2 = def2;
+	newLinearDimension.m_dimensionPoint = def;
+	newLinearDimension.m_textPoint = text;
+	newLinearDimension.m_angle = data->getAngle();
+	newLinearDimension.m_styleName = QString::fromStdString(data->getStyle());
+	//newLinearDimension.m_textHeight = data->di
+
+	/* value 256 means use defaultColor, value 7 is black */
+	if(!(data->color == 256 || data->color == 7))
+		newLinearDimension.m_color = QColor(DRW::dxfColors[data->color][0],
+											DRW::dxfColors[data->color][1],
+											DRW::dxfColors[data->color][2]);
+	else
+		newLinearDimension.m_color = QColor();
+
+	m_drawing->m_linearDimensions.push_back(newLinearDimension);
+
+}
+
 void DRW_InterfaceImpl::addDimRadial(const DRW_DimRadial */*data*/){}
 void DRW_InterfaceImpl::addDimDiametric(const DRW_DimDiametric */*data*/){}
 void DRW_InterfaceImpl::addDimAngular(const DRW_DimAngular */*data*/){}
