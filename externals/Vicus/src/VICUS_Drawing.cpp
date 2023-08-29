@@ -48,8 +48,8 @@ TiXmlElement * Drawing::Text::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (!m_text.isEmpty())
 		e->SetAttribute("text", m_text.toStdString());
 	if (!m_layerName.isEmpty())
@@ -159,8 +159,8 @@ TiXmlElement * Drawing::Solid::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 
@@ -301,8 +301,10 @@ TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
+	if (m_angle != 0.0)
+		e->SetAttribute("angle", IBK::val2string<double>(m_angle));
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 	if (!m_styleName.isEmpty())
@@ -334,6 +336,8 @@ void Drawing::LinearDimension::readXML(const TiXmlElement *element){
 				m_color = QColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "zPosition")
 				m_zPosition = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "angle")
+				m_zPosition = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "layer")
 				m_layerName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "styleName")
@@ -587,8 +591,8 @@ TiXmlElement * Drawing::Point::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 
@@ -816,8 +820,8 @@ TiXmlElement * Drawing::Line::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_layerName.isEmpty())
@@ -838,7 +842,7 @@ TiXmlElement * Drawing::Circle::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_zPosition > 0.0)
+	if (m_zPosition != 0.0)
 		e->SetAttribute("zPosition", IBK::val2string<double>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
@@ -966,8 +970,8 @@ TiXmlElement * Drawing::PolyLine::writeXML(TiXmlElement * parent) const {
 			e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 		if (m_color.isValid())
 			e->SetAttribute("color", m_color.name().toStdString());
-		if (m_zPosition > 0.0)
-			e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+		if (m_zPosition != 0.0)
+			e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 		if (m_endConnected)
 			e->SetAttribute("connected", IBK::val2string<bool>(m_endConnected));
 		if (!m_layerName.isEmpty())
@@ -1105,8 +1109,8 @@ TiXmlElement * Drawing::Arc::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 
@@ -1248,8 +1252,8 @@ TiXmlElement * Drawing::Ellipse::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_zPosition > 0.0)
-		e->SetAttribute("zPosition", IBK::val2string<double>(m_zPosition));
+	if (m_zPosition != 0.0)
+		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 
