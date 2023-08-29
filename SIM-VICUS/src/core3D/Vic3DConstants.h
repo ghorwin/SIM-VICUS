@@ -127,9 +127,9 @@ const double Z_MULTIPLYER					= 0.00005;
 // in m, should be enough, right?
 const float SNAP_DISTANCES_THRESHHOLD		= 0.5;
 
-const unsigned int SEGMENT_COUNT_ARC		= 30;
-const unsigned int SEGMENT_COUNT_CIRCLE		= 30;
-const unsigned int SEGMENT_COUNT_ELLIPSE	= 30;
+const unsigned int SEGMENT_COUNT_ARC		= 5;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 5;
 
 
 #define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
