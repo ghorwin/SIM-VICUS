@@ -94,7 +94,7 @@ void SVImportDXFDialog::moveDrawings() {
 	std::vector<const VICUS::Surface*> surfaces;
 	std::vector<const VICUS::SubSurface*> subsurfaces;
 
-	project().boundingBox(drawings, surfaces, subsurfaces, center);
+	project().boundingBox(drawings, surfaces, subsurfaces, center, false);
 
 	m_drawing.m_origin = - 1.0 * center;
 }
@@ -135,7 +135,7 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		m_drawing.m_displayName = m_ui->lineEditDrawingName->text();
 
 		log += "Import successful!\nThe following objects were imported:\n";
-		log += QString("Layers:\t%1\n").arg(m_drawing.m_layers.size());
+		log += QString("Layers:\t%1\n").arg(m_drawing.m_drawingLayers.size());
 		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
 		log += QString("Polylines:\t%1\n").arg(m_drawing.m_polylines.size());
 		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
@@ -143,6 +143,9 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		log += QString("Circles:\t%1\n").arg(m_drawing.m_circles.size());
 		log += QString("Ellipses:\t%1\n").arg(m_drawing.m_ellipses.size());
 		log += QString("Points:\t%1\n").arg(m_drawing.m_points.size());
+		log += QString("Linear Dimensions:\t%1\n").arg(m_drawing.m_linearDimensions.size());
+		log += QString("Dimension Styles:\t%1\n").arg(m_drawing.m_dimensionStyles.size());
+		log += QString("Texts:\t%1\n").arg(m_drawing.m_texts.size());
 
 		// m_drawing.updatePointer();
 		m_drawing.updateParents();
@@ -210,17 +213,24 @@ void DRW_InterfaceImpl::addLayer(const DRW_Layer& data){
 		newLayer.m_color = SVStyle::instance().m_defaultDrawingColor;
 
 	// Push new layer into vector<Layer*> m_layer
-	m_drawing->m_layers.push_back(newLayer);
+	m_drawing->m_drawingLayers.push_back(newLayer);
 }
 
 
 void DRW_InterfaceImpl::addDimStyle(const DRW_Dimstyle& data) {
 	VICUS::Drawing::DimStyle dimStyle;
 	dimStyle.m_name = QString::fromStdString(data.name);
-	dimStyle.m_dimexe = data.dimexe;
-	dimStyle.m_dimexo = data.dimexo;
+	dimStyle.m_upperLineDistance = data.dimexe;
+	dimStyle.m_extensionLineLowerDistance = data.dimexo;
+
+	dimStyle.m_fixedExtensionLength = data.dimfxlon == 1;
+	dimStyle.m_extensionLineLength = data.dimfxl;
+	dimStyle.m_textHeight = data.dimtxt;
 
 	dimStyle.m_id = (*m_nextId)++;
+
+	// Add object
+	m_drawing->m_dimensionStyles.push_back(dimStyle);
 }
 
 
@@ -251,12 +261,16 @@ void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 	m_activeBlock = &newBlock;
 
 }
+
+
 void DRW_InterfaceImpl::setBlock(const int /*handle*/){}
 void DRW_InterfaceImpl::endBlock(){
 	// Active block not existing
 	m_activeBlock = nullptr;
 
 }
+
+
 void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
 	// Activeblock
@@ -283,6 +297,8 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 	m_drawing->m_points.push_back(newPoint);
 
 }
+
+
 void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
 	if(m_activeBlock != nullptr) return;
@@ -504,6 +520,7 @@ void DRW_InterfaceImpl::addMText(const DRW_MText& data){
 	newText.m_layerName = QString::fromStdString(data.layer);
 	newText.m_height = data.height;
 	newText.m_alignment = data.alignH == DRW_Text::HCenter ? Qt::AlignHCenter : Qt::AlignLeft;
+	newText.m_rotationAngle = data.angle;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -527,6 +544,7 @@ void DRW_InterfaceImpl::addText(const DRW_Text& data){
 	newText.m_layerName = QString::fromStdString(data.layer);
 	newText.m_height = data.height;
 	newText.m_alignment = data.alignH == DRW_Text::HCenter ? Qt::AlignHCenter : Qt::AlignLeft;
+	newText.m_rotationAngle = data.angle;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -567,9 +585,8 @@ void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear *data){
 	newLinearDimension.m_textPoint = text;
 	newLinearDimension.m_angle = data->getAngle();
 	newLinearDimension.m_styleName = QString::fromStdString(data->getStyle());
-	//newLinearDimension.m_textHeight = data->di
 
-	/* value 256 means use defaultColor, value 7 is black */
+	// value 256 means use defaultColor, value 7 is black
 	if(!(data->color == 256 || data->color == 7))
 		newLinearDimension.m_color = QColor(DRW::dxfColors[data->color][0],
 											DRW::dxfColors[data->color][1],
