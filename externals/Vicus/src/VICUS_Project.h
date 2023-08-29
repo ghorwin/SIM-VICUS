@@ -245,7 +245,8 @@ public:
 	static IBKMK::Vector3D boundingBox(const std::vector<const Drawing *> &drawings,
 									   const std::vector<const Surface *> &surfaces,
 									   const std::vector<const SubSurface *> &subsurfaces,
-									   IBKMK::Vector3D &center);
+									   IBKMK::Vector3D &center,
+									   bool transformPoints = true);
 
 	/*! This function computes the global bounding box of all selected edges & nodes and the center point in global coordinates.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in global coordinates.

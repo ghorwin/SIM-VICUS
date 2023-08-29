@@ -617,7 +617,7 @@ void Project::updatePointers() {
 	for (VICUS::Drawing &d : m_drawings) {
 		d.updateParents();
 		addAndCheckForUniqueness(&d);
-		for (VICUS::DrawingLayer &dl : d.m_layers) {
+		for (VICUS::DrawingLayer &dl : d.m_drawingLayers) {
 			addAndCheckForUniqueness(&dl);
 		}
 	}
@@ -707,7 +707,7 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 	if (sg & SG_Drawing) {
 		for (const VICUS::Drawing & d : m_drawings) {
 
-			for (const VICUS::DrawingLayer & dl : d.m_layers) {
+			for (const VICUS::DrawingLayer & dl : d.m_drawingLayers) {
 				if (selectionCheck(dl, takeSelected, takeVisible))
 					selectedObjs.insert(&dl);
 			}
@@ -828,16 +828,14 @@ QString Project::newUniqueSubSurfaceName(const QString & baseName) const {
 template <typename t>
 void drawingBoundingBox(const VICUS::Drawing &d,
 						const std::vector<t> &drawingObjects,
-						IBKMK::Vector3D &upperValues, IBKMK::Vector3D &lowerValues) {
+						IBKMK::Vector3D &upperValues,
+						IBKMK::Vector3D &lowerValues,
+						bool transformPoints = true) {
 	// FUNCID(Project::boundingBox);
 
 	// store selected surfaces
 	if (drawingObjects.empty())
 		return;
-
-	// multiplier for z-coordinate. Multiplied with the z counter of an entity
-	const double zmultiplier = 0.00005;
-
 
 	// process all drawings
 	for (const t &drawObj : drawingObjects) {
@@ -853,16 +851,20 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 
 			// Create Vector from start and end point of the line,
 			// add point of origin to each coordinate and calculate z value
-			double zCoordinate = drawObj.m_zPosition * zmultiplier + d.m_origin.m_z;
+			double zCoordinate = drawObj.m_zPosition * Z_MULTIPLYER + d.m_origin.m_z;
 			IBKMK::Vector3D p1 = IBKMK::Vector3D(p.m_x + d.m_origin.m_x,
 												 p.m_y + d.m_origin.m_y,
 												 zCoordinate);
 
-			// scale Vector with selected unit
-			p1 *= d.m_scalingFactor;
+			QVector3D vec1(p1.m_x, p1.m_y, p1.m_z);
 
-			// rotate Vectors
-			QVector3D vec1 = d.m_rotationMatrix.toQuaternion() * QVector3D(p1.m_x, p1.m_y, p1.m_z);
+			if (transformPoints) {
+				// scale Vector with selected unit
+				p1 *= d.m_scalingFactor;
+
+				// rotate Vectors
+				vec1 = d.m_rotationMatrix.toQuaternion() * vec1;
+			}
 
 			upperValues.m_x = std::max(upperValues.m_x, (double)vec1.x());
 			upperValues.m_y = std::max(upperValues.m_y, (double)vec1.y());
@@ -879,7 +881,8 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings,
 									 const std::vector<const Surface*> &surfaces,
 									 const std::vector<const SubSurface*> &subsurfaces,
-									 IBKMK::Vector3D &center)
+									 IBKMK::Vector3D &center,
+									 bool transformPoints)
 {
 	// NOTE: We do not reuse the other boundingBox() function, because this implementation is much faster.
 
@@ -887,8 +890,12 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 	if ( surfaces.empty() && subsurfaces.empty() && drawings.empty() )
 		return IBKMK::Vector3D ( 0,0,0 );
 
-	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-	IBKMK::Vector3D upperValues(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
+	IBKMK::Vector3D lowerValues(std::numeric_limits<double>::max(),
+								std::numeric_limits<double>::max(),
+								std::numeric_limits<double>::max());
+	IBKMK::Vector3D upperValues(std::numeric_limits<double>::lowest(),
+								std::numeric_limits<double>::lowest(),
+								std::numeric_limits<double>::lowest());
 
 	// process all surfaces
 	for (const VICUS::Surface *s : surfaces ) {
@@ -920,13 +927,15 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 	}
 
 	for (const VICUS::Drawing *drawing : drawings) {
-		drawingBoundingBox<VICUS::Drawing::Arc>(*drawing, drawing->m_arcs, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::Circle>(*drawing, drawing->m_circles, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::Ellipse>(*drawing, drawing->m_ellipses, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::Line>(*drawing, drawing->m_lines, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::PolyLine>(*drawing, drawing->m_polylines, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::Point>(*drawing, drawing->m_points, upperValues, lowerValues);
-		drawingBoundingBox<VICUS::Drawing::Solid>(*drawing, drawing->m_solids, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Arc>(*drawing, drawing->m_arcs, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Circle>(*drawing, drawing->m_circles, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Ellipse>(*drawing, drawing->m_ellipses, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Line>(*drawing, drawing->m_lines, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::PolyLine>(*drawing, drawing->m_polylines, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Point>(*drawing, drawing->m_points, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Solid>(*drawing, drawing->m_solids, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Text>(*drawing, drawing->m_texts, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::LinearDimension>(*drawing, drawing->m_linearDimensions, upperValues, lowerValues, transformPoints);
 	}
 
 	// center point of bounding box
