@@ -15,21 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label_18">
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
-     <property name="text">
-      <string>In ray tracing mode, a grid is created on each surface with its maximum size. A ray is shot from the center of each grid patch in the direction of the sun. If the ray hits an obstacle, the considered area is shaded and a shading factor can be determined from the ratio of the patch area to the total area. In surface clipping mode, on the other hand, all surfaces are projected onto the current surface from the direction of the sun. If this results in overlapping areas, these represent the shaded area, so a shading factor can be formed by the ratio of the overlapping area to the total area.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
     <spacer name="verticalSpacer_7">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -354,24 +339,26 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="15" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Output Type:</string>
+     <item row="2" column="1" colspan="3">
+      <widget class="QComboBox" name="comboBoxPresets">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="labelGridSize">
-       <property name="text">
-        <string>Grid size:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="1">
-      <widget class="QLineEdit" name="lineEditShadingFactorFilename">
-       <property name="readOnly">
-        <bool>true</bool>
+     <item row="15" column="0" colspan="4">
+      <widget class="Line" name="line_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -388,6 +375,107 @@
          <width>400</width>
          <height>16777215</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0" rowspan="2" colspan="4">
+      <spacer name="verticalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Maximum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>30</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelGridSize_3">
+         <property name="text">
+          <string>Deg</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="13" column="0" colspan="4">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>Output file</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="1">
+      <widget class="QComboBox" name="comboBoxFileType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="1">
+      <widget class="QLineEdit" name="lineEditShadingFactorFilename">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="2" colspan="2">
+      <spacer name="horizontalSpacer_14">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Detail presets:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="labelGridSize">
+       <property name="text">
+        <string>Grid size:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Geometry Mode:</string>
        </property>
       </widget>
      </item>
@@ -411,10 +499,23 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label">
+     <item row="4" column="2" colspan="2">
+      <spacer name="horizontalSpacer_11">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="16" column="0">
+      <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>Detail presets:</string>
+        <string>Output Type:</string>
        </property>
       </widget>
      </item>
@@ -439,8 +540,8 @@
        </item>
       </layout>
      </item>
-     <item row="15" column="1">
-      <widget class="QComboBox" name="comboBoxFileType">
+     <item row="7" column="1">
+      <widget class="QComboBox" name="comboBoxGeometryMode">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -455,26 +556,25 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone">
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelGridSize_3">
-         <property name="text">
-          <string>Deg</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+     <item row="18" column="2" colspan="2">
+      <spacer name="horizontalSpacer_13">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Calculation Mode:</string>
+       </property>
+      </widget>
      </item>
      <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -507,125 +607,25 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_12">
-       <property name="text">
-        <string>Geometry Mode:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0" rowspan="2" colspan="4">
-      <spacer name="verticalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Maximum</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>30</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="2" column="1" colspan="3">
-      <widget class="QComboBox" name="comboBoxPresets">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>400</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0" colspan="4">
-      <widget class="QLabel" name="label_17">
-       <property name="text">
-        <string>Output file</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="comboBoxGeometryMode">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>400</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="0">
+     <item row="18" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Shading factor file name:</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="2" colspan="2">
-      <spacer name="horizontalSpacer_11">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="10" column="0" colspan="4">
+      <widget class="QLabel" name="label_18">
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="15" column="2" colspan="2">
-      <spacer name="horizontalSpacer_14">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_13">
        <property name="text">
-        <string>Calculation Mode:</string>
+        <string>In ray tracing mode, a grid is created on each surface with its maximum size. A ray is shot from the center of each grid patch in the direction of the sun. If the ray hits an obstacle, the considered area is shaded and a shading factor can be determined from the ratio of the patch area to the total area. In surface clipping mode, on the other hand, all surfaces are projected onto the current surface from the direction of the sun. If this results in overlapping areas, these represent the shaded area, so a shading factor can be formed by the ratio of the overlapping area to the total area.</string>
        </property>
-      </widget>
-     </item>
-     <item row="17" column="2" colspan="2">
-      <spacer name="horizontalSpacer_13">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="14" column="0" colspan="4">
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

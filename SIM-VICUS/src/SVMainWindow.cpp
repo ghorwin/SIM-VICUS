@@ -1592,14 +1592,14 @@ void SVMainWindow::updateMainView() {
 			m_simulationSettingsView->setVisible(false);
 		} break;
 		case MV_GeometryView: {
+			m_simulationSettingsView->setVisible(false);
 			m_ui->actionGeometryView->setChecked(true);
 			m_geometryViewSplitter->setVisible(true);
-			m_simulationSettingsView->setVisible(false);
 			m_geometryView->setFocus();
 		} break;
 		case MV_SimulationView: {
-			m_ui->actionSimulationSettings->setChecked(true);
 			m_geometryViewSplitter->setVisible(false);
+			m_ui->actionSimulationSettings->setChecked(true);
 			m_simulationSettingsView->setVisible(true);
 		} break;
 	}
@@ -1614,7 +1614,6 @@ void SVMainWindow::on_actionGeometryView_triggered() {
 
 void SVMainWindow::on_actionSimulationSettings_triggered() {
 	m_mainViewMode = MV_SimulationView;
-
 	updateMainView();
 }
 
