@@ -61,6 +61,9 @@ private:
 	/*! Moves drawings to global coordinate center. */
 	void moveDrawings();
 
+	/*! Fix too big fonts. */
+	void fixFonts();
+
 	/*! Pointer to UI. */
 	Ui::SVImportDXFDialog		*m_ui;
 

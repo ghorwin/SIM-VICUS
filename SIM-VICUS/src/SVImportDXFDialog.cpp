@@ -54,6 +54,9 @@ SVImportDXFDialog::ImportResults SVImportDXFDialog::import(const QString &fname)
 	if (m_ui->checkBoxMove->isChecked())
 		moveDrawings();
 
+	if (m_ui->checkBoxFixFonts->isChecked())
+		fixFonts();
+
 	m_ui->plainTextEditLogWindow->clear();
 
 	return m_returnCode;
@@ -97,6 +100,19 @@ void SVImportDXFDialog::moveDrawings() {
 	project().boundingBox(drawings, surfaces, subsurfaces, center, false);
 
 	m_drawing.m_origin = - 1.0 * center;
+}
+
+void SVImportDXFDialog::fixFonts() {
+	double HEIGHT = 15;
+
+	for (VICUS::Drawing::Text &text : m_drawing.m_texts) {
+		if (text.m_height > HEIGHT)
+			text.m_height *= 0.1;
+	}
+	for (VICUS::Drawing::LinearDimension &linDem : m_drawing.m_linearDimensions) {
+		if (linDem.m_style->m_textHeight > HEIGHT)
+			linDem.m_style->m_textHeight *= 0.1;
+	}
 }
 
 const VICUS::Drawing& SVImportDXFDialog::drawing() const {
