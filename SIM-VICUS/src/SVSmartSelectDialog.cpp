@@ -146,6 +146,11 @@ SVSmartSelectDialog::~SVSmartSelectDialog() {
 
 void SVSmartSelectDialog::select() {
 
+	// tab enable states
+	const VICUS::Project &p = project();
+	m_ui->tabWidgetGroup->setTabEnabled(0,!p.m_buildings.empty());
+	m_ui->tabWidgetGroup->setTabEnabled(1,!p.m_geometricNetworks.empty());
+
 	// process data structure and populate options
 
 	const SVDatabase & db = SVSettings::instance().m_db;
