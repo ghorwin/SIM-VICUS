@@ -114,6 +114,28 @@ void WireFrameObject::destroy() {
 	m_indexBufferObject.destroy();
 }
 
+template <typename t>
+void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
+						   unsigned int &currentElementIndex, std::vector<VertexC> &vertexBufferData, std::vector<GLuint> &indexBufferData) {
+	for (const t & obj : objects){
+
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+
+		if (dl == nullptr)
+			continue;
+
+		if (!dl->m_selected || !dl->m_visible)
+			continue;
+
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
+		for (const VICUS::PlaneGeometry &plane : planes) {
+			addPlane(plane.triangulationData(), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
+		}
+	}
+}
+
+
 void WireFrameObject::updateBuffers() {
 	// get all selected and visible objects
 	m_selectedObjects.clear();
@@ -183,233 +205,16 @@ void WireFrameObject::updateBuffers() {
 		if (drawingLayer != nullptr) {
 
 			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(drawingLayer->m_parent);
-
 			Q_ASSERT(drawing != nullptr);
 
-			for (const VICUS::Drawing::Line & line : drawing->m_lines){
-
-				if (line.m_parentLayer != drawingLayer)
-					continue;
-
-				double width = DEFAULT_LINE_WEIGHT + line.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING;
-
-				// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
-				double zCoordinate = line.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z;
-				IBKMK::Vector3D p1 = IBKMK::Vector3D(line.m_point1.m_x + drawing->m_origin.m_x, line.m_point1.m_y + drawing->m_origin.m_y, zCoordinate);
-				IBKMK::Vector3D p2 = IBKMK::Vector3D(line.m_point2.m_x + drawing->m_origin.m_x, line.m_point2.m_y + drawing->m_origin.m_y, zCoordinate);
-
-				// scale Vector with selected unit
-				p1 *= drawing->m_scalingFactor;
-				p2 *= drawing->m_scalingFactor;
-
-				// rotate Vectors
-				QVector3D vec1 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
-				QVector3D vec2 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
-
-				// call addLine to draw line
-				addLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing->m_rotationMatrix,
-						width, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			}
-
-			for(const VICUS::Drawing::Point & point : drawing->m_points){
-
-				if (point.m_parentLayer != drawingLayer)
-					continue;
-
-				// Create Vector from point, add point of origin to each coordinate and calculate z value
-				IBKMK::Vector3D p(point.m_point.m_x + drawing->m_origin.m_x,
-								  point.m_point.m_y + drawing->m_origin.m_y,
-								  point.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-
-				// scale Vector with selected unit
-				p *= drawing->m_scalingFactor;
-
-				double pointWeight = (DEFAULT_LINE_WEIGHT + point.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
-
-				// rotation
-				QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-				IBKMK::Vector3D p1 = QVector2IBKVector(vec);
-
-				IBKMK::Vector3D pExt0 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z);
-				IBKMK::Vector3D pExt1 = IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z);
-				IBKMK::Vector3D pExt2 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z);
-
-				IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
-				VICUS::PlaneGeometry g1(po);
-
-				addPlane(g1.triangulationData(), currentVertexIndex,
-						 currentElementIndex, m_vertexBufferData,
-						 m_indexBufferData);
-			}
-
-			for(const VICUS::Drawing::PolyLine & polyline : drawing->m_polylines){
-
-				if (polyline.m_parentLayer != drawingLayer)
-					continue;
-
-				// Create Vector to store vertices of polyline
-				std::vector<IBKMK::Vector3D> polylinePoints;
-
-				// adds z-coordinate to polyline
-				for(unsigned int i = 0; i < polyline.m_polyline.size(); i++){
-					IBKMK::Vector3D p = IBKMK::Vector3D(polyline.m_polyline[i].m_x + drawing->m_origin.m_x,
-														polyline.m_polyline[i].m_y + drawing->m_origin.m_y,
-														polyline.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-					p *= drawing->m_scalingFactor;
-
-					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-					polylinePoints.push_back(QVector2IBKVector(vec));
-				}
-
-				addPolyLine(polylinePoints, drawing->m_rotationMatrix, polyline.m_endConnected,
-							DEFAULT_LINE_WEIGHT + polyline.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-							currentVertexIndex, currentElementIndex,
-							m_vertexBufferData,	m_indexBufferData);
-			}
-
-			for(const VICUS::Drawing::Circle & circle : drawing->m_circles){
-
-				if (circle.m_parentLayer != drawingLayer)
-					continue;
-
-				std::vector<IBKMK::Vector3D> circlePoints;
-
-				for(int i = 0; i < Vic3D::SEGMENT_COUNT_CIRCLE; i++){
-					IBKMK::Vector3D p = IBKMK::Vector3D(circle.m_center.m_x + circle.m_radius * cos(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE) + drawing->m_origin.m_x,
-														circle.m_center.m_y + circle.m_radius * sin(2 * IBK::PI * i / Vic3D::SEGMENT_COUNT_CIRCLE) + drawing->m_origin.m_y,
-														circle.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-					p *= drawing->m_scalingFactor;
-
-					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-					circlePoints.push_back(QVector2IBKVector(vec));
-				}
-
-				addPolyLine(circlePoints, drawing->m_rotationMatrix, true,
-							DEFAULT_LINE_WEIGHT + circle.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-							currentVertexIndex, currentElementIndex,
-							m_vertexBufferData,
-							m_indexBufferData);
-
-			}
-
-			for(const VICUS::Drawing::Arc & arc : drawing->m_arcs){
-
-				if (!arc.m_parentLayer->m_visible)
-					continue;
-
-				std::vector<IBKMK::Vector3D> arcPoints;
-
-				double startAngle = arc.m_startAngle;
-				double endAngle = arc.m_endAngle;
-
-				double angleDifference;
-
-				if(startAngle > endAngle)
-					angleDifference = 2 * IBK::PI - startAngle + endAngle;
-				else
-					angleDifference = endAngle - startAngle;
-
-
-				int toCalcN = (int)(Vic3D::SEGMENT_COUNT_ARC * (2 * IBK::PI / angleDifference));
-
-				double stepAngle = angleDifference / toCalcN;
-
-				for(int i = 0; i < toCalcN; i++){
-					IBKMK::Vector3D p = IBKMK::Vector3D(arc.m_center.m_x + arc.m_radius * cos(startAngle + i * stepAngle) + drawing->m_origin.m_x,
-														arc.m_center.m_y + arc.m_radius * sin(startAngle + i * stepAngle) + drawing->m_origin.m_y,
-														arc.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-					p *= drawing->m_scalingFactor;
-
-					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-					arcPoints.push_back(QVector2IBKVector(vec));
-				}
-
-				addPolyLine(arcPoints, drawing->m_rotationMatrix, false, DEFAULT_LINE_WEIGHT + arc.lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-							currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-
-			}
-
-			for (const VICUS::Drawing::Ellipse & ellipse : drawing->m_ellipses){
-
-				if (!ellipse.m_parentLayer->m_visible)
-					continue;
-
-				std::vector<IBKMK::Vector3D> ellipsePoints;
-
-				// Assuming startAngle and endAngle are in radians, provided by your ellipse object
-				double startAngle = ellipse.m_startAngle;
-				double endAngle = ellipse.m_endAngle;
-
-				double angleStep = (endAngle - startAngle) / Vic3D::SEGMENT_COUNT_ELLIPSE;
-
-				double majorRadius = sqrt(pow(ellipse.m_majorAxis.m_x, 2) + pow(ellipse.m_majorAxis.m_y, 2));
-				double minorRadius = majorRadius * ellipse.m_ratio;
-
-				double rotationAngle = atan2(ellipse.m_majorAxis.m_y, ellipse.m_majorAxis.m_x);
-
-				double x, y, rotated_x, rotated_y;
-
-				for (unsigned int i = 0; i <= Vic3D::SEGMENT_COUNT_ELLIPSE; i++) {
-
-					double currentAngle = startAngle + i * angleStep;
-
-					x = majorRadius * cos(currentAngle);
-					y = minorRadius * sin(currentAngle);
-
-					rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
-					rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
-
-					IBKMK::Vector3D p = IBKMK::Vector3D(rotated_x + ellipse.m_center.m_x + drawing->m_origin.m_x,
-														rotated_y + ellipse.m_center.m_y + drawing->m_origin.m_y,
-														ellipse.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-					p *= drawing->m_scalingFactor;
-
-					QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-					ellipsePoints.push_back(QVector2IBKVector(vec));
-				}
-
-				// Change this line to false, so it doesn't connect the last point to the first point
-				addPolyLine(ellipsePoints, drawing->m_rotationMatrix, startAngle == endAngle,
-							DEFAULT_LINE_WEIGHT + ellipse.m_lineWeight * DEFAULT_LINE_WEIGHT_SCALING,
-							currentVertexIndex,
-							currentElementIndex, m_vertexBufferData,
-							m_indexBufferData);
-			}
-
-
-			for(const VICUS::Drawing::Solid &solid : drawing->m_solids){
-
-				if (!solid.m_parentLayer->m_visible)
-					continue;
-
-
-				IBKMK::Vector3D p1 = IBKMK::Vector3D(solid.m_point1.m_x + drawing->m_origin.m_x,
-													 solid.m_point1.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-				IBKMK::Vector3D p2 = IBKMK::Vector3D(solid.m_point2.m_x + drawing->m_origin.m_x,
-													 solid.m_point2.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-				/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * Z_MULTIPLYER + drawing.m_origin.m_z); */
-				IBKMK::Vector3D p4 = IBKMK::Vector3D(solid.m_point4.m_x + drawing->m_origin.m_x,
-													 solid.m_point4.m_y + drawing->m_origin.m_y,
-													 solid.m_zPosition * Z_MULTIPLYER + drawing->m_origin.m_z);
-
-				p1 *= drawing->m_scalingFactor;
-				p2 *= drawing->m_scalingFactor;
-//				/* p3 *= drawing.m_scalingFactor; */
-				p4 *= drawing->m_scalingFactor;
-
-				QVector3D vec1 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
-				QVector3D vec2 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
-				/* QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3); */
-				QVector3D vec4 = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p4);
-
-				IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));
-				VICUS::PlaneGeometry g1(p);
-
-				addPlane(g1.triangulationData(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			}
-
+			generateDrawingPlanes<VICUS::Drawing::Line>(drawing->m_lines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing->m_polylines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing->m_linearDimensions, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Arc>(drawing->m_arcs, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing->m_ellipses, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Circle>(drawing->m_circles, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Solid>(drawing->m_solids, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Text>(drawing->m_texts, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 		}
 
 	}
