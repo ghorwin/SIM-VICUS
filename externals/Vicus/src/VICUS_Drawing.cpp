@@ -313,6 +313,8 @@ TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "Point1", nullptr, std::string(), m_point1.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "Point2", nullptr, std::string(), m_point2.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "DimensionPoint", nullptr, std::string(), m_dimensionPoint.toString());
+	TiXmlElement::appendSingleAttributeElement(e, "LeftPoint", nullptr, std::string(), m_leftPoint.toString());
+	TiXmlElement::appendSingleAttributeElement(e, "RightPoint", nullptr, std::string(), m_rightPoint.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "TextPoint", nullptr, std::string(), m_textPoint.toString());
 
 	return e;
@@ -376,6 +378,23 @@ void Drawing::LinearDimension::readXML(const TiXmlElement *element){
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
+			else if (cName == "LeftPoint") {
+				try {
+					m_leftPoint = IBKMK::Vector2D::fromString(c->GetText());
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										  .arg("Invalid vector data."), FUNC_ID);
+				}
+			}
+			else if (cName == "RightPoint") {
+				try {
+					m_rightPoint = IBKMK::Vector2D::fromString(c->GetText());
+				} catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
+										  .arg("Invalid vector data."), FUNC_ID);
+				}
+			}
+
 			else if (cName == "TextPoint") {
 				try {
 					m_textPoint = IBKMK::Vector2D::fromString(c->GetText());
@@ -413,53 +432,57 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
 		double zCoordinate = m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
 
-		IBKMK::Vector2D xAxis(1, 0);
-		IBKMK::Vector2D lineVec (std::cos(m_angle * IBK::DEG2RAD),
-								 std::sin(m_angle * IBK::DEG2RAD));
+		if (m_leftPoint == IBKMK::Vector2D() ||
+				m_rightPoint == IBKMK::Vector2D() ) {
 
-		IBKMK::Vector2D lineVec2 (lineVec.m_y, -lineVec.m_x);
+			IBKMK::Vector2D xAxis(1, 0);
+			IBKMK::Vector2D lineVec (std::cos(m_angle * IBK::DEG2RAD),
+									 std::sin(m_angle * IBK::DEG2RAD));
 
-		const unsigned int SCALING_FACTOR = 1E6;
+			IBKMK::Vector2D lineVec2 (lineVec.m_y, -lineVec.m_x);
 
-		IBKMK::Vector2D measurePoint1 = m_point1 + SCALING_FACTOR * lineVec2;
-		IBKMK::Vector2D measurePoint2 = m_point2 + SCALING_FACTOR * lineVec2;
+			const unsigned int SCALING_FACTOR = 1E6;
 
-		IBK::Line lineMeasure (m_dimensionPoint -   SCALING_FACTOR * lineVec,
-							   m_dimensionPoint + 2*SCALING_FACTOR * lineVec);
+			IBKMK::Vector2D measurePoint1 = m_point1 + SCALING_FACTOR * lineVec2;
+			IBKMK::Vector2D measurePoint2 = m_point2 + SCALING_FACTOR * lineVec2;
 
-		IBK::Line lineLeft  (m_point1 - SCALING_FACTOR * lineVec2, measurePoint1);
-		IBK::Line lineRight (m_point2 - SCALING_FACTOR * lineVec2, measurePoint2);
+			IBK::Line lineMeasure (m_dimensionPoint -   SCALING_FACTOR * lineVec,
+								   m_dimensionPoint + 2*SCALING_FACTOR * lineVec);
 
-		IBKMK::Vector2D intersection1Left, intersection2Left;
-		IBKMK::Vector2D intersection1Right, intersection2Right;
-		bool intersect1 = lineMeasure.intersects(lineLeft, intersection1Left, intersection2Left) == 1;
-		bool intersect2 = lineMeasure.intersects(lineRight, intersection1Right, intersection2Right) == 1;
+			IBK::Line lineLeft  (m_point1 - SCALING_FACTOR * lineVec2, measurePoint1);
+			IBK::Line lineRight (m_point2 - SCALING_FACTOR * lineVec2, measurePoint2);
 
-		if (!intersect1 && !intersect2)
-			throw IBK::Exception();
+			IBKMK::Vector2D intersection1Left, intersection2Left;
+			IBKMK::Vector2D intersection1Right, intersection2Right;
+			bool intersect1 = lineMeasure.intersects(lineLeft, intersection1Left, intersection2Left) == 1;
+			bool intersect2 = lineMeasure.intersects(lineRight, intersection1Right, intersection2Right) == 1;
 
-		IBKMK::Vector2D leftPoint, rightPoint;
-		IBKMK::Vector2D point1, point2;
-		if (intersect1 && (m_dimensionPoint - intersection1Left).magnitudeSquared() > 1E-3 ) {
-			leftPoint = intersection1Left;
-			rightPoint = m_dimensionPoint;
+			if (!intersect1 && !intersect2)
+				throw IBK::Exception();
+
+			IBKMK::Vector2D leftPoint, rightPoint;
+			IBKMK::Vector2D point1, point2;
+			if (intersect1 && (m_dimensionPoint - intersection1Left).magnitudeSquared() > 1E-3 ) {
+				m_leftPoint = intersection1Left;
+				m_rightPoint = m_dimensionPoint;
+			}
+			if (intersect2 && (m_dimensionPoint - intersection1Right).magnitudeSquared() > 1E-3 ) {
+				m_leftPoint = m_dimensionPoint;
+				m_rightPoint = intersection1Right;
+			}
 		}
-		if (intersect2 && (m_dimensionPoint - intersection1Right).magnitudeSquared() > 1E-3 ) {
-			leftPoint = m_dimensionPoint;
-			rightPoint = intersection1Right;
-		}
 
-		m_pickPoints.push_back(leftPoint);
-		m_pickPoints.push_back(rightPoint);
+		m_pickPoints.push_back(m_leftPoint);
+		m_pickPoints.push_back(m_rightPoint);
 
 		// MEASURE LINE ================================================================
 
-		IBKMK::Vector3D p1 = IBKMK::Vector3D(leftPoint.m_x + drawing.m_origin.m_x,
-											 leftPoint.m_y + drawing.m_origin.m_y,
+		IBKMK::Vector3D p1 = IBKMK::Vector3D(m_leftPoint.m_x + drawing.m_origin.m_x,
+											 m_leftPoint.m_y + drawing.m_origin.m_y,
 											 zCoordinate);
 
-		IBKMK::Vector3D p2 = IBKMK::Vector3D(rightPoint.m_x + drawing.m_origin.m_x,
-											 rightPoint.m_y + drawing.m_origin.m_y,
+		IBKMK::Vector3D p2 = IBKMK::Vector3D(m_rightPoint.m_x + drawing.m_origin.m_x,
+											 m_rightPoint.m_y + drawing.m_origin.m_y,
 											 zCoordinate);
 
 		// scale Vector with selected unit
@@ -480,12 +503,12 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 
 		// LINE LEFT  ================================================================
 
-		IBKMK::Vector3D l (leftPoint - m_point1);
+		IBKMK::Vector3D l (m_leftPoint - m_point1);
 		IBKMK::Vector3D point;
 		if (m_style->m_fixedExtensionLength) {
 			IBKMK::Vector3D ext = drawing.m_scalingFactor * m_style->m_fixedExtensionLength * l.normalized();
-			point.m_x = leftPoint.m_x - ext.m_x;
-			point.m_y = leftPoint.m_y - ext.m_y;
+			point.m_x = m_leftPoint.m_x - ext.m_x;
+			point.m_y = m_leftPoint.m_y - ext.m_y;
 		}
 		else {
 			IBKMK::Vector3D ext = drawing.m_scalingFactor * m_style->m_extensionLineLowerDistance * l.normalized();
@@ -497,8 +520,8 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 												 point.m_y + drawing.m_origin.m_y,
 												 zCoordinate);
 		IBKMK::Vector3D lowerExtension = drawing.m_scalingFactor * m_style->m_upperLineDistance * l.normalized();
-		IBKMK::Vector3D p2Left = IBKMK::Vector3D(leftPoint.m_x + lowerExtension.m_x + drawing.m_origin.m_x,
-												 leftPoint.m_y + lowerExtension.m_y + drawing.m_origin.m_y,
+		IBKMK::Vector3D p2Left = IBKMK::Vector3D(m_leftPoint.m_x + lowerExtension.m_x + drawing.m_origin.m_x,
+												 m_leftPoint.m_y + lowerExtension.m_y + drawing.m_origin.m_y,
 												 zCoordinate);
 
 		// scale Vector with selected unit
@@ -509,8 +532,8 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		QVector3D vec1Left = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1Left);
 		QVector3D vec2Left = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2Left);
 
-//		QQuaternion q = QQuaternion::fromAxisAndAngle(QVector3D(vec1Left.x(), vec1Left.y(), 1), linDem.m_angle);
-//		vec2Left = q * vec2Left;
+		//		QQuaternion q = QQuaternion::fromAxisAndAngle(QVector3D(vec1Left.x(), vec1Left.y(), 1), linDem.m_angle);
+		//		vec2Left = q * vec2Left;
 
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = generatePlaneFromLine(QVector2IBKVector(vec1Left), QVector2IBKVector(vec2Left), drawing.m_rotationMatrix,
@@ -522,11 +545,11 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 
 		// LINE RIGHT ================================================================
 
-		IBKMK::Vector3D r (rightPoint - m_point2);
+		IBKMK::Vector3D r (m_rightPoint - m_point2);
 		if (m_style->m_fixedExtensionLength) {
 			IBKMK::Vector3D ext = drawing.m_scalingFactor * m_style->m_fixedExtensionLength * r.normalized();
-			point.m_x = rightPoint.m_x - ext.m_x;
-			point.m_y = rightPoint.m_y - ext.m_y;
+			point.m_x = m_rightPoint.m_x - ext.m_x;
+			point.m_y = m_rightPoint.m_y - ext.m_y;
 		}
 		else {
 			IBKMK::Vector3D ext = drawing.m_scalingFactor * m_style->m_extensionLineLowerDistance * r.normalized();
@@ -538,8 +561,8 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 												  point.m_y + drawing.m_origin.m_y,
 												  zCoordinate);
 		lowerExtension = drawing.m_scalingFactor * m_style->m_upperLineDistance * l.normalized();
-		IBKMK::Vector3D p2Right = IBKMK::Vector3D(rightPoint.m_x + lowerExtension.m_x + drawing.m_origin.m_x,
-												  rightPoint.m_y + lowerExtension.m_y + drawing.m_origin.m_y,
+		IBKMK::Vector3D p2Right = IBKMK::Vector3D(m_rightPoint.m_x + lowerExtension.m_x + drawing.m_origin.m_x,
+												  m_rightPoint.m_y + lowerExtension.m_y + drawing.m_origin.m_y,
 												  zCoordinate);
 
 		// scale Vector with selected unit
@@ -560,7 +583,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 
 		// Text ======================================================================
 
-		double length = (leftPoint - rightPoint).magnitude();
+		double length = (m_leftPoint - m_rightPoint).magnitude();
 
 		QFont font("Arial");
 		font.setPointSize(2 * m_style->m_textHeight);

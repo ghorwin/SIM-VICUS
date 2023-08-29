@@ -326,6 +326,12 @@ public:
 		/*! Base point. */
 		IBKMK::Vector2D		m_dimensionPoint;
 
+		/*! Base point. */
+		mutable IBKMK::Vector2D		m_leftPoint;
+
+		/*! Base point. */
+		mutable IBKMK::Vector2D		m_rightPoint;
+
 		/*! Point 1 of Line. */
 		IBKMK::Vector2D		m_point1;
 
