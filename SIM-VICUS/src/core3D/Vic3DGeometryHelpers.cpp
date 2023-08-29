@@ -1001,41 +1001,47 @@ bool isClockwise(const QPolygonF& polygon) {
 	return sum > 0.0;
 }
 
-void addText(const std::string &text, Qt::Alignment alignment, const double &textSize, const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
-			 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, const QColor &color,
-			 unsigned int &currentVertexIndex, unsigned int &currentElementIndex, std::vector<Vertex> &vertexBufferData,  std::vector<ColorRGBA> & colorBufferData,
-			 std::vector<GLuint> &indexBufferData) {
 
-	QFont font("Arial");
-	font.setPointSizeF(textSize);
+void addText(const std::string &text, const QFont &font, Qt::Alignment alignment, const double &rotationAngle,
+			 const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
+			 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, const QColor &color,
+			 unsigned int &currentVertexIndex, unsigned int &currentElementIndex, std::vector<Vertex> &vertexBufferData,
+			 std::vector<ColorRGBA> & colorBufferData,
+			 std::vector<GLuint> &indexBufferData) {
 
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
+
 	double width = path.boundingRect().width();
 
 	if (alignment == Qt::AlignHCenter) {
 		QPointF center = path.boundingRect().center();
-		center.setX(center.x() - 0.5*width );
+		center.setX(center.x() - 0.5*width);
 		path.moveTo(center);
 	}
 
+	QTransform transform;
+	transform.rotate(rotationAngle);  // Rotate by 45 degrees
+
+	// Apply the rotation to the path
+	QPainterPath rotatedPath = transform.map(path);
+
 	// Extract polygons from the path
-	QList<QPolygonF> polygons = path.toSubpathPolygons();
+	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
 	std::vector<VICUS::PlaneGeometry> planeGeometries;
 	for (int i=0; i < polygons.size(); ++i) {
 
 		const QPolygonF &polygon = polygons[i];
-
 		std::vector<IBKMK::Vector3D> poly(polygon.size());
 
 		for (unsigned int i=0; i<poly.size(); ++i) {
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-			IBKMK::Vector3D v3D = IBKMK::Vector3D( point.x() + basePoint.m_x + origin.m_x,
-												  -point.y() + basePoint.m_y + origin.m_y,
-												   zScale);
+			IBKMK::Vector3D v3D = IBKMK::Vector3D(0.01 *  point.x() + basePoint.m_x + origin.m_x,
+												  0.01 * -point.y() + basePoint.m_y + origin.m_y,
+												  zScale);
 
 			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
 			qV3D *= scalingFactor;

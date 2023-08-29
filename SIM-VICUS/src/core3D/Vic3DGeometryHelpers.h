@@ -181,7 +181,7 @@ void addPolyLine(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::Rot
 				 unsigned int & currentElementIndex, std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 
-void addText(const std::string & text, Qt::Alignment alignment, const double &textSize, const VICUS::RotationMatrix & matrix, const IBKMK::Vector3D &origin, const IBKMK::Vector2D &basePoint,
+void addText(const std::string & text, const QFont &font, Qt::Alignment alignment, const double &rotationAngle, const VICUS::RotationMatrix & matrix, const IBKMK::Vector3D &origin, const IBKMK::Vector2D &basePoint,
 			 double scalingFactor, double zScale, const QColor &color, unsigned int & currentVertexIndex, unsigned int & currentElementIndex, std::vector<Vertex> & vertexBufferData,
 			 std::vector<ColorRGBA> &colorBufferData, std::vector<GLuint> & indexBufferData);
 
@@ -189,7 +189,6 @@ void addText(const std::string & text, Qt::Alignment alignment, const double &te
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::NetworkNode & n,
 				  unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
-
 
 } // namespace Vic3D
 
