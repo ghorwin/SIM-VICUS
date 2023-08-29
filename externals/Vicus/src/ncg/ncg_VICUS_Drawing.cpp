@@ -84,7 +84,7 @@ void Drawing::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "Layers") {
+			else if (cName == "DrawingLayers") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -92,7 +92,7 @@ void Drawing::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					DrawingLayer obj;
 					obj.readXML(c2);
-					m_layers.push_back(obj);
+					m_drawingLayers.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -192,6 +192,30 @@ void Drawing::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "LinearDimensions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "LinearDimension")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					LinearDimension obj;
+					obj.readXML(c2);
+					m_linearDimensions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "DimensionStyles") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "DimStyle")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					DimStyle obj;
+					obj.readXML(c2);
+					m_dimensionStyles.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ZCounter")
 				m_zCounter = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "DefaultColor")
@@ -240,12 +264,12 @@ TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_layers.empty()) {
-		TiXmlElement * child = new TiXmlElement("Layers");
+	if (!m_drawingLayers.empty()) {
+		TiXmlElement * child = new TiXmlElement("DrawingLayers");
 		e->LinkEndChild(child);
 
-		for (std::vector<DrawingLayer>::const_iterator it = m_layers.begin();
-			it != m_layers.end(); ++it)
+		for (std::vector<DrawingLayer>::const_iterator it = m_drawingLayers.begin();
+			it != m_drawingLayers.end(); ++it)
 		{
 			it->writeXML(child);
 		}
@@ -342,6 +366,30 @@ TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Text>::const_iterator it = m_texts.begin();
 			it != m_texts.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_linearDimensions.empty()) {
+		TiXmlElement * child = new TiXmlElement("LinearDimensions");
+		e->LinkEndChild(child);
+
+		for (std::vector<LinearDimension>::const_iterator it = m_linearDimensions.begin();
+			it != m_linearDimensions.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_dimensionStyles.empty()) {
+		TiXmlElement * child = new TiXmlElement("DimensionStyles");
+		e->LinkEndChild(child);
+
+		for (std::vector<DimStyle>::const_iterator it = m_dimensionStyles.begin();
+			it != m_dimensionStyles.end(); ++it)
 		{
 			it->writeXML(child);
 		}
