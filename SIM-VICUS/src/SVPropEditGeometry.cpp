@@ -1246,6 +1246,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			double scaling = m_ui->lineEditScaleFactor->value();
 			newDrawing.m_scalingFactor = scaling;
 		}
+		newDrawing.updatePlaneGeometries();
 		modifiedDrawings.push_back(newDrawing);
 	}
 

@@ -72,7 +72,6 @@ void SVUndoModifySurfaceGeometry::undo() {
 		std::swap(m_drawings[i], *d);
 	}
 
-
 	// also modified sub-surface components, if needed
 	if (m_modifySubSurfaceComponentInstances) {
 		m_subSurfaceComponentInstances.swap(theProject().m_subSurfaceComponentInstances);
