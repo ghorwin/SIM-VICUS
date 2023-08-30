@@ -34,5 +34,12 @@
         <file>gfx/icons8/icons8-size-80.png</file>
         <file>gfx/icons8/icons8-info-80.png</file>
         <file>gfx/icons8/icons8-ausgefuellte-checkbox-80.png</file>
+        <file>gfx/icons8/icons8-window-80.png</file>
+        <file>gfx/icons8/icons8-roof-80.png</file>
+        <file>gfx/icons8/icons8-rectangle-80.png</file>
+        <file>gfx/icons8/icons8-polygon-80.png</file>
+        <file>gfx/icons8/icons8-pipeline-80.png</file>
+        <file>gfx/icons8/icons8-checkbox-unmarkiert-2-80.xcf</file>
+        <file>gfx/icons8/icons8-box-80.png</file>
     </qresource>
 </RCC>
