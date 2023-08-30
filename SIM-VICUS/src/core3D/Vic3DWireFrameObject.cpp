@@ -29,14 +29,18 @@
 #include <QOpenGLShaderProgram>
 #include <QElapsedTimer>
 
+#include <IBK_physics.h>
+
 #include <VICUS_Project.h>
 #include <SVConversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
 #include "SVSettings.h"
+#include "Vic3DConstants.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DShaderProgram.h"
+#include "qstyle.h"
 
 namespace Vic3D {
 
@@ -81,10 +85,10 @@ void WireFrameObject::create(ShaderProgram * shaderProgram) {
 #define VERTEX_ARRAY_INDEX 0
 
 	m_vertexBufferObject.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
-				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
-				  // respective attribute array that's fed into the shader. When the vao is later bound before
-				  // rendering, this association is remembered so that the vertex fetch stage pulls data from
-				  // this vbo
+	// calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
+	// respective attribute array that's fed into the shader. When the vao is later bound before
+	// rendering, this association is remembered so that the vertex fetch stage pulls data from
+	// this vbo
 
 	// coordinates
 	m_shaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
@@ -109,6 +113,28 @@ void WireFrameObject::destroy() {
 	m_vertexBufferObject.destroy();
 	m_indexBufferObject.destroy();
 }
+
+template <typename t>
+void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
+						   unsigned int &currentElementIndex, std::vector<VertexC> &vertexBufferData, std::vector<GLuint> &indexBufferData) {
+	for (const t & obj : objects){
+
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+
+		if (dl == nullptr)
+			continue;
+
+		if (!dl->m_selected || !dl->m_visible)
+			continue;
+
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
+		for (const VICUS::PlaneGeometry &plane : planes) {
+			addPlane(plane.triangulationData(), currentVertexIndex, currentElementIndex,
+					 vertexBufferData, indexBufferData);
+		}
+	}
+}
+
 
 void WireFrameObject::updateBuffers() {
 	// get all selected and visible objects
@@ -174,6 +200,23 @@ void WireFrameObject::updateBuffers() {
 					  currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			continue;
 		}
+
+		const VICUS::DrawingLayer * drawingLayer = dynamic_cast<const VICUS::DrawingLayer *>(o);
+		if (drawingLayer != nullptr) {
+
+			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(drawingLayer->m_parent);
+			Q_ASSERT(drawing != nullptr);
+
+			generateDrawingPlanes<VICUS::Drawing::Line>(drawing->m_lines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing->m_polylines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing->m_linearDimensions, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Arc>(drawing->m_arcs, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing->m_ellipses, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Circle>(drawing->m_circles, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Solid>(drawing->m_solids, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Text>(drawing->m_texts, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+		}
+
 	}
 
 	// transfer data to GPU
@@ -257,7 +300,7 @@ void WireFrameObject::localScaling(const QVector3D & offset, const QQuaternion &
 	m_translation = offset;
 	m_rotation = toLocal;
 	m_scaling = localScaleFactors;
-    m_transform.setLocalScaling(offset, toLocal, localScaleFactors);
+	m_transform.setLocalScaling(offset, toLocal, localScaleFactors);
 }
 
 

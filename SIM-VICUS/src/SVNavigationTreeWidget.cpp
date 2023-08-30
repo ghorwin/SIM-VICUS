@@ -145,8 +145,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	switch (mod) {
 	case SVProjectHandler::AllModified :
 	case SVProjectHandler::NetworkGeometryChanged :
+	case SVProjectHandler::DrawingModified :
 	case SVProjectHandler::BuildingGeometryChanged :
-
 		break;
 	case SVProjectHandler::BuildingTopologyChanged : {
 		/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
@@ -326,6 +326,32 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			no->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, nod.m_visible);
 			no->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, nod.m_selected);
 			nnode->addChild(no);
+		}
+	}
+
+	// DXF Drawings
+	QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
+	m_ui->treeWidget->addTopLevelItem(drawing);
+	for (const VICUS::Drawing & d : prj.m_drawings) {
+		// TODO should drawing have name & id
+		QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
+		m_treeItemMap[d.m_id] = drawingItem;
+		//m_treeItemMap[d.m_id] = drawingItem;
+		drawing->addChild(drawingItem);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::NodeID, d.m_id);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, d.m_visible);
+		drawingItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, d.m_selected);
+
+		// add child nodes for each edge in the network
+		for (const VICUS::DrawingLayer & l : d.m_drawingLayers) {
+			const QString &name = l.m_displayName;
+			QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
+			m_treeItemMap[l.m_id] = ln;
+			// first fill with dummy data
+			ln->setData(0, SVNavigationTreeItemDelegate::NodeID, l.m_id);
+			ln->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, l.m_visible);
+			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, l.m_selected);
+			drawingItem->addChild(ln);
 		}
 	}
 

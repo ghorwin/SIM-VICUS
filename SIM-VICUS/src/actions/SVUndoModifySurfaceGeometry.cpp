@@ -34,9 +34,11 @@
 #include "Vic3DWireFrameObject.h"
 
 SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
-														 const std::vector<VICUS::Surface> & surfaces,
-														 const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances)
-	: m_surfaces(surfaces)
+														 std::vector<VICUS::Surface> & surfaces,
+														 std::vector<VICUS::Drawing> & drawings,
+														 const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances) :
+	m_surfaces(surfaces),
+	m_drawings(drawings)
 {
 	setText( label );
 	if (subSurfaceComponentInstances != nullptr) {
@@ -59,6 +61,17 @@ void SVUndoModifySurfaceGeometry::undo() {
 		std::swap(m_surfaces[i], *s);
 	}
 
+	// process all of our stored surfaces in the project
+	for (unsigned int i=0; i<m_drawings.size(); ++i) {
+		// find surface by ID in current project
+		VICUS::Object * o = theProject().objectById(m_drawings[i].m_id);
+		IBK_ASSERT(o != nullptr);
+		VICUS::Drawing *d = dynamic_cast<VICUS::Drawing *>(o);
+		Q_ASSERT(d != nullptr);
+		// exchange data between surfaces
+		std::swap(m_drawings[i], *d);
+	}
+
 	// also modified sub-surface components, if needed
 	if (m_modifySubSurfaceComponentInstances) {
 		m_subSurfaceComponentInstances.swap(theProject().m_subSurfaceComponentInstances);
@@ -69,6 +82,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 	// tell project that geometry has changed
 	// NOTE: this may be slow for larger geometries...
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged );
+	SVProjectHandler::instance().setModified( SVProjectHandler::DrawingModified );
 }
 
 

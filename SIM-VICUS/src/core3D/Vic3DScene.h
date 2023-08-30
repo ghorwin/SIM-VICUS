@@ -34,6 +34,7 @@
 
 #include <VICUS_GridPlane.h>
 
+#include "VICUS_RotationMatrix.h"
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
@@ -74,10 +75,10 @@ class Scene {
 	Q_DECLARE_TR_FUNCTIONS(Scene)
 public:
 
-    enum HighlightingMode {
-        HM_TransparentWithBoxes,
-        HM_ColoredSurfaces
-    };
+	enum HighlightingMode {
+		HM_TransparentWithBoxes,
+		HM_ColoredSurfaces
+	};
 
 	void create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms);
 
@@ -156,12 +157,14 @@ public:
 	/*! Getter for worldToView Matrix. */
 	const QMatrix4x4 & worldToView() const;
 
-    void updatedHighlightingMode(HighlightingMode mode);
+	void updatedHighlightingMode(HighlightingMode mode);
 
 private:
 	void generateBuildingGeometry();
 	void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_TransparentWithBoxes);
 	void generateNetworkGeometry();
+
+	void generate2DDrawingGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
 	void recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const;
@@ -172,8 +175,11 @@ private:
 	*/
 	void pick(PickObject & pickObject);
 
-    /*! Pick all child surfaces. */
-    void pickChildSurfaces();
+	/*! Pick drawings. */
+	void pickDrawings(PickObject & pickObject, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction);
+
+	/*! Pick all child surfaces. */
+	void pickChildSurfaces();
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
@@ -257,6 +263,8 @@ private:
 	GridObject				m_gridObject;
 	/*! A geometry drawing object (transparency only for windows) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_buildingGeometryObject;
+	/*! todo */
+	OpaqueGeometryObject	m_drawingGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
 	/*! A geometry drawing object for building (room) surfaces.*/
@@ -293,8 +301,8 @@ private:
 	/// TODO Andreas, add vector of snap marker objects, stripped down coordinate system objects with just a single sphere.
 	OpaqueGeometryObject	m_rotationMarkerObject;
 
-    /*! Cached surface colors. */
-    std::map<unsigned int, QColor> m_surfaceColor;
+	/*! Cached surface colors. */
+	std::map<unsigned int, QColor> m_surfaceColor;
 
 	// *** Navigation stuff ***
 

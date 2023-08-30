@@ -13,27 +13,29 @@ QT += gui core widgets
 
 
 unix|mac {
-	VER_MAJ = 0
-	VER_MIN = 1
-	VER_PAT = 0
-	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
+VER_MAJ = 0
+VER_MIN = 1
+VER_PAT = 0
+VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO -llibdxfrw
 
 INCLUDEPATH = \
-	../../src \
+../../src \
 	../../../IBK/src \
 	../../../IBKMK/src \
 	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../DataIO/src \
-	../../../TiCPP/src
+	../../../TiCPP/src \
+	../../../libdxfrw/src \
+	../../../libdxfrw/src/intern
 
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
-	../../src/VICUS_AbstractDBElement.h \
+../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BoundaryCondition.h \
@@ -46,6 +48,8 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
+	../../src/VICUS_Drawing.h \
+	../../src/VICUS_DrawingLayer.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
@@ -101,14 +105,16 @@ HEADERS += \
 	../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
-	../../src/VICUS_AbstractDBElement.cpp \
-    ../../src/VICUS_AcousticTemplate.cpp \
-	../../src/VICUS_ArgsParser.cpp \
-	../../src/VICUS_BoundaryCondition.cpp \
-	../../src/VICUS_Component.cpp \
+../../src/VICUS_AbstractDBElement.cpp \
+../../src/VICUS_AcousticTemplate.cpp \
+../../src/VICUS_ArgsParser.cpp \
+../../src/VICUS_BoundaryCondition.cpp \
+../../src/VICUS_Component.cpp \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
+	../../src/VICUS_Drawing.cpp \
+    ../../src/VICUS_DrawingLayer.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
@@ -155,7 +161,7 @@ SOURCES += \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
+	../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
@@ -163,6 +169,8 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
+    ../../src/ncg/ncg_VICUS_Drawing.cpp \
+    ../../src/ncg/ncg_VICUS_DrawingLayer.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
@@ -173,7 +181,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
-        ../../src/ncg/ncg_VICUS_NetworkController.cpp \
+	../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
 	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
@@ -182,7 +190,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Outputs.cpp \
 	../../src/ncg/ncg_VICUS_OutputDefinition.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
-		../../src/ncg/ncg_VICUS_PlainGeometry.cpp \
+	../../src/ncg/ncg_VICUS_PlainGeometry.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \

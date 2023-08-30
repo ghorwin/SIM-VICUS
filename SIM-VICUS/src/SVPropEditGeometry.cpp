@@ -142,6 +142,8 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditScaleY->installEventFilter(this);
 	m_ui->lineEditScaleZ->installEventFilter(this);
 
+	// m_ui->lineEditScaleFactor->installEventFilter(this);
+
 	m_ui->lineEditCopyX->setText( QString("%L1").arg(m_copyTranslationVector.m_x,0,'f',3));
 	m_ui->lineEditCopyY->setText( QString("%L1").arg(m_copyTranslationVector.m_y,0,'f',3));
 	m_ui->lineEditCopyZ->setText( QString("%L1").arg(m_copyTranslationVector.m_z,0,'f',3));
@@ -164,11 +166,16 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(m_ui->lineEditScaleX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditScaleY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditScaleZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
+	// connect(m_ui->lineEditScaleFactor, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
 	connect(m_ui->lineEditTranslateX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 
+	m_ui->comboBoxUnit->addItem("Meter", SU_Meter);
+	m_ui->comboBoxUnit->addItem("Decimeter", SU_Decimeter);
+	m_ui->comboBoxUnit->addItem("Centimeter", SU_Centimeter);
+	m_ui->comboBoxUnit->addItem("Millimeter", SU_Millimeter);
 }
 
 
@@ -209,8 +216,8 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 											  QVector2IBKVector(cso->localXAxis() ),
 											  QVector2IBKVector(cso->localYAxis() ),
 											  QVector2IBKVector(cso->localZAxis() ) );
-	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
+	m_bbDim[OM_Global] = project().boundingBox(m_selDrawings, m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	m_normal = QVector2IBKVector(cso->localZAxis());
 	updateInputs();
@@ -219,14 +226,14 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 
 bool SVPropEditGeometry::handleGlobalKeyPress(Qt::Key k) {
 	switch (k) {
-		case Qt::Key_Escape :
-			if (!m_ui->pushButtonCancel->isEnabled())
-				return false;
-			m_ui->pushButtonCancel->click();
-			break;
-
-		default:
+	case Qt::Key_Escape :
+		if (!m_ui->pushButtonCancel->isEnabled())
 			return false;
+		m_ui->pushButtonCancel->click();
+		break;
+
+	default:
+		return false;
 	}
 	return true;
 }
@@ -240,19 +247,19 @@ void SVPropEditGeometry::finishTransformation() {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
-		case SVProjectHandler::AllModified:
-			updateUi();
-			break;
-		case SVProjectHandler::BuildingGeometryChanged:
-			// When the building geometry has changed, we need to update the geometrical info
-			// in the widget based on the current selection. LCS is not moved.
-			updateUi(false);
-			break;
-		case SVProjectHandler::NodeStateModified:
-			updateUi();
-			break;
+	case SVProjectHandler::AllModified:
+		updateUi();
+		break;
+	case SVProjectHandler::BuildingGeometryChanged:
+		// When the building geometry has changed, we need to update the geometrical info
+		// in the widget based on the current selection. LCS is not moved.
+		updateUi(false);
+		break;
+	case SVProjectHandler::NodeStateModified:
+		updateUi();
+		break;
 
-		default: ; // just to make compiler happy
+	default: ; // just to make compiler happy
 	}
 }
 
@@ -304,10 +311,10 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 		{
 			double delta = 0.1; // default
 			switch (m_ui->stackedWidget->currentIndex()) {
-				case MT_Translate				:
-				case MT_Scale					: delta = 0.01; break;
-				case MT_Rotate					: delta = 1; break;
-				case NUM_MT : ; // just to make compiler happy
+			case MT_Translate				:
+			case MT_Scale					: delta = 0.01; break;
+			case MT_Rotate					: delta = 1; break;
+			case NUM_MT : ; // just to make compiler happy
 			}
 
 			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
@@ -433,6 +440,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// process all selected surfaces (not subsurfaces) and flip their normal vectors
 	// this is done directly, without use of apply/cancel buttons
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Drawing>			modifiedDrawings;
 	for (const VICUS::Surface* s : m_selSurfaces) {
 		// create a copy of the surface
 		VICUS::Surface modS(*s);
@@ -443,7 +451,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	if (modifiedSurfaces.empty())
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces, modifiedDrawings );
 	undo->push();
 
 	// also disable apply and cancel buttons
@@ -490,6 +498,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	project().selectObjects(sel, VICUS::Project::SG_All, false, false);
 
 	// we also have to cache all existing names, so we take alle existing objects
+	m_selDrawings.clear();
 	m_selSurfaces.clear();
 	m_selRooms.clear();
 	m_selSubSurfaces.clear();
@@ -500,7 +509,6 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	m_surfNames.clear();
 	m_buildingNames.clear();
 	m_buildingLevelNames.clear();
-
 
 	// process all selected objects and sort them into vectors
 	for (const VICUS::Object * o : sel) {
@@ -535,6 +543,16 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 			if (b->m_selected && b->m_visible)
 				m_selBuildings.push_back(b);
 		}
+
+		const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(o);
+		if (d != nullptr) {
+			if (d->m_selected && d->m_visible)
+				m_selDrawings.push_back(d);
+			//			for (const VICUS::Drawing::DrawingLayer &dl : d->m_layers) {
+			//				if (dl.m_selected && dl.m_visible)
+			//					m_selDrawings.push_back(d);
+			//			}
+		}
 	}
 
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
@@ -543,7 +561,7 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 											  QVector2IBKVector(cso->localXAxis() ),
 											  QVector2IBKVector(cso->localYAxis() ),
 											  QVector2IBKVector(cso->localZAxis() ) );
-	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+	m_bbDim[OM_Global] = project().boundingBox(m_selDrawings, m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	// NOTE: this function is being called even if edit geometry property widget is not
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[OM_Global]);
@@ -568,10 +586,15 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 	m_ui->pushButtonCopyBuildingLevel->setEnabled(!m_selBuildingLevels.empty());
 	m_ui->pushButtonCopyBuilding->setEnabled(!m_selBuildings.empty());
 
-	bool noSelection = m_selSurfaces.empty() && m_selSubSurfaces.empty() &&
+	bool noSelection = m_selDrawings.empty() && m_selSurfaces.empty() && m_selSubSurfaces.empty() &&
 			m_selRooms.empty() && m_selBuildingLevels.empty() && m_selBuildings.empty();
 
 	setEnabled(!noSelection);
+
+//	if (m_selDrawings.size() == 1)
+//		m_ui->lineEditScaleFactor->setValue(m_selDrawings.back()->m_scalingFactor);
+//	else
+//		m_ui->lineEditScaleFactor->setValue(1.0);
 }
 
 
@@ -700,27 +723,27 @@ void SVPropEditGeometry::updateScalePreview(int aspectRatioSourceEdit) {
 		else															scaleFactors.setZ(float(newZ/m_bbDim[OM_Local].m_z));
 
 		switch (aspectRatioSourceEdit) {
-			case 0 : {
-				float scale = scaleFactors.x();
-				scaleFactors.setY(scale);
-				scaleFactors.setZ(scale);
-				m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
-				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
-			} break;
-			case 1 : {
-				float scale = scaleFactors.y();
-				scaleFactors.setX(scale);
-				scaleFactors.setZ(scale);
-				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
-				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
-			} break;
-			case 2 : {
-				float scale = scaleFactors.z();
-				scaleFactors.setX(scale);
-				scaleFactors.setY(scale);
-				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
-				m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
-			} break;
+		case 0 : {
+			float scale = scaleFactors.x();
+			scaleFactors.setY(scale);
+			scaleFactors.setZ(scale);
+			m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
+			m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
+		} break;
+		case 1 : {
+			float scale = scaleFactors.y();
+			scaleFactors.setX(scale);
+			scaleFactors.setZ(scale);
+			m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
+			m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
+		} break;
+		case 2 : {
+			float scale = scaleFactors.z();
+			scaleFactors.setX(scale);
+			scaleFactors.setY(scale);
+			m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
+			m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
+		} break;
 		}
 	}
 	else {
@@ -728,27 +751,27 @@ void SVPropEditGeometry::updateScalePreview(int aspectRatioSourceEdit) {
 		scaleFactors.setY( (float)m_ui->lineEditScaleY->value());
 		scaleFactors.setZ( (float)m_ui->lineEditScaleZ->value());
 		switch (aspectRatioSourceEdit) {
-			case 0 : {
-				float scale = scaleFactors.x();
-				scaleFactors.setY(scale);
-				scaleFactors.setZ(scale);
-				m_ui->lineEditScaleY->setValue((double)scale);
-				m_ui->lineEditScaleZ->setValue((double)scale);
-			} break;
-			case 1 : {
-				float scale = scaleFactors.y();
-				scaleFactors.setX(scale);
-				scaleFactors.setZ(scale);
-				m_ui->lineEditScaleX->setValue((double)scale);
-				m_ui->lineEditScaleZ->setValue((double)scale);
-			} break;
-			case 2 : {
-				float scale = scaleFactors.z();
-				scaleFactors.setX(scale);
-				scaleFactors.setY(scale);
-				m_ui->lineEditScaleX->setValue((double)scale);
-				m_ui->lineEditScaleY->setValue((double)scale);
-			} break;
+		case 0 : {
+			float scale = scaleFactors.x();
+			scaleFactors.setY(scale);
+			scaleFactors.setZ(scale);
+			m_ui->lineEditScaleY->setValue((double)scale);
+			m_ui->lineEditScaleZ->setValue((double)scale);
+		} break;
+		case 1 : {
+			float scale = scaleFactors.y();
+			scaleFactors.setX(scale);
+			scaleFactors.setZ(scale);
+			m_ui->lineEditScaleX->setValue((double)scale);
+			m_ui->lineEditScaleZ->setValue((double)scale);
+		} break;
+		case 2 : {
+			float scale = scaleFactors.z();
+			scaleFactors.setX(scale);
+			scaleFactors.setY(scale);
+			m_ui->lineEditScaleX->setValue((double)scale);
+			m_ui->lineEditScaleY->setValue((double)scale);
+		} break;
 		}
 	}
 	// obtain offset and rotation of local coordinate system
@@ -801,102 +824,105 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 		on_lineEditScaleY_editingFinishedSuccessfully();
 	else if (lineEdit == m_ui->lineEditScaleZ)
 		on_lineEditScaleZ_editingFinishedSuccessfully();
+//	else if (lineEdit == m_ui->lineEditScaleFactor)
+//		;
+	//on_lineEditScale_editingFinishedSuccessfully();
 }
 
 
 void SVPropEditGeometry::updateInputs() {
 	switch (m_ui->stackedWidget->currentIndex()) {
 
-		// *** Translation page ***
-		case MT_Translate : {
-			if (m_ui->radioButtonTranslationAbsolute->isChecked()) {
+	// *** Translation page ***
+	case MT_Translate : {
+		if (m_ui->radioButtonTranslationAbsolute->isChecked()) {
 
-				m_ui->labelTranslateX->setText("X [m]:");
-				m_ui->labelTranslateY->setText("Y [m]:");
-				m_ui->labelTranslateZ->setText("Z [m]:");
+			m_ui->labelTranslateX->setText("X [m]:");
+			m_ui->labelTranslateY->setText("Y [m]:");
+			m_ui->labelTranslateZ->setText("Z [m]:");
 
-				// cache current local coordinate systems position as fall-back values
-				m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
-			}
-			else {
-				m_ui->labelTranslateX->setText("ΔX [m]:");
-				m_ui->labelTranslateY->setText("ΔY [m]:");
-				m_ui->labelTranslateZ->setText("ΔZ [m]:");
+			// cache current local coordinate systems position as fall-back values
+			m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
+		}
+		else {
+			m_ui->labelTranslateX->setText("ΔX [m]:");
+			m_ui->labelTranslateY->setText("ΔY [m]:");
+			m_ui->labelTranslateZ->setText("ΔZ [m]:");
 
-				m_originalValues.set(0,0,0);
-			}
-			m_ui->lineEditTranslateX->setValue( m_originalValues.m_x );
-			m_ui->lineEditTranslateY->setValue( m_originalValues.m_y );
-			m_ui->lineEditTranslateZ->setValue( m_originalValues.m_z );
-		} break;
+			m_originalValues.set(0,0,0);
+		}
+		m_ui->lineEditTranslateX->setValue( m_originalValues.m_x );
+		m_ui->lineEditTranslateY->setValue( m_originalValues.m_y );
+		m_ui->lineEditTranslateZ->setValue( m_originalValues.m_z );
+	} break;
 
 
-		case MT_Rotate: {
-			bool align2Angles = m_ui->radioButtonRotationAlignToAngles->isChecked();
-			m_ui->labelRotateInclinationAbs->setEnabled(align2Angles);
-			m_ui->labelRotateOrientationAbs->setEnabled(align2Angles);
-			m_ui->labelRotationX->setEnabled(!align2Angles);
-			m_ui->labelRotationY->setEnabled(!align2Angles);
-			m_ui->labelRotationZ->setEnabled(!align2Angles);
-			m_ui->lineEditRotateInclination->setEnabled(align2Angles);
-			m_ui->lineEditRotateOrientation->setEnabled(align2Angles);
-			m_ui->lineEditRotateX->setEnabled(!align2Angles);
-			m_ui->lineEditRotateY->setEnabled(!align2Angles);
-			m_ui->lineEditRotateZ->setEnabled(!align2Angles);
+	case MT_Rotate: {
+		bool align2Angles = m_ui->radioButtonRotationAlignToAngles->isChecked();
+		m_ui->labelRotateInclinationAbs->setEnabled(align2Angles);
+		m_ui->labelRotateOrientationAbs->setEnabled(align2Angles);
+		m_ui->labelRotationX->setEnabled(!align2Angles);
+		m_ui->labelRotationY->setEnabled(!align2Angles);
+		m_ui->labelRotationZ->setEnabled(!align2Angles);
+		m_ui->lineEditRotateInclination->setEnabled(align2Angles);
+		m_ui->lineEditRotateOrientation->setEnabled(align2Angles);
+		m_ui->lineEditRotateX->setEnabled(!align2Angles);
+		m_ui->lineEditRotateY->setEnabled(!align2Angles);
+		m_ui->lineEditRotateZ->setEnabled(!align2Angles);
 
-			m_ui->lineEditRotateX->setValue(0);
-			m_ui->lineEditRotateY->setValue(0);
-			m_ui->lineEditRotateZ->setValue(0);
+		m_ui->lineEditRotateX->setValue(0);
+		m_ui->lineEditRotateY->setValue(0);
+		m_ui->lineEditRotateZ->setValue(0);
 
-			if (align2Angles) {
-				m_ui->lineEditRotateInclination->setText( QString("%L1").arg(std::acos(m_normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
-				// positive y Richtung = Norden = Orientation 0°
-				// positive x Richtung = Osten = Orientation 90°
+		if (align2Angles) {
+			m_ui->lineEditRotateInclination->setText( QString("%L1").arg(std::acos(m_normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
+			// positive y Richtung = Norden = Orientation 0°
+			// positive x Richtung = Osten = Orientation 90°
 
-				double orientation = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) /IBK::DEG2RAD ;
-				m_ui->lineEditRotateOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
-			}
-			else {
-				m_ui->lineEditRotateInclination->setValue(0);
-				m_ui->lineEditRotateOrientation->setValue(0);
-			}
+			double orientation = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) /IBK::DEG2RAD ;
+			m_ui->lineEditRotateOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
+		}
+		else {
+			m_ui->lineEditRotateInclination->setValue(0);
+			m_ui->lineEditRotateOrientation->setValue(0);
+		}
 
-		} break;
+	} break;
 
-		case MT_Scale: {
+	case MT_Scale: {
 
-			if (m_ui->radioButtonScaleResize->isChecked()) {
-				m_ui->labelScaleX->setText("L<sub>X</sub> [m]:");
-				m_ui->labelScaleY->setText("W<sub>Y</sub> [m]:");
-				m_ui->labelScaleZ->setText("H<sub>Z</sub> [m]:");
+		if (m_ui->radioButtonScaleResize->isChecked()) {
+			m_ui->labelScaleX->setText("L<sub>X</sub> [m]:");
+			m_ui->labelScaleY->setText("W<sub>Y</sub> [m]:");
+			m_ui->labelScaleZ->setText("H<sub>Z</sub> [m]:");
 
-				// always local bounding box
-				m_originalValues = m_bbDim[OM_Local];
+			// always local bounding box
+			m_originalValues = m_bbDim[OM_Local];
 
-				m_ui->lineEditScaleX->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_x,0.0,1e-6));
-				m_ui->lineEditScaleY->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_y,0.0,1e-6));
-				m_ui->lineEditScaleZ->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_z,0.0,1e-6));
+			m_ui->lineEditScaleX->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_x,0.0,1e-6));
+			m_ui->lineEditScaleY->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_y,0.0,1e-6));
+			m_ui->lineEditScaleZ->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_z,0.0,1e-6));
 
-			}
-			else {
-				m_ui->labelScaleX->setText("s<sub>X</sub>:");
-				m_ui->labelScaleY->setText("s<sub>Y</sub>:");
-				m_ui->labelScaleZ->setText("s<sub>Z</sub>:");
+		}
+		else {
+			m_ui->labelScaleX->setText("s<sub>X</sub>:");
+			m_ui->labelScaleY->setText("s<sub>Y</sub>:");
+			m_ui->labelScaleZ->setText("s<sub>Z</sub>:");
 
-				m_originalValues = IBKMK::Vector3D( 1,1,1 );
+			m_originalValues = IBKMK::Vector3D( 1,1,1 );
 
-				m_ui->lineEditScaleX->setEnabled(true);
-				m_ui->lineEditScaleY->setEnabled(true);
-				m_ui->lineEditScaleZ->setEnabled(true);
-			}
-			m_ui->lineEditScaleX->setValue(m_originalValues.m_x );
-			m_ui->lineEditScaleY->setValue(m_originalValues.m_y );
-			m_ui->lineEditScaleZ->setValue(m_originalValues.m_z );
-		} break;
+			m_ui->lineEditScaleX->setEnabled(true);
+			m_ui->lineEditScaleY->setEnabled(true);
+			m_ui->lineEditScaleZ->setEnabled(true);
+		}
+		m_ui->lineEditScaleX->setValue(m_originalValues.m_x );
+		m_ui->lineEditScaleY->setValue(m_originalValues.m_y );
+		m_ui->lineEditScaleZ->setValue(m_originalValues.m_z );
+	} break;
 
-		case MT_Copy: {
-			// Nothing for now?
-		} break;
+	case MT_Copy: {
+		// Nothing for now?
+	} break;
 
 	} // switch modification type
 
@@ -963,28 +989,28 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 	else {
 		// put local coordinate system back into correct transform mode
 		switch (m_ui->stackedWidget->currentIndex()) {
-			case MT_Translate:
-				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
-					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
-					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-				}
-				break;
+		case MT_Translate:
+			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
+				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
+				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+			}
+			break;
 
-			case MT_Rotate:
-				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
-					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
-					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-				}
-				break;
+		case MT_Rotate:
+			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
+				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
+				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+			}
+			break;
 
-			case MT_Scale:
-				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
-					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
-					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-				}
-				break;
+		case MT_Scale:
+			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
+				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
+				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+			}
+			break;
 
-			case NUM_MT : ; // just to make compiler happy
+		case NUM_MT : ; // just to make compiler happy
 		}
 	}
 }
@@ -1031,6 +1057,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Drawing>			modifiedDrawings;
 	std::set<const VICUS::Surface*>		handledSurfaces;
 
 	// process all selected surfaces
@@ -1211,14 +1238,45 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		modifiedSurfaces.push_back(newSurf);
 	}
 
+	for (const VICUS::Drawing *d : m_selDrawings) {
+		VICUS::Drawing newDrawing(*d);
+		newDrawing.m_origin += QVector2IBKVector(translation);
+
+		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
+
+		double scalingFactor = 0.0;
+
+		switch (su) {
+
+		case SU_Meter:		scalingFactor = 1;		break;
+		case SU_Decimeter:	scalingFactor = 0.1;	break;
+		case SU_Centimeter: scalingFactor = 0.01;	break;
+		case SU_Millimeter: scalingFactor = 0.001;	break;
+
+		case NUM_SU: break; // make compiler happy
+
+		}
+
+		newDrawing.m_scalingFactor = scalingFactor;
+
+		if (!haveScaling) {
+			// rotation
+			QQuaternion quaternion = rotation * newDrawing.m_rotationMatrix.toQuaternion();
+			newDrawing.m_rotationMatrix.setQuaternion(quaternion);
+		}
+		else {
+		}
+		newDrawing.updatePlaneGeometries();
+		modifiedDrawings.push_back(newDrawing);
+	}
 
 	// TODO : Netzwerk zeugs
 
 	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
+	if (modifiedSurfaces.empty() && modifiedDrawings.empty())
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modifiedSurfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modifiedSurfaces, modifiedDrawings );
 	undo->push();
 
 	// also disable apply and cancel buttons
@@ -1263,3 +1321,8 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 				m_selBuildings, std::vector<const VICUS::Surface*>(), localCopyTranslationVector());
 	undo->push();
 }
+
+void SVPropEditGeometry::on_comboBoxUnit_currentIndexChanged(int index) {
+	enableTransformation();
+}
+

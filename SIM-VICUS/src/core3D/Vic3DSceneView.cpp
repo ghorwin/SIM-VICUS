@@ -249,6 +249,7 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 	std::vector<const VICUS::SubSurface*> subsurfaces;
 	std::vector<const VICUS::NetworkNode*> nodes;
 	std::vector<const VICUS::NetworkEdge*> edges;
+	std::vector<const VICUS::Drawing*> drawings;
 	std::set<const VICUS::Object *> selectedObjects;
 	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 	for (const VICUS::Object * o : selectedObjects) {
@@ -266,6 +267,9 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 		const VICUS::NetworkEdge *e = dynamic_cast<const VICUS::NetworkEdge*>(o);
 		if (e != nullptr)
 			edges.push_back(e);
+		const VICUS::Drawing *d = dynamic_cast<const VICUS::Drawing*>(o);
+		if (d != nullptr)
+			drawings.push_back(d);
 	}
 
 	// center and bDim will be overriden
@@ -296,10 +300,9 @@ void SceneView::resetCamera(CameraPosition cameraPosition) {
 	}
 
 	if (!edges.empty() || !nodes.empty())
-		bbDim = project().boundingBox(edges, nodes, center);
+		bbDim = project().boundingBox(drawings, edges, nodes, center);
 	else
-		bbDim = project().boundingBox(surfaces, subsurfaces, center);
-
+		bbDim = project().boundingBox(drawings, surfaces, subsurfaces, center);
 
 	switch (cameraPosition) {
 		case CP_Reset : { // reset camera position -> go to point (0,0,100) and camera faces down

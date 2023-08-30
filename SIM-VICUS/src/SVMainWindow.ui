@@ -30,6 +30,7 @@
      </property>
      <addaction name="actionFileImportEneryPlusIDF"/>
      <addaction name="actionFileImportNetworkGISData"/>
+     <addaction name="actionFileImportDXF"/>
     </widget>
     <widget class="QMenu" name="menuExport">
      <property name="title">
@@ -868,6 +869,11 @@
   <action name="actionCalculateViewFactors">
    <property name="text">
     <string>Precalculate view factors</string>
+   </property>
+  </action>
+  <action name="actionFileImportDXF">
+   <property name="text">
+    <string>DXF File ...</string>
    </property>
   </action>
  </widget>

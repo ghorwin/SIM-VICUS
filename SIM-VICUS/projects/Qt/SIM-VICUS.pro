@@ -27,13 +27,14 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 -lNandrad \
 -lQtExt \
 -lQuaZIP \
-	-lTiCPP \
-	-lIDFReader \
+-lTiCPP \
+-lIDFReader \
 	-lVicus \
 	-lShading \
 	-lDataIO \
 	-lCCM \
 	-lclipper \
+	-llibdxfrw \
 	-lIBK \
 	-lIBKMK \
 	-lsundials \
@@ -57,10 +58,12 @@ INCLUDEPATH = \
 ../../src \
 ../../src/actions \
 ../../src/core3D \
-	../../../externals/CCM/src \
-	../../../externals/Shading/src \
+../../../externals/CCM/src \
+../../../externals/Shading/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
+	../../../externals/libdxfrw/src \
+	../../../externals/libdxfrw/src/intern \
 	../../../externals/Nandrad/src \
 	../../../externals/Nandrad/srcTranslations \
 	../../../externals/Vicus/src \
@@ -79,8 +82,8 @@ DEPENDPATH = $${INCLUDEPATH}
 
 
 SOURCES += \
-	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
-	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 	../../src/SVAboutDialog.cpp \
 	../../src/SVAbstractDatabaseEditWidget.cpp \
         ../../src/SVAutoSaveDialog.cpp \
@@ -153,6 +156,7 @@ SOURCES += \
 	../../src/SVDatabaseEditDialog.cpp \
 	../../src/SVDebugApplication.cpp \
 	../../src/SVGeometryView.cpp \
+	../../src/SVImportDXFDialog.cpp \
 	../../src/SVImportIDFDialog.cpp \
 	../../src/SVLCA.cpp \
 	../../src/SVLocalCoordinateView.cpp \
@@ -227,6 +231,7 @@ SOURCES += \
 	../../src/SVTimeSeriesPreviewDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVUndoAddDrawing.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DDialog.cpp \
@@ -356,6 +361,7 @@ HEADERS  += \
 	../../src/SVDatabaseEditDialog.h \
 	../../src/SVDebugApplication.h \
 	../../src/SVGeometryView.h \
+	../../src/SVImportDXFDialog.h \
 	../../src/SVImportIDFDialog.h \
 	../../src/SVLCA.h \
 	../../src/SVLocalCoordinateView.h \
@@ -430,6 +436,7 @@ HEADERS  += \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
+	../../src/SVUndoAddDrawing.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DDialog.h \
@@ -531,6 +538,7 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
 	../../src/SVGeometryView.ui \
+	../../src/SVImportDXFDialog.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \
@@ -545,7 +553,7 @@ FORMS    += \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPluginManager.ui \
 	../../src/SVPreferencesDialog.ui \
-        ../../src/SVPreferencesPageMisc.ui \
+	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddGeometry.ui \
