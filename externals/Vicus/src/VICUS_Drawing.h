@@ -340,7 +340,7 @@ public:
 		IBKMK::Vector2D		m_textPoint;
 
 		/*! Angle of rotation. */
-		double				m_angle;
+		double				m_angle = 0.0;
 
 		/*! Name of Dim style. */
 		QString				m_styleName;
