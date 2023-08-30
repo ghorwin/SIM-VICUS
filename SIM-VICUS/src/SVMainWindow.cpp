@@ -2235,7 +2235,7 @@ void SVMainWindow::on_actionOpenPostProcessing_triggered() {
 	}
 }
 
-void SVMainWindow::on_actionEPD_elements_triggered() {
+void SVMainWindow::on_actionEPDElements_triggered() {
 	dbEpdEditDialog()->edit();
 }
 

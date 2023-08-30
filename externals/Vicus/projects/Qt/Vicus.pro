@@ -13,16 +13,16 @@ QT += gui core widgets
 
 
 unix|mac {
-	VER_MAJ = 0
-	VER_MIN = 1
-	VER_PAT = 0
-	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
+VER_MAJ = 0
+VER_MIN = 1
+VER_PAT = 0
+VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
 LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO #-lHL
 
 INCLUDEPATH = \
-	../../src \
+../../src \
 	../../../IBK/src \
 	../../../IBKMK/src \
 	../../../CCM/src \
@@ -34,7 +34,7 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
-	../../src/VICUS_AbstractDBElement.h \
+../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BTFReader.h \
@@ -48,6 +48,8 @@ HEADERS += \
 	../../src/VICUS_Construction.h \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
+	../../src/VICUS_Drawing.h \
+	../../src/VICUS_DrawingLayer.h \
 	../../src/VICUS_EpdCategorySet.h \
 	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
@@ -115,6 +117,8 @@ SOURCES += \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
+	../../src/VICUS_Drawing.cpp \
+    ../../src/VICUS_DrawingLayer.cpp \
   ../../src/VICUS_EpdCategorySet.cpp \
 	../../src/VICUS_EpdDataset.cpp \
     ../../src/VICUS_EpdModuleDataset.cpp \
@@ -172,7 +176,9 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Component.cpp \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
-        ../../src/ncg/ncg_VICUS_DailyCycle.cpp \
+	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
+    ../../src/ncg/ncg_VICUS_Drawing.cpp \
+    ../../src/ncg/ncg_VICUS_DrawingLayer.cpp \
 	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
@@ -185,7 +191,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
-		../../src/ncg/ncg_VICUS_NetworkController.cpp \
+	../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
 	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \

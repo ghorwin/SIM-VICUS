@@ -54,6 +54,7 @@ class SVNavigationTreeWidget;
 class SVNetworkImportDialog;
 class SVNetworkExportDialog;
 class SVImportIDFDialog;
+class SVImportDXFDialog;
 class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
@@ -375,7 +376,7 @@ private slots:
 
 	void onShortCutStartSimulation();
 
-	void on_actionEPD_elements_triggered();
+	void on_actionEPDElements_triggered();
 
 private:
 

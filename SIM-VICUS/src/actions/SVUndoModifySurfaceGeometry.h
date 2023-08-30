@@ -27,8 +27,10 @@
 #define SVUndoModifySurfaceGeometryH
 
 #include <VICUS_Surface.h>
+#include <VICUS_Drawing.h>
 
 #include "SVUndoCommandBase.h"
+#include "VICUS_Drawing.h"
 
 /*! Action for modifying a surface.
 	This action is also used for adding/removing sub-surfaces.
@@ -41,7 +43,9 @@ public:
 	/*! Creates the undo-action.
 		Mind: surfaces must be triangulated already, if they contain new sub-surfaces.
 	*/
-	SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces,
+	SVUndoModifySurfaceGeometry(const QString & label,
+								std::vector<VICUS::Surface> & surfaces,
+								std::vector<VICUS::Drawing> & drawings,
 								const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances = nullptr);
 
 	virtual void undo();
@@ -51,6 +55,9 @@ private:
 
 	/*! Object copies of modified surfaces. */
 	std::vector<VICUS::Surface>								m_surfaces;
+
+	/*! Object copies of modified surfaces. */
+	std::vector<VICUS::Drawing>								m_drawings;
 
 	/*! True, if we also modify the sub-surface component instances (i.e. we add/remove windows). */
 	bool													m_modifySubSurfaceComponentInstances = false;

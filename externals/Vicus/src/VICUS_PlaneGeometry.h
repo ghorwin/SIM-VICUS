@@ -185,7 +185,7 @@ private:
 	Polygon3D									m_polygon;
 
 	/*! Polygons with holes/subsurfaces inside the polygon. */
-    std::vector<Hole>                           m_holes;
+	std::vector<Hole>							m_holes;
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of.
 		Includes only the triangles of the opaque surfaces without any holes

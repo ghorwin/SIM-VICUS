@@ -31,7 +31,7 @@ LIBS += \
 	-lIDFReader \
 	-lVicus \
 	-lclipper \
-        -lRoomClipper \
+	-lRoomClipper \
 	-lShading \
 	-lDataIO \
 	-lCCM \

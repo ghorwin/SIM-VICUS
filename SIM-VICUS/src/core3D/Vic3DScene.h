@@ -34,6 +34,7 @@
 
 #include <VICUS_GridPlane.h>
 
+#include "VICUS_RotationMatrix.h"
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
@@ -164,6 +165,8 @@ private:
 	void generateTransparentBuildingGeometry(const HighlightingMode &mode = HighlightingMode::HM_TransparentWithBoxes);
 	void generateNetworkGeometry();
 
+	void generate2DDrawingGeometry();
+
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
 	void recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const;
 
@@ -172,6 +175,9 @@ private:
 		\note There is always at least one pick candidate in the list of intersection candidates, which is the intersection with the far plane.
 	*/
 	void pick(PickObject & pickObject);
+
+	/*! Pick drawings. */
+	void pickDrawings(PickObject & pickObject, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction);
 
 	/*! Pick all child surfaces. */
 	void pickChildSurfaces();
@@ -258,6 +264,8 @@ private:
 	GridObject				m_gridObject;
 	/*! A geometry drawing object (transparency only for windows) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_buildingGeometryObject;
+	/*! todo */
+	OpaqueGeometryObject	m_drawingGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
 	/*! A geometry drawing object for building (room) surfaces.*/

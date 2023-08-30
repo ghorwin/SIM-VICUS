@@ -327,19 +327,23 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 
 			// first we get how many surfaces are selected
 			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-			bool haveSurface = false;
+			bool haveSurfaceOrDrawing = false;
 			bool haveSubSurface = false;
 			bool haveRoom = false;
 			bool haveBuildingLevel = false;
 			bool haveBuilding = false;
 			for (const VICUS::Object* o : sel) {
+				if (dynamic_cast<const VICUS::Drawing*>(o) != nullptr) {
+					haveSurfaceOrDrawing = true;
+					continue;
+				}
 				if (dynamic_cast<const VICUS::Surface*>(o) != nullptr) {
-					haveSurface = true;
+					haveSurfaceOrDrawing = true;
 					continue;
 				}
 				if (dynamic_cast<const VICUS::SubSurface*>(o) != nullptr) {
 					haveSubSurface = true;
-					haveSurface = true;
+					haveSurfaceOrDrawing = true;
 					continue;
 				}
 				if (dynamic_cast<const VICUS::Room*>(o) != nullptr) {
@@ -355,11 +359,11 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 					continue;
 				}
 			}
-			m_ui->actionTranslateGeometry->setEnabled(haveSurface);
-			m_ui->actionRotateGeometry->setEnabled(haveSurface);
-			m_ui->actionScaleGeometry->setEnabled(haveSurface);
-			m_ui->actionAlignGeometry->setEnabled(haveSurface);
-			m_ui->actionCopyGeometry->setEnabled(haveSurface || haveSubSurface || haveRoom || haveBuildingLevel || haveBuilding);
+			m_ui->actionTranslateGeometry->setEnabled(haveSurfaceOrDrawing);
+			m_ui->actionRotateGeometry->setEnabled(haveSurfaceOrDrawing);
+			m_ui->actionScaleGeometry->setEnabled(haveSurfaceOrDrawing);
+			m_ui->actionAlignGeometry->setEnabled(haveSurfaceOrDrawing);
+			m_ui->actionCopyGeometry->setEnabled(haveSurfaceOrDrawing || haveSubSurface || haveRoom || haveBuildingLevel || haveBuilding);
 		} break;
 
 		default:;

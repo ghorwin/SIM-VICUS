@@ -255,6 +255,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_logWarningText							= "#f0dc00";
 		m_logDebugText								= "#39b1d9";
 
+		m_defaultDrawingColor						= "#FFFFFF";
+
 		// now adjust the style settings for QtExt components
 		QtExt::Style::EditFieldBackground = "#212124";
 		QtExt::Style::AlternativeEditFieldBackground = "#3a3b3f";
@@ -289,6 +291,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_logErrorText								= "#ab0000";
 		m_logWarningText							= "#b17d00";
 		m_logDebugText								= "#39b1d9";
+
+		m_defaultDrawingColor						= "#000000";
 
 		QtExt::Style::EditFieldBackground						= "#f9f6c8";
 		QtExt::Style::AlternativeEditFieldBackground			= "#f9ffd8";

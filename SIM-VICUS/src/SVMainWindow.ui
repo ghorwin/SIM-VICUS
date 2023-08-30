@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -147,7 +147,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
-    <addaction name="actionEPD_elements"/>
+    <addaction name="actionEPDElements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
@@ -286,8 +286,8 @@
   </action>
   <action name="actionFileQuit">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/exit_32x32.png</normaloff>:/gfx/actions/32x32/exit_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-close-80.png</normaloff>:/gfx/icons8/icons8-close-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -311,8 +311,8 @@
   </action>
   <action name="actionFileReload">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Reload project</string>
@@ -331,8 +331,8 @@
   </action>
   <action name="actionEditTextEditProject">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-create-80.png</normaloff>:/gfx/icons8/icons8-create-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open project in text editor</string>
@@ -343,8 +343,8 @@
   </action>
   <action name="actionEditPreferences">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/64x64/projectProperties.png</normaloff>:/gfx/actions/64x64/projectProperties.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-settings-80.png</normaloff>:/gfx/icons8/icons8-settings-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Preferences...</string>
@@ -363,8 +363,8 @@
   </action>
   <action name="actionToolsCCMeditor">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/CCMEditor_32.png</normaloff>:/gfx/actions/32x32/CCMEditor_32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-rain-cloud-80.png</normaloff>:/gfx/icons8/icons8-rain-cloud-80.png</iconset>
    </property>
    <property name="text">
     <string>External Climate Editor...</string>
@@ -440,8 +440,8 @@
   </action>
   <action name="actionHelpAbout">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-info-80.png</normaloff>:/gfx/icons8/icons8-info-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About SIM-VICUS...</string>
@@ -722,8 +722,8 @@
   </action>
   <action name="actionEditApplicationLog">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-create-80.png</normaloff>:/gfx/icons8/icons8-create-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open application log in editor</string>
@@ -808,7 +808,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-tune-80.png</normaloff>:/gfx/icons8/icons8-tune-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-start-80.png</normaloff>:/gfx/icons8/icons8-start-80.png</iconset>
    </property>
    <property name="text">
     <string>Simulation Settings</string>
@@ -832,7 +832,7 @@
     <string>External post processing</string>
    </property>
   </action>
-  <action name="actionEPD_elements">
+  <action name="actionEPDElements">
    <property name="text">
     <string>EPD elements...</string>
    </property>
@@ -840,7 +840,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
   <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>

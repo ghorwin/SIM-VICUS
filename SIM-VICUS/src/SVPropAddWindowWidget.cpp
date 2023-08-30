@@ -242,6 +242,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 
 	// process all selected surface
 	std::vector<VICUS::Surface> modSurfaces; // here, we store only the modified surfaces
+	std::vector<VICUS::Drawing> modDrawings; // here, we store only the modified drawings
 
 	// in case the original surfaces did have already subsurface components assigned, search and remove them
 	std::set<unsigned int> subSurfaceIDsToRemove;
@@ -314,7 +315,9 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 	}
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
-		modSurfaces, &subSurfaceComponentInstances);
+																		 modSurfaces,
+																		 modDrawings,
+																		 &subSurfaceComponentInstances);
 	undo->push();
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -325,6 +328,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 void SVPropAddWindowWidget::on_pushButtonChangeLocalOrigin_clicked() {
 	// process all selected surface
 	std::vector<VICUS::Surface> modSurfaces; // here, we store only the modified surfaces
+	std::vector<VICUS::Drawing> modDrawings; // here, we store only the modified drawings
 
 	for (unsigned int i=0; i<m_currentSelection.size(); ++i) {
 		VICUS::Surface* s = const_cast<VICUS::Surface*>(m_currentSelection[i]);
@@ -336,7 +340,7 @@ void SVPropAddWindowWidget::on_pushButtonChangeLocalOrigin_clicked() {
 		modSurfaces.push_back(*s);
 	}
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("New polygon origin."),
-		modSurfaces, nullptr);
+		modSurfaces, modDrawings, nullptr);
 	undo->push();
 }
 

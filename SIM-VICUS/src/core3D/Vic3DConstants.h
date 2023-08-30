@@ -117,6 +117,21 @@ enum Shaders {
 	NUM_SHADER_PROGRAMS
 };
 
+// default line width
+const double DEFAULT_LINE_WEIGHT			= 0.05;
+// multiplier to apply to width of entities
+const double DEFAULT_LINE_WEIGHT_SCALING	= 0.005;
+// Multiplyer for different layers and their heights
+const double Z_MULTIPLYER					= 0.00005;
+
+// in m, should be enough, right?
+const float SNAP_DISTANCES_THRESHHOLD		= 0.5;
+
+const unsigned int SEGMENT_COUNT_ARC		= 5;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 5;
+
+
 #define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
 
 #define INVALID_POINT QVector3D(-1e19f,-1e19f,-1e19f)

@@ -104,6 +104,8 @@ public:
 		NodeStateModified,
 		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
 		ObjectRenamed,
+		/*! Drawings have been added / removed from project */
+		DrawingModified,
 		/*! LCA / LCC settings have been modified. */
 		LcaLccModified,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)

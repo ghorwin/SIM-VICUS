@@ -30,6 +30,7 @@
 
 #include <IBKMK_Vector3D.h>
 
+#include <VICUS_Drawing.h>
 #include <Vic3DTransform3D.h>
 
 namespace VICUS {
@@ -86,6 +87,14 @@ public:
 		OM_Local,
 		OM_Global,
 		NUM_OM
+	};
+
+	enum ScaleUnit {
+		SU_Meter,
+		SU_Decimeter,
+		SU_Centimeter,
+		SU_Millimeter,
+		NUM_SU
 	};
 
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
@@ -187,6 +196,7 @@ private slots:
 	void on_pushButtonCancel_clicked();
 	void on_pushButtonApply_clicked();
 
+	void on_comboBoxUnit_currentIndexChanged(int index);
 	void on_pushButtonFixSurfaceOrientation_clicked();
 
 private:
@@ -270,6 +280,7 @@ private:
 	std::vector<const VICUS::Surface*>			m_selSurfaces;
 	std::vector<const VICUS::SubSurface*>		m_selSubSurfaces;
 
+	std::vector<const VICUS::Drawing*>			m_selDrawings;
 
 	std::set<QString>					m_subSurfNames;
 	std::set<QString>					m_surfNames;

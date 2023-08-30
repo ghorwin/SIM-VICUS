@@ -80,6 +80,7 @@ NANDRAD Solver and SIM-VICUS use a bunch of common libraries from IBK and extern
 * **IDFReader** - library for IDF file parsing and data import to VICUS
 * **IntegratorFramework** - library that includes several numerical integration libraries and provides a convenient framework to error-controlled time integration
 * **ITSOL2** - implements ILUT preconditioner (included in IntegratorFramework, this directory contains the original sources)
+* **libdxfrw** - library to read and write DXF files in both formats, ascii and binary form. It also has rudimentary capabilities to read DWG files
 * **Nandrad** - the NANDRAD data model library (holds the project data for the NANDRAD solver)
 * **QtExt** - Qt extension library from IBK, lots of utility functions and widgets to assist with UI development
 * **QuaZIP** - zip-support (needed for creating FMU archives)
