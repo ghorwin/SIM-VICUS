@@ -1576,6 +1576,11 @@ void SVMainWindow::onUpdateActions() {
 
 			SVSettings::instance().m_navigationSplitterSize = 0; // will be set again when the app is being closed
 		}
+
+		bool isVisible = true;
+		if (project().m_viewSettings.m_gridPlanes.size() > 0)
+			isVisible = project().m_viewSettings.m_gridPlanes[0].m_isVisible;
+		m_ui->actionViewShowGrid->setChecked(isVisible);
 	}
 }
 

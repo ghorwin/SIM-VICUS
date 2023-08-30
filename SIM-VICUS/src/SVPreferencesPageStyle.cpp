@@ -55,6 +55,7 @@ void SVPreferencesPageStyle::updateUi() {
 	SVSettings & s = SVSettings::instance();
 	// transfer data to Ui
 	m_ui->radioButtonDark->setChecked(s.m_theme == SVSettings::TT_Dark);
+	m_ui->radioButtonWhite->setChecked(s.m_theme == SVSettings::TT_White);
 
 	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
 	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);

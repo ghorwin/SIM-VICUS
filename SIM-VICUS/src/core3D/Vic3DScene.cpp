@@ -2698,10 +2698,8 @@ void Scene::pick(PickObject & pickObject) {
 
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
-		if (!project().m_viewSettings.m_gridPlanes[i].m_isVisible)
-			continue;
-
-		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
+		if (project().m_viewSettings.m_gridPlanes[i].m_isVisible &&
+				project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
