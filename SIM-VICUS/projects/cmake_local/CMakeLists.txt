@@ -151,8 +151,7 @@ target_link_libraries( ${PROJECT_NAME}
 	QuaZIP
 	Nandrad
 	clipper
-        libdxfrw
-	Shading
+    Shading
 	DataIO
 	CCM
 	QtExt
