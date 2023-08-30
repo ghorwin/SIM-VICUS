@@ -598,6 +598,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 							   m_planeGeometries);
 
 		m_dirtyTriangulation = false;
+		m_dirtyPoints = false;
 	}
 
 	return m_planeGeometries;
