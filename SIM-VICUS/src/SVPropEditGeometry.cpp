@@ -1241,42 +1241,30 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	for (const VICUS::Drawing *d : m_selDrawings) {
 		VICUS::Drawing newDrawing(*d);
 		newDrawing.m_origin += QVector2IBKVector(translation);
+
+		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
+
+		double scalingFactor = 0.0;
+
+		switch (su) {
+
+		case SU_Meter:		scalingFactor = 1;		break;
+		case SU_Decimeter:	scalingFactor = 0.1;	break;
+		case SU_Centimeter: scalingFactor = 0.01;	break;
+		case SU_Millimeter: scalingFactor = 0.001;	break;
+
+		case NUM_SU: break; // make compiler happy
+
+		}
+
+		newDrawing.m_scalingFactor = scalingFactor;
+
 		if (!haveScaling) {
 			// rotation
 			QQuaternion quaternion = rotation * newDrawing.m_rotationMatrix.toQuaternion();
 			newDrawing.m_rotationMatrix.setQuaternion(quaternion);
 		}
 		else {
-			ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
-
-			double scalingFactor = 0.0;
-
-			switch (su) {
-
-			case SU_Meter:		scalingFactor = 1;		break;
-			case SU_Decimeter:	scalingFactor = 0.1;	break;
-			case SU_Centimeter: scalingFactor = 0.01;	break;
-			case SU_Millimeter: scalingFactor = 0.001;	break;
-
-			case NUM_SU: break; // make compiler happy
-
-			}
-
-			std::vector<VICUS::Drawing> modDrawings;
-			std::vector<VICUS::Surface> modSurfaces;
-			for (const VICUS::Drawing *drawing : m_selDrawings) {
-				VICUS::Drawing d(*drawing);
-				d.m_scalingFactor = scalingFactor;
-				d.updatePlaneGeometries();
-				modDrawings.push_back(d);
-			}
-
-			// in case operation was executed without any selected objects - should be prevented
-			if (modDrawings.empty())
-				return;
-
-			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modSurfaces, modDrawings );
-			undo->push();
 		}
 		newDrawing.updatePlaneGeometries();
 		modifiedDrawings.push_back(newDrawing);
