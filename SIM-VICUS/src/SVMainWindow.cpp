@@ -751,7 +751,6 @@ void SVMainWindow::setup() {
 	m_ui->menuEdit->addAction(m_redoAction);
 
 	// TODO: Hauke re-arrange actions
-
 	// now move all the actions to bottom
 //	for (int i=0; i<acts.count(); ++i)
 //		m_ui->menuEdit->addAction(acts[i]);
@@ -1544,6 +1543,10 @@ void SVMainWindow::onUpdateActions() {
 
 		// window caption
 		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+
+		// if no recent projects set welcome page to demo files
+		if (SVSettings::instance().m_recentProjects.empty())
+			m_welcomeScreen->setPageType(SVWelcomeScreen::PT_DemoFiles);
 		m_welcomeScreen->updateWelcomePage();
 	}
 

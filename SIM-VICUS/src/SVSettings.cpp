@@ -129,6 +129,9 @@ void SVSettings::setDefaults() {
 	// initialization of autosave vars
 	m_autosaveInterval = 10; // 10 mins
 	m_autosaveEnabled = true;
+
+	// set max number of recent projects
+	m_maxRecentProjects = 20;
 }
 
 

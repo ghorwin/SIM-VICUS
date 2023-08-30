@@ -56,6 +56,11 @@ public:
 	/*! Updates the welcome page content. */
 	void updateWelcomePage();
 
+	/*! Set page type. */
+	void setPageType(PageType pType){
+		m_pageType = pType;
+	}
+
 public slots:
 	/*! Triggered when user clicks on a project file or external link. */
 	void onAnchorClicked( const QUrl & link );
