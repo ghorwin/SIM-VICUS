@@ -41,5 +41,33 @@
         <file>gfx/icons8/icons8-pipeline-80.png</file>
         <file>gfx/icons8/icons8-checkbox-unmarkiert-2-80.xcf</file>
         <file>gfx/icons8/icons8-box-80.png</file>
+        <file>gfx/icons8/icons8-u-turn-to-right-100.png</file>
+        <file>gfx/icons8/icons8-u-turn-to-left-100.png</file>
+        <file>gfx/icons8/icons8-start-100.png</file>
+        <file>gfx/icons8/icons8-save-100.png</file>
+        <file>gfx/icons8/icons8-opened-folder-100.png</file>
+        <file>gfx/icons8/icons8-graph-100.png</file>
+        <file>gfx/icons8/icons8-back-100.png</file>
+        <file>gfx/icons8/icons8-add-file-100.png</file>
+        <file>gfx/icons8/icons8-3d-100.png</file>
+        <file>gfx/icons8/icons8-save-96(1).png</file>
+        <file>gfx/icons8/icons8-opened-folder-96.png</file>
+        <file>gfx/icons8/icons8-new-file-96.png</file>
+        <file>gfx/icons8/icons8-move-100.png</file>
+        <file>gfx/icons8/icons8-magnet-96.png</file>
+        <file>gfx/icons8/icons8-element-level-96(1).png</file>
+        <file>gfx/icons8/icons8-element-level-96.png</file>
+        <file>gfx/icons8/icons8-duplicate-100.png</file>
+        <file>gfx/icons8/icons8-area-chart-96.png</file>
+        <file>gfx/icons8/icons8-adjust-96.png</file>
+        <file>gfx/icons8/icons8-settings-80.png</file>
+        <file>gfx/icons8/icons8-reload-80.png</file>
+        <file>gfx/icons8/icons8-rain-cloud-80.png</file>
+        <file>gfx/icons8/icons8-create-80.png</file>
+        <file>gfx/icons8/icons8-close-80.png</file>
+        <file>gfx/icons8/icons8-start-80.png</file>
+        <file>gfx/icons8/icons8-select-80.png</file>
+        <file>gfx/icons8/icons8-bulb-off-80.png</file>
+        <file>gfx/icons8/icons8-bulb-80.png</file>
     </qresource>
 </RCC>

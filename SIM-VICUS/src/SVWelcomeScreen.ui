@@ -137,8 +137,8 @@
         <string>Create project...</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/SIM-VICUS.qrc">
-         <normaloff>:/gfx/actions/64x64/new.png</normaloff>:/gfx/actions/64x64/new.png</iconset>
+        <iconset resource="../resources/icons.qrc">
+         <normaloff>:/gfx/icons8/icons8-new-file-80.png</normaloff>:/gfx/icons8/icons8-new-file-80.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -163,8 +163,8 @@
         <string>Open project...</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/SIM-VICUS.qrc">
-         <normaloff>:/gfx/actions/64x64/open.png</normaloff>:/gfx/actions/64x64/open.png</iconset>
+        <iconset resource="../resources/icons.qrc">
+         <normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -211,7 +211,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

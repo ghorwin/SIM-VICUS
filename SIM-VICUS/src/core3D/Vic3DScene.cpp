@@ -345,7 +345,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 	m_projection.setToIdentity();
 	// create projection matrix, i.e. camera lens
 	m_projection.perspective(
-				/* vertical angle */ 45.0f,
+				/* vertical angle */ 10.0f,
 				/* aspect ratio */   width / float(height),
 				/* near */           0.1f,
 				/* far */            farDistance
