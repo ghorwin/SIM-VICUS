@@ -89,6 +89,14 @@ public:
 		NUM_OM
 	};
 
+	enum ScaleUnit {
+		SU_Meter,
+		SU_Decimeter,
+		SU_Centimeter,
+		SU_Millimeter,
+		NUM_SU
+	};
+
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
@@ -187,6 +195,8 @@ private slots:
 
 	void on_pushButtonCancel_clicked();
 	void on_pushButtonApply_clicked();
+
+	void on_comboBoxUnit_currentIndexChanged(int index);
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

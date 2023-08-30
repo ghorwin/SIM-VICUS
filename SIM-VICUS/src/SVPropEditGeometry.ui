@@ -510,7 +510,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditScaleFactor"/>
+           <widget class="QComboBox" name="comboBoxUnit"/>
           </item>
          </layout>
         </widget>
