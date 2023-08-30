@@ -339,7 +339,7 @@ void Drawing::LinearDimension::readXML(const TiXmlElement *element){
 			else if (attribName == "zPosition")
 				m_zPosition = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "angle")
-				m_zPosition = NANDRAD::readPODAttributeValue<double>(element, attrib);
+				m_angle = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "layer")
 				m_layerName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "styleName")
