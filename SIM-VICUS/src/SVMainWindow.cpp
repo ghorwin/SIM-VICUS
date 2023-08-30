@@ -2235,61 +2235,7 @@ void SVMainWindow::on_actionOpenPostProcessing_triggered() {
 	}
 }
 
-void SVMainWindow::on_actionEPD_elements_triggered() {
+void SVMainWindow::on_actionEPDElements_triggered() {
 	dbEpdEditDialog()->edit();
-}
-
-
-void SVMainWindow::on_actionDXF_File_triggered() {
-}
-
-
-void SVMainWindow::on_actionFileImportDXF_triggered() {
-
-	// request IDF file and afterwards open import dialog
-	QString filename = QFileDialog::getOpenFileName(
-				this,
-				tr("Select DXF file"),
-				SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory].toString(),
-			tr("DXF files (*.dxf);;All files (*.*)"), nullptr,
-			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-															);
-
-	if (filename.isEmpty()) return;
-
-	QFile f1(filename);
-	if (!f1.exists()) {
-		QMessageBox::critical(
-					this,
-					tr("File not found"),
-					tr("The file '%1' does not exist or cannot be accessed.").arg(filename)
-					);
-		return;
-	}
-
-	// now spawn import dialog
-	if (m_importDXFDialog == nullptr) {
-		m_importDXFDialog = new SVImportDXFDialog(this);
-	}
-
-	if (!SVProjectHandler::instance().isValid()) {
-		QMessageBox::critical(this, tr("VICUS Project"), tr("No valid SIM-VICUS project is existing."));
-		return;
-	}
-
-	SVImportDXFDialog::ImportResults res = m_importDXFDialog->import(filename);
-
-	switch (res) {
-
-	case SVImportDXFDialog::AddDrawings:	{
-		/* if file was read successfully, add drawing to project */
-		SVUndoAddDrawing *undo = new SVUndoAddDrawing("Added DXF drawings to project.", m_importDXFDialog->drawing());
-		undo->push();
-	}
-	break;
-	case SVImportDXFDialog::ImportCancelled:
-
-		break;
-	}
 }
 

@@ -376,11 +376,7 @@ private slots:
 
 	void onShortCutStartSimulation();
 
-	void on_actionEPD_elements_triggered();
-
-	void on_actionDXF_File_triggered();
-
-	void on_actionFileImportDXF_triggered();
+	void on_actionEPDElements_triggered();
 
 private:
 
@@ -505,9 +501,6 @@ private:
 
 	/*! IDF import dialog */
 	SVImportIDFDialog			*m_importIDFDialog										= nullptr;
-
-	/*! DXF import dialog */
-	SVImportDXFDialog			*m_importDXFDialog										= nullptr;
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;

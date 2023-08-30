@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -30,7 +30,6 @@
      </property>
      <addaction name="actionFileImportEneryPlusIDF"/>
      <addaction name="actionFileImportNetworkGISData"/>
-     <addaction name="actionFileImportDXF"/>
     </widget>
     <widget class="QMenu" name="menuExport">
      <property name="title">
@@ -148,7 +147,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
-    <addaction name="actionEPD_elements"/>
+    <addaction name="actionEPDElements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
@@ -833,14 +832,9 @@
     <string>External post processing</string>
    </property>
   </action>
-  <action name="actionEPD_elements">
+  <action name="actionEPDElements">
    <property name="text">
     <string>EPD elements...</string>
-   </property>
-  </action>
-  <action name="actionFileImportDXF">
-   <property name="text">
-    <string>DXF File ...</string>
    </property>
   </action>
  </widget>
