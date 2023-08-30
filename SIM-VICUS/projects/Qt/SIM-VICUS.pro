@@ -482,7 +482,6 @@ HEADERS  += \
 	../../src/SVDBZoneTemplateTreeModel.h \
 	../../src/SVDebugApplication.h \
 	../../src/SVGeometryView.h \
-	../../src/SVImportDXFDialog.h \
 	../../src/SVImportIDFDialog.h \
 	../../src/SVLCA.h \
 	../../src/SVLocalCoordinateView.h \
@@ -569,7 +568,6 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVGeometryView.ui \
-	../../src/SVImportDXFDialog.ui \
 	../../src/SVImportIDFDialog.ui \
     ../../src/SVLcaLccResultsWidget.ui \
     ../../src/SVLcaLccSettingsWidget.ui \
