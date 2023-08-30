@@ -1434,7 +1434,8 @@ void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
 	if (modifiedSurfaces.empty())
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	std::vector<VICUS::Drawing> drawings;
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces, drawings );
 	undo->push();
 
 	// also disable apply and cancel buttons

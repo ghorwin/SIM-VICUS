@@ -489,9 +489,10 @@ void SVView3DCalculation::calculateViewFactors(QWidget * parent, std::vector<con
 
 	dlg.hide();
 	if(!dlg.wasCanceled()){
+		std::vector<VICUS::Drawing> drawing;
 		QMessageBox::information(parent, QString(), tr("View factors have been calculated for all selected rooms."));
 		// trigger the undo action with the modified surfaces
-		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), modifiedSurfaces );
+		SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("View factors added"), modifiedSurfaces, drawing);
 		undo->push();
 	} else {
 		QMessageBox::critical(parent, QString(), tr("Calculation of View factors was canceled."));

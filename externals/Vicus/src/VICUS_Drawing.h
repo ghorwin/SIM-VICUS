@@ -16,12 +16,6 @@
 #include <QColor>
 #include <QDebug>
 
-#include <libdxfrw.h>
-
-#include <drw_interface.h>
-#include <drw_objects.h>
-#include <drw_base.h>
-
 
 
 namespace VICUS {
