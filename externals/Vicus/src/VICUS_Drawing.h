@@ -79,6 +79,10 @@ public:
 		/* used to get correct lineWeight of entity */
 		double lineWeight() const;
 
+		void updateGeometry() {
+			m_dirtyTriangulation = true;
+		}
+
 		/*! name of Entity */
 		QString										m_layerName;
 		/*! Layer of Entity */
@@ -362,6 +366,9 @@ public:
 
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
+
+	/*! Updates all planes, when transformation operations were applied. */
+	void updatePlaneGeometries();
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

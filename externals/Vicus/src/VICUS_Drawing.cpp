@@ -1507,6 +1507,24 @@ void Drawing::updatePointer(){
 	}
 }
 
+template <typename t>
+void updateGeometry(std::vector<t> &objects) {
+	for (t &obj : objects )
+		obj.updateGeometry();
+}
+
+void Drawing::updatePlaneGeometries() {
+	updateGeometry<Drawing::Line>(m_lines);
+	updateGeometry<Drawing::PolyLine>(m_polylines);
+	updateGeometry<Drawing::Arc>(m_arcs);
+	updateGeometry<Drawing::Circle>(m_circles);
+	updateGeometry<Drawing::Ellipse>(m_ellipses);
+	updateGeometry<Drawing::Solid>(m_solids);
+	updateGeometry<Drawing::LinearDimension>(m_linearDimensions);
+	updateGeometry<Drawing::Point>(m_points);
+	updateGeometry<Drawing::Text>(m_texts);
+}
+
 
 DrawingLayer* Drawing::findLayerPointer(const QString &layername){
 	for(unsigned int i = 0; i < m_drawingLayers.size(); ++i) {
