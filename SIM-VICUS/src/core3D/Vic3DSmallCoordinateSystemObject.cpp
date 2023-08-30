@@ -124,11 +124,11 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	double sizeFactor = 2;
+	double sizeFactor = 5;
 
 	// Note: the following geometrical objects are added a triangle strips with restart-indexes in between
 
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
@@ -137,11 +137,11 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.06*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.06*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.06*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	// add a plane for the background
@@ -152,7 +152,7 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 	// draw elements
 	m_vertexBufferData.resize(m_vertexBufferData.size()+6);
 	m_colorBufferData.resize(m_colorBufferData.size()+6);
-	ColorRGBA planeCol(QColor(32,32,32,192) );
+	ColorRGBA planeCol(QColor(32,32,32,0) );
 
 	for (unsigned int i=0; i<6; ++i) {
 		m_colorBufferData[m_planeStartVertex+i] = planeCol;

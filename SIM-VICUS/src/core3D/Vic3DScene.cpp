@@ -2691,12 +2691,11 @@ void Scene::pick(PickObject & pickObject) {
 	QElapsedTimer pickTimer;
 	pickTimer.start();
 #endif
-
-
-	// *** intersection with grid plane ***
-
+	// *** intersects x-y-plane ***
 	IBKMK::Vector3D intersectionPoint;
+	IBKMK::Vector2D point;
 	double t;
+
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
 		if (!project().m_viewSettings.m_gridPlanes[i].m_isVisible)
@@ -2707,6 +2706,19 @@ void Scene::pick(PickObject & pickObject) {
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
 			r.m_objectID = i;
+			r.m_depth = t;
+			r.m_pickPoint = intersectionPoint;
+			pickObject.m_candidates.push_back(r);
+		}
+		else {
+			// *** intersection with grid plane ***
+
+			IBKMK::linePlaneIntersection(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1), nearPoint,
+										 direction, intersectionPoint, t);
+
+			PickObject::PickResult r;
+			r.m_resultType = PickObject::RT_xyPlane;
+			//r.m_objectID = i;
 			r.m_depth = t;
 			r.m_pickPoint = intersectionPoint;
 			pickObject.m_candidates.push_back(r);
