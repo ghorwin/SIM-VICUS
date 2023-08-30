@@ -53,16 +53,13 @@ protected:
 
 private slots:
 
-	void on_comboBoxTheme_activated(const QString &theme);
-
 	void on_pushButtonSceneBackgroundColor_colorChanged();
 	void on_pushButtonMajorGridColor_colorChanged();
 	void on_pushButtonMinorGridColor_colorChanged();
 	void on_pushButtonSelectedSurfaceColor_colorChanged();
-
 	void on_pushButtonDefault_clicked();
-
 	void on_checkBoxScaling_toggled(bool checked);
+	void on_radioButtonDark_toggled(bool useDarkTheme);
 
 private:
 	Ui::SVPreferencesPageStyle *m_ui;

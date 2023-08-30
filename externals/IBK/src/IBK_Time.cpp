@@ -829,7 +829,9 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 std::string Time::format_time_difference(double delta_t) {
 	std::stringstream strm;
 	strm << std::fixed << std::setprecision(3) << std::setw(6) << std::right;
-	if (delta_t<60)
+	if (delta_t<1)
+		strm << std::setprecision(0) << delta_t*1000 << " ms";
+	else if (delta_t<60)
 		strm << delta_t << " s";
 	else if (delta_t<3600)
 		strm << delta_t/60.0 << " min";
@@ -849,8 +851,10 @@ std::string Time::format_time_difference(double delta_t, const std::string & ust
 	/// \todo implement usage for uniformUnitLength
 	(void) uniformUnitLength;
 	std::stringstream strm;
-	strm << std::fixed << std::setprecision(3) << std::setw(6) << std::right;
+	strm << std::fixed << std::setprecision(3) << std::setw(7) << std::right; // 150 s -> 150.000 = 7 digits
 	UnitList::instance().convert(Unit("s"), Unit(ustr), delta_t);
+	if (ustr == "ms")
+		strm << std::setprecision(0);
 	strm << delta_t << " " << ustr;
 	if (ustr.size() < 3)
 		strm << std::string(4-ustr.size(), ' ');

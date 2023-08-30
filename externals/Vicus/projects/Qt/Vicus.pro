@@ -19,7 +19,7 @@ VER_PAT = 0
 VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO -llibdxfrw
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO #-lHL
 
 INCLUDEPATH = \
 ../../src \
@@ -28,9 +28,8 @@ INCLUDEPATH = \
 	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../DataIO/src \
-	../../../TiCPP/src \
-	../../../libdxfrw/src \
-	../../../libdxfrw/src/intern
+	#../../../HeatLoad/src \
+	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
@@ -38,6 +37,7 @@ HEADERS += \
 ../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
+	../../src/VICUS_BTFReader.h \
 	../../src/VICUS_BoundaryCondition.h \
 	../../src/VICUS_Building.h \
 	../../src/VICUS_BuildingLevel.h \
@@ -50,14 +50,17 @@ HEADERS += \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_Drawing.h \
 	../../src/VICUS_DrawingLayer.h \
-	../../src/VICUS_EPDCategroySet.h \
-	../../src/VICUS_EPDDataset.h \
+	../../src/VICUS_EpdCategorySet.h \
+	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
+	../../src/VICUS_EpdModuleDataset.h \
 	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InterfaceHeatConduction.h \
 	../../src/VICUS_InternalLoad.h \
 	../../src/VICUS_KeywordList.h \
+	../../src/VICUS_LcaSettings.h \
+	../../src/VICUS_LccSettings.h \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
 	../../src/VICUS_Network.h \
@@ -105,23 +108,28 @@ HEADERS += \
 	../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
-../../src/VICUS_AbstractDBElement.cpp \
-../../src/VICUS_AcousticTemplate.cpp \
-../../src/VICUS_ArgsParser.cpp \
-../../src/VICUS_BoundaryCondition.cpp \
-../../src/VICUS_Component.cpp \
+	../../src/VICUS_AbstractDBElement.cpp \
+	../../src/VICUS_AcousticTemplate.cpp \
+	../../src/VICUS_ArgsParser.cpp \
+    ../../src/VICUS_BTFReader.cpp \
+	../../src/VICUS_BoundaryCondition.cpp \
+	../../src/VICUS_Component.cpp \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_Drawing.cpp \
     ../../src/VICUS_DrawingLayer.cpp \
-	../../src/VICUS_EPDCategroySet.cpp \
-	../../src/VICUS_EPDDataset.cpp \
+  ../../src/VICUS_EpdCategorySet.cpp \
+	../../src/VICUS_EpdDataset.cpp \
+    ../../src/VICUS_EpdModuleDataset.cpp \
 	../../src/VICUS_GridPlane.cpp \
+	../../src/VICUS_HeatLoad12831Export.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
+	../../src/VICUS_LcaSettings.cpp \
+  ../../src/VICUS_LccSettings.cpp \
 	../../src/VICUS_Material.cpp \
 	../../src/VICUS_MaterialLayer.cpp \
 	../../src/VICUS_Network.cpp \
@@ -171,12 +179,14 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
     ../../src/ncg/ncg_VICUS_Drawing.cpp \
     ../../src/ncg/ncg_VICUS_DrawingLayer.cpp \
-	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
+	../../src/ncg/ncg_VICUS_EpdDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
+	../../src/ncg/ncg_VICUS_LcaSettings.cpp \
+        ../../src/ncg/ncg_VICUS_LccSettings.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
@@ -215,3 +225,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
 	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp \
+
+DISTFILES += \
+	../../src/.gitignore

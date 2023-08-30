@@ -13,6 +13,7 @@ The following documentation is automatically generated with Asciidoctor.
 - [Developer Information](Developer-Documentation/index.html)
 - [NANDRAD FMU Generator Manual](NANDRAD-FMU-Generator/index.html)
 - [SIM-VICUS Plugin Development](SIM-VICUS-Plugin-Development/index.html)
+- [VICUS-Developer-Documentation](VICUS-Model-Documentation/index.html)
 
 The input `adoc`-files for above documentation are in the `doc` directory. 
 You can update the documentation by running the `build.sh` script.

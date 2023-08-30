@@ -118,6 +118,9 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 	// calculate initial solution for constant model
 	if (m_internalLoadsModel->m_modelType == NANDRAD::InternalLoadsModel::MT_Constant) {
 		// retrieve iterator to all result quantities
+		double * totalElectricalPowerPtr = m_vectorValuedResults[VVR_TotalElectricalPower].dataPtr();
+		double * equipElectricalPowerPtr = m_vectorValuedResults[VVR_EquipmentElectricalPower].dataPtr();
+		double * lightElectricalPowerPtr = m_vectorValuedResults[VVR_LightingElectricalPower].dataPtr();
 		double * convEquipLoadPtr = m_vectorValuedResults[VVR_ConvectiveEquipmentHeatLoad].dataPtr();
 		double * radEquipLoadPtr = m_vectorValuedResults[VVR_RadiantEquipmentHeatLoad].dataPtr();
 		double * convPersonLoadPtr = m_vectorValuedResults[VVR_ConvectivePersonHeatLoad].dataPtr();
@@ -135,6 +138,10 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 			double personLoad = area * m_personLoadPerArea;
 			double lightingLoad = area * m_lightingLoadPerArea;
 
+			equipElectricalPowerPtr[i] = equipmentLoad;
+			lightElectricalPowerPtr[i] = lightingLoad;
+			totalElectricalPowerPtr[i] = equipmentLoad + lightingLoad;
+
 			// distribute
 			convEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
 			radEquipLoadPtr[i]	= m_eqipmentRadiationFraction * equipmentLoad;
@@ -144,7 +151,6 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 			radLightLoadPtr[i]	= m_lightingRadiationFraction * lightingLoad;
 		}
 	}
-
 }
 
 
@@ -175,6 +181,7 @@ void InternalLoadsModel::resultDescriptions(std::vector<QuantityDescription> & r
 			quantityName, quantityUnit, quantityDescription,
 			false, VectorValuedQuantityIndex::IK_ModelID, indexKeys) );
 	}
+
 }
 
 
@@ -251,6 +258,9 @@ int InternalLoadsModel::update() {
 	unsigned int nZones = m_zoneAreas.size();
 
 	// retrieve iterator to all result quantities
+	double * totalElectricalPowerPtr = m_vectorValuedResults[VVR_TotalElectricalPower].dataPtr();
+	double * equipElectricalPowerPtr = m_vectorValuedResults[VVR_EquipmentElectricalPower].dataPtr();
+	double * lightElectricalPowerPtr = m_vectorValuedResults[VVR_LightingElectricalPower].dataPtr();
 	double * convEquipLoadPtr = m_vectorValuedResults[VVR_ConvectiveEquipmentHeatLoad].dataPtr();
 	double * radEquipLoadPtr = m_vectorValuedResults[VVR_RadiantEquipmentHeatLoad].dataPtr();
 	double * convPersonLoadPtr = m_vectorValuedResults[VVR_ConvectivePersonHeatLoad].dataPtr();
@@ -270,6 +280,10 @@ int InternalLoadsModel::update() {
 		double equipmentLoad = area * (*m_valueRefs[i * 3]);
 		double personLoad = area * (*m_valueRefs[i * 3 + 1]);
 		double lightingLoad = area * (*m_valueRefs[i * 3 + 2]);
+
+		equipElectricalPowerPtr[i] = equipmentLoad;
+		lightElectricalPowerPtr[i] = lightingLoad;
+		totalElectricalPowerPtr[i] = equipmentLoad + lightingLoad;
 
 		// distribute
 		convEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;

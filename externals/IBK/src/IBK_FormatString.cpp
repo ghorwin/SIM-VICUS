@@ -242,7 +242,8 @@ std::string FormatString::operator+(const std::string& s) const {
 }
 
 std::string operator+(const std::string& lhs, const FormatString& rhs) {
-	return lhs + rhs.str();
+	// implement using operator+
+	return rhs.operator+(lhs);
 }
 
 std::ostream& operator<<(std::ostream& strm, const FormatString& fstr) {

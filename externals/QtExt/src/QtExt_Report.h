@@ -172,6 +172,12 @@ public:
 
 	bool							m_showPageNumbers;		///< If true page numbers will be shown in footer.
 
+	/*! Set a logfile. Logging is enabled if the logfilename is not empty.*/
+	void setLogfile(const std::string& newLogfile);
+
+	bool drawItemRect() const;
+	void setDrawItemRect(bool newDrawItemRect);
+
 signals:
 	/*! Send current progress state.
 		Maximum is FrameCount * 2.
@@ -296,6 +302,13 @@ private:
 	/*! Contains the list of pointers for all report frames registered to this report. */
 	std::vector< std::pair<int, ReportFrameBase*> > m_reportFramesRegistered;
 
+	/*! Contains the list of pointers for all report frames registered to this report. */
+	std::string						m_logfile;
+
+	/*! If true a rect will be drawn around of each report item.
+		It can be useful for debugging purposes.
+	*/
+	bool							m_drawItemRect = false;
 };
 
 } // namespace QtExt {

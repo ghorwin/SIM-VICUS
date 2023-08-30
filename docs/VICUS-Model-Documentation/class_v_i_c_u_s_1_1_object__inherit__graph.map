@@ -1,0 +1,19 @@
+<map id="VICUS::Object" name="VICUS::Object">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,179,116,204"/>
+<area shape="rect" id="Node000002" href="$class_v_i_c_u_s_1_1_building.html" title=" " alt="" coords="181,5,299,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,165,106,102,131,69,162,40,183,28,186,33,166,44,135,72,110,105,75,167"/>
+<area shape="rect" id="Node000003" href="$class_v_i_c_u_s_1_1_building_level.html" title=" " alt="" coords="165,55,315,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="79,166,115,127,163,89,187,78,189,83,165,94,119,131,82,169"/>
+<area shape="rect" id="Node000004" href="$class_v_i_c_u_s_1_1_network.html" title=" " alt="" coords="179,104,301,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="96,170,163,138,194,127,196,132,165,143,98,175"/>
+<area shape="rect" id="Node000005" href="$class_v_i_c_u_s_1_1_network_edge.html" title=" " alt="" coords="165,153,315,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="130,179,164,174,165,179,130,184"/>
+<area shape="rect" id="Node000006" href="$class_v_i_c_u_s_1_1_network_node.html" title=" " alt="" coords="164,203,316,228"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="130,198,164,203,164,208,129,203"/>
+<area shape="rect" id="Node000007" href="$class_v_i_c_u_s_1_1_room.html" title=" " alt="" coords="187,252,293,277"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="101,208,165,237,199,249,198,254,163,242,99,213"/>
+<area shape="rect" id="Node000008" href="$class_v_i_c_u_s_1_1_sub_surface.html" title=" " alt="" coords="170,301,310,327"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="83,213,119,251,165,286,192,299,190,304,163,291,116,255,79,217"/>
+<area shape="rect" id="Node000009" href="$class_v_i_c_u_s_1_1_surface.html" title=" " alt="" coords="181,351,299,376"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="76,215,111,276,136,308,166,336,188,348,185,353,162,340,132,312,106,279,71,218"/>
+</map>

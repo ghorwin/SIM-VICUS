@@ -58,6 +58,7 @@
 #include "IBK_Exception.h"
 #include "IBK_FormatString.h"
 #include "IBK_Path.h"
+#include "IBK_FileUtils.h"
 
 namespace IBK {
 
@@ -65,13 +66,41 @@ namespace IBK {
 /*! The default unit list as encoded string, used by IBK::UnitList::read_default(). */
 extern const char * const DEFAULT_UNITS;
 
+/*! List of deprecated units that have been replaced by others.
+	Map is populated in constructor of UnitList().
+*/
+static std::map<std::string, std::string> DEPRECATED_LIST;
+
 /*****************************************************************************
  * Public methods
  *****************************************************************************/
 
 UnitList::UnitList() {
 	// read the default unit list instead
-	read_default();
+	bool success = read_default(); (void)success;
+	IBK_ASSERT(success);
+	// ensure correct unit IDs for seconds and meters
+	for (const_iterator it = begin(); it != end(); ++it) {
+		if ((*it)->name() == "s") {
+			IBK_ASSERT((*it)->id() == IBK_UNIT_ID_SECONDS);
+		}
+		else if ((*it)->name() == "m") {
+			IBK_ASSERT((*it)->id() == IBK_UNIT_ID_METERS);
+		}
+	}
+
+	// populate DEPRECATED_LIST
+	DEPRECATED_LIST.clear();
+
+	//	"L/m2s        * 3600 L/m2h        * 86400 L/m2d       * 86400 mm/d        * 3600 mm/h  * 1 l/m2s   * 3600 l/m2h  * 86400 l/m2d     \n"
+	//	"L/m3s        * 3600 L/m3h        * 1 l/m3s           * 3600 l/m3h     \n"
+
+	DEPRECATED_LIST["l/m2s"] = "L/m2s";
+	DEPRECATED_LIST["l/m2h"] = "L/m2h";
+	DEPRECATED_LIST["l/m2d"] = "L/m2d";
+
+	DEPRECATED_LIST["l/m3s"] = "L/m3s";
+	DEPRECATED_LIST["l/m3h"] = "L/m3h";
 }
 
 UnitList & UnitList::instance() {
@@ -81,107 +110,33 @@ UnitList & UnitList::instance() {
 
 // Reads the unit list from a file
 bool UnitList::read_file(const std::string& filename, bool overwrite) {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-			std::ifstream in(IBK::Path(filename).wstr().c_str());
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(IBK::Path(filename).wstr(), false);
-			std::ifstream in(filenameAnsi.c_str());
-	#endif
-#else // _WIN32
-			std::ifstream in(IBK::Path(filename).c_str());
-#endif
+	std::ifstream in;
+	IBK::open_ifstream(in, IBK::Path(filename));
 	return read(in, overwrite);
 }
 // ---------------------------------------------------------------------------
 
+
 // Reads the unitlist from default string
 bool UnitList::read_default() {
-	FUNCID(UnitList::read_default);
-
-#define NO_ATOF
-	std::vector<char> defaultVector;
-	std::copy(DEFAULT_UNITS, DEFAULT_UNITS + std::strlen(DEFAULT_UNITS), std::back_inserter(defaultVector));
-	defaultVector.push_back('\0');
-	char* defaultList = &(defaultVector[0]);
-	std::vector<std::vector<char> > lines;
-	// divide unit list into lines
-	char* line = std::strtok(defaultList, ";");
-	while( line != nullptr) {
-		std::vector<char> tmp;
-		std::copy(line, line + std::strlen(line), std::back_inserter(tmp));
-		tmp.push_back('\0');
-		lines.push_back(tmp);
-		line = strtok(nullptr, ";");
-	}
-
-	std::set<std::string> all_units; // temporary set of units, used in duplicate check
-
-	unsigned int base_index=0, current_index=0;
-	for( unsigned int i=0; i<lines.size(); ++i) {
-		char* line = &(lines[i][0]);
-		char* str = std::strtok(line, "\t ");
-		if( str == nullptr)
-			continue;
-
-		// sanity check, ensure uniqueness of units
-		if (all_units.find(str) != all_units.end())
-			throw IBK::Exception(FormatString("Duplicate unit '%1' defined.").arg(str), FUNC_ID);
-		all_units.insert(str);
-
-		add(new UnitData(current_index, str, base_index, 1.0, OP_NONE));
-		char* op = strtok(nullptr, "\t ");
-		while( op != nullptr) {
-			char* fact = strtok(nullptr, "\t ");
-			if( fact == nullptr)
-				break;
-#ifdef NO_ATOF
-			double factor = IBK::string2val<double>(fact);
-#else // NO_ATOF
-			double factor = std::atof(fact);
-#endif // NO_ATOF
-
-			str = strtok(nullptr, "\t ");
-			if( str == nullptr)
-				break;
-
-			// sanity check, ensure uniqueness of units
-			if (all_units.find(str) != all_units.end())
-				throw IBK::Exception(FormatString("Duplicate unit '%1' defined.").arg(str), FUNC_ID);
-			all_units.insert(str);
-
-			current_index++;
-			unsigned int op_id;
-			switch (op[0]) {
-				case '+' : op_id = OP_ADD; break;
-				case '-' : op_id = OP_SUB; break;
-				case '*' : op_id = OP_MUL; break;
-				case '/' : op_id = OP_DIV; break;
-				case '%' : op_id = OP_SPECIAL; break;
-				default  : op_id = OP_NONE;
-			}
-			if (factor == 0.0 && op_id != OP_SPECIAL) {
-				IBK::IBK_Message("Invalid unit definition: factor = 0, but not a special unit conversion!", MSG_WARNING, "UnitList::read_default", 3);
-			}
-			else {
-				add(new UnitData(current_index, str, base_index, factor, op_id));
-			}
-			op = strtok(nullptr, "\t ");
-		}
-		current_index++;          // next unit
-		base_index=current_index; // is also the base unit
-	}
-	return true;
+	std::stringstream strm(DEFAULT_UNITS);
+	bool success = read(strm, true); // we always overwrite when reading the default units
+	if (success)
+		m_builtinUnitCount = size();
+	return success;
 }
+
 
 // Reads the unitlist from an input filestream
 bool UnitList::read(std::istream& stream, bool overwrite) {
 	FUNCID(UnitList::read);
-	if (!overwrite && !empty())  return true; // do not read the list again
 	if (!stream)  return false;
 
 	unsigned int base_index=0, current_index=0;
-	clear();                        // Clear list
+	if (overwrite) {
+		clear();                        // Clear list
+		m_builtinUnitCount = 0;
+	}
 
 	std::set<std::string> all_units; // temporary set of units, used in duplicate check
 
@@ -230,7 +185,6 @@ bool UnitList::read(std::istream& stream, bool overwrite) {
 		}
 	}
 	if (empty()) return false;
-//        throw IBK::Exception( "[UnitList::read]  Could not read any units!");
 	return true;
 }
 // ---------------------------------------------------------------------------
@@ -245,7 +199,7 @@ bool UnitList::read(const std::string& str, bool overwrite) {
 
 bool UnitList::write(const std::string& filename) const {
 	if (empty()) return false;
-//        throw IBK::Exception( "[UnitList::write]  Unit list is empty!");
+
 	std::ofstream out(filename.c_str());
 	// write first base unit
 	out << std::setw(10) << std::left << list_.front()->name() << "   ";
@@ -278,12 +232,11 @@ bool UnitList::write(const std::string& filename) const {
 	}
 	out << ";" << std::endl;    // finish last line
 	return out.good();
-//    if (!out)        throw IBK::Exception( "[UnitList::write]  Error writing unit list to file '"+filename+"'!");
 }
 // ---------------------------------------------------------------------------
 
 bool UnitList::convertible_units(std::vector<Unit>& list, const Unit& src,
-								  const bool remove) const
+								  const bool removeSrcUnit) const
 {
 	unsigned int baseid( src.base_id() );
 	list.clear();           // empty list
@@ -298,19 +251,18 @@ bool UnitList::convertible_units(std::vector<Unit>& list, const Unit& src,
 			// 2. get unit id
 			unsigned int uid=unit->id();
 			// 3. if units to not match and remove is == true, do NOT add unit
-			if (remove && uid==id) continue;
+			if (removeSrcUnit && uid==id) continue;
 			// 4. add unit to the list
 			list.push_back( Unit(uid) );
-		};
-	};
+		}
+	}
 	if (list.empty()) return false;
 	return true;
 }
 
 // ---------------------------------------------------------------------------
 
-void UnitList::all_units( std::vector<Unit>& list ) const
-{
+void UnitList::all_units( std::vector<Unit>& list ) const {
 	// empty list
 	list.clear();
 	const_iterator endit=end();
@@ -329,7 +281,7 @@ void UnitList::all_units( std::vector<Unit>& list ) const
 		// add unit to the list
 		list.push_back( Unit(uid) );
 
-	};
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -344,7 +296,7 @@ bool UnitList::base_units(std::vector<Unit>& list) {
 		const UnitData* unit( *it++ );
 		if (unit->id()==unit->base_id())
 			list.push_back( Unit(unit->id()) );
-	};
+	}
 	return true;
 }
 // ---------------------------------------------------------------------------
@@ -356,7 +308,14 @@ const UnitData* UnitList::retrieve(unsigned int unitid) const {
 }
 // ---------------------------------------------------------------------------
 
-const UnitData* UnitList::retrieve(const std::string &str) const {
+const UnitData* UnitList::retrieve(const std::string &ustr) const {
+	// apply deprecated unit conversion
+	std::string str;
+	std::map<std::string, std::string>::const_iterator depit = DEPRECATED_LIST.find(ustr);
+	if (depit == DEPRECATED_LIST.end())
+		str = ustr;
+	else
+		str = depit->second;
 	const_iterator endit=end();
 	const_iterator it=begin();
 	while (it!=endit) {
@@ -365,7 +324,7 @@ const UnitData* UnitList::retrieve(const std::string &str) const {
 		if ( name==str)
 			return unit;
 		++it;
-	};
+	}
 	return nullptr;
 }
 // ---------------------------------------------------------------------------
@@ -411,7 +370,7 @@ void UnitList::relate_units(const UnitData* src, const UnitData* target,
 
 			case OP_DIV :
 				op=OP_MUL;
-				if (target->factor()==0)
+				if (target->factor()==0.)
 					throw IBK::Exception("Div by zero! (tried to convert ["+src->name()+
 						"] to ["+target->name()+ "] )!","[UnitList::relate_units]");
 				fact=1.0/target->factor();
@@ -460,7 +419,7 @@ void UnitList::relate_units(const UnitData* src, const UnitData* target,
 		double own_factor=src->factor();
 		// convert to base unit
 		if (src->operation()==OP_MUL) {
-			if (own_factor==0)
+			if (own_factor==0.)
 				throw IBK::Exception("Div by zero! "
 					"(tried to convert ["+src->name()+"] to ["+target->name()+ "] )!",
 					"[UnitList::relate_units]");
@@ -482,7 +441,7 @@ void UnitList::relate_units(const UnitData* src, const UnitData* target,
 
 			case OP_DIV :
 				op=OP_MUL;
-				if (target->factor()==0)
+				if (target->factor()==0.)
 					throw IBK::Exception("Div by zero! "
 						"(tried to convert ["+src->name()+"] to ["+target->name()+ "] )!",
 						"[UnitList::relate_units]");
@@ -652,6 +611,9 @@ IBK::Unit UnitList::integralQuantity(const IBK::Unit & srcUnit, bool spaceIntegr
 		else if (base_name.size() > 2 && base_name.rfind("/s") == base_name.size()-2) {
 			base_name = base_name.substr(0, base_name.size()-2);
 		}
+		else if (base_name == "---") {
+			base_name = "s";
+		}
 		else {
 			converted = false;
 		}
@@ -698,87 +660,88 @@ std::string UnitList::replaceUnitWithIntegralUnit(const std::string & original) 
 
 // The units defined per default in the unitlist
 const char * const DEFAULT_UNITS =
-"undefined    ;"
-"m            * 1e+03 mm          * 1e+02 cm          * 1e+01 dm       ;"
-"m2           * 1e+06 mm2         * 1e+04 cm2         * 1e+02 dm2      ;"
-"m3           * 1e+09 mm3         * 1e+06 cm3         * 1e+03 dm3      ;"
-"s            / 60 min            / 3600 h            / 86400 d           / 3.1536e+07 a      % 0       sqrt(s)   % 0       sqrt(h)  * 1000 ms ;"
-"s/s          / 60 min/s          / 3600 h/s          / 86400 d/s         / 3.1536e+07 a/s ;"
-"m/s          * 100 cm/s          * 360000 cm/h       * 8.64e+06 cm/d     ;"
-"m2/s         * 10000 cm2/s       * 3600 m2/h         * 3.6e+07 cm2/h     ;"
-"m/s2         ;"
-"s/m          * 1 kg/m2sPa        ;"
-"s2/m2        ;"
-"kg           * 1000 g            * 1e+06 mg          ;"
-"kg/ms        ;"
-"kg/s         * 3600 kg/h         * 86400 kg/d        * 1000 g/s          * 3.6e6 g/h         * 8.64e+07 g/d      * 31536e6 g/a   * 1e6 mg/s      * 1e9 µg/s    ;"
-"kg/m2        / 100 kg/dm2        * 10 g/dm2          / 10 g/cm2          * 1e6 mg/m2     ;"
-"kg/m2s       * 1000 g/m2s        * 3.6e+06 g/m2h     * 86.4e+06 g/m2d    * 3600 kg/m2h       * 1e6 mg/m2s    * 1e9 µg/m2s  * 3.6e9 mg/m2h    * 3.6e12 µg/m2h ;"
-"kg/m3        / 1000 kg/dm3       * 1 g/dm3           / 1000 g/cm3        * 1000 g/m3     * 1e6 mg/m3   * 1e9 µg/m3       % 0      log(kg/m3)    % 0    log(g/m3)    % 0    log(mg/m3)    % 0    log(µg/m3);"
-"kg/m3s       * 1000 g/m3s        * 3.6e+06 g/m3h     * 3600 kg/m3h       * 1e6 mg/m3s    * 1e9 µg/m3s  * 3.6e9 mg/m3h    * 3.6e12 µg/m3h ;"
-"kg/m         * 1000 g/m          * 1 g/mm            / 1000 kg/mm        ;"
-"kg/kg        * 1000 g/kg         * 1e6 mg/kg         ;"
-"J            / 1000 kJ           / 1e+06 MJ          / 3.6e+09 MWh       / 3.6e+06 kWh        / 3600     Wh  ;"
-"J/m2         / 1000 kJ/m2        / 1e+06 MJ/m2       / 1e+09 GJ/m2       / 1e+02 J/dm2        / 1e+04 J/cm2       / 3.6e+06 kWh/m2          ;"
-"J/m3         * 1    Ws/m3        / 1000 kJ/m3        / 1e+06 MJ/m3       / 1e+09 GJ/m3       / 1e+03 J/dm3        / 1e+06 J/cm3       / 3.6e+06 kWh/m3          ;"
-"J/m3s        / 1000 kJ/m3s       / 1e+06 MJ/m3s      / 1000 J/dm3s       / 1e+06 J/cm3s       * 3600  J/m3h       * 1    W/m3         / 1000 kW/m3        / 1e+06 MW/m3       / 1000 W/dm3        / 1e+06 W/cm3       / 1e+09 W/mm3       ;"
-"J/m3K        / 1000 kJ/m3K;"
-"J/s          * 3600 J/h          * 86400 J/d         * 86.4 kJ/d         * 1     W            / 1000 kW           / 1e+06 MW          * 1     Nm/s  ;"
-"J/kg         / 1000 kJ/kg        ;"
-"J/kgK        / 1000 kJ/kgK       * 1     Ws/kgK      / 1000 J/gK       / 1000 Ws/gK       ;"
-"J/K          / 1000 kJ/K         ;"
-"J/m2s        * 1    W/m2         / 1000 kW/m2        / 1e+06 MW/m2       / 100 W/dm2         / 10000 W/cm2       ;"
-"W/mK         / 1000 kW/mK        ;"
-"W/m2K        ;"
-"W/m2K2       ;"
-"W/mK2        ;"
-"l/m2s        * 3600 l/m2h        * 86400 l/m2d       * 86400 mm/d        * 3600 mm/h         ;"
-"l/m3s        * 3600 l/m3h        ;"
-"m3/m2s       * 3600 m3/m2h       * 1000 dm3/m2s      * 3.6e+06 dm3/m2h   ;"
-"m3/m2sPa     * 3600 m3/m2hPa     ;"
-"m3/s         * 3600 m3/h         * 1000 dm3/s        * 3.6e+06 dm3/h   ;"
-"m3/m3        * 100 Vol%          ;"
-"m3/m3d       * 100 Vol%/d        ;"
-"---          * 100 %             * 1 1               * 10 1/10           * 8 1/8         ;"
-"---/d        * 100 %/d           ;"
-"K            - 273.15 C          ;"
-"1/K          ;"
-"K/m          ;"
-"m2s/kg       ;"
-"Pa           / 100 hPa           / 1000 kPa          * 1e-05 Bar        * 0.000145038 PSI         * 0.00750062 Torr          ;"
-"1/Pa         ;"
-"Pa/m         / 1000 kPa/m        ;"
-"Lux          / 1000 kLux         ;"
-"Rad          * 57.2958 Deg       ;"
-"m2/kg        ;"
-"m2K/W        ;"
-"1/m          / 100 1/cm          ;"
-"logcm        ;"
-"logm         ;"
-"logPa        ;"
-"K/Pa         ;"
-"mol/kg       / 1000 mol/g        ;"
-"kg/mol       * 1000 g/mol        ;"
-"J/mol        / 1000 kJ/mol       ;"
-"kg/m2s05     * 60 kg/m2h05       ;"
-"1/logcm      ;"
-"mol/m3       / 1000 mol/ltr      / 1000 mol/dm3      / 1e+06 mol/cm3     ;"
-"mol          * 1e+03 mmol        ;"
+"undefined    \n"
+"m            * 1e+03 mm          * 1e+02 cm          * 1e+01 dm       \n"
+"m2           * 1e+06 mm2         * 1e+04 cm2         * 1e+02 dm2      \n"
+"m3           * 1e+09 mm3         * 1e+06 cm3         * 1e+03 dm3      \n"
+"s            / 60 min            / 3600 h            / 86400 d           / 3.1536e+07 a      % 0       sqrt(s)   % 0       sqrt(h)  * 1000 ms \n"
+"s/s          / 60 min/s          / 3600 h/s          / 86400 d/s         / 3.1536e+07 a/s \n"
+"m/s          * 100 cm/s          * 360000 cm/h       * 8.64e+06 cm/d     \n"
+"m2/s         * 10000 cm2/s       * 3600 m2/h         * 3.6e+07 cm2/h     \n"
+"m/s2         \n"
+"s/m          * 1 kg/m2sPa        \n"
+"s2/m2        \n"
+"kg           * 1000 g            * 1e+06 mg          / 1000 t\n"
+"kg/ms        \n"
+"kg/s         * 3600 kg/h         * 86400 kg/d        * 1000 g/s          * 3.6e6 g/h         * 8.64e+07 g/d      * 31536e6 g/a   * 1e6 mg/s      * 1e9 µg/s    \n"
+"kg/m2        / 100 kg/dm2        * 10 g/dm2          / 10 g/cm2          * 1e6 mg/m2         \n"
+"kg/m2s       * 1000 g/m2s        * 3.6e+06 g/m2h     * 86.4e+06 g/m2d    * 3600 kg/m2h       * 1e6 mg/m2s        * 1e9 µg/m2s  * 3.6e9 mg/m2h    * 3.6e12 µg/m2h \n"
+"kg/m3        / 1000 kg/dm3       * 1 g/dm3           / 1000 g/cm3        * 1000 g/m3         * 1e6 mg/m3         * 1000 kg/L   * 1 g/L         / 1000 mg/L     * 1e9 µg/m3       % 0      log(kg/m3)    % 0    log(g/m3)    % 0    log(mg/m3)    % 0    log(µg/m3) \n"
+"kg/m3s       * 1000 g/m3s        * 3.6e+06 g/m3h     * 3600 kg/m3h       * 1e6 mg/m3s        * 1e9 µg/m3s        * 3.6e9 mg/m3h  * 3.6e12 µg/m3h \n"
+"kg/m         * 1000 g/m          * 1 g/mm            / 1000 kg/mm        \n"
+"kg/kg        * 1000 g/kg         * 1e6 mg/kg         \n"
+"kg/m2s05     * 60 kg/m2h05       \n"
+"J            / 1000 kJ           / 1e+06 MJ          / 3.6e+09 MWh       / 3.6e+06 kWh        / 3600     Wh  \n"
+"J/m2         / 1000 kJ/m2        / 1e+06 MJ/m2       / 1e+09 GJ/m2       / 1e+02 J/dm2        / 1e+04 J/cm2       / 3.6e+06 kWh/m2          \n"
+"J/m3         * 1    Ws/m3        / 1000 kJ/m3        / 1e+06 MJ/m3       / 1e+09 GJ/m3       / 1e+03 J/dm3        / 1e+06 J/cm3       / 3.6e+06 kWh/m3          \n"
+"J/m3s        / 1000 kJ/m3s       / 1e+06 MJ/m3s      / 1000 J/dm3s       / 1e+06 J/cm3s       * 3600  J/m3h       * 1    W/m3         / 1000 kW/m3        / 1e+06 MW/m3       / 1000 W/dm3        / 1e+06 W/cm3       / 1e+09 W/mm3       \n"
+"J/m3K        / 1000 kJ/m3K\n"
+"J/s          * 3600 J/h          * 86400 J/d         * 86.4 kJ/d         * 1     W            / 1000 kW           / 1e+06 MW          * 1     Nm/s  \n"
+"J/kg         / 1000 kJ/kg        \n"
+"J/kgK        / 1000 kJ/kgK       * 1     Ws/kgK      / 1000 J/gK       / 1000 Ws/gK       \n"
+"J/K          / 1000 kJ/K         \n"
+"J/m2s        * 1    W/m2         / 1000 kW/m2        / 1e+06 MW/m2       / 100 W/dm2         / 10000 W/cm2       \n"
+"W/mK         / 1000 kW/mK        \n"
+"W/m2K        \n"
+"W/m2K2       \n"
+"W/mK2        \n"
+"L/m2s        * 3600 L/m2h        * 86400 L/m2d       * 86400 mm/d        * 3600 mm/h\n"
+"L/m3s        * 3600 L/m3h\n"
+"m3/m2s       * 3600 m3/m2h       * 1000 dm3/m2s      * 3.6e+06 dm3/m2h   \n"
+"m3/m2sPa     * 3600 m3/m2hPa     \n"
+"m3/s         * 3600 m3/h         * 1000 dm3/s        * 3.6e+06 dm3/h   \n"
+"m3/m3        * 100 Vol%          \n"
+"m3/m3d       * 100 Vol%/d        \n"
+"---          * 100 %             * 1 1               * 10 1/10           * 8 1/8         \n"
+"---/d        * 100 %/d           \n"
+"K            - 273.15 C          \n"
+"1/K          \n"
+"K/m          \n"
+"m2s/kg       \n"
+"Pa           / 100 hPa           / 1000 kPa          * 1e-05 Bar        * 0.000145038 PSI         * 0.00750062 Torr          \n"
+"1/Pa         \n"
+"Pa/m         / 1000 kPa/m        \n"
+"Lux          / 1000 kLux         \n"
+"Rad          * 57.2958 Deg       \n"
+"m2/kg        \n"
+"m2K/W        \n"
+"1/m          / 100 1/cm          \n"
+"logcm        \n"
+"logm         \n"
+"logPa        \n"
+"K/Pa         \n"
+"mol/kg       / 1000 mol/g        \n"
+"kg/mol       * 1000 g/mol        \n"
+"J/mol        / 1000 kJ/mol       \n"
+"1/logcm      \n"
+"mol/m3       / 1000 mol/L      / 1000 mol/dm3         / 1e+06 mol/cm3     / 1 mmol/L      / 1 mM \n"
+"mol          * 1e+03 mmol        \n"
 "-            "
-"mm/mK        ;"
-"mm/m         ;"
-"m3m/m3m      * 1000 m3mm/m3m;"
-"kg/m3sK      * 1000 g/m3sK       * 3.6e+06 g/m3hK    * 3600 kg/m3hK      * 1e6 mg/m3sK   * 1e9 µg/m3sK * 3.6e9 mg/m3hK   * 3.6e12 µg/m3hK ;"
-"1/s          * 60 1/min          * 3600 1/h ;"
-"W/m2s *  3600.0000000       W/m2h  /  1000.0000000      kW/m2s /  1.000000e+06      MW/m2s /   100.0000000      W/dm2s / 10000.0000000      W/cm2s ;"
-"Person/m2    ;"
-"m2/Person    ;"
-"W/Person     / 1000 kW/Person    ;"
-"W/K          ;"
-"kWh/m2a;"
-"kWh/a;"
-"m2/m3;"
-"Kh;";
+"mm/mK        \n"
+"mm/m         \n"
+"m3m/m3m      * 1000 m3mm/m3m\n"
+"kg/m3sK      * 1000 g/m3sK       * 3.6e+06 g/m3hK     * 3600 kg/m3hK      * 1e6 mg/m3sK   * 1e9 µg/m3sK * 3.6e9 mg/m3hK   * 3.6e12 µg/m3hK \n"
+"1/s          * 60 1/min          * 3600 1/h \n"
+"W/m2s *  3600.0000000       W/m2h  /  1000.0000000      kW/m2s /  1.000000e+06      MW/m2s /   100.0000000      W/dm2s / 10000.0000000      W/cm2s \n"
+"Person/m2    \n"
+"m2/Person    \n"
+"W/Person     / 1000 kW/Person    \n"
+"W/K          \n"
+"kWh/m2a      \n"
+"kWh/a        \n"
+"m2/m3        \n"
+"Kh           \n"
+;
 
 
 }  // namespace IBK

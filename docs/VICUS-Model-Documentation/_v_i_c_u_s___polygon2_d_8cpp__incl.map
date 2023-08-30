@@ -1,0 +1,35 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_Polygon2D.cpp" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/VICUS_Polygon2D.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="533,5,755,60"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___polygon2_d_8h.html" title=" " alt="" coords="99,108,245,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="533,57,249,108,248,103,532,52"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="269,108,309,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="533,59,435,81,323,111,322,105,433,76,532,54"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="333,108,397,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="560,63,411,108,409,103,558,58"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="422,108,509,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="591,62,503,104,500,100,588,58"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="533,108,624,133"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="626,62,598,99,594,95,622,58"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="648,108,771,133"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="666,58,694,95,690,99,662,62"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="795,108,965,133"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="717,58,837,101,835,106,715,63"/>
+<area shape="rect" id="Node000011" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="990,108,1133,133"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="756,54,993,103,992,108,755,59"/>
+<area shape="rect" id="Node000012" href="$_v_i_c_u_s___keyword_list_8h.html" title="Contains the declaration of class KeywordList." alt="" coords="1157,108,1312,133"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="756,47,1144,104,1143,109,755,53"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1336,108,1411,133"/>
+<area shape="poly" id="edge16_Node000001_Node000017" title=" " alt="" coords="756,39,1011,63,1165,82,1323,105,1322,111,1165,87,1011,69,756,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,181,152,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="159,135,106,175,103,171,155,131"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="177,181,357,207"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="189,131,242,171,239,175,186,135"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1062,181,1117,207"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="1212,136,1126,178,1124,173,1210,131"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1141,181,1209,207"/>
+<area shape="poly" id="edge13_Node000012_Node000014" title=" " alt="" coords="1227,135,1195,173,1191,169,1223,132"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1233,181,1354,207"/>
+<area shape="poly" id="edge14_Node000012_Node000015" title=" " alt="" coords="1246,132,1277,169,1273,173,1242,135"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1379,181,1483,207"/>
+<area shape="poly" id="edge15_Node000012_Node000016" title=" " alt="" coords="1267,131,1387,174,1385,179,1265,136"/>
+</map>

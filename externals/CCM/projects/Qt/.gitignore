@@ -1,2 +1,8 @@
 /.qmake.stash
 /Makefile.CCM
+/debug/
+/debug_x64/
+/release/
+/release_x64/
+*.Debug
+*.Release

@@ -216,11 +216,11 @@ public:
 	/*! Holds the acctual device pixel ratio needed for HighDPI scaling. */
 	double						m_ratio;
 
-	/*! Auto-save intervall in ms. */
+	/*! Auto-save intervall in minutes. */
 	int							m_autosaveInterval;
 
 	/*! Determines whether autosaving is enabled. */
-	bool						m_enableAutosaving;
+	bool						m_autosaveEnabled;
 
 	// *** members below are stored in settings file ***
 
@@ -271,10 +271,6 @@ public:
 
 	/*! The project file suffix including the . */
 	QString						m_projectFileSuffix			= ".vicus";
-
-	/*! The auto-save project file suffix including the . */
-	QString						m_projectFileAutoSaveSuffix	= ".vicus.bak";
-
 
 	/*! The project package suffix including the . */
 	QString						m_projectPackageSuffix		= ".vicpac";

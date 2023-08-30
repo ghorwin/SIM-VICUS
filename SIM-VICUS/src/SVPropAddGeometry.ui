@@ -53,7 +53,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Physical Components</string>
+      <string>Add Building components</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="2">
@@ -96,7 +96,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Network</string>
+      <string>Add Network elements</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>

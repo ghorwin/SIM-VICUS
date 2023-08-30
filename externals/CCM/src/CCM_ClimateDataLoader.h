@@ -412,6 +412,17 @@ public:
 	*/
 	static void checkForValidCyclicData(const std::vector<double> & timeVec);
 
+	/*! Performs the "annual data check". Overload of above function.
+		Time points must not exceed 365d and time points 0d and 365d must
+		not be present at the same time.
+		Does not throw an exception, but returns true/false depending on check.
+		\param timeVec Vector with time points in seconds.
+		\param errmsg Contains error message in case of returning false
+		\return Returns true if data checks out, false in case of failure. When failed, errmsg contains an
+			english error text.
+	*/
+	static bool checkForValidCyclicData(const std::vector<double> & timeVec, std::string& errmsg);
+
 	/*! Inserts hourly values when these are missing by using the previous value.
 		This function checks for valid input data. Whenever an hourly value is
 		missing, the preceeding and following value must be the same, otherwise

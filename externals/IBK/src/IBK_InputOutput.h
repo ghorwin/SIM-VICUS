@@ -59,6 +59,8 @@
 #include "IBK_NotificationHandler.h"
 #include "IBK_Exception.h"
 #include "IBK_configuration.h"
+#include "IBK_FileUtils.h"
+#include "IBK_Path.h"
 
 namespace IBK {
 
@@ -238,12 +240,13 @@ void read_string_vector_binary( std::istream &in,
 
 /*! Writes a matrix into a binary file.
 	\param mat The matrix to write, must implement serializationSize() and serialize() functions.
-	\param filename The file path to write file to.
+	\param filename The file path to write file to (utf8 encoded).
 */
 template <typename T>
 void write_matrix_binary(const T & mat, const std::string & filename) {
 	FUNCID(IBK::write_matrix_binary);
-	std::ofstream binFile(filename.c_str(), std::ios_base::binary);
+	std::ofstream binFile;
+	IBK::open_ofstream(binFile, IBK::Path(filename), std::ios_base::binary | std::ios_base::trunc);
 	// get size of matrix when stored on file
 	std::size_t matSize = mat.serializationSize();
 	// reserve memory
@@ -271,7 +274,8 @@ void write_matrix_binary(const T & mat, const std::string & filename) {
 template <typename T>
 void read_matrix_binary(const std::string & filename, T & mat) {
 	FUNCID(IBK::read_matrix_binary);
-	std::ifstream binFile(filename.c_str(), std::ios_base::binary);
+	std::ifstream binFile;
+	IBK::open_ifstream(binFile, IBK::Path(filename), std::ios_base::binary);
 	// read size of data storage in file
 	std::size_t matSize;
 	if (!binFile.read((char*)&matSize, sizeof(uint64_t)))

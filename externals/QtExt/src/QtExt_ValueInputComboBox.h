@@ -140,6 +140,9 @@ signals:
 	/*! Emits the result of the editing, but only if a result was entered correctly. */
 	void editingFinishedSuccessfully();
 
+protected:
+	bool eventFilter(QObject* obj, QEvent* event) override;
+
 private slots:
 	/*! Overloaded to ensure validation is applied when setting text. */
 	void setCurrentText(const QString& text);
@@ -154,6 +157,9 @@ private slots:
 		the double value stored as item data into the combo box instead.
 	*/
 	void onActivated(int index);
+
+private:
+	bool	m_enterPressed;
 };
 
 } // namespace QtExt

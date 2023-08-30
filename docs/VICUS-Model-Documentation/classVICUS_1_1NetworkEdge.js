@@ -1,0 +1,28 @@
+var classVICUS_1_1NetworkEdge =
+[
+    [ "NetworkEdge", "classVICUS_1_1NetworkEdge.html#a4addbf48bec9d8cc1973873750d87a1b", null ],
+    [ "NetworkEdge", "classVICUS_1_1NetworkEdge.html#a422ed7320bc34d5d2a24b6c4250e53aa", null ],
+    [ "typeinfo", "classVICUS_1_1NetworkEdge.html#a766dad900b21aa41a7b2fe7fcfd70952", null ],
+    [ "collectConnectedNodes", "classVICUS_1_1NetworkEdge.html#a48c239a6693be3cf67aeadd7bfd89cd3", null ],
+    [ "setInletOutletNode", "classVICUS_1_1NetworkEdge.html#a7fcdc3c7e762653816ae14d2c5b72508", null ],
+    [ "neighbourNode", "classVICUS_1_1NetworkEdge.html#a70ce09b61ad9f25c3bfc59ed62920dad", null ],
+    [ "neighbourNode", "classVICUS_1_1NetworkEdge.html#a6097b046ba6f67858430d06a0b71d1de", null ],
+    [ "length", "classVICUS_1_1NetworkEdge.html#aa2726229595aaa6cab250b25919b370c", null ],
+    [ "setLengthFromCoordinates", "classVICUS_1_1NetworkEdge.html#a1b3194ae9f2efd35b5ca92fd6bcc7ea2", null ],
+    [ "changeNode1", "classVICUS_1_1NetworkEdge.html#a2c8d6369e72baf98c0fa3dae3718139b", null ],
+    [ "changeNode2", "classVICUS_1_1NetworkEdge.html#ae752ca99409920e58cd2e171730c32dc", null ],
+    [ "m_supply", "classVICUS_1_1NetworkEdge.html#aa8f72b8f491b22272867dde1c422da3e", null ],
+    [ "m_idPipe", "classVICUS_1_1NetworkEdge.html#ad2fb7a6482c56b2b502b7bbd85ba5e74", null ],
+    [ "m_heatExchange", "classVICUS_1_1NetworkEdge.html#aa71702ae835e89dcf76f02c15fd74cc8", null ],
+    [ "m_visualizationRadius", "classVICUS_1_1NetworkEdge.html#a350527c570b2b3c3471da298542c9a77", null ],
+    [ "m_color", "classVICUS_1_1NetworkEdge.html#a7274312f550ac30efa8a88fc7256d4ca", null ],
+    [ "m_nominalHeatingDemand", "classVICUS_1_1NetworkEdge.html#a000c2e3e060c9c0e5610ca74fd4c6d20", null ],
+    [ "m_nominalMassFlow", "classVICUS_1_1NetworkEdge.html#a15278c21809976b7db771ca514d8f553", null ],
+    [ "m_tempChangeIndicator", "classVICUS_1_1NetworkEdge.html#aa6436802d282610ec6c61b116132849b", null ],
+    [ "m_cumulativeTempChangeIndicator", "classVICUS_1_1NetworkEdge.html#adcc96bed20f45615be21956049e9e25d", null ],
+    [ "m_node1", "classVICUS_1_1NetworkEdge.html#afe9cfbe5d9a89dc792ba834ec9a15c56", null ],
+    [ "m_idNodeInlet", "classVICUS_1_1NetworkEdge.html#a3748f4c3972a3a8bc0499b98fa1ff2be", null ],
+    [ "m_idNandradSupplyPipe", "classVICUS_1_1NetworkEdge.html#a6e72e41716597fdd5aa1106a73456cc6", null ],
+    [ "m_idSoil", "classVICUS_1_1NetworkEdge.html#abfc1668248a9065261ecec46230ca045", null ],
+    [ "m_length", "classVICUS_1_1NetworkEdge.html#a767b1b8faa3ae3af7a6ad59020fd0376", null ]
+];

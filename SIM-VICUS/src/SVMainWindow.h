@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QUndoStack>
 #include <QProcess>
+#include <QTimer>
 
 #include <map>
 
@@ -42,7 +43,6 @@ class QProgressDialog;
 class QSplitter;
 
 class SVThreadBase;
-class SVAutoSaveDialog;
 class SVWelcomeScreen;
 class SVNotesDialog;
 class SVButtonBar;
@@ -61,18 +61,29 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
 class SVCoSimCO2VentilationDialog;
+class SVLcaLccSettingsWidget;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
 class SVDBDuplicatesDialog;
-
 class SVPluginLoader;
+class SVSimulationSettingsView;
 
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
 	Q_OBJECT
 public:
+
+
+	enum MainViewMode {
+		/*! None of the main views is shown, the welcome screen should then be present */
+		MV_None,
+		/*! 3d scene geometry view */
+		MV_GeometryView,
+		/*! Simulation settings and simulation start view */
+		MV_SimulationView
+	};
 
 	/*! Returns a pointer to the SVMainWindow instance.
 		Only access this function during the lifetime of the
@@ -127,6 +138,8 @@ public:
 
 	/*! Returns the material edit dialog. */
 	SVDatabaseEditDialog * dbMaterialEditDialog();
+	/*! Returns the EPD edit dialog. */
+	SVDatabaseEditDialog * dbEpdEditDialog();
 	/*! Returns the construction edit dialog. */
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
@@ -189,11 +202,6 @@ public slots:
 	void on_actionDBComponents_triggered();
 	void on_actionDBSubSurfaceComponents_triggered();
 
-	/*! Public access function to auto-save project file (called from simulation view).
-		\return Returns true if auto-save has been done successfully.
-	*/
-	void onAutoSaveProject();
-
 protected:
 	/*! Checks if project file has been changed by external application. */
 	void changeEvent(QEvent *event) override;
@@ -254,7 +262,11 @@ private slots:
 
 	/*! Triggered whenever a project was read successfully. */
 	void onFixProjectAfterRead();
+
+	/*! Connected to SVPreferencesPageStyle */
 	void onStyleChanged();
+	/*! Connected to SVPreferencesPageMisc */
+	void onAutosaveSettingsChanged();
 
 	void onDockWidgetToggled(bool);
 
@@ -285,6 +297,7 @@ private slots:
 	void on_actionEditCleanProject_triggered();
 	void on_actionEditApplicationLog_triggered();
 
+	void on_actionDBEpdElements_triggered();
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
 	void on_actionDBWindowGlazingSystems_triggered();
@@ -321,9 +334,7 @@ private slots:
 	void on_actionBuildingFloorManager_triggered();
 	void on_actionBuildingSurfaceHeatings_triggered();
 
-	void on_actionToolsExternalPostProcessing_triggered();
 	void on_actionToolsCCMeditor_triggered();
-
 
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
 	void on_actionViewShowGrid_toggled(bool visible);
@@ -339,8 +350,6 @@ private slots:
 	void on_actionViewBirdsEyeViewSouthWest_triggered();
 	void on_actionViewBirdsEyeViewSouthEast_triggered();
 
-	void on_actionSimulationNANDRAD_triggered();
-	void on_actionSimulationExportFMI_triggered();
 	void on_actionSimulationCO2Balance_triggered();
 
 	void on_actionHelpAboutQt_triggered();
@@ -358,13 +367,25 @@ private slots:
 
 	void on_actionExportNetworkAsGeoJSON_triggered();
 
-	void on_actionCalculateViewFactors_triggered();
+
+	void on_actionGeometryView_triggered();
+
+	void on_actionSimulationSettings_triggered();
+
+	void on_actionOpenPostProcessing_triggered();
+
+	void onShortCutStartSimulation();
+
+	void on_actionEPD_elements_triggered();
 
 	void on_actionDXF_File_triggered();
 
 	void on_actionFileImportDXF_triggered();
 
 private:
+
+	void updateMainView();
+
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
 
@@ -438,6 +459,9 @@ private:
 	*/
 	std::map<QDockWidget*, bool>	m_dockWidgetVisibility;
 
+	/*! Stores the current main view mode (Geometry, Simulation Start, ...) */
+	MainViewMode					m_mainViewMode										= MV_GeometryView;
+
 	/*! Main user interface pointer. */
 	Ui::SVMainWindow			*m_ui													= nullptr;
 	/*! The global undo stack in the program. */
@@ -470,6 +494,9 @@ private:
 	/*! Splitter that contains navigation tree widget and geometry view. */
 	QSplitter					*m_geometryViewSplitter									= nullptr;
 
+	/*! View with simulation settings, climate data, ouptuts and so on */
+	SVSimulationSettingsView	*m_simulationSettingsView								= nullptr;
+
 	/*! Navigation tree widget (left of 3D scene view). */
 	SVNavigationTreeWidget		*m_navigationTreeWidget									= nullptr;
 
@@ -488,16 +515,6 @@ private:
 	/*! Network export dialog */
 	SVNetworkExportDialog		*m_networkExportDialog									= nullptr;
 
-	/*! Network edit dialog */
-	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;
-
-	/*! Simulation start dialog. */
-	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
-	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
-
-	/*! FMI Export dialog. */
-	SVSimulationShadingOptions	*m_shadingCalculationDialog								= nullptr;
-
 
 	/*! Contains the 3D scene view (and tool buttons and stuff). */
 	SVGeometryView				*m_geometryView											= nullptr;
@@ -509,11 +526,10 @@ private:
 	SVPostProcHandler			*m_postProcHandler										= nullptr;
 
 	/*! Central handler for the user interface state. */
-	SVViewStateHandler			*m_viewStateHandler										= nullptr;
-
-	SVAutoSaveDialog					*m_autoSave												= nullptr;
+	SVViewStateHandler					*m_viewStateHandler								= nullptr;
 
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbEpdEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
@@ -545,6 +561,11 @@ private:
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
 
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
+
+	/*! Timer for auto-save periods. */
+	QTimer								*m_autoSaveTimer 								= nullptr;
+
+	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
 
 	friend class SVThreadBase;
 };

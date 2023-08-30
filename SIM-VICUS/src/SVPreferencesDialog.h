@@ -37,7 +37,7 @@ namespace Ui {
 }
 
 /*! Implementation of the preferences dialog. */
-class SVPreferencesDialog : public QWidget {
+class SVPreferencesDialog : public QDialog {
 	Q_OBJECT
 public:
 	/*! Constructor.*/
@@ -47,18 +47,15 @@ public:
 
 	/*! Spawns the dialog and returns when user has closed the dialog.
 		\param initialPage The index of the page to be shown initially.
+
+		\note Changes in settings dialog are applied directly, for example through signals emitted for certain changes.
 	*/
 	void edit(int initialPage = 0);
 
 	/*! Provides read-only access to pageStyle() so that signals can be connected. */
 	const SVPreferencesPageStyle * pageStyle() const { return m_pageStyle; }
-
-signals:
-	/*! Emitted to signal a preference decision for the calling window/dialog event loop.*/
-	void closed();
-
-protected:
-	void closeEvent(QCloseEvent *event) override;
+	/*! Provides read-only access to pageMisc() so that signals can be connected. */
+	const SVPreferencesPageMisc * pageMisc() const { return m_pageMisc; }
 
 private:
 	/*! Transfers values from Settings object to user interface (config pages).*/

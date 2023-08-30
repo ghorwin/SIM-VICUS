@@ -5,6 +5,7 @@
 			<Comment>Test case with 4 windows, exterior shading is defined through tsv file. Mind the time shift.</Comment>
 		</ProjectInfo>
 		<Location>
+			<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
 			<IBK:Parameter name="Albedo" unit="---">0</IBK:Parameter>
 			<ClimateFilePath>${Project Directory}/../climate/DirectRadiationLoads.c6b</ClimateFilePath>
 			<!-- We define the path to the shading factor file here -->
@@ -16,6 +17,13 @@
 				<IBK:Parameter name="Start" unit="d">180</IBK:Parameter>
 				<IBK:Parameter name="End" unit="d">191</IBK:Parameter>
 			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">50</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">30</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">20</IBK:Parameter>
+			</SolarLoadsDistributionModel>
   		</SimulationParameter>
 		<SolverParameter />
 		<Zones>

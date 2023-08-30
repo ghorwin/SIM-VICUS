@@ -41,13 +41,12 @@
 #include <NANDRAD_Schedules.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_SupplySystem.h"
 #include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
-#include "VICUS_NetworkFluid.h"
-#include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
+#include "VICUS_LcaSettings.h"
+#include "VICUS_LccSettings.h"
 #include "VICUS_ComponentInstance.h"
 #include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
@@ -238,8 +237,9 @@ public:
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath, unsigned int networkId) const;
 
+	void generateHeatLoadExport();
 
 	// *** STATIC FUNCTIONS ***
 
@@ -300,6 +300,10 @@ public:
 	VICUS::Outputs										m_outputs;					// XML:E
 
 	ViewSettings										m_viewSettings;				// XML:E
+
+	LcaSettings											m_lcaSettings;				// XML:E
+
+	LccSettings											m_lccSettings;				// XML:E
 
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
@@ -400,8 +404,11 @@ private:
 	*/
 	void addAndCheckForUniqueness(VICUS::Object* o);
 
+	/*! Adds view factors to the nandrad project.
+		If there are conflicts Exceptions are thrown.
+	*/
 	void addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vector<Project::RoomMapping> &roomMappings, const std::map<unsigned int, unsigned int> &componentInstanceMapping,
-									  std::map<unsigned int, unsigned int> &subSurfaceMapping, QStringList & errorStack) const;
+									  const std::map<unsigned int, unsigned int> &subSurfaceMapping, QStringList & errorStack) const;
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().

@@ -188,14 +188,14 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 						throw std::exception();
 					vec.push_back(val);
 				} catch (...) {
-					throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 				}
 #else
 				// try to parse from begin of number to this position
 				double val;
 				auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
 				if (answer.ec != std::errc())
-					throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 				vec.push_back(val);
 #endif // IBK_USE_STOD
 			}
@@ -219,13 +219,13 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 				throw;
 			vec.push_back(val);
 		} catch (...) {
-			throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 		}
 #else
 		double val;
 		auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
 		if (answer.ec != std::errc())
-			throw IBK::Exception(IBK::FormatString("'%1' at character pos %2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 		vec.push_back(val);
 #endif // IBK_USE_STOD
 	}
@@ -911,7 +911,7 @@ bool isInCharType(char ch, unsigned int types) {
 }
 
 /*! Functor for creating a random character in the given chart type range.*/
-struct random_char : std::unary_function<void,char> {
+struct random_char {
 public:
 	/*! Constructor set the char type.*/
 	random_char(unsigned int charTypes) :
@@ -1269,7 +1269,7 @@ std::string WstringToANSI(const std::wstring& wide, bool OEMPage) {
 	std::vector<char> str(reslength, '\0');
 	int writtenLength = WideCharToMultiByte(pageFlag, 0, wide.c_str(), -1, &str[0], reslength, 0, 0);
 	if(writtenLength == 0)
-		throw std::logic_error("Cannot create  UTF8 string from wide string.");
+		throw std::logic_error("Cannot create ansi string from wide string.");
 	return std::string(&str[0]);
 }
 

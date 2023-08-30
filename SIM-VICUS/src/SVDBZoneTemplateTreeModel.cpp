@@ -335,7 +335,7 @@ void SVDBZoneTemplateTreeModel::resetModel() {
 
 QModelIndex SVDBZoneTemplateTreeModel::addNewItem() {
 	VICUS::ZoneTemplate c;
-	c.m_displayName.setEncodedString("en:<new zone template>");
+	c.m_displayName.setString(tr("<new zone template>").toStdString(), IBK::MultiLanguageString::m_language);
 	c.m_color = SVStyle::randomColor();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_zoneTemplates.add( c );

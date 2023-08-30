@@ -26,8 +26,8 @@
 #include "SVPreferencesPageMisc.h"
 #include "ui_SVPreferencesPageMisc.h"
 
-#include "SVAutoSaveDialog.h"
 #include "SVSettings.h"
+#include "SVMainWindow.h"
 
 SVPreferencesPageMisc::SVPreferencesPageMisc(QWidget *parent) :
 	QWidget(parent),
@@ -50,11 +50,10 @@ void SVPreferencesPageMisc::updateUi() {
 	m_ui->checkBoxDontUseNativeDialogs->blockSignals(false);
 
 	m_ui->spinBoxAutosaveInterval->blockSignals(true);
-	m_ui->spinBoxAutosaveInterval->setValue((int)((double)s.m_autosaveInterval/60.0/1000.0)); // from ms in min
+	m_ui->spinBoxAutosaveInterval->setValue(s.m_autosaveInterval); // in min
 	m_ui->spinBoxAutosaveInterval->blockSignals(false);
 
-	m_ui->groupBoxAutoSaving->setChecked(s.m_enableAutosaving); // from ms in min
-	m_ui->spinBoxAutosaveInterval->setEnabled(s.m_enableAutosaving);
+	m_ui->groupBoxAutoSaving->setChecked(s.m_autosaveEnabled); // from ms in min
 }
 
 
@@ -75,14 +74,13 @@ void SVPreferencesPageMisc::on_pushButtonResetDoNotShowAgainDialogs_clicked() {
 
 
 void SVPreferencesPageMisc::on_spinBoxAutosaveInterval_valueChanged(int value) {
-	SVSettings::instance().m_autosaveInterval = value * 60 * 1000; // in milliseconds
-	SVAutoSaveDialog::instance().restartTimerWithoutAutosaving();
+	SVSettings::instance().m_autosaveInterval = value;
+	emit autosaveSettingsChanged();
 }
 
 
 void SVPreferencesPageMisc::on_groupBoxAutoSaving_toggled(bool isEnabled) {
-	SVSettings::instance().m_enableAutosaving = isEnabled;
-
-	updateUi();
+	SVSettings::instance().m_autosaveEnabled = isEnabled;
+	emit autosaveSettingsChanged();
 }
 

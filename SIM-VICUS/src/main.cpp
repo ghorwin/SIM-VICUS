@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
 	// Compose program name using the always use the major.minor version variant,
 	// since this string is used to identify the registry/config file location.
-	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
+	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION);
 
 	// *** Create and initialize setting object ***
 

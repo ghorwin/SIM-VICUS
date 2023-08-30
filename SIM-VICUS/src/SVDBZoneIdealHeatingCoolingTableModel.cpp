@@ -142,7 +142,7 @@ void SVDBZoneIdealHeatingCoolingTableModel::resetModel() {
 
 QModelIndex SVDBZoneIdealHeatingCoolingTableModel::addNewItem() {
 	VICUS::ZoneIdealHeatingCooling ideal;
-	ideal.m_displayName.setEncodedString("en:<new zone ideal heating cooling model>");
+	ideal.m_displayName.setString(tr("<new ideal heating cooling model>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 

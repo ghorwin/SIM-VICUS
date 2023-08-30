@@ -334,7 +334,7 @@ std::string& trim_keyword(std::string& keyword);
 	std::transform(strvec.begin(), strvec.end(), strvec.begin(), trimmer());
 	\endcode
 */
-class trimmer : public std::unary_function<std::string,std::string> {
+class trimmer {
 public:
 	/*! Evaluation operator, returns a trimmed copy of the string argument using default trim characters, see trim(). */
 	std::string operator()(const std::string& val) {
@@ -353,7 +353,7 @@ std::string& remove_comment(std::string& str);
 	bool equal = std::equal(vec1.begin(), vec1.end(), vec2.begin(), nocase_equal());
 	\endcode
 */
-class nocase_equal : public std::binary_function<char, char, bool> {
+class nocase_equal {
 public:
 	/*! Evaluation operator, returns whether left uppercased character equals right upper cased character. */
 	bool operator() (char lhs, char rhs) { return TOLOWER(lhs)==TOLOWER(rhs); }

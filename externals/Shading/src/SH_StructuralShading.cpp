@@ -25,6 +25,7 @@
 #include <IBK_physics.h>
 #include <IBK_StopWatch.h>
 #include <IBK_math.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMK_Vector3D.h>
 #include <IBKMK_3DCalculations.h>
@@ -119,7 +120,7 @@ void StructuralShading::setGeometry(const std::vector<ShadingObject> & surfaces,
 	}
 }
 
-void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth, bool useClippingMethod) {
+void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth, bool useClippingMethod, IBK::Path currentDir) {
 	FUNCID(StructuralShading::calculateShadingFactors);
 
 	// TODO Stephan, input data check
@@ -176,7 +177,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 #ifdef WRITE_OUTPUT
 	// Create Shading debugging path
-	IBK::Path path ("shading_debugging/");
+	IBK::Path path (currentDir + "/shading_debugging");
 	if(path.exists())
 		IBK::Path::remove(path);
 	IBK::Path::makePath(path);
@@ -216,9 +217,12 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
 
 #ifdef WRITE_OUTPUT
-				std::ofstream out(QString("C:/shading/shading_info_%1_%2.txt")
+
+
+				std::ofstream out(QString("%3/shading_info_%1_%2.txt")
 								  .arg(QString::fromStdString(so.m_name))
-								  .arg(i).toStdString());
+								  .arg(i)
+								  .arg(QString::fromStdString(path.absolutePath().str())).toStdString());
 				out << "Shading calculation for surface " << so.m_name << std::endl;
 				out << "Sun normal: X:" << m_sunConeNormals[i].m_x << " Y: " << m_sunConeNormals[i].m_y << "Z: " << m_sunConeNormals[i].m_z;
 				out << std::endl;
@@ -262,7 +266,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 				if ( omp_get_thread_num() == 0) {
 #endif
 					// only notify every second or so
-					if (!notify->m_aborted && w.difference() > 100) {
+					if (!notify->m_aborted && w.difference() > 1000) {
 						notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
 						w.start();
 					}
@@ -336,11 +340,13 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 							 .arg(path).arg(fname_wo_ext), FUNC_ID);
 	}
 
-	std::ofstream tsvFile ( path.str() );
+	std::ofstream tsvFile;
 
-	if ( !tsvFile.is_open() )
+	if ( !IBK::open_ofstream(tsvFile, path) )
 		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
 
+	if( tsvFile.fail() )
+		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
 
 	// we have a map of different sunConeNormals to sunPositions i.e. time points in vector m_indexesOfSimilarNormals
 	// we now generate the reverse mapping by creating a vector of sunConeNormal indexes corresponding to each sampling

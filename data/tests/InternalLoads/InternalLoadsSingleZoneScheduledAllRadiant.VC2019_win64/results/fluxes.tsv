@@ -1,4 +1,4 @@
-Time [h]	Model(id=401).RadiantEquipmentHeatLoad(id=1) [W]	Model(id=401).RadiantPersonHeatLoad(id=1) [W]	Model(id=401).RadiantLightingHeatLoad(id=1) [W]	ConstructionInstance(id=101).FluxShortWaveRadiationA [W]
+Time [h]	Model(id=401).RadiantEquipmentHeatLoad(id=1) [W]	Model(id=401).RadiantPersonHeatLoad(id=1) [W]	Model(id=401).RadiantLightingHeatLoad(id=1) [W]	South.FluxShortWaveRadiationA [W]
 0	0	0	0	0
 0.1666666667	0	0	0	0
 0.3333333333	0	0	0	0

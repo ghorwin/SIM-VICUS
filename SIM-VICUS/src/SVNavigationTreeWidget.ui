@@ -44,6 +44,7 @@
      <addaction name="actionHideSelected"/>
      <addaction name="actionShowSelected"/>
      <addaction name="actionSelect_all"/>
+     <addaction name="actionDeselect_all"/>
      <addaction name="actionInvertSelection"/>
      <addaction name="actionSmartSelect"/>
     </widget>
@@ -69,8 +70,8 @@
   </layout>
   <action name="actionRemoveSelected">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-loeschen.svg</normaloff>:/gfx/icons8/icons8-loeschen.svg</iconset>
    </property>
    <property name="text">
     <string>Remove (Del)</string>
@@ -84,8 +85,8 @@
   </action>
   <action name="actionShowSelected">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/16x16/help-hint.png</normaloff>:/gfx/actions/16x16/help-hint.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-sichtbar-80.png</normaloff>:/gfx/icons8/icons8-sichtbar-80.png</iconset>
    </property>
    <property name="text">
     <string>Show selected objects</string>
@@ -99,8 +100,8 @@
   </action>
   <action name="actionHideSelected">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/16x16/help-hint_gray.png</normaloff>:/gfx/actions/16x16/help-hint_gray.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-unsichtbar-80.png</normaloff>:/gfx/icons8/icons8-unsichtbar-80.png</iconset>
    </property>
    <property name="text">
     <string>Hides selected objects</string>
@@ -114,8 +115,8 @@
   </action>
   <action name="actionSelect_all">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/16x16/checkbox-full.png</normaloff>:/gfx/actions/16x16/checkbox-full.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</iconset>
    </property>
    <property name="text">
     <string>Select all</string>
@@ -128,6 +129,10 @@
    </property>
   </action>
   <action name="actionDeselect_all">
+   <property name="icon">
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</iconset>
+   </property>
    <property name="text">
     <string>Deselect all</string>
    </property>
@@ -140,8 +145,8 @@
   </action>
   <action name="actionSmartSelect">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/search.png</normaloff>:/gfx/actions/search.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-suche-80.png</normaloff>:/gfx/icons8/icons8-suche-80.png</iconset>
    </property>
    <property name="text">
     <string>Smart select</string>
@@ -155,8 +160,8 @@
   </action>
   <action name="actionInvertSelection">
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/16x16/checkbox-inverted.png</normaloff>:/gfx/actions/16x16/checkbox-inverted.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-umkehren-80.png</normaloff>:/gfx/icons8/icons8-umkehren-80.png</iconset>
    </property>
    <property name="text">
     <string>Invert selection</string>
@@ -170,7 +175,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

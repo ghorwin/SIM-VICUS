@@ -110,7 +110,13 @@ class ptr_list {
 		This function both releases the memory of the object and removes the pointer from the list.
 		@see add, release, ptr_remove
 	*/
-	void remove(iterator it) { iterator tmp(it); remove(it, ++tmp); }
+	void remove(iterator it) { list_.erase(it); }
+
+	/*! Removes the pointer at the index position i.
+		This function both releases the memory of the object and removes the pointer from the list.
+		@see add, release, ptr_remove
+	*/
+	void removeAt(unsigned int i);
 
 	/*! Removes only the pointers in the range from the list, the memory is NOT released.
 		Be careful when using the function. If you remove a pointer from a list without
@@ -214,6 +220,14 @@ void ptr_list<T>::remove(iterator first, iterator last) {
 	while (it!=last)
 		delete *it++;
 	list_.erase(first, last);
+}
+
+template<class T>
+void ptr_list<T>::removeAt(unsigned int i) {
+	iterator it = list_.begin();
+	for (unsigned int j=0; j<i; ++j)
+		++it;
+	list_.erase(it);
 }
 
 template <class T>

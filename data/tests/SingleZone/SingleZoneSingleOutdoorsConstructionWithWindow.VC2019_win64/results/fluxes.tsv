@@ -1,4 +1,4 @@
-Time [h]	Room.ConstructionHeatConductionLoad [W]	Room.WindowHeatConductionLoad [W]	Room.WindowSolarRadiationLoad [W]	EmbeddedObject(id=201).FluxHeatConductionA [W]	EmbeddedObject(id=201).FluxShortWaveRadiationA [W]
+Time [h]	Room.ConstructionHeatConductionLoad [W]	Room.WindowHeatConductionLoad [W]	Room.WindowSolarRadiationLoad [W]	Simple window.FluxHeatConductionA [W]	Simple window.FluxShortWaveRadiationA [W]
 4080	0	-25.0435	0	25.0435	-0
 4081	23.4785	-23.4784	0	23.4784	-0
 4082	25.1911	-25.1905	0	25.1905	-0

@@ -36,16 +36,13 @@ SVPreferencesPageStyle::SVPreferencesPageStyle(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->comboBoxTheme->addItem("White");
-	m_ui->comboBoxTheme->addItem("Dark");
-
-	SVSettings & s = SVSettings::instance();
-	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
-
 	m_ui->pushButtonMajorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonMinorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonSceneBackgroundColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->pushButtonSelectedSurfaceColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
+	m_ui->labelDarkPreview->setPixmap(QPixmap(":/gfx/style/dark.png").scaledToHeight(100, Qt::SmoothTransformation));
+	m_ui->labelWhitePreview->setPixmap(QPixmap(":/gfx/style/white.png").scaledToHeight(100, Qt::SmoothTransformation));
 }
 
 
@@ -57,7 +54,8 @@ SVPreferencesPageStyle::~SVPreferencesPageStyle() {
 void SVPreferencesPageStyle::updateUi() {
 	SVSettings & s = SVSettings::instance();
 	// transfer data to Ui
-	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
+	m_ui->radioButtonDark->setChecked(s.m_theme == SVSettings::TT_Dark);
+
 	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
 	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
 	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
@@ -66,35 +64,6 @@ void SVPreferencesPageStyle::updateUi() {
 	m_ui->checkBoxScaling->blockSignals(true);
 	m_ui->checkBoxScaling->setChecked(s.m_useHighDPIScaling);
 	m_ui->checkBoxScaling->blockSignals(false);
-}
-
-
-void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
-	// no checks necessary
-	SVStyle & style = SVStyle::instance();
-	SVSettings & s = SVSettings::instance();
-
-	/// \todo Stephan: instead of comparing against (translated) strings, use item data for
-	///		  each combo box entry to compare against, like addItem(string, enum value)
-	///       and (ThemeType)currentData().toInt().
-	if ( theme == "White" ) {
-		s.m_theme = SVSettings::TT_White;
-	}
-	else if (theme == "Dark" ) {
-		s.m_theme = SVSettings::TT_Dark;
-	}
-
-	style.setStyle(s.m_theme);
-
-	// transfer theme-specific settings to UI
-	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
-	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
-	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
-	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
-	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
-
-	// now apply the style
-	emit styleChanged();
 }
 
 
@@ -148,5 +117,28 @@ void SVPreferencesPageStyle::on_pushButtonDefault_clicked() {
 void SVPreferencesPageStyle::on_checkBoxScaling_toggled(bool useScaling) {
 	SVSettings::instance().m_useHighDPIScaling = useScaling;
 	QMessageBox::information(this, tr("High Resolution Scaling"), tr("Scaling of Interface will apply after program restart.") );
+}
+
+void SVPreferencesPageStyle::on_radioButtonDark_toggled(bool useDarkTheme) {
+	// no checks necessary
+	SVStyle & style = SVStyle::instance();
+	SVSettings & s = SVSettings::instance();
+
+	if (useDarkTheme)
+		s.m_theme = SVSettings::TT_Dark;
+	else
+		s.m_theme = SVSettings::TT_White;
+
+	style.setStyle(s.m_theme);
+
+	// transfer theme-specific settings to UI
+	const SVSettings::ThemeSettings & ts = s.m_themeSettings[s.m_theme];
+	m_ui->pushButtonMajorGridColor->setColor(ts.m_majorGridColor);
+	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
+	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
+	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
+
+	// now apply the style
+	emit styleChanged();
 }
 

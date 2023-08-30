@@ -5,6 +5,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_FileReader.h>
+#include <IBK_FileUtils.h>
 #include <IBK_Version.h>
 
 namespace EP {
@@ -14,14 +15,9 @@ namespace EP {
 
 void IDFParser::read(const IBK::Path & fname) {
 	FUNCID(EP_IDFParser::read);
-	// open file in binary mode
-#ifdef _MSC_VER
-	std::ifstream in(fname.wstr().c_str(), std::ios_base::binary);
-#else
-	std::ifstream in(fname.str().c_str(), std::ios_base::binary);
-#endif
-	// check if file exists
-	if (!in)
+	// open file in binary mode and check if file exists
+	std::ifstream in;
+	if (!IBK::open_ifstream(in, fname, std::ios_base::binary))
 		throw IBK::Exception( IBK::FormatString("Climate data file '%1' does not exist or is not accessible.")
 							  .arg(fname), FUNC_ID);
 

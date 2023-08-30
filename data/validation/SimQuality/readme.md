@@ -9,6 +9,8 @@ described in the test suite).
 
 ## Validation Results
 
+NOTE: The *NANDRAD 2* solver is the calculation kernel of _SIM-VICUS_.
+
 ### TestCase 01 - Sonnenstandsberechnung
 
 <img src="TF01/results/TF01.5_Azimuth.png" width="600px" height="400px"/><img src="TF01/results/TF01.5_Elevation.png" width="600" height="400"/>

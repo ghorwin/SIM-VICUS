@@ -24,6 +24,7 @@
 */
 
 #include "SVPropEditGeometry.h"
+#include "IBKMK_2DCalculations.h"
 #include "ui_SVPropEditGeometry.h"
 
 #include <IBK_physics.h>
@@ -517,7 +518,6 @@ void SVPropEditGeometry::updateUi(bool resetLCS) {
 			m_surfNames.insert(s->m_displayName );
 			if (s->m_selected && s->m_visible)
 				m_selSurfaces.push_back(s);
-			//selectChildSurfaces(m_selSurfaces, *s);
 		}
 		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(o);
 		if (r != nullptr ) {
@@ -979,7 +979,8 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 	if (SVViewStateHandler::instance().m_geometryView == nullptr)
 		return; // do nothing while initializing
 	// adjust appearance of local coordinate system
-	if (m_ui->stackedWidget->currentIndex() == MT_Align) {
+	if (m_ui->stackedWidget->currentIndex() == MT_Align ||
+			m_ui->stackedWidget->currentIndex() == MT_Copy) {
 		// put local coordinate system back into "plain" mode
 		if (cso->m_geometryTransformMode != 0) {
 			cso->m_geometryTransformMode = 0;
@@ -1113,14 +1114,14 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 				// now set the new subsurface polygon
 				sub.m_polygon2D.setVertexes(polyVerts);
 			}
-			for (VICUS::Surface & child : modChilds) {
-				std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
-				for (IBKMK::Vector3D & v : verts) {
-					v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
-				}
-				// now set the new subsurface polygon
-				const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
-			}
+//			for (VICUS::Surface & child : modChilds) {
+//				std::vector<IBKMK::Vector3D> verts = child.polygon3D().vertexes();
+//				for (IBKMK::Vector3D & v : verts) {
+//					v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+//				}
+//				// now set the new subsurface polygon
+//				const_cast<IBKMK::Polygon3D &>(child.polygon3D()).setVertexes(verts);
+//			}
 
 			modS.setPolygon3D((VICUS::Polygon3D)poly);
 			modS.setChildAndSubSurfaces(modSubs, modChilds);
@@ -1324,5 +1325,124 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 
 void SVPropEditGeometry::on_comboBoxUnit_currentIndexChanged(int index) {
 	enableTransformation();
+}
+
+void SVPropEditGeometry::on_pushButtonFixSurfaceOrientation_clicked() {
+	FUNCID(on_pushButtonFixSurfaceOrientation_clicked);
+
+	/// 1) We take all surfaces from each room
+	/// 2) We calculate the surface weight point by points
+	/// 3) We take its normal from the middle point
+	/// 4) We construct a long ray (e.g. 1000m)
+	/// 5) We check if we cut other surfaces of the room
+	/// 6) If surface cutting count is 0 or even the normal points into correct direction
+	/// 7) If surface cutting count is uneven the normal should be inverted
+
+	VICUS::Project prj = SVProjectHandler::instance().project();
+
+	std::vector<VICUS::Surface> modifiedSurfaces;
+
+	for (const VICUS::Building &b : prj.m_buildings) {
+		for (const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
+			for (const VICUS::Room &r : bl.m_rooms) {
+				for (const VICUS::Surface &s : r.m_surfaces) {
+
+					if (!s.geometry().isValid())
+						continue;
+
+					if (!s.m_visible || !s.m_selected)
+						continue;
+
+					unsigned int intersectionCount = 0;
+
+					// Find Intersection
+					IBKMK::Vector3D center;
+
+					const IBKMK::Vector3D &offset = s.geometry().offset();
+					const IBKMK::Vector3D &localX = s.geometry().localX();
+					const IBKMK::Vector3D &localY = s.geometry().localY();
+
+					for (unsigned int i=0; i<s.geometry().polygon3D().vertexes().size(); ++i) {
+						for(unsigned int j=0; j<3; ++j) {
+							unsigned int idx = (i+j)%s.geometry().polygon3D().vertexes().size();
+							const IBKMK::Vector3D &v3D = s.geometry().polygon3D().vertexes()[idx];
+
+							center += v3D;
+						}
+
+						center /= 3.;
+
+						IBKMK::Vector2D p;
+
+						// Check if point lies within polygon
+						if (!IBKMK::planeCoordinates(offset, localX, localY, center, p.m_x, p.m_y))
+							continue;
+
+						if(IBKMK::pointInPolygon(s.geometry().polygon2D().vertexes(), p) != -1)
+							break;
+
+						center = IBKMK::Vector3D();
+					}
+
+					const IBKMK::Vector3D &normal = s.geometry().normal();
+
+					for (const VICUS::Surface &sTest : r.m_surfaces) {
+
+						if (s.m_id == sTest.m_id)
+							continue;
+
+						if(!sTest.geometry().isValid())
+							continue;
+
+						const IBKMK::Vector3D &offset = sTest.geometry().offset();
+						const IBKMK::Vector3D &localX = sTest.geometry().localX();
+						const IBKMK::Vector3D &localY = sTest.geometry().localY();
+						const IBKMK::Vector3D &normalTest = sTest.geometry().normal();
+
+						IBKMK::Vector3D v;
+						IBKMK::Vector2D p;
+						double dist;
+
+						if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, normalTest, center, normal, v, dist, false))
+							continue;
+
+						if (dist < 1E-3)
+							continue;
+
+						if (!IBKMK::planeCoordinates(offset, localX, localY, v, p.m_x, p.m_y))
+							continue;
+
+						if(IBKMK::pointInPolygon(sTest.geometry().polygon2D().vertexes(), p) == -1)
+							continue;
+
+						++intersectionCount;
+					}
+
+					if (intersectionCount > 0 && intersectionCount % 2 == 1) {
+						IBK::IBK_Message(IBK::FormatString("Surface #%2 %1 is beeing flipped.").arg(s.m_displayName.toStdString()).arg(s.m_id), IBK::MSG_WARNING, FUNC_ID);
+
+						const_cast<VICUS::Surface &>(s).flip();
+						const_cast<VICUS::Surface &>(s).initializeColorBasedOnInclination(); // reset color
+						modifiedSurfaces.push_back(s);
+					}
+				}
+			}
+		}
+	}
+
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	undo->push();
+
+	// also disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
+	// and update our inputs again
+	updateUi();
+
 }
 

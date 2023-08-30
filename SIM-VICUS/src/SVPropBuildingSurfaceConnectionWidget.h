@@ -25,7 +25,7 @@ public:
 	~SVPropBuildingSurfaceConnectionWidget();
 
 	/*! Updates user interface. */
-	void updateUi(bool /*onlySelectionModified*/);
+	void updateUi(bool onlySelectionModified);
 
 private slots:
     void on_pushButtonRemoveComponentInstance_clicked();
@@ -44,7 +44,7 @@ private:
 	/*! Caches currently selected surfaces. Updated in updateUi().
 		We use a set since we frequently need to search for surfaces in this container.
 	*/
-	std::set<const VICUS::Surface*>						m_selectedSurfaces;
+	std::map<unsigned int, const VICUS::Surface*>		m_selectedSurfaces;
 
     SVSmartIntersectionDialog                           *m_smartClippingDialog = nullptr;
 

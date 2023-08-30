@@ -1,0 +1,13 @@
+<map id="VICUS::SubSurfaceComponentInstance" name="VICUS::SubSurfaceComponentInstance">
+<area shape="rect" id="Node000001" title="Defines an embedded object (a subsurface)." alt="" coords="59,80,266,120"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1SubSurface.html" title="Represents a SubSurface and its associated properties." alt="" coords="255,197,395,223"/>
+<area shape="poly" id="edge6_Node000002_Node000001" title=" " alt="" coords="48,126,26,135,13,146,8,158,15,171,26,177,46,183,108,192,255,203,255,208,107,197,45,188,24,182,12,175,3,158,8,143,24,131,45,121"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="279,194,248,175,234,161,222,146,192,122,195,118,226,142,238,157,251,171,282,189"/>
+<area shape="rect" id="Node000003" href="$classVICUS_1_1Object.html" title="Base class for all objects that have a parent and are shown in the navigation tree widget." alt="" coords="295,87,406,113"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="372,123,384,147,385,161,381,175,369,189,355,199,352,195,366,185,376,172,380,161,378,149,367,125"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="421,91,433,100,424,108,407,111,406,105,422,103,427,100,418,96"/>
+<area shape="rect" id="Node000004" href="$classVICUS_1_1Polygon2D.html" title="Class Polygon2D stores a polygon of 2D points." alt="" coords="513,87,649,113"/>
+<area shape="poly" id="edge4_Node000002_Node000004" title=" " alt="" coords="543,121,354,200,352,195,541,116"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="513,5,649,31"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="584,44,584,87,579,87,579,44"/>
+</map>

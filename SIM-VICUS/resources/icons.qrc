@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gfx/icons8/icons8-3d-80.png</file>
+        <file>gfx/icons8/icons8-back-80.png</file>
+        <file>gfx/icons8/icons8-forward-80.png</file>
+        <file>gfx/icons8/icons8-graph-80.png</file>
+        <file>gfx/icons8/icons8-new-file-80.png</file>
+        <file>gfx/icons8/icons8-save-80.png</file>
+        <file>gfx/icons8/icons8-tune-80.png</file>
+        <file>gfx/icons8/icons8-ordner-oeffnen-80.png</file>
+        <file>gfx/icons8/icons8-checkbox-markiert-2-80.png</file>
+        <file>gfx/icons8/icons8-loeschen.svg</file>
+        <file>gfx/icons8/icons8-sichtbar-80.png</file>
+        <file>gfx/icons8/icons8-suche-80.png</file>
+        <file>gfx/icons8/icons8-umkehren-80.png</file>
+        <file>gfx/icons8/icons8-unausgefuellte-checkbox-80.png</file>
+        <file>gfx/icons8/icons8-unsichtbar-80.png</file>
+        <file>gfx/icons8/icons8-add-layer-80.png</file>
+        <file>gfx/icons8/icons8-audiowelle-80.png</file>
+        <file>gfx/icons8/icons8-direktverbindung-80.png</file>
+        <file>gfx/icons8/icons8-futures-80.png</file>
+        <file>gfx/icons8/icons8-gitter-80.png</file>
+        <file>gfx/icons8/icons8-heim-automatisierung-80.png</file>
+        <file>gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</file>
+        <file>gfx/icons8/icons8-kategorisieren-80.png</file>
+        <file>gfx/icons8/icons8-skalieren-80.png</file>
+        <file>gfx/icons8/icons8-verfuegbare-updates-80.png</file>
+        <file>gfx/icons8/icons8-kopieren-80.png</file>
+        <file>gfx/icons8/icons8-abscissa-80.png</file>
+        <file>gfx/icons8/icons8-abscissa-80(1).png</file>
+        <file>gfx/icons8/icons8-magnet-80.png</file>
+        <file>gfx/icons8/icons8-width-80.png</file>
+        <file>gfx/icons8/icons8-abscissa-80(2).png</file>
+        <file>gfx/icons8/icons8-size-80.png</file>
+        <file>gfx/icons8/icons8-info-80.png</file>
+        <file>gfx/icons8/icons8-ausgefuellte-checkbox-80.png</file>
+    </qresource>
+</RCC>

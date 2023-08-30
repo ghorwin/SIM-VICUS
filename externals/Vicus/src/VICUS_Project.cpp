@@ -34,6 +34,7 @@
 #include <IBK_messages.h>
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
+#include <IBK_FileUtils.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -53,6 +54,12 @@
 namespace VICUS {
 
 Project::Project() {
+
+	m_location.initDefaults();
+	m_simulationParameter.initDefaults();
+	m_solverParameter.initDefaults();
+
+
 	// build test building
 
 #if 0
@@ -218,17 +225,7 @@ void Project::parseHeader(const IBK::Path & filename) {
 	FUNCID(Project::parseHeader);
 
 	std::ifstream inputStream;
-#if defined(_WIN32)
-#if defined(_MSC_VER)
-	inputStream.open(filename.wstr().c_str(), std::ios_base::binary);
-#else
-	std::string filenameAnsi = IBK::WstringToANSI(filename.wstr(), false);
-	inputStream.open(filenameAnsi.c_str(), std::ios_base::binary);
-#endif
-#else // _WIN32
-	inputStream.open(filename.c_str(), std::ios_base::binary);
-#endif
-	if (!inputStream.is_open()) {
+	if (!IBK::open_ifstream(inputStream, filename, std::ios_base::binary)) {
 		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename.c_str()), FUNC_ID);
 	}
 	std::string line;
@@ -388,14 +385,14 @@ void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
 			const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(e, "name");
 			if (attrib == nullptr) {
 				IBK::IBK_Message(IBK::FormatString(
-						"Missing '%1' attribute in Placeholder element.").arg("name"), IBK::MSG_WARNING);
+									 "Missing '%1' attribute in Placeholder element.").arg("name"), IBK::MSG_WARNING);
 				continue;
 			}
 			m_placeholders[attrib->Value()] = e->GetText();
 		}
 		else {
 			IBK::IBK_Message(IBK::FormatString(
-					"Unknown element '%1' in DirectoryPlaceholders section.").arg(name), IBK::MSG_WARNING);
+								 "Unknown element '%1' in DirectoryPlaceholders section.").arg(name), IBK::MSG_WARNING);
 		}
 	}
 }
@@ -430,7 +427,7 @@ void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
 		return;
 
 	TiXmlComment::addComment(parent,
-		"DirectoryPlaceholders section defines strings to be substituted with directories");
+							 "DirectoryPlaceholders section defines strings to be substituted with directories");
 
 	TiXmlElement * e1 = new TiXmlElement( "DirectoryPlaceholders" );
 	parent->LinkEndChild( e1 );
@@ -461,7 +458,6 @@ void Project::addChildSurface(const VICUS::Surface &s) {
 	for (VICUS::Surface & childSurf : const_cast<std::vector<VICUS::Surface> &>(s.childSurfaces()) ) {
 		addAndCheckForUniqueness(&childSurf);
 		childSurf.m_componentInstance = nullptr;
-
 		addChildSurface(childSurf);
 	}
 }
@@ -501,7 +497,6 @@ void Project::updatePointers() {
 						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
-
 					addChildSurface(s);
 				}
 			}
@@ -520,6 +515,7 @@ void Project::updatePointers() {
 	// also check, that backward referenced from surfaces to component instances are unique
 	// Note: invalid "component" is ok, as this does not affect model consistency (it is just meta-data)
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
+
 		// component instance must have at least one valid side ID
 		if (ci.m_idSideASurface == VICUS::INVALID_ID && ci.m_idSideBSurface == VICUS::INVALID_ID)
 			throw IBK::Exception(IBK::FormatString("Component instance #%1 has two invalid surface references.").arg(ci.m_id), FUNC_ID);
@@ -538,13 +534,15 @@ void Project::updatePointers() {
 			std::map<unsigned int, unsigned int>::const_iterator it = referencedSurface.find(ci.m_idSideASurface);
 			if (it != referencedSurface.end())
 				throw IBK::Exception(IBK::FormatString("Surface #%1 name: '%2' is referenced by component instance #%3, but was previously also referenced by component instance #%4!")
-								 .arg(ci.m_idSideASurface).arg(ci.m_sideASurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
+									 .arg(ci.m_idSideASurface).arg(ci.m_sideASurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
 			// remember referenced surface
 			referencedSurface[ci.m_idSideASurface] = ci.m_id;
 
 			// store pointer to this component in referenced side
 			ci.m_sideASurface->m_componentInstance = &ci;
 		}
+		else
+			ci.m_sideASurface = nullptr; // set nullptr if now invalid id
 
 		if (ci.m_idSideBSurface != VICUS::INVALID_ID) {
 			ci.m_sideBSurface = surfaceByID(ci.m_idSideBSurface);
@@ -555,13 +553,15 @@ void Project::updatePointers() {
 			std::map<unsigned int, unsigned int>::const_iterator it = referencedSurface.find(ci.m_idSideBSurface);
 			if (it != referencedSurface.end())
 				throw IBK::Exception(IBK::FormatString("Surface #%1 name: '%2' is referenced by component instance #%3, but was previously also referenced by component instance #%4!")
-								 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
+									 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
 			// remember referenced surface
 			referencedSurface[ci.m_idSideBSurface] = ci.m_id;
 
 			// store pointer to this component in referenced side
 			ci.m_sideBSurface->m_componentInstance = &ci;
 		}
+		else
+			ci.m_sideBSurface = nullptr; // set nullptr if now invalid id
 
 		// NOTE: surface heating control zone may be referenced by several component instances (forward reference)
 		if (ci.m_idSurfaceHeatingControlZone != VICUS::INVALID_ID) {
@@ -613,7 +613,7 @@ void Project::updatePointers() {
 			if (it != referencedSubSurface.end())
 				throw IBK::Exception(IBK::FormatString("Subsurface #%1 name: '%2' is referenced by subcomponent instance #%3, but was previously also "
 													   "referenced by component instance #%4!")
-								 .arg(ci.m_idSideASurface).arg(ci.m_sideASubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
+									 .arg(ci.m_idSideASurface).arg(ci.m_sideASubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
 			// remember referenced surface
 			referencedSubSurface[ci.m_idSideASurface] = ci.m_id;
 
@@ -631,7 +631,7 @@ void Project::updatePointers() {
 			if (it != referencedSubSurface.end())
 				throw IBK::Exception(IBK::FormatString("Subsurface #%1 name: '%2' is referenced by subcomponent instance #%3, but was previously also "
 													   "referenced by component instance #%4!")
-								 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
+									 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSubSurface->m_displayName.toStdString()).arg(ci.m_id).arg(it->second), FUNC_ID);
 			// remember referenced surface
 			referencedSubSurface[ci.m_idSideBSurface] = ci.m_id;
 
@@ -1219,7 +1219,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	try {
 		generateBuildingProjectData(QString(IBK::Path(nandradProjectPath).filename().withoutExtension().c_str()),
-								   p, errorStack, surfaceIdsVicusToNandrad, roomMappings, componentInstanceMappings);
+									p, errorStack, surfaceIdsVicusToNandrad, roomMappings, componentInstanceMappings);
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(IBK::FormatString("%1\nCould not export NANDRAD project.").arg(ex.what()), FUNC_ID);
@@ -1244,8 +1244,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	if (!m_geometricNetworks.empty()) {
-		generateNetworkProjectData(p, errorStack, nandradProjectPath);
+	for (const VICUS::Network &net: m_geometricNetworks) {
+		generateNetworkProjectData(p, errorStack, nandradProjectPath, net.m_id);
 		if (!errorStack.isEmpty())
 			throw IBK::Exception("Error during network data conversion.", FUNC_ID);
 	}
@@ -1262,8 +1262,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// generate output grid, if needed
 	std::string refName;
 	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() ||
-		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled() ||
-		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled() )
+			m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled() ||
+			m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled() )
 	{
 		// we need at least one hourly grid
 		if (p.m_outputs.m_grids.empty()) {
@@ -1455,26 +1455,65 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		d.m_gridName = def.m_gridName;
 		d.m_timeType = (NANDRAD::OutputDefinition::timeType_t)def.m_timeType;
 		d.m_quantity = def.m_quantity;
-		if (!def.m_vectorIds.empty()) {
-			NANDRAD::IDGroup idGroup;
-			idGroup.m_ids = std::set<unsigned int>(def.m_vectorIds.begin(), def.m_vectorIds.end());
-			d.m_quantity += "[" + idGroup.encodedString() + "]";
-		}
+		//		if (!def.m_vectorIds.empty()) {
+		//			NANDRAD::IDGroup idGroup;
+		//			idGroup.m_ids = std::set<unsigned int>(def.m_vectorIds.begin(), def.m_vectorIds.end());
+		//			d.m_quantity += "[" + idGroup.encodedString() + "]";
+		//		}
 
-		// now generate an object list for this output - don't mind if we get duplicate object lists
+		std::map<std::pair<NANDRAD::ModelInputReference::referenceType_t, std::set<unsigned int>>, std::string> outputLists;
 		NANDRAD::ObjectList ol;
-		ol.m_name ="Outputs-" + IBK::val2string(objectListCount++);
-		ol.m_filterID.m_ids = std::set<unsigned int>(def.m_sourceObjectIds.begin(), def.m_sourceObjectIds.end());
+		NANDRAD::ModelInputReference::referenceType_t type;
 		try {
-			ol.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", def.m_sourceObjectType);
+			type = (NANDRAD::ModelInputReference::referenceType_t)NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", def.m_sourceObjectType);
 		} catch (...) {
 			IBK::IBK_Message(IBK::FormatString("Invalid/unknown source object type '%1' in output definition.").arg(def.m_sourceObjectType),
 							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 		}
-		p.m_objectLists.push_back(ol);
+		std::set<unsigned int> ids = std::set<unsigned int>(def.m_sourceObjectIds.begin(), def.m_sourceObjectIds.end());
+		std::pair<NANDRAD::ModelInputReference::referenceType_t, std::set<unsigned int>> key = std::pair<NANDRAD::ModelInputReference::referenceType_t, std::set<unsigned int>>(type, ids);
 
-		d.m_objectListName = ol.m_name;
-		p.m_outputs.m_definitions.push_back(d);
+		if(!def.m_vectorIds.empty()) {
+			for(unsigned int i=0; i<def.m_vectorIds.size(); ++i) {
+				NANDRAD::OutputDefinition newD = d;
+				newD.m_quantity += "[" + IBK::val2string(def.m_vectorIds[i]) + "]";
+
+				// now generate an object list for this output - don't mind if we get duplicate object lists
+				std::string outputListName;
+
+				if(outputLists.find(key) != outputLists.end())
+					outputListName = outputLists.at(key);
+				else {
+					outputListName = "Outputs-" + IBK::val2string(objectListCount++);
+					outputLists[key] = outputListName;
+
+					ol.m_referenceType = type;
+					ol.m_name = outputListName;
+					ol.m_filterID.m_ids = ids;
+
+					p.m_objectLists.push_back(ol);
+				}
+				newD.m_objectListName = outputListName;
+				p.m_outputs.m_definitions.push_back(newD);
+			}
+		}
+		else  {
+			std::string outputListName;
+			if(outputLists.find(key) != outputLists.end())
+				outputListName = outputLists.at(key);
+			else {
+				outputListName = "Outputs-" + IBK::val2string(objectListCount++);
+				outputLists[key] = outputListName;
+
+				ol.m_referenceType = type;
+				ol.m_name = outputListName;
+				ol.m_filterID.m_ids = ids;
+
+				p.m_objectLists.push_back(ol);
+			}
+			d.m_objectListName = outputListName;
+			p.m_outputs.m_definitions.push_back(d);
+		}
 	}
 }
 
@@ -1509,8 +1548,8 @@ std::string createUniqueNandradObjListName(const std::map<std::string, std::vect
 }
 
 std::string createUniqueNandradObjListAndName(const std::string &name,
-										   const std::vector<unsigned int> &roomIds, NANDRAD::Project &p,
-										   const NANDRAD::ModelInputReference::referenceType_t &type){
+											  const std::vector<unsigned int> &roomIds, NANDRAD::Project &p,
+											  const NANDRAD::ModelInputReference::referenceType_t &type){
 	//create an obj list
 	NANDRAD::ObjectList objList;
 	for(unsigned int id : roomIds)
@@ -1760,10 +1799,10 @@ bool Project::createThermostat(const VICUS::ZoneControlThermostat * thermo,
 
 	if(!foundHeatOrCoolSched){
 		errors << tr("No valid heating or cooling schedules were found. "
-							"Error in Thermostat #%1 with name '%2'")
+					 "Error in Thermostat #%1 with name '%2'")
 				  .arg(thermo->m_id).arg(QString::fromUtf8(thermo->m_displayName.string().c_str()));
 		throw IBK::Exception(IBK::FormatString("No valid heating or cooling schedules were found. "
-							"Error in Thermostat #%1 with name '%2'").arg(thermo->m_id).arg(thermo->m_displayName.string()), FUNC_ID);
+											   "Error in Thermostat #%1 with name '%2'").arg(thermo->m_id).arg(thermo->m_displayName.string()), FUNC_ID);
 	}
 
 	//we dont support RadiantTemperature
@@ -1782,9 +1821,9 @@ bool Project::createThermostat(const VICUS::ZoneControlThermostat * thermo,
 }
 
 bool Project::createIdealHeatingCooling(const VICUS::ZoneIdealHeatingCooling * ideal,
-							   NANDRAD::Project &p,
-							   std::vector<IdMap> &idMaps,
-							   const std::string &objListNameThermostat) const{
+										NANDRAD::Project &p,
+										std::vector<IdMap> &idMaps,
+										const std::string &objListNameThermostat) const{
 
 	if(ideal == nullptr)
 		return false;
@@ -1937,8 +1976,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 				//set a name for the NANDRAD objlist
 				//if(mapZoneTemplateIdToNandradObjListName.find(r.m_idZoneTemplate) == mapZoneTemplateIdToNandradObjListName.end())
-					//check name already exist in all NANDRAD objLists
-					//mapZoneTemplateIdToNandradObjListName[r.m_idZoneTemplate] = getNandradObjListName(p, r.m_displayName.toStdString());
+				//check name already exist in all NANDRAD objLists
+				//mapZoneTemplateIdToNandradObjListName[r.m_idZoneTemplate] = getNandradObjListName(p, r.m_displayName.toStdString());
 			}
 		}
 	}
@@ -1990,7 +2029,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		const VICUS::Component * comp = VICUS::element(m_embeddedDB.m_components, ci.m_idComponent);
 		if (comp == nullptr) {
 			errorStack.push_back( tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
-							 .arg(ci.m_idComponent).arg(ci.m_id));
+								  .arg(ci.m_idComponent).arg(ci.m_id));
 			throw IBK::Exception("Conversion error.", FUNC_ID);
 		}
 
@@ -2021,9 +2060,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				// check if both areas are approximately the same
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 					errorStack.push_back(tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
-						   "areas %3 and %4 m2.")
-								  .arg(ci.m_id).arg(ci.m_idSideASurface).arg(ci.m_idSideBSurface)
-								  .arg(area).arg(areaB));
+											"areas %3 and %4 m2.")
+										 .arg(ci.m_id).arg(ci.m_idSideASurface).arg(ci.m_idSideBSurface)
+										 .arg(area).arg(areaB));
 					throw IBK::Exception("Conversion error.", FUNC_ID);
 				}
 
@@ -2065,10 +2104,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		}
 		else {
 			// we must have a side B surface, otherwise this is an invalid component instance
-//			if (ci.m_sideBSurface == nullptr)
-//				throw ConversionError(ConversionError::ET_InvalidID,
-//									  tr("Component instance #%1 does neither reference a valid surface on side A nor on side B.")
-//									  .arg(ci.m_id));
+			//			if (ci.m_sideBSurface == nullptr)
+			//				throw ConversionError(ConversionError::ET_InvalidID,
+			//									  tr("Component instance #%1 does neither reference a valid surface on side A nor on side B.")
+			//									  .arg(ci.m_id));
 
 			const VICUS::Surface * s = ci.m_sideBSurface;
 
@@ -2140,12 +2179,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	for (const VICUS::ComponentInstance & ci : m_componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already
 		const VICUS::Component * comp = VICUS::element(m_embeddedDB.m_components, ci.m_idComponent);
-//		if (comp == nullptr){
-//			throw ConversionError(ConversionError::ET_InvalidID,
-//				tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
-//							 .arg(ci.m_componentID).arg(ci.m_id));
-//			continue;
-//		}
+		//		if (comp == nullptr){
+		//			throw ConversionError(ConversionError::ET_InvalidID,
+		//				tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
+		//							 .arg(ci.m_componentID).arg(ci.m_id));
+		//			continue;
+		//		}
 	}
 
 	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
@@ -2180,8 +2219,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != VICUS::INVALID_ID ||
 				zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] != VICUS::INVALID_ID)
 			intLoadEnums = std::set<VICUS::ZoneTemplate::SubTemplateType>{VICUS::ZoneTemplate::ST_IntLoadEquipment,
-																	VICUS::ZoneTemplate::ST_IntLoadPerson,
-																   VICUS::ZoneTemplate::ST_IntLoadLighting};
+					VICUS::ZoneTemplate::ST_IntLoadPerson,
+					VICUS::ZoneTemplate::ST_IntLoadLighting};
 
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
@@ -2237,7 +2276,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				//only accept models with floor area > 0 m2
 				if(areaToRoomIdsObj.first<=0)
 					throw IBK::Exception(IBK::FormatString("The ground floor area of room with id %1 and name '%1'"
-															" is <=0 m2 ").arg(areaToRoomIdsObj.second.front()).arg(getRoomNameById(areaToRoomIdsObj.second.front())), FUNC_ID);
+														   " is <=0 m2 ").arg(areaToRoomIdsObj.second.front()).arg(getRoomNameById(areaToRoomIdsObj.second.front())), FUNC_ID);
 				//create an obj list
 				//std::string uniqueName = createUniqueNandradObjListName(mapObjListNameToRoomIds, zt->m_displayName.string());
 				std::string uniqueName = createUniqueNandradObjListAndName(zt->m_displayName.string(), areaToRoomIdsObj.second, p, NANDRAD::ModelInputReference::MRT_ZONE);
@@ -2279,134 +2318,134 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					//uiuiui
 
 					switch (e) {
-						case VICUS::ZoneTemplate::ST_IntLoadPerson:{
-							//get schedule ids
-							//check valid status
-							const VICUS::InternalLoad *pers = VICUS::element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
-							if(pers == nullptr)
-								addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+					case VICUS::ZoneTemplate::ST_IntLoadPerson:{
+						//get schedule ids
+						//check valid status
+						const VICUS::InternalLoad *pers = VICUS::element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
+						if(pers == nullptr)
+							addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
-							else{
-								unsigned int schedId = pers->m_idActivitySchedule;
-								const VICUS::Schedule *schedAct = VICUS::element(m_embeddedDB.m_schedules, schedId);
-								if(schedAct == nullptr)
-									IBK::Exception(IBK::FormatString("Activity schedule with id %1 is not in database.")
-												   .arg(schedId), FUNC_ID);
-								if(!schedAct->isValid())
-									IBK::Exception(IBK::FormatString("Activity schedule with id %1 and name '%2' is not in valid.")
-												   .arg(schedId).arg(schedAct->m_displayName.string()), FUNC_ID);
+						else{
+							unsigned int schedId = pers->m_idActivitySchedule;
+							const VICUS::Schedule *schedAct = VICUS::element(m_embeddedDB.m_schedules, schedId);
+							if(schedAct == nullptr)
+								IBK::Exception(IBK::FormatString("Activity schedule with id %1 is not in database.")
+											   .arg(schedId), FUNC_ID);
+							if(!schedAct->isValid())
+								IBK::Exception(IBK::FormatString("Activity schedule with id %1 and name '%2' is not in valid.")
+											   .arg(schedId).arg(schedAct->m_displayName.string()), FUNC_ID);
 
-								unsigned int schedId2 = pers->m_idOccupancySchedule;
-								const VICUS::Schedule *schedOcc = VICUS::element(m_embeddedDB.m_schedules, schedId2);
-								//const VICUS::Schedule *schedOcc = const_cast<VICUS::Schedule *>(db.m_schedules[schedId2]);
-								if(schedOcc == nullptr)
-									IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 is not in database.")
-												   .arg(schedId2), FUNC_ID);
-								if(!schedOcc->isValid())
-									IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 and name '%2' is not in valid.")
-												   .arg(schedId2).arg(schedOcc->m_displayName.string()), FUNC_ID);
+							unsigned int schedId2 = pers->m_idOccupancySchedule;
+							const VICUS::Schedule *schedOcc = VICUS::element(m_embeddedDB.m_schedules, schedId2);
+							//const VICUS::Schedule *schedOcc = const_cast<VICUS::Schedule *>(db.m_schedules[schedId2]);
+							if(schedOcc == nullptr)
+								IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 is not in database.")
+											   .arg(schedId2), FUNC_ID);
+							if(!schedOcc->isValid())
+								IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 and name '%2' is not in valid.")
+											   .arg(schedId2).arg(schedOcc->m_displayName.string()), FUNC_ID);
 
-								posIntLoad enum1 = P_Person;
-								VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
-								//multiply the two schedules and add this to vector
-								intLoadSched = schedAct->multiply(*schedOcc);
-								//id is not used
-								intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
+							posIntLoad enum1 = P_Person;
+							VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
+							//multiply the two schedules and add this to vector
+							intLoadSched = schedAct->multiply(*schedOcc);
+							//id is not used
+							intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
-								//multiply sched and constant val
+							//multiply sched and constant val
 
-								switch(pers->m_personCountMethod){
-									case VICUS::InternalLoad::PCM_PersonPerArea:
-										intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("Person/m2"));
-									break;
-									case VICUS::InternalLoad::PCM_AreaPerPerson: {
-										double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2/Person");
-										//if value is zero do nothing
-										if(val>0)
-											intLoadSched = intLoadSched.multiply(1/val);
-									} break;
-									case VICUS::InternalLoad::PCM_PersonCount:{
-										intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
-									} break;
-									case VICUS::InternalLoad::NUM_PCM:
-									break;
-								}
-								addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
-									p, uniqueName);
-
-								//override zero values in NANDRAD model
-								NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																   NANDRAD::InternalLoadsModel::P_PersonRadiationFraction,
-																   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+							switch(pers->m_personCountMethod){
+							case VICUS::InternalLoad::PCM_PersonPerArea:
+								intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("Person/m2"));
+								break;
+							case VICUS::InternalLoad::PCM_AreaPerPerson: {
+								double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2/Person");
+								//if value is zero do nothing
+								if(val>0)
+									intLoadSched = intLoadSched.multiply(1/val);
+							} break;
+							case VICUS::InternalLoad::PCM_PersonCount:{
+								intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
+							} break;
+							case VICUS::InternalLoad::NUM_PCM:
+								break;
 							}
-
-							//allModelIds.push_back(intLoadSched.m_id);
-						}
-						break;
-						case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-						case VICUS::ZoneTemplate::ST_IntLoadLighting:
-						case VICUS::ZoneTemplate::ST_IntLoadOther:{
-							//get internal load model
-							//get schedule ids
-							//check valid status
-							const VICUS::InternalLoad *intLoadMod = VICUS::element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
-							if(intLoadMod == nullptr)
-								addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+							addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
-							else{
-								unsigned int schedId = intLoadMod->m_idPowerManagementSchedule;
-								const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
-								if(schedMan == nullptr)
-									IBK::Exception(IBK::FormatString("Power management schedule with id %1 is not in database.")
-												   .arg(schedId), FUNC_ID);
-								if(!schedMan->isValid())
-									IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
-												   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 
-								posIntLoad enum1;
-								switch(e){
-									case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
-										enum1 = P_Electric;
-										NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																		   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
-																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
-									}break;
-									case VICUS::ZoneTemplate::ST_IntLoadLighting:{
-										enum1 = P_Lighting;
-										NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																		   NANDRAD::InternalLoadsModel::P_LightingRadiationFraction,
-																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
-									}break;
-									case VICUS::ZoneTemplate::ST_IntLoadOther:{
-										enum1 = P_Other;
-										//TODO Implement Model in NANDRAD
-										/*NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+							//override zero values in NANDRAD model
+							NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+															   NANDRAD::InternalLoadsModel::P_PersonRadiationFraction,
+															   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+						}
+
+						//allModelIds.push_back(intLoadSched.m_id);
+					}
+						break;
+					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+					case VICUS::ZoneTemplate::ST_IntLoadLighting:
+					case VICUS::ZoneTemplate::ST_IntLoadOther:{
+						//get internal load model
+						//get schedule ids
+						//check valid status
+						const VICUS::InternalLoad *intLoadMod = VICUS::element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
+						if(intLoadMod == nullptr)
+							addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
+						else{
+							unsigned int schedId = intLoadMod->m_idPowerManagementSchedule;
+							const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
+							if(schedMan == nullptr)
+								IBK::Exception(IBK::FormatString("Power management schedule with id %1 is not in database.")
+											   .arg(schedId), FUNC_ID);
+							if(!schedMan->isValid())
+								IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
+											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
+
+							posIntLoad enum1;
+							switch(e){
+							case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
+								enum1 = P_Electric;
+								NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
+																   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+							}break;
+							case VICUS::ZoneTemplate::ST_IntLoadLighting:{
+								enum1 = P_Lighting;
+								NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																   NANDRAD::InternalLoadsModel::P_LightingRadiationFraction,
+																   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+							}break;
+							case VICUS::ZoneTemplate::ST_IntLoadOther:{
+								enum1 = P_Other;
+								//TODO Implement Model in NANDRAD
+								/*NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
 																		   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
 																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---")); */
-									}break;
-								}
-								intLoadScheds[enum1] = *schedMan;
-								intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
-								//get val
-								//multiply sched*val
-								//multiply sched and constant val
-
-								switch(intLoadMod->m_powerMethod){
-									case VICUS::InternalLoad::PM_PowerPerArea:
-										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
-									break;
-									case VICUS::InternalLoad::PM_Power: {
-										double val = intLoadMod->m_para[VICUS::InternalLoad::P_Power].get_value("W");
-										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(val/areaToRoomIdsObj.first);
-									} break;
-									case VICUS::InternalLoad::NUM_PM:
-									break;
-								}
-								addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
-									p, uniqueName);
+							}break;
 							}
-							//allModelIds.push_back(intLoadScheds[enum1].m_id);
+							intLoadScheds[enum1] = *schedMan;
+							intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
+							//get val
+							//multiply sched*val
+							//multiply sched and constant val
+
+							switch(intLoadMod->m_powerMethod){
+							case VICUS::InternalLoad::PM_PowerPerArea:
+								intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
+								break;
+							case VICUS::InternalLoad::PM_Power: {
+								double val = intLoadMod->m_para[VICUS::InternalLoad::P_Power].get_value("W");
+								intLoadScheds[enum1] = intLoadScheds[enum1].multiply(val/areaToRoomIdsObj.first);
+							} break;
+							case VICUS::InternalLoad::NUM_PM:
+								break;
+							}
+							addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
 						}
+						//allModelIds.push_back(intLoadScheds[enum1].m_id);
+					}
 						break;
 					}
 				}
@@ -2420,7 +2459,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		VICUS::ZoneTemplate::SubTemplateType type;
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat] != VICUS::INVALID_ID){
 			const VICUS::ZoneControlThermostat * thermo =  VICUS::element(m_embeddedDB.m_zoneControlThermostats,
-																   zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat]);
+																		  zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat]);
 			std::string objListNameThermostat;
 			if(!createThermostat(thermo, zt->m_displayName.string(), p, m_idMaps, allRoomIdsForThisZt, objListNameThermostat))
 				errorStack << tr("Error in Export. Thermostat in zonetemplate #%1 with name '%2' was not exported. ")
@@ -2428,7 +2467,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			else{
 				type = VICUS::ZoneTemplate::ST_IdealHeatingCooling;
 				const VICUS::ZoneIdealHeatingCooling *ideal = VICUS::element(m_embeddedDB.m_zoneIdealHeatingCooling,
-																	  zt->m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling]);
+																			 zt->m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling]);
 				if(!createIdealHeatingCooling(ideal, p, m_idMaps, objListNameThermostat))
 					errorStack << tr("Error in Export. Ideal Heating Cooling in zonetemplate #%1 with name '%2' was not exported. ")
 								  .arg(zt->m_id).arg(QString::fromUtf8(zt->m_displayName.string().c_str()));
@@ -2451,86 +2490,86 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								}
 
 								switch (shSys->m_type) {
-									case VICUS::SurfaceHeating::T_Ideal:
-									case VICUS::SurfaceHeating::NUM_T:{
-										NANDRAD::IdealSurfaceHeatingCoolingModel surfSysNandrad;
-										surfSysNandrad.m_thermostatZoneId = dsh.m_zoneId;
-										surfSysNandrad.m_constructionObjectList =
-												createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it->second.m_contructionInstanceIds, p,
-																													NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
-										NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
-																		   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxHeatingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_HeatingLimit].value);
-										NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
-																		   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxCoolingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_CoolingLimit].value);
-										p.m_models.m_idealSurfaceHeatingCoolingModels.push_back(surfSysNandrad);
-									}
+								case VICUS::SurfaceHeating::T_Ideal:
+								case VICUS::SurfaceHeating::NUM_T:{
+									NANDRAD::IdealSurfaceHeatingCoolingModel surfSysNandrad;
+									surfSysNandrad.m_thermostatZoneId = dsh.m_zoneId;
+									surfSysNandrad.m_constructionObjectList =
+											createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it->second.m_contructionInstanceIds, p,
+																			  NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
+									NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+																	   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxHeatingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_HeatingLimit].value);
+									NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+																	   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxCoolingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_CoolingLimit].value);
+									p.m_models.m_idealSurfaceHeatingCoolingModels.push_back(surfSysNandrad);
+								}
 									break;
 
-									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
-										// get pipe data
-										const VICUS::NetworkPipe * pipe = VICUS::element(m_embeddedDB.m_pipes, shSys->m_idPipe);
-										if(pipe == nullptr){
-											// TODO Dirk, error handling errorstack
-											continue;
-										}
-										if (!pipe->isValid()) {
-											// TODO Dirk, error handling errorstack
-											continue;
-										}
-
-										//anlegen der grunddaten
-										NANDRAD::HydraulicFluid hyFluid;
-										hyFluid.defaultFluidWater();
-
-										NANDRAD::IdealPipeRegisterModel idealPipe;
-
-										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
-																		   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->UValue());
-										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
-																		   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->diameterInside());
-										idealPipe.m_thermostatZoneId = dsh.m_zoneId;
-										idealPipe.m_fluid = hyFluid;
-
-										//alle gleich großen Flächen bekommen das gleiche
-										double pipeSpacing = shSys->m_para[VICUS::SurfaceHeating::P_PipeSpacing].value;
-										for(std::map<int, std::vector<unsigned int>>::const_iterator it2 = it->second.m_areaToIds.begin();
-														it2 != it->second.m_areaToIds.end();
-														++it2){
-											double length = it2->first / (pipeSpacing * 10000); //Achtung umrechnung beachten
-											int parallelPipes = 1;
-											//get parallel pipes and adjust length
-											if(length > 100){
-												parallelPipes = std::ceil(length / 100);
-												length /= parallelPipes;
-											}
-
-											NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
-																			   NANDRAD::IdealPipeRegisterModel::P_PipeLength, length);
-											NANDRAD::KeywordList::setIntPara(idealPipe.m_intPara, "IdealPipeRegisterModel::intPara_t",
-																			 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes,
-																			 parallelPipes);
-											idealPipe.m_constructionObjectList =
-													createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it2->second, p,
-																					  NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
-											p.m_models.m_idealPipeRegisterModels.push_back(idealPipe);
-
-											//TODO add heating and cooling schedule
-											//dazu muss die klimadatei geparst werden die lufttemperatur ermitteln
-											//dann mit den punkten für heiz und kühllastkurve die fluidtemperaturen ermitteln
-											//und einen jahreszeitplan rausschreiben
-											//TODO Dirk Name herausfinden
-
-											std::vector<double> supplyTemperatureVec;
-											calculateSupplyTemperature(shSys->m_heatingCoolingCurvePoints.m_values.at("Tsupply"),
-																	   shSys->m_heatingCoolingCurvePoints.m_values.at("Tout"),
-																	   outdoorTemp.y(), supplyTemperatureVec);
-
-											NANDRAD::LinearSplineParameter tSupply("FluidSupplyTemperature",NANDRAD::LinearSplineParameter::I_LINEAR,
-																				   outdoorTemp.x(), supplyTemperatureVec,
-																				   IBK::Unit("h"),IBK::Unit("K"));
-											p.m_schedules.m_annualSchedules[idealPipe.m_constructionObjectList].push_back(tSupply);
-										}
+								case VICUS::SurfaceHeating::T_IdealPipeRegister:{
+									// get pipe data
+									const VICUS::NetworkPipe * pipe = VICUS::element(m_embeddedDB.m_pipes, shSys->m_idPipe);
+									if(pipe == nullptr){
+										// TODO Dirk, error handling errorstack
+										continue;
 									}
+									if (!pipe->isValid()) {
+										// TODO Dirk, error handling errorstack
+										continue;
+									}
+
+									//anlegen der grunddaten
+									NANDRAD::HydraulicFluid hyFluid;
+									hyFluid.defaultFluidWater();
+
+									NANDRAD::IdealPipeRegisterModel idealPipe;
+
+									NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																	   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->UValue());
+									NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																	   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->diameterInside());
+									idealPipe.m_thermostatZoneId = dsh.m_zoneId;
+									idealPipe.m_fluid = hyFluid;
+
+									//alle gleich großen Flächen bekommen das gleiche
+									double pipeSpacing = shSys->m_para[VICUS::SurfaceHeating::P_PipeSpacing].value;
+									for(std::map<int, std::vector<unsigned int>>::const_iterator it2 = it->second.m_areaToIds.begin();
+										it2 != it->second.m_areaToIds.end();
+										++it2){
+										double length = it2->first / (pipeSpacing * 10000); //Achtung umrechnung beachten
+										int parallelPipes = 1;
+										//get parallel pipes and adjust length
+										if(length > 100){
+											parallelPipes = std::ceil(length / 100);
+											length /= parallelPipes;
+										}
+
+										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																		   NANDRAD::IdealPipeRegisterModel::P_PipeLength, length);
+										NANDRAD::KeywordList::setIntPara(idealPipe.m_intPara, "IdealPipeRegisterModel::intPara_t",
+																		 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes,
+																		 parallelPipes);
+										idealPipe.m_constructionObjectList =
+												createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it2->second, p,
+																				  NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
+										p.m_models.m_idealPipeRegisterModels.push_back(idealPipe);
+
+										//TODO add heating and cooling schedule
+										//dazu muss die klimadatei geparst werden die lufttemperatur ermitteln
+										//dann mit den punkten für heiz und kühllastkurve die fluidtemperaturen ermitteln
+										//und einen jahreszeitplan rausschreiben
+										//TODO Dirk Name herausfinden
+
+										std::vector<double> supplyTemperatureVec;
+										calculateSupplyTemperature(shSys->m_heatingCoolingCurvePoints.m_values.at("Tsupply"),
+																   shSys->m_heatingCoolingCurvePoints.m_values.at("Tout"),
+																   outdoorTemp.y(), supplyTemperatureVec);
+
+										NANDRAD::LinearSplineParameter tSupply("FluidSupplyTemperature",NANDRAD::LinearSplineParameter::I_LINEAR,
+																			   outdoorTemp.x(), supplyTemperatureVec,
+																			   IBK::Unit("h"),IBK::Unit("K"));
+										p.m_schedules.m_annualSchedules[idealPipe.m_constructionObjectList].push_back(tSupply);
+									}
+								}
 									break;
 								}
 							}
@@ -2584,130 +2623,45 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
 														  NANDRAD::ModelInputReference::MRT_ZONE);
 				switch (ventiType) {
-					case Infiltration:{
-						type = VICUS::ZoneTemplate::ST_Infiltration;
-						ztBools[counter].m_subTemplateId[type] = idSubTempInf;
-						const VICUS::Infiltration * inf = VICUS::element(m_embeddedDB.m_infiltration, idSubTempInf);
-						if(inf != nullptr){
-							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
-							switch(inf->m_airChangeType){
-								case VICUS::Infiltration::AC_normal:{
-									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																	   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
-								}break;
-								case VICUS::Infiltration::AC_n50:{
-									double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-									val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
-									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																	   val);
-								}break;
-								case VICUS::Infiltration::NUM_AC:{
-									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																	   0);
-								}break;
-							}
-						}
-
-					}break;
-					case Ventilation:{
-						type = VICUS::ZoneTemplate::ST_VentilationNatural;
-						ztBools[counter].m_subTemplateId[type] = idSubTempVent;
-						const VICUS::VentilationNatural* vent = VICUS::element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
-						if(vent != nullptr){
-							if(isCtrl){
-								natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   0);
-								//set all control values
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
-																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
-
-							}
-							else
-								natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-							unsigned int schedId = vent->m_idSchedule;
-							const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
-							if(schedMan == nullptr)
-								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
-											   .arg(schedId), FUNC_ID);
-							if(!schedMan->isValid())
-								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 and name '%2' is not in valid.")
-											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
-							VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
-
-							addVicusScheduleToNandradProject(ventSched, "VentilationRateSchedule [1/h]", p, natVentMod.m_zoneObjectList);
-						}
-					}break;
-					case InfAndVenti:{
-						VICUS::ZoneTemplate::SubTemplateType type1 = VICUS::ZoneTemplate::ST_Infiltration;
-						ztBools[counter].m_subTemplateId[type1] = idSubTempInf;
-						const VICUS::Infiltration * inf = VICUS::element(m_embeddedDB.m_infiltration, idSubTempInf);
-						VICUS::ZoneTemplate::SubTemplateType type2 = VICUS::ZoneTemplate::ST_VentilationNatural;
-						ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
-						const VICUS::VentilationNatural* vent = VICUS::element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
-						if(inf == nullptr || vent == nullptr)
-							throw IBK::Exception(IBK::FormatString("Infiltration id #%1 and/or ventilation id #%2 model is not found.")
-												 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
-						if(!inf->isValid())
-							throw IBK::Exception(IBK::FormatString("Infiltration id #%1 is not valid.")
-												 .arg(idSubTempInf), FUNC_ID);
-						/* TODO Dirk->Andreas wie bekomm ich hier die Datenbanken rein?
-						if(!vent->isValid())
-							throw IBK::Exception(IBK::FormatString("Ventilation id #%1 is not valid.")
-												 .arg(idSubTempVent), FUNC_ID);
-						*/
-
-						//check infiltration value
-						double infVal = 0;
+				case Infiltration:{
+					type = VICUS::ZoneTemplate::ST_Infiltration;
+					ztBools[counter].m_subTemplateId[type] = idSubTempInf;
+					const VICUS::Infiltration * inf = VICUS::element(m_embeddedDB.m_infiltration, idSubTempInf);
+					if(inf != nullptr){
+						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
 						switch(inf->m_airChangeType){
-							case VICUS::Infiltration::AC_normal:{
-								infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-							}break;
-							case VICUS::Infiltration::AC_n50:{
-								infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-								infVal *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
-							}break;
-							case VICUS::Infiltration::NUM_AC: break;		//only for compiler
+						case VICUS::Infiltration::AC_normal:{
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+															   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+						}break;
+						case VICUS::Infiltration::AC_n50:{
+							double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+							val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+															   val);
+						}break;
+						case VICUS::Infiltration::NUM_AC:{
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+															   0);
+						}break;
 						}
+					}
 
-						// get ventilation schedule
-						// multiply const value with scheduele
-						unsigned int schedId = vent->m_idSchedule;
-						const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
-						if(schedMan == nullptr)
-							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
-										   .arg(schedId), FUNC_ID);
-						if(!schedMan->isValid())
-							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 and name '%2' is not in valid.")
-										   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
-						VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
-
+				}break;
+				case Ventilation:{
+					type = VICUS::ZoneTemplate::ST_VentilationNatural;
+					ztBools[counter].m_subTemplateId[type] = idSubTempVent;
+					const VICUS::VentilationNatural* vent = VICUS::element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+					if(vent != nullptr){
 						if(isCtrl){
 							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
 							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 															   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-															   infVal);
-							//all control values
+															   0);
+							//set all control values
 							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 															   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
 															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
@@ -2726,14 +2680,99 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 															   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
 															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+
 						}
-						else{
+						else
 							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-							if(infVal > 0)
-								ventSched = ventSched.add(infVal);
-						}
+						unsigned int schedId = vent->m_idSchedule;
+						const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
+						if(schedMan == nullptr)
+							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
+										   .arg(schedId), FUNC_ID);
+						if(!schedMan->isValid())
+							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 and name '%2' is not in valid.")
+										   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
+						VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
+
 						addVicusScheduleToNandradProject(ventSched, "VentilationRateSchedule [1/h]", p, natVentMod.m_zoneObjectList);
+					}
+				}break;
+				case InfAndVenti:{
+					VICUS::ZoneTemplate::SubTemplateType type1 = VICUS::ZoneTemplate::ST_Infiltration;
+					ztBools[counter].m_subTemplateId[type1] = idSubTempInf;
+					const VICUS::Infiltration * inf = VICUS::element(m_embeddedDB.m_infiltration, idSubTempInf);
+					VICUS::ZoneTemplate::SubTemplateType type2 = VICUS::ZoneTemplate::ST_VentilationNatural;
+					ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
+					const VICUS::VentilationNatural* vent = VICUS::element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+					if(inf == nullptr || vent == nullptr)
+						throw IBK::Exception(IBK::FormatString("Infiltration id #%1 and/or ventilation id #%2 model is not found.")
+											 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
+					if(!inf->isValid())
+						throw IBK::Exception(IBK::FormatString("Infiltration id #%1 is not valid.")
+											 .arg(idSubTempInf), FUNC_ID);
+					/* TODO Dirk->Andreas wie bekomm ich hier die Datenbanken rein?
+						if(!vent->isValid())
+							throw IBK::Exception(IBK::FormatString("Ventilation id #%1 is not valid.")
+												 .arg(idSubTempVent), FUNC_ID);
+						*/
+
+					//check infiltration value
+					double infVal = 0;
+					switch(inf->m_airChangeType){
+					case VICUS::Infiltration::AC_normal:{
+						infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
 					}break;
+					case VICUS::Infiltration::AC_n50:{
+						infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+						infVal *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+					}break;
+					case VICUS::Infiltration::NUM_AC: break;		//only for compiler
+					}
+
+					// get ventilation schedule
+					// multiply const value with scheduele
+					unsigned int schedId = vent->m_idSchedule;
+					const VICUS::Schedule *schedMan = VICUS::element(m_embeddedDB.m_schedules, schedId);
+					if(schedMan == nullptr)
+						IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
+									   .arg(schedId), FUNC_ID);
+					if(!schedMan->isValid())
+						IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 and name '%2' is not in valid.")
+									   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
+					VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
+
+					if(isCtrl){
+						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+														   infVal);
+						//all control values
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
+														   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+					}
+					else{
+						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+						if(infVal > 0)
+							ventSched = ventSched.add(infVal);
+					}
+					addVicusScheduleToNandradProject(ventSched, "VentilationRateSchedule [1/h]", p, natVentMod.m_zoneObjectList);
+				}break;
 				}
 				p.m_models.m_naturalVentilationModels.push_back(natVentMod);
 			}
@@ -2834,23 +2873,23 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 
 	// lookup boundary condition definition in embedded database
 	const VICUS::BoundaryCondition * bc = VICUS::element(m_embeddedDB.m_boundaryConditions, bcID);
-//	if (bc == nullptr)
-//		throw ConversionError(ConversionError::ET_InvalidID,
-//			tr("Component #%1 has invalid boundary condition ID reference #%2.")
-//				.arg(ci.m_componentID).arg(s->m_id));
-//	if (!bc->isValid())
-//		throw ConversionError(ConversionError::ET_NotValid,
-//			tr("Boundary condition #%1 has invalid/incomplete parameters.").arg(bc->m_id));
+	//	if (bc == nullptr)
+	//		throw ConversionError(ConversionError::ET_InvalidID,
+	//			tr("Component #%1 has invalid boundary condition ID reference #%2.")
+	//				.arg(ci.m_componentID).arg(s->m_id));
+	//	if (!bc->isValid())
+	//		throw ConversionError(ConversionError::ET_NotValid,
+	//			tr("Boundary condition #%1 has invalid/incomplete parameters.").arg(bc->m_id));
 
 	// do we have a surface to a zone?
 	if (s != nullptr) {
 		// get the zone that this interface is connected to
 		const VICUS::Object * obj = s->m_parent;
 		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
-//		if (room == nullptr)
-//			throw ConversionError(ConversionError::ET_MissingParentZone,
-//				tr("Component instance #%1 references surface %2, which is not associated to a zone.")
-//					.arg(ci.m_id).arg(s->m_id));
+		//		if (room == nullptr)
+		//			throw ConversionError(ConversionError::ET_MissingParentZone,
+		//				tr("Component instance #%1 references surface %2, which is not associated to a zone.")
+		//					.arg(ci.m_id).arg(s->m_id));
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;

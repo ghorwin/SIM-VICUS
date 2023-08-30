@@ -631,13 +631,6 @@ void SVCoSimSupplySystemDialog::on_pushButtonLaunchMasterSim_clicked() {
 																  "MASTERSIM in the preferences dialog!"));
 
 		SVMainWindow::instance().preferencesDialog()->edit(0);
-		// TODO Andreas, find a way to show a mode-less window within a dialog's event loop
-		QEventLoop loop;
-		connect(SVMainWindow::instance().preferencesDialog(), &SVPreferencesDialog::closed, &loop, &QEventLoop::quit);
-		loop.exec();
-
-		// ensure that preferences dialog is in foreground
-//		stackUnder(SVMainWindow::instance().preferencesDialog());
 
 		masterSimPath = SVSettings::instance().m_masterSimExecutable;
 

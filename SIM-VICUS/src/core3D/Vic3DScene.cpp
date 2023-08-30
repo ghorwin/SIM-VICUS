@@ -71,9 +71,6 @@ const int SUBWINDOWSIZE = 150;
 /// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 5;
 
-// needed for drawing of circle/arc/ellipse in generate2DDrawingGeometry()
-const double PI = 3.14159265358979323846;
-
 namespace Vic3D {
 
 void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms) {
@@ -354,7 +351,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* far */            farDistance
 				);
 	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
-
+//	m_projection.ortho(-.02*width, .02*width, -.02*height, .02*height, -farDistance, farDistance);
 	// the small view projection matrix is constant
 	m_smallViewProjection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -431,6 +428,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		float transSpeed = TRANSLATION_SPEED;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed = 0.1f;
+		else if (keyboardHandler.keyDown(Qt::Key_Space))
+			transSpeed = 10.0f;
+
 		m_camera.translate(transSpeed * translation);
 		m_camera.rotate(transSpeed, rotationAxis);
 
@@ -502,7 +502,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// qDebug() << "Camera translation";
 			m_camera.setTranslation(IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-			// qDebug() << "Adjust Dragging";
+			//			qDebug() << "Adjust Dragging: " << mouseDelta << localMousePos << newLocalMousePos;
 			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
@@ -1929,6 +1929,22 @@ void Scene::generate2DDrawingGeometry() {
 	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();
 }
 
+// Helper to color all child surfaces (recursive)
+void colorSubSurfaces(const VICUS::Surface &surf, const QColor &color) {
+	for(const VICUS::Surface &cs : surf.childSurfaces()) {
+		cs.m_color = color;
+		colorSubSurfaces(cs, color);
+	}
+}
+
+void colorChildSurfaces(const VICUS::Surface &s, const QColor &color) {
+	// now the subsurfaces
+	for (const VICUS::Surface & cs : s.childSurfaces()) {
+		cs.m_color = color; // will be drawn opaque in most modes
+		colorChildSurfaces(cs, color);
+	}
+}
+
 
 void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
@@ -1981,6 +1997,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							sub.m_color = QColor(72,72,82,192); // will be drawn opaque in most modes
 						}
 					}
+
+					colorChildSurfaces(s, s.m_color.darker(120));
 				}
 			}
 		}
@@ -2015,6 +2033,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						// change color of selected surfaces
 						if (s.m_selected)
 							s.m_color = QColor(255,144,0,255); // nice orange
+
+						colorChildSurfaces(s, QColor(255,144,0,255));
 					}
 				}
 			}
@@ -2138,7 +2158,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 
 		// *** OCM_BoundaryConditions
-	case SVViewState::OCM_BoundaryConditions: {
+	case SVViewState::OCM_BoundaryConditionsInside: {
 		// now color all surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// lookup component definition
@@ -2158,6 +2178,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					ci.m_sideBSurface->m_color = bc->m_color;
 			}
 		}
+		// TODO: coloring sub-surfaces is unnecessary here?
 		// now color all sub-surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 			// lookup component definition
@@ -2179,6 +2200,29 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
 					ci.m_sideBSubSurface->m_color.setAlpha(128);
 				}
+			}
+		}
+	} break;
+
+
+	case SVViewState::OCM_BoundaryConditionsOutside: {
+		// now color all surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// lookup component definition
+			const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (gray) color
+			if (ci.m_sideASurface == nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID && ci.m_sideBSurface != nullptr ) {
+				// lookup boundary condition definition
+				const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+				if (bc != nullptr)
+					ci.m_sideBSurface->m_color = bc->m_color;
+			}
+			if (ci.m_sideBSurface == nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID && ci.m_sideASurface != nullptr ) {
+				// lookup boundary condition definition
+				const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+				if (bc != nullptr)
+					ci.m_sideASurface->m_color = bc->m_color;
 			}
 		}
 	} break;
@@ -2227,10 +2271,11 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						if (zt == nullptr)
 							continue; // no definition - keep default (gray) color
 						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces)
+						for (const VICUS::Surface & s : r.m_surfaces) {
 							s.m_color = zt->m_color;
-						// TODO : subsurfaces
-
+							colorSubSurfaces(s, zt->m_color);
+							colorChildSurfaces(s, zt->m_color);
+						}
 					}
 				}
 			}
@@ -2252,10 +2297,12 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						if (at == nullptr)
 							continue; // no definition - keep default (gray) color
 						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces)
+						for (const VICUS::Surface & s : r.m_surfaces) {
 							s.m_color = at->m_color;
-						// TODO : subsurfaces
-
+							// TODO : subsurfaces
+							colorSubSurfaces(s, at->m_color);
+							colorChildSurfaces(s, at->m_color);
+						}
 					}
 				}
 			}
@@ -3348,28 +3395,40 @@ void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePosScaled.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
-		//						qDebug() << "Resetting mousepos to right side of window.";
+		//		qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
-		//						qDebug() << "Resetting mousepos to right side of window.";
+		//		qDebug() << "Resetting mousepos to left side of window.";
 		newLocalMousePos.setX(WINDOW_MOVE_MARGIN);
 	}
 
 	if (localMousePosScaled.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
-		qDebug() << "Resetting mousepos to bottom side of window.";
+		//		qDebug() << "Resetting mousepos to bottom side of window.";
 		newLocalMousePos.setY(m_viewPort.height()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePosScaled.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
-		qDebug() << "Resetting mousepos to top side of window.";
+		//		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
 	// if panning is enabled, reset the pan start positions/variables
 	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
-		pickObject.m_localMousePos = newLocalMousePos * SVSettings::instance().m_ratio;
-		pick(pickObject);
-		panStart(newLocalMousePos, pickObject, true);
+		bool useMouseWarping = false;
+#ifdef Q_OS_LINUX
+#if HAVE_X11
+		if (QX11Info::isPlatformX11()) {
+			useMouseWarping = true;
+		}
+#endif
+#else
+		useMouseWarping = true;
+#endif
+		if (useMouseWarping) {
+			pickObject.m_localMousePos = newLocalMousePos * SVSettings::instance().m_ratio;
+			pick(pickObject);
+			panStart(newLocalMousePos, pickObject, true);
+		}
 	}
 }
 

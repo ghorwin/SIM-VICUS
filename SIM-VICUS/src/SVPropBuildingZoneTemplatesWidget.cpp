@@ -18,7 +18,8 @@ SVPropBuildingZoneTemplatesWidget::SVPropBuildingZoneTemplatesWidget(QWidget *pa
 	m_ui(new Ui::SVPropBuildingZoneTemplatesWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setContentsMargins(0,0,0,0);
+	//m_ui->verticalLayout_2->setContentsMargins(0,0,0,0);
+	m_ui->groupBoxSelectedRooms->setContentsMargins(9,9,9,9);
 
 	m_ui->tableWidgetZoneTemplates->setColumnCount(2);
 	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Zone template"));
@@ -38,7 +39,7 @@ SVPropBuildingZoneTemplatesWidget::~SVPropBuildingZoneTemplatesWidget() {
 void SVPropBuildingZoneTemplatesWidget::updateUi() {
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, false); // we always show all in table
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // we always show only visible in table
 
 	m_zoneTemplateAssignments.clear();
 	const VICUS::Database<VICUS::ZoneTemplate> & db_zt = SVSettings::instance().m_db.m_zoneTemplates;
@@ -104,6 +105,7 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 
 	// update selection-related info
 	std::set<const VICUS::ZoneTemplate *> selectedZoneTemplate;
+	m_selectedZoneTemplateId = VICUS::INVALID_ID;
 	// loop over all selected rooms and store pointer to assigned zone template
 	for (const VICUS::Room* r : rooms) {
 		if (r->m_idZoneTemplate != VICUS::INVALID_ID) {
@@ -119,9 +121,11 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 		// special handling: exactly one room with invalid zone template ID is selected
 		if (zt == nullptr)
 			m_ui->labelSelectedZoneTemplates->setText(tr("Zone template with invalid/unknown ID"));
-		else // otherwise show info about the selected zone template
+		else { // otherwise show info about the selected zone template
+			m_selectedZoneTemplateId = zt->m_id;
 			m_ui->labelSelectedZoneTemplates->setText(tr("%1 [%2]")
 			   .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id) );
+		}
 	}
 	else {
 		m_ui->labelSelectedZoneTemplates->setText(tr("%1 different templates")
@@ -167,14 +171,12 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateVisibleZonesSelectionChanged
 }
 
 
-
-
 void SVPropBuildingZoneTemplatesWidget::on_pushButtonAssignZoneTemplate_clicked() {
 	// ask user to select a the zone template to assign
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignZoneTemplate",
 		tr("Assign zone template"), tr("You may now select a zone template from the database, which will then be "
 								   "assigned to the selected rooms."));
-	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(0);
+	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(m_selectedZoneTemplateId);
 	if (selectedId == VICUS::INVALID_ID)
 		return; // user aborted the dialog
 
@@ -305,6 +307,8 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 		for (const VICUS::Surface &s : r->m_surfaces) {
 			objIds.insert(s.m_id);
 			for (const VICUS::SubSurface &ss : s.subSurfaces())
+				objIds.insert(ss.m_id);
+			for (const VICUS::Surface &ss : s.childSurfaces())
 				objIds.insert(ss.m_id);
 		}
 	}

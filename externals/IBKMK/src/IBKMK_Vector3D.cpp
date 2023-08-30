@@ -42,14 +42,14 @@
 
 namespace IBKMK {
 
-/*! Converts a vector to a string in format "x y z". */
+
 std::string Vector3D::toString() const {
 	std::stringstream strm;
 	strm << m_x << " " << m_y << " " << m_z;
 	return strm.str();
 }
 
-/*! Converts a vector from a string in format "x y z". Throws an exception if parsing of numbers fails. */
+
 Vector3D Vector3D::fromString(const std::string & vecString) {
 	FUNCID(Vector3D::fromString);
 

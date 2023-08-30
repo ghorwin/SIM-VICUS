@@ -314,17 +314,8 @@ const double * DataIO::data(unsigned int time_idx) const {
 		else {
 #ifndef READ_FULL_FILE
 			// open output file
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-			std::ifstream in(m_filename.wstr().c_str(), std::ios_base::binary);
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(m_filename.wstr(), false);
-			std::ifstream in(filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
-#else // _WIN32
-			std::ifstream in(m_filename.c_str(), std::ios_base::binary);
-#endif
-			if (!in)
+			std::ifstream in;
+			if (!IBK::open_ifstream(in, m_filename, std::ios_base::binary))
 				throw IBK::Exception("Cannot open output file for reading.", FUNC_ID);
 
 			in.seekg(m_dataSectionOffset, std::ios_base::beg);
@@ -598,17 +589,7 @@ void DataIO::writeHeader() const {
 
 	// create output file stream
 
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-		m_ofstream = new std::ofstream(m_filename.wstr().c_str(), std::ios_base::binary);
-	#else
-		std::string filenameAnsi = IBK::WstringToANSI(m_filename.wstr(), false);
-		m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
-#else
-	m_ofstream = new std::ofstream(m_filename.c_str(), std::ios_base::binary);
-#endif
-
+	m_ofstream = IBK::create_ofstream(m_filename, std::ios_base::binary | std::ios_base::trunc);
 
 	// check if successful
 	if (!m_ofstream->good()) {
@@ -765,28 +746,10 @@ void DataIO::reopenForWriting(const IBK::Path &fname) {
 	// reopen file and attempt to read header
 
 	if (m_isBinary) {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-			m_ofstream = new std::ofstream(fname.wstr().c_str(), std::ios_base::binary | std::ios_base::app);
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(fname.wstr(), false);
-			m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::binary | std::ios_base::app);
-	#endif
-#else
-		m_ofstream = new std::ofstream(fname.str().c_str(), std::ios_base::binary | std::ios_base::app);
-#endif
+		m_ofstream = IBK::create_ofstream(m_filename, std::ios_base::binary | std::ios_base::app);
 	}
 	else {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-			m_ofstream = new std::ofstream(fname.wstr().c_str(), std::ios_base::app);
-	#else
-			std::string filenameAnsi = IBK::WstringToANSI(fname.wstr(), false);
-			m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::app);
-	#endif
-#else
-		m_ofstream = new std::ofstream(fname.c_str(), std::ios_base::app);
-#endif
+		m_ofstream = IBK::create_ofstream(m_filename, std::ios_base::app);
 	}
 
 	// check if successful
@@ -1048,13 +1011,7 @@ void DataIO::openAndReadHeader(const IBK::Path & fname, std::ifstream & in, IBK:
 	clear();
 
 	// open file in binary mode and determine file size
-#if defined(_WIN32) && !defined(__MINGW32__)
-	in.open(fname_tmp.wstr().c_str(), std::ios_base::binary);
-#else
-	in.open(fname_tmp.c_str(), std::ios_base::binary);
-#endif // _WIN32
-
-	if (!in)
+	if (!IBK::open_ifstream(in, fname_tmp, std::ios_base::binary))
 		throw IBK::Exception( IBK::FormatString("Cannot open file '%1'").arg(fname), FUNC_ID);
 
 	try {

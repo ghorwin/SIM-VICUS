@@ -275,7 +275,7 @@ void SVUndoTreeNodeState::redo() {
 	}
 
 	if ((it = m_nodeStates.find(0)) != m_nodeStates.end()) {
-		setState(const_cast<VICUS::PlainGeometry&>(project().m_plainGeometry), it->second);
+		setState(p.m_plainGeometry, it->second);
 		modifiedIDs.push_back(0);
 	}
 

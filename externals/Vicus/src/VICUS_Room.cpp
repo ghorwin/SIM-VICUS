@@ -28,7 +28,8 @@
 
 #include <QDebug>
 
-#include "IBKMK_3DCalculations.h"
+#include <IBKMK_3DCalculations.h>
+#include <IBK_messages.h>
 
 namespace VICUS {
 
@@ -48,6 +49,8 @@ void Room::calculateFloorArea() {
 
 
 void Room::calculateVolume() {
+	FUNCID(Room::calculateVolume);
+
 	// an implementation of Shoelace Formula, see https://ysjournal.com/tetrahedral-shoelace-method-calculating-volume-of-irregular-solids/
 	//
 	// Conditions:
@@ -158,7 +161,12 @@ void Room::calculateVolume() {
 
 	vol /= 6;
 
-	qDebug() << m_displayName << "\t" << vol;
+	if(vol < 0.1) {
+		IBK::IBK_Message(IBK::FormatString("Error in volume calculation of room '%1' - Setting Volume to 0.1 m3").arg(m_displayName.toStdString()), IBK::MSG_WARNING, FUNC_ID);
+		vol = 0.1;
+	}
+
+	// qDebug() << m_displayName << "\t" << vol;
 
 	VICUS::KeywordList::setParameter(m_para,"Room::para_t", VICUS::Room::P_Volume, vol);
 }

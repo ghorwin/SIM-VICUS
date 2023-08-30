@@ -162,6 +162,9 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	}
 
 	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
+	// for built-ins, disable editing/make read-only
+	m_isEditable = !m_current->m_builtIn;
+
 	// we must a valid schedule pointer
 	Q_ASSERT(m_current != nullptr);
 
@@ -180,6 +183,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->radioButtonDailyCycles->blockSignals(false);
 
 	m_ui->stackedWidget->setCurrentIndex(m_current->m_haveAnnualSchedule ? 1 : 0);
+
 
 	// period schedule?
 	if (!m_current->m_haveAnnualSchedule) {
@@ -268,8 +272,6 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		updateAnnualDataDiagram();
 	}
 
-	// for built-ins, disable editing/make read-only
-	m_isEditable = !m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!m_isEditable);
 
 	m_ui->toolButtonAddPeriod->setEnabled(m_isEditable);
@@ -279,8 +281,8 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->radioButtonConstant->setEnabled(m_isEditable);
 	m_ui->pushButtonSelectWeekDays->setEnabled(m_isEditable);
 	m_ui->pushButtonSelectWeekEnds->setEnabled(m_isEditable);
-}
 
+}
 
 void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 	m_ui->tableWidgetPeriods->blockSignals(true);
@@ -442,7 +444,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	// update current daily cycle data type and chart
 
 	VICUS::DailyCycle *dc = &m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
-	m_ui->widgetDailyCycle->updateInput( dc , m_db, m_isEditable);
+	m_ui->widgetDailyCycle->updateInput(dc, m_db,m_isEditable);
 
 	updateDailyCycleSelectButtons();
 

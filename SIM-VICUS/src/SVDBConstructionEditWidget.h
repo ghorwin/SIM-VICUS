@@ -128,6 +128,8 @@ private slots:
 
 	/*! Connected with construction view widget move layer signal.*/
 	void constructionViewMove_layer(int index, bool left);
+
+	void on_lineEditDataSource_editingFinished();
 };
 
 #endif // SVDBConstructionEditWidgetH

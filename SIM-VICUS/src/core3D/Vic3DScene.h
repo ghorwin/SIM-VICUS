@@ -103,6 +103,7 @@ public:
 	*/
 	bool inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos);
 
+
 	/*! Actually renders to the current OpenGL context. */
 	void render();
 

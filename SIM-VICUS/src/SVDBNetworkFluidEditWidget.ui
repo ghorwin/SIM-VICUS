@@ -46,40 +46,37 @@
       <string>Fluid properties</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Density [kg/m3]</string>
-        </property>
-       </widget>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatCapacity"/>
       </item>
       <item row="0" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditDensity"/>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Thermal conductivity:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QTableWidget" name="tableWidgetViscosity"/>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Spec. heat capacity [J/kg K]</string>
+         <string>Spec. heat capacity:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatCapacity"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Thermal conductivity [W/mK]</string>
+         <string>Density:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditThermalConductivity"/>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QTableWidget" name="tableWidgetViscosity"/>
-      </item>
-      <item row="3" column="2">
+      <item row="4" column="2">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QToolButton" name="toolButtonAddViscosityPoint">
@@ -118,12 +115,42 @@
         </item>
        </layout>
       </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditThermalConductivity"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>kg/m3</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>J/kg K</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>W/mK</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
@@ -136,12 +163,9 @@
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources>

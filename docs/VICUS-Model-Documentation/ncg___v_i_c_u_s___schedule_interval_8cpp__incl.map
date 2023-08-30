@@ -1,0 +1,39 @@
+<map id="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/ncg/ncg_VICUS_ScheduleInterval.cpp" name="/home/hirth/git/SIM&#45;VICUS.master2/externals/Vicus/src/ncg/ncg_VICUS_ScheduleInterval.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="784,5,964,75"/>
+<area shape="rect" id="Node000002" href="$_v_i_c_u_s___schedule_interval_8h.html" title=" " alt="" coords="182,123,361,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="784,58,359,123,358,118,783,53"/>
+<area shape="rect" id="Node000007" href="$_v_i_c_u_s___constants_8h.html" title="Contains global constants for the SIM&#45;VICUS data model." alt="" coords="397,269,540,295"/>
+<area shape="poly" id="edge18_Node000001_Node000007" title=" " alt="" coords="784,47,727,54,666,69,606,91,552,125,523,155,502,190,487,226,477,257,472,255,482,224,497,188,519,151,548,121,604,87,665,64,726,49,783,42"/>
+<area shape="rect" id="Node000009" href="$_v_i_c_u_s___keyword_list_8h.html" title="Contains the declaration of class KeywordList." alt="" coords="562,123,717,148"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="790,77,682,120,680,115,788,72"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="741,123,863,148"/>
+<area shape="poly" id="edge15_Node000001_Node000013" title=" " alt="" coords="850,76,822,113,817,110,846,73"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="887,123,1007,148"/>
+<area shape="poly" id="edge16_Node000001_Node000014" title=" " alt="" coords="903,73,932,110,928,113,898,76"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1031,123,1154,148"/>
+<area shape="poly" id="edge17_Node000001_Node000015" title=" " alt="" coords="954,72,1054,115,1052,120,952,77"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1178,123,1330,148"/>
+<area shape="poly" id="edge19_Node000001_Node000016" title=" " alt="" coords="965,61,1195,117,1194,122,963,66"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1354,123,1429,148"/>
+<area shape="poly" id="edge20_Node000001_Node000017" title=" " alt="" coords="965,53,1135,82,1341,120,1340,125,1134,87,964,58"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="53,196,233,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="252,150,178,191,175,187,249,146"/>
+<area shape="rect" id="Node000004" href="$_v_i_c_u_s___code_gen_macros_8h.html" title=" " alt="" coords="5,269,185,295"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="184,151,98,170,64,183,43,198,38,213,43,229,55,245,70,259,66,263,51,248,38,231,32,213,39,194,61,178,96,164,183,145"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="266,269,325,295"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="276,148,294,255,289,256,271,149"/>
+<area shape="rect" id="Node000006" href="$_v_i_c_u_s___daily_cycle_8h.html" title=" " alt="" coords="309,196,455,221"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="291,146,354,186,351,191,288,150"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="337,224,156,269,154,263,335,219"/>
+<area shape="poly" id="edge8_Node000006_Node000005" title=" " alt="" coords="370,223,322,263,318,258,366,219"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="398,219,446,258,442,263,394,223"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="616,269,671,295"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="425,219,603,267,602,272,423,224"/>
+<area shape="poly" id="edge11_Node000009_Node000008" title=" " alt="" coords="644,148,649,196,648,256,643,256,643,196,638,148"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="709,196,777,221"/>
+<area shape="poly" id="edge12_Node000009_Node000010" title=" " alt="" coords="658,146,716,186,713,190,655,150"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="801,196,923,221"/>
+<area shape="poly" id="edge13_Node000009_Node000011" title=" " alt="" coords="676,145,814,189,812,194,674,151"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="530,196,634,221"/>
+<area shape="poly" id="edge14_Node000009_Node000012" title=" " alt="" coords="632,150,602,187,598,183,628,147"/>
+</map>

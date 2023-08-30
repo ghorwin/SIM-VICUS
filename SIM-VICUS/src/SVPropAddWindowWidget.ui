@@ -51,16 +51,6 @@
           <string>Percentage distribution</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Percentage of surface area  [%]:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditWindowPercentage"/>
-          </item>
           <item row="1" column="0">
            <spacer name="verticalSpacer_5">
             <property name="orientation">
@@ -76,6 +66,23 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditWindowPercentage"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Percentage of surface area:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>%</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -94,17 +101,24 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Offset [m]:</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>Max. number:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Offset:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>m</string>
             </property>
            </widget>
           </item>
@@ -117,7 +131,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Width [m]:</string>
+           <string>Width:</string>
           </property>
          </widget>
         </item>
@@ -134,7 +148,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Height [m]:</string>
+           <string>Height:</string>
           </property>
          </widget>
         </item>
@@ -170,7 +184,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Window-sill height [m]:</string>
+           <string>Window-sill height:</string>
           </property>
          </widget>
         </item>
@@ -190,7 +204,7 @@
         <item row="4" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>Distance in-between [m]:</string>
+           <string>Distance in-between:</string>
           </property>
          </widget>
         </item>
@@ -221,6 +235,13 @@
          <widget class="QPushButton" name="pushButtonChangeLocalOrigin">
           <property name="text">
            <string>Use next point as origin</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Values in m</string>
           </property>
          </widget>
         </item>

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>527</width>
+    <width>534</width>
     <height>40</height>
    </rect>
   </property>
@@ -53,8 +53,8 @@
       <string>...</string>
      </property>
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/Rotate-Coordinate-System.png</normaloff>:/gfx/actions/Rotate-Coordinate-System.png</iconset>
+      <iconset resource="../resources/icons.qrc">
+       <normaloff>:/gfx/icons8/icons8-abscissa-80.png</normaloff>:/gfx/icons8/icons8-abscissa-80.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -79,8 +79,8 @@
       <string>...</string>
      </property>
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/Move-Coordinate-System.png</normaloff>:/gfx/actions/Move-Coordinate-System.png</iconset>
+      <iconset resource="../resources/icons.qrc">
+       <normaloff>:/gfx/icons8/icons8-abscissa-80(1).png</normaloff>:/gfx/icons8/icons8-abscissa-80(1).png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -121,7 +121,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../resources/SIM-VICUS.qrc">:/gfx/actions/Coordinate-System.png</pixmap>
+      <pixmap resource="../resources/icons.qrc">:/gfx/icons8/icons8-abscissa-80(2).png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -210,7 +210,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../resources/SIM-VICUS.qrc">:/gfx/actions/Bounding-Box.png</pixmap>
+      <pixmap resource="../resources/icons.qrc">:/gfx/icons8/icons8-size-80.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -280,8 +280,14 @@
       <string>i</string>
      </property>
      <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+      <iconset resource="../resources/icons.qrc">
+       <normaloff>:/gfx/icons8/icons8-info-80.png</normaloff>:/gfx/icons8/icons8-info-80.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -298,7 +304,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

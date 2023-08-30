@@ -27,9 +27,10 @@ const char * const VERSION			= "1.0";
 const char * const LONG_VERSION		= "1.0.0";
 const char * const RELEASE_DATE		= "February 23rd, 2023";
 
-const unsigned int SCALE_FACTOR     = 1E6;
-const double MIN_AREA               = 1E-4;
+const unsigned int SCALE_FACTOR		= 1E6;
+const double MIN_AREA				= 1E-4;
+const double STOPWATCH_INTERVAL		= 100;
 
-const double EPSILON                = 1E-2;
+const double EPSILON				= 1E-2;
 
 } // namespace NANDRAD

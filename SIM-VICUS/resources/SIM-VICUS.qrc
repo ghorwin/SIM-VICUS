@@ -188,5 +188,13 @@
         <file>gfx/actions/colormap_viridis.png</file>
         <file>gfx/actions/search.png</file>
         <file>gfx/actions/sound-wave.png</file>
+        <file>gfx/actions/leaf.png</file>
+        <file>gfx/actions/shades.png</file>
+        <file>gfx/actions/Location_Climate_32x32.svg</file>
+        <file>gfx/actions/play_simstart.png</file>
+        <file>gfx/actions/play-button.png</file>
+        <file>gfx/actions/simulation-temperature.png</file>
+        <file>gfx/style/dark.png</file>
+        <file>gfx/style/white.png</file>
     </qresource>
 </RCC>

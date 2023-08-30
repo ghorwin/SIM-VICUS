@@ -168,8 +168,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/Object-Snap.png</normaloff>:/gfx/actions/Object-Snap.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-magnet-80.png</normaloff>:/gfx/icons8/icons8-magnet-80.png</iconset>
    </property>
    <property name="text">
     <string>Snap</string>
@@ -183,8 +183,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/Measurement.png</normaloff>:/gfx/actions/Measurement.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-width-80.png</normaloff>:/gfx/icons8/icons8-width-80.png</iconset>
    </property>
    <property name="text">
     <string>Measure</string>
@@ -225,8 +225,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/Add.png</normaloff>:/gfx/actions/Add.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-add-layer-80.png</normaloff>:/gfx/icons8/icons8-add-layer-80.png</iconset>
    </property>
    <property name="text">
     <string>Add geometry</string>
@@ -240,8 +240,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/move.png</normaloff>:/gfx/actions/move.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</normaloff>:/gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</iconset>
    </property>
    <property name="text">
     <string>Translate geometry</string>
@@ -255,8 +255,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/rotating.png</normaloff>:/gfx/actions/rotating.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</iconset>
    </property>
    <property name="text">
     <string>Rotate geometry</string>
@@ -270,8 +270,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/resize.png</normaloff>:/gfx/actions/resize.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-skalieren-80.png</normaloff>:/gfx/icons8/icons8-skalieren-80.png</iconset>
    </property>
    <property name="text">
     <string>Rotate geometry</string>
@@ -285,8 +285,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/misc_operations.png</normaloff>:/gfx/actions/misc_operations.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-kategorisieren-80.png</normaloff>:/gfx/icons8/icons8-kategorisieren-80.png</iconset>
    </property>
    <property name="text">
     <string>Align geometry</string>
@@ -300,8 +300,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/copy_building.png</normaloff>:/gfx/actions/copy_building.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-kopieren-80.png</normaloff>:/gfx/icons8/icons8-kopieren-80.png</iconset>
    </property>
    <property name="text">
     <string>Copy geometry</string>
@@ -315,8 +315,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/building_parameter.png</normaloff>:/gfx/actions/building_parameter.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-heim-automatisierung-80.png</normaloff>:/gfx/icons8/icons8-heim-automatisierung-80.png</iconset>
    </property>
    <property name="text">
     <string>Edit Building Parametrization</string>
@@ -330,8 +330,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/neural.png</normaloff>:/gfx/actions/neural.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-direktverbindung-80.png</normaloff>:/gfx/icons8/icons8-direktverbindung-80.png</iconset>
    </property>
    <property name="text">
     <string>Edit Network Parametrization</string>
@@ -345,8 +345,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/info.png</normaloff>:/gfx/actions/info.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-gitter-80.png</normaloff>:/gfx/icons8/icons8-gitter-80.png</iconset>
    </property>
    <property name="text">
     <string>actionSiteParametrization</string>
@@ -360,8 +360,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/sound-wave.png</normaloff>:/gfx/actions/sound-wave.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-audiowelle-80.png</normaloff>:/gfx/icons8/icons8-audiowelle-80.png</iconset>
    </property>
    <property name="text">
     <string>Acoustic parametrization</string>
@@ -375,8 +375,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/64x64/resultsView.png</normaloff>:/gfx/actions/64x64/resultsView.png</iconset>
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-futures-80.png</normaloff>:/gfx/icons8/icons8-futures-80.png</iconset>
    </property>
    <property name="text">
     <string>Show Results</string>
@@ -401,7 +401,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

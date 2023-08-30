@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>707</width>
+    <width>721</width>
     <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayoutMaster">
+  <layout class="QGridLayout" name="gridLayoutMaster" columnstretch="0,1,0,0,0">
    <item row="2" column="0">
     <widget class="QLabel" name="labelLightsInput">
      <property name="text">
@@ -56,16 +56,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditPower">
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1" colspan="2">
     <widget class="QLineEdit" name="lineEditManagementScheduleName">
      <property name="readOnly">
@@ -90,20 +80,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QLabel" name="labelConvectiveFactorUnit">
-     <property name="text">
-      <string>-</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="labelLightsInputUnit">
-     <property name="text">
-      <string>Person</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
      <property name="text">
@@ -111,22 +87,52 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="0" colspan="5">
+    <widget class="QwtPlot" name="widgetPlot" native="true"/>
+   </item>
+   <item row="2" column="3" colspan="2">
+    <widget class="QLabel" name="labelLightsInputUnit">
+     <property name="text">
+      <string>Person</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="2">
+    <widget class="QLabel" name="labelConvectiveFactorUnit">
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="5">
-    <widget class="QwtPlot" name="widgetPlot" native="true"/>
+   <item row="2" column="1" colspan="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditPower">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
@@ -136,15 +142,12 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QwtPlot</class>

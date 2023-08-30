@@ -572,6 +572,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pushButtonFixSurfaceOrientation">
+            <property name="text">
+             <string>Fix surface orientation (pointing outside)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -818,7 +825,6 @@
   <tabstop>lineEditScaleZ</tabstop>
   <tabstop>pushButtonCenterHorizontally</tabstop>
   <tabstop>pushButtonCenterVertically</tabstop>
-  <tabstop>pushButtonFlipNormals</tabstop>
   <tabstop>lineEditCopyX</tabstop>
   <tabstop>lineEditCopyY</tabstop>
   <tabstop>lineEditCopyZ</tabstop>

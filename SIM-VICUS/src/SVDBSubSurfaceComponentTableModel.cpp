@@ -157,7 +157,7 @@ void SVDBSubSurfaceComponentTableModel::resetModel() {
 
 QModelIndex SVDBSubSurfaceComponentTableModel::addNewItem() {
 	VICUS::SubSurfaceComponent c;
-	c.m_displayName.setEncodedString("en:<new sub-surface>");
+	c.m_displayName.setString(tr("<new sub-surface>").toStdString(), IBK::MultiLanguageString::m_language);
 	c.m_color = SVStyle::randomColor();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_subSurfaceComponents.add( c );

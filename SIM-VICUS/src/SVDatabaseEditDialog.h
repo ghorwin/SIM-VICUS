@@ -31,7 +31,7 @@
 #include <VICUS_InternalLoad.h>
 
 namespace Ui {
-	class SVDatabaseEditDialog;
+class SVDatabaseEditDialog;
 }
 
 class SVAbstractDatabaseTableModel;
@@ -113,10 +113,14 @@ private:
 		Signals are blocked in this function.
 	*/
 	void selectItemById(unsigned int id);
+	/*! Writes the user DB in case it was modified
+	 */
+	void writeUserDB();
 
 
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createEpdEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createSubSurfaceComponentEditDialog(QWidget * parent);
@@ -140,7 +144,6 @@ private:
 	static SVDatabaseEditDialog * createSubNetworkEditDialog(QWidget * parent);
 
 	static void resizeDBDialog(QDialog *dlg);
-
 
 	Ui::SVDatabaseEditDialog *m_ui;
 

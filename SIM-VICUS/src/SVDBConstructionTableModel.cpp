@@ -70,7 +70,7 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
-                case ColDataSource          : return QtExt::MultiLangString2QString(it->second.m_dataSource);
+				case ColDataSource          : return QtExt::MultiLangString2QString(it->second.m_dataSource);
 				case ColUsageType			: return VICUS::KeywordListQt::Description("Construction::UsageType", it->second.m_usageType);
 				case ColInsulationKind		: return VICUS::KeywordListQt::Description("Construction::InsulationKind", it->second.m_insulationKind);
 				case ColMaterialKind		: return VICUS::KeywordListQt::Description("Construction::MaterialKind", it->second.m_materialKind);
@@ -146,8 +146,8 @@ QVariant SVDBConstructionTableModel::headerData(int section, Qt::Orientation ori
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-                case ColDataSource          : return tr("Source");
-                case ColInsulationKind		: return tr("Insulation");
+				case ColDataSource          : return tr("Source");
+				case ColInsulationKind		: return tr("Insulation");
 				case ColMaterialKind		: return tr("Material");
 				case ColUsageType			: return tr("Usage");
 				case ColNumLayers			: return tr("Layers");
@@ -174,8 +174,7 @@ void SVDBConstructionTableModel::resetModel() {
 
 QModelIndex SVDBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
-	c.m_displayName.setEncodedString("en:<new construction type>");
-
+	c.m_displayName.setString(tr("<new construction type>").toStdString(), IBK::MultiLanguageString::m_language);
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_constructions.add( c );
 	endInsertRows();

@@ -175,7 +175,7 @@ void SVDBMaterialTableModel::resetModel() {
 
 QModelIndex SVDBMaterialTableModel::addNewItem() {
 	VICUS::Material m;
-	m.m_displayName.setEncodedString("en:<new material>");
+	m.m_displayName.setString(tr("<new material>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	//set default parameters
 	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_Conductivity, 1);

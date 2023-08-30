@@ -1,0 +1,5 @@
+<map id="VICUS::NetworkEdge" name="VICUS::NetworkEdge">
+<area shape="rect" id="Node000001" title="A network edge defines all parameters needed to generate pipe hydraulic network elements." alt="" coords="5,79,156,104"/>
+<area shape="rect" id="Node000002" href="$classVICUS_1_1Object.html" title="Base class for all objects that have a parent and are shown in the navigation tree widget." alt="" coords="25,5,136,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,44,83,79,78,79,78,44"/>
+</map>

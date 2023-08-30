@@ -6,73 +6,64 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>834</width>
-    <height>758</height>
+    <width>901</width>
+    <height>762</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Building components used in current project</string>
+  <layout class="QGridLayout" name="mainGridLayout">
+   <item row="0" column="0" colspan="4">
+    <widget class="QTableWidget" name="tableWidgetComponents"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushButtonEditComponents">
+     <property name="text">
+      <string>Edit...</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QPushButton" name="pushButtonEditComponents">
-        <property name="text">
-         <string>Edit...</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="pushButtonExchangeComponents">
-        <property name="toolTip">
-         <string>Replaces the component association of all objects with the currently selected component.</string>
-        </property>
-        <property name="text">
-         <string>Exchange...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QTableWidget" name="tableWidgetComponents"/>
-      </item>
-      <item row="1" column="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>280</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
-        <property name="toolTip">
-         <string>Selects all objects/surfaces which are associated with the selected component.</string>
-        </property>
-        <property name="text">
-         <string>Select surfaces with selected component</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButtonExchangeComponents">
+     <property name="toolTip">
+      <string>Replaces the component association of all objects with the currently selected component.</string>
+     </property>
+     <property name="text">
+      <string>Exchange...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
+     <property name="toolTip">
+      <string>Selects all objects/surfaces which are associated with the selected component.</string>
+     </property>
+     <property name="text">
+      <string>Select</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>617</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" colspan="4">
     <widget class="QGroupBox" name="groupBoxSelectedComponent">
      <property name="title">
       <string>Selected surface</string>
@@ -90,7 +81,7 @@
         <item>
          <widget class="QPushButton" name="pushButtonAssignComponent">
           <property name="text">
-           <string>Assign component...</string>
+           <string>Assign from DB...</string>
           </property>
           <property name="iconSize">
            <size>
@@ -103,7 +94,7 @@
         <item>
          <widget class="QPushButton" name="pushButtonAssignInsideComponent">
           <property name="text">
-           <string>Connect surfaces with component...</string>
+           <string>Connect surfaces...</string>
           </property>
          </widget>
         </item>
@@ -126,7 +117,7 @@
            <string>Assign the component selected in the table above to all currently selected surfaces.</string>
           </property>
           <property name="text">
-           <string>Assign in table selected component</string>
+           <string>Assign from table</string>
           </property>
          </widget>
         </item>

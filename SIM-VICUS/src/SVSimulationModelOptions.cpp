@@ -26,7 +26,15 @@
 #include "SVSimulationModelOptions.h"
 #include "ui_SVSimulationModelOptions.h"
 
-#include <SVProjectHandler.h>
+#include "SVProjectHandler.h"
+#include "SVUndoModifySolverParameter.h"
+#include "SVUndoModifyClimate.h"
+#include "SVMainWindow.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
+#include "SVSettings.h"
+#include "SVView3DCalculation.h"
+
 #include <VICUS_Project.h>
 
 #include <NANDRAD_KeywordList.h>
@@ -34,16 +42,12 @@
 #include <NANDRAD_SimulationParameter.h>
 #include <NANDRAD_Location.h>
 
-SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent,
-												   NANDRAD::SimulationParameter & simParams,
-												   NANDRAD::Location & location) :
+SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVSimulationModelOptions),
-	m_simParams(&simParams),
-	m_location(&location)
+	m_ui(new Ui::SVSimulationModelOptions)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayout->setMargin(0);
+	layout()->setContentsMargins(0,0,0,0);
 
 	// populate combo box with solar distribution model options
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);
@@ -56,6 +60,13 @@ SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent,
 
 	m_ui->lineEditInitialTemperature->setup(-50,150,tr("Initial temperature to be used for zones/constructions etc."), true, true);
 
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVSimulationModelOptions::onModified);
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVSimulationModelOptions::onStyleChanged);
+
+	onStyleChanged();
 }
 
 
@@ -66,198 +77,185 @@ SVSimulationModelOptions::~SVSimulationModelOptions() {
 
 void SVSimulationModelOptions::updateUi() {
 
-	// values stored in same order as in NANDRAD::SimulationParameter::para_t
-	std::vector<double> values {20, 50, 0, 0.1, 0.07, 20};
-	std::vector<std::string> unitStr {"C", "%", "---", "1/h", "---", "C"};
-
-	Q_ASSERT(values.size() == unitStr.size() && values.size() == NANDRAD::SimulationParameter::NUM_P);
-
-	for(unsigned int i=0; i< NANDRAD::SimulationParameter::NUM_P; ++i){
-		NANDRAD::SimulationParameter::para_t type = (NANDRAD::SimulationParameter::para_t)i;
-		double &val = values[i];
-		IBK::Unit unit(unitStr[i]);
-		if (!m_simParams->m_para[type].name.empty() &&
-				m_simParams->m_para[type].IO_unit.base_id() == unit.base_id()) {
-			val = m_simParams->m_para[type].get_value(unit);
-		}
-	}
-
-	/// ToDo werte noch setzen
+	const NANDRAD::SimulationParameter &simParams = project().m_simulationParameter;
+	const NANDRAD::Location &location = project().m_location;
 
 	// now set all values
-	m_ui->lineEditInitialTemperature->setValue(values[0]);
+	if (!simParams.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].empty())
+		m_ui->lineEditInitialTemperature->setValue(simParams.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C"));
+	else
+		m_ui->lineEditInitialTemperature->clear();
 
-	std::vector<double> solarValues{10, 80, 10, 10};
-	NANDRAD::SolarLoadsDistributionModel &solMod = m_simParams->m_solarLoadsDistributionModel;
-	for(unsigned int i=0; i< solarValues.size(); ++i){
-		NANDRAD::SolarLoadsDistributionModel::para_t type = (NANDRAD::SolarLoadsDistributionModel::para_t)i;
-		double &val = solarValues[i];
-		IBK::Unit unit("%");
-		if (!solMod.m_para[type].name.empty() &&
-				solMod.m_para[type].IO_unit.base_id() == unit.base_id()) {
-			val = solMod.m_para[type].get_value(unit);
-		}
-		// prevent against inputting 0
-		if (val < 0)
-			val = 0;
-	}
+	if (!simParams.m_para[NANDRAD::SimulationParameter::P_InitialRelativeHumidity].empty())
+		m_ui->lineEditInitialRelativeHumidity->setValue(simParams.m_para[NANDRAD::SimulationParameter::P_InitialRelativeHumidity].get_value("%"));
+	else
+		m_ui->lineEditInitialRelativeHumidity->clear();
+
+	/// TODO: set remaining values
 
 	// set percentages in spin boxes -> round to whole numbers!
-	m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue((int)solarValues[0]);
-	m_ui->spinBoxSolarRadiationToFloor->setValue((int)solarValues[1]);
-	m_ui->spinBoxSolarRadiationToRoofCeiling->setValue((int)solarValues[2]);
-	m_ui->spinBoxSolarRadiationToWalls->setValue((int)solarValues[3]);
+	if (!simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone].empty())
+		m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue((int)
+					(simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone].value * 100));
+
+	if (!simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor].empty())
+		m_ui->spinBoxSolarRadiationToFloor->setValue((int)
+					(simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor].value * 100));
+
+	if (!simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling].empty())
+		m_ui->spinBoxSolarRadiationToRoofCeiling->setValue((int)
+					(simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling].value * 100));
+
+	if (!simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls].empty())
+		m_ui->spinBoxSolarRadiationToWalls->setValue((int)
+					(simParams.m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls].value * 100));
 
 	m_ui->checkBoxUsePerez->blockSignals(true);
-	m_ui->checkBoxUsePerez->setChecked(m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled());
+	m_ui->checkBoxUsePerez->setChecked(location.m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled());
 	m_ui->checkBoxUsePerez->blockSignals(false);
 
 	m_ui->checkBoxEnableMoistureBalance->blockSignals(true);
-	m_ui->checkBoxEnableMoistureBalance->setChecked(m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled());
+	bool moistureEnabled = simParams.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled();
+	m_ui->checkBoxEnableMoistureBalance->setChecked(moistureEnabled);
 	m_ui->checkBoxEnableMoistureBalance->blockSignals(false);
 
+	m_ui->lineEditInitialRelativeHumidity->setEnabled(moistureEnabled);
+	m_ui->labelInitialRelHum->setEnabled(moistureEnabled);
+	m_ui->labelInitialRelHumPerc->setEnabled(moistureEnabled);
+
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);
-	int idx = m_simParams->m_solarLoadsDistributionModel.m_distributionType;
+	int idx = simParams.m_solarLoadsDistributionModel.m_distributionType;
 	m_ui->comboBoxSolarDistributionModeltype->setCurrentIndex(idx);
-	on_comboBoxSolarDistributionModeltype_currentIndexChanged(idx);
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(false);
 
 	m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setEnabled(idx == 0);
-
 	m_ui->spinBoxSolarRadiationToFloor->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToRoofCeiling->setEnabled(idx == 1);
 	m_ui->spinBoxSolarRadiationToWalls->setEnabled(idx == 1);
 
-
+	bool validFractions = ( m_ui->spinBoxSolarRadiationToFloor->value() +
+						   m_ui->spinBoxSolarRadiationToRoofCeiling->value() +
+						  m_ui->spinBoxSolarRadiationToWalls->value() ) == 100;
+	m_ui->iconErrorFractionSum->setVisible(!validFractions && idx == 1);
+	m_ui->labelErrorFractionSum->setVisible(!validFractions && idx == 1);
 }
 
 
+void SVSimulationModelOptions::onModified(int modificationType, ModificationInfo *) {
+	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (modType) {
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::SolverParametersModified:
+			updateUi();
+		break;
+		default:;
+	}
+}
+
 
 void SVSimulationModelOptions::on_comboBoxSolarDistributionModeltype_currentIndexChanged(int index) {
-	NANDRAD::SolarLoadsDistributionModel &solMod = m_simParams->m_solarLoadsDistributionModel;
-	solMod.m_distributionType = (NANDRAD::SolarLoadsDistributionModel::distribution_t)index;
 
-	m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setEnabled(false);
-	m_ui->spinBoxSolarRadiationToFloor->setEnabled(false);
-	m_ui->spinBoxSolarRadiationToRoofCeiling->setEnabled(false);
-	m_ui->spinBoxSolarRadiationToWalls->setEnabled(false);
+	NANDRAD::SimulationParameter simParams = project().m_simulationParameter;
+	simParams.m_solarLoadsDistributionModel.m_distributionType = (NANDRAD::SolarLoadsDistributionModel::distribution_t)index;
 
-	switch (solMod.m_distributionType) {
-		case NANDRAD::SolarLoadsDistributionModel::SWR_AreaWeighted: {
-			NANDRAD::SolarLoadsDistributionModel::para_t type = NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone;
-			IBK::Unit unit("%");
-			double val = 10;
-			if (!solMod.m_para[type].name.empty() && solMod.m_para[type].IO_unit.base_id() == unit.base_id()) {
-				val = solMod.m_para[type].get_value(unit);
-			}
-			else
-				NANDRAD::KeywordList::setParameter(solMod.m_para, "SolarLoadsDistributionModel::para_t", type, val);
-			m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue(val);
-			m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setEnabled(true);
-		}
-		break;
-		case NANDRAD::SolarLoadsDistributionModel::SWR_SurfaceTypeFactor: {
+	SVUndoModifySolverParameter *undo = new SVUndoModifySolverParameter("solar loads modified", project().m_solverParameter, simParams);
+	undo->push();
+}
 
-			std::vector<double>			values{80, 10, 10};
-			std::vector<NANDRAD::SolarLoadsDistributionModel::para_t> types{
-				NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor,
-				NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling,
-				NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls
-			};
-			double summedFractions = 0;
-			for(unsigned int i=0; i<values.size(); ++i){
-				NANDRAD::SolarLoadsDistributionModel::para_t type = (NANDRAD::SolarLoadsDistributionModel::para_t)(i+1);
-				IBK::Unit unit("%");
-				double val = 10;
-				if (!solMod.m_para[type].name.empty() && solMod.m_para[type].IO_unit.base_id() == unit.base_id()) {
-					val = solMod.m_para[type].get_value(unit);
-				}
-				else
-					NANDRAD::KeywordList::setParameter(solMod.m_para, "SolarLoadsDistributionModel::para_t", type, val);
-				summedFractions += val;
-			}
-			/// ToDo hier muss mal ne Fehlerabfrage rein und an den Nutzer durchgeschickt werden falls die Addition != 1 ist
 
-			m_ui->spinBoxSolarRadiationToFloor->setValue(values[0]);
-			m_ui->spinBoxSolarRadiationToRoofCeiling->setValue(values[1]);
-			m_ui->spinBoxSolarRadiationToWalls->setValue(values[2]);
+void SVSimulationModelOptions::modifySolarLoadParameters(int paraEnum, const QSpinBox *spnBox) {
 
-			m_ui->spinBoxSolarRadiationToFloor->setEnabled(true);
-			m_ui->spinBoxSolarRadiationToRoofCeiling->setEnabled(true);
-			m_ui->spinBoxSolarRadiationToWalls->setEnabled(true);
-			//double val = 1- summedFractions;
-			//val = std::max<double>(0, val);
-			//m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->setValue(val * 100);
+	NANDRAD::SimulationParameter simParams = project().m_simulationParameter;
+	NANDRAD::KeywordList::setParameter(simParams.m_solarLoadsDistributionModel.m_para, "SolarLoadsDistributionModel::para_t", paraEnum, spnBox->value());
 
-		}
-		break;
-		case NANDRAD::SolarLoadsDistributionModel::SWR_ViewFactor: {
-			/// ToDo ...
-
-		}
-		break;
-		case NANDRAD::SolarLoadsDistributionModel::NUM_SWR:
-		break;
-	}
+	SVUndoModifySolverParameter *undo = new SVUndoModifySolverParameter("solar loads modified", project().m_solverParameter, simParams);
+	undo->push();
 }
 
 
 void SVSimulationModelOptions::on_lineEditInitialTemperature_editingFinished() {
-	if(m_ui->lineEditInitialTemperature->isValid()){
-		double val = m_ui->lineEditInitialTemperature->value();
-		// we set the IBK Parameter
-		m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature] = IBK::Parameter("InitialTemperature", val, IBK::Unit("C"));
-	}
-	else{
-		double val = 20;
-		if (!m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].name.empty() &&
-			m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].IO_unit.base_id() == IBK::Unit("K").base_id())
-		{
-			val = m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C");
-		}
-		m_ui->lineEditInitialTemperature->setValue(val);
-	}
+
+	if(!m_ui->lineEditInitialTemperature->isValid())
+		return;
+
+	NANDRAD::SimulationParameter simParams = project().m_simulationParameter;
+	double val = m_ui->lineEditInitialTemperature->value();
+	simParams.m_para[NANDRAD::SimulationParameter::P_InitialTemperature] = IBK::Parameter("InitialTemperature", val, IBK::Unit("C"));
+
+	SVUndoModifySolverParameter *undo = new SVUndoModifySolverParameter("solar loads modified", project().m_solverParameter, simParams);
+	undo->push();
 }
 
 
-
-void SVSimulationModelOptions::on_spinBoxSolarRadiationGainsDirectlyToRoomNode_valueChanged(int /*arg1*/) {
-	double val = m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->value();
-	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone] = IBK::Parameter("RadiationLoadFractionZone", val, IBK::Unit("%"));
+void SVSimulationModelOptions::on_spinBoxSolarRadiationToFloor_editingFinished() {
+	modifySolarLoadParameters(NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor, m_ui->spinBoxSolarRadiationToFloor);
 }
 
 
-void SVSimulationModelOptions::on_spinBoxSolarRadiationToFloor_valueChanged(int /*arg1*/) {
-	double val = m_ui->spinBoxSolarRadiationToFloor->value();
-	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor] = IBK::Parameter("RadiationLoadFractionFloor", val, IBK::Unit("%"));
+void SVSimulationModelOptions::on_spinBoxSolarRadiationToRoofCeiling_editingFinished() {
+	modifySolarLoadParameters(NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling, m_ui->spinBoxSolarRadiationToRoofCeiling);
 }
 
 
-void SVSimulationModelOptions::on_spinBoxSolarRadiationToRoofCeiling_valueChanged(int /*arg1*/) {
-	double val = m_ui->spinBoxSolarRadiationToRoofCeiling->value();
-	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling] = IBK::Parameter("RadiationLoadFractionCeiling", val, IBK::Unit("%"));
+void SVSimulationModelOptions::on_spinBoxSolarRadiationToWalls_editingFinished() {
+	modifySolarLoadParameters(NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls, m_ui->spinBoxSolarRadiationToWalls);
 }
 
 
-void SVSimulationModelOptions::on_spinBoxSolarRadiationToWalls_valueChanged(int /*arg1*/) {
-	double val = m_ui->spinBoxSolarRadiationToWalls->value();
-	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls] = IBK::Parameter("RadiationLoadFractionWalls", val, IBK::Unit("%"));
+void SVSimulationModelOptions::on_spinBoxSolarRadiationGainsDirectlyToRoomNode_editingFinished() {
+	modifySolarLoadParameters(NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone, m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode);
 }
 
 
 void SVSimulationModelOptions::on_checkBoxUsePerez_toggled(bool checked) {
+	NANDRAD::Location location = project().m_location;
+
 	if (checked)
-		m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].set( NANDRAD::KeywordList::Keyword("Location::flag_t", NANDRAD::Location::F_PerezDiffuseRadiationModel), true);
+		location.m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].set( NANDRAD::KeywordList::Keyword("Location::flag_t", NANDRAD::Location::F_PerezDiffuseRadiationModel), true);
 	else
-		m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].clear();
+		location.m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].clear();
+
+	SVUndoModifyClimate *undo = new SVUndoModifyClimate("Radiation model modified", location, false);
+	undo->push();
 }
 
 
 void SVSimulationModelOptions::on_checkBoxEnableMoistureBalance_toggled(bool checked) {
-	// set/clear flag
+
+	NANDRAD::SimulationParameter simParams = project().m_simulationParameter;
+
 	if (checked)
-		m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].set(
+		simParams.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].set(
 					NANDRAD::KeywordList::Keyword("SimulationParameter::flag_t", NANDRAD::SimulationParameter::F_EnableMoistureBalance), true);
 	else
-		m_simParams->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].clear();
+		simParams.m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].clear();
+
+	SVUndoModifySolverParameter *undo = new SVUndoModifySolverParameter("Moisture balance modified", project().m_solverParameter, simParams);
+	undo->push();
 }
+
+void SVSimulationModelOptions::onStyleChanged() {
+	m_ui->labelErrorFractionSum->setStyleSheet("QLabel { color: #CC0000;  }");
+}
+
+
+void SVSimulationModelOptions::on_pushButtonPrecalculateViewFactors_clicked() {
+
+	std::vector<const VICUS::Surface*> surfaces;
+	for (const VICUS::Building &b: project().m_buildings) {
+		for (const VICUS::BuildingLevel &bl: b.m_buildingLevels) {
+			for (const VICUS::Room &r: bl.m_rooms) {
+				for (const VICUS::Surface &s: r.m_surfaces) {
+					surfaces.push_back(&s);
+				}
+			}
+		}
+	}
+
+	try {
+		SVView3DCalculation::calculateViewFactors(this, surfaces);
+	} catch (IBK::Exception &ex) {
+		QMessageBox::critical(this, "Error", ex.what());
+	}
+}
+

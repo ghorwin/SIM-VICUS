@@ -10,7 +10,9 @@ include( ../../../externals/IBK/projects/Qt/IBK.pri )
 
 # adjust default output paths
 DESTDIR = ../../../externals/lib$${DIR_PREFIX}
-LIBS += -L../../../externals/lib$${DIR_PREFIX}
+linux-g++ {
+    LIBS += -L../../../externals/lib$${DIR_PREFIX}
+}
 
 unix|mac {
 	VER_MAJ = 2
@@ -20,6 +22,7 @@ unix|mac {
 }
 
 LIBS += \
+        -L../../../externals/lib$${DIR_PREFIX} \
 	-lIntegratorFramework \
 	-lNandrad \
 	-lZeppelin \
@@ -46,10 +49,6 @@ INCLUDEPATH = \
 	../../../externals/Nandrad/src \
 	../../../externals/SuiteSparse/src/include \
 	../../../externals/sundials/src/include
-
-DEPENDPATH = $${INCLUDEPATH} \
-	../../../externals/DataIO/src \
-	../../../externals/TiCPP/src
 
 SOURCES += \
 	../../src/NM_AbstractModel.cpp \

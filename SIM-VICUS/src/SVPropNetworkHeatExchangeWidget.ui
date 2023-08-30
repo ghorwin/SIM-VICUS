@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>435</width>
     <height>521</height>
    </rect>
   </property>
@@ -20,25 +20,41 @@
       <string>Heat Exchange</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_10">
+      <item row="5" column="1">
+       <widget class="QComboBox" name="comboBoxZoneId"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelHXTransferCoefficient">
+        <property name="text">
+         <string>External heat transfer coefficient:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="labelZoneId">
+        <property name="text">
+         <string>Zone Id:</string>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelTemperature">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelHeatFlux_2">
         <property name="text">
-         <string>Temperature [C]</string>
+         <string>Type:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="labelDataFile">
-        <property name="text">
-         <string>Data spline</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="comboBoxZoneId"/>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
       </item>
       <item row="4" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -58,40 +74,45 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="labelZoneId">
-        <property name="text">
-         <string>Zone Id</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelHXTransferCoefficient">
-        <property name="text">
-         <string>External heat transfer coefficient [W/m²K]</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="labelHeatFlux">
         <property name="text">
-         <string>Heat flux [W]</string>
+         <string>Heat flux:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelHeatFlux_2">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelTemperature">
         <property name="text">
-         <string>Type</string>
+         <string>Temperature:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelDataFile">
+        <property name="text">
+         <string>Data spline:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelHeatFlux_3">
+        <property name="text">
+         <string>W</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="labelTemperature_2">
+        <property name="text">
+         <string>C</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="labelHXTransferCoefficient_2">
+        <property name="text">
+         <string>W/m²K</string>
         </property>
        </widget>
       </item>

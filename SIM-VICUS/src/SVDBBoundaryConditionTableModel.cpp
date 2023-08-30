@@ -159,7 +159,7 @@ void SVDBBoundaryConditionTableModel::resetModel() {
 
 QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 	VICUS::BoundaryCondition bc;
-	bc.m_displayName.setEncodedString("en:<new boundary condition>");
+	bc.m_displayName.setString(tr("<new boundary condition>").toStdString(), IBK::MultiLanguageString::m_language);
 	bc.m_color = SVStyle::randomColor();
 
 	//set default parameters

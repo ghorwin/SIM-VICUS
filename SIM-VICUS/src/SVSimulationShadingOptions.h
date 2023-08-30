@@ -41,6 +41,8 @@ namespace SH {
 	class StructuralShading;
 }
 
+class ModificationInfo;
+
 /*! The widget holds all data needed for pre calculated shading factors.
 	The pre-computed shading data depends on:
 	- (selection of/all) surfaces and their geometry (and subsurface geometry)
@@ -55,9 +57,14 @@ class SVSimulationShadingOptions : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit SVSimulationShadingOptions(QWidget *parent,
-										NANDRAD::SimulationParameter & solverParams, NANDRAD::Location & location);
+	explicit SVSimulationShadingOptions(QWidget *parent);
 	~SVSimulationShadingOptions();
+
+	/*! Defines the Calculation Method. */
+	enum CalculationMethod {
+		RayTracing,
+		SurfaceClipping
+	};
 
 	/*! Defines the specific output type */
 	enum OutputType {
@@ -93,22 +100,23 @@ public:
 	/*! Defines whether to use "all geometry" or "only selected geometry". */
 	bool m_useOnlySelectedSurfaces = false;
 
+public slots:
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified(int modificationType, ModificationInfo *);
+
 private slots:
 	void on_pushButtonCalculate_clicked();
 
-	void on_radioButtonFast_toggled(bool checked);
+	void on_comboBoxCalculationMethod_activated(int);
 
-	void on_radioButtonManual_toggled(bool checked);
+	void on_comboBoxPresets_activated(int);
 
-	void on_radioButtonDetailed_toggled(bool checked);
+	void on_comboBoxGeometryMode_activated(int);
 
-	void on_comboBoxFileType_currentIndexChanged(int index);
+	void on_comboBoxFileType_activated(int);
 
-	void on_pushButtonDeletePreviousShadingFile_clicked();
-
-	void on_radioButtonFlatGeometry_toggled(bool checked);
-
-	void on_radioButtonRayTracing_toggled(bool checked);
+	void on_toolButtonDeletePreviousShadingFile_clicked();
 
 private:
 	/*! Updates m_shadingFactorBaseName and the line edit in the user interface base on the current
@@ -122,16 +130,14 @@ private:
 	void calculateShadingFactors();
 
 	/*! Sets the simulation parameters grid size and cone deg */
-	void setSimulationParameters(const DetailType &dt);
+	void updateDefaultShadingSimulationParameters(const DetailType &dt);
 
-	void setPreviousSimulationFileValues();
+	void updatePreviousSimulationFileValues();
+
+	void updateLocationAndTime();
 
 
 	Ui::SVSimulationShadingOptions			*m_ui;								///< pointer to UI
-
-	// Data storage locations, synchronized with user interface.
-	const NANDRAD::SimulationParameter		*m_simParams = nullptr;
-	const NANDRAD::Location					*m_location = nullptr;
 
 	/*! Start time in seconds, updated in updateUi(). */
 	IBK::Time 								m_startTime;

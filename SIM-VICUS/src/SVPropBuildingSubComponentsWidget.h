@@ -81,6 +81,9 @@ private:
 	/*! Stores list of all selected surfaces. */
 	std::vector<const VICUS::SubSurface* >				m_selectedSurfaces;
 
+	/*! Stores subsurface component id that is currently selected in the secene. Is only valid if there is just one selected. */
+	unsigned int										m_sceneSelectedComponentId = VICUS::INVALID_ID;
+
 	/*! Stores the data shown in the table. */
 	std::vector<ComponentLegendEntry>					m_componentTable;
 

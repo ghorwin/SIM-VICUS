@@ -130,12 +130,16 @@ public:
 	/*! This flag marks if a report shoud be hidden or not in the report manager class. */
 	bool			m_isHidden;
 
+	bool drawItemRect() const;
+	void setDrawItemRect(bool newDrawItemRect);
+
 protected:
 	Report*												m_report;				///< Reference to report.
 	QTextDocument*										m_textDocument;			///< Pointer to text document object responsible for rendering text and images.
 	QRectF												m_wholeFrameRect;		///< Rectangle of the whole area.
 	std::vector<std::shared_ptr<ReportFrameItemBase>>	m_items;				///< List of items to be drawn
 	std::vector<ReportFrameBase*>						m_currentSubFrames;		///< Store all subframes created from subFrames function
+	bool												m_drawItemRect = false;
 
 	/*! Create a list of frame numbers that fits in the given page heights.
 		\param paintDevice Used paint device. Necessary for height calculations

@@ -197,6 +197,7 @@ private slots:
 	void on_pushButtonApply_clicked();
 
 	void on_comboBoxUnit_currentIndexChanged(int index);
+	void on_pushButtonFixSurfaceOrientation_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

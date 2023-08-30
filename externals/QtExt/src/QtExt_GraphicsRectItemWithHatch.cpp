@@ -114,7 +114,6 @@ namespace QtExt {
 			painter->restore();
 		}
 
-
 		// draw own selection frame
 		if( selected) {
 			painter->save();

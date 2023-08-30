@@ -35,6 +35,7 @@
 #include <IBK_StringUtils.h>
 #include <IBK_QuantityManager.h>
 #include <IBK_Path.h>
+#include <IBK_FileUtils.h>
 
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
@@ -75,16 +76,8 @@ IBK::Path SVPostProcBindings::defaultSessionFilePath(const QString & projectFile
 void SVPostProcBindings::generateDefaultSessionFile(const QString & projectFile) {
 	IBK::Path sessionFile = defaultSessionFilePath(projectFile);
 
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-		std::ofstream strm(sessionFile.wstr().c_str());
-	#else
-		std::string filenameAnsi = IBK::WstringToANSI(sessionFile.wstr(), false);
-		std::ofstream strm(filenameAnsi.c_str());
-	#endif
-#else
-	std::ofstream strm(sessionFile.c_str());
-#endif
+	std::ofstream strm;
+	IBK::open_ofstream(strm, sessionFile);
 
 	// configure mappers
 	std::string mappers;

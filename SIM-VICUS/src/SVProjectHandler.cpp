@@ -38,6 +38,7 @@
 #include <QInputDialog>
 #include <QTimer>
 #include <QCryptographicHash>
+#include <QPushButton>
 
 #include <QtExt_Directories.h>
 
@@ -182,8 +183,8 @@ bool SVProjectHandler::closeProject(QWidget * parent) {
 
 	} // if (isModified())
 
-	// Remove all auto-saves
-	emit removeProjectAutoSaves(m_projectFile);
+	// remove autosave file upon close
+	QFile::remove(m_projectFile + "~"); // remove backup file.
 
 	// saving succeeded, now we can close the project
 	destroyProject();
@@ -196,17 +197,47 @@ bool SVProjectHandler::closeProject(QWidget * parent) {
 }
 
 
-void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	bool silent) {
+void SVProjectHandler::loadProject(QWidget * parent, QString fileName,	bool silent) {
 	FUNCID(SVProjectHandler::loadProject);
 
 	// we must not have a project loaded
 	IBK_ASSERT(!isValid());
 
+	bool autosaveLoaded = false;
 	do {
 		m_reload = false;
 
 		// create a new project
 		createProject();
+
+		// check for autosave file
+		if (QFile::exists(fileName + "~")) {
+			QDateTime timeBackup = QFileInfo(fileName + "~").lastModified();
+			QDateTime timeProject = QFileInfo(fileName).lastModified();
+			QMessageBox msgbox(QMessageBox::Question, tr("Load autosave backup?"), tr("There exists a backup file for "
+				"the project.\nBackup file date %1,\nproject last saved on %2.\n Load backup file or discard autosave backup?")
+							   .arg(timeBackup.toString("yyyy-MM-dd hh:mm:ss"), timeProject.toString("yyyy-MM-dd hh:mm:ss")),
+							   QMessageBox::Cancel, parent);
+			// add buttons
+			QPushButton * btnLoadBackup = new QPushButton("Load backup");
+			QPushButton * btnRejectBackup = new QPushButton("Discard backup");
+			msgbox.addButton(btnLoadBackup, QMessageBox::YesRole); // dialog takes ownership
+			msgbox.addButton(btnRejectBackup, QMessageBox::NoRole); // dialog takes ownership
+			msgbox.exec(); // ignore return code, as we have custom buttons
+
+			if (msgbox.clickedButton() == btnLoadBackup) {
+				// we load the backup
+				autosaveLoaded = true; // remember to fix the filepath afterwards
+				fileName += "~";
+			}
+			else if (msgbox.clickedButton() == btnRejectBackup) {
+				QFile::remove(fileName + "~"); // remove backup file
+			}
+			else
+				return; // dialog was canceled
+
+
+		}
 
 		try {
 			if (!read(fileName))
@@ -255,6 +286,15 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 		// fixes above
 		m_modified = have_modified_project;
 
+		// fix project file again if we have read a backup
+		if (autosaveLoaded) {
+			fileName.chop(1); // remove trailing ~
+			m_projectFile.chop(1);
+			// also update time stamp to that of original project, otherwise we get a modified warning here
+			m_lastReadTime = QFileInfo(fileName).lastModified();
+		}
+
+		// this updates the filename in main menu, hence we need to fix the backup file name before this call
 		emit updateActions();
 	}
 	catch (IBK::Exception & ex) {
@@ -295,12 +335,14 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 }
 
+
 void SVProjectHandler::reloadProject(QWidget * parent) {
 	QString projectFileName = projectFile();
 	m_modified = false; // so that closeProject doesn't ask questions
 	closeProject(parent);
 	loadProject(parent, projectFileName, false); // emits updateActions() if project was successfully loaded
 }
+
 
 void SVProjectHandler::importProject(VICUS::Project & other) {
 	// we must have a project loaded
@@ -423,6 +465,9 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 		return SaveCancelled;
 	}
 
+	// remove previous backup file
+	QFile::remove(m_projectFile + "~"); // remove backup file
+
 	// relay to saveProject() which updates modified flag and emits corresponding signals.
 	if (saveProject(parent, filename) != SaveOK)
 		return SaveFailed; // saving failed
@@ -430,103 +475,19 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 	return SaveOK;
 }
 
-SVProjectHandler::SaveResult SVProjectHandler::autoSave() {
-	FUNCID(SVProjectHandler::autoSave);
 
-	// Project name
-	QString projectName = m_projectFile.isEmpty() ? "UnnamedProject" : m_projectFile;
-
-	// Path
-	IBK::Path path(projectName.toStdString());
-
-	// Get baseName
-	QString originName = QString::fromStdString(path.filename().str());
-
-	const QDateTime now = QDateTime::currentDateTime();
-	const QString timestamp = now.toString(QLatin1String("yyyyMMdd-hhmmss"));
-
-	QString metaData = timestamp + "_" + QString::fromStdString(path.parentPath().str());
-	const QString metaHash = QString(QCryptographicHash::hash(metaData.toStdString().c_str(), QCryptographicHash::Md5).toHex());
-	QString fname = originName;
-
-	// if the file already ends with ".vicus" it will be removed
-	if (fname.endsWith(SVSettings::instance().m_projectFileSuffix))
-		fname.remove(SVSettings::instance().m_projectFileSuffix);
-
-	fname += "(" + metaHash + ")";
-
-	// Append ".vicus.bak"
-	fname.append(SVSettings::instance().m_projectFileAutoSaveSuffix);
-
-	// update standard placeholders in project file
-	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]		= QtExt::Directories::databasesDir().toStdString();
-	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
-
-	// update embedded database
-	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
-
-	// Auto-Save directories
-	QString autoSaveBase = QtExt::Directories::userDataDir() + "/autosaves/";
-	QString autoSaveName = autoSaveBase + fname;
-
-	QDir baseDir(autoSaveBase);
-	if(!baseDir.exists())
-		QDir(QtExt::Directories::userDataDir()).mkdir("autosaves");
-
-	QFile file(autoSaveName);
-	// auto-save project file
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1' (path does not exist or missing permissions).")
-						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-		return SVProjectHandler::SaveCancelled;
-	}
-	file.close();
-
-	try {
-		m_project->writeXML(IBK::Path(autoSaveName.toStdString()));
-	}
-	catch(IBK::Exception &ex) {
-		IBK::IBK_Message(IBK::FormatString("Cannot create autosave file '%1'. Exception in writing xml.")
-						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-		return SVProjectHandler::SaveCancelled;
-	}
-
-	QString info(autoSaveBase + "/autosave-metadata.info");
-	QFile autoSaveInformation(info);
-	unsigned int size = autoSaveInformation.size();
-
-	if(!autoSaveInformation.open(QIODevice::Append | QIODevice::Text)) {
-		IBK::IBK_Message(IBK::FormatString("Cannot create autosave metadata-file '%1' (path does not exist or missing permissions).")
-						 .arg(info.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-		return SVProjectHandler::SaveCancelled;
-	}
-
-	// Check whether file is empty
-	QTextStream out(&autoSaveInformation);
-	if(size == 0) { // empty and add header data
-		out << "Filename\tHash\tTimestamp\tPath\n";
-	}
-
-	QString basePath;
-	if(!path.exists())
-		basePath = "-";
-	else
-		basePath = QString::fromStdString(path.parentPath().str());
-
-	out << originName << "\t" << metaHash << "\t" << timestamp << "\t" << basePath << "\n";
-
-	autoSaveInformation.close();
-
-	return SaveOK; // saving succeeded
-}
-
-
-SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList) {
+SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList, bool autosave) {
 
 	// check project file ending, if there is none append it
 	QString fname = fileName;
-	if (!fname.endsWith(SVSettings::instance().m_projectFileSuffix))
-		fname.append( SVSettings::instance().m_projectFileSuffix );
+	if (autosave) {
+		// Note: for autosave we expect a valid filename and do not modify the passed name
+		fname += "~";
+	}
+	else {
+		if (!fname.endsWith(SVSettings::instance().m_projectFileSuffix))
+			fname.append( SVSettings::instance().m_projectFileSuffix );
+	}
 
 	// updated created and lastEdited tags
 	if (m_project->m_projectInfo.m_created.empty())
@@ -542,6 +503,10 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 
 	// save project file
 	if (!write(fname)) {
+		m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
+
+		if (autosave)
+			return SaveFailed;
 
 		QMessageBox::critical(
 				parent,
@@ -549,9 +514,11 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 				tr("Error while saving project file, see error log file '%1' for details.").arg(QtExt::Directories::globalLogFile())
 				);
 
-		m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
 		return SaveFailed;
 	}
+
+	if (autosave)
+		return SaveOK;
 
 	m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
 
@@ -647,7 +614,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 		unsigned int oldId = e.m_id;
 		unsigned int newId = db.add(e, oldId); // e.m_id gets modified here!
 		IBK::IBK_Message( IBK::FormatString(importMsg)
-			.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+			.arg(e.m_displayName.string(),5,std::ios_base::left).arg(oldId).arg(newId),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		if (newId != oldId)
 			idSubstitutionMap[oldId] = newId;
@@ -658,7 +625,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 			// we need to adjust the ID name of material
 			idSubstitutionMap[e.m_id] = existingElement->m_id;
 			IBK::IBK_Message( IBK::FormatString(existingMsg)
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+				.arg(e.m_displayName.string(),5,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
 							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
@@ -1034,6 +1001,31 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 }
 
 
+void SVProjectHandler::onAutoSave() {
+	FUNCID(SVProjectHandler::onAutoSave);
+
+	// no autosave without project
+	if (!isValid())
+		return;
+
+	// no autosave without existing filename
+	if (m_projectFile.isEmpty())
+		return;
+
+	// save backup
+	if (saveProject(nullptr, m_projectFile, false, true) == SaveOK) {
+		// remember to strip the trailing ~ again
+		m_projectFile.chop(1);
+		IBK::IBK_Message( IBK::FormatString("Auto-saved project in file %1\n").arg( (m_projectFile + "~").toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	}
+	else
+		IBK::IBK_Message("Error autosaving project", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+}
+
+
+
+
 // *** PRIVATE MEMBER FUNCTIONS ***
 
 void SVProjectHandler::createProject() {
@@ -1128,7 +1120,6 @@ bool SVProjectHandler::write(const QString & fname) const {
 
 	try {
 		IBK::Path filename(fname.toStdString());
-		IBK::Path newProjectDir = filename.parentPath();
 		IBK::Path oldProjectDir(m_projectFile.toStdString());
 		std::map<std::string, IBK::Path> pmap;
 		try {

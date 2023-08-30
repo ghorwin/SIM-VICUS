@@ -142,7 +142,7 @@ void SVDBVentilationNaturalTableModel::resetModel() {
 
 QModelIndex SVDBVentilationNaturalTableModel::addNewItem() {
 	VICUS::VentilationNatural venti;
-	venti.m_displayName.setEncodedString("en:<new natural ventilation model>");
+	venti.m_displayName.setString(tr("<new natural ventilation model>").toStdString(), IBK::MultiLanguageString::m_language);
 
 	// set default parameters
 

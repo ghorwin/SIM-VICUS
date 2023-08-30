@@ -182,22 +182,28 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		Q_ASSERT(info != nullptr);
 
 		for (unsigned int ID : info->m_nodeIDs) {
-			const VICUS::Object * o = project().objectById(ID);
-			if (o == nullptr) {
-				qCritical() << "Object with ID" << ID << "does not exist!";
-				continue;
-			}
-			auto itemId = m_treeItemMap.find(ID);
-			if (itemId == m_treeItemMap.end()) {
-				qCritical() << "Tree node for object with ID" << ID << "does not exist!";
-				continue;
-			}
-			QTreeWidgetItem * item = itemId->second;
-			m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
 			if(ID == 0) { // Special handling for plain geometry
+				auto itemId = m_treeItemMap.find(0);
+				QTreeWidgetItem * item = itemId->second;
+				Q_ASSERT(item!=nullptr);
+				m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
 				item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, project().m_plainGeometry.m_visible);
 				item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, project().m_plainGeometry.m_selected);
-			} else {
+				m_ui->treeWidget->blockSignals(false);
+			}
+			else {
+				const VICUS::Object * o = project().objectById(ID);
+				if (o == nullptr) {
+					qCritical() << "Object with ID" << ID << "does not exist!";
+					continue;
+				}
+				auto itemId = m_treeItemMap.find(ID);
+				if (itemId == m_treeItemMap.end()) {
+					qCritical() << "Tree node for object with ID" << ID << "does not exist!";
+					continue;
+				}
+				QTreeWidgetItem * item = itemId->second;
+				m_ui->treeWidget->blockSignals(true); // prevent side effects from "setData()"
 				item->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, o->m_visible);
 				item->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, o->m_selected);
 			}

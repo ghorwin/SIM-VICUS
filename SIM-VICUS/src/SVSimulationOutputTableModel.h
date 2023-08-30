@@ -57,8 +57,9 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 	QVariant data(const QModelIndex & index, int role) const override;
 
-	/*! Updates the internal data storage of the model. */
-	void updateListFromFile(const QString & outputRefListFilepath);
+	/*! Updates the internal data storage of the model.
+	 *  If enableSeparateVectorIndexSelection=false, outputs of same quantity and object name but different ids (e.g. constructions) are joined to one output. It is not possible to select the vector index then.  */
+	void updateListFromFile(const QString & outputRefListFilepath, bool enableSeparateVectorIndexSelection);
 
 	/*! Checks if the defined output is available. */
 	bool haveOutput(const VICUS::OutputDefinition& of) const;
@@ -76,7 +77,8 @@ private:
 	};
 
 	/*! List of variables from output definitions file. */
-	std::vector<OutputVariable> m_variables;
+	std::vector<OutputVariable>			m_variables;
+
 };
 
 Q_DECLARE_METATYPE(std::set<unsigned int>)

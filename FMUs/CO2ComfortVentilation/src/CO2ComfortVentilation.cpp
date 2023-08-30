@@ -499,9 +499,15 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 
 	// this is now the path without column indicator
 	try {
-#if defined(_WIN32) && !defined(__MINGW32__)
-		std::ifstream in(fpath.wstr().c_str());
+#if defined(_WIN32)
+
+#if defined(_MSC_VER)
+		std::ifstream in(fpath.wstr());
 #else
+		std::string filenameAnsi = IBK::WstringToANSI(fpath.wstr(), false);
+		std::ifstream in(filenameAnsi.c_str());
+#endif
+#else // defined(_WIN32)
 		std::ifstream in(fpath.c_str());
 #endif
 		if (!in)
