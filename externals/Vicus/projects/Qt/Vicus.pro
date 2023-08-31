@@ -49,8 +49,8 @@ HEADERS += \
 	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EmbeddedDatabase.h \
-	../../src/VICUS_EPDCategroySet.h \
-	../../src/VICUS_EPDDataset.h \
+	../../src/VICUS_EpdCategorySet.h \
+	../../src/VICUS_EpdDataset.h \
 	../../src/VICUS_EpdModuleDataset.h \
 	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
