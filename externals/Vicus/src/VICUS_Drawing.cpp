@@ -133,7 +133,8 @@ const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries(const Drawing &
 		m_planeGeometries.clear();
 
 		QFont font("Arial");
-		font.setPointSize(2 * m_height);
+		double size = std::max(1.0, FONT_SCALING * m_height * drawing.m_scalingFactor);
+		font.setPointSize(size);
 
 		generatePlanesFromText(m_text.toStdString(), font, m_alignment, m_rotationAngle, drawing.m_rotationMatrix, drawing.m_origin,
 							   m_basePoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
@@ -586,10 +587,10 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		double length = (m_leftPoint - m_rightPoint).magnitude();
 
 		QFont font("Arial");
-		font.setPointSize(2 * m_style->m_textHeight);
 
+		double size = std::max(1.0, FONT_SCALING * m_style->m_textHeight * drawing.m_scalingFactor);
+		font.setPointSize(size);
 		// qDebug() << "DIM STYLE CHANGED";
-
 
 		m_pickPoints.push_back(m_textPoint);
 
@@ -1367,7 +1368,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Ellipse::points() const {
 		double startAngle = m_startAngle;
 		double endAngle = m_endAngle;
 
-		double angleStep = (endAngle - startAngle) / SEGMENT_COUNT_ELLIPSE;
+		double angleStep = (endAngle - startAngle) / (SEGMENT_COUNT_ELLIPSE - 1);
 
 		double majorRadius = sqrt(pow(m_majorAxis.m_x, 2) + pow(m_majorAxis.m_y, 2));
 		double minorRadius = majorRadius * m_ratio;
@@ -1377,7 +1378,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Ellipse::points() const {
 
 		m_pickPoints.resize(SEGMENT_COUNT_ELLIPSE);
 
-		for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; ++i) {
+		for (unsigned int i = 0; i < SEGMENT_COUNT_ELLIPSE; ++i) {
 
 			double currentAngle = startAngle + i * angleStep;
 
@@ -1714,8 +1715,8 @@ void Drawing::generatePlanesFromText(const std::string &text, const QFont &font,
 		for (unsigned int i=0; i<poly.size(); ++i) {
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-			IBKMK::Vector3D v3D = IBKMK::Vector3D(0.5 *  point.x() + basePoint.m_x + origin.m_x,
-												  0.5 * -point.y() + basePoint.m_y + origin.m_y,
+			IBKMK::Vector3D v3D = IBKMK::Vector3D(1 / FONT_SCALING / scalingFactor *  point.x() + basePoint.m_x + origin.m_x,
+												  1 / FONT_SCALING / scalingFactor * -point.y() + basePoint.m_y + origin.m_y,
 												  zScale);
 
 			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);

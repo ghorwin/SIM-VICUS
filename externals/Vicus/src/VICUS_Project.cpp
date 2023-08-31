@@ -846,7 +846,7 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 		if (!dl->m_visible)
 			continue;
 
-		std::vector<IBKMK::Vector2D> verts = drawObj.points();
+		const std::vector<IBKMK::Vector2D> &verts = drawObj.points();
 		for (const IBKMK::Vector2D &p : verts) {
 
 			// Create Vector from start and end point of the line,

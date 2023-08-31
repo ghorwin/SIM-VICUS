@@ -47,9 +47,9 @@ extern const char * XML_READ_UNKNOWN_NAME;
 extern const char * DATABASE_PLACEHOLDER_NAME;
 extern const char * USER_DATABASE_PLACEHOLDER_NAME;
 
-const double MAX_SEGMENT_ARC_LENGHT			= 30;
-const unsigned int SEGMENT_COUNT_CIRCLE		= 30;
-const unsigned int SEGMENT_COUNT_ELLIPSE	= 30;
+const double MAX_SEGMENT_ARC_LENGHT			= 50;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 10;
 
 // Multiplyer for different layers and their heights
 const double Z_MULTIPLYER					= 0.00005;
@@ -57,6 +57,8 @@ const double Z_MULTIPLYER					= 0.00005;
 const double DEFAULT_LINE_WEIGHT			= 0.05;
 // multiplier to apply to width of entities
 const double DEFAULT_LINE_WEIGHT_SCALING	= 0.005;
+
+const double FONT_SCALING = 0.5;
 
 #define VICUS_PLANE_PROJECTION_TOLERANCE 1e-3
 

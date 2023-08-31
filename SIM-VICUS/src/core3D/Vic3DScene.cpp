@@ -2652,10 +2652,8 @@ void Scene::pick(PickObject & pickObject) {
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
-		if (!project().m_viewSettings.m_gridPlanes[i].m_isVisible)
-			continue;
-
-		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
+		if (project().m_viewSettings.m_gridPlanes[i].m_isVisible &&
+				project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
@@ -2920,8 +2918,8 @@ void Scene::pickDrawings(PickObject &pickObject,
 		addPickPoint<VICUS::Drawing::Arc>(pickObject, d.m_arcs, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Circle>(pickObject, d.m_circles, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Ellipse>(pickObject, d.m_ellipses, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Line>(pickObject, d.m_lines, d, nearPoint, direction, true);
-		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, true);
+		addPickPoint<VICUS::Drawing::Line>(pickObject, d.m_lines, d, nearPoint, direction, false);
+		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Solid>(pickObject, d.m_solids, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::LinearDimension>(pickObject, d.m_linearDimensions, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
