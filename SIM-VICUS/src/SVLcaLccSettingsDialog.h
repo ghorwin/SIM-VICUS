@@ -203,10 +203,10 @@ private:
 	Ui::SVLcaLccSettingsDialog							*m_ui;
 
 	/*! Pointer to LCA Settings. */
-	const VICUS::LcaSettings							*m_lcaSettings = nullptr;
+	VICUS::LcaSettings									*m_lcaSettings = nullptr;
 
 	/*! Pointer to LCC Settings. */
-	const VICUS::LccSettings							*m_lccSettings = nullptr;
+	VICUS::LccSettings									*m_lccSettings = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;

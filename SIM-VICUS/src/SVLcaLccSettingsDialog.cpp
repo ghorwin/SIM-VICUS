@@ -106,27 +106,31 @@ SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 	connect(m_ui->checkBoxC4, &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
 	connect(m_ui->checkBoxD,  &QCheckBox::stateChanged, this, &SVLcaLccSettingsDialog::setModuleState);
 
-	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
+	for(int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
 		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::CalculationMode", i), i);
 
-	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
+	for(int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
 		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::CertificationSytem", i), i);
 
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
 	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "Energy Price increase", true, true);
-	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "General Price increase", true, true);
-	m_ui->lineEditTimePeriod->setup(0, 1e10, "Time period for evaluation", false, true);
+	m_ui->lineEditPriceIncreaseGeneral->setup(0, 100, "General Price increase", true, true);
 
 	m_ui->lineEditGasPrice->setup(0, 1e10, "Gas price for evaluation in €/kWh", false, true);
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
 	m_ui->lineEditElectricityPrice->setup(0, 1e10, "Electricity price for evaluation in €/kWh", false, true);
 
+	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
+									SVSettings::instance().m_dontUseNativeDialogs);
+
 	updateUi();
 }
+
 
 SVLcaLccSettingsDialog::~SVLcaLccSettingsDialog() {
 	delete m_ui;
 }
+
 
 void SVLcaLccSettingsDialog::calculateLCA() {
 	FUNCID(SVLcaLccSettingsDialog::calculateLCA);
@@ -896,34 +900,34 @@ void SVLcaLccSettingsDialog::setCheckBoxState(QCheckBox *cb, int bitmask) {
 	cb->blockSignals(false);
 }
 
+
 SVLcaLccResultsDialog *SVLcaLccSettingsDialog::lcaResultsDialog() {
 	if(m_lcaResultDialog == nullptr)
 		m_lcaResultDialog = new SVLcaLccResultsDialog(this);
 	return m_lcaResultDialog;
 }
 
+
 void SVLcaLccSettingsDialog::updateUi() {
 	m_ui->groupBoxLcaCalc->blockSignals(true);
 	m_ui->groupBoxLccSettings->blockSignals(true);
 	m_ui->groupBoxGeneral->blockSignals(true);
 
-	m_ui->lineEditArea->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
+	// Note: we expect all units to be valid in all parameters and checked!
 
-	m_ui->lineEditTimePeriod->setText(QString("%1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
+	m_ui->lineEditArea->setText(QString("%L1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].value));
 
-	m_ui->lineEditInterestRate->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
-	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
-	m_ui->lineEditPriceIncreaseGeneral->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].get_value("%")));
+	m_ui->lineEditTimePeriod->setText(QString("%L1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
 
-	m_ui->lineEditCoalConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a")));
-	m_ui->lineEditGasConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a")));
-	m_ui->lineEditElectricityConsumption->setText(QString("%1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a")));
+	m_ui->lineEditInterestRate->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
+	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
+	m_ui->lineEditPriceIncreaseGeneral->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].get_value("%")));
 
-	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
-									SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->lineEditCoalConsumption->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a")));
+	m_ui->lineEditGasConsumption->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a")));
+	m_ui->lineEditElectricityConsumption->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a")));
 
 	// m_ui->filepathResults->setup("Select directory for LCA results", false, true, "", SVSettings::instance().m_dontUseNativeDialogs);
-
 
 	QObjectList ol;
 	ol.push_back(m_ui->checkBoxA1);
@@ -1006,9 +1010,9 @@ void SVLcaLccSettingsDialog::updateUi() {
 	else
 		m_ui->lineEditEpdElectricity->setText("-");
 
-	m_ui->lineEditCoalPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100, 7, 'f', 2 ) );
-	m_ui->lineEditElectricityPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100, 7, 'f', 2 ) );
-	m_ui->lineEditGasPrice->setText( QString( "%1" ).arg( (double)m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100, 7, 'f', 2 ) );
+	m_ui->lineEditCoalPrice->setText( QString( "%L1" ).arg( m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100.0, 7, 'f', 2 ) );
+	m_ui->lineEditElectricityPrice->setText( QString( "%L1" ).arg( m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100.0, 7, 'f', 2 ) );
+	m_ui->lineEditGasPrice->setText( QString( "%L1" ).arg( m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0, 7, 'f', 2 ) );
 
 }
 
@@ -1179,24 +1183,31 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 			}
 		}
 	}
-	m_ui->lineEditArea->setText(QString::number(area));
+	m_ui->lineEditArea->setText(QString("%L1").arg(area, 0, 'f', 2));
+	QMessageBox::information(this, QString(), tr("The net ground floor area calculation is based on all surfaces with inclination angle < 5°. "
+												 "The geometry view shows now only the counted surfaces."));
 }
 
 
 void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 	try {
-		const double &coalConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value;
-		const double &gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value;
-		const double &electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
+		// TODO : kWh/a  -> Energy/Time -> Power     --> J/s is SI base unit
+
+		// get annual consumptions in kWh/a
+
+		double coalConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a");
+		double gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a");
+		double electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a");
 
 		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
 								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
 								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
-		totalEnergyCost /= 100; // Mind we store our Prices in cent --> convert to € by /100
+		totalEnergyCost /= 100.0; // Mind we store our Prices in cent --> convert to € by /100
 
 		calculateLCA();
 
-		std::vector<double> investCost(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"), 0.0);
+		unsigned int numberOfYears = (unsigned int)m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+		std::vector<double> investCost(numberOfYears, 0.0);
 
 		lcaResultsDialog()->setup();
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings, investCost);
@@ -1215,8 +1226,8 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 
 
 void SVLcaLccSettingsDialog::on_lineEditArea_editingFinishedSuccessfully() {
-	if(m_ui->lineEditArea->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
+	if (m_ui->lineEditArea->isValid())
+		VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
 	else
 		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].value);
 }
@@ -1224,7 +1235,7 @@ void SVLcaLccSettingsDialog::on_lineEditArea_editingFinishedSuccessfully() {
 
 void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully() {
 	if(m_ui->lineEditTimePeriod->isValid()) {
-		float years = m_ui->lineEditTimePeriod->value();
+		unsigned int years = (unsigned int)m_ui->lineEditTimePeriod->value();
 		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
 	}
 	else
@@ -1234,7 +1245,7 @@ void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully()
 
 void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully() {
 	if(m_ui->lineEditPriceIncreaseGeneral->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
+		VICUS::KeywordList::setParameter(m_lccSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
 	else
 		m_ui->lineEditPriceIncreaseGeneral->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
 }
@@ -1242,7 +1253,7 @@ void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseGeneral_editingFinishedSucc
 
 void SVLcaLccSettingsDialog::on_lineEditGasConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditGasConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
+		VICUS::KeywordList::setParameter(m_lccSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
 	else
 		m_ui->lineEditGasConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].value);
 }
@@ -1250,7 +1261,7 @@ void SVLcaLccSettingsDialog::on_lineEditGasConsumption_editingFinishedSuccessful
 
 void SVLcaLccSettingsDialog::on_lineEditElectricityConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditElectricityConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
+		VICUS::KeywordList::setParameter(m_lccSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
 	else
 		m_ui->lineEditElectricityConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].value);
 }
@@ -1258,15 +1269,15 @@ void SVLcaLccSettingsDialog::on_lineEditElectricityConsumption_editingFinishedSu
 
 void SVLcaLccSettingsDialog::on_lineEditCoalConsumption_editingFinishedSuccessfully() {
 	if(m_ui->lineEditCoalConsumption->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
+		VICUS::KeywordList::setParameter(m_lccSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
 	else
-		m_ui->lineEditArea->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value);
+		m_ui->lineEditCoalConsumption->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_CoalConsumption].value);
 }
 
 
 void SVLcaLccSettingsDialog::on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully() {
 	if(m_ui->lineEditPriceIncreaseEnergy->isValid())
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
+		VICUS::KeywordList::setParameter(m_lccSettings->m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
 	else
 		m_ui->lineEditPriceIncreaseEnergy->setValue(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value);
 
@@ -1320,7 +1331,7 @@ void SVLcaLccSettingsDialog::on_toolButtonSelectCoal_clicked() {
 
 void SVLcaLccSettingsDialog::on_lineEditCoalPrice_editingFinishedSuccessfully() {
 	if(m_ui->lineEditCoalPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, m_ui->lineEditCoalPrice->value()*100);
+		VICUS::KeywordList::setIntPara(m_lccSettings->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, m_ui->lineEditCoalPrice->value()*100);
 
 	updateUi();
 }
@@ -1328,7 +1339,7 @@ void SVLcaLccSettingsDialog::on_lineEditCoalPrice_editingFinishedSuccessfully() 
 
 void SVLcaLccSettingsDialog::on_lineEditGasPrice_editingFinishedSuccessfully() {
 	if(m_ui->lineEditGasPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, m_ui->lineEditGasPrice->value()*100);
+		VICUS::KeywordList::setIntPara(m_lccSettings->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, m_ui->lineEditGasPrice->value()*100);
 
 	updateUi();
 }
@@ -1336,7 +1347,7 @@ void SVLcaLccSettingsDialog::on_lineEditGasPrice_editingFinishedSuccessfully() {
 
 void SVLcaLccSettingsDialog::on_lineEditElectricityPrice_editingFinishedSuccessfully() {
 	if(m_ui->lineEditElectricityPrice->isValid())
-		VICUS::KeywordList::setIntPara(const_cast<VICUS::LccSettings*>(m_lccSettings)->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, m_ui->lineEditElectricityPrice->value()*100);
+		VICUS::KeywordList::setIntPara(m_lccSettings->m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, m_ui->lineEditElectricityPrice->value()*100);
 
 	updateUi();
 }
