@@ -1,0 +1,10 @@
+{
+	"title":"DXFImportPlugin",
+	"short-description":"en:This is a import plugin for DXF files.|de:Dies ist ein Import-Plugin für DXF Dateien.",
+	"long-description":"en:This is a import plugin for DXF files.|de:Dies ist ein Import-Plugin für DXF Dateien.",
+	"version":"1.0.0",
+	"vicus-version":"1.1",
+	"webpage":"https://sim-vicus.de",
+	"author":"Stephan Hirth",
+	"license":"GPL 3.0"
+}

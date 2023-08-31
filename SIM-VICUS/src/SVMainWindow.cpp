@@ -2247,3 +2247,28 @@ void SVMainWindow::on_actionEPDElements_triggered() {
 	dbEpdEditDialog()->edit();
 }
 
+
+void SVMainWindow::on_actionExternal_Post_Processor_triggered() {
+	on_actionOpenPostProcessing_triggered();
+}
+
+
+void SVMainWindow::on_actionDWD_Weather_Data_Converter_triggered() {
+	QString dwdPath = SVSettings::instance().m_DWDConverterExecutable;
+	if (dwdPath.isEmpty() || !QFileInfo::exists(dwdPath)) {
+		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the DWD "
+																	 "weather downloader in the preferences dialog!"));
+		// spawn preferences dialog
+		preferencesDialog()->edit(0);
+		// still not ccm editor selected?
+		dwdPath = SVSettings::instance().m_DWDConverterExecutable;
+		if (dwdPath.isEmpty() || !QFileInfo::exists(dwdPath))
+			return;
+	}
+	bool res = QProcess::startDetached(dwdPath, QStringList(), QString());
+	if (!res) {
+		QMessageBox::critical(this, tr("Error starting external application"), tr("DWD weather downloader '%1' could not be started.")
+							  .arg(dwdPath));
+	}
+}
+

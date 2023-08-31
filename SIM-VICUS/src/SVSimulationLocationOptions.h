@@ -81,6 +81,8 @@ private slots:
 
 	void on_radioButtonCustomFilePath_toggled(bool checked);
 
+	void on_pushButtonOpenDWDConverter_clicked();
+
 private:
 
 	void updateLocationInfoText(const SVClimateFileInfo * dataPtr);

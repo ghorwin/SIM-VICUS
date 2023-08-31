@@ -39,12 +39,14 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->filepathTextEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePath7Zip->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathCCMEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathDWDConverter->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathMasterSim->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #else
 	m_ui->filepathPostProc->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePath7Zip->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathDWDConverter->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathMasterSim->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #endif
 
@@ -54,9 +56,13 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->pushButtonAutoDetectPP2->setVisible(false);
 	m_ui->pushButtonAutoDetect7zip->setVisible(false);
 	m_ui->pushButtonAutoDetectCCM->setVisible(false);
+	m_ui->pushButtonAutoDetectDWD->setVisible(false);
 	m_ui->pushButtonAutoDetectTextEditor->setVisible(false);
 	m_ui->pushButtonAutoDetectMasterSim->setVisible(false);
 #endif
+
+	connect(m_ui->filePathDWDConverter, &QtExt::BrowseFilenameWidget::editingFinished,
+			this, &SVPreferencesPageTools::on_filePathDWDConverter_editingFinished);
 }
 
 
@@ -66,19 +72,22 @@ SVPreferencesPageTools::~SVPreferencesPageTools() {
 
 
 void SVPreferencesPageTools::updateUi() {
+
 	SVSettings & s = SVSettings::instance();
+
 	// transfer data to Ui
 	m_ui->filepathTextEditor->setFilename(s.m_textEditorExecutable);
 	m_ui->filepathPostProc->setFilename(s.m_postProcExecutable);
 	m_ui->filePath7Zip->setFilename(s.m_7zExecutable);
 	m_ui->filePathCCMEditor->setFilename(s.m_CCMEditorExecutable);
+	m_ui->filePathDWDConverter->setFilename(s.m_DWDConverterExecutable);
 	m_ui->filePathMasterSim->setFilename(s.m_masterSimExecutable);
 
 
 	// TODO : Refactor, let SVSettings auto-detect tool paths and just take them here
 
 	// auto-detect postproc 2 and CCM
-	QString postProc2Path, ccmPath, masterSimPath;
+	QString postProc2Path, ccmPath, masterSimPath, dwdConverterPath;
 
 #ifdef Q_OS_WIN
 	// search for installed x64 version of PostProc2
@@ -105,7 +114,7 @@ void SVPreferencesPageTools::updateUi() {
 	QFileInfo ccmEditor = s.m_CCMEditorExecutable;
 	if (!ccmEditor.exists()) {
 		// search for installed x86 version
-		const char * const CCM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\CCMEditor 1.%1\\CCMEditor.exe";
+		const char * const CCM_INSTALL_LOC2 = "c:\\Program Files\\IBK\\CCMEditor 1.%1\\CCMEditor.exe";
 		for (int i=9; i>=0; --i) {
 			QString ccmLoc = QString(CCM_INSTALL_LOC2).arg(i);
 			if (QFileInfo(ccmLoc).exists()) {
@@ -113,8 +122,6 @@ void SVPreferencesPageTools::updateUi() {
 				break;
 			}
 		}
-
-		m_ui->filePathCCMEditor->setFilename(ccmPath);
 	}
 
 	// search for installed x64 version of MasterSim
@@ -134,6 +141,28 @@ void SVPreferencesPageTools::updateUi() {
 			QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC2).arg(i);
 			if (QFileInfo(masterSimLoc).exists()) {
 				masterSimPath = masterSimLoc;
+				break;
+			}
+		}
+	}
+
+	// search for installed x64 version of DWDConverter
+	QFileInfo dwdConv = s.m_DWDConverterExecutable;
+	const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+	for (int i=9; i>=0; --i) {
+		QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
+		if (QFileInfo(dwdConvLoc).exists()) {
+			dwdConverterPath = dwdConvLoc;
+			break;
+		}
+	}
+	if (dwdConverterPath.isEmpty()) {
+		// search for installed x86 version
+		const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files (x86)\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+		for (int i=9; i>=0; --i) {
+			QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
+			if (QFileInfo(dwdConvLoc).exists()) {
+				dwdConverterPath = dwdConvLoc;
 				break;
 			}
 		}
@@ -176,6 +205,10 @@ void SVPreferencesPageTools::updateUi() {
 	if (!masterSimPath.isEmpty()) {
 		m_ui->filePathMasterSim->setFilename(masterSimPath);
 		s.m_masterSimExecutable = masterSimPath;
+	}
+	if (!dwdConverterPath.isEmpty()) {
+		m_ui->filePathDWDConverter->setFilename(dwdConverterPath);
+		s.m_DWDConverterExecutable = dwdConverterPath;
 	}
 }
 
@@ -325,4 +358,71 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectMasterSim_clicked()
 	}
 }
 
+
+
+void SVPreferencesPageTools::on_pushButtonAutoDetectDWD_clicked() {
+	SVSettings & s = SVSettings::instance();
+	QString toolPath;
+#ifdef Q_OS_WIN
+	const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+	for (int i=9; i>=0; --i) {
+		QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
+		if (QFileInfo(dwdConvLoc).exists()) {
+			toolPath = dwdConvLoc;
+			break;
+		}
+	}
+	if (toolPath.isEmpty()) {
+		// search for installed x86 version
+		const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files (x86)\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+		for (int i=9; i>=0; --i) {
+			QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
+			if (QFileInfo(dwdConvLoc).exists()) {
+				toolPath = dwdConvLoc;
+				break;
+			}
+		}
+	}
+#elif defined(Q_OS_MAC)
+
+	// master simulator on Mac?
+#endif
+
+	if (!toolPath.isEmpty()) {
+		m_ui->filePathDWDConverter->setFilename(toolPath);
+		s.m_DWDConverterExecutable = toolPath;
+	}
+
+}
+
+void SVPreferencesPageTools::on_filePathDWDConverter_editingFinished() {
+	SVSettings & s = SVSettings::instance();
+	s.m_DWDConverterExecutable = m_ui->filePathDWDConverter->filename();
+}
+
+
+void SVPreferencesPageTools::on_pushButtonAutoDetectCCM_clicked() {
+	SVSettings & s = SVSettings::instance();
+	QString toolPath;
+#ifdef Q_OS_WIN
+	const char * const CCM_INSTALL_LOC = "c:\\Program Files\\IBK\\CCMEditor 1.%1\\CCMEditor.exe";
+	for (int i=9; i>=0; --i) {
+		QString ccmLoc = QString(CCM_INSTALL_LOC).arg(i);
+		if (QFileInfo(ccmLoc).exists()) {
+			toolPath = ccmLoc;
+			break;
+		}
+	}
+
+#elif defined(Q_OS_MAC)
+
+	// master simulator on Mac?
+#endif
+
+	if (!toolPath.isEmpty()) {
+		m_ui->filePathCCMEditor->setFilename(toolPath);
+		s.m_CCMEditorExecutable = toolPath;
+	}
+
+}
 

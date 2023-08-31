@@ -196,5 +196,6 @@
         <file>gfx/actions/simulation-temperature.png</file>
         <file>gfx/style/dark.png</file>
         <file>gfx/style/white.png</file>
+        <file>gfx/actions/DWDWeatherDataConverter.png</file>
     </qresource>
 </RCC>

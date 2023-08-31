@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QProgressDialog>
+#include <QProcess>
 
 #include <NANDRAD_Location.h>
 #include <NANDRAD_KeywordList.h>
@@ -145,6 +146,9 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 
 
 void SVSimulationLocationOptions::updateUi(bool updatingPlotsRequired) {
+
+	bool haveDWDConv = QFileInfo(SVSettings::instance().m_DWDConverterExecutable).exists();
+	m_ui->pushButtonOpenDWDConverter->setVisible(haveDWDConv);
 
 	m_ui->tableViewClimateFiles->resizeRowsToContents();
 
@@ -817,6 +821,21 @@ void SVSimulationLocationOptions::on_radioButtonCustomFilePath_toggled(bool chec
 	}
 	else {
 		on_tableViewClimateFiles_clicked(m_ui->tableViewClimateFiles->currentIndex());
+	}
+}
+
+
+void SVSimulationLocationOptions::on_pushButtonOpenDWDConverter_clicked() {
+	QString dwdPath = SVSettings::instance().m_DWDConverterExecutable;
+	if (dwdPath.isEmpty() || !QFileInfo::exists(dwdPath)) {
+		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
+																	 "climate editor in the preferences dialog!"));
+		return;
+	}
+	bool res = QProcess::startDetached(dwdPath, QStringList(), QString());
+	if (!res) {
+		QMessageBox::critical(this, tr("Error starting external application"), tr("Climate editor '%1' could not be started.")
+							  .arg(dwdPath));
 	}
 }
 

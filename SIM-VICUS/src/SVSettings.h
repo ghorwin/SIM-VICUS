@@ -238,6 +238,9 @@ public:
 	/*! Path to CCMEditor executable. */
 	QString						m_CCMEditorExecutable;
 
+	/*! Path to DWDWeatherDataConverter executable. */
+	QString						m_DWDConverterExecutable;
+
 	/*! Path to MasterSim. */
 	QString						m_masterSimExecutable;
 

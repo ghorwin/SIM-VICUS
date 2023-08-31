@@ -378,6 +378,10 @@ private slots:
 
 	void on_actionEPDElements_triggered();
 
+	void on_actionExternal_Post_Processor_triggered();
+
+	void on_actionDWD_Weather_Data_Converter_triggered();
+
 private:
 
 	void updateMainView();

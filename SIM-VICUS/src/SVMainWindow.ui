@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -114,7 +114,9 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
+    <addaction name="actionExternal_Post_Processor"/>
     <addaction name="actionToolsCCMeditor"/>
+    <addaction name="actionDWD_Weather_Data_Converter"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
     <property name="title">
@@ -835,6 +837,24 @@
   <action name="actionEPDElements">
    <property name="text">
     <string>EPD elements...</string>
+   </property>
+  </action>
+  <action name="actionDWD_Weather_Data_Converter">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/DWDWeatherDataConverter.png</normaloff>:/gfx/actions/DWDWeatherDataConverter.png</iconset>
+   </property>
+   <property name="text">
+    <string>DWD Weather Data Download...</string>
+   </property>
+  </action>
+  <action name="actionExternal_Post_Processor">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>External Post Processor...</string>
    </property>
   </action>
  </widget>
