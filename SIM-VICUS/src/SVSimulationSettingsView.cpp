@@ -28,6 +28,9 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/simulation-temperature.png");
 	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
 
+	QListWidgetItem *item = m_ui->listWidget->item(3);
+	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+
 	QFont fnt;
 	fnt.setPixelSize(14);
 	m_ui->listWidget->setFont(fnt);
