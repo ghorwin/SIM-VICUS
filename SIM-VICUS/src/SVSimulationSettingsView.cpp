@@ -28,6 +28,7 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/simulation-temperature.png");
 	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
 
+	// disable LCA
 	QListWidgetItem *item = m_ui->listWidget->item(3);
 	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
