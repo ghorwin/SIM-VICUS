@@ -1161,7 +1161,6 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
-					const_cast<VICUS::Surface &>(s).m_visible = false;
 
 					VICUS::Component *comp = m_db->m_components[s.m_componentInstance->m_idComponent];
 					if(comp == nullptr)
@@ -1177,7 +1176,6 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 						if(angle < 5) {
 							qDebug() << "Surface added.";
 							area += s.geometry().area();
-							const_cast<VICUS::Surface &>(s).m_visible = true;
 						}
 					}
 				}
@@ -1185,8 +1183,8 @@ void SVLcaLccSettingsDialog::on_pushButtonAreaDetection_clicked() {
 		}
 	}
 	m_ui->lineEditArea->setText(QString("%L1").arg(area, 0, 'f', 2));
-	QMessageBox::information(this, QString(), tr("The net ground floor area calculation is based on all surfaces with inclination angle < 5°. "
-												 "The geometry view shows now only the counted surfaces."));
+	VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
+	QMessageBox::information(this, QString(), tr("The net ground floor area calculation is based on all surfaces with inclination angle < 5°."));
 }
 
 
@@ -1200,10 +1198,10 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 		double gasConsumption			= m_lccSettings->m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a");
 		double electricityConsumption	= m_lccSettings->m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a");
 
-		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
-								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
-								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
-		totalEnergyCost /= 100.0; // Mind we store our Prices in cent --> convert to € by /100
+//		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
+//								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
+//								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
+//		totalEnergyCost /= 100.0; // Mind we store our Prices in cent --> convert to € by /100
 
 		calculateLCA();
 
@@ -1216,7 +1214,12 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings, investCost);
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings, investCost);
 
-		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
+		// Mind: cost values are in ct/kWh and we convert to EUR/kWh
+		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings,
+				electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100.0,
+				coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100.0,
+				gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0,
+				investCost);
 
 		m_lcaResultDialog->showMaximized();
 	}

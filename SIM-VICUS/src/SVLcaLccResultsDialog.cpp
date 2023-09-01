@@ -33,6 +33,7 @@ double SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit &
 
 	if(refUnit.name() == "a")
 		return 50; // Also not implemented yet
+	return 1;
 }
 
 
@@ -41,13 +42,13 @@ SVLcaLccResultsDialog::SVLcaLccResultsDialog(QWidget *parent) :
 	m_ui(new Ui::SVLcaLccResultsDialog)
 {
 	m_ui->setupUi(this);
-
-	setup();
 }
+
 
 SVLcaLccResultsDialog::~SVLcaLccResultsDialog() {
 	delete m_ui;
 }
+
 
 void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::ComponentType, AggregatedComponentData> &lcaResultMap,
 												 const std::map<unsigned int, AggregatedComponentData> compIdToAggregatedData,
@@ -337,50 +338,59 @@ void SVLcaLccResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
 	m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
 }
 
-void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings, const double &totalEnergyCost,
-												  const std::vector<double> &totalMaterialCost) {
+
+void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings,
+										   double electricityCost, double coalCost, double gasCost,
+										   const std::vector<double> &totalMaterialCost)
+{
 
 	QTableWidget &tab = *m_ui->tableWidgetLccResults;
 
 
-	unsigned int rowCount = lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+	unsigned int rowCount = totalMaterialCost.size();
 	m_ui->tableWidgetLccResults->setRowCount(rowCount);
 	m_ui->tableWidgetLccResults->setSortingEnabled(false);
 
 	double sumMaterialCost = 0.0;
 	double sumEnergyCost = 0.0;
-	double totalArea = lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2");
+	double sumMaterialCostDiscounted = 0.0;
+	double sumEnergyCostDiscounted = 0.0;
+	double totalArea = lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].value;
 
-	for(unsigned int i=0; i<rowCount; ++i) {
+	double annualPriceIncreaseEnergy = lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value;
+	double annualPriceIncreaseGeneral = lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value;
+	double discountingInterestRate = lccSettings.m_para[VICUS::LccSettings::P_DiscountingInterestRate].value;
 
-		unsigned int index = i == 0 ? 0 : i-1;
+	for (unsigned int i=0; i<rowCount; ++i) {
 
-		double priceEnergyIncreaseBefore = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value, index);
-		double priceMaterialIncreaseBefore = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value, index);
+		tab.setItem(i, LCC_Year, new QTableWidgetItem(QString::number(i+1)));
+		double discountingRate = 1/std::pow(1.0 + discountingInterestRate, i);
+		tab.setItem(i, LCC_DiscountingRate, new QTableWidgetItem( QString( "%L1" ).arg( discountingRate, 0, 'f', 2 ) ));
 
-		double priceEnergyIncrease = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value, i);
-		double priceMaterialIncrease = std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value, i);
+		double priceEnergyFactorThisYear = std::pow(1.0 + annualPriceIncreaseEnergy, i);
 
-		double discountingRate = 1/std::pow(1.0 + lccSettings.m_para[VICUS::LccSettings::P_DiscountingInterestRate].value, i);
+		double electricityCostThisYear	= electricityCost * priceEnergyFactorThisYear;
+		double coalCostThisYear			= coalCost * priceEnergyFactorThisYear;
+		double gasCostThisYear			= gasCost * priceEnergyFactorThisYear;
 
+		tab.setItem(i, LCC_PriceElectricity, new QTableWidgetItem( QString( "%L1 €" ).arg( electricityCostThisYear, 0, 'f', 2 ) ));
+		tab.setItem(i, LCC_PriceCoal, new QTableWidgetItem( QString( "%L1 €" ).arg( coalCostThisYear, 0, 'f', 2 ) ));
+		tab.setItem(i, LCC_PriceGas, new QTableWidgetItem( QString( "%L1 €" ).arg( gasCostThisYear, 0, 'f', 2 ) ));
+		double totalEnergyCostsThisYear = electricityCostThisYear + coalCostThisYear + gasCostThisYear;
+		tab.setItem(i, LCC_PriceEnergyTotal, new QTableWidgetItem( QString( "%L1 €" ).arg( totalEnergyCostsThisYear, 0, 'f', 2 ) ));
+		sumEnergyCost += totalEnergyCostsThisYear;
+		tab.setItem(i, LCC_PriceInvestEnergy, new QTableWidgetItem( QString( "%L1 €" ).arg( discountingRate*totalEnergyCostsThisYear, 0, 'f', 2 ) ));
+		sumEnergyCostDiscounted += discountingRate*totalEnergyCostsThisYear;
 
-		tab.setItem(i, ColYear, new QTableWidgetItem(QString::number(i+1)));
+		double priceMaterialFactorThisYear = std::pow(1.0 + annualPriceIncreaseGeneral, i);
+		double totalMaterialCostsThisYear = totalMaterialCost[i]*priceMaterialFactorThisYear;
+		tab.setItem(i, LCC_PriceMaterialCosts, new QTableWidgetItem( QString( "%L1 €" ).arg( totalMaterialCostsThisYear, 0, 'f', 2 ) ));
+		sumMaterialCost += totalMaterialCostsThisYear;
+		tab.setItem(i, LCC_PriceInvestMaterial, new QTableWidgetItem( QString( "%L1 €" ).arg( discountingRate*totalMaterialCostsThisYear, 0, 'f', 2 ) ));
+		sumMaterialCostDiscounted += discountingRate*totalMaterialCostsThisYear;
 
-		tab.setItem(i, ColDiscountingRate, new QTableWidgetItem( QString( "%1 %" ).arg( discountingRate, 7, 'f', 2 ) ));
-
-		tab.setItem(i, ColPriceIncreaseEnergy, new QTableWidgetItem( QString( "%1 %" ).arg( priceEnergyIncrease, 7, 'f', 2 ) ));
-		tab.setItem(i, ColPriceIncreaseGeneral, new QTableWidgetItem(QString( "%1 %" ).arg( priceMaterialIncrease, 7, 'f', 2 )));
-
-		sumMaterialCost += discountingRate * priceMaterialIncreaseBefore * totalMaterialCost[i];
-		sumEnergyCost   += discountingRate * priceEnergyIncreaseBefore   * totalEnergyCost ;
-
-		tab.setItem(i, ColPriceInvestMaterial, new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceMaterialIncreaseBefore * totalMaterialCost[i], 7, 'f', 2 )));
-		tab.setItem(i, ColPriceInvestEnergy,   new QTableWidgetItem( QString( "%1 €" ).arg( discountingRate * priceEnergyIncreaseBefore   * totalEnergyCost  , 7, 'f', 2 )));
-
-		tab.item(i, ColPriceInvestMaterial)->setTextAlignment(Qt::AlignRight);
-		tab.item(i, ColPriceInvestEnergy)->setTextAlignment(Qt::AlignRight);
-
-		for(unsigned int j=0; j<NumColLcc; ++j) {
+		// make all items read-only and right aligned
+		for (unsigned int j=0; j<NUM_LCCColumns; ++j) {
 			QTableWidgetItem &item = *tab.item(i, j);
 			item.setFlags(item.flags() & ~Qt::ItemIsEditable);
 			item.setTextAlignment(Qt::AlignRight);
@@ -388,6 +398,7 @@ void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings
 	}
 
 	double totalCost = sumEnergyCost+sumMaterialCost;
+	double totalCostDiscounted = sumEnergyCostDiscounted+sumMaterialCostDiscounted;
 
 	m_ui->tableWidgetLccOverview->setRowCount(3);
 
@@ -407,75 +418,59 @@ void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings
 	m_ui->tableWidgetLccOverview->setItem(2, ColTitle, item);
 
 	item = new QTableWidgetItem();
-	item->setText(tr("€"));
-	item->setTextAlignment(Qt::AlignRight);
-	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-	m_ui->tableWidgetLccOverview->setItem(0, ColUnit, item);
-
-	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText("€/m2");
-	m_ui->tableWidgetLccOverview->setItem(1, ColUnit, item);
-
-	item = new QTableWidgetItem();
-	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-	item->setTextAlignment(Qt::AlignRight);
-	item->setText(tr("%"));
-	m_ui->tableWidgetLccOverview->setItem(2, ColUnit, item);
-
-	item = new QTableWidgetItem();
-	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( sumMaterialCost, 7, 'f', 2 ));
+	item->setText(QString( "%1 €" ).arg( sumMaterialCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(0, ColsProduction, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( sumEnergyCost, 7, 'f', 2 ));
+	item->setText(QString( "%1 €" ).arg( sumEnergyCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(0, ColsEnergy, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( sumEnergyCost+sumMaterialCost, 7, 'f', 2 ));
+	item->setText(QString( "%1 €" ).arg( totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(0, ColsTotal, item);
+
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( sumMaterialCost/totalArea, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( sumMaterialCostDiscounted/totalArea, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(1, ColsProduction, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( sumEnergyCost/totalArea, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( sumEnergyCostDiscounted/totalArea, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(1, ColsEnergy, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( totalCost/totalArea, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( totalCostDiscounted/totalArea, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(1, ColsTotal, item);
+
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( 100.0*sumMaterialCost/totalCost, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( 100.0*sumMaterialCostDiscounted/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, ColsProduction, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( 100.0*sumEnergyCost/totalCost, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( 100.0*sumEnergyCost/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, ColsEnergy, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%1" ).arg( 100.0*totalCost/totalCost, 7, 'f', 2 ));
+	item->setText(QString( "%1" ).arg( 100.0*totalCostDiscounted/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, ColsTotal, item);
 
 	m_ui->tableWidgetLccResults->resizeColumnsToContents();
@@ -497,11 +492,20 @@ void SVLcaLccResultsDialog::setup() {
 	//SVStyle::formatDatabaseTreeView(m_ui->treeWidgetLcaResults);
 
 	m_ui->treeWidgetLcaResults->setItemsExpandable(true);
-	m_ui->tableWidgetLccResults->setColumnCount(NumColLcc);
+	m_ui->tableWidgetLccResults->setColumnCount(NUM_LCCColumns);
 
 	QStringList headersLcc;
-	headersLcc << tr("Year [a]") << tr("Discounting rate [%]")  << tr("Price increase general [%]")
-			   << tr("Price increase energy [%]") << tr("Energy - net present value  [€]") << tr("Material - net present value  [€]");
+	headersLcc << tr("Year [a]")
+			   << tr("Eletricity costs [€]")
+			   << tr("Gas costs [€]")
+			   << tr("Coal costs [€]")
+			   << tr("Total energy costs [€]")
+			   << tr("Discounting rate")
+			   << tr("Energy - net present value  [€]")
+			   << tr("Material costs [€]")
+			   << tr("Material - net present value  [€]")
+			   << tr("Price increase general [%]")
+			   << tr("Price increase energy [%]");
 	m_ui->tableWidgetLccResults->setHorizontalHeaderLabels(headersLcc);
 
 	m_ui->tableWidgetLccOverview->setColumnCount(NumColLccOverview);

@@ -138,14 +138,17 @@ class SVLcaLccResultsDialog : public QDialog {
 		NumCol
 	};
 
-	enum ColsLcc {
-		ColYear,
-		ColDiscountingRate,
-		ColPriceIncreaseGeneral,
-		ColPriceIncreaseEnergy,
-		ColPriceInvestEnergy,
-		ColPriceInvestMaterial,
-		NumColLcc
+	enum LCCColumns {
+		LCC_Year,
+		LCC_PriceElectricity,
+		LCC_PriceGas,
+		LCC_PriceCoal,
+		LCC_PriceEnergyTotal,
+		LCC_DiscountingRate,
+		LCC_PriceInvestEnergy,		// Present Value - Energy
+		LCC_PriceMaterialCosts,
+		LCC_PriceInvestMaterial,	// Present Value - Material
+		NUM_LCCColumns
 	};
 
 	enum ColsLccOverview {
@@ -176,8 +179,12 @@ public:
 	void setUsageResults(const VICUS::LcaSettings &settings, const double &gasConsumption, const double &electricityConsumption,
 						 const double &coalConsumption);
 
+	/*! Utility costs are given for first year. Material costs are given based on todays costs for each year. */
 	void setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings,
-						const double &totalEnergyCost, const std::vector<double> &totalMaterialCost);
+						double electricityCost,
+						double coalCost,
+						double gasCost,
+						const std::vector<double> &totalMaterialCost);
 
 	/*! Converts the material to the referenced reference quantity from the epd.
 		\param layerThickness Thickness of layer in m
