@@ -368,11 +368,13 @@ void SVLcaLccSettingsDialog::calculateLCA() {
 }
 
 
-bool convertString2Val(double &val, const std::string &text, unsigned int row, unsigned int column) {
+bool convertString2Val(double &val, std::string &text, unsigned int row, unsigned int column) {
 	if(text == "") {
 		val = 0.0;
 		return true;
 	}
+
+	std::replace( text.begin(), text.end(), ',', '.'); // replace all ',' to '.'
 
 	try {
 		val = IBK::string2val<double>(text);
@@ -381,7 +383,7 @@ bool convertString2Val(double &val, const std::string &text, unsigned int row, u
 						 .arg(text).arg(row+1).arg(column+1).arg(ex.what()));
 		return false;
 	}
-	return true;
+		return true;
 }
 
 
@@ -436,6 +438,7 @@ void SVLcaLccSettingsDialog::importOkoebauDat(const IBK::Path & csvPath) {
 	oekobauDatUnit2IBKUnit["m"] = "m";
 	oekobauDatUnit2IBKUnit["kg"] = "kg";
 	oekobauDatUnit2IBKUnit["a"] = "a";
+	oekobauDatUnit2IBKUnit[""] = "-";
 
 	unsigned int id = 1090000;
 
@@ -565,7 +568,7 @@ void SVLcaLccSettingsDialog::importOkoebauDat(const IBK::Path & csvPath) {
 			case ColExpireYear:			epd->m_expireYear = QString::fromStdString(t);			break;
 			case ColDeclarationOwner:	epd->m_manufacturer = QString::fromStdString(t);			break;
 			case ColReferenceSize: {
-				if(t == "")
+				if(t == "" || t == "not available")
 					continue;
 
 				double val;
@@ -577,6 +580,9 @@ void SVLcaLccSettingsDialog::importOkoebauDat(const IBK::Path & csvPath) {
 			} break;
 			case ColReferenceUnit: {
 				if(t == "")
+					continue;
+
+				if (oekobauDatUnit2IBKUnit.find(t) == oekobauDatUnit2IBKUnit.end())
 					continue;
 
 				if(!foundExistingEpd) {
