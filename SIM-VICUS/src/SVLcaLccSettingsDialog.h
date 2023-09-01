@@ -53,6 +53,8 @@ public:
 		ColYield,
 		ColLinearWeight,
 		ColConversionFactorTo1kg,
+		ColBiogenicCarbonContentInkg,
+		ColBiogenicCarbonContentPackagingInKg,
 		ColModule,
 		ColGWP,
 		ColODP,
