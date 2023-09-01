@@ -116,20 +116,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 
 	m_ui->lineEditConvectiveFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].value);
 
-	switch (m_current->m_personCountMethod) {
-		case VICUS::InternalLoad::PCM_AreaPerPerson:{
-			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
-
-		}break;
-		case VICUS::InternalLoad::PCM_PersonPerArea: {
-			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
-		}break;
-		case VICUS::InternalLoad::PCM_PersonCount:
-		case VICUS::InternalLoad::NUM_PCM:{
-			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
-		}break;
-	}
-	m_ui->labelPersonCount->setText(tr("Max. person count [%1]:").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", m_current->m_personCountMethod)));
+	updateLabelPersonCount();
 
 	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idOccupancySchedule ]);
 	if (occSched != nullptr)
@@ -178,29 +165,14 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditName_editingFinished() {
 void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
-	for(int i=0; i<VICUS::InternalLoad::PersonCountMethod::NUM_PCM; ++i){
-		if(index == i){
-			m_current->m_personCountMethod = static_cast<VICUS::InternalLoad::PersonCountMethod>(i);
-			modelModify();
-			switch (m_current->m_personCountMethod) {
-				case VICUS::InternalLoad::PCM_PersonPerArea:
-					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
-				break;
-				case VICUS::InternalLoad::PCM_AreaPerPerson:
-					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
-				break;
-				case VICUS::InternalLoad::PCM_PersonCount:
-				case VICUS::InternalLoad::NUM_PCM:
-					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
-				break;
+	m_current->m_personCountMethod = static_cast<VICUS::InternalLoad::PersonCountMethod>(index);
 
-			}
-			break;
-		}
-	}
+	updateLabelPersonCount();
 
-	m_ui->labelPersonCount->setText(tr("Max. person count [%1]:").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", index)));
+	// we need to store the new value to the project
+	on_lineEditPersonCount_editingFinishedSuccessfully();
 
+	// in any case we want to update the plot (might not have happened above)
 	updatePlot();
 }
 
@@ -217,9 +189,8 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinishedSu
 		case VICUS::InternalLoad::PCM_PersonCount:					paraName = VICUS::InternalLoad::P_PersonCount;		break;
 		case VICUS::InternalLoad::NUM_PCM:							paraName = VICUS::InternalLoad::NUM_P;				break;
 	}
-	if (m_current->m_para[paraName].empty() ||
-		val != m_current->m_para[paraName].value)
-	{
+
+	if (m_current->m_para[paraName].empty() || val != m_current->m_para[paraName].value) {
 		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
 		modelModify();
 		updatePlot();
@@ -310,13 +281,18 @@ void SVDBInternalLoadsPersonEditWidget::updatePlot() {
 	}
 	else if (m_current->m_personCountMethod == VICUS::InternalLoad::PCM_PersonPerArea) {
 		label = tr("Power per area [W/m²]");
-		if (!m_current->m_para[VICUS::InternalLoad::PCM_PersonPerArea].empty())
-			factor = m_current->m_para[VICUS::InternalLoad::PCM_PersonPerArea].value;
+		if (!m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].empty())
+			factor = m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value;
 	}
 	else if (m_current->m_personCountMethod == VICUS::InternalLoad::PCM_AreaPerPerson) {
-			label = tr("Power per area [W/m²]");
-			if (!m_current->m_para[VICUS::InternalLoad::PCM_AreaPerPerson].empty())
-				factor = 1 / m_current->m_para[VICUS::InternalLoad::PCM_AreaPerPerson].value;
+		label = tr("Power per area [W/m²]");
+		if (!m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].empty()) {
+			// avoid factor=inf if value=0
+			if (m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value > 0)
+				factor = 1. / m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value;
+			else
+				factor = 0;
+		}
 	}
 
 	// check schedules, if invalid return
@@ -325,20 +301,15 @@ void SVDBInternalLoadsPersonEditWidget::updatePlot() {
 	if (sched1==nullptr || sched2==nullptr)
 		return;
 
-	std::vector<double> time1, time2, vals1, vals2;
-	createDataVectorFromSchedule(*sched1, time1, vals1);
-	createDataVectorFromSchedule(*sched2, time2, vals2);
-	if ( (time1.size() != time2.size()) || (vals1.size() != vals2.size()) )
-		 return;
+	VICUS::Schedule	schedComb = sched1->multiply(*sched2);
+	std::vector<double> time, vals;
+	createDataVectorFromSchedule(schedComb, time, vals);
 
 	m_xData.clear();
 	m_yData.clear();
-	for (unsigned int i=0; i<time1.size(); ++i){
-		// this must not happen, maybe throw an error message here?
-		if (time1[i] != time2[i])
-			return;
-		m_xData.push_back(time1[i]);
-		m_yData.push_back( vals1[i] * vals2[i] * factor );
+	for (unsigned int i=0; i<time.size(); ++i){
+		m_xData.push_back(time[i]);
+		m_yData.push_back( vals[i] * factor );
 	}
 
 	// dont plot if there is no data
@@ -364,6 +335,28 @@ void SVDBInternalLoadsPersonEditWidget::updatePlot() {
 	yl.setFont(ft);
 	m_ui->widgetPlot->setAxisTitle(QwtPlot::yLeft, yl);
 	m_ui->widgetPlot->replot();
+}
+
+
+void SVDBInternalLoadsPersonEditWidget::updateLabelPersonCount() {
+	QString unitPersonCount;
+	switch (m_current->m_personCountMethod) {
+		case VICUS::InternalLoad::PCM_AreaPerPerson:{
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
+			unitPersonCount = "m²";
+		}break;
+		case VICUS::InternalLoad::PCM_PersonPerArea: {
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
+			unitPersonCount = "1/m²";
+		}break;
+		case VICUS::InternalLoad::PCM_PersonCount:
+		case VICUS::InternalLoad::NUM_PCM:{
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
+			unitPersonCount = "-";
+		}break;
+	}
+	m_ui->labelPersonCountUnit->setText(unitPersonCount);
+	m_ui->labelPersonCount->setText(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", m_current->m_personCountMethod));
 }
 
 
