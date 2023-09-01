@@ -335,7 +335,7 @@ void SVLcaLccResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
 	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
 	// Not useful
-	m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
+	//m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
 }
 
 
