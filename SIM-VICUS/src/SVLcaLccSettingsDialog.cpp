@@ -120,8 +120,9 @@ SVLcaLccSettingsDialog::SVLcaLccSettingsDialog(QWidget *parent,
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
 	m_ui->lineEditElectricityPrice->setup(0, 1e10, "Electricity price for evaluation in €/kWh", false, true);
 
-	m_ui->filepathOekoBauDat->setup(tr("Select csv with ÖKOBAUDAT"), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
+	m_ui->filepathOekoBauDat->setup(QString(), true, true, tr("ÖKOBAUDAT-csv (*.csv)"),
 									SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filepathOekoBauDat->lineEdit()->setPlaceholderText(tr("<select csv with ÖKOBAUDAT>"));
 
 	updateUi();
 }
