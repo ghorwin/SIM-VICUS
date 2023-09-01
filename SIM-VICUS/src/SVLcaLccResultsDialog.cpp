@@ -194,7 +194,7 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 					unsigned int yearCount = settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
 
 					for(unsigned int i=0; i<yearCount; ++i) {
-						if(i%usageTime == 0)
+						if(i%period == 0)
 							investCost[i] += totalCost;
 					}
 				}
