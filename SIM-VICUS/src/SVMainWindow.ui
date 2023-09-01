@@ -346,7 +346,7 @@
   <action name="actionEditPreferences">
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-settings-80.png</normaloff>:/gfx/icons8/icons8-settings-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-dienstleistungen-80.png</normaloff>:/gfx/icons8/icons8-dienstleistungen-80.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Preferences...</string>
@@ -795,7 +795,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-3d-80.png</normaloff>:/gfx/icons8/icons8-3d-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-wuerfel-80.png</normaloff>:/gfx/icons8/icons8-wuerfel-80.png</iconset>
    </property>
    <property name="text">
     <string>Geometry View</string>
@@ -810,7 +810,7 @@
    </property>
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-start-80.png</normaloff>:/gfx/icons8/icons8-start-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-einstellungen-80.png</normaloff>:/gfx/icons8/icons8-einstellungen-80.png</iconset>
    </property>
    <property name="text">
     <string>Simulation Settings</string>
@@ -860,6 +860,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
   <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>

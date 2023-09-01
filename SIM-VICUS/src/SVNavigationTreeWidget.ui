@@ -86,7 +86,7 @@
   <action name="actionShowSelected">
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-sichtbar-80.png</normaloff>:/gfx/icons8/icons8-sichtbar-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-idee-80.png</normaloff>:/gfx/icons8/icons8-idee-80.png</iconset>
    </property>
    <property name="text">
     <string>Show selected objects</string>
@@ -101,7 +101,7 @@
   <action name="actionHideSelected">
    <property name="icon">
     <iconset resource="../resources/icons.qrc">
-     <normaloff>:/gfx/icons8/icons8-unsichtbar-80.png</normaloff>:/gfx/icons8/icons8-unsichtbar-80.png</iconset>
+     <normaloff>:/gfx/icons8/icons8-keine-idee-80.png</normaloff>:/gfx/icons8/icons8-keine-idee-80.png</iconset>
    </property>
    <property name="text">
     <string>Hides selected objects</string>

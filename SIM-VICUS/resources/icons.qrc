@@ -69,5 +69,11 @@
         <file>gfx/icons8/icons8-select-80.png</file>
         <file>gfx/icons8/icons8-bulb-off-80.png</file>
         <file>gfx/icons8/icons8-bulb-80.png</file>
+        <file>gfx/icons8/icons8-dienstleistungen-80.png</file>
+        <file>gfx/icons8/icons8-idee-80.png</file>
+        <file>gfx/icons8/icons8-keine-idee-80.png</file>
+        <file>gfx/icons8/icons8-netzdiagramm-80.png</file>
+        <file>gfx/icons8/icons8-wuerfel-80.png</file>
+        <file>gfx/icons8/icons8-einstellungen-80.png</file>
     </qresource>
 </RCC>
