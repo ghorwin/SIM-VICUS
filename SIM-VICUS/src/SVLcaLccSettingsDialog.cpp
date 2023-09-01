@@ -973,7 +973,7 @@ void SVLcaLccSettingsDialog::updateUi() {
 	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
 
 	if(m_lcaSettings->m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
-		for(unsigned int i=0; i<ol.count(); ++i) {
+		for(int i=0; i<ol.count(); ++i) {
 			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
 			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
 			cb->setChecked(m_lcaSettings->m_flags[mod].isEnabled());
