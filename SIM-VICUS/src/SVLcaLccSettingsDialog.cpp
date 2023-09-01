@@ -890,7 +890,7 @@ void SVLcaLccSettingsDialog::setModuleState(int state) {
 	Q_ASSERT(cb != nullptr);
 
 	VICUS::EpdModuleDataset::Module mod = static_cast<VICUS::EpdModuleDataset::Module>(cb->property("category").toInt());
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_flags[mod].set(m_lcaSettings->m_flags[mod].name(), state == Qt::Checked);
+	m_lcaSettings->m_flags[mod].set(m_lcaSettings->m_flags[mod].name(), state == Qt::Checked);
 
 }
 
@@ -917,7 +917,7 @@ void SVLcaLccSettingsDialog::updateUi() {
 
 	m_ui->lineEditArea->setText(QString("%L1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_NetUsageArea].value));
 
-	m_ui->lineEditTimePeriod->setText(QString("%L1").arg(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
+	m_ui->spinBoxTimePeriod->setValue((int)m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
 
 	m_ui->lineEditInterestRate->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
 	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%L1").arg(m_lccSettings->m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
@@ -1133,7 +1133,7 @@ void SVLcaLccSettingsDialog::on_pushButtonImportOkoebaudat_clicked() {
 
 
 void SVLcaLccSettingsDialog::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
+	m_lcaSettings->m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
 	m_ui->comboBoxCertificationSystem->setEnabled(mode == 0);
 
 	updateUi();
@@ -1141,10 +1141,10 @@ void SVLcaLccSettingsDialog::on_comboBoxCalculationMode_currentIndexChanged(int 
 
 
 void SVLcaLccSettingsDialog::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
-	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_certificationSystem = static_cast<VICUS::LcaSettings::CertificationSytem>(certiSystem);
+	m_lcaSettings->m_certificationSystem = static_cast<VICUS::LcaSettings::CertificationSytem>(certiSystem);
 
 	switch(m_lcaSettings->m_certificationSystem) {
-		case (VICUS::LcaSettings::CS_BNB) :	const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
+		case (VICUS::LcaSettings::CS_BNB) :	m_lcaSettings->m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
 		case (VICUS::LcaSettings::NUM_CS) : break;
 	}
 
@@ -1234,12 +1234,8 @@ void SVLcaLccSettingsDialog::on_lineEditArea_editingFinishedSuccessfully() {
 
 
 void SVLcaLccSettingsDialog::on_lineEditTimePeriod_editingFinishedSuccessfully() {
-	if(m_ui->lineEditTimePeriod->isValid()) {
-		unsigned int years = (unsigned int)m_ui->lineEditTimePeriod->value();
-		VICUS::KeywordList::setParameter(const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
-	}
-	else
-		m_ui->lineEditArea->setValue(m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
+	unsigned int years = (unsigned int)m_ui->spinBoxTimePeriod->value();
+	VICUS::KeywordList::setParameter(m_lcaSettings->m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
 }
 
 
@@ -1292,7 +1288,7 @@ void SVLcaLccSettingsDialog::on_toolButtonSelectGas_clicked() {
 
 	unsigned int idGas = editDialog->select(id, false, "MJ", 5);
 	if (idGas != VICUS::INVALID_ID && idGas != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Gas] = idGas;
+		m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Gas] = idGas;
 	}
 
 	updateUi();
@@ -1307,7 +1303,7 @@ void SVLcaLccSettingsDialog::on_toolButtonSelectElectricity_clicked() {
 
 	unsigned int idElectricity = editDialog->select(id, false, "MJ", 5);
 	if (idElectricity != VICUS::INVALID_ID && idElectricity != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Electricity] = idElectricity;
+		m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Electricity] = idElectricity;
 	}
 
 	updateUi();
@@ -1322,7 +1318,7 @@ void SVLcaLccSettingsDialog::on_toolButtonSelectCoal_clicked() {
 
 	unsigned int idCoal = editDialog->select(id, false, "MJ", 5);
 	if (idCoal != VICUS::INVALID_ID && idCoal != id) {
-		const_cast<VICUS::LcaSettings*>(m_lcaSettings)->m_idUsage[VICUS::LcaSettings::UT_Coal] = idCoal;
+		m_lcaSettings->m_idUsage[VICUS::LcaSettings::UT_Coal] = idCoal;
 	}
 
 	updateUi();
