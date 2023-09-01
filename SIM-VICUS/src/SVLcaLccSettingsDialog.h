@@ -56,6 +56,8 @@ public:
 		ColBiogenicCarbonContentInkg,
 		ColBiogenicCarbonContentPackagingInKg,
 		ColModule,
+		ColScenario,
+		ColScenarioDescription,
 		ColGWP,
 		ColODP,
 		ColPOCP,
