@@ -137,13 +137,10 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				const VICUS::Material &mat = *db.m_materials[con.m_materialLayers[i].m_idMaterial];
 				const VICUS::MaterialLayer &matLayer = con.m_materialLayers[i];
 
-				const VICUS::EpdDataset *epdMat = db.m_epdDatasets[mat.m_epdCategorySet.m_idCategory[category]];
 
-				if(epdMat == nullptr)
-					continue; // no epd defined
 
 				int usageTime = 0;
-
+				std::string materialName = mat.m_displayName.string();
 				bool isEmpty = matLayer.m_para[VICUS::MaterialLayer::P_LifeTime].empty();
 				if(isEmpty){
 					IBK::IBK_Message(IBK::FormatString("No usage time is specified for material layer '%1' of construction '%2'. Skipping material calculation.").arg(i).arg(con.m_displayName));
@@ -155,6 +152,28 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				double constructionCount = category == VICUS::EpdDataset::C_CategoryB ?
 							1 :  // Usage is already normated
 							std::ceil((float)usageTime / period - 1E-4); // to make it save
+
+				const VICUS::EpdDataset *epdMat = db.m_epdDatasets[mat.m_epdCategorySet.m_idCategory[category]];
+
+				double area = aggregatedCompData.m_area;
+				double materialCosts = matLayer.m_cost.value;
+				double totalCost = area * materialCosts / 100;
+
+				// Aggregate cost for lcc
+				if(category == VICUS::EpdDataset::C_CategoryA) {
+					unsigned int yearCount = settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+
+					for(unsigned int i=0; i<yearCount; ++i) {
+						if(i%period == 0) {
+							qDebug() << "Year: " << i << " Material: " << QString::fromStdString(materialName) << " Area: " << area << "Material cost: " << materialCosts / 100  << " Total cost: " << totalCost;
+							investCost[i] += totalCost;
+							qDebug() << "Total costs: " << investCost[i];
+						}
+					}
+				}
+
+				if(epdMat == nullptr)
+					continue; // no epd defined
 
 				VICUS::EpdModuleDataset epdCatData = epdMat->calcTotalEpdByCategory(category, settings);
 				double conversionFactor = conversionFactorEpdReferenceUnit(epdMat->m_referenceUnit, mat,
@@ -169,8 +188,6 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				itemMatChild->setText(ColArea, QString( "%1 m2" ).arg( aggregatedCompData.m_area, 7, 'f', 2 ) );
 				itemMatChild->setTextAlignment(ColArea, Qt::AlignRight);
 				itemMatChild->setTextAlignment(ColInvestCost, Qt::AlignRight);
-
-				double totalCost = aggregatedCompData.m_area * matLayer.m_cost.value / 100;
 
 				itemMatChild->setText(ColInvestCost, QString( "%1 €" ).arg( totalCost, 7, 'f', 2 ) );
 				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
@@ -191,14 +208,6 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 
 				itemChild->addChild(itemMatChild);
 
-				if(category == VICUS::EpdDataset::C_CategoryA) {
-					unsigned int yearCount = settings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
-
-					for(unsigned int i=0; i<yearCount; ++i) {
-						if(i%period == 0)
-							investCost[i] += totalCost;
-					}
-				}
 			}
 
 
