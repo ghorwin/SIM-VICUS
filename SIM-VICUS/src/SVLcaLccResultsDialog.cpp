@@ -479,7 +479,7 @@ void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%L1 %" ).arg( 100.0*totalCostDiscounted/totalCostDiscounted, 0, 'f', 2 ));
+	item->setText(QString( "%L1 %" ).arg( 100.0*(sumMaterialCostDiscounted+sumEnergyCost)/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, LCCS_Total, item);
 
 	m_ui->tableWidgetLccResults->resizeColumnsToContents();
@@ -519,7 +519,7 @@ void SVLcaLccResultsDialog::setup() {
 
 	m_ui->tableWidgetLccOverview->setColumnCount(NUM_LCCS);
 	QStringList headerLccOverview;
-	headerLccOverview << tr("Name") << tr("Unit") << tr("Production") << tr("Energy")	<< tr("Total");
+	headerLccOverview << tr("Name") << tr("Production") << tr("Energy")	<< tr("Total");
 	m_ui->tableWidgetLccOverview->setHorizontalHeaderLabels(headerLccOverview);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetLccResults);
