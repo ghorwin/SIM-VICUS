@@ -151,18 +151,17 @@ class SVLcaLccResultsDialog : public QDialog {
 		NUM_LCCColumns
 	};
 
-	enum ColsLccOverview {
-		ColTitle,
-		ColUnit,
-		ColsProduction,
-		ColsEnergy,
-		ColsTotal,
-		NumColLccOverview
+	enum LCCSummaryColumns {
+		LCCS_Title,
+		LCCS_Production,
+		LCCS_Energy,
+		LCCS_Total,
+		NUM_LCCS
 	};
 
 public:
 	explicit SVLcaLccResultsDialog(QWidget *parent = nullptr);
-	~SVLcaLccResultsDialog();
+	~SVLcaLccResultsDialog() override;
 
 	/*! Sets up Dialog with LCA Data. Needs to be called once before Dialog is beeing used. */
 	void setup();
