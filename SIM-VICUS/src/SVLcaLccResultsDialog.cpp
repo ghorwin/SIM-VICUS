@@ -473,13 +473,13 @@ void SVLcaLccResultsDialog::setCostResults(const VICUS::LccSettings &lccSettings
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%L1 %" ).arg( 100.0*sumEnergyCost/totalCostDiscounted, 0, 'f', 2 ));
+	item->setText(QString( "%L1 %" ).arg( 100.0*sumEnergyCostDiscounted/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, LCCS_Energy, item);
 
 	item = new QTableWidgetItem();
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 	item->setTextAlignment(Qt::AlignRight);
-	item->setText(QString( "%L1 %" ).arg( 100.0*(sumMaterialCostDiscounted+sumEnergyCost)/totalCostDiscounted, 0, 'f', 2 ));
+	item->setText(QString( "%L1 %" ).arg( 100.0*(sumMaterialCostDiscounted+sumEnergyCostDiscounted)/totalCostDiscounted, 0, 'f', 2 ));
 	m_ui->tableWidgetLccOverview->setItem(2, LCCS_Total, item);
 
 	m_ui->tableWidgetLccResults->resizeColumnsToContents();
