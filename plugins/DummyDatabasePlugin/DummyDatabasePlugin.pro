@@ -13,8 +13,7 @@ LIBS += \
 	-lNandrad \
 	-lIBKMK \
 	-lIBK \
-        -lTiCPP \
-        -llibdxfrw
+	-lTiCPP
 
 INCLUDEPATH  += \
 	../../SIM-VICUS/src \
@@ -23,9 +22,7 @@ INCLUDEPATH  += \
 	../../externals/IBK/src \
 	../../externals/IBKMK/src \
 	../../externals/TiCPP/src \
-        ../../externals/Nandrad/src \
-        ../../externals/libdxfrw/src \
-        ../../externals/libdxfrw/src/intern
+	../../externals/Nandrad/src
 
 HEADERS       = src/DummyDatabasePlugin.h
 SOURCES       = src/DummyDatabasePlugin.cpp
