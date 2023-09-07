@@ -883,6 +883,11 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (!pickObject.m_pickPerformed)
 			pick(pickObject);
 
+		// NOTE: standard mouse wheel delta is either +1 (forward) or -1 (backward)
+		//       some mouse have high-res switch buttons and then the wheel delta is strange... for example
+		//       on Mac the wheel delta is generally 16 or higher and the high-res button turns the sensitivity
+		//       down to 1. We need to figure out the nominal wheel delta for a mouse (without modifier) somehow.
+
 		// move forward along camera's forward vector
 #ifdef Q_OS_MAC
 		if (wheelDelta > 2)
@@ -890,22 +895,35 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (wheelDelta < -2)
 			wheelDelta = -2;
 #endif
-		double transSpeed = 0.05;
+
+		// our default translation speed
+		double translationSpeedFactor = 1;
+
+		// if user presses either Shift or Space for slow/fast speed, we do not apply the "automatic-slowdown-when near"
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
-			transSpeed *= 0.1;
+			translationSpeedFactor = 0.1;
 
 		if (keyboardHandler.keyDown(Qt::Key_Space))
-			transSpeed *= 10;
+			translationSpeedFactor = 10;
 
-		IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
+		IBKMK::Vector3D moveDist = pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 
-		const IBKMK::Vector3D &lineOfSight = pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
-		double dampening = std::min(1.0, (80.0 / (lineOfSight.magnitude())));
-		double moveFactor = std::max(1.0, (1.0 / (5 * moveDist.magnitude())));
-		// qDebug() << "Dampening factor: " << dampening;
-		// qDebug() << "Move distance: " << moveDist.magnitude();
-		// move camera along line of sight towards selected object
-		m_camera.translate(IBKVector2QVector(dampening*wheelDelta*moveFactor*moveDist));
+		// normal distance that we move our camera (in meters along our line of sight)
+		// it is large, when our intersection point to first object is far away, and small if we are very close
+		double cameraMoveDistance = moveDist.magnitude();
+
+		// normalize moveDist vector - this is now only a direction
+		moveDist /= cameraMoveDistance;
+
+		cameraMoveDistance *= 0.05; // we move 5 % of our distance to target; with 100 % we would hit the intersection point
+
+		// clip move distance for very large values (when mouse points to emptiness)
+		cameraMoveDistance = std::min(cameraMoveDistance, 100.0);
+		// ensure move distance is at least 1 meter (10 cm with Shift modifier)
+		cameraMoveDistance = std::max(cameraMoveDistance, 1.0); // normally we move by at least 1 meter
+
+		// we move towards the object at adjusted speed selected by user
+		m_camera.translate(IBKVector2QVector(wheelDelta*translationSpeedFactor*cameraMoveDistance*moveDist));
 	}
 
 	// store camera position in view settings, but only if we have a project
@@ -2696,27 +2714,22 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector2D point;
 	double t;
 
+
+	// *** intersection with grid planes ***
+
+	// NOTE: the vector project().m_viewSettings.m_gridPlanes usually contains our default
+	//       grid plane IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1) as first grid plane.
+	//       However, users may delete this plane and add their own, so we do not hard-code this grid plane.
+	//       We may even have no grid plane at all!
+
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
-		if (project().m_viewSettings.m_gridPlanes[i].m_isVisible &&
-				project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
+		// Note: intersectsLine() only handles plane if currently set to visible and active, no need to test this extra
+		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
 			r.m_objectID = i;
-			r.m_depth = t;
-			r.m_pickPoint = intersectionPoint;
-			pickObject.m_candidates.push_back(r);
-		}
-		else {
-			// *** intersection with grid plane ***
-
-			IBKMK::linePlaneIntersection(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1), nearPoint,
-										 direction, intersectionPoint, t);
-
-			PickObject::PickResult r;
-			r.m_resultType = PickObject::RT_xyPlane;
-			//r.m_objectID = i;
 			r.m_depth = t;
 			r.m_pickPoint = intersectionPoint;
 			pickObject.m_candidates.push_back(r);
