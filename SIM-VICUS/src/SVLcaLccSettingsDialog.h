@@ -160,6 +160,7 @@ private slots:
 
 	void on_lineEditElectricityPrice_editingFinishedSuccessfully();
 
+
 private:
 	/*! Import ÖKOBAUDAT as csv from
 		https://www.oekobaudat.de/service/downloads.html. */

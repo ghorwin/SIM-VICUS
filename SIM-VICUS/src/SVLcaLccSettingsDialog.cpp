@@ -1211,7 +1211,9 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 
 		calculateLCA();
 
-		unsigned int numberOfYears = (unsigned int)m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+		unsigned int numberOfYears = (unsigned int)m_ui->spinBoxTimePeriod->value();
+		m_lcaSettings->m_para[VICUS::LcaSettings::P_TimePeriod].set(numberOfYears, IBK::Unit("a"));
+
 		std::vector<double> investCost(numberOfYears, 0.0);
 
 		lcaResultsDialog()->setup();
@@ -1357,4 +1359,5 @@ void SVLcaLccSettingsDialog::on_lineEditElectricityPrice_editingFinishedSuccessf
 
 	updateUi();
 }
+
 
