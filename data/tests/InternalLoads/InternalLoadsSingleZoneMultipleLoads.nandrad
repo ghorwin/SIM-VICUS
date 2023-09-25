@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2.0">
+
+	<Project>
+		<ProjectInfo>
+			<Comment>Tests correct implementation of RoomBalanceModel (sourcing of loads)</Comment>
+			<Created>Mo. Sept. 25 08:43:00 2023</Created>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">0.2</IBK:Parameter>
+			<IBK:Flag name="PerezDiffuseRadiationModel">true</IBK:Flag>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">50</IBK:Parameter>
+			<IBK:Parameter name="DomesticWaterSensitiveHeatGainFraction" unit="---">0</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2001</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>SurfaceTypeFactor</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="---">0.1</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="---">0.5</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="---">0.2</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="---">0.3</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
+			<IBK:Parameter name="AbsTol" unit="---">1e-10</IBK:Parameter>
+			<IBK:Parameter name="MaxTimeStep" unit="h">1</IBK:Parameter>
+			<IBK:Parameter name="MinTimeStep" unit="s">1e-08</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.1</IBK:Parameter>
+			<IBK:Parameter name="NonlinSolverConvCoeff" unit="---">0.1</IBK:Parameter>
+			<IBK:Parameter name="IterativeSolverConvCoeff" unit="---">0.05</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="ViewfactorTileWidth" unit="cm">50</IBK:Parameter>
+			<IBK:Parameter name="SurfaceDiscretizationDensity" unit="---">1</IBK:Parameter>
+			<IBK:Parameter name="ControlTemperatureTolerance" unit="K">1e-05</IBK:Parameter>
+			<IBK:IntPara name="PreILUWidth">3</IBK:IntPara>
+			<IBK:IntPara name="MaxKrylovDim">50</IBK:IntPara>
+			<IBK:IntPara name="MaxNonlinIter">3</IBK:IntPara>
+			<IBK:IntPara name="MaxOrder">5</IBK:IntPara>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">20</IBK:IntPara>
+			<IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
+			<IBK:Flag name="KinsolDisableLineSearch">false</IBK:Flag>
+		</SolverParameter>
+		<Zones>
+			<Zone id="3" displayName="Gebäude.Erdgeschoss.Raum(ID=3)" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+			<Zone id="4" displayName="GroundZone(ID=4)" type="Constant">
+				<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="2" displayName="Boden (ID=4)">
+				<ConstructionTypeId>1</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="4">
+					<!--Interface to 'GroundZone(ID=4)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="5" displayName="Decke (ID=5)">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="6" displayName="Wand 1 (ID=6)">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">12</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="7" displayName="Wand 2 (ID=7)">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">7.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="8" displayName="Wand 3 (ID=8)">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">12</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="9" displayName="Wand 4 (ID=9)">
+				<ConstructionTypeId>3</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">7.5</IBK:Parameter>
+				<InterfaceA id="1" zoneId="3">
+					<!--Interface to 'Gebäude.Erdgeschoss.Raum(ID=3)'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="3" displayName="Einschalige Betonwand (20cm)">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="10000" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="2" displayName="Deckenkonstuktion">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.01" matId="10007" />
+					<MaterialLayer thickness="0.2" matId="10009" />
+					<MaterialLayer thickness="0.04" matId="10003" />
+					<MaterialLayer thickness="0.06" matId="10010" />
+					<MaterialLayer thickness="0.01" matId="10012" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="1" displayName="Bodenplatte leicht 1919 bis 1968">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.024" matId="10136" />
+					<MaterialLayer thickness="0.2" matId="10113" />
+					<MaterialLayer thickness="0.024" matId="10136" />
+					<MaterialLayer thickness="0.015" matId="10106" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="10000" displayName="Beton">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="10003" displayName="PUR">
+				<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="10007" displayName="Gipsputz">
+				<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
+			</Material>
+			<Material id="10009" displayName="Stahlbeton">
+				<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
+			</Material>
+			<Material id="10010" displayName="Fließestrich">
+				<IBK:Parameter name="Density" unit="kg/m3">2060</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
+			</Material>
+			<Material id="10012" displayName="Teppichboden">
+				<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+			</Material>
+			<Material id="10106" displayName="Kalkputz">
+				<IBK:Parameter name="Density" unit="kg/m3">1600</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+			</Material>
+			<Material id="10113" displayName="Holzbalken mit Luft und Lehm">
+				<IBK:Parameter name="Density" unit="kg/m3">736</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+			</Material>
+			<Material id="10136" displayName="Hartholz">
+				<IBK:Parameter name="Density" unit="kg/m3">650</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.13</IBK:Parameter>
+			</Material>
+			<Material id="1010001" displayName="&lt;neues Material&gt;">
+				<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Schedules>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="InternalLoads-Testraum">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0;LightingHeatLoadPerAreaSchedule [W/m2]:0;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,8,12,14,18</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0,11,0,11,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+				<ScheduleGroup objectList="Thermostat-Testraum">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>CoolingSetpointSchedule [C]:24;HeatingSetpointSchedule [C]:20;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+				<ScheduleGroup objectList="Ventilation-Testraum">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationMaxAirTemperatureSchedule [C]:24;VentilationMinAirTemperatureSchedule [C]:20;VentilationRateIncreaseSchedule [1/h]:0.1;VentilationRateSchedule [1/h]:1;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="3" displayName="Testraum" modelType="ScheduledWithBaseACRDynamicTLimit">
+					<ZoneObjectList>Ventilation-Testraum</ZoneObjectList>
+					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+			<InternalLoadsModels>
+				<InternalLoadsModel id="1" displayName="Testraum" modelType="Scheduled">
+					<ZoneObjectList>InternalLoads-Testraum</ZoneObjectList>
+					<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="PersonRadiationFraction" unit="---">0.2</IBK:Parameter>
+					<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+				</InternalLoadsModel>
+			</InternalLoadsModels>
+			<Thermostats>
+				<Thermostat id="1067501" displayName="Thermostat_Testraum" modelType="Scheduled">
+					<ZoneObjectList>Thermostat-Testraum</ZoneObjectList>
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.1</IBK:Parameter>
+					<TemperatureType>AirTemperature</TemperatureType>
+					<ControllerType>Analog</ControllerType>
+				</Thermostat>
+			</Thermostats>
+			<IdealHeatingCoolingModels>
+				<IdealHeatingCoolingModel id="4" displayName="IdealHeatCool_Testraum">
+					<ZoneObjectList>IdealHeatCool-Testraum</ZoneObjectList>
+					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">200</IBK:Parameter>
+					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">80</IBK:Parameter>
+				</IdealHeatingCoolingModel>
+			</IdealHeatingCoolingModels>
+		</Models>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>InternalLoads-Testraum</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">6</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="InternalLoads-Testraum">
+				<FilterID>3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation-Testraum">
+				<FilterID>3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Thermostat-Testraum">
+				<FilterID>3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="IdealHeatCool-Testraum">
+				<FilterID>3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
