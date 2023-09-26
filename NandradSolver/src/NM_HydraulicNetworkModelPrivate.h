@@ -114,6 +114,11 @@ public:
 	*/
 	std::vector<double>									m_outletNodeAbsolutePressures;
 
+	/*! To distinguish in update() between calls for "a new time point" or "calls to update solution in the same step"
+		which affects the initial guess of our Newton scheme.
+	*/
+	bool												m_newStepStarted = true;
+
 private:
 
 	enum LESSolver {

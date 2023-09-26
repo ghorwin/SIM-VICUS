@@ -593,7 +593,28 @@ int HydraulicNetworkModel::update() {
 	return 0; // signal success
 }
 
+
 int HydraulicNetworkModel::setTime(double t) {
+
+	// NOTE
+	// ----
+	//
+	// This function is called indirectly from the CVODE integrator (or any other time integrator) whenever:
+	//    - the last time step was completed and a new time point with an extrapolated solution has been computed
+	//    - the Newton iteration failed and the integration step is repeated with reduced time step
+	// In either case, the y-solution vector (system state) was newly approximated, and thus we expect
+	// some differences in the y-vector compared to previous model evalutions. In fact, in case of the Newton
+	// convergence failure the state still stored in our m_y vector may be very unsuitable for a quick convergence.
+	// Hence, we want to commence our new hydraulic network calculation using the previously computed _converged_
+	// solution from the last step, which is stored in m_yLast.
+	// m_yLast is updated only whenever we have a converged solution, and hence we rely on physically meaningful values
+	// in this vector.
+	// In all subsequent model evaluations (at the same time point, but with mildly modified y vector as part of the
+	// CVODE Newton iteration) we restart our own Newton method with the previously obtained solution, which should be
+	// pretty close to the final result as we approach convergence in the outer CVODE Newton scheme.
+
+	// To distinguish between "a new step" and "iterating over the same step" we set a variable here.
+	m_p->m_newStepStarted = true;
 
 	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
 		fe->setTime(t);
@@ -918,10 +939,15 @@ int HydraulicNetworkModelImpl::solve() {
 	FUNCID(HydraulicNetworkModelImpl::solve);
 
 	unsigned int n = m_nodeCount + m_elementCount;
-
-	// reset initial guess
 	std::vector<double> rhs(n, 0);
-	std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
+
+	// Reset initial guess to previous converged solution whenever we start a new step.
+	// See explanation in HydraulicNetworkModel::setTime()
+	if (m_newStepStarted) {
+		std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
+		m_newStepStarted = false;
+	}
+
 #if 0
 	for (unsigned int i=0; i<n; ++i)
 		m_y[i] = 10;
