@@ -40,7 +40,8 @@ namespace NANDRAD_MODEL {
 
 HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
 											 const std::vector<NANDRAD::Thermostat> &thermostats,
-											 unsigned int id, const std::string &displayName) :
+											 unsigned int id, const std::string &displayName,
+											 double solverAbsTol, double solverMassFluxScale) :
 	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(thermostats)
 {
 
@@ -98,7 +99,7 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 	unsigned int refElemeIdx = std::distance(nw.m_elements.begin(), refFeIt);
 
 	// create implementation instance
-	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx); // we take ownership
+	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx, solverAbsTol, solverMassFluxScale); // we take ownership
 }
 
 
@@ -664,17 +665,14 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 
 // *** HydraulicNetworkModelImpl members ***
 
-// constants that control Jacobian matrix generation
-const double JACOBIAN_EPS_RELTOL = 1e-6;
-const double JACOBIAN_EPS_ABSTOL = 1e-8; // in Pa and scaled kg/s
-
-// convergence threshold for WRMS norm
-const double THRESHOLD = 0.1;
-const double MASS_FLUX_SCALE = 1000;
-
-
-HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx) {
+HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx,
+													 double solverAbsTol, double solverMassFluxScale) {
 	FUNCID(HydraulicNetworkModelImpl::HydraulicNetworkModelImpl);
+
+	// solver parameter
+	m_absoluteTolerance = solverAbsTol;
+	m_massFluxScale = solverMassFluxScale;
+
 	// copy elements vector
 	m_network.m_elements = elems;
 	// count number of nodes
@@ -941,7 +939,7 @@ int HydraulicNetworkModelImpl::solve() {
 		// and evaluate residuals
 		double resNorm = WRMSNorm(m_G);
 //		std::cout << "res = " << resNorm << std::endl;
-		if (resNorm < THRESHOLD)
+		if (resNorm < m_absoluteTolerance)
 			break;
 
 		// now compose Jacobian with FD quotients
@@ -1416,7 +1414,7 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	// extract mass flows
 	for (unsigned int i=0; i<m_elementCount; ++i) {
-		m_fluidMassFluxes[i] = m_y[i]/MASS_FLUX_SCALE;
+		m_fluidMassFluxes[i] = m_y[i] / m_massFluxScale;
 	}
 	// first nodal equations
 	for (unsigned int i=0; i<m_nodeCount; ++i) {
@@ -1435,7 +1433,7 @@ void HydraulicNetworkModelImpl::updateG() {
 				massSum += m_fluidMassFluxes[feIndex]; // otherwise flux goes into the node -> positive sign
 		}
 		// store in system function vector
-		m_G[i + m_elementCount] = massSum*MASS_FLUX_SCALE; // we'll apply scaling here
+		m_G[i + m_elementCount] = massSum * m_massFluxScale; // we'll apply scaling here
 
 	}
 
