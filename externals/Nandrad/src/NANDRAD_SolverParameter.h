@@ -62,6 +62,8 @@ public:
 		P_ControlTemperatureTolerance,		// Keyword: ControlTemperatureTolerance		[K]		'Temperature tolerance for ideal heating or cooling.'
 		P_KinsolRelTol,						// Keyword: KinsolRelTol					[---]	'Relative tolerance for Kinsol solver.'
 		P_KinsolAbsTol,						// Keyword: KinsolAbsTol					[---]	'Absolute tolerance for Kinsol solver.'
+		P_HydraulicNetworkAbsTol,			// Keyword: HydraulicNetworkAbsTol			[---]	'Absolute tolerance (WRMS threshold) for Newton method in hydraulic network.'
+		P_HydraulicNetworkMassFluxScale,	// Keyword: HydraulicNetworkMassFluxScale	[---]	'Scale factor for mass fluxes in solution vector of hydraulic network.'
 		NUM_P
 	};
 

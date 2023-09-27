@@ -1609,7 +1609,9 @@ void NandradModel::initNetworks() {
 									.arg(nw.m_id), FUNC_ID);
 			}
 			// create a network model object
-			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, m_project->m_models.m_thermostats, nw.m_id, nw.m_displayName);
+			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, m_project->m_models.m_thermostats, nw.m_id, nw.m_displayName,
+																		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_HydraulicNetworkAbsTol].value,
+																		m_project->m_solverParameter.m_para[NANDRAD::SolverParameter::P_HydraulicNetworkMassFluxScale].value);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
 			// initialize
 			nwmodel->setup();

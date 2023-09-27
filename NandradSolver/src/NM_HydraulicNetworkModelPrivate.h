@@ -57,11 +57,18 @@ struct Network {
 	std::vector<Node>		m_nodes;
 };
 
+
 // *** Pimpl class declaration ***
 
 class HydraulicNetworkModelImpl {
+
 public:
-	HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx);
+	// constants that control Jacobian matrix generation
+	const double JACOBIAN_EPS_RELTOL = 1e-6;
+	const double JACOBIAN_EPS_ABSTOL = 1e-8; // in Pa and scaled kg/s
+
+	HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx,
+							  double solverAbsTol, double solverMassFluxScale);
 	~HydraulicNetworkModelImpl();
 
 	/*! Initialized solver based on current content of m_flowElements.
@@ -192,6 +199,13 @@ private:
 	std::vector<double>					m_yLast;
 	/*! Vector with system function. */
 	std::vector<double>					m_G;
+
+
+	/*! Convergence threshold for WRMS norm of Newton method */
+	double								m_absoluteTolerance;
+	/*! Mass flux scaling factor for y. */
+	double								m_massFluxScale;
+
 };
 
 

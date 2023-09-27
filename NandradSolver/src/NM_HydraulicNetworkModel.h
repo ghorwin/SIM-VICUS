@@ -56,7 +56,8 @@ public:
 	/*! Constructor. */
 	HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
 		const std::vector<NANDRAD::Thermostat> &thermostats,
-		unsigned int id, const std::string &displayName);
+		unsigned int id, const std::string &displayName,
+		double solverAbsTol, double solverMassFluxScale);
 
 	/*! D'tor, released pimpl object. */
 	~HydraulicNetworkModel() override;
