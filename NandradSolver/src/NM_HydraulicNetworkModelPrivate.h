@@ -61,12 +61,7 @@ struct Network {
 // *** Pimpl class declaration ***
 
 class HydraulicNetworkModelImpl {
-
 public:
-	// constants that control Jacobian matrix generation
-	const double JACOBIAN_EPS_RELTOL = 1e-6;
-	const double JACOBIAN_EPS_ABSTOL = 1e-8; // in Pa and scaled kg/s
-
 	HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx,
 							  double solverAbsTol, double solverMassFluxScale);
 	~HydraulicNetworkModelImpl();
@@ -186,6 +181,11 @@ private:
 	/*! Stucture storing sparse jacobian and KLU solver information. */
 	SparseSolver						m_sparseSolver;
 
+	/*! The threshold for the WRMS norm of the residual vector to accept the solution. */
+	double								m_residualTolerance = 1e-2;
+	/*! Mass flux scaling factor for y. */
+	double								m_massFluxScale;
+
 	unsigned int						m_nodeCount;
 	unsigned int						m_elementCount;
 
@@ -199,13 +199,6 @@ private:
 	std::vector<double>					m_yLast;
 	/*! Vector with system function. */
 	std::vector<double>					m_G;
-
-
-	/*! Convergence threshold for WRMS norm of Newton method */
-	double								m_absoluteTolerance;
-	/*! Mass flux scaling factor for y. */
-	double								m_massFluxScale;
-
 };
 
 

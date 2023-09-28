@@ -36,6 +36,11 @@
 
 namespace NANDRAD_MODEL {
 
+// constants that control Jacobian matrix generation
+const double JACOBIAN_EPS_RELTOL = 1e-6;
+const double JACOBIAN_EPS_ABSTOL = 1e-8; // in Pa and scaled kg/s
+
+
 // *** HydraulicNetworkModel members ***
 
 HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
@@ -691,7 +696,7 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> 
 	FUNCID(HydraulicNetworkModelImpl::HydraulicNetworkModelImpl);
 
 	// solver parameter
-	m_absoluteTolerance = solverAbsTol;
+	m_residualTolerance = solverAbsTol;
 	m_massFluxScale = solverMassFluxScale;
 
 	// copy elements vector
@@ -904,7 +909,7 @@ double WRMSNorm(const std::vector<double> & vec) {
 void HydraulicNetworkModelImpl::printVars() const {
 	std::cout << "Mass fluxes [kg/s]" << std::endl;
 	for (unsigned int i=0; i<m_elementCount; ++i)
-		std::cout << "  " << i << "   " << m_y[i]/MASS_FLUX_SCALE  << std::endl;
+		std::cout << "  " << i << "   " << m_y[i]/m_massFluxScale  << std::endl;
 
 	std::cout << "Nodal pressures [Pa]" << std::endl;
 	for (unsigned int i=0; i<m_nodeCount; ++i)
@@ -952,7 +957,11 @@ int HydraulicNetworkModelImpl::solve() {
 #endif
 
 	// now start the Newton iteration
-	int iterations = 100;
+	const int MAX_ITERATIONS = 20;   // TODO : this seems too much... investigate if we might just get by with a smaller number of iterations
+									 //	       and rather return with a slightly imperfect solution. With subsequent Newton iterations we
+									 //        have likely less changes compared to the last solution and end up with very few hydraulic
+									 //        network Newton iterations.
+	int iterations = MAX_ITERATIONS;
 	while (--iterations > 0) {
 		// evaluate system function for current guess
 		updateG();
@@ -965,7 +974,7 @@ int HydraulicNetworkModelImpl::solve() {
 		// and evaluate residuals
 		double resNorm = WRMSNorm(m_G);
 //		std::cout << "res = " << resNorm << std::endl;
-		if (resNorm < m_absoluteTolerance)
+		if (resNorm < m_residualTolerance && iterations < MAX_ITERATIONS-1) // require at least one solve always!
 			break;
 
 		// now compose Jacobian with FD quotients
