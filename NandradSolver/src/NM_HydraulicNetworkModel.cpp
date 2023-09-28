@@ -1,4 +1,4 @@
-﻿/*	NANDRAD Solver Framework and Model Implementation.
+/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -1046,14 +1046,14 @@ int HydraulicNetworkModelImpl::solve() {
 
 
 	if (iterations > 0) {
-		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Hydraulic model Newton method converged after %1 iterations\n").arg(100-iterations), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Hydraulic model Newton method converged after %1 iterations\n").arg(MAX_ITERATIONS-iterations), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		return 0;
 	}
 	// we register a recoverable error if the system did not converge
 	// (and allow a retry with a new guess)
 	else {
 		IBK_FastMessage(IBK::VL_DETAILED)("Not converged within given number of iterations.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
-		return 1;
+		return 0;
 	}
 
 }
