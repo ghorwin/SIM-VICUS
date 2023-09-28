@@ -931,7 +931,7 @@ int HydraulicNetworkModelImpl::solve() {
 #endif
 
 	// now start the Newton iteration
-	const int MAX_ITERATIONS = 20;   // TODO : this seems too much... investigate if we might just get by with a smaller number of iterations
+	const int MAX_ITERATIONS = 50;   // TODO : this seems too much... investigate if we might just get by with a smaller number of iterations
 									 //	       and rather return with a slightly imperfect solution. With subsequent Newton iterations we
 									 //        have likely less changes compared to the last solution and end up with very few hydraulic
 									 //        network Newton iterations.
