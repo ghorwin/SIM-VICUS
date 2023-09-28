@@ -267,6 +267,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Temperature tolerance for ideal heating or cooling.");
 	tr("Relative tolerance for Kinsol solver.");
 	tr("Absolute tolerance for Kinsol solver.");
+	tr("Absolute tolerance (WRMS threshold) for Newton method in hydraulic network.");
+	tr("Scale factor for mass fluxes in solution vector of hydraulic network.");
 	tr("Maximum level of fill-in to be used for ILU preconditioner.");
 	tr("Maximum dimension of Krylov subspace.");
 	tr("Maximum number of nonlinear iterations.");

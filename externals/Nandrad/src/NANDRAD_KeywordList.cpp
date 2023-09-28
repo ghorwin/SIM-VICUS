@@ -646,6 +646,8 @@ namespace NANDRAD {
 				case 11 : return "ControlTemperatureTolerance";
 				case 12 : return "KinsolRelTol";
 				case 13 : return "KinsolAbsTol";
+				case 14 : return "HydraulicNetworkAbsTol";
+				case 15 : return "HydraulicNetworkMassFluxScale";
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -1303,6 +1305,8 @@ namespace NANDRAD {
 				case 11 : return "ControlTemperatureTolerance";
 				case 12 : return "KinsolRelTol";
 				case 13 : return "KinsolAbsTol";
+				case 14 : return "HydraulicNetworkAbsTol";
+				case 15 : return "HydraulicNetworkMassFluxScale";
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -1961,6 +1965,8 @@ namespace NANDRAD {
 				case 11 : return "Temperature tolerance for ideal heating or cooling.";
 				case 12 : return "Relative tolerance for Kinsol solver.";
 				case 13 : return "Absolute tolerance for Kinsol solver.";
+				case 14 : return "Absolute tolerance (WRMS threshold) for Newton method in hydraulic network.";
+				case 15 : return "Scale factor for mass fluxes in solution vector of hydraulic network.";
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -2618,6 +2624,8 @@ namespace NANDRAD {
 				case 11 : return "K";
 				case 12 : return "---";
 				case 13 : return "---";
+				case 14 : return "---";
+				case 15 : return "---";
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -3275,6 +3283,8 @@ namespace NANDRAD {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
+				case 15 : return "#FFFFFF";
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -3932,6 +3942,8 @@ namespace NANDRAD {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
+				case 15 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SolverParameter::intPara_t
 			case 67 :
@@ -4213,7 +4225,7 @@ namespace NANDRAD {
 			// SolarLoadsDistributionModel::para_t
 			case 65 : return 4;
 			// SolverParameter::para_t
-			case 66 : return 14;
+			case 66 : return 16;
 			// SolverParameter::intPara_t
 			case 67 : return 6;
 			// SolverParameter::flag_t
@@ -4393,7 +4405,7 @@ namespace NANDRAD {
 			// SolarLoadsDistributionModel::para_t
 			case 65 : return 3;
 			// SolverParameter::para_t
-			case 66 : return 13;
+			case 66 : return 15;
 			// SolverParameter::intPara_t
 			case 67 : return 5;
 			// SolverParameter::flag_t
