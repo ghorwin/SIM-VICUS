@@ -116,6 +116,11 @@ public:
 	*/
 	std::vector<double>									m_outletNodeAbsolutePressures;
 
+	/*! To distinguish in update() between calls for "a new time point" or "calls to update solution in the same step"
+		which affects the initial guess of our Newton scheme.
+	*/
+	bool												m_newStepStarted = true;
+
 private:
 
 	enum LESSolver {
@@ -177,9 +182,9 @@ private:
 	SparseSolver						m_sparseSolver;
 
 	/*! The threshold for the WRMS norm of the residual vector to accept the solution. */
-	double								m_residualTolerance = 1e-2;
+	double								m_residualTolerance = -999;
 	/*! Mass flux scaling factor for y. */
-	double								m_massFluxScale;
+	double								m_massFluxScale = -999;
 
 	unsigned int						m_nodeCount;
 	unsigned int						m_elementCount;

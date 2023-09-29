@@ -196,7 +196,6 @@ private:
 	/*! The static pressure resulting from the geodetic height of the outlet nodes, will be pre-calculated in setup() */
 	std::vector<double>								m_geodeticOutletNodePressures;
 
-
 	friend class ThermalNetworkStatesModel;
 
 
