@@ -1236,8 +1236,18 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// replace vicus ids in shading file with nandrad ids
 	IBK::Path shadingFilePath;
-	if (generateShadingFactorsFile(surfaceIdsVicusToNandrad, IBK::Path(nandradProjectPath), shadingFilePath))
-		p.m_location.m_shadingFactorFilePath = IBK::Path(shadingFilePath);
+	if (generateShadingFactorsFile(surfaceIdsVicusToNandrad, IBK::Path(nandradProjectPath), shadingFilePath)) {
+		std::string composedFilePath;
+		IBK::Path proPath = IBK::Path(nandradProjectPath).parentPath();
+		try {
+			IBK::Path relPath = shadingFilePath.relativePath(proPath);
+			composedFilePath = (IBK::Path("${Project Directory}") / relPath).str();
+		} catch (...) {
+			// can't relate paths... keep absolute
+			composedFilePath = shadingFilePath.str();
+		}
+		p.m_location.m_shadingFactorFilePath = composedFilePath;
+	}
 	else {
 		errorStack.push_back(tr("Shading factor file data invalid/outdated, try re-generating shading factor data!"));
 		throw IBK::Exception("Error during shading factor file generation.", FUNC_ID);
