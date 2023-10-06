@@ -65,8 +65,8 @@ public:
 	MaterialLayer(double thickness, unsigned int id):
 		m_idMaterial(id)
 	{
-		m_para[P_Thickness].set(thickness, IBK::Unit("m"));
-		m_para[P_LifeTime].set(50, IBK::Unit("a")); // We take 50 years as standard
+		m_para[P_Thickness].set("Thickness", thickness, IBK::Unit("m"));
+		m_para[P_LifeTime] .set("LifeTime", 50, IBK::Unit("a")); // We take 50 years as standard
 	}
 
 	/*! Simple Constructor with thickness and material id. */
@@ -74,9 +74,8 @@ public:
 		m_idMaterial(id)
 	{
 		m_para[P_Thickness] = thickness;
-		m_para[P_LifeTime].set(50, IBK::Unit("a")); // We take 50 years as standard
+		m_para[P_LifeTime].set("LifeTime", 50, IBK::Unit("a")); // We take 50 years as standard
 	}
-
 
 	VICUS_READWRITE
 
