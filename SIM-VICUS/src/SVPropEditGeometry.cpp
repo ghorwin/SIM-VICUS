@@ -1042,6 +1042,45 @@ void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 }
 
+void rotateChild(VICUS::Surface &s, std::vector<VICUS::Surface> &modifiedSurfaces,
+				 const QQuaternion &rotation, const QVector3D &translation) {
+	std::vector<VICUS::Surface> childs;
+	std::vector<VICUS::SubSurface> subs = s.subSurfaces();
+	for (const VICUS::Surface &cs : s.childSurfaces()) {
+		VICUS::Surface modS(cs);
+
+		IBKMK::Polygon3D poly = cs.polygon3D();
+
+		// we copy the surface's local, normal and offset
+		IBKMK::Vector3D localX = poly.localX();
+		IBKMK::Vector3D normal = poly.normal();
+		IBKMK::Vector3D offset = poly.offset();
+		IBKMK::Vector3D trans = QVector2IBKVector(translation);
+
+		if (rotation != QQuaternion()) {
+			// we rotate our axis and offset
+			IBKMK::Quaternion rotate = QQuaternion2IBKQuaternion(rotation);
+			rotate.rotateVector(localX);
+			rotate.rotateVector(normal);
+			rotate.rotateVector(offset);
+		}
+
+		trans = QVector2IBKVector(translation);
+
+		// we set our rotated axises
+		poly.setRotation(normal, localX);
+		// we have to mind the we rotate around our
+		// local coordinate system center point
+		poly.translate(offset-poly.offset()+trans);
+
+		// Polygon3D is dirty, but geometry is not
+		modS.setPolygon3D((VICUS::Polygon3D)poly); // now geometry is also marked as dirty
+		childs.push_back(modS);
+		rotateChild(modS, modifiedSurfaces, rotation, translation);
+		// modifiedSurfaces.push_back(modS);
+	}
+	s.setChildAndSubSurfaces(subs, childs);
+}
 
 void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	FUNCID(SVPropEditGeometry::on_pushButtonApply_clicked);
@@ -1157,6 +1196,9 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 			// Polygon3D is dirty, but geometry is not
 			modS.setPolygon3D((VICUS::Polygon3D)poly); // now geometry is also marked as dirty
+
+			// rotateChild(modS, modifiedSurfaces, rotation, translation);
+
 			modifiedSurfaces.push_back(modS);
 		}
 
