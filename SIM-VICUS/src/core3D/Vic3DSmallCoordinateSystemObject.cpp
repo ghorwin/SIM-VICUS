@@ -27,6 +27,7 @@
 
 #include <QOpenGLShaderProgram>
 
+#include "IBKMK_3DCalculations.h"
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
@@ -35,6 +36,7 @@
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
+#include "qpainterpath.h"
 
 namespace Vic3D {
 
@@ -148,23 +150,34 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 	m_planeStartIndex = currentElementIndex; // number of indexes to use in the TRIANGLE_STRIP draw call
 	m_planeStartVertex = currentVertexIndex; // first index of the two triangles of the TRIANGLES draw call
 
-	// we now manually add the vertexes for two triangles (forming a plane) to the vertex buffer. These will be drawn with
+	VICUS::RotationMatrix rotMat;
+	rotMat.setQuaternion(QQuaternion::fromAxisAndAngle(QVector3D(0,0,1), 0));
+
+	QFont font("Arial");
+	font.setBold(true);
+	font.setPointSize(64);
+	addText("N", font, Qt::AlignHCenter, 0, rotMat, IBKMK::Vector3D(0, 0, 0), IBKMK::Vector2D(-0.3, 2.5), 1, 0.0001,
+			Qt::green, currentVertexIndex, currentElementIndex,	m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addText("E", font, Qt::AlignHCenter, 0, rotMat, IBKMK::Vector3D(0, 0, 0), IBKMK::Vector2D(2.4, -0.3), 1, 0.0001,
+			Qt::red, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	//	// we now manually add the vertexes for two triangles (forming a plane) to the vertex buffer. These will be drawn with
 	// draw elements
-	m_vertexBufferData.resize(m_vertexBufferData.size()+6);
-	m_colorBufferData.resize(m_colorBufferData.size()+6);
-	ColorRGBA planeCol(QColor(32,32,32,0) );
+//	m_vertexBufferData.resize(m_vertexBufferData.size()+6);
+//	m_colorBufferData.resize(m_colorBufferData.size()+6);
+//	ColorRGBA planeCol(QColor(255,32,32,180) );
 
-	for (unsigned int i=0; i<6; ++i) {
-		m_colorBufferData[m_planeStartVertex+i] = planeCol;
-	}
+//	for (unsigned int i=0; i<6; ++i) {
+//		m_colorBufferData[m_planeStartVertex+i] = planeCol;
+//	}
 
-	// add vertexes for both triangles in anti-clock-wise winding order so that normal vector points towards view
-	m_vertexBufferData[m_planeStartVertex+0].m_coords = QVector3D(-1000,-1000,0);
-	m_vertexBufferData[m_planeStartVertex+1].m_coords = QVector3D( 1000,-1000,0);
-	m_vertexBufferData[m_planeStartVertex+2].m_coords = QVector3D(-1000, 1000,0);
-	m_vertexBufferData[m_planeStartVertex+3].m_coords = QVector3D( 1000,-1000,0); // second triangle
-	m_vertexBufferData[m_planeStartVertex+4].m_coords = QVector3D( 1000, 1000,0);
-	m_vertexBufferData[m_planeStartVertex+5].m_coords = QVector3D(-1000, 1000,0);
+//	// add vertexes for both triangles in anti-clock-wise winding order so that normal vector points towards view
+//	m_vertexBufferData[m_planeStartVertex+0].m_coords = QVector3D(-1000,-1000,0);
+//	m_vertexBufferData[m_planeStartVertex+1].m_coords = QVector3D( 1000,-1000,0);
+//	m_vertexBufferData[m_planeStartVertex+2].m_coords = QVector3D(-1000, 1000,0);
+//	m_vertexBufferData[m_planeStartVertex+3].m_coords = QVector3D( 1000,-1000,0); // second triangle
+//	m_vertexBufferData[m_planeStartVertex+4].m_coords = QVector3D( 1000, 1000,0);
+//	m_vertexBufferData[m_planeStartVertex+5].m_coords = QVector3D(-1000, 1000,0);
 
 	// Note: the indexes added for the plane in the index array will not be used
 
@@ -204,7 +217,7 @@ void SmallCoordinateSystemObject::render() {
 
 	// set transformation matrix to unity-matrix, so that the backplane fills the entire screen
 	m_transparentShaderProgram->shaderProgram()->setUniformValue(m_transparentShaderProgram->m_uniformIDs[0], QMatrix4x4());
-	glDrawArrays(GL_TRIANGLES, (GLint)m_planeStartVertex, 6);
+	//glDrawArrays(GL_TRIANGLES, (GLint)m_vertexBufferData.size() - 6, 6);
 
 	m_transparentShaderProgram->release();
 
@@ -235,7 +248,9 @@ void SmallCoordinateSystemObject::render() {
 	m_opaquePhongShaderProgram->shaderProgram()->setUniformValue(m_opaquePhongShaderProgram->m_uniformIDs[4], m_transform.toMatrix());
 
 	// now draw the geometry
-	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLE_STRIP, m_planeStartIndex, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, m_indexBufferData.size() - m_planeStartIndex, GL_UNSIGNED_INT,
+				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_planeStartIndex));
 
 	m_opaquePhongShaderProgram->release();
 

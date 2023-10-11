@@ -26,6 +26,12 @@
 #ifndef Vic3DSmallCoordinateSystemObjectH
 #define Vic3DSmallCoordinateSystemObjectH
 
+#include <VICUS_RotationMatrix.h>
+#include <VICUS_PlaneGeometry.h>
+
+#include <IBKMK_Vector2D.h>
+#include <IBKMK_Vector3D.h>
+
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 
@@ -79,7 +85,6 @@ public:
 	Camera					m_smallViewCamera;
 
 private:
-
 	/*! The transformation object, transforms the coordinate system to its position and orientation in
 		the scene.
 	*/
@@ -109,6 +114,9 @@ private:
 
 	unsigned int				m_planeStartIndex;
 	unsigned int				m_planeStartVertex;
+
+	unsigned int				m_textStartIndex;
+	unsigned int				m_textStartVertex;
 };
 
 } // namespace Vic3D
