@@ -333,7 +333,7 @@ private:
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
 
-	// *** Interactive translation/rotation/scale stuff **
+	// *** Interactive translation/rotation/scale stuff ***
 
 	/*! Reference vector (coordinate system will be rotated around this vector). */
 	IBKMK::Vector3D			m_rotationAxis;

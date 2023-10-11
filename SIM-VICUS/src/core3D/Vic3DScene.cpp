@@ -3688,6 +3688,8 @@ void Scene::setDefaultViewState() {
 		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 		SVViewStateHandler::instance().setViewState(vs);
 		return;
+	case SVViewState::PM_BuildingAcousticProperties:
+		break;
 	} // switchd
 }
 
