@@ -1593,6 +1593,7 @@ void SVMainWindow::updateMainView() {
 	// uncheck all button bar actions
 	m_ui->actionGeometryView->setChecked(false);
 	m_ui->actionSimulationSettings->setChecked(false);
+	m_geometryViewSplitter->setVisible(false);
 
 	switch (m_mainViewMode) {
 		case MV_None: {

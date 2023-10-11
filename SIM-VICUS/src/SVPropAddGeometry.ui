@@ -135,6 +135,10 @@
         <property name="text">
          <string>Sub Stations</string>
         </property>
+        <property name="icon">
+         <iconset resource="../resources/icons.qrc">
+          <normaloff>:/gfx/icons8/icons8-haus-80.png</normaloff>:/gfx/icons8/icons8-haus-80.png</iconset>
+        </property>
        </widget>
       </item>
       <item>

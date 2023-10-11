@@ -264,7 +264,9 @@ void SVGeometryView::moveMeasurementWidget() {
 	//       widget wasn't created, yet. Hence, we need to protect against accessing the pointer.
 	if (SVViewStateHandler::instance().m_measurementWidget == nullptr)
 		return;
-	const QPoint &point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
+	QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
+	point.setX(point.x() - 10);
+	point.setY(point.y() - 10);
 	SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
 }
 

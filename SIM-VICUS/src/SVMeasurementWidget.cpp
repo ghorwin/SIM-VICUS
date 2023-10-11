@@ -28,6 +28,8 @@ SVMeasurementWidget::SVMeasurementWidget(QWidget *parent) :
 
 	setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint);
 
+	setWindowOpacity(0.75);
+
 	SVViewStateHandler::instance().m_measurementWidget = this;
 }
 

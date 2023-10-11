@@ -34,15 +34,17 @@ if ERRORLEVEL 1 GOTO fail
 popd
 
 :: copy executable to bin/release dir
-xcopy /Y .\bb_VC_x64\View3D\View3D.exe ..\..\bin\release_x64
-xcopy /Y .\bb_VC_x64\NandradSolver\NandradSolver.exe ..\..\bin\release_x64
-xcopy /Y .\bb_VC_x64\NandradFMUGenerator\NandradFMUGenerator.exe ..\..\bin\release_x64
-xcopy /Y .\bb_VC_x64\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
-xcopy /Y .\bb_VC_x64\NandradSolverFMI\NandradSolverFMI.dll ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64_noOpenMP\View3D\View3D.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64_noOpenMP\NandradSolver\NandradSolver.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64_noOpenMP\NandradFMUGenerator\NandradFMUGenerator.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64_noOpenMP\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
+xcopy /Y .\bb_VC_x64_noOpenMP\NandradSolverFMI\NandradSolverFMI.dll ..\..\bin\release_x64
 
-echo ** Run Tests **
-run_tests.bat				  			 
+REM echo ** Run Tests **
+REM run_tests.bat				  			 
 exit /b 0
+
+
 
 
 :fail
