@@ -705,38 +705,42 @@ const std::vector<IBKMK::Vector2D> &Drawing::Point::points() const {
 
 const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Line::planeGeometries);
+	try {
+		if (m_dirtyTriangulation) {
+			m_planeGeometries.clear();
 
-	if (m_dirtyTriangulation) {
-		m_planeGeometries.clear();
+			// Create Vector from point, add point of origin to each coordinate and calculate z value
+			IBKMK::Vector3D p(m_point.m_x + drawing.m_origin.m_x,
+							  m_point.m_y + drawing.m_origin.m_y,
+							  m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 
-		// Create Vector from point, add point of origin to each coordinate and calculate z value
-		IBKMK::Vector3D p(m_point.m_x + drawing.m_origin.m_x,
-						  m_point.m_y + drawing.m_origin.m_y,
-						  m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
+			// scale Vector with selected unit
+			p *= drawing.m_scalingFactor;
 
-		// scale Vector with selected unit
-		p *= drawing.m_scalingFactor;
+			double pointWeight = (DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
 
-		double pointWeight = (DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
+			// rotation
+			QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
+			IBKMK::Vector3D p1 = QVector2IBKVector(vec);
 
-		// rotation
-		QVector3D vec = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-		IBKMK::Vector3D p1 = QVector2IBKVector(vec);
+			IBKMK::Vector3D pExt0 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z);
+			IBKMK::Vector3D pExt1 = IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z);
+			IBKMK::Vector3D pExt2 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z);
 
-		IBKMK::Vector3D pExt0 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y - pointWeight, p1.m_z);
-		IBKMK::Vector3D pExt1 = IBKMK::Vector3D(p1.m_x + pointWeight, p1.m_y - pointWeight, p1.m_z);
-		IBKMK::Vector3D pExt2 = IBKMK::Vector3D(p1.m_x - pointWeight, p1.m_y + pointWeight, p1.m_z);
+			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
+			m_planeGeometries.push_back(VICUS::PlaneGeometry(po));
 
-		IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
-		m_planeGeometries.push_back(VICUS::PlaneGeometry(po));
+			//		if (!success)
+			//			throw IBK::Exception(IBK::FormatString("Could not generate plane geometry for Drawing Element #%1.").arg(m_id), FUNC_ID);
 
-		//		if (!success)
-		//			throw IBK::Exception(IBK::FormatString("Could not generate plane geometry for Drawing Element #%1.").arg(m_id), FUNC_ID);
+			m_dirtyTriangulation = false;
+		}
 
-		m_dirtyTriangulation = false;
+		return m_planeGeometries;
 	}
-
-	return m_planeGeometries;
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception("Could not generate plane geometries.", FUNC_ID);
+	}
 }
 
 void Drawing::Line::readXML(const TiXmlElement *element){
@@ -1394,45 +1398,41 @@ void Drawing::Ellipse::readXML(const TiXmlElement *element){
 }
 
 const std::vector<IBKMK::Vector2D> &Drawing::Ellipse::points() const {
-	try {
-		if (m_dirtyPoints) {
-			m_pickPoints.clear();
+	if (m_dirtyPoints) {
+		m_pickPoints.clear();
 
-			// iterateover data.vertlist, insert all vertices of Polyline into vector
-			double startAngle = m_startAngle;
-			double endAngle = m_endAngle;
+		// iterateover data.vertlist, insert all vertices of Polyline into vector
+		double startAngle = m_startAngle;
+		double endAngle = m_endAngle;
 
-			double angleStep = (endAngle - startAngle) / SEGMENT_COUNT_ELLIPSE;
+		double angleStep = (endAngle - startAngle) / SEGMENT_COUNT_ELLIPSE;
 
-			double majorRadius = sqrt(pow(m_majorAxis.m_x, 2) + pow(m_majorAxis.m_y, 2));
-			double minorRadius = majorRadius * m_ratio;
-			double rotationAngle = atan2(m_majorAxis.m_y, m_majorAxis.m_x);
+		double majorRadius = sqrt(pow(m_majorAxis.m_x, 2) + pow(m_majorAxis.m_y, 2));
+		double minorRadius = majorRadius * m_ratio;
+		double rotationAngle = atan2(m_majorAxis.m_y, m_majorAxis.m_x);
 
-			double x, y, rotated_x, rotated_y;
+		double x, y, rotated_x, rotated_y;
 
-			m_pickPoints.resize(SEGMENT_COUNT_ELLIPSE);
+		m_pickPoints.resize(SEGMENT_COUNT_ELLIPSE);
 
-			for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; ++i) {
+		for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; ++i) {
 
-				double currentAngle = startAngle + i * angleStep;
+			double currentAngle = startAngle + i * angleStep;
 
-				x = majorRadius * cos(currentAngle);
-				y = minorRadius * sin(currentAngle);
+			x = majorRadius * cos(currentAngle);
+			y = minorRadius * sin(currentAngle);
 
-				rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
-				rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
+			rotated_x = x * cos(rotationAngle) - y * sin(rotationAngle);
+			rotated_y = x * sin(rotationAngle) + y * cos(rotationAngle);
 
-				m_pickPoints[i] = IBKMK::Vector2D(rotated_x + m_center.m_x,
-												  rotated_y + m_center.m_y);
+			m_pickPoints[i] = IBKMK::Vector2D(rotated_x + m_center.m_x,
+											  rotated_y + m_center.m_y);
 
-			}
-			m_dirtyPoints = false;
 		}
-		return m_pickPoints;
+		m_dirtyPoints = false;
 	}
-	catch (IBK::Exception &ex) {
-		throw IBK::Exception("Could not generate plane geometries.", FUNC_ID);
-	}
+	return m_pickPoints;
+
 }
 
 
@@ -1768,7 +1768,6 @@ void Drawing::generatePlanesFromText(const std::string &text, const QFont &font,
 		}
 
 		IBKMK::Polygon3D poly3D(poly);
-
 		if ( planeGeometries.size() > 0 && isClockwise(polygon) ) {
 			/// We need to use the hole triangulation of the plane geometry
 			/// in order to add holes to the letters. We now just assume, that
