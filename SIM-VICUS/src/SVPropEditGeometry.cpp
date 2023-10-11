@@ -1365,7 +1365,7 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 	undo->push();
 }
 
-void SVPropEditGeometry::on_comboBoxUnit_currentIndexChanged(int index) {
+void SVPropEditGeometry::on_comboBoxUnit_currentIndexChanged(int /*index*/) {
 	enableTransformation();
 }
 
