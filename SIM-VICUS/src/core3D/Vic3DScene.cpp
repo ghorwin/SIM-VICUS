@@ -66,7 +66,7 @@ const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
 
 // Size of the local coordinate system window
-const int SUBWINDOWSIZE = 150;
+const int SUBWINDOWSIZE = 400;
 
 /// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 5;
@@ -356,7 +356,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 	m_smallViewProjection.setToIdentity();
 	// create projection matrix, i.e. camera lens
 	m_smallViewProjection.perspective(
-				/* vertical angle */ 45.0f,
+				/* vertical angle */ 30.0f,
 				/* aspect ratio */   1, // it's a square window
 				/* near */           0.1f,
 				/* far */            farDistance
@@ -387,7 +387,9 @@ void Scene::updateWorld2ViewMatrix() {
 	// move it into origin
 	m_smallCoordinateSystemObject.m_smallViewCamera.setTranslation(QVector3D(0,0,0));
 	// move 10 units backwards
-	m_smallCoordinateSystemObject.m_smallViewCamera.translate( -6*m_smallCoordinateSystemObject.m_smallViewCamera.forward());
+	m_smallCoordinateSystemObject.m_smallViewCamera.translate( -22*m_smallCoordinateSystemObject.m_smallViewCamera.forward());
+	m_smallCoordinateSystemObject.m_smallViewCamera.translate(   2*m_smallCoordinateSystemObject.m_smallViewCamera.right());
+	m_smallCoordinateSystemObject.m_smallViewCamera.translate(   2*m_smallCoordinateSystemObject.m_smallViewCamera.up());
 	// store in m_smallCoordinateSystemMatrix
 	m_smallCoordinateSystemObject.m_worldToSmallView = m_smallViewProjection * m_smallCoordinateSystemObject.m_smallViewCamera.toMatrix();
 }
