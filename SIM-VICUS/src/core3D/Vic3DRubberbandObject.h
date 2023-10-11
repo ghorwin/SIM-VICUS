@@ -100,18 +100,18 @@ public:
 		1) Construct a polygon in NDC based on rubberband.
 		2) Take Surface and Project all points in NDC via inverted WorldToView-Matrix
 		3) Take ClipperLib construct a Path with all projected Points in NDC.
-			(Only IntPoints exists in Clipper, so we scale by SCALE_FACTOR)
+		   (Only IntPoints exists in Clipper, so we scale by SCALE_FACTOR)
 		4) CLip Rubberband Polygon with Projected Surface Polygon
 		5) INCLUDE MODE:	De-/Select Object if absolute Clipping Area of Projected Surface with
-						Rubberband Surface is the same as the Area of the projected Surface.
+							Rubberband Surface is the same as the Area of the projected Surface.
 		   TOUCH MODE:		De-/Select Object if absolute Clipping Area of Projected Surface with
-						Rubberband Surface is > 0;
+							Rubberband Surface is > 0;
 		   -----------------------------------------------------------------------------------------------
 		   MIND:	We compare always the scaled clipping areas, so that hopefully also nearly orthogonal
-				surfaces to near plane contain a small projected area.
+					surfaces to near plane contain a small projected area.
 		   TODO:	If this is not always working we have to check before if we sometimes get
-				a line and then we check 1) Both points inside Clipping Poly and 2) Line cuts one Line Of
-				Clipping Polygon.
+					a line and then we check 1) Both points inside Clipping Poly and 2) Line cuts one Line Of
+					Clipping Polygon.
 		   -----------------------------------------------------------------------------------------------
 		7) Construct undo-action with selection changed Objects
 		8) push undo action.

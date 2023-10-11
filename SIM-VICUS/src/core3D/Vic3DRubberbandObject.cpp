@@ -99,13 +99,13 @@ void RubberbandObject::render() {
 		gap = 15.0;
 	}
 
-	/*
-	dashedLines.m_uniformNames.append("worldToView");
-	dashedLines.m_uniformNames.append("resolution");
-	dashedLines.m_uniformNames.append("dashSize");
-	dashedLines.m_uniformNames.append("gapSize");
-	dashedLines.m_uniformNames.append("fixedColor");
-	 */
+	/*!
+		dashedLines.m_uniformNames.append("worldToView");
+		dashedLines.m_uniformNames.append("resolution");
+		dashedLines.m_uniformNames.append("dashSize");
+		dashedLines.m_uniformNames.append("gapSize");
+		dashedLines.m_uniformNames.append("fixedColor");
+	*/
 
 	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[1], QVector2D((float)m_viewport.width(), (float)m_viewport.height()));
 	m_rubberbandShaderProgram->shaderProgram()->setUniformValue(m_rubberbandShaderProgram->m_uniformIDs[2], dash);
@@ -285,7 +285,6 @@ void RubberbandObject::selectObjectsBasedOnRubberband() {
 
 				// We want to also select the room, when all surfaces are selected
 				unsigned int surfaceSelectionCount = 0;
-
 				for(const VICUS::Surface &s : r.m_surfaces) {
 
 					if(!s.m_visible)
