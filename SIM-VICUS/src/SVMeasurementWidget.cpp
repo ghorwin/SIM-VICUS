@@ -121,7 +121,7 @@ void SVMeasurementWidget::on_pushButtonColor_colorChanged() {
 	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(m_color);
 }
 
-void SVMeasurementWidget::on_checkBoxLocalMeasurement_toggled(bool on) {
+void SVMeasurementWidget::on_checkBoxLocalMeasurement_toggled(bool /*on*/) {
 	showMeasurement();
 }
 
