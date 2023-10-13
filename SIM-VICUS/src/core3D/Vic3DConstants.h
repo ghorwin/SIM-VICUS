@@ -122,10 +122,11 @@ const double DEFAULT_LINE_WEIGHT			= 0.05;
 // multiplier to apply to width of entities
 const double DEFAULT_LINE_WEIGHT_SCALING	= 0.005;
 // Multiplyer for different layers and their heights
-const double Z_MULTIPLYER					= 0.00005;
+const double Z_MULTIPLYER					= 0.000005;
 
 // in m, should be enough, right?
-const float SNAP_DISTANCES_THRESHHOLD		= 0.5;
+const float SNAP_DISTANCES_THRESHHOLD			= 0.5;
+const float SNAP_DRAWING_DISTANCES_THRESHHOLD	= 0.2;
 
 const unsigned int SEGMENT_COUNT_ARC		= 5;
 const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
