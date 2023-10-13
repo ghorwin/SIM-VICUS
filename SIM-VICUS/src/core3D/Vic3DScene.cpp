@@ -2881,7 +2881,7 @@ void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
 				dist2 = IBKMK::lineToLineDistance(nearPoint, direction, v, vB - v, depth2, closestPoint2, lineFactor);
 
 				// check distance to line
-				if (dist2 < SNAP_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
+				if (dist2 < SNAP_DRAWING_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
 					PickObject::PickResult r;
 					r.m_resultType = PickObject::RT_Object;
 					r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
@@ -2895,7 +2895,7 @@ void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
 			dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
 
 			// check distance against radius of sphere
-			if (dist < SNAP_DISTANCES_THRESHHOLD) {
+			if (dist < SNAP_DRAWING_DISTANCES_THRESHHOLD) {
 				PickObject::PickResult r;
 				r.m_resultType = PickObject::RT_Object;
 				r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
@@ -2922,7 +2922,7 @@ void Scene::pickDrawings(PickObject &pickObject,
 		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Solid>(pickObject, d.m_solids, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::LinearDimension>(pickObject, d.m_linearDimensions, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
+		//addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
 	}
 }
 
