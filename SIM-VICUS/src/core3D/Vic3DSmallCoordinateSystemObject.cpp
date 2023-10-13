@@ -139,12 +139,19 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	addSphere(IBKMK::Vector3D(2,0,0), Qt::red, 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
+//			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	addSphere(IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
+//			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	addSphere(IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.03*sizeFactor, currentVertexIndex, currentElementIndex,
+//			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	addCone(IBKMK::Vector3D(1.8,0,0), IBKMK::Vector3D(2.4,0,0), Qt::red, 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+	addCone(IBKMK::Vector3D(0,1.8,0), IBKMK::Vector3D(0,2.4,0), QColor(0,196,0), 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+	addCone(IBKMK::Vector3D(0,0,1.8), IBKMK::Vector3D(0,0,2.4), QColor(32,32,255), 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
 	// add a plane for the background
 	m_planeStartIndex = currentElementIndex; // number of indexes to use in the TRIANGLE_STRIP draw call
@@ -157,7 +164,7 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 	font.setBold(true);
 	font.setPointSize(64);
 	addText("N", font, Qt::AlignHCenter, 0, rotMat, IBKMK::Vector3D(0, 0, 0), IBKMK::Vector2D(-0.3, 2.5), 1, 0.0001,
-			Qt::green, currentVertexIndex, currentElementIndex,	m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+			QColor(0,196,0), currentVertexIndex, currentElementIndex,	m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 	addText("E", font, Qt::AlignHCenter, 0, rotMat, IBKMK::Vector3D(0, 0, 0), IBKMK::Vector2D(2.4, -0.3), 1, 0.0001,
 			Qt::red, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
