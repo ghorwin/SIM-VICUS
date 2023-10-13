@@ -312,6 +312,102 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 }
 
 
+void addCone(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<Vertex> & vertexBufferData,
+				 std::vector<ColorRGBA> & colorBufferData,
+				 std::vector<GLuint> & indexBufferData, bool closed)
+{
+	#define PI_CONST 3.14159265
+
+	IBKMK::Vector3D coneAxis = p2-p1;
+	double L = coneAxis.magnitude();
+
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), IBKVector2QVector(coneAxis));
+	QVector3D trans = IBKVector2QVector(p1);
+
+	unsigned int nSeg = CYLINDER_SEGMENTS; // (Wir behalten den gleichen Segments-Namen bei)
+	vertexBufferData.resize(vertexBufferData.size() + nSeg + 1); // +1 für die Spitze des Kegels
+	colorBufferData.resize(colorBufferData.size() + nSeg + 1);
+
+	unsigned int vertexIndexStart = currentVertexIndex;
+
+	vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(L, 0, 0)) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(1, 0, 0));
+	colorBufferData[currentVertexIndex] = c;
+	++currentVertexIndex;
+
+	for (unsigned int i=0; i<nSeg; ++i, ++currentVertexIndex) {
+		double angle = -2*PI_CONST*i/nSeg;
+		double ny = std::cos(angle);
+		double y = ny*radius;
+		double nz = std::sin(angle);
+		double z = nz*radius;
+
+		vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;
+		// Der Normalenvektor für den Kegel ist komplizierter als für den Zylinder:
+		QVector3D segment(0, y, z);
+
+		QVector3D normal = L * segment.normalized() + segment.length() * QVector3D(1, 0, 0);
+		vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(normal.normalized());
+		colorBufferData[currentVertexIndex] = c;
+	}
+	// Elemente hinzufügen
+	indexBufferData.resize(indexBufferData.size() + 3*(nSeg+1) + 1);
+
+	for (unsigned int i=0; i<nSeg; ++i, currentElementIndex +=3) {
+		indexBufferData[currentElementIndex] = vertexIndexStart;
+		indexBufferData[currentElementIndex+1] = vertexIndexStart + 1 + i;
+		indexBufferData[currentElementIndex+2] = vertexIndexStart + 1 + (1 + i) % nSeg;
+	}
+
+	// finally add first two vertices again
+	indexBufferData[currentElementIndex++] = vertexIndexStart;
+	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
+	indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // set stop index
+
+	if (closed) {
+		// we need 2*nSeg more vertexes + 2 for the centers, because the normal vectors point in different direction
+		vertexBufferData.resize(vertexBufferData.size() + nSeg + 1);
+		colorBufferData.resize(colorBufferData.size()   + nSeg + 1);
+		vertexIndexStart = currentVertexIndex;
+
+		// front facing plate
+		vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D( 0, 0, 0)) + trans;
+		vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(-1, 0, 0)) + trans;
+		colorBufferData[currentVertexIndex] = c;
+
+		++currentVertexIndex;
+		for (unsigned int i=0; i<nSeg; ++i, ++currentVertexIndex) {
+			double angle = -2*PI_CONST*i/nSeg;
+			double ny = std::cos(angle);
+			double y = ny*radius;
+			double nz = std::sin(angle);
+			double z = nz*radius;
+			vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;
+			vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(-1, 0, 0)) + trans;
+			colorBufferData[currentVertexIndex] = c;
+		}
+
+		// also more indexes, since we render with triangle strips, and we have nSeg Vertexes, that makes
+		// 2*(nSeg+1) indexes plus one stop index and that 2 times for either side of the cylinder
+		indexBufferData.resize(indexBufferData.size() + 3*nSeg + 2);
+
+		// generate the sequence 0 1 2   0 2 3   0 3 4   0 4 1    0 stop
+		for (unsigned int i=0; i<nSeg; ++i, currentElementIndex +=3) {
+
+			indexBufferData[currentElementIndex  ] = vertexIndexStart; // 0
+			indexBufferData[currentElementIndex+1] = vertexIndexStart + 1 + i; // 1
+			indexBufferData[currentElementIndex+2] = vertexIndexStart + 1 + (1 + i) % nSeg; // 2
+		}
+
+		indexBufferData[currentElementIndex++] = vertexIndexStart; // 0
+		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // stop index
+	}
+}
+
+
+
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)

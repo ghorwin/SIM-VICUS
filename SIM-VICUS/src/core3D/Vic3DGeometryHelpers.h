@@ -88,6 +88,16 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
+/*! Same as addCone, but only adds coordinates (no normals, no color buffer).
+	Also, the index buffer contains indexes to be drawn with GL_TRIANGLES, whereas the other addCylinder function
+	generates index buffer data for GL_TRIANGLE_STRIP.
+*/
+void addCone(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
+				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				 std::vector<Vertex> & vertexBufferData,
+				 std::vector<ColorRGBA> & colorBufferData,
+				 std::vector<GLuint> & indexBufferData, bool closed);
+
 /*! Adds a cylinder mesh to a vertex, color and index buffer. */
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 
