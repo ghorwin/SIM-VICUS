@@ -31,6 +31,7 @@ public:
 	};
 
 	enum ScaleUnit {
+		SU_Auto,
 		SU_Meter,
 		SU_Decimeter,
 		SU_Centimeter,
@@ -46,6 +47,7 @@ public:
 
 private slots:
 	void on_comboBoxUnit_activated(int index);
+
 	void on_pushButtonConvert_clicked();
 
 	void on_pushButtonImport_clicked();
@@ -76,6 +78,10 @@ private:
 	/*! Next VICUS project ID. */
 	unsigned int				m_nextId;
 
+	/*! Center point of drawing. Used in moveDrawings()
+		to center the painting. */
+	IBKMK::Vector3D				m_center;
+
 	/*! Return code. */
 	ImportResults				m_returnCode;
 
@@ -87,11 +93,11 @@ The objects are then inserted into drawing */
 
 class DRW_InterfaceImpl : public DRW_Interface {
 
-	VICUS::Drawing				*m_drawing;
+	VICUS::Drawing				*m_drawing		= nullptr;
 
-	VICUS::DrawingLayer::Block	*m_activeBlock = nullptr;
+	VICUS::DrawingLayer::Block	*m_activeBlock	= nullptr;
 
-	unsigned int				*m_nextId = nullptr;
+	unsigned int				*m_nextId		= nullptr;
 
 public :
 

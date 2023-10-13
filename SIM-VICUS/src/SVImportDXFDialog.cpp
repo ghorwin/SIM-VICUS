@@ -5,6 +5,8 @@
 
 #include <libdxfrw.h>
 
+#include <regex>
+
 #include "SVSettings.h"
 #include "SVUndoAddDrawing.h"
 #include "SVStyle.h"
@@ -28,6 +30,7 @@ SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 
 	m_ui->lineEditDrawingName->setText(defaultName);
 
+	m_ui->comboBoxUnit->addItem("Auto", SU_Auto);
 	m_ui->comboBoxUnit->addItem("Meter", SU_Meter);
 	m_ui->comboBoxUnit->addItem("Decimeter", SU_Decimeter);
 	m_ui->comboBoxUnit->addItem("Centimeter", SU_Centimeter);
@@ -89,17 +92,7 @@ void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingOb
 }
 
 void SVImportDXFDialog::moveDrawings() {
-	IBKMK::Vector3D center;
-
-	std::vector<const VICUS::Drawing *> drawings;
-	drawings.push_back(&m_drawing);
-
-	std::vector<const VICUS::Surface*> surfaces;
-	std::vector<const VICUS::SubSurface*> subsurfaces;
-
-	project().boundingBox(drawings, surfaces, subsurfaces, center, false);
-
-	m_drawing.m_origin = - 1.0 * center;
+	m_drawing.m_origin = - 1.0 * m_center;
 }
 
 void SVImportDXFDialog::fixFonts() {
@@ -163,25 +156,40 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		log += QString("Dimension Styles:\t%1\n").arg(m_drawing.m_dimensionStyles.size());
 		log += QString("Texts:\t%1\n").arg(m_drawing.m_texts.size());
 
+		// m_drawing.m_texts.clear();
+		// m_drawing.m_arcs.clear();
+		// m_drawing.m_ellipses.clear();
+
 		// m_drawing.updatePointer();
 		m_drawing.updateParents();
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
-		double scalingFactor = 0.0;
+		double scalingFactor[NUM_SU] = {100.0, 1.0, 0.1, 0.01, 0.001};
 
-		switch (su) {
+		std::vector<const VICUS::Drawing *> drawings;
+		drawings.push_back(&m_drawing);
 
-		case SU_Meter:		scalingFactor = 1;		break;
-		case SU_Decimeter:	scalingFactor = 0.1;	break;
-		case SU_Centimeter: scalingFactor = 0.01;	break;
-		case SU_Millimeter: scalingFactor = 0.001;	break;
+		std::vector<const VICUS::Surface*> surfaces;
+		std::vector<const VICUS::SubSurface*> subsurfaces;
+		IBKMK::Vector3D bounding = project().boundingBox(drawings, surfaces, subsurfaces, m_center, false);
 
-		case NUM_SU: break; // make compiler happy
+		double AUTO_SCALING_THRESHOLD = 1000;
+		if (su == SU_Auto) {
+			for (unsigned int i=0; i<NUM_SU; ++i) {
 
+				if (scalingFactor[i] * bounding.m_x > AUTO_SCALING_THRESHOLD)
+					continue;
+
+				if (scalingFactor[i] * bounding.m_y > AUTO_SCALING_THRESHOLD)
+					continue;
+
+				scalingFactor[SU_Auto] = scalingFactor[i];
+				break;
+			}
 		}
 
-		m_drawing.m_scalingFactor = scalingFactor;
+		m_drawing.m_scalingFactor = scalingFactor[su];
 	}
 	else
 		log += "Import of DXF-File was not successful!";
@@ -507,8 +515,8 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 
 	newSolid.m_point1 = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newSolid.m_point2 = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
-	newSolid.m_point3 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);
-	newSolid.m_point4 = IBKMK::Vector2D(data.fourPoint.x, data.fourPoint.y);
+	newSolid.m_point3 = IBKMK::Vector2D(data.fourPoint.x, data.fourPoint.y);
+	newSolid.m_point4 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);
 	newSolid.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newSolid.m_layerName = QString::fromStdString(data.layer);
 	newSolid.m_id = (*m_nextId)++;
@@ -523,11 +531,29 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 
 }
 
+std::string replaceFormatting(const std::string &str) {
+	std::string replaced = str;
+	try {
+		replaced = std::regex_replace(replaced, std::regex("\\\\\\\\"), "\032");
+		replaced = std::regex_replace(replaced, std::regex("\\\\P|\\n|\\t"), " ");
+		replaced = std::regex_replace(replaced, std::regex("\\\\(\\\\[ACcFfHLlOopQTW])|\\\\[ACcFfHLlOopQTW][^\\\\;]*;|\\\\[ACcFfHLlOopQTW]"), "$1");
+		replaced = std::regex_replace(replaced, std::regex("([^\\\\])\\\\S([^;]*)[/#\\^]([^;]*);"), "$1$2/$3");
+		replaced = std::regex_replace(replaced, std::regex("\\\\(\\\\S)|[\\\\](})|}"), "$1$2");
+		replaced = std::regex_replace(replaced, std::regex("\\{/?"), "");
+	}
+	catch (std::exception &ex) {
+		IBK::IBK_Message(IBK::FormatString("Could not replace all regex expressions.\n%1").arg(ex.what()),
+						 IBK::MSG_WARNING);
+	}
+
+	return replaced;
+}
+
 void DRW_InterfaceImpl::addMText(const DRW_MText& data){
 	if(m_activeBlock != nullptr) return;
 
 	VICUS::Drawing::Text newText;
-	newText.m_text = QString::fromStdString(data.text);
+	newText.m_text = QString::fromStdString(replaceFormatting(data.text));
 	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newText.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
@@ -546,6 +572,7 @@ void DRW_InterfaceImpl::addMText(const DRW_MText& data){
 
 	m_drawing->m_texts.push_back(newText);
 }
+
 void DRW_InterfaceImpl::addText(const DRW_Text& data){
 
 	if(m_activeBlock != nullptr) return;
