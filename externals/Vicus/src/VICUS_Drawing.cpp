@@ -132,11 +132,7 @@ const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries(const Drawing &
 	if (m_dirtyTriangulation) {
 		m_planeGeometries.clear();
 
-		QFont font("Arial");
-		double size = std::max(1.0, FONT_SCALING * m_height * drawing.m_scalingFactor);
-		font.setPointSize(size);
-
-		generatePlanesFromText(m_text.toStdString(), font, m_alignment, m_rotationAngle, drawing.m_rotationMatrix, drawing.m_origin,
+		generatePlanesFromText(m_text.toStdString(), m_height, m_alignment, m_rotationAngle, drawing.m_rotationMatrix, drawing.m_origin,
 							   m_basePoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
 							   m_planeGeometries);
 
@@ -265,22 +261,29 @@ const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries(const Drawing 
 		IBKMK::Vector3D p2 = IBKMK::Vector3D(m_point2.m_x + drawing.m_origin.m_x,
 											 m_point2.m_y + drawing.m_origin.m_y,
 											 m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
-		/* IBKMK::Vector3D p3 = IBKMK::Vector3D(solid.m_point3.m_x + drawing.m_origin.m_x, solid.m_point3.m_y + drawing.m_origin.m_y, solid.m_zposition * VICUS::Z_MULTIPLYER + drawing.m_origin.m_z); */
+		IBKMK::Vector3D p3 = IBKMK::Vector3D(m_point3.m_x + drawing.m_origin.m_x,
+											 m_point3.m_y + drawing.m_origin.m_y,
+											 m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 		IBKMK::Vector3D p4 = IBKMK::Vector3D(m_point4.m_x + drawing.m_origin.m_x,
 											 m_point4.m_y + drawing.m_origin.m_y,
 											 m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 
 		p1 *= drawing.m_scalingFactor;
 		p2 *= drawing.m_scalingFactor;
-		/* p3 *= drawing.m_scalingFactor; */
+		p3 *= drawing.m_scalingFactor;
 		p4 *= drawing.m_scalingFactor;
 
 		QVector3D vec1 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p1);
 		QVector3D vec2 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p2);
-		/* QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3); */
+		QVector3D vec3 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p3);
 		QVector3D vec4 = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(p4);
 
-		IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, QVector2IBKVector(vec1), QVector2IBKVector(vec4), QVector2IBKVector(vec2));
+		std::vector<IBKMK::Vector3D> vertexes(4);
+		vertexes[0] = QVector2IBKVector(vec1);
+		vertexes[1] = QVector2IBKVector(vec2);
+		vertexes[2] = QVector2IBKVector(vec3);
+		vertexes[3] = QVector2IBKVector(vec4);
+		IBKMK::Polygon3D p(vertexes);
 		m_planeGeometries.push_back(VICUS::PlaneGeometry(p));
 
 		//		if (!success)
@@ -430,6 +433,9 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 	if (m_dirtyTriangulation) {
 		m_planeGeometries.clear();
 
+		if ((m_point1 - m_point2).magnitudeSquared() < 1E-2)
+			return m_planeGeometries;
+
 		// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
 		double zCoordinate = m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
 
@@ -463,15 +469,24 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 
 			IBKMK::Vector2D leftPoint, rightPoint;
 			IBKMK::Vector2D point1, point2;
+			bool left = false, right = false;
 			if (intersect1 && (m_dimensionPoint - intersection1Left).magnitudeSquared() > 1E-3 ) {
 				m_leftPoint = intersection1Left;
 				m_rightPoint = m_dimensionPoint;
+				left = true;
 			}
 			if (intersect2 && (m_dimensionPoint - intersection1Right).magnitudeSquared() > 1E-3 ) {
 				m_leftPoint = m_dimensionPoint;
 				m_rightPoint = intersection1Right;
+				right = true;
 			}
+
+			if (!left && !right)
+				return m_planeGeometries;
 		}
+
+		qDebug() << "Left point: X " << m_leftPoint.m_x << " Y " << m_leftPoint.m_y;
+		qDebug() << "Right point: X " << m_rightPoint.m_x << " Y " << m_rightPoint.m_y;
 
 		m_pickPoints.push_back(m_leftPoint);
 		m_pickPoints.push_back(m_rightPoint);
@@ -585,16 +600,9 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		// Text ======================================================================
 
 		double length = (m_leftPoint - m_rightPoint).magnitude();
-
-		QFont font("Arial");
-
-		double size = std::max(1.0, FONT_SCALING * m_style->m_textHeight * drawing.m_scalingFactor);
-		font.setPointSize(size);
-		// qDebug() << "DIM STYLE CHANGED";
-
 		m_pickPoints.push_back(m_textPoint);
 
-		generatePlanesFromText(QString("%1").arg(length).toStdString(), font, Qt::AlignHCenter, m_angle, drawing.m_rotationMatrix, drawing.m_origin,
+		generatePlanesFromText(QString("%1").arg(length).toStdString(), m_style->m_textHeight, Qt::AlignHCenter, m_angle, drawing.m_rotationMatrix, drawing.m_origin,
 							   m_textPoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z,
 							   m_planeGeometries);
 
@@ -1218,10 +1226,7 @@ const std::vector<IBKMK::Vector2D>& Drawing::Arc::points() const {
 		else
 			angleDifference = endAngle - startAngle;
 
-
-		double arc_length = std::abs(angleDifference) * m_radius;
-		unsigned int n = std::ceil(arc_length / MAX_SEGMENT_ARC_LENGHT);  // Calculate n based on max_segment_length
-
+		unsigned int n = std::ceil(angleDifference / (2 * IBK::PI) * SEGMENT_COUNT_ARC);
 		double stepAngle = angleDifference / n;
 
 		m_pickPoints.resize(n + 1);
@@ -1242,8 +1247,8 @@ const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries(const Drawing &d
 		m_planeGeometries.clear();
 
 		std::vector<IBKMK::Vector3D> arcPoints;
-		const std::vector<IBKMK::Vector2D> arcPoints2D = points();
-		for (unsigned int i = 0; i < arcPoints2D.size(); i++){
+		const std::vector<IBKMK::Vector2D> &arcPoints2D = points();
+		for (unsigned int i = 0; i < arcPoints2D.size(); ++i){
 			IBKMK::Vector3D p = IBKMK::Vector3D(arcPoints2D[i].m_x + drawing.m_origin.m_x,
 												arcPoints2D[i].m_y + drawing.m_origin.m_y,
 												m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
@@ -1404,11 +1409,13 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries(const Drawin
 	if (m_dirtyTriangulation) {
 		m_planeGeometries.clear();
 
-		std::vector<IBKMK::Vector3D> ellipsePoints;
-		for (unsigned int i = 0; i <= SEGMENT_COUNT_ELLIPSE; i++) {
+		const std::vector<IBKMK::Vector2D> &pickPoints = points();
 
-			IBKMK::Vector3D p = IBKMK::Vector3D(points()[i].m_x + drawing.m_origin.m_x,
-												points()[i].m_y + drawing.m_origin.m_y,
+		std::vector<IBKMK::Vector3D> ellipsePoints;
+		for (unsigned int i = 0; i < SEGMENT_COUNT_ELLIPSE; i++) {
+
+			IBKMK::Vector3D p = IBKMK::Vector3D(pickPoints[i].m_x + drawing.m_origin.m_x,
+												pickPoints[i].m_y + drawing.m_origin.m_y,
 												m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z);
 			p *= drawing.m_scalingFactor;
 
@@ -1418,7 +1425,7 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries(const Drawin
 
 		Q_ASSERT(points().size() > 0);
 
-		bool connect = points()[0] == points().back();
+		bool connect = pickPoints[0] == pickPoints.back();
 		bool success = generatePlanesFromPolyline(ellipsePoints, drawing.m_rotationMatrix, connect,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 												  m_planeGeometries);
@@ -1682,16 +1689,18 @@ bool isClockwise(const QPolygonF& polygon) {
 	return sum > 0.0;
 }
 
-void Drawing::generatePlanesFromText(const std::string &text, const QFont &font, Qt::Alignment alignment, const double &rotationAngle,
+void Drawing::generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
 									 const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 									 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, std::vector<PlaneGeometry> &planeGeometries) {
+
+	// We choose Arial for now
+	QFont font("Arial");
 
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
 
 	double width = path.boundingRect().width();
-
 	double moveX = 0.0;
 	if (alignment == Qt::AlignHCenter) {
 		moveX = -0.5*width;
@@ -1715,8 +1724,8 @@ void Drawing::generatePlanesFromText(const std::string &text, const QFont &font,
 		for (unsigned int i=0; i<poly.size(); ++i) {
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-			IBKMK::Vector3D v3D = IBKMK::Vector3D(1 / FONT_SCALING / scalingFactor *  point.x() + basePoint.m_x + origin.m_x,
-												  1 / FONT_SCALING / scalingFactor * -point.y() + basePoint.m_y + origin.m_y,
+			IBKMK::Vector3D v3D = IBKMK::Vector3D( point.x() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_x + origin.m_x,
+												  -point.y() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_y + origin.m_y,
 												  zScale);
 
 			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);

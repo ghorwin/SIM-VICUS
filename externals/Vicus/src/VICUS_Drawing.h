@@ -424,7 +424,7 @@ private:
 	static bool generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix,
 											   bool connectEndStart, double width, std::vector<PlaneGeometry> &planes);
 
-	static void generatePlanesFromText(const std::string &text, const QFont &font, Qt::Alignment alignment, const double &rotationAngle,
+	static void generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
 									   const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 									   const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale,
 									   std::vector<VICUS::PlaneGeometry> &planeGeometries);
