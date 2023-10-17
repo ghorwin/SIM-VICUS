@@ -54,7 +54,7 @@ SVDBZoneControlVentilationNaturalEditWidget::SVDBZoneControlVentilationNaturalEd
 	m_ui->lineEditTemperatureAirRoomMaximum->setup(-100, 100, tr("Maximum room air temperature above which ventilation stops."), true, true);
 	m_ui->lineEditTemperatureAirRoomMinimum->setup(-100, 100, tr("Minimum room air temperature below which ventilation stops."), true, true);
 	m_ui->lineEditWindSpeedMax->setup(0, 40, tr("Maximum wind speed. Values above stops ventilation."), true, true);
-	m_ui->lineEditMaximumAirChangeRateComfort->setup(0, 50, tr("Maxium comfort air change rate."), false, true);
+	m_ui->lineEditMaximumAirChangeRateComfort->setup(0, 70, tr("Maxium comfort air change rate."), false, true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
