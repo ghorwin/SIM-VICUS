@@ -846,7 +846,7 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 		if (!dl->m_visible)
 			continue;
 
-		const std::vector<IBKMK::Vector2D> &verts = drawObj.points();
+		const std::vector<IBKMK::Vector2D> &verts = drawObj.points2D();
 		for (const IBKMK::Vector2D &p : verts) {
 
 			// Create Vector from start and end point of the line,
@@ -997,10 +997,9 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 
 	// store selected surfaces
 	if ( surfaces.empty() && subsurfaces.empty())
-		return IBKMK::Vector3D ( 0,0,0 );
+		return IBKMK::Vector3D (0.,0.,0.);
 
 	// TODO : Review this
-
 	double maxX = std::numeric_limits<double>::lowest();
 	double maxY = std::numeric_limits<double>::lowest();
 	double maxZ = std::numeric_limits<double>::lowest();
