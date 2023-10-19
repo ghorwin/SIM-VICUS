@@ -72,6 +72,7 @@ struct PickObject {
 		}
 
 		ResultType		m_resultType;
+
 		/*! Distance from observer/near plane point. */
 		double			m_depth;
 
@@ -81,7 +82,7 @@ struct PickObject {
 		unsigned int	m_objectID = 0;
 
 		/*! Special handling for drawing objects, since it is not a vicus object
-			and it origin has to be stored separately. This is needed to perform
+			and its origin has to be stored separately. This is needed to perform
 			correct picking of drawing objects. */
 		unsigned int	m_drawingID = 0;
 
@@ -95,8 +96,7 @@ struct PickObject {
 
 	PickObject(const QPoint & localMousePos) :
 		m_localMousePos(localMousePos)
-	{
-	}
+	{}
 
 	/*! Set to true, if picking was already performed. */
 	bool					m_pickPerformed = false;
