@@ -1878,7 +1878,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 		bool isBlockDefined = block != nullptr;
 		bool hasBlock = obj.m_block != nullptr;
 
-		if (hasBlock && !isBlockDefined)
+		if ((hasBlock && !isBlockDefined) || (isBlockDefined && !hasBlock))
 			continue;
 
 		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
@@ -1919,7 +1919,7 @@ void generateDrawingPlanesForBlock(const std::vector<VICUS::Drawing::Insert> &in
 		trans.rotate(insert.m_angle, QVector3D(0,0,1));
 		trans.scale(insert.m_xScale, insert.m_yScale, insert.m_zScale);
 
-		IBKMK::Vector2D insertPoint = insert.m_block->m_basePoint - insert.m_insertionPoint;
+		IBKMK::Vector2D insertPoint = insert.m_insertionPoint - insert.m_block->m_basePoint;
 
 		trans.translate(QVector3D(insertPoint.m_x, insertPoint.m_y, 0.0));
 
