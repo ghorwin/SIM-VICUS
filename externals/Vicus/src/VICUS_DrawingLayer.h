@@ -1,6 +1,7 @@
 #ifndef VICUS_DrawingLayerH
 #define VICUS_DrawingLayerH
 
+#include "IBKMK_Vector2D.h"
 #include "qcolor.h"
 
 #include <VICUS_CodeGenMacros.h>
@@ -26,6 +27,8 @@ public:
 		QColor			m_color = QColor();
 		/*! Line weight. */
 		int				m_lineWeight;
+		/*! Base point */
+		IBKMK::Vector2D	m_basePoint;
 	};
 
 
