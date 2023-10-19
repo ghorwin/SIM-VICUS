@@ -1,18 +1,20 @@
 #ifndef VICUS_DRAWING_H
 #define VICUS_DRAWING_H
 
-#include "VICUS_PlaneGeometry.h"
 #include "tinyxml.h"
+
 #include <IBKMK_Vector2D.h>
 #include <IBKMK_Vector3D.h>
 #include <IBK_Line.h>
 
+#include "VICUS_PlaneGeometry.h"
 #include <VICUS_RotationMatrix.h>
 #include <VICUS_CodeGenMacros.h>
 #include <VICUS_Object.h>
 #include <VICUS_DrawingLayer.h>
 
 #include <QQuaternion>
+#include <QMatrix4x4>
 #include <QColor>
 #include <QDebug>
 
@@ -71,8 +73,9 @@ public:
 
 			Point will be recalculated when m_dirty is true;
 		*/
-		virtual const std::vector<IBKMK::Vector2D>& points() const = 0 ;
-		virtual const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const = 0;
+		virtual const std::vector<IBKMK::Vector2D>& points2D() const = 0 ;
+		virtual const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																		 const QMatrix4x4 *trans = nullptr) const = 0;
 
 		/* used to get correct color of entity */
 		const QColor &color() const;
@@ -93,6 +96,8 @@ public:
 		double										m_lineWeight = 0;
 		/* integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
 		unsigned int								m_zPosition;
+		/*! Name of block. */
+		QString										m_blockName;
 		/* Block Entity belongs to, if nullptr, no block is used */
 		DrawingLayer::Block							*m_block = nullptr;
 		/*! ID of object. */
@@ -110,7 +115,29 @@ public:
 		mutable std::vector<VICUS::PlaneGeometry>	m_planeGeometries;
 	};
 
+	/*! Insert structure for blocks. */
+	struct Insert {
 
+		TiXmlElement * writeXML(TiXmlElement * element) const;
+		void readXML(const TiXmlElement * element);
+
+		unsigned int			m_id;					// unsigned int
+		QString					m_blockName;			// name of block
+		/* Block Entity that belongs to name. */
+		DrawingLayer::Block		*m_block = nullptr;
+
+		double					m_xScale = 1.0;			// scale-factor in x direction
+		double					m_yScale = 1.0;			// scale-factor in y direction
+		double					m_zScale = 1.0;			// scale-factor in z direction
+
+		double					m_angle = 0.0;			// angle of rotation
+
+		IBKMK::Vector2D			m_insertionPoint;		// insertion point
+	};
+
+	/*! Struct that holds all data for Dimension styling.
+		For now all the basic implementation is just done.
+	*/
 	struct DimStyle {
 		/*!
 			https://ezdxf.readthedocs.io/en/stable/tutorials/linear_dimension.html
@@ -150,11 +177,12 @@ public:
 		void readXML(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
-		const std::vector<IBKMK::Vector2D>& points() const override;
+		const std::vector<IBKMK::Vector2D>& points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Point coordinate */
@@ -169,11 +197,12 @@ public:
 		void readXML(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
-		const std::vector<IBKMK::Vector2D>& points() const override;
+		const std::vector<IBKMK::Vector2D>& points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 		/*! Point coordinate */
 		IBKMK::Vector2D					m_point1;
@@ -188,11 +217,12 @@ public:
 		void readXML(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
-		const std::vector<IBKMK::Vector2D>& points() const override;
+		const std::vector<IBKMK::Vector2D>& points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 		/*! polyline coordinates */
 		std::vector<IBKMK::Vector2D>    m_polyline;
@@ -206,11 +236,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 		/*! Calculate points. */
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 		/*! Circle center */
 		IBKMK::Vector2D					m_center;
@@ -224,11 +255,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Ellipse center */
@@ -249,11 +281,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Arc center */
@@ -272,11 +305,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Point 1 */
@@ -295,11 +329,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Base point. */
@@ -320,11 +355,12 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const override;
 		void readXML(const TiXmlElement * element) override;
 
-		const std::vector<IBKMK::Vector2D> &points() const override;
+		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing,
+																 const QMatrix4x4 *trans = nullptr) const override;
 
 
 		/*! Base point. */
@@ -367,14 +403,21 @@ public:
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
 
-	/*! Updates all planes, when transformation operations were applied. */
+	/*! Updates all planes, when transformation operations are applied.
+		MIND: Always call this function, when the drawing transformation
+		(translation, rotation) were changed, since the triangulation is
+		redone.
+	*/
 	void updatePlaneGeometries();
+
+	/*! Generates 3D Points from 2D points by applying transformation from drawing. */
+	const std::vector<IBKMK::Vector3D> points3D(const AbstractDrawingObject &obj) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
-	//:inherited	QString				m_displayName;				// XML:A
-	//:inherited	bool				m_visible = true;			// XML:A
+	//:inherited	unsigned int		m_id = INVALID_ID;					// XML:A:required
+	//:inherited	QString				m_displayName;						// XML:A
+	//:inherited	bool				m_visible = true;					// XML:A
 
 	/*! point of origin */
 	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);	// XML:E
@@ -407,6 +450,8 @@ public:
 	std::vector<LinearDimension>											m_linearDimensions;	// XML:E
 	/*! list of Dim Styles */
 	std::vector<DimStyle>													m_dimensionStyles;	// XML:E
+	/*! list of inserts. */
+	std::vector<Insert>														m_inserts;
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;	// XML:E
@@ -418,16 +463,28 @@ private:
 	/*! Helper function to assign the correct layer to an entity */
 	DrawingLayer *findLayerPointer(const QString &layername);
 
+	/*! Helper function to assign the correct block to an entity */
+	DrawingLayer::Block* findBlockPointer(const QString &name);
+
+	/*! Function to generate plane geometries from a line. */
 	static bool generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
-									  const RotationMatrix &matrix, double width, VICUS::PlaneGeometry &plane);
+									  const RotationMatrix &matrix, double width, VICUS::PlaneGeometry &plane,
+									  const QMatrix4x4 *trans = nullptr);
 
+	/*! Function to generate plane geometries from a polyline. */
 	static bool generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix,
-											   bool connectEndStart, double width, std::vector<PlaneGeometry> &planes);
+										   bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
+										   const QMatrix4x4 *trans = nullptr);
 
+	/*! Function to generate plane geometries from text. Heavy operation. Text is polygonised by QPainterPath with font-size 1
+		in order to get a rough letter and less polygons. Some dxfs contain a lot of text and so we would end in having too many
+		polygons.
+	*/
 	static void generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
 									   const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 									   const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale,
-									   std::vector<VICUS::PlaneGeometry> &planeGeometries);
+									   std::vector<VICUS::PlaneGeometry> &planeGeometries,
+									   const QMatrix4x4 *trans = nullptr);
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().
