@@ -79,14 +79,14 @@ bool SVImportDXFDialog::readDxfFile(VICUS::Drawing &drawing, const QString &fnam
 }
 
 void addPoints(IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingObject &object) {
-	for (const IBKMK::Vector2D &v2D : object.points()) {
+	for (const IBKMK::Vector2D &v2D : object.points2D()) {
 		center += v2D;
 	}
-	center /= 1 + object.points().size();
+	center /= 1 + object.points2D().size();
 }
 
 void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingObject &object) {
-	for (const IBKMK::Vector2D &v2D : object.points()) {
+	for (const IBKMK::Vector2D &v2D : object.points2D()) {
 		const_cast<IBKMK::Vector2D &>(v2D) -= center;
 	}
 }
@@ -264,7 +264,8 @@ void DRW_InterfaceImpl::addAppId(const DRW_AppId& /*data*/){}
 void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 
 	// New Block
-	VICUS::DrawingLayer::Block newBlock;
+	m_drawing->m_blocks.push_back(VICUS::DrawingLayer::Block());
+	VICUS::DrawingLayer::Block &newBlock = m_drawing->m_blocks.back();
 
 	// Set name
 	newBlock.m_name = QString::fromStdString(data.name);
@@ -277,9 +278,6 @@ void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 
 	// ID
 	newBlock.m_id = (*m_nextId)++;
-
-	// Add blocks
-	m_drawing->m_blocks.push_back(newBlock);
 
 	// Set actove block
 	m_activeBlock = &newBlock;
@@ -297,10 +295,6 @@ void DRW_InterfaceImpl::endBlock(){
 
 void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
-	// Activeblock
-	if(m_activeBlock != nullptr)
-		return;
-
 	VICUS::Drawing::Point newPoint;
 	newPoint.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
@@ -311,6 +305,8 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 	newPoint.m_layerName = QString::fromStdString(data.layer);
 
 	newPoint.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newPoint.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -325,7 +321,7 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
 void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 
-	if(m_activeBlock != nullptr) return;
+
 
 	VICUS::Drawing::Line newLine;
 	newLine.m_zPosition = m_drawing->m_zCounter;
@@ -338,6 +334,8 @@ void DRW_InterfaceImpl::addLine(const DRW_Line& data){
 	newLine.m_layerName = QString::fromStdString(data.layer);
 
 	newLine.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newLine.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	/* value 256 means use defaultColor, value 7 is black */
@@ -353,13 +351,11 @@ void DRW_InterfaceImpl::addRay(const DRW_Ray& /*data*/){}
 void DRW_InterfaceImpl::addXline(const DRW_Xline& /*data*/){}
 void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 
-	if(m_activeBlock != nullptr) return;
-
 	VICUS::Drawing::Arc newArc;
 	newArc.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 
-	//create new arc, insert into vector m_arcs from drawing
+	// create new arc, insert into vector m_arcs from drawing
 	newArc.m_radius = data.radious;
 	newArc.m_startAngle = data.staangle;
 	newArc.m_endAngle = data.endangle;
@@ -368,6 +364,8 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 	newArc.m_layerName = QString::fromStdString(data.layer);
 
 	newArc.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newArc.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -381,7 +379,7 @@ void DRW_InterfaceImpl::addArc(const DRW_Arc& data){
 
 void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
-	if(m_activeBlock != nullptr) return;
+
 
 	VICUS::Drawing::Circle newCircle;
 	newCircle.m_zPosition = m_drawing->m_zCounter;
@@ -394,6 +392,8 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 	newCircle.m_layerName = QString::fromStdString(data.layer);
 
 	newCircle.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newCircle.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -407,7 +407,7 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
 void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 
-	if(m_activeBlock != nullptr) return;
+
 
 	VICUS::Drawing::Ellipse newEllipse;
 	newEllipse.m_zPosition = m_drawing->m_zCounter;
@@ -422,6 +422,8 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 	newEllipse.m_layerName = QString::fromStdString(data.layer);
 
 	newEllipse.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newEllipse.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -435,8 +437,6 @@ void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
 
 void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
-	if(m_activeBlock != nullptr) return;
-
 	VICUS::Drawing::PolyLine newPolyline;
 	newPolyline.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
@@ -445,6 +445,8 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 	newPolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
 	newPolyline.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newPolyline.m_blockName = m_activeBlock->m_name;
 
 	// iterate over data.vertlist, insert all vertices of Polyline into vector
 	for(size_t i = 0; i < data.vertlist.size(); i++){
@@ -470,8 +472,6 @@ void DRW_InterfaceImpl::addLWPolyline(const DRW_LWPolyline& data){
 
 void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 
-	if(m_activeBlock != nullptr) return;
-
 	VICUS::Drawing::PolyLine newPolyline;
 	newPolyline.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
@@ -484,6 +484,9 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 	}
 
 	newPolyline.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newPolyline.m_blockName = m_activeBlock->m_name;
+
 	newPolyline.m_layerName = QString::fromStdString(data.layer);
 	newPolyline.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 
@@ -501,13 +504,27 @@ void DRW_InterfaceImpl::addPolyline(const DRW_Polyline& data){
 }
 void DRW_InterfaceImpl::addSpline(const DRW_Spline* /*data*/){}
 void DRW_InterfaceImpl::addKnot(const DRW_Entity & /*data*/){}
-void DRW_InterfaceImpl::addInsert(const DRW_Insert& /*data*/){}
+
+void DRW_InterfaceImpl::addInsert(const DRW_Insert& data){
+	VICUS::Drawing::Insert newInsert;
+
+	newInsert.m_blockName = QString::fromStdString(data.name);
+	newInsert.m_id = (*m_nextId)++;
+
+	newInsert.m_angle = data.angle;
+
+	newInsert.m_xScale = data.xscale;
+	newInsert.m_yScale = data.yscale;
+	newInsert.m_zScale = data.zscale;
+
+	newInsert.m_insertionPoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+
+	m_drawing->m_inserts.push_back(newInsert);
+}
+
 void DRW_InterfaceImpl::addTrace(const DRW_Trace& /*data*/){}
 void DRW_InterfaceImpl::add3dFace(const DRW_3Dface& /*data*/){}
 void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
-
-	if(m_activeBlock != nullptr) return;
-
 
 	VICUS::Drawing::Solid newSolid;
 	newSolid.m_zPosition = m_drawing->m_zCounter;
@@ -517,9 +534,13 @@ void DRW_InterfaceImpl::addSolid(const DRW_Solid& data){
 	newSolid.m_point2 = IBKMK::Vector2D(data.secPoint.x, data.secPoint.y);
 	newSolid.m_point3 = IBKMK::Vector2D(data.fourPoint.x, data.fourPoint.y);
 	newSolid.m_point4 = IBKMK::Vector2D(data.thirdPoint.x, data.thirdPoint.y);
+
 	newSolid.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newSolid.m_layerName = QString::fromStdString(data.layer);
+
 	newSolid.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newSolid.m_blockName = m_activeBlock->m_name;
 
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
@@ -550,14 +571,15 @@ std::string replaceFormatting(const std::string &str) {
 }
 
 void DRW_InterfaceImpl::addMText(const DRW_MText& data){
-	if(m_activeBlock != nullptr) return;
-
 	VICUS::Drawing::Text newText;
 	newText.m_text = QString::fromStdString(replaceFormatting(data.text));
 	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newText.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 	newText.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newText.m_blockName = m_activeBlock->m_name;
+
 	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newText.m_layerName = QString::fromStdString(data.layer);
 	newText.m_height = data.height;
@@ -575,14 +597,15 @@ void DRW_InterfaceImpl::addMText(const DRW_MText& data){
 
 void DRW_InterfaceImpl::addText(const DRW_Text& data){
 
-	if(m_activeBlock != nullptr) return;
-
 	VICUS::Drawing::Text newText;
 	newText.m_text = QString::fromStdString(data.text);
 	newText.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
 	newText.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 	newText.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newText.m_blockName = m_activeBlock->m_name;
+
 	newText.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data.lWeight);
 	newText.m_layerName = QString::fromStdString(data.layer);
 	newText.m_height = data.height;
@@ -601,7 +624,7 @@ void DRW_InterfaceImpl::addText(const DRW_Text& data){
 }
 void DRW_InterfaceImpl::addDimAlign(const DRW_DimAligned */*data*/){}
 void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear *data){
-	if(m_activeBlock != nullptr) return;
+
 
 	// Line points
 	const DRW_Coord &def1Point = data->getDef1Point();
@@ -620,6 +643,9 @@ void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear *data){
 	newLinearDimension.m_zPosition = m_drawing->m_zCounter;
 	m_drawing->m_zCounter++;
 	newLinearDimension.m_id = (*m_nextId)++;
+	if (m_activeBlock != nullptr)
+		newLinearDimension.m_blockName = m_activeBlock->m_name;
+
 	newLinearDimension.m_lineWeight = DRW_LW_Conv::lineWidth2dxfInt(data->lWeight);
 	newLinearDimension.m_layerName = QString::fromStdString(data->layer);
 	newLinearDimension.m_point1 = def1;
