@@ -154,6 +154,7 @@ SOURCES += \
 	../../src/SVDatabase.cpp \
 	../../src/SVDatabaseEditDialog.cpp \
 	../../src/SVDebugApplication.cpp \
+	../../src/SVDrawingPropertiesDialog.cpp \
 	../../src/SVGeometryView.cpp \
 	../../src/SVImportDXFDialog.cpp \
 	../../src/SVImportIDFDialog.cpp \
@@ -358,6 +359,7 @@ HEADERS  += \
 	../../src/SVDatabase.h \
 	../../src/SVDatabaseEditDialog.h \
 	../../src/SVDebugApplication.h \
+	../../src/SVDrawingPropertiesDialog.h \
 	../../src/SVGeometryView.h \
 	../../src/SVImportDXFDialog.h \
 	../../src/SVImportIDFDialog.h \
@@ -534,6 +536,7 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
+	../../src/SVDrawingPropertiesDialog.ui \
 	../../src/SVGeometryView.ui \
 	../../src/SVImportDXFDialog.ui \
 	../../src/SVImportIDFDialog.ui \
