@@ -31,8 +31,12 @@
 #include <QMouseEvent>
 #include <QTreeView>
 
+#include "SVUndoModifySurfaceGeometry.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVSettings.h"
+#include "SVProjectHandler.h"
+#include "SVDrawingPropertiesDialog.h"
+#include "SVMainWindow.h"
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
@@ -106,25 +110,25 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	else {
 		TopologyType t = static_cast<TopologyType>(index.data(ItemType).toInt());
 		switch (SVSettings::instance().m_theme) {
-			case SVSettings::NUM_TT:
-			case SVSettings::TT_White:
-				switch (t) {
-					case (TT_Building):			painter->setPen(QColor(78, 87, 135)); break;
-					case (TT_BuildingLevel):	painter->setPen(QColor(219, 108, 0)); break;
-					case (TT_Room):				painter->setPen(QColor(150, 20, 20)); break;
-					case (TT_Subsurface):		painter->setPen(QColor(70, 80, 125)); break;
-					default:					painter->setPen(Qt::black); break;
-				}
+		case SVSettings::NUM_TT:
+		case SVSettings::TT_White:
+			switch (t) {
+			case (TT_Building):			painter->setPen(QColor(78, 87, 135)); break;
+			case (TT_BuildingLevel):	painter->setPen(QColor(219, 108, 0)); break;
+			case (TT_Room):				painter->setPen(QColor(150, 20, 20)); break;
+			case (TT_Subsurface):		painter->setPen(QColor(70, 80, 125)); break;
+			default:					painter->setPen(Qt::black); break;
+			}
 
 			break;
-			case SVSettings::TT_Dark:
-				switch (t) {
-					case (TT_Building):			painter->setPen(QColor(150,140,190)); break;
-					case (TT_BuildingLevel):	painter->setPen(QColor(255, 200, 120)); break;
-					case (TT_Room):				painter->setPen(QColor(250, 140, 140));	break;
-					case (TT_Subsurface):		painter->setPen(QColor(120,110,170)); break;
-					default:					painter->setPen(QColor(240,240,240)); break;
-				}
+		case SVSettings::TT_Dark:
+			switch (t) {
+			case (TT_Building):			painter->setPen(QColor(150,140,190)); break;
+			case (TT_BuildingLevel):	painter->setPen(QColor(255, 200, 120)); break;
+			case (TT_Room):				painter->setPen(QColor(250, 140, 140));	break;
+			case (TT_Subsurface):		painter->setPen(QColor(120,110,170)); break;
+			default:					painter->setPen(QColor(240,240,240)); break;
+			}
 
 			break;
 		}
@@ -181,7 +185,29 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 		}
 
 	}
+	if (event->type() == QEvent::MouseButtonDblClick) {
+		unsigned int nodeID = index.data(NodeID).toUInt();
+		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(nodeID);
+		const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(obj);
 
+		if (drawing != nullptr) {
+
+			VICUS::Drawing newDrawing(*drawing);
+			bool result = SVDrawingPropertiesDialog::showDrawingProperties(SVMainWindow::instance().window(), &newDrawing);
+			if (result) {
+
+				std::vector<VICUS::Surface> newSurfs;
+				std::vector<VICUS::Drawing> newDrawings;
+
+				newDrawings.push_back(newDrawing);
+				SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Drawing geometry modified"), newSurfs, newDrawings );
+				undo->push();
+
+				SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged );
+				return false;
+			}
+		}
+	}
 	return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
