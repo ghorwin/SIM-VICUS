@@ -1918,7 +1918,13 @@ void generateDrawingPlanesForBlock(const std::vector<VICUS::Drawing::Insert> &in
 		QMatrix4x4 trans;
 		trans.rotate(insert.m_angle, QVector3D(0,0,1));
 		trans.scale(insert.m_xScale, insert.m_yScale, insert.m_zScale);
-		trans.translate(QVector3D(insert.m_insertionPoint.m_x, insert.m_insertionPoint.m_y, 0.0));
+
+		IBKMK::Vector2D insertPoint = insert.m_block->m_basePoint - insert.m_insertionPoint;
+
+		trans.translate(QVector3D(insertPoint.m_x, insertPoint.m_y, 0.0));
+
+		// All triangulation needs to be updated
+		const_cast<VICUS::Drawing &>(drawing).updatePlaneGeometries();
 
 		generateDrawingPlanes<VICUS::Drawing::Line>(drawing.m_lines, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
 		generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing.m_linearDimensions, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
