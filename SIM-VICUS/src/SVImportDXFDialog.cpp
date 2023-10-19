@@ -279,6 +279,9 @@ void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 	// ID
 	newBlock.m_id = (*m_nextId)++;
 
+	// Set base
+	newBlock.m_basePoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+
 	// Set actove block
 	m_activeBlock = &newBlock;
 
@@ -406,8 +409,6 @@ void DRW_InterfaceImpl::addCircle(const DRW_Circle& data){
 
 
 void DRW_InterfaceImpl::addEllipse(const DRW_Ellipse& data){
-
-
 
 	VICUS::Drawing::Ellipse newEllipse;
 	newEllipse.m_zPosition = m_drawing->m_zCounter;
