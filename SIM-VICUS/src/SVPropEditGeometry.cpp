@@ -171,11 +171,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(m_ui->lineEditTranslateX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditTranslateZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
-
-	m_ui->comboBoxUnit->addItem("Meter", SU_Meter);
-	m_ui->comboBoxUnit->addItem("Decimeter", SU_Decimeter);
-	m_ui->comboBoxUnit->addItem("Centimeter", SU_Centimeter);
-	m_ui->comboBoxUnit->addItem("Millimeter", SU_Millimeter);
 }
 
 
@@ -1240,33 +1235,15 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 	for (const VICUS::Drawing *d : m_selDrawings) {
 		VICUS::Drawing newDrawing(*d);
-		newDrawing.m_origin += QVector2IBKVector(translation);
-
-		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
-
-		double scalingFactor = 0.0;
-
-		switch (su) {
-
-		case SU_Meter:		scalingFactor = 1;		break;
-		case SU_Decimeter:	scalingFactor = 0.1;	break;
-		case SU_Centimeter: scalingFactor = 0.01;	break;
-		case SU_Millimeter: scalingFactor = 0.001;	break;
-
-		case NUM_SU: break; // make compiler happy
-
-		}
-
-		newDrawing.m_scalingFactor = scalingFactor;
+		// QVector3D origin = IBKVector2QVector(newDrawing.m_origin);
 
 		if (!haveScaling) {
 			// rotation
 			QQuaternion quaternion = rotation * newDrawing.m_rotationMatrix.toQuaternion();
 			newDrawing.m_rotationMatrix.setQuaternion(quaternion);
 		}
-		else {
-		}
-		newDrawing.updatePlaneGeometries();
+
+		newDrawing.m_origin -= QVector2IBKVector(translation);
 		modifiedDrawings.push_back(newDrawing);
 	}
 
