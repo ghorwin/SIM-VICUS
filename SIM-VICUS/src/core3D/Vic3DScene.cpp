@@ -240,6 +240,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		updateDrawing = true;
 		updateSelection = true;
 
+		for (const VICUS::Drawing &d : project().m_drawings)
+			const_cast<VICUS::Drawing &>(d).updatePlaneGeometries();
+
 		m_drawingGeometryObject.updateBuffers();
 	} break;
 
@@ -353,8 +356,8 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* near */           0.1f,
 				/* far */            farDistance
 				);
-	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
+	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 	// the small view projection matrix is constant
 	m_smallViewProjection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -370,7 +373,6 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 
 	// update viewport
 	m_viewPort = QRect(0, 0, static_cast<int>(width * retinaScale), static_cast<int>(height * retinaScale) );
-
 	m_smallViewPort = QRect(0, 0, static_cast<int>(SUBWINDOWSIZE * retinaScale), static_cast<int>(SUBWINDOWSIZE * retinaScale) );
 }
 
@@ -1868,8 +1870,19 @@ const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
 
 template <typename t>
 void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
-						   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject) {
+						   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject, const VICUS::DrawingLayer::Block *block = nullptr,
+						   const QMatrix4x4 *trans = nullptr) {
+
 	for (const t & obj : objects){
+
+		bool isBlockDefined = block != nullptr;
+		bool hasBlock = obj.m_block != nullptr;
+
+		if (hasBlock && !isBlockDefined)
+			continue;
+
+		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
+			continue;
 
 		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
 
@@ -1877,8 +1890,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 			continue;
 
 		const QColor color = objectColor(obj);
-
-		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing, trans);
 		for (const VICUS::PlaneGeometry &plane : planes) {
 			addPlane(plane.triangulationData(), color, currentVertexIndex, currentElementIndex,
 					 opaqueObject.m_vertexBufferData,
@@ -1891,6 +1903,31 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 					 opaqueObject.m_indexBufferData,
 					 true);
 		}
+	}
+}
+
+void generateDrawingPlanesForBlock(const std::vector<VICUS::Drawing::Insert> &inserts, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
+								   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject) {
+	FUNCID(Vic3DScene::generateDrawingPlanesForBlock);
+
+	for (const VICUS::Drawing::Insert &insert : inserts) {
+
+		if (insert.m_block == nullptr)
+			throw IBK::Exception(IBK::FormatString("Block with name '%1' was not found").arg(insert.m_blockName.toStdString()), FUNC_ID);
+
+		QMatrix4x4 trans;
+		trans.rotate(insert.m_angle, QVector3D(0,0,1));
+		trans.scale(insert.m_xScale, insert.m_yScale, insert.m_zScale);
+		trans.translate(QVector3D(insert.m_insertionPoint.m_x, insert.m_insertionPoint.m_y, 0.0));
+
+		generateDrawingPlanes<VICUS::Drawing::Line>(drawing.m_lines, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing.m_linearDimensions, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing.m_polylines, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::Arc>(drawing.m_arcs, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::Circle>(drawing.m_circles, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
+		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
 	}
 }
 
@@ -1924,6 +1961,7 @@ void Scene::generate2DDrawingGeometry() {
 		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanesForBlock(drawing.m_inserts, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 	}
 
 	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();
@@ -2848,35 +2886,23 @@ void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
 
 	// process all objects
 	for (const t &abstrObj : objs) {
-		// skip invisible drawing objects
+		// skip invisible drawing objects, to be sure we have valid objects
 		Q_ASSERT(abstrObj.m_parentLayer != nullptr);
 		if (!abstrObj.m_parentLayer->m_visible)
 			continue;
 
-		const std::vector<IBKMK::Vector2D> &points = abstrObj.points();
+		// Take all 3D points, are not cached and will be recalculated all the time for now
+		const std::vector<IBKMK::Vector3D> &points3D = drawing.points3D(abstrObj);
+		for (unsigned int i=0; i<points3D.size(); ++i) {
 
-		std::vector<IBKMK::Vector3D> points3d(points.size());
-		for (unsigned int i=0; i<points.size(); ++i) {
-			const IBKMK::Vector2D &v2D = points[i];
-
-			double zCoordinate = abstrObj.m_zPosition * Z_MULTIPLYER + drawing.m_origin.m_z;
-			IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + drawing.m_origin.m_x,
-												  v2D.m_y + drawing.m_origin.m_y,
-												  zCoordinate);
-
-			v3D *= drawing.m_scalingFactor;
-			QVector3D qV3D = drawing.m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
-			points3d[i] = QVector2IBKVector(qV3D);
-		}
-
-		for (unsigned int i=0; i<points3d.size(); ++i) {
-
-			const IBKMK::Vector3D &v  = points3d[      i                     ];
-			const IBKMK::Vector3D &vB = points3d[((int)i - 1) % points.size()];
+			const IBKMK::Vector3D &v  = points3D[      i                       ];
+			const IBKMK::Vector3D &vB = points3D[((int)i - 1) % points3D.size()];
 
 			double depth = 0., depth2 = 0., dist = 0., dist2 = 0., lineFactor;
 			IBKMK::Vector3D closestPoint, closestPoint2;
 
+			/// If a line should be traced, it is handled here.
+			/// But is costing performance and so it is right now not handled
 			if (pickLine) {
 				dist2 = IBKMK::lineToLineDistance(nearPoint, direction, v, vB - v, depth2, closestPoint2, lineFactor);
 
@@ -2892,9 +2918,8 @@ void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
 				}
 			}
 
-			dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
-
 			// check distance against radius of sphere
+			dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
 			if (dist < SNAP_DRAWING_DISTANCES_THRESHHOLD) {
 				PickObject::PickResult r;
 				r.m_resultType = PickObject::RT_Object;
@@ -2922,7 +2947,9 @@ void Scene::pickDrawings(PickObject &pickObject,
 		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::Solid>(pickObject, d.m_solids, d, nearPoint, direction, false);
 		addPickPoint<VICUS::Drawing::LinearDimension>(pickObject, d.m_linearDimensions, d, nearPoint, direction, false);
-		//addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
+
+		// For now we do not want to pick texts since its a heavy operation (many points)
+		// addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
 	}
 }
 
@@ -3250,21 +3277,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 				if (snapOptions & SVViewState::Snap_ObjectVertex) {
 
-					std::vector<IBKMK::Vector3D> points3d(obj->points().size());
-					for (unsigned int i=0; i<obj->points().size(); ++i) {
-						const IBKMK::Vector2D &v2D = obj->points()[i];
-
-						double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-						IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x + d->m_origin.m_x,
-															  v2D.m_y + d->m_origin.m_y,
-															  zCoordinate);
-
-						QVector3D qV3D = d->m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
-						qV3D *= d->m_scalingFactor;
-
-						points3d[i] = QVector2IBKVector(qV3D);
-					}
-
+					std::vector<IBKMK::Vector3D> points3d = d->points3D(*obj);
 					for (unsigned int i=0; i<points3d.size(); ++i) {
 
 						const IBKMK::Vector3D & v3D  = points3d[i];
