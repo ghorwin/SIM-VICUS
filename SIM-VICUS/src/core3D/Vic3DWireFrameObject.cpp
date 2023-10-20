@@ -117,9 +117,12 @@ void WireFrameObject::destroy() {
 template <typename t>
 void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
 						   unsigned int &currentElementIndex, std::vector<VertexC> &vertexBufferData, std::vector<GLuint> &indexBufferData) {
-	for (const t & obj : objects){
 
+	for (const t & obj : objects) {
 		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+
+		if (obj.m_block != nullptr)
+			continue;
 
 		if (dl == nullptr)
 			continue;
@@ -158,6 +161,7 @@ void WireFrameObject::updateBuffers() {
 
 	qDebug() << m_selectedObjects.size() << " selected objects";
 
+	std::set<unsigned int> handledDrawingIds;
 	for (const VICUS::Object * o : m_selectedObjects) {
 
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
@@ -206,6 +210,9 @@ void WireFrameObject::updateBuffers() {
 
 			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(drawingLayer->m_parent);
 			Q_ASSERT(drawing != nullptr);
+
+			if (handledDrawingIds.find(drawing->m_id) != handledDrawingIds.end())
+				continue; // Skip if already handled
 
 			generateDrawingPlanes<VICUS::Drawing::Line>(drawing->m_lines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing->m_polylines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
