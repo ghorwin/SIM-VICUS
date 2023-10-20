@@ -73,18 +73,18 @@
      <property name="title">
       <string>Settings</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QCheckBox" name="checkBoxMove">
-        <property name="text">
-         <string>Move drawing to (0|0|0)</string>
-        </property>
-       </widget>
-      </item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QCheckBox" name="checkBoxFixFonts">
         <property name="text">
          <string>Fix too big text fonts</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxMove">
+        <property name="text">
+         <string>Move drawing to (0|0|0)</string>
         </property>
        </widget>
       </item>
