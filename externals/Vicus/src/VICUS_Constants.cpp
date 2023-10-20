@@ -42,12 +42,12 @@ const char * XML_READ_UNKNOWN_NAME		= "Name '%1' for tag '%2' in line %3 is inva
 const char * DATABASE_PLACEHOLDER_NAME			= "Database";
 const char * USER_DATABASE_PLACEHOLDER_NAME		= "User Database";
 
-const unsigned int SEGMENT_COUNT_ARC		= 10;
-const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
-const unsigned int SEGMENT_COUNT_ELLIPSE	= 10;
+const unsigned int SEGMENT_COUNT_ARC		= 15;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 15;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 15;
 
 // Multiplyer for different layers and their heights
-const double Z_MULTIPLYER					= 0.000005;
+const double Z_MULTIPLYER					= 0.000001;
 // default line width
 const double DEFAULT_LINE_WEIGHT			= 0.02;
 // multiplier to apply to width of entities
