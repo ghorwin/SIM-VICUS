@@ -1870,18 +1870,13 @@ const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
 
 template <typename t>
 void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
-						   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject, const VICUS::DrawingLayer::Block *block = nullptr,
-						   const QMatrix4x4 *trans = nullptr) {
+						   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject) {
 
 	for (const t & obj : objects){
 
-		bool isBlockDefined = block != nullptr;
-		bool hasBlock = obj.m_block != nullptr;
+		bool isBlockObject = obj.m_block != nullptr;
 
-		if ((hasBlock && !isBlockDefined) || (isBlockDefined && !hasBlock))
-			continue;
-
-		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
+		if (isBlockObject)
 			continue;
 
 		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
@@ -1890,7 +1885,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 			continue;
 
 		const QColor color = objectColor(obj);
-		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing, trans);
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
 		for (const VICUS::PlaneGeometry &plane : planes) {
 			addPlane(plane.triangulationData(), color, currentVertexIndex, currentElementIndex,
 					 opaqueObject.m_vertexBufferData,
@@ -1905,38 +1900,6 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 		}
 	}
 }
-
-void generateDrawingPlanesForBlock(const std::vector<VICUS::Drawing::Insert> &inserts, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
-								   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject) {
-	FUNCID(Vic3DScene::generateDrawingPlanesForBlock);
-
-	for (const VICUS::Drawing::Insert &insert : inserts) {
-
-		if (insert.m_block == nullptr)
-			throw IBK::Exception(IBK::FormatString("Block with name '%1' was not found").arg(insert.m_blockName.toStdString()), FUNC_ID);
-
-		QMatrix4x4 trans;
-		trans.rotate(insert.m_angle, QVector3D(0,0,1));
-		trans.scale(insert.m_xScale, insert.m_yScale, insert.m_zScale);
-
-		IBKMK::Vector2D insertPoint = insert.m_insertionPoint - insert.m_block->m_basePoint;
-
-		trans.translate(QVector3D(insertPoint.m_x, insertPoint.m_y, 0.0));
-
-		// All triangulation needs to be updated
-		const_cast<VICUS::Drawing &>(drawing).updatePlaneGeometries();
-
-		generateDrawingPlanes<VICUS::Drawing::Line>(drawing.m_lines, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing.m_linearDimensions, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing.m_polylines, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::Arc>(drawing.m_arcs, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::Circle>(drawing.m_circles, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, drawing, currentVertexIndex, currentElementIndex, opaqueObject, insert.m_block, &trans);
-	}
-}
-
 
 void Scene::generate2DDrawingGeometry() {
 
@@ -1967,7 +1930,6 @@ void Scene::generate2DDrawingGeometry() {
 		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanesForBlock(drawing.m_inserts, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 	}
 
 	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();
@@ -2884,60 +2846,6 @@ void Scene::pick(PickObject & pickObject) {
 	pickObject.m_pickPerformed = true;
 }
 
-/*! Add Pick points of drawing objects. */
-template <typename t>
-void addPickPoint(PickObject &pickObject, const std::vector<t> objs,
-				  const VICUS::Drawing &drawing, const IBKMK::Vector3D &nearPoint,
-				  const IBKMK::Vector3D &direction, bool pickLine = false) {
-
-	// process all objects
-	for (const t &abstrObj : objs) {
-		// skip invisible drawing objects, to be sure we have valid objects
-		Q_ASSERT(abstrObj.m_parentLayer != nullptr);
-		if (!abstrObj.m_parentLayer->m_visible)
-			continue;
-
-		// Take all 3D points, are not cached and will be recalculated all the time for now
-		const std::vector<IBKMK::Vector3D> &points3D = drawing.points3D(abstrObj);
-		for (unsigned int i=0; i<points3D.size(); ++i) {
-
-			const IBKMK::Vector3D &v  = points3D[      i                       ];
-			const IBKMK::Vector3D &vB = points3D[((int)i - 1) % points3D.size()];
-
-			double depth = 0., depth2 = 0., dist = 0., dist2 = 0., lineFactor;
-			IBKMK::Vector3D closestPoint, closestPoint2;
-
-			/// If a line should be traced, it is handled here.
-			/// But is costing performance and so it is right now not handled
-			if (pickLine) {
-				dist2 = IBKMK::lineToLineDistance(nearPoint, direction, v, vB - v, depth2, closestPoint2, lineFactor);
-
-				// check distance to line
-				if (dist2 < SNAP_DRAWING_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
-					PickObject::PickResult r;
-					r.m_resultType = PickObject::RT_Object;
-					r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
-					r.m_pickPoint = closestPoint2; // this
-					r.m_objectID = drawing.m_id;
-					r.m_drawingID = abstrObj.m_id;
-					pickObject.m_candidates.push_back(r);
-				}
-			}
-
-			// check distance against radius of sphere
-			dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
-			if (dist < SNAP_DRAWING_DISTANCES_THRESHHOLD) {
-				PickObject::PickResult r;
-				r.m_resultType = PickObject::RT_Object;
-				r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
-				r.m_pickPoint = closestPoint; // this
-				r.m_objectID = drawing.m_id;
-				r.m_drawingID = abstrObj.m_id;
-				pickObject.m_candidates.push_back(r);
-			}
-		}
-	}
-}
 
 void Scene::pickDrawings(PickObject &pickObject,
 						 const IBKMK::Vector3D &nearPoint,
@@ -2945,17 +2853,54 @@ void Scene::pickDrawings(PickObject &pickObject,
 						 const IBKMK::Vector3D &direction) {
 
 	for (const VICUS::Drawing & d : project().m_drawings) {
-		addPickPoint<VICUS::Drawing::Point>(pickObject, d.m_points, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Arc>(pickObject, d.m_arcs, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Circle>(pickObject, d.m_circles, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Ellipse>(pickObject, d.m_ellipses, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Line>(pickObject, d.m_lines, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::PolyLine>(pickObject, d.m_polylines, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::Solid>(pickObject, d.m_solids, d, nearPoint, direction, false);
-		addPickPoint<VICUS::Drawing::LinearDimension>(pickObject, d.m_linearDimensions, d, nearPoint, direction, false);
+		const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &points3D = d.pickPoints();
 
-		// For now we do not want to pick texts since its a heavy operation (many points)
-		// addPickPoint<VICUS::Drawing::Text>(pickObject, d.m_texts, d, nearPoint, direction, false);
+		for (std::map<unsigned int, std::vector<IBKMK::Vector3D>>::const_iterator it = points3D.begin();
+			 it != points3D.end(); ++it) {
+
+			unsigned int id = it->first;
+			const std::vector<IBKMK::Vector3D> &points = it->second;
+
+			const VICUS::Drawing::AbstractDrawingObject &object = *d.objectByID(it->first);
+
+			for (unsigned int j=0; j<points.size(); ++j) {
+				const IBKMK::Vector3D &v  = points[      j                       ];
+				const IBKMK::Vector3D &vB = points[((int)j - 1) % points.size()];
+
+				double depth = 0., depth2 = 0., dist = 0., dist2 = 0., lineFactor;
+				IBKMK::Vector3D closestPoint, closestPoint2;
+
+				/// If a line should be traced, it is handled here.
+				/// But it is costing performance and so it is right now not handled
+				if (PICK_LINE) {
+					dist2 = IBKMK::lineToLineDistance(nearPoint, direction, v,
+													  vB - v, depth2, closestPoint2, lineFactor);
+
+					// check distance to line
+					if (dist2 < SNAP_DRAWING_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
+						PickObject::PickResult r;
+						r.m_resultType = PickObject::RT_Object;
+						r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
+						r.m_pickPoint = closestPoint2; // this
+						r.m_objectID = object.m_parentLayer->m_id;
+						r.m_drawingID = it->first;
+						pickObject.m_candidates.push_back(r);
+					}
+				}
+
+				// check distance against radius of sphere
+				dist = IBKMK::lineToPointDistance(nearPoint, direction, v, depth, closestPoint);
+				if (dist < SNAP_DRAWING_DISTANCES_THRESHHOLD) {
+					PickObject::PickResult r;
+					r.m_resultType = PickObject::RT_Object;
+					r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
+					r.m_pickPoint = closestPoint; // this
+					r.m_objectID = object.m_parentLayer->m_id;
+					r.m_drawingID = it->first;
+					pickObject.m_candidates.push_back(r);
+				}
+			}
+		}
 	}
 }
 
@@ -3257,8 +3202,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapInfo = "snap to object";
 			} // if (s != nullptr)
 
-
-			const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(obj);
+			// *** drawings ***
+			const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);
+			const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
 			if (d != nullptr) {
 
 				// a surface object might have several snap points which we collect first in a vector
@@ -3274,16 +3220,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 				const VICUS::Drawing::AbstractDrawingObject *obj = d->objectByID(r.m_drawingID);
 
-				bool linePick = false;
-				const VICUS::Drawing::Line *line = dynamic_cast<const VICUS::Drawing::Line *>(obj);
-				const VICUS::Drawing::PolyLine *polyline = dynamic_cast<const VICUS::Drawing::PolyLine *>(obj);
-
-				if (line != nullptr || polyline != nullptr)
-					linePick = true;
-
 				if (snapOptions & SVViewState::Snap_ObjectVertex) {
 
-					std::vector<IBKMK::Vector3D> points3d = d->points3D(*obj);
+					std::vector<IBKMK::Vector3D> points3d = d->pickPoints().at(obj->m_id);
 					for (unsigned int i=0; i<points3d.size(); ++i) {
 
 						const IBKMK::Vector3D & v3D  = points3d[i];
@@ -3299,14 +3238,14 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							closestDepthSoFar = dist;
 						}
 
-						if (linePick) {
+						if (PICK_LINE) {
 							const IBKMK::Vector3D & v3DB = points3d[((int)i - 1) % points3d.size()];
 
 							IBKMK::Vector3D pickPoint;
 							double lineFactor;
 							double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
 
-//							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
+							//							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
 
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 							// another snap point that's closer.
@@ -3317,7 +3256,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 								snapCandidates.push_back(sc);
 								closestDepthSoFar = dist2;
 
-//								qDebug() << "PICKED";
+								//								qDebug() << "PICKED";
 							}
 						}
 					}
