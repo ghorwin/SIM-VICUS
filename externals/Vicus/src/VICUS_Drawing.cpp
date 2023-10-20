@@ -25,7 +25,7 @@ inline IBKMK::Vector3D QVector2IBKVector(const QVector3D & v) {
 namespace VICUS {
 
 Drawing::Drawing() :
-	m_blocks(std::vector<DrawingLayer::Block>()),
+	m_blocks(std::vector<Block>()),
 	m_drawingLayers(std::vector<DrawingLayer>()),
 	m_points(std::vector<Point>()),
 	m_lines(std::vector<Line>()),
@@ -126,19 +126,18 @@ const std::vector<IBKMK::Vector2D> &Drawing::Text::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries(const Drawing &drawing,
-																 const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Text::planeGeometries);
 	try {
 		if (m_dirtyTriangulation) {
 			m_planeGeometries.clear();
 
-			generatePlanesFromText(m_text.toStdString(), m_height, m_alignment, m_rotationAngle, drawing.m_rotationMatrix, drawing.m_origin,
-								   m_basePoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER,
-								   m_planeGeometries, trans);
+			generatePlanesFromText(m_text.toStdString(), m_height, m_alignment, m_rotationAngle, drawing.m_rotationMatrix,
+								   drawing.m_origin, m_basePoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER,
+								   m_planeGeometries, m_trans);
 
-			//		if (!success)
-			//			throw IBK::Exception(IBK::FormatString("Could not generate plane geometry for Drawing Element #%1.").arg(m_id), FUNC_ID);
+			//	if (!success)
+			//		throw IBK::Exception(IBK::FormatString("Could not generate plane geometry for Drawing Element #%1.").arg(m_id), FUNC_ID);
 
 			m_dirtyTriangulation = false;
 		}
@@ -254,8 +253,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Solid::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries(const Drawing &drawing,
-																  const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Line::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -290,10 +288,10 @@ const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries(const Drawing 
 		vertexes[2] = QVector2IBKVector(vec3);
 		vertexes[3] = QVector2IBKVector(vec4);
 
-		if (trans != nullptr) {
-			for (IBKMK::Vector3D &v3D : vertexes)
-				v3D = QVector2IBKVector(*trans * IBKVector2QVector(v3D));
-		}
+
+		for (IBKMK::Vector3D &v3D : vertexes)
+			v3D = QVector2IBKVector(m_trans * IBKVector2QVector(v3D));
+
 
 		IBKMK::Polygon3D p(vertexes);
 		m_planeGeometries.push_back(VICUS::PlaneGeometry(p));
@@ -439,8 +437,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::LinearDimension::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(const Drawing &drawing,
-																			const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Text::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -526,7 +523,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		m_planeGeometries.push_back(PlaneGeometry());
 		bool success = generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing.m_rotationMatrix,
 											 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-											 m_planeGeometries.back(), trans);
+											 m_planeGeometries.back(), m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -568,7 +565,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = generatePlaneFromLine(QVector2IBKVector(vec1Left), QVector2IBKVector(vec2Left), drawing.m_rotationMatrix,
 										DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-										m_planeGeometries.back(), trans);
+										m_planeGeometries.back(), m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -606,7 +603,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = generatePlaneFromLine(QVector2IBKVector(vec1Right), QVector2IBKVector(vec2Right), drawing.m_rotationMatrix,
 										DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-										m_planeGeometries.back(), trans);
+										m_planeGeometries.back(), m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -618,7 +615,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries(cons
 
 		generatePlanesFromText(QString("%1").arg(length).toStdString(), m_style->m_textHeight, Qt::AlignHCenter, m_angle, drawing.m_rotationMatrix, drawing.m_origin,
 							   m_textPoint, drawing.m_scalingFactor, m_zPosition * Z_MULTIPLYER,
-							   m_planeGeometries, trans);
+							   m_planeGeometries, m_trans);
 
 		m_dirtyTriangulation = false;
 		m_dirtyPoints = false;
@@ -712,8 +709,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Point::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries(const Drawing &drawing,
-																  const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Line::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -740,10 +736,9 @@ const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries(const Drawing 
 
 		IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
 
-		if (trans != nullptr) {
-			for (const IBKMK::Vector3D &v3D : po.vertexes())
-				const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(*trans * IBKVector2QVector(v3D));
-		}
+		for (const IBKMK::Vector3D &v3D : po.vertexes())
+			const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(m_trans * IBKVector2QVector(v3D));
+
 
 		m_planeGeometries.push_back(VICUS::PlaneGeometry(po));
 
@@ -820,6 +815,7 @@ void Drawing::Line::readXML(const TiXmlElement *element){
 const std::vector<IBKMK::Vector2D> &Drawing::Line::points2D() const {
 	if (m_dirtyPoints) {
 		m_pickPoints.clear();
+
 		m_pickPoints.push_back(m_point1);
 		m_pickPoints.push_back(m_point2);
 
@@ -829,8 +825,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Line::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries(const Drawing &drawing,
-																 const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Line::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -854,16 +849,13 @@ const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries(const Drawing &
 		vec1 += IBKVector2QVector(drawing.m_origin);
 		vec2 += IBKVector2QVector(drawing.m_origin);
 
-		std::vector<IBKMK::Vector3D> vec3d = drawing.points3D(*this);
-
 		bool success = generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2), drawing.m_rotationMatrix,
-											 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane, trans);
+											 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane, m_trans);
 
 		if (!success)
 			return m_planeGeometries;
 
 		m_planeGeometries.push_back(plane);
-
 		m_dirtyTriangulation = false;
 	}
 
@@ -984,8 +976,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Circle::points2D() const {
 }
 
 
-const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries(const Drawing &drawing,
-																   const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Circle::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -1006,7 +997,7 @@ const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries(const Drawing
 
 		bool success = generatePlanesFromPolyline(circlePoints, drawing.m_rotationMatrix, true,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												  m_planeGeometries, trans);
+												  m_planeGeometries, m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1125,8 +1116,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::PolyLine::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries(const Drawing &drawing,
-																	 const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::PolyLine::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -1148,7 +1138,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries(const Drawi
 
 		bool success = generatePlanesFromPolyline(polylinePoints, drawing.m_rotationMatrix, true,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												  m_planeGeometries, trans);
+												  m_planeGeometries, m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1268,8 +1258,7 @@ const std::vector<IBKMK::Vector2D>& Drawing::Arc::points2D() const {
 	return m_pickPoints;
 }
 
-const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries(const Drawing &drawing,
-																const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Arc::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -1289,7 +1278,7 @@ const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries(const Drawing &d
 
 		bool success = generatePlanesFromPolyline(arcPoints, drawing.m_rotationMatrix, false,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												  m_planeGeometries, trans);
+												  m_planeGeometries, m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1432,8 +1421,7 @@ const std::vector<IBKMK::Vector2D> &Drawing::Ellipse::points2D() const {
 }
 
 
-const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries(const Drawing &drawing,
-																	const QMatrix4x4 *trans) const {
+const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries(const Drawing &drawing) const {
 	FUNCID(Drawing::Ellipse::planeGeometries);
 
 	if (m_dirtyTriangulation) {
@@ -1459,7 +1447,7 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries(const Drawin
 		bool connect = pickPoints[0] == pickPoints.back();
 		bool success = generatePlanesFromPolyline(ellipsePoints, drawing.m_rotationMatrix, connect,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												  m_planeGeometries, trans);
+												  m_planeGeometries, m_trans);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1528,10 +1516,14 @@ void Drawing::updatePointer(){
 	for (unsigned int i=0; i < m_inserts.size(); ++i){
 		for(unsigned int j = 0; j < m_blocks.size(); ++j) {
 			const QString &blockName = m_blocks[j].m_name;
-			const QString &insertBlockName = m_inserts[i].m_blockName;
+			const QString &insertBlockName = m_inserts[i].m_currentBlockName;
 			if (blockName == insertBlockName) {
-				m_inserts[i].m_block = &m_blocks[j];
-				break;
+				m_inserts[i].m_currentBlock = &m_blocks[j];
+			}
+
+			const QString &insertParentBlockName = m_inserts[i].m_parentBlockName;
+			if (blockName == insertParentBlockName) {
+				m_inserts[i].m_parentBlock = &m_blocks[j];
 			}
 		}
 	}
@@ -1555,16 +1547,16 @@ void Drawing::updatePointer(){
 	}
 
 	// Update blocks
-	for (unsigned int i=0; i < m_drawingLayers.size(); ++i) {
-		if (m_drawingLayers[i].m_idBlock != INVALID_ID ) {
-			for (unsigned int j=0; j < m_blocks.size(); ++j) {
-				if (m_blocks[j].m_id == m_drawingLayers[i].m_idBlock) {
-					m_drawingLayers[i].m_block = &m_blocks[j];
-					break;
-				}
-			}
-		}
-	}
+//	for (unsigned int i=0; i < m_drawingLayers.size(); ++i) {
+//		if (m_drawingLayers[i].m_idBlock != INVALID_ID ) {
+//			for (unsigned int j=0; j < m_blocks.size(); ++j) {
+//				if (m_blocks[j].m_id == m_drawingLayers[i].m_idBlock) {
+//					m_drawingLayers[i].m_currentBlock = &m_blocks[j];
+//					break;
+//				}
+//			}
+//		}
+//	}
 }
 
 template <typename t>
@@ -1585,7 +1577,125 @@ void Drawing::updatePlaneGeometries() {
 	updateGeometry<Drawing::Text>(m_texts);
 }
 
-const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject &obj) const {
+template <typename t>
+void generateObjectFromInsert(unsigned int &nextId, const Drawing::Block &block,
+							  std::vector<t> &objects, const QMatrix4x4 &trans) {
+	std::vector<t> newObjects;
+
+	for (const t &obj : objects) {
+
+		if (obj.m_block == nullptr)
+			continue;
+
+		if (obj.m_block->m_name != block.m_name)
+			continue;
+
+		t newObj(obj);
+		newObj.m_id = ++nextId;
+		newObj.m_trans = trans;
+		newObj.m_blockName = "";
+		newObj.m_block = nullptr;
+
+		newObjects.push_back(newObj);
+	}
+
+	objects.insert(objects.end(), newObjects.begin(), newObjects.end());
+}
+
+void Drawing::transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId) {
+
+	Q_ASSERT(insert.m_currentBlock != nullptr);
+	IBKMK::Vector2D insertPoint = insert.m_insertionPoint - insert.m_currentBlock->m_basePoint;
+
+	trans.translate(QVector3D(insertPoint.m_x,
+							  insertPoint.m_y,
+							  0.0));
+
+	for (const Insert &i : m_inserts) {
+		if (i.m_parentBlock == nullptr)
+			continue;
+
+		if (insert.m_currentBlockName == i.m_parentBlock->m_name) {
+			transformInsert(trans, i, nextId);
+		}
+	}
+
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_points, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_arcs, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_circles, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_ellipses, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_lines, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_polylines, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_solids, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_texts, trans);
+
+}
+
+void Drawing::generateInsertGeometries(unsigned int &nextId) {
+	FUNCID(Drawing::generateInsertGeometries);
+	updateParents();
+
+	for (const VICUS::Drawing::Insert &insert : m_inserts) {
+
+		if (insert.m_parentBlock != nullptr)
+			continue;
+
+		if (insert.m_currentBlock == nullptr)
+			throw IBK::Exception(IBK::FormatString("Block with name '%1' was not found").arg(insert.m_currentBlockName.toStdString()), FUNC_ID);
+
+		QMatrix4x4 trans;
+		transformInsert(trans, insert, nextId);
+	}
+
+	updateParents();
+}
+
+
+template <typename t>
+void addPickPoints(const std::vector<t> &objects, const VICUS::Drawing &d, std::map<unsigned int, std::vector<IBKMK::Vector3D>> &verts,
+				   const Drawing::Block *block = nullptr) {
+	for (const t& obj : objects) {
+		bool isBlockDefined = block != nullptr;
+		bool hasBlock = obj.m_block != nullptr;
+
+		if ((hasBlock && !isBlockDefined) || (isBlockDefined && !hasBlock))
+			continue;
+
+		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
+			continue;
+
+		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj, obj.m_trans);
+		verts[obj.m_id] = objVerts;
+	}
+}
+
+
+const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &Drawing::pickPoints() const {
+	FUNCID(Drawing::pickPoints);
+	try {
+		if (m_dirtyPickPoints) {
+			addPickPoints(m_points, *this, m_pickPoints);
+			addPickPoints(m_arcs, *this, m_pickPoints);
+			addPickPoints(m_circles, *this, m_pickPoints);
+			addPickPoints(m_ellipses, *this, m_pickPoints);
+			addPickPoints(m_linearDimensions, *this, m_pickPoints);
+			addPickPoints(m_lines, *this, m_pickPoints);
+			addPickPoints(m_polylines, *this, m_pickPoints);
+			addPickPoints(m_solids, *this, m_pickPoints);
+
+			m_dirtyPickPoints = false;
+		}
+		return m_pickPoints;
+	}
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("Could not generate pick points.\n%1").arg(ex.what()), FUNC_ID);
+	}
+}
+
+
+const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject &obj,
+													 const QMatrix4x4 &trans) const {
+
 	const std::vector<IBKMK::Vector2D> &points2D = obj.points2D();
 	std::vector<IBKMK::Vector3D> points3D(points2D.size());
 
@@ -1596,10 +1706,11 @@ const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject
 											  v2D.m_y * m_scalingFactor,
 											  zCoordinate);
 
-
 		QVector3D qV3D = m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
 		qV3D += IBKVector2QVector(m_origin);
 
+		// Apply block transformation from insert
+		qV3D = trans * qV3D;
 		points3D[i] = QVector2IBKVector(qV3D);
 	}
 
@@ -1615,7 +1726,7 @@ DrawingLayer* Drawing::findLayerPointer(const QString &layername){
 	return nullptr;
 }
 
-DrawingLayer::Block* Drawing::findBlockPointer(const QString &name){
+Drawing::Block *Drawing::findBlockPointer(const QString &name){
 	for(unsigned int i = 0; i < m_blocks.size(); ++i) {
 		if (m_blocks[i].m_name == name)
 			return &m_blocks[i];
@@ -1625,7 +1736,7 @@ DrawingLayer::Block* Drawing::findBlockPointer(const QString &name){
 
 bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
 									const RotationMatrix &matrix, double width, VICUS::PlaneGeometry &plane,
-									const QMatrix4x4 *trans) {
+									const QMatrix4x4 &trans) {
 
 	// Calculate the line vector and its length
 	IBKMK::Vector3D lineVector = endPoint - startPoint;
@@ -1654,10 +1765,10 @@ bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBK
 		startPoint + perpendicularVector,
 	};
 
-	if (trans != nullptr) {
-		for (IBKMK::Vector3D &v3D : lineVertices)
-			v3D = QVector2IBKVector(*trans * IBKVector2QVector(v3D));
-	}
+
+	for (IBKMK::Vector3D &v3D : lineVertices)
+		v3D = QVector2IBKVector(trans * IBKVector2QVector(v3D));
+
 
 	// Call addPlane to create the box geometry twice so visible from both sides
 	IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, lineVertices[0], lineVertices[3], lineVertices[1]);
@@ -1668,7 +1779,7 @@ bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBK
 
 bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &polyline, const RotationMatrix &matrix,
 										 bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
-										 const QMatrix4x4 *trans) {
+										 const QMatrix4x4 &trans) {
 
 	// initialise values
 	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
@@ -1681,10 +1792,8 @@ bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &pol
 		return false;
 	}
 
-	if (trans != nullptr) {
-		for (const IBKMK::Vector3D &v3D : polyline)
-			const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(*trans * IBKVector2QVector(v3D));
-	}
+	for (const IBKMK::Vector3D &v3D : polyline)
+		const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(trans * IBKVector2QVector(v3D));
 
 	// initialise previousVector
 	previousVector = polyline[1] - polyline[0];
@@ -1786,7 +1895,7 @@ bool isClockwise(const QPolygonF& polygon) {
 void Drawing::generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
 									 const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 									 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, std::vector<PlaneGeometry> &planeGeometries,
-									 const QMatrix4x4 *trans) {
+									 const QMatrix4x4 &trans) {
 
 	// We choose Arial for now
 	QFont font("Arial");
@@ -1826,10 +1935,7 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
 			qV3D += IBKVector2QVector(origin);
-
-			if (trans != nullptr) {
-				qV3D = *trans * qV3D;
-			}
+			qV3D = trans * qV3D;
 
 			poly[i] = QVector2IBKVector(qV3D);
 		}
@@ -1970,8 +2076,8 @@ TiXmlElement *Drawing::Insert::writeXML(TiXmlElement *parent) const {
 	TiXmlElement * e = new TiXmlElement("Insert");
 	parent->LinkEndChild(e);
 
-	if (m_blockName != QString())
-		e->SetAttribute("blockName", m_blockName.toStdString());
+	if (m_currentBlockName != QString())
+		e->SetAttribute("blockName", m_currentBlockName.toStdString());
 	if (m_angle != 0.0)
 		e->SetAttribute("angle", IBK::val2string<double>(m_angle));
 	if (m_xScale != 1.0)
@@ -1998,7 +2104,7 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "blockName")
-				m_blockName = QString::fromStdString(attrib->ValueStr());
+				m_currentBlockName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "angle")
 				m_angle= NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "xScale")
@@ -2022,6 +2128,57 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 	}
 }
 
+TiXmlElement * Drawing::Block::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
+	TiXmlElement * e = new TiXmlElement("Block");
+	parent->LinkEndChild(e);
+
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
+	if (!m_name.isEmpty())
+		e->SetAttribute("name", m_name.toStdString());
+	if (m_lineWeight > 0)
+		e->SetAttribute("lineWeight", IBK::val2string<unsigned int>(m_lineWeight));
+
+	return e;
+}
+
+void Drawing::Block::readXML(const TiXmlElement *element){
+	FUNCID(Drawing::Circle::readXMLPrivate);
+
+	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "lineWeight")
+				m_lineWeight = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "Name")
+				m_name = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ZoneTemplate' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ZoneTemplate' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
 
 } // namespace VICUS
