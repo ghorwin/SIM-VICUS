@@ -326,7 +326,7 @@ void SVLcaLccResultsDialog::setUsageResults(const VICUS::LcaSettings &settings,
 
 		item->setText(ColComponentType, "Gas Consumption");
 		item->setTextAlignment(ColArea, Qt::AlignRight);
-		item->setText(ColArea, QString( "%1 kWh" ).arg( coalConsumption, 7, 'f', 2 ));
+        item->setText(ColArea, QString( "%1 kWh" ).arg( gasConsumption, 7, 'f', 2 ));
 
 		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
 		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));
