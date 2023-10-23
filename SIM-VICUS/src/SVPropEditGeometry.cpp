@@ -1237,15 +1237,29 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		VICUS::Drawing newDrawing(*d);
 		// QVector3D origin = IBKVector2QVector(newDrawing.m_origin);
 
-		if (!haveScaling) {
+        if (rotation != QQuaternion(1, 0, 0, 0)) {
+            // Translation of LCS
+            IBKMK::Vector3D newOrigin = newDrawing.m_origin;
+
+			const QVector3D &trans = m_lcsTransform.translation();
+
+            newOrigin -= QVector2IBKVector(trans);
+            QMatrix4x4 transform;
+            transform.rotate(rotation);
+
+            newOrigin = QVector2IBKVector(transform * IBKVector2QVector(newOrigin));
+            newOrigin += QVector2IBKVector(trans);
 			// rotation
 			QQuaternion quaternion = rotation * newDrawing.m_rotationMatrix.toQuaternion();
-			newDrawing.m_rotationMatrix.setQuaternion(quaternion);
-		}
+            newDrawing.m_rotationMatrix.setQuaternion(quaternion);
 
-		newDrawing.m_origin -= QVector2IBKVector(translation);
-		modifiedDrawings.push_back(newDrawing);
-	}
+            newDrawing.m_origin = newOrigin;
+        }
+        else
+            newDrawing.m_origin += QVector2IBKVector(translation);
+
+        modifiedDrawings.push_back(newDrawing);
+    }
 
 	// TODO : Netzwerk zeugs
 
