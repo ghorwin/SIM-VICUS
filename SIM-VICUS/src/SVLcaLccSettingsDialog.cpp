@@ -1218,7 +1218,7 @@ void SVLcaLccSettingsDialog::on_pushButtonCalculate_clicked() {
 
 		lcaResultsDialog()->setup();
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings, investCost);
-		lcaResultsDialog()->setUsageResults(*m_lcaSettings, gasConsumption, coalConsumption, electricityConsumption);
+        lcaResultsDialog()->setUsageResults(*m_lcaSettings, gasConsumption, electricityConsumption, coalConsumption);
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings, investCost);
 		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings, investCost);
 
