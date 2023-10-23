@@ -63,5 +63,8 @@ moc_*
 *.lyx\#
 *.odg\#
 *.ilk
+
+# build
 /build/Qt/.qtc_clangd/
 /release/
+/build-*/
