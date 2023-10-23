@@ -68,3 +68,4 @@ moc_*
 /build/Qt/.qtc_clangd/
 /release/
 /build-*/
+/SIM-VICUS/projects/build-*/
