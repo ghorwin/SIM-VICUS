@@ -2877,13 +2877,14 @@ void Scene::pickDrawings(PickObject &pickObject,
 													  vB - v, depth2, closestPoint2, lineFactor);
 
 					// check distance to line
-					if (dist2 < SNAP_DRAWING_DISTANCES_THRESHHOLD && lineFactor > 0.0 && lineFactor < 1.0) {
+					if (dist2 < SNAP_DRAWING_DISTANCES_THRESHHOLD &&
+							lineFactor > 0.0 && lineFactor < 1.0) {
 						PickObject::PickResult r;
 						r.m_resultType = PickObject::RT_Object;
 						r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
 						r.m_pickPoint = closestPoint2; // this
 						r.m_objectID = object.m_parentLayer->m_id;
-						r.m_drawingID = it->first;
+						r.m_drawingID = id;
 						pickObject.m_candidates.push_back(r);
 					}
 				}
@@ -2896,17 +2897,12 @@ void Scene::pickDrawings(PickObject &pickObject,
 					r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
 					r.m_pickPoint = closestPoint; // this
 					r.m_objectID = object.m_parentLayer->m_id;
-					r.m_drawingID = it->first;
+					r.m_drawingID = id;
 					pickObject.m_candidates.push_back(r);
 				}
 			}
 		}
 	}
-}
-
-
-void Scene::pickChildSurfaces() {
-
 }
 
 
@@ -3204,9 +3200,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 			// *** drawings ***
 			const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);
-			const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
-			if (d != nullptr) {
+			if (dl != nullptr) {
 
+				const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
 				// a surface object might have several snap points which we collect first in a vector
 				std::vector<SnapCandidate> snapCandidates;
 				float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
@@ -3245,7 +3241,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							double lineFactor;
 							double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
 
-							//							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
+							// qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
 
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 							// another snap point that's closer.
