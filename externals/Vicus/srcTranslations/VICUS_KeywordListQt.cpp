@@ -295,6 +295,7 @@ KeywordListQt::KeywordListQt() {
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");
+	tr("Reduction factor for dynamic shading");
 	tr("Stand-alone mode with given mass flux and suppply temperature");
 	tr("User defined sub network");
 	tr("Supply FMU loaded from a database and parametrized by the user");
@@ -318,7 +319,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame area fraction of the window");
 	tr("Divider width of the window");
 	tr("Divider area fraction of the window");
-	tr("Reduction factor for dynamic shading");
 	tr("Divider material thickness.");
 	tr("Frame material thickness.");
 	tr("Standard globbed-layers model");

@@ -81,15 +81,14 @@ AbstractDBElement::ComparisonResult SubSurfaceComponent::equal(const AbstractDBE
 		return Different;
 
 	// first check critical data
-
 	if (m_idWindow != otherComp->m_idWindow ||
-			m_idSideABoundaryCondition != otherComp->m_idSideABoundaryCondition||
+			m_idSideABoundaryCondition != otherComp->m_idSideABoundaryCondition ||
 			m_idSideBBoundaryCondition != otherComp->m_idSideBBoundaryCondition ||
-			m_type != otherComp->m_type)
+			m_type != otherComp->m_type ||
+			m_para[P_ReductionFactor].value != otherComp->m_para[P_ReductionFactor].value)
 		return Different;
 
 	//check meta data
-
 	if (m_displayName != otherComp->m_displayName || m_color != otherComp->m_color)
 		return OnlyMetaDataDiffers;
 

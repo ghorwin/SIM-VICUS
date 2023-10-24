@@ -46,12 +46,16 @@ public:
 
 	/*! SubSurfaceComponent types. */
 	enum SubSurfaceComponentType {
-		CT_Window,					// Keyword: Window					'A window'
-		CT_Door,					// Keyword: Door					'A door'
-		CT_Miscellaneous,			// Keyword: Miscellaneous			'Some other component type'
+		CT_Window,					// Keyword: Window						'A window'
+		CT_Door,					// Keyword: Door						'A door'
+		CT_Miscellaneous,			// Keyword: Miscellaneous				'Some other component type'
 		NUM_CT
 	};
 
+	enum para_t {
+		P_ReductionFactor,			// Keyword: ReductionFactor		[---]	'Reduction factor for dynamic shading'
+		NUM_P
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -85,6 +89,9 @@ public:
 
 	/*! Boundary condition ID for Side B (usually inside). */
 	unsigned int					m_idSideBBoundaryCondition = INVALID_ID;	// XML:E
+
+	/*! Parameter. */
+	IBK::Parameter					m_para[NUM_P];								// XML:E
 };
 
 } // namespace VICUS

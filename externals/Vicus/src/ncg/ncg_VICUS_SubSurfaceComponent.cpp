@@ -74,6 +74,19 @@ void SubSurfaceComponent::readXML(const TiXmlElement * element) {
 				m_idSideABoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideBBoundaryCondition")
 				m_idSideBBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("SubSurfaceComponent::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else if (cName == "Type") {
 				try {
 					m_type = (SubSurfaceComponentType)KeywordList::Enumeration("SubSurfaceComponent::SubSurfaceComponentType", c->GetText());
@@ -119,6 +132,12 @@ TiXmlElement * SubSurfaceComponent::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideABoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideABoundaryCondition));
 	if (m_idSideBBoundaryCondition != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideBBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBBoundaryCondition));
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
+		}
+	}
 	return e;
 }
 
