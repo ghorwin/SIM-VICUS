@@ -1575,6 +1575,8 @@ void Drawing::updatePlaneGeometries() {
 	updateGeometry<Drawing::LinearDimension>(m_linearDimensions);
 	updateGeometry<Drawing::Point>(m_points);
 	updateGeometry<Drawing::Text>(m_texts);
+
+	m_dirtyPickPoints = true;
 }
 
 template <typename t>
@@ -1664,7 +1666,7 @@ void addPickPoints(const std::vector<t> &objects, const VICUS::Drawing &d, std::
 		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
 			continue;
 
-		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj, obj.m_trans);
+		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj);
 		verts[obj.m_id] = objVerts;
 	}
 }
@@ -1693,8 +1695,7 @@ const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &Drawing::pickPoints(
 }
 
 
-const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject &obj,
-													 const QMatrix4x4 &trans) const {
+const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject &obj) const {
 
 	const std::vector<IBKMK::Vector2D> &points2D = obj.points2D();
 	std::vector<IBKMK::Vector3D> points3D(points2D.size());
@@ -1710,11 +1711,23 @@ const std::vector<IBKMK::Vector3D> Drawing::points3D(const AbstractDrawingObject
 		qV3D += IBKVector2QVector(m_origin);
 
 		// Apply block transformation from insert
-		qV3D = trans * qV3D;
+		qV3D = obj.m_trans * qV3D;
 		points3D[i] = QVector2IBKVector(qV3D);
 	}
 
 	return points3D;
+}
+
+const IBKMK::Vector3D Drawing::normal() const {
+	return QVector2IBKVector(m_rotationMatrix.toQuaternion() * QVector3D(0,0,1));
+}
+
+const IBKMK::Vector3D Drawing::localX() const {
+	return QVector2IBKVector(m_rotationMatrix.toQuaternion() * QVector3D(1,0,0));
+}
+
+const IBKMK::Vector3D Drawing::localY() const {
+	return QVector2IBKVector(m_rotationMatrix.toQuaternion() * QVector3D(0,1,0));
 }
 
 

@@ -328,7 +328,6 @@ public:
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
 
-
 		/*! Point 1 */
 		IBKMK::Vector2D			m_point1;
 		/*! Point 2 */
@@ -378,7 +377,7 @@ public:
 
 
 		/*! Base point. */
-		IBKMK::Vector2D		m_dimensionPoint;
+		IBKMK::Vector2D				m_dimensionPoint;
 
 		/*! Base point. */
 		mutable IBKMK::Vector2D		m_leftPoint;
@@ -387,24 +386,24 @@ public:
 		mutable IBKMK::Vector2D		m_rightPoint;
 
 		/*! Point 1 of Line. */
-		IBKMK::Vector2D		m_point1;
+		IBKMK::Vector2D				m_point1;
 
 		/*! Point 2 of Line. */
-		IBKMK::Vector2D		m_point2;
+		IBKMK::Vector2D				m_point2;
 
 		/*! Point 2 of Line. */
-		IBKMK::Vector2D		m_textPoint;
+		IBKMK::Vector2D				m_textPoint;
 
 		/*! Angle of rotation. */
-		double				m_angle;
+		double						m_angle;
 
 		/*! Name of Dim style. */
-		QString				m_styleName;
+		QString						m_styleName;
 
 		/*! Pointer to style object. Updated in
 			updatePointers();
 		*/
-		DimStyle			*m_style = nullptr;
+		DimStyle					*m_style = nullptr;
 	};
 
 
@@ -431,8 +430,16 @@ public:
 	const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &pickPoints() const;
 
 	/*! Generates 3D Points from 2D points by applying transformation from drawing. */
-	const std::vector<IBKMK::Vector3D> points3D(const AbstractDrawingObject &obj,
-												const QMatrix4x4 &trans) const;
+	const std::vector<IBKMK::Vector3D> points3D(const AbstractDrawingObject &obj) const;
+
+	/*! Returns the normal vector of the drawing. */
+	const IBKMK::Vector3D normal() const;
+
+	/*! Returns the normal vector of the drawing. */
+	const IBKMK::Vector3D localX() const;
+
+	/*! Returns the normal vector of the drawing. */
+	const IBKMK::Vector3D localY() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -441,11 +448,11 @@ public:
 	//:inherited	bool				m_visible = true;					// XML:A
 
 	/*! point of origin */
-	IBKMK::Vector3D															m_origin = IBKMK::Vector3D(0,0,0);	// XML:E
+	IBKMK::Vector3D															m_origin			= IBKMK::Vector3D(0,0,0);						// XML:E
 	/*! rotation matrix */
-	RotationMatrix															m_rotationMatrix = RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0)); // XML:E
+	RotationMatrix															m_rotationMatrix	= RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0)); // XML:E
 	/*! scale factor */
-	double																	m_scalingFactor = 0.01;	// XML:E
+	double																	m_scalingFactor		= 0.01;											// XML:E
 
 	/*! list of blocks, dummy implementation */
 	std::vector<Block>														m_blocks;			// XML:E
@@ -473,6 +480,7 @@ public:
 	std::vector<DimStyle>													m_dimensionStyles;	// XML:E
 	/*! list of inserts. */
 	std::vector<Insert>														m_inserts;
+
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;	// XML:E
