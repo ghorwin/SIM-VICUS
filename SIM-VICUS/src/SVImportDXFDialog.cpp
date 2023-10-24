@@ -23,6 +23,8 @@ SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	resize(1500, 800);
+
 	std::set<QString> existingNames;
 	for (const VICUS::Drawing & b : project().m_drawings)
 		existingNames.insert(b.m_displayName);
@@ -147,6 +149,7 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		m_drawing.m_displayName = m_ui->lineEditDrawingName->text();
 
 		log += "Import successful!\nThe following objects were imported:\n";
+		log += QString("-----------------------------------\n");
 		log += QString("Layers:\t%1\n").arg(m_drawing.m_drawingLayers.size());
 		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
 		log += QString("Polylines:\t%1\n").arg(m_drawing.m_polylines.size());
@@ -157,10 +160,11 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		log += QString("Linear Dimensions:\t%1\n").arg(m_drawing.m_linearDimensions.size());
 		log += QString("Dimension Styles:\t%1\n").arg(m_drawing.m_dimensionStyles.size());
 		log += QString("Inserts:\t%1\n").arg(m_drawing.m_inserts.size());
+		log += QString("-----------------------------------\n");
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
-		double scalingFactor[NUM_SU] = {100.0, 1.0, 0.1, 0.01, 0.001};
+		double scalingFactor[NUM_SU] = {1.0, 1.0, 0.1, 0.01, 0.001};
 
 		std::vector<const VICUS::Drawing *> drawings;
 		drawings.push_back(&m_drawing);
@@ -169,9 +173,10 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		std::vector<const VICUS::SubSurface*> subsurfaces;
 		IBKMK::Vector3D bounding = project().boundingBox(drawings, surfaces, subsurfaces, m_center, false);
 
-		double AUTO_SCALING_THRESHOLD = 1500;
+		// Drawing should be at least bigger than 150 m
+		double AUTO_SCALING_THRESHOLD = 1000;
 		if (su == SU_Auto) {
-			for (unsigned int i=0; i<NUM_SU; ++i) {
+			for (unsigned int i=1; i<NUM_SU; ++i) {
 
 				if (scalingFactor[i] * bounding.m_x > AUTO_SCALING_THRESHOLD)
 					continue;
@@ -182,7 +187,12 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 				scalingFactor[SU_Auto] = scalingFactor[i];
 				break;
 			}
+
+			log += QString("Found auto scaling factor: %1\n").arg(scalingFactor[SU_Auto]);
 		}
+		log += QString("Current dimensions - X: %1 Y: %2 Z: %3\n").arg(scalingFactor[su] * bounding.m_x)
+																.arg(scalingFactor[su] * bounding.m_y)
+																.arg(scalingFactor[su] * bounding.m_z);
 
 		m_drawing.m_scalingFactor = scalingFactor[su];
 
