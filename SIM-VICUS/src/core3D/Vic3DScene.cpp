@@ -1010,6 +1010,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				const VICUS::Object * obj = project().objectById(uniqueID);
 				// should be a surface
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+				const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);
 				// but maybe a nullptr, if we hit a sphere/cylinder from a network object
 				if (s != nullptr) {
 					// now get normal vector
@@ -1048,6 +1049,18 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					QQuaternion q2 = QQuaternion::fromAxes(IBKVector2QVector(localX.normalized()),
 														   IBKVector2QVector(localY.normalized()),
 														   IBKVector2QVector(n.normalized()));
+					//			qDebug() << q2;
+					m_coordinateSystemObject.setRotation(q2);
+				}
+				if (dl != nullptr) {
+					// Set normal of drawing
+					const VICUS::Drawing *d = dynamic_cast<VICUS::Drawing *>(dl->m_parent);
+					Q_ASSERT(d != nullptr);
+
+					// or use the ready-made Qt function (which surprisingly gives the same result :-)
+					QQuaternion q2 = QQuaternion::fromAxes(IBKVector2QVector(d->localX().normalized()),
+														   IBKVector2QVector(d->localY().normalized()),
+														   IBKVector2QVector(d->normal().normalized()));
 					//			qDebug() << q2;
 					m_coordinateSystemObject.setRotation(q2);
 				}
