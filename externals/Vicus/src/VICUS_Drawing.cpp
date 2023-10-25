@@ -1919,21 +1919,16 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// We choose Arial for now
 	QFont font("Arial");
-	qDebug() << "Drawing text: " << QString::fromStdString(text);
 
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
-
-	qDebug() << "1928";
 
 	double width = path.boundingRect().width();
 	double moveX = 0.0;
 	if (alignment == Qt::AlignHCenter) {
 		moveX = -0.5*width;
 	}
-
-	qDebug() << "1936";
 
 	QTransform transformation;
 	transformation.rotate(rotationAngle);  // Rotate by 45 degrees
@@ -1944,8 +1939,6 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
-
-	qDebug() << "1948";
 
 	for (int i=0; i < polygons.size(); ++i) {
 
