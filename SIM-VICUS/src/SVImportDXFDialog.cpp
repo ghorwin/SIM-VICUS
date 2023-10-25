@@ -151,18 +151,19 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		m_drawing.m_displayName = m_ui->lineEditDrawingName->text();
 
 		log += "Import successful!\nThe following objects were imported:\n";
-		log += QString("-----------------------------------\n");
-		log += QString("Layers:\t%1\n").arg(m_drawing.m_drawingLayers.size());
-		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
-		log += QString("Polylines:\t%1\n").arg(m_drawing.m_polylines.size());
-		log += QString("Arcs:\t%1\n").arg(m_drawing.m_arcs.size());
-		log += QString("Circles:\t%1\n").arg(m_drawing.m_circles.size());
-		log += QString("Ellipses:\t%1\n").arg(m_drawing.m_ellipses.size());
-		log += QString("Points:\t%1\n").arg(m_drawing.m_points.size());
+		log += QString("---------------------------------------------------------\n");
+		log += QString("Layers:\t\t%1\n").arg(m_drawing.m_drawingLayers.size());
+		log += QString("Lines:\t\t%1\n").arg(m_drawing.m_lines.size());
+		log += QString("Polylines:\t\t%1\n").arg(m_drawing.m_polylines.size());
+		log += QString("Arcs:\t\t%1\n").arg(m_drawing.m_arcs.size());
+		log += QString("Circles:\t\t%1\n").arg(m_drawing.m_circles.size());
+		log += QString("Ellipses:\t\t%1\n").arg(m_drawing.m_ellipses.size());
+		log += QString("Points:\t\t%1\n").arg(m_drawing.m_points.size());
 		log += QString("Linear Dimensions:\t%1\n").arg(m_drawing.m_linearDimensions.size());
 		log += QString("Dimension Styles:\t%1\n").arg(m_drawing.m_dimensionStyles.size());
-		log += QString("Inserts:\t%1\n").arg(m_drawing.m_inserts.size());
-		log += QString("-----------------------------------\n");
+		log += QString("Inserts:\t\t%1\n").arg(m_drawing.m_inserts.size());
+		log += QString("Solids:\t\t%1\n").arg(m_drawing.m_solids.size());
+		log += QString("---------------------------------------------------------\n");
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
@@ -197,6 +198,8 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		log += QString("Current dimensions - X: %1 Y: %2 Z: %3\n").arg(scalingFactor[su] * bounding.m_x)
 																  .arg(scalingFactor[su] * bounding.m_y)
 																  .arg(scalingFactor[su] * bounding.m_z);
+		log += QString("---------------------------------------------------------\n");
+		log += QString("\nPLEASE MIND: Currently are no hatchings supported.\n");
 
 		m_drawing.m_scalingFactor = scalingFactor[su];
 		m_center *= scalingFactor[su];

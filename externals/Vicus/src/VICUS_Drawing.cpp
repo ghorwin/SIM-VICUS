@@ -1919,7 +1919,6 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// We choose Arial for now
 	QFont font("Arial");
-
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
