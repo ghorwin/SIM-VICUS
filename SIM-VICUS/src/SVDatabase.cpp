@@ -67,6 +67,7 @@ SVDatabase::SVDatabase() :
 	m_constructions(1020000),
 	m_windows(1035000),
 	m_windowGlazingSystems(1031000),
+	m_acousticBoundaryConditions(1030000),
 	m_boundaryConditions(1030000),
 	m_components(1000001),
 	m_subSurfaceComponents(1040000),
@@ -108,6 +109,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_constructions.readXML(			dbDir / "db_constructions.xml", "Constructions", "Construction", true);
 		m_windows.readXML(					dbDir / "db_windows.xml", "Windows", "Window", true);
 		m_windowGlazingSystems.readXML(		dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", true);
+		m_acousticBoundaryConditions.readXML(	dbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions", "AcousticBoundaryCondition", true);
 		m_boundaryConditions.readXML(		dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", true);
 		m_components.readXML(				dbDir / "db_components.xml", "Components", "Component", true);
 		m_subSurfaceComponents.readXML(		dbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", true);
@@ -147,6 +149,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_windows.readXML(					userDbDir / "db_windows.xml", "Windows", "Window", false);
 	if (t == NUM_DT || t == DT_WindowGlazingSystems)
 		m_windowGlazingSystems.readXML(		userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", false);
+	if (t == NUM_DT || t == DT_AcousticBoundaryConditions)
+		m_acousticBoundaryConditions.readXML(		userDbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions", "AcousticBoundaryCondition", false);
 	if (t == NUM_DT || t == DT_BoundaryConditions)
 		m_boundaryConditions.readXML(		userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
 	if (t == NUM_DT || t == DT_Components)
@@ -207,6 +211,8 @@ void SVDatabase::writeDatabases(DatabaseTypes t) const {
 	if (t == NUM_DT || t == DT_WindowGlazingSystems)
 		m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
 	if (t == NUM_DT || t == DT_BoundaryConditions)
+		m_acousticBoundaryConditions.writeXML(	userDbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions");
+	if (t == NUM_DT || t == DT_BoundaryConditions)
 		m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
 	if (t == NUM_DT || t == DT_Components)
 		m_components.writeXML(			userDbDir / "db_components.xml", "Components");
@@ -257,6 +263,7 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_constructions.import(db.m_constructions);
 	m_windows.import(db.m_windows);
 	m_windowGlazingSystems.import(db.m_windowGlazingSystems);
+	m_acousticBoundaryConditions.import(db.m_acousticBoundaryConditions);
 	m_boundaryConditions.import(db.m_boundaryConditions);
 	m_components.import(db.m_components);
 	m_subSurfaceComponents.import(db.m_subSurfaceComponents);
@@ -329,6 +336,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_constructions, m_constructions);
 	storeVector(p.m_embeddedDB.m_windows, m_windows);
 	storeVector(p.m_embeddedDB.m_windowGlazingSystems, m_windowGlazingSystems);
+	storeVector(p.m_embeddedDB.m_acousticBoundaryConditions, m_acousticBoundaryConditions);
 	storeVector(p.m_embeddedDB.m_boundaryConditions, m_boundaryConditions);
 	storeVector(p.m_embeddedDB.m_components, m_components);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, m_subSurfaceComponents);
@@ -362,6 +370,8 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 	for (auto it=m_windows.begin(); it!=m_windows.end(); ++it)
 		it->second.m_isReferenced = false;
 	for (auto it=m_windowGlazingSystems.begin(); it!=m_windowGlazingSystems.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_acousticBoundaryConditions.begin(); it!=m_acousticBoundaryConditions.end(); ++it)
 		it->second.m_isReferenced = false;
 	for (auto it=m_boundaryConditions.begin(); it!=m_boundaryConditions.end(); ++it)
 		it->second.m_isReferenced = false;
@@ -469,6 +479,7 @@ void SVDatabase::updateElementChildren() {
 	m_constructions.clearChildren();
 	m_windows.clearChildren();
 	m_windowGlazingSystems.clearChildren();
+	m_acousticBoundaryConditions.clearChildren();
 	m_boundaryConditions.clearChildren();
 	m_components.clearChildren();
 	m_subSurfaceComponents.clearChildren();
@@ -703,6 +714,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_constructions, duplicatePairs[DT_Constructions]);
 	findDublicates(m_windows, duplicatePairs[DT_Windows]);
 	findDublicates(m_windowGlazingSystems, duplicatePairs[DT_WindowGlazingSystems]);
+	findDublicates(m_acousticBoundaryConditions, duplicatePairs[DT_AcousticBoundaryConditions]);
 	findDublicates(m_boundaryConditions, duplicatePairs[DT_BoundaryConditions]);
 	findDublicates(m_components, duplicatePairs[DT_Components]);
 	findDublicates(m_subSurfaceComponents, duplicatePairs[DT_SubSurfaceComponents]);
@@ -1072,6 +1084,7 @@ void SVDatabase::removeLocalElements() {
 	m_windows.removeLocalElements();
 	m_epdDatasets.removeLocalElements();
 	m_windowGlazingSystems.removeLocalElements();
+	m_acousticBoundaryConditions.removeLocalElements();
 	m_boundaryConditions.removeLocalElements();
 	m_components.removeLocalElements();
 	m_subSurfaceComponents.removeLocalElements();
@@ -1105,6 +1118,8 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_windows.removeNotReferencedLocalElements(); break;
 		case DT_WindowGlazingSystems:
 			m_windowGlazingSystems.removeNotReferencedLocalElements(); break;
+		case DT_AcousticBoundaryConditions:
+			m_acousticBoundaryConditions.removeNotReferencedLocalElements(); break;
 		case DT_BoundaryConditions:
 			m_boundaryConditions.removeNotReferencedLocalElements(); break;
 		case DT_Components:
@@ -1195,6 +1210,9 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_WindowGlazingSystems:
 			Q_ASSERT(m_windowGlazingSystems[id] != nullptr);
 			m_windowGlazingSystems[id]->collectLocalChildren(localChildren); break;
+		case DT_AcousticBoundaryConditions:
+			Q_ASSERT(m_acousticBoundaryConditions[id] != nullptr);
+			m_acousticBoundaryConditions[id]->collectLocalChildren(localChildren); break;
 		case DT_BoundaryConditions:
 			Q_ASSERT(m_boundaryConditions[id] != nullptr);
 			m_boundaryConditions[id]->collectLocalChildren(localChildren); break;

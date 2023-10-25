@@ -34,6 +34,8 @@
 #include <SVConversions.h>
 
 #include <VICUS_KeywordListQt.h>
+#include <VICUS_KeywordList.h>
+#include <VICUS_Construction.h>
 
 #include "SVStyle.h"
 #include "SVConstants.h"
@@ -703,7 +705,7 @@ void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
     // reverse construction layers
     std::reverse(m_current->m_materialLayers.begin(), m_current->m_materialLayers.end());
     // update preview
-	// ToDO Maik: Flip also coloring!
+    // ToDO Maik: Flip also coloring!
     updateConstructionView();
 }
 
@@ -712,6 +714,32 @@ void SVDBConstructionEditWidget::on_lineEditDataSource_editingFinished() {
 
 	if (m_current->m_dataSource != m_ui->lineEditDataSource->string()) {
 		m_current->m_dataSource = m_ui->lineEditDataSource->string();
+		modelModify();
+	}
+}
+
+
+void SVDBConstructionEditWidget::on_lineEditImpactSound_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	bool ok;
+	double value = m_ui->lineEditImpactSound->text().toDouble(&ok);
+	if(ok){
+		VICUS::KeywordList::setParameter(m_current->m_acousticPara, "Construction::para_t", VICUS::Construction::P_ImpactSoundValue, value);
+		modelModify();
+	}
+}
+
+
+void SVDBConstructionEditWidget::on_lineEditAirSoundRes_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	bool ok;
+	double value = m_ui->lineEditAirSoundRes->text().toDouble(&ok);
+	if(ok){
+		VICUS::KeywordList::setParameter(m_current->m_acousticPara, "Construction::para_t", VICUS::Construction::P_AirSoundResistanceValue, value);
 		modelModify();
 	}
 }

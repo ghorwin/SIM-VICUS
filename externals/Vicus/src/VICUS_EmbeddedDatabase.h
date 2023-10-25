@@ -36,6 +36,7 @@
 #include "VICUS_Window.h"
 #include "VICUS_WindowFrame.h"
 #include "VICUS_WindowDivider.h"
+#include "VICUS_AcousticBoundaryCondition.h"
 #include "VICUS_BoundaryCondition.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkFluid.h"
@@ -73,6 +74,9 @@ public:
 
 	/*! Map of all database glazing systems. */
 	std::vector<VICUS::WindowGlazingSystem>				m_windowGlazingSystems;				// XML:E
+
+	/*! Map pf all database acoustic boundary conditions */
+	std::vector<VICUS::AcousticBoundaryCondition>		m_acousticBoundaryConditions;		// XML:E
 
 	/*! Map of all database boundary conditions. */
 	std::vector<VICUS::BoundaryCondition>				m_boundaryConditions;				// XML:E

@@ -64,6 +64,19 @@ void Construction::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("Construction::para_t", p.name);
+					m_acousticPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else if (cName == "MaterialLayers") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -139,6 +152,12 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_acousticPara[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_acousticPara[i].name, m_acousticPara[i].IO_unit.name(), m_acousticPara[i].get_value(m_acousticPara[i].IO_unit));
+		}
+	}
 
 	if (!m_materialLayers.empty()) {
 		TiXmlElement * child = new TiXmlElement("MaterialLayers");

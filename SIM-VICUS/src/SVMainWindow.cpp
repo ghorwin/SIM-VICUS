@@ -292,6 +292,12 @@ SVDatabaseEditDialog * SVMainWindow::dbSubSurfaceComponentEditDialog() {
 	return m_dbSubSurfaceComponentEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbAcousticBoundaryConditionEditDialog(){
+	if (m_dbAcousticBoundaryConditionEditDialog == nullptr)
+		m_dbAcousticBoundaryConditionEditDialog = SVDatabaseEditDialog::createAcousticBoundaryConditionEditDialog(this);
+	return m_dbAcousticBoundaryConditionEditDialog;
+}
+
 SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = SVDatabaseEditDialog::createBoundaryConditionsEditDialog(this);
@@ -2271,5 +2277,11 @@ void SVMainWindow::on_actionDWD_Weather_Data_Converter_triggered() {
 		QMessageBox::critical(this, tr("Error starting external application"), tr("DWD weather downloader '%1' could not be started.")
 							  .arg(dwdPath));
 	}
+}
+
+
+void SVMainWindow::on_actionDBAcousticBoundaryconditions_triggered()
+{
+	dbAcousticBoundaryConditionEditDialog()->edit();
 }
 

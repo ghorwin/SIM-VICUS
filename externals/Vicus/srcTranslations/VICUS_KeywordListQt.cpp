@@ -57,6 +57,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame construction");
 	tr("Loam");
 	tr("Not selected");
+	tr("Impact sound value");
+	tr("Air sound resistance value");
 	tr("ID of Catefory A");
 	tr("ID of Catefory B");
 	tr("ID of Catefory C");

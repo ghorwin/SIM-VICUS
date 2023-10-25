@@ -100,6 +100,8 @@ SOURCES += \
     ../../src/SVCoSimSupplySystemDialog.cpp \
     ../../src/SVColorLegend.cpp \
     ../../src/SVColorMap.cpp \
+    ../../src/SVDBAcousticBoundaryConditionEditWidget.cpp \
+    ../../src/SVDBAcousticBoundaryConditionTableModel.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBEpdEditWidget.cpp \
@@ -314,6 +316,8 @@ HEADERS  += \
     ../../src/SVColorLegend.h \
     ../../src/SVColorMap.h \
 	../../src/SVConversions.h \
+    ../../src/SVDBAcousticBoundaryConditionEditWidget.h \
+    ../../src/SVDBAcousticBoundaryConditionTableModel.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
 	../../src/SVDBEpdEditWidget.h \
@@ -534,6 +538,7 @@ FORMS    += \
 	../../src/SVAboutDialog.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
+    ../../src/SVDBAcousticBoundaryConditionEditWidget.ui \
 	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBEpdEditWidget.ui \

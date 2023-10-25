@@ -62,6 +62,8 @@
 #include "SVDBWindowEditWidget.h"
 #include "SVDBWindowGlazingSystemTableModel.h"
 #include "SVDBWindowGlazingSystemEditWidget.h"
+#include "SVDBAcousticBoundaryConditionEditWidget.h"
+#include "SVDBAcousticBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "SVDBScheduleTableModel.h"
@@ -399,6 +401,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
 			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
 			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
+			case SVDatabase::DT_AcousticBoundaryConditions:		SVSettings::instance().m_db.m_acousticBoundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
 			case SVDatabase::DT_EpdDatasets:			SVSettings::instance().m_db.m_epdDatasets.removeUserElements(); break;
@@ -620,6 +623,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowGlazingSystemEditDialog
 		new SVDBWindowGlazingSystemTableModel(parent, SVSettings::instance().m_db),
 		new SVDBWindowGlazingSystemEditWidget(parent),
 		tr("Window glazing system Database"), tr("Window glazing system properties"), true
+	);
+	resizeDBDialog(dlg);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticBoundaryConditionEditDialog(QWidget * parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBAcousticBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
+		new SVDBAcousticBoundaryConditionEditWidget(parent),
+		tr("Acoustic boundary conditions Database"), tr("Acoustic boundary conditions properties"), true
 	);
 	resizeDBDialog(dlg);
 	return dlg;

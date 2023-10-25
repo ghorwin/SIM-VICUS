@@ -45,6 +45,7 @@ public:
 		DT_Constructions,
 		DT_Windows,
 		DT_WindowGlazingSystems,
+		DT_AcousticBoundaryConditions,
 		DT_BoundaryConditions,
 		DT_Components,
 		DT_SubSurfaceComponents,
@@ -153,6 +154,9 @@ public:
 
 	/*! Map of all database glazing systems. */
 	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
+
+	/*! Map of all database acoustic boundary conditions */
+	VICUS::Database<VICUS::AcousticBoundaryCondition>   m_acousticBoundaryConditions;
 
 	/*! Map of all database boundary conditions. */
 	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryConditions;

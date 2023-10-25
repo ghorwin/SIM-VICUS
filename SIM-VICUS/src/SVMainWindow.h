@@ -146,6 +146,8 @@ public:
 	SVDatabaseEditDialog * dbComponentEditDialog();
 	/*! Returns the subsurface component edit dialog. */
 	SVDatabaseEditDialog * dbSubSurfaceComponentEditDialog();
+	/*! Returns the acoustic boundary condition edit dialog. */
+	SVDatabaseEditDialog * dbAcousticBoundaryConditionEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDatabaseEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
@@ -382,6 +384,8 @@ private slots:
 
 	void on_actionDWD_Weather_Data_Converter_triggered();
 
+	void on_actionDBAcousticBoundaryconditions_triggered();
+
 private:
 
 	void updateMainView();
@@ -532,6 +536,7 @@ private:
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbSubSurfaceComponentEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbAcousticBoundaryConditionEditDialog		= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
