@@ -2205,7 +2205,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 									shading.m_modelType = NANDRAD::WindowShading::MT_Controlled;
 									//TODO give user possibility to set Reductionfactor in UI, right now its set default to 0.6
 									NANDRAD::KeywordList::setParameter(shading.m_para, "WindowShading::para_t",
-																	   NANDRAD::WindowShading::P_ReductionFactor, winV.m_para[Window::P_ReductionFactor].get_value());
+																	   NANDRAD::WindowShading::P_ReductionFactor, ssc.m_para[SubSurfaceComponent::P_ReductionFactor].value);
 									//calc the sensor orientation
 									const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(ss.m_parent);
 									ControlledShadingModelGenerator::SensorOrientation ori = ControlledShadingModelGenerator::calculateSensorOrientation(s->geometry().normal(), zcs->m_category);

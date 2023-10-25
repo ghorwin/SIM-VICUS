@@ -188,7 +188,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 			}
 		}
 
-		m_ui->lineEditReductionFactor->setValue(win->m_para[VICUS::Window::P_ReductionFactor].get_value());
+		m_ui->lineEditReductionFactor->setValue(comp->m_para[VICUS::SubSurfaceComponent::P_ReductionFactor].value);
 
 	}
 	else {
@@ -315,6 +315,6 @@ void SVDBSubSurfaceComponentEditWidget::on_lineEditReductionFactor_editingFinish
 
 	Q_ASSERT(win != nullptr);
 
-	VICUS::KeywordList::setParameter(win->m_para, "Window::para_t", VICUS::Window::P_ReductionFactor, val);
+	VICUS::KeywordList::setParameter(m_current->m_para, "SubSurfaceComponent::para_t", VICUS::SubSurfaceComponent::P_ReductionFactor, val);
 }
 

@@ -23,6 +23,8 @@ SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	resize(1500, 800);
+
 	std::set<QString> existingNames;
 	for (const VICUS::Drawing & b : project().m_drawings)
 		existingNames.insert(b.m_displayName);
@@ -92,7 +94,7 @@ void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingOb
 }
 
 void SVImportDXFDialog::moveDrawings() {
-	m_drawing.m_origin = - 1.0 * m_center;
+	m_drawing.m_origin = - 1.0 * m_center /** m_drawing.m_scalingFactor*/;
 }
 
 void SVImportDXFDialog::fixFonts() {
@@ -108,15 +110,20 @@ void SVImportDXFDialog::fixFonts() {
 	}
 }
 
+
 const VICUS::Drawing& SVImportDXFDialog::drawing() const {
 	return m_drawing;
 }
+
 
 void SVImportDXFDialog::on_comboBoxUnit_activated(int index) {
 	m_ui->comboBoxUnit->setCurrentIndex(index);
 }
 
+
 void SVImportDXFDialog::on_pushButtonConvert_clicked() {
+	FUNCID(SVImportDXFDialog::on_pushButtonConvert_clicked);
+
 	QString log;
 	QFile fileName(m_filePath);
 	if (!fileName.exists()) {
@@ -131,41 +138,33 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		m_drawing.m_id = m_nextId++;
 
 		success = readDxfFile(m_drawing, fileName.fileName());
-	} catch (IBK::Exception &ex) {
-		log += "Error in converting DXF-File. See Error below\n";
-		log += ex.what();
-		return;
-	}
+		m_drawing.generateInsertGeometries(m_nextId);
 
-	m_ui->pushButtonImport->setEnabled(success);
-	if (success) {
+		m_ui->pushButtonImport->setEnabled(success);
+
+		if (!success)
+			throw IBK::Exception(IBK::FormatString("Import of DXF-File was not successful!"), FUNC_ID);
 
 		// set name for drawing from lineEdit
 		m_drawing.m_displayName = m_ui->lineEditDrawingName->text();
 
 		log += "Import successful!\nThe following objects were imported:\n";
+		log += QString("-----------------------------------\n");
 		log += QString("Layers:\t%1\n").arg(m_drawing.m_drawingLayers.size());
 		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
 		log += QString("Polylines:\t%1\n").arg(m_drawing.m_polylines.size());
-		log += QString("Lines:\t%1\n").arg(m_drawing.m_lines.size());
 		log += QString("Arcs:\t%1\n").arg(m_drawing.m_arcs.size());
 		log += QString("Circles:\t%1\n").arg(m_drawing.m_circles.size());
 		log += QString("Ellipses:\t%1\n").arg(m_drawing.m_ellipses.size());
 		log += QString("Points:\t%1\n").arg(m_drawing.m_points.size());
 		log += QString("Linear Dimensions:\t%1\n").arg(m_drawing.m_linearDimensions.size());
 		log += QString("Dimension Styles:\t%1\n").arg(m_drawing.m_dimensionStyles.size());
-		log += QString("Texts:\t%1\n").arg(m_drawing.m_texts.size());
-
-		// m_drawing.m_texts.clear();
-		// m_drawing.m_arcs.clear();
-		// m_drawing.m_ellipses.clear();
-
-		// m_drawing.updatePointer();
-		m_drawing.updateParents();
+		log += QString("Inserts:\t%1\n").arg(m_drawing.m_inserts.size());
+		log += QString("-----------------------------------\n");
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
-		double scalingFactor[NUM_SU] = {100.0, 1.0, 0.1, 0.01, 0.001};
+		double scalingFactor[NUM_SU] = {0.001, 1.0, 0.1, 0.01, 0.001};
 
 		std::vector<const VICUS::Drawing *> drawings;
 		drawings.push_back(&m_drawing);
@@ -174,9 +173,11 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		std::vector<const VICUS::SubSurface*> subsurfaces;
 		IBKMK::Vector3D bounding = project().boundingBox(drawings, surfaces, subsurfaces, m_center, false);
 
+		// Drawing should be at least bigger than 150 m
 		double AUTO_SCALING_THRESHOLD = 1000;
 		if (su == SU_Auto) {
-			for (unsigned int i=0; i<NUM_SU; ++i) {
+			bool foundAutoScaling = false;
+			for (unsigned int i=1; i<NUM_SU; ++i) {
 
 				if (scalingFactor[i] * bounding.m_x > AUTO_SCALING_THRESHOLD)
 					continue;
@@ -185,14 +186,23 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 					continue;
 
 				scalingFactor[SU_Auto] = scalingFactor[i];
+				foundAutoScaling = true;
 				break;
 			}
+			if (foundAutoScaling)
+				log += QString("Found auto scaling factor: %1\n").arg(scalingFactor[SU_Auto]);
 		}
+		log += QString("Current dimensions - X: %1 Y: %2 Z: %3\n").arg(scalingFactor[su] * bounding.m_x)
+																  .arg(scalingFactor[su] * bounding.m_y)
+																  .arg(scalingFactor[su] * bounding.m_z);
 
 		m_drawing.m_scalingFactor = scalingFactor[su];
+		m_center *= scalingFactor[su];
+
+	} catch (IBK::Exception &ex) {
+		log += "Error in converting DXF-File. See Error below\n";
+		log += ex.what();
 	}
-	else
-		log += "Import of DXF-File was not successful!";
 
 	m_ui->plainTextEditLogWindow->setPlainText(log);
 }
@@ -264,8 +274,8 @@ void DRW_InterfaceImpl::addAppId(const DRW_AppId& /*data*/){}
 void DRW_InterfaceImpl::addBlock(const DRW_Block& data){
 
 	// New Block
-	m_drawing->m_blocks.push_back(VICUS::DrawingLayer::Block());
-	VICUS::DrawingLayer::Block &newBlock = m_drawing->m_blocks.back();
+	m_drawing->m_blocks.push_back(VICUS::Drawing::Block());
+	VICUS::Drawing::Block &newBlock = m_drawing->m_blocks.back();
 
 	// Set name
 	newBlock.m_name = QString::fromStdString(data.name);
@@ -323,8 +333,6 @@ void DRW_InterfaceImpl::addPoint(const DRW_Point& data){
 
 
 void DRW_InterfaceImpl::addLine(const DRW_Line& data){
-
-
 
 	VICUS::Drawing::Line newLine;
 	newLine.m_zPosition = m_drawing->m_zCounter;
@@ -509,7 +517,7 @@ void DRW_InterfaceImpl::addKnot(const DRW_Entity & /*data*/){}
 void DRW_InterfaceImpl::addInsert(const DRW_Insert& data){
 	VICUS::Drawing::Insert newInsert;
 
-	newInsert.m_blockName = QString::fromStdString(data.name);
+	newInsert.m_currentBlockName = QString::fromStdString(data.name);
 	newInsert.m_id = (*m_nextId)++;
 
 	newInsert.m_angle = data.angle;
@@ -519,6 +527,8 @@ void DRW_InterfaceImpl::addInsert(const DRW_Insert& data){
 	newInsert.m_zScale = data.zscale;
 
 	newInsert.m_insertionPoint = IBKMK::Vector2D(data.basePoint.x, data.basePoint.y);
+	if (m_activeBlock != nullptr)
+		newInsert.m_parentBlockName = m_activeBlock->m_name;
 
 	m_drawing->m_inserts.push_back(newInsert);
 }
@@ -616,8 +626,8 @@ void DRW_InterfaceImpl::addText(const DRW_Text& data){
 	/* value 256 means use defaultColor, value 7 is black */
 	if(!(data.color == 256 || data.color == 7))
 		newText.m_color = QColor(DRW::dxfColors[data.color][0],
-								 DRW::dxfColors[data.color][1],
-								 DRW::dxfColors[data.color][2]);
+				DRW::dxfColors[data.color][1],
+				DRW::dxfColors[data.color][2]);
 	else
 		newText.m_color = QColor();
 
@@ -659,8 +669,8 @@ void DRW_InterfaceImpl::addDimLinear(const DRW_DimLinear *data){
 	// value 256 means use defaultColor, value 7 is black
 	if(!(data->color == 256 || data->color == 7))
 		newLinearDimension.m_color = QColor(DRW::dxfColors[data->color][0],
-											DRW::dxfColors[data->color][1],
-											DRW::dxfColors[data->color][2]);
+				DRW::dxfColors[data->color][1],
+				DRW::dxfColors[data->color][2]);
 	else
 		newLinearDimension.m_color = QColor();
 

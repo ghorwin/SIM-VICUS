@@ -48,8 +48,8 @@ class ComponentInstance;
 class Surface : public Object {
 	VICUS_READWRITE_PRIVATE
 public:
-		/*! Type-info string. */
-		const char * typeinfo() const override { return "Surface"; }
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "Surface"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -70,7 +70,7 @@ public:
 	const std::vector<SubSurface> &		subSurfaces() const { return m_subSurfaces; }
 	const std::vector<Surface> &		childSurfaces() const { return m_childSurfaces; }
 
-	void setChildAndSubSurfaces(const std::vector<SubSurface>  & subSurfaces,
+	void setChildAndSubSurfaces(const std::vector<SubSurface>  &subSurfaces,
 								const std::vector<Surface>     &childSurfaces);
 
 	/*! Gives read-access to the surface's geometry. */

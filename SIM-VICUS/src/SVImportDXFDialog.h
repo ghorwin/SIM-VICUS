@@ -95,7 +95,7 @@ class DRW_InterfaceImpl : public DRW_Interface {
 
 	VICUS::Drawing				*m_drawing		= nullptr;
 
-	VICUS::DrawingLayer::Block	*m_activeBlock	= nullptr;
+	VICUS::Drawing::Block		*m_activeBlock	= nullptr;
 
 	unsigned int				*m_nextId		= nullptr;
 

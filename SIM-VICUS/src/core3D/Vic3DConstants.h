@@ -128,10 +128,7 @@ const double Z_MULTIPLYER					= 0.000005;
 const float SNAP_DISTANCES_THRESHHOLD			= 0.5;
 const float SNAP_DRAWING_DISTANCES_THRESHHOLD	= 0.2;
 
-const unsigned int SEGMENT_COUNT_ARC		= 5;
-const unsigned int SEGMENT_COUNT_CIRCLE		= 10;
-const unsigned int SEGMENT_COUNT_ELLIPSE	= 5;
-
+const bool PICK_LINE = true;
 
 #define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
 

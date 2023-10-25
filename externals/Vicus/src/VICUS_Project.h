@@ -260,13 +260,14 @@ public:
 		the provided local coordinate system.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center' in local coordinates.
 	*/
-	static IBKMK::Vector3D boundingBox(std::vector<const VICUS::Surface*> &surfaces,
-										std::vector<const VICUS::SubSurface*> &subsurfaces,
-										IBKMK::Vector3D &center,
-										const IBKMK::Vector3D &offset,
-										const IBKMK::Vector3D &xAxis,
-										const IBKMK::Vector3D &yAxis,
-										const IBKMK::Vector3D &zAxis );
+	static IBKMK::Vector3D boundingBox(std::vector<const Drawing *> & drawings,
+									   std::vector<const VICUS::Surface*> &surfaces,
+									   std::vector<const VICUS::SubSurface*> &subsurfaces,
+									   IBKMK::Vector3D &center,
+									   const IBKMK::Vector3D &offset = IBKMK::Vector3D(0,0,0),
+									   const IBKMK::Vector3D &xAxis = IBKMK::Vector3D(1,0,0),
+									   const IBKMK::Vector3D &yAxis = IBKMK::Vector3D(0,1,0),
+									   const IBKMK::Vector3D &zAxis = IBKMK::Vector3D(0,0,1));
 
 	/*! Attempts to create new surface-surface connections based on the current selection.
 		Newly created component instances are stored in vector newComponentInstances alongside
@@ -399,7 +400,9 @@ private:
 		This map is updated in updatePointers().
 	*/
 	std::map<unsigned int, VICUS::Object*>		m_objectPtr;
+
 };
+
 
 
 } // namespace VICUS
