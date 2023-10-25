@@ -144,7 +144,7 @@ const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries(const Drawing &
 
 		return m_planeGeometries;
 	} catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Could not generate plane geometries of 'Drawing::Text"), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Could not generate plane geometries of 'Drawing::Text'\n%1").arg(ex.what()), FUNC_ID);
 	}
 
 }
@@ -1126,7 +1126,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries(const Drawi
 		std::vector<IBKMK::Vector3D> polylinePoints;
 
 		// adds z-coordinate to polyline
-		for(unsigned int i = 0; i < m_polyline.size(); i++){
+		for(unsigned int i = 0; i < m_polyline.size(); ++i){
 			IBKMK::Vector3D p = IBKMK::Vector3D(drawing.m_scalingFactor * m_polyline[i].m_x,
 												drawing.m_scalingFactor * m_polyline[i].m_y,
 												m_zPosition * Z_MULTIPLYER);
@@ -1747,6 +1747,7 @@ Drawing::Block *Drawing::findBlockPointer(const QString &name){
 	return nullptr;
 }
 
+
 bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
 									const RotationMatrix &matrix, double width, VICUS::PlaneGeometry &plane,
 									const QMatrix4x4 &trans) {
@@ -1789,6 +1790,7 @@ bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBK
 
 	return true;
 }
+
 
 bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &polyline, const RotationMatrix &matrix,
 										 bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
@@ -1895,6 +1897,7 @@ bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &pol
 	return true;
 }
 
+
 bool isClockwise(const QPolygonF& polygon) {
 	double sum = 0.0;
 	for (int i = 0; i < polygon.count(); i++) {
@@ -1905,23 +1908,32 @@ bool isClockwise(const QPolygonF& polygon) {
 	return sum > 0.0;
 }
 
+
 void Drawing::generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
 									 const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
 									 const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale, std::vector<PlaneGeometry> &planeGeometries,
 									 const QMatrix4x4 &trans) {
 
+	if (text.empty())
+		return;
+
 	// We choose Arial for now
 	QFont font("Arial");
+	qDebug() << "Drawing text: " << QString::fromStdString(text);
 
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
+
+	qDebug() << "1928";
 
 	double width = path.boundingRect().width();
 	double moveX = 0.0;
 	if (alignment == Qt::AlignHCenter) {
 		moveX = -0.5*width;
 	}
+
+	qDebug() << "1936";
 
 	QTransform transformation;
 	transformation.rotate(rotationAngle);  // Rotate by 45 degrees
@@ -1932,6 +1944,9 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
+
+	qDebug() << "1948";
+
 	for (int i=0; i < polygons.size(); ++i) {
 
 		const QPolygonF &polygon = polygons[i];
@@ -1940,12 +1955,11 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 		for (unsigned int i=0; i<poly.size(); ++i) {
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-			IBKMK::Vector3D v3D = IBKMK::Vector3D( point.x() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_x,
+			IBKMK::Vector3D v3D = IBKMK::Vector3D(  point.x() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_x,
 												   -point.y() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_y,
 												   zScale);
 
 			v3D *= scalingFactor;
-
 			QVector3D qV3D = matrix.toQuaternion() * IBKVector2QVector(v3D);
 			qV3D += IBKVector2QVector(origin);
 			qV3D = trans * qV3D;
@@ -1954,6 +1968,8 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 		}
 
 		IBKMK::Polygon3D poly3D(poly);
+		if (!poly3D.isValid())
+			continue;
 
 		if ( planeGeometries.size() > 0 && isClockwise(polygon) ) {
 			/// We need to use the hole triangulation of the plane geometry

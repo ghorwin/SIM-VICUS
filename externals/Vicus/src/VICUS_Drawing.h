@@ -452,7 +452,7 @@ public:
 	/*! rotation matrix */
 	RotationMatrix															m_rotationMatrix	= RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0)); // XML:E
 	/*! scale factor */
-	double																	m_scalingFactor		= 0.01;											// XML:E
+	double																	m_scalingFactor		= 1.0;											// XML:E
 
 	/*! list of blocks, dummy implementation */
 	std::vector<Block>														m_blocks;			// XML:E

@@ -94,7 +94,7 @@ void movePoints(const IBKMK::Vector2D &center, VICUS::Drawing::AbstractDrawingOb
 }
 
 void SVImportDXFDialog::moveDrawings() {
-	m_drawing.m_origin = - 1.0 * m_center;
+	m_drawing.m_origin = - 1.0 * m_center /** m_drawing.m_scalingFactor*/;
 }
 
 void SVImportDXFDialog::fixFonts() {
@@ -164,7 +164,7 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 
 		ScaleUnit su = (ScaleUnit)m_ui->comboBoxUnit->currentData().toInt();
 
-		double scalingFactor[NUM_SU] = {1.0, 1.0, 0.1, 0.01, 0.001};
+		double scalingFactor[NUM_SU] = {0.001, 1.0, 0.1, 0.01, 0.001};
 
 		std::vector<const VICUS::Drawing *> drawings;
 		drawings.push_back(&m_drawing);
@@ -176,6 +176,7 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 		// Drawing should be at least bigger than 150 m
 		double AUTO_SCALING_THRESHOLD = 1000;
 		if (su == SU_Auto) {
+			bool foundAutoScaling = false;
 			for (unsigned int i=1; i<NUM_SU; ++i) {
 
 				if (scalingFactor[i] * bounding.m_x > AUTO_SCALING_THRESHOLD)
@@ -185,17 +186,18 @@ void SVImportDXFDialog::on_pushButtonConvert_clicked() {
 					continue;
 
 				scalingFactor[SU_Auto] = scalingFactor[i];
+				foundAutoScaling = true;
 				break;
 			}
-
-			log += QString("Found auto scaling factor: %1\n").arg(scalingFactor[SU_Auto]);
+			if (foundAutoScaling)
+				log += QString("Found auto scaling factor: %1\n").arg(scalingFactor[SU_Auto]);
 		}
 		log += QString("Current dimensions - X: %1 Y: %2 Z: %3\n").arg(scalingFactor[su] * bounding.m_x)
-																.arg(scalingFactor[su] * bounding.m_y)
-																.arg(scalingFactor[su] * bounding.m_z);
+																  .arg(scalingFactor[su] * bounding.m_y)
+																  .arg(scalingFactor[su] * bounding.m_z);
 
 		m_drawing.m_scalingFactor = scalingFactor[su];
-
+		m_center *= scalingFactor[su];
 
 	} catch (IBK::Exception &ex) {
 		log += "Error in converting DXF-File. See Error below\n";
