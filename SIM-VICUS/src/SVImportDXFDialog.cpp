@@ -37,6 +37,8 @@ SVImportDXFDialog::SVImportDXFDialog(QWidget *parent) :
 	m_ui->comboBoxUnit->addItem("Decimeter", SU_Decimeter);
 	m_ui->comboBoxUnit->addItem("Centimeter", SU_Centimeter);
 	m_ui->comboBoxUnit->addItem("Millimeter", SU_Millimeter);
+
+	m_ui->checkBoxFixFonts->setHidden(true);
 }
 
 SVImportDXFDialog::ImportResults SVImportDXFDialog::import(const QString &fname) {
