@@ -1,14 +1,16 @@
-#ifndef VICUS_SOUNDABSORPTION_H
-#define VICUS_SOUNDABSORPTION_H
+#ifndef VICUS_AcousticSoundAbsorptionH
+#define VICUS_AcousticSoundAbsorptionH
 
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_CodeGenMacros.h"
 
 namespace VICUS {
 
-class SoundAbsorption : public AbstractDBElement
+class AcousticSoundAbsorption : public AbstractDBElement
 {
 public:
+
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE_OVERRIDE
@@ -25,12 +27,21 @@ public:
 		NUM_SF
 	};
 
-	double						m_soundAbsorption[NUM_SF] = {0, 0, 0, 0, 0, 0};			// XML:E
+
+	/*! Checks if all parameters are valid. */
+	bool isValid() const;
 
 	// AbstractDBElement interface
 	ComparisonResult equal(const AbstractDBElement *other) const;
+
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+
+	double						m_soundAbsorption[NUM_SF] = {0, 0, 0, 0, 0, 0};			// XML:E
 };
 
 } // namespace VICUS
 
-#endif // VICUS_SOUNDABSORPTION_H
+#endif // VICUS_AcousticSoundAbsorptionH

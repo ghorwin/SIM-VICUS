@@ -44,17 +44,11 @@
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_InterfaceHeatConduction.h"
 #include "VICUS_Schedule.h"
-#include "VICUS_SoundAbsorption.h"
-
+#include "VICUS_AcousticSoundAbsorption.h"
+#include "VICUS_SoundAbsorptionLayer.h"
 
 namespace VICUS {
 
-struct SoundAbsorptionRatios {
-
-
-	IBK::Parameter				ratio;					// XML:E
-	SoundAbsorption				soundAbsorption;		// XML:E
-};
 
 /*! This is a template for boundary conditions, to be referenced by components. */
 class AcousticBoundaryCondition : public AbstractDBElement {
@@ -82,10 +76,10 @@ public:
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 	//:inherited	QColor							m_color;				// XML:A
 
-	std::vector<SoundAbsorptionRatios> m_soundAbsorptions;
+	std::vector<SoundAbsorptionLayer>				m_soundAbsorptionLayers;
 
 	/*! Holds error string in order to give users a tooltip in db dialog. */
-	mutable std::string						m_errorMsg;
+	mutable std::string								m_errorMsg;
 
 };
 
