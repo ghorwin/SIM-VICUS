@@ -51,6 +51,7 @@
 #include "VICUS_ZoneControlNaturalVentilation.h"
 #include "VICUS_ZoneTemplate.h"
 #include "VICUS_SurfaceHeating.h"
+#include "VICUS_AcousticSoundAbsorption.h"
 
 namespace VICUS {
 
@@ -77,6 +78,9 @@ public:
 
 	/*! Map pf all database acoustic boundary conditions */
 	std::vector<VICUS::AcousticBoundaryCondition>		m_acousticBoundaryConditions;		// XML:E
+
+	/*! Map pf all database acoustic boundary conditions */
+	std::vector<VICUS::AcousticSoundAbsorption>					m_acousticSoundAbsorptions;		// XML:E
 
 	/*! Map of all database boundary conditions. */
 	std::vector<VICUS::BoundaryCondition>				m_boundaryConditions;				// XML:E
