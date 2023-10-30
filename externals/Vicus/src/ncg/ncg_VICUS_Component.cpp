@@ -78,6 +78,10 @@ void Component::readXML(const TiXmlElement * element) {
 				m_idSideABoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideBBoundaryCondition")
 				m_idSideBBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSideAAcousticBoundaryCondition")
+				m_idSideAAcousticBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSideBAcousticBoundaryCondition")
+				m_idSideBAcousticBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSurfaceProperty")
 				m_idSurfaceProperty = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "ActiveLayerIndex")
@@ -131,6 +135,10 @@ TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideABoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideABoundaryCondition));
 	if (m_idSideBBoundaryCondition != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideBBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBBoundaryCondition));
+	if (m_idSideAAcousticBoundaryCondition != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSideAAcousticBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideAAcousticBoundaryCondition));
+	if (m_idSideBAcousticBoundaryCondition != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSideBAcousticBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBAcousticBoundaryCondition));
 	if (m_idSurfaceProperty != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceProperty", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceProperty));
 	if (m_activeLayerIndex != VICUS::INVALID_ID)
