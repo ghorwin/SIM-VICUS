@@ -67,6 +67,7 @@ public:
 		DT_Infiltration,
 		DT_ZoneTemplates,
 		DT_AcousticTemplates,
+		DT_AcousticSoundAbsorptions,
 		NUM_DT // used for "all"
 	};
 
@@ -220,6 +221,10 @@ public:
 
 	/*! Map of all database Acoustic templates. */
 	VICUS::Database<VICUS::AcousticTemplate>			m_acousticTemplates;
+
+	/*! Map of all database acoustic sound absorption templates. */
+	VICUS::Database<VICUS::AcousticSoundAbsorption>		m_acousticSoundAbsorptions;
+
 
 };
 

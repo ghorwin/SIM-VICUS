@@ -50,7 +50,7 @@ SVDBAcousticBoundaryConditionTableModel::SVDBAcousticBoundaryConditionTableModel
 
 
 QVariant SVDBAcousticBoundaryConditionTableModel::data ( const QModelIndex & index, int role) const {
-	/*
+
 	if (!index.isValid())
 		return QVariant();
 
@@ -121,17 +121,16 @@ QVariant SVDBAcousticBoundaryConditionTableModel::data ( const QModelIndex & ind
 		}
 	}
 
-	return QVariant();*/
+	return QVariant();
 }
 
 
 int SVDBAcousticBoundaryConditionTableModel::rowCount ( const QModelIndex & ) const {
-	/*return (int)m_db->m_acousticBoundaryConditions.size();*/
+	return (int)m_db->m_acousticBoundaryConditions.size();
 }
 
 
 QVariant SVDBAcousticBoundaryConditionTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
-	/*
 	if (orientation == Qt::Vertical)
 		return QVariant();
 	switch (role) {
@@ -149,43 +148,34 @@ QVariant SVDBAcousticBoundaryConditionTableModel::headerData(int section, Qt::Or
 			return f;
 		}
 	} // switch
-	return QVariant();*/
+	return QVariant();
 }
 
 
 void SVDBAcousticBoundaryConditionTableModel::resetModel() {
-	/*
+
 	beginResetModel();
-	endResetModel();*/
+	endResetModel();
 }
 
 
 QModelIndex SVDBAcousticBoundaryConditionTableModel::addNewItem() {
-	/*
+
 	VICUS::AcousticBoundaryCondition bc;
-	bc.m_displayName.setString(tr("<new boundary condition>").toStdString(), IBK::MultiLanguageString::m_language);
+	bc.m_displayName.setString(tr("<new acoustic boundary condition>").toStdString(), IBK::MultiLanguageString::m_language);
 	bc.m_color = SVStyle::randomColor();
 
 	//set default parameters
-	bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
-
-	bc.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_solarAbsorption.m_para, "InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, 0.6);
-
-	bc.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_longWaveEmission.m_para, "InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, 0.9);
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_acousticBoundaryConditions.add( bc );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
-	return idx;*/
+	return idx;
 }
 
 
 QModelIndex SVDBAcousticBoundaryConditionTableModel::copyItem(const QModelIndex & existingItemIndex) {
-	/*
 	// lookup existing item
 	const VICUS::Database<VICUS::AcousticBoundaryCondition> & db = m_db->m_acousticBoundaryConditions;
 	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
@@ -198,38 +188,35 @@ QModelIndex SVDBAcousticBoundaryConditionTableModel::copyItem(const QModelIndex 
 	unsigned int id = m_db->m_acousticBoundaryConditions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
-	return idx;*/
+	return idx;
 }
 
 
 void SVDBAcousticBoundaryConditionTableModel::deleteItem(const QModelIndex & index) {
-	/*
 	if (!index.isValid())
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_acousticBoundaryConditions.remove(id);
-	endRemoveRows();*/
+	endRemoveRows();
 }
 
 
 void SVDBAcousticBoundaryConditionTableModel::setColumnResizeModes(QTableView * tableView) {
-	/*
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBAcousticBoundaryConditionTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBAcousticBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBAcousticBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBAcousticBoundaryConditionTableModel::ColName, QHeaderView::Stretch);*/
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBAcousticBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
 }
 
 
 void SVDBAcousticBoundaryConditionTableModel::setItemLocal(const QModelIndex &index, bool local) {
-	/*
 	if (!index.isValid())
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	m_db->m_acousticBoundaryConditions[id]->m_local = local;
 	m_db->m_acousticBoundaryConditions.m_modified = true;
-	setItemModified(id);*/
+	setItemModified(id);
 }
 
 

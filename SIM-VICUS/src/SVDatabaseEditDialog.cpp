@@ -64,6 +64,8 @@
 #include "SVDBWindowGlazingSystemEditWidget.h"
 #include "SVDBAcousticBoundaryConditionEditWidget.h"
 #include "SVDBAcousticBoundaryConditionTableModel.h"
+#include "SVDBAcousticSoundAbsorptionEditWidget.h"
+#include "SVDBAcousticSoundAbsorptionTableModel.h"
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "SVDBScheduleTableModel.h"
@@ -634,6 +636,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticBoundaryConditionEdit
 		new SVDBAcousticBoundaryConditionEditWidget(parent),
 		tr("Acoustic boundary conditions Database"), tr("Acoustic boundary conditions properties"), true
 	);
+	resizeDBDialog(dlg);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticSoundAbsorptionEditDialog(QWidget * parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+														  new SVDBAcousticSoundAbsorptionTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBAcousticSoundAbsorptionEditWidget(parent),
+														  tr("Acoustic sound absorption Database"), tr("Acoustic sound absorption properties"), true
+														  );
 	resizeDBDialog(dlg);
 	return dlg;
 }

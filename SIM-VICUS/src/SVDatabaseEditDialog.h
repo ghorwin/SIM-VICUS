@@ -127,6 +127,7 @@ private:
 	static SVDatabaseEditDialog * createWindowEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createWindowGlazingSystemEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createAcousticBoundaryConditionEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createAcousticSoundAbsorptionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createBoundaryConditionsEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createScheduleEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category);

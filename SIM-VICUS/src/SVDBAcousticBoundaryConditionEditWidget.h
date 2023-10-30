@@ -28,6 +28,8 @@
 
 #include "SVAbstractDatabaseEditWidget.h"
 
+class QTableWidgetItem;
+
 namespace Ui {
 	class SVDBAcousticBoundaryConditionEditWidget;
 }
@@ -50,6 +52,14 @@ class SVDatabase;
 class SVDBAcousticBoundaryConditionEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
+	enum SoundApsortionColumns {
+		ColId,
+		ColName,
+		ColFraction,
+		NumCol
+	};
+
+
 public:
 	explicit SVDBAcousticBoundaryConditionEditWidget(QWidget *parent = nullptr);
 	~SVDBAcousticBoundaryConditionEditWidget() override;
@@ -61,35 +71,36 @@ public:
 	void updateInput(int id) override;
 
 
+
 private slots:
 	void on_lineEditName_editingFinished();
-	void on_lineEditHeatTransferCoefficient_editingFinished();
-	void on_lineEditSolarAbsorptionCoefficient_editingFinished();
-	void on_lineEditLongWaveEmissivity_editingFinished();
-	void on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(int index);
-	void on_comboBoxLWModelType_currentIndexChanged(int index);
-	void on_comboBoxSWModelType_currentIndexChanged(int index);
-
 	void on_pushButtonColor_colorChanged();
 
+	void on_spinBoxLayerCount_valueChanged(int layerCount);
 
-	void on_comboBoxConnectedZoneType_currentIndexChanged(int index);
+	/*! Triggered when user modifies a table cell, only needed for 'area fraction'-column. */
+	void tableItemChanged(QTableWidgetItem *);
 
-
-	void on_toolButtonSelectTemperatureSchedule_clicked();
-
-	void on_toolButtonRemoveTemperatureSchedule_clicked();
-
-	void on_lineEditZoneConstTemperature_editingFinishedSuccessfully();
+	/*! Slot for react on double click on table cell.*/
+	void onCellDoubleClicked(int row, int col);
 
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
+	/*! Updates sound absorption layers in table. */
+	void updateTable();
+
+	/*! Show a sound absorption database view in order to select a new sound absorption layer
+	 *   and change the current selection.
+		\param index Index of the layer for sound absorption change.
+	*/
+	void showSoundAbsorptionSelectionDialog(int index);
+
 	Ui::SVDBAcousticBoundaryConditionEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */
-	SVDatabase							*m_db;
+	SVDatabase									*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBAcousticBoundaryConditionTableModel		*m_dbModel;

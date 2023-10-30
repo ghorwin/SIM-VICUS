@@ -54,6 +54,7 @@
 - VentilationNatural: 1077500-1080000
 - Infiltration: 1080000-1082500
 - ZoneTemplates: 1082500-1085000
+- SoundAbsorptions: 1085001-1090000
 ToDo Hauke prüfen bitte Network würde ich dann bei ID-Space 1100000 anfangen lassen
 - Pipes: 1100000-1102500
 - Fluids: 1102500-1105000
@@ -89,13 +90,13 @@ SVDatabase::SVDatabase() :
 	m_infiltration(1080000),
 	m_zoneTemplates(1082500),
 	//	SubNetworks: 1110000-1112500
-	m_acousticTemplates(1400100)
+	m_acousticTemplates(1400100),
+	m_acousticSoundAbsorptions(1085001)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
   //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
   //davon starten manche bei 1 und manche bei 10.000.000 ???
-{
-}
+{}
 
 
 void SVDatabase::readDatabases(DatabaseTypes t) {
@@ -109,7 +110,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_constructions.readXML(			dbDir / "db_constructions.xml", "Constructions", "Construction", true);
 		m_windows.readXML(					dbDir / "db_windows.xml", "Windows", "Window", true);
 		m_windowGlazingSystems.readXML(		dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", true);
-		m_acousticBoundaryConditions.readXML(	dbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions", "AcousticBoundaryCondition", true);
+		m_acousticBoundaryConditions.readXML(dbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions", "AcousticBoundaryCondition", true);
+		m_acousticSoundAbsorptions.readXML(	dbDir / "db_acousticSoundAbsorptions.xml", "AcousticSoundAbsorptions", "AcousticSoundAbsorption", true);
 		m_boundaryConditions.readXML(		dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", true);
 		m_components.readXML(				dbDir / "db_components.xml", "Components", "Component", true);
 		m_subSurfaceComponents.readXML(		dbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", true);
@@ -151,6 +153,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_windowGlazingSystems.readXML(		userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", false);
 	if (t == NUM_DT || t == DT_AcousticBoundaryConditions)
 		m_acousticBoundaryConditions.readXML(		userDbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions", "AcousticBoundaryCondition", false);
+	if (t == NUM_DT || t == DT_AcousticSoundAbsorptions)
+		m_acousticSoundAbsorptions.readXML(		userDbDir / "db_acousticSoundAbsorptions.xml", "AcousticSoundAbsorptions", "AcousticSoundAbsorption", false);
 	if (t == NUM_DT || t == DT_BoundaryConditions)
 		m_boundaryConditions.readXML(		userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
 	if (t == NUM_DT || t == DT_Components)
@@ -210,8 +214,10 @@ void SVDatabase::writeDatabases(DatabaseTypes t) const {
 		m_windows.writeXML(				userDbDir / "db_windows.xml", "Windows");
 	if (t == NUM_DT || t == DT_WindowGlazingSystems)
 		m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
-	if (t == NUM_DT || t == DT_BoundaryConditions)
+	if (t == NUM_DT || t == DT_AcousticBoundaryConditions)
 		m_acousticBoundaryConditions.writeXML(	userDbDir / "db_acousticBoundaryConditions.xml", "AcousticBoundaryConditions");
+	if (t == NUM_DT || t == DT_AcousticSoundAbsorptions)
+		m_acousticSoundAbsorptions.writeXML(	userDbDir / "db_acousticSoundAbsorptions.xml", "AcousticSoundAbsorptions");
 	if (t == NUM_DT || t == DT_BoundaryConditions)
 		m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
 	if (t == NUM_DT || t == DT_Components)
@@ -265,6 +271,7 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_windowGlazingSystems.import(db.m_windowGlazingSystems);
 	m_acousticBoundaryConditions.import(db.m_acousticBoundaryConditions);
 	m_boundaryConditions.import(db.m_boundaryConditions);
+	m_acousticSoundAbsorptions.import(db.m_acousticSoundAbsorptions);
 	m_components.import(db.m_components);
 	m_subSurfaceComponents.import(db.m_subSurfaceComponents);
 	m_surfaceHeatings.import(db.m_surfaceHeatings);
@@ -337,6 +344,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_windows, m_windows);
 	storeVector(p.m_embeddedDB.m_windowGlazingSystems, m_windowGlazingSystems);
 	storeVector(p.m_embeddedDB.m_acousticBoundaryConditions, m_acousticBoundaryConditions);
+	storeVector(p.m_embeddedDB.m_acousticSoundAbsorptions, m_acousticSoundAbsorptions);
 	storeVector(p.m_embeddedDB.m_boundaryConditions, m_boundaryConditions);
 	storeVector(p.m_embeddedDB.m_components, m_components);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, m_subSurfaceComponents);
@@ -372,6 +380,8 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 	for (auto it=m_windowGlazingSystems.begin(); it!=m_windowGlazingSystems.end(); ++it)
 		it->second.m_isReferenced = false;
 	for (auto it=m_acousticBoundaryConditions.begin(); it!=m_acousticBoundaryConditions.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_acousticSoundAbsorptions.begin(); it!=m_acousticSoundAbsorptions.end(); ++it)
 		it->second.m_isReferenced = false;
 	for (auto it=m_boundaryConditions.begin(); it!=m_boundaryConditions.end(); ++it)
 		it->second.m_isReferenced = false;
@@ -480,6 +490,7 @@ void SVDatabase::updateElementChildren() {
 	m_windows.clearChildren();
 	m_windowGlazingSystems.clearChildren();
 	m_acousticBoundaryConditions.clearChildren();
+	m_acousticSoundAbsorptions.clearChildren();
 	m_boundaryConditions.clearChildren();
 	m_components.clearChildren();
 	m_subSurfaceComponents.clearChildren();
@@ -715,6 +726,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_windows, duplicatePairs[DT_Windows]);
 	findDublicates(m_windowGlazingSystems, duplicatePairs[DT_WindowGlazingSystems]);
 	findDublicates(m_acousticBoundaryConditions, duplicatePairs[DT_AcousticBoundaryConditions]);
+	findDublicates(m_acousticSoundAbsorptions, duplicatePairs[DT_AcousticSoundAbsorptions]);
 	findDublicates(m_boundaryConditions, duplicatePairs[DT_BoundaryConditions]);
 	findDublicates(m_components, duplicatePairs[DT_Components]);
 	findDublicates(m_subSurfaceComponents, duplicatePairs[DT_SubSurfaceComponents]);
@@ -1085,6 +1097,7 @@ void SVDatabase::removeLocalElements() {
 	m_epdDatasets.removeLocalElements();
 	m_windowGlazingSystems.removeLocalElements();
 	m_acousticBoundaryConditions.removeLocalElements();
+	m_acousticSoundAbsorptions.removeLocalElements();
 	m_boundaryConditions.removeLocalElements();
 	m_components.removeLocalElements();
 	m_subSurfaceComponents.removeLocalElements();
@@ -1120,6 +1133,8 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_windowGlazingSystems.removeNotReferencedLocalElements(); break;
 		case DT_AcousticBoundaryConditions:
 			m_acousticBoundaryConditions.removeNotReferencedLocalElements(); break;
+		case DT_AcousticSoundAbsorptions:
+			m_acousticSoundAbsorptions.removeNotReferencedLocalElements(); break;
 		case DT_BoundaryConditions:
 			m_boundaryConditions.removeNotReferencedLocalElements(); break;
 		case DT_Components:
@@ -1213,6 +1228,9 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_AcousticBoundaryConditions:
 			Q_ASSERT(m_acousticBoundaryConditions[id] != nullptr);
 			m_acousticBoundaryConditions[id]->collectLocalChildren(localChildren); break;
+		case DT_AcousticSoundAbsorptions:
+			Q_ASSERT(m_acousticSoundAbsorptions[id] != nullptr);
+			m_acousticSoundAbsorptions[id]->collectLocalChildren(localChildren); break;
 		case DT_BoundaryConditions:
 			Q_ASSERT(m_boundaryConditions[id] != nullptr);
 			m_boundaryConditions[id]->collectLocalChildren(localChildren); break;
