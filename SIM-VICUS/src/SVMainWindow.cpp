@@ -298,6 +298,12 @@ SVDatabaseEditDialog * SVMainWindow::dbAcousticBoundaryConditionEditDialog(){
 	return m_dbAcousticBoundaryConditionEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbAcousticSoundAbsorptionEditDialog(){
+	if (m_dbAcousticSoundAbsorptionEditDialog == nullptr)
+		m_dbAcousticSoundAbsorptionEditDialog = SVDatabaseEditDialog::createAcousticSoundAbsorptionEditDialog(this);
+	return m_dbAcousticSoundAbsorptionEditDialog;
+}
+
 SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = SVDatabaseEditDialog::createBoundaryConditionsEditDialog(this);
@@ -2280,8 +2286,13 @@ void SVMainWindow::on_actionDWD_Weather_Data_Converter_triggered() {
 }
 
 
-void SVMainWindow::on_actionDBAcousticBoundaryconditions_triggered()
-{
+void SVMainWindow::on_actionDBAcousticBoundaryConditions_triggered() {
 	dbAcousticBoundaryConditionEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionDBAcousticSoundAbsorptions_triggered() {
+
+	dbAcousticSoundAbsorptionEditDialog()->edit();
 }
 

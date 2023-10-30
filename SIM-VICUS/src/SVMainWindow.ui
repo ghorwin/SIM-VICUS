@@ -153,7 +153,6 @@
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
-    <addaction name="actionDBAcousticBoundaryconditions"/>
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
@@ -163,6 +162,9 @@
     <addaction name="actionDBZoneIdealHeatingCooling"/>
     <addaction name="actionDBSupplySystems"/>
     <addaction name="actionDBZoneTemplates"/>
+    <addaction name="separator"/>
+    <addaction name="actionDBAcousticBoundaryConditions"/>
+    <addaction name="actionDBAcousticSoundAbsorptions"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBFluids"/>
@@ -858,7 +860,7 @@
     <string>External Post Processor...</string>
    </property>
   </action>
-  <action name="actionDBAcousticBoundaryconditions">
+  <action name="actionDBAcousticBoundaryConditions">
    <property name="text">
     <string>Acoustic boundary conditions...</string>
    </property>
@@ -866,11 +868,19 @@
     <string>Acoustic boundary conditions</string>
    </property>
   </action>
+  <action name="actionDBAcousticSoundAbsorptions">
+   <property name="text">
+    <string>Acoustic sound absorptions...</string>
+   </property>
+   <property name="toolTip">
+    <string>Acoustic sound absorptions</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../resources/icons.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -148,6 +148,8 @@ public:
 	SVDatabaseEditDialog * dbSubSurfaceComponentEditDialog();
 	/*! Returns the acoustic boundary condition edit dialog. */
 	SVDatabaseEditDialog * dbAcousticBoundaryConditionEditDialog();
+	/*! Returns the sound absorption edit dialog. */
+	SVDatabaseEditDialog * dbAcousticSoundAbsorptionEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDatabaseEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
@@ -384,7 +386,9 @@ private slots:
 
 	void on_actionDWD_Weather_Data_Converter_triggered();
 
-	void on_actionDBAcousticBoundaryconditions_triggered();
+	void on_actionDBAcousticBoundaryConditions_triggered();
+
+	void on_actionDBAcousticSoundAbsorptions_triggered();
 
 private:
 
@@ -537,6 +541,7 @@ private:
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbSubSurfaceComponentEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbAcousticBoundaryConditionEditDialog		= nullptr;
+	SVDatabaseEditDialog				*m_dbAcousticSoundAbsorptionEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
