@@ -81,6 +81,15 @@ private slots:
 
 	void on_spinBoxActiveLayerIndex_valueChanged(int arg1);
 
+
+	void on_toolButtonSelectAcousticBoundaryConditionSideAName_clicked();
+
+	void on_toolButtonRemoveAcousticBoundaryConditionSideA_clicked();
+
+	void on_toolButtonSelectAcousticBoundaryConditionSideBName_clicked();
+
+	void on_toolButtonRemoveAcousticBoundaryConditionSideB_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
