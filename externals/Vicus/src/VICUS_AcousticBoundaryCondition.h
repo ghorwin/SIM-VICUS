@@ -44,7 +44,6 @@
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_InterfaceHeatConduction.h"
 #include "VICUS_Schedule.h"
-#include "VICUS_AcousticSoundAbsorption.h"
 #include "VICUS_SoundAbsorptionLayer.h"
 
 namespace VICUS {
@@ -62,10 +61,10 @@ public:
 
 
 	/*! Checks if all parameters are valid. */
-	bool isValid(const Database<Schedule> &scheduleDB) const;
+	bool isValid(const VICUS::Database<VICUS::AcousticSoundAbsorption> & soundAbsDB) const;
 
 	/*! Generates a short html-description of the defined parameters. */
-	QString htmlDescription(const VICUS::Database<Schedule> & scheduleDB) const;
+	QString htmlDescription(const VICUS::Database<VICUS::AcousticSoundAbsorption> & soundAbsDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

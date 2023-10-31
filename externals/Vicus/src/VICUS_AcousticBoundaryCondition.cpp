@@ -27,72 +27,63 @@
 
 namespace VICUS {
 
-bool AcousticBoundaryCondition::isValid(const Database<Schedule> & scheduleDB) const {
-	/*if (m_id == VICUS::INVALID_ID)
+bool AcousticBoundaryCondition::isValid(const VICUS::Database<AcousticSoundAbsorption> &soundAbsDB) const {
+	if (m_id == VICUS::INVALID_ID)
 		return false;
 
-	if(!m_heatConduction.isValid(scheduleDB)) {
-		m_errorMsg = "Heat conduction is not valid.";
+	if(!m_soundAbsorptionLayers.empty()){
+		m_errorMsg = "Sound absorption layer count is not valid!";
 		return false;
 	}
 
-	try {
-		m_longWaveEmission.checkParameters();
-		// TODO : add vapor diffusion/air flow once needed
-	} catch (...) {
-		m_errorMsg = "Long wave emission is not valid.";
-		return false;
+	for(const SoundAbsorptionLayer &layer : m_soundAbsorptionLayers){
+		if(!layer.isValid(soundAbsDB)){
+			m_errorMsg = "Sound absorption ist not valid!";
+			return false;
+		}
 	}
-	try {
-		m_solarAbsorption.checkParameters();
-	} catch (...) {
-		m_errorMsg = "Solar absorption is not valid.";
-		return false;
-	}*/
 
 	return true;
 }
 
 
-QString AcousticBoundaryCondition::htmlDescription(const VICUS::Database<Schedule> & scheduleDB) const {
+QString AcousticBoundaryCondition::htmlDescription(const VICUS::Database<VICUS::AcousticSoundAbsorption> & soundAbsDB) const {
 	QString html = "<html><body>";
 
-	/*if (!isValid(scheduleDB))
+	if (!isValid(soundAbsDB))
 		html += tr("<p><span style=\" color:#a40000;\">Invalid parameter definition found.</span></p>");
 
 	html += tr("<p><b>Parameters:</b></p><ul>");
-	if (m_heatConduction.m_modelType != VICUS::InterfaceHeatConduction::NUM_MT) {
-		QString heatCondInfo;
-		switch (m_heatConduction.m_modelType) {
-			case VICUS::InterfaceHeatConduction::MT_Constant:
-				heatCondInfo = tr("Constant, heat transfer coefficient = %1 W/m2K").arg(m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].get_value("W/m2K"));
-			break;
-			case VICUS::InterfaceHeatConduction::NUM_MT: break;
+
+	std::vector<int> freq{125,250,500,1000,2000,4000};
+	std::vector<double> absorption(6,0);
+
+
+	if(isValid(soundAbsDB)){
+		// sum up all absorptions
+		for(unsigned int i=0; i<m_soundAbsorptionLayers.size(); ++i){
+			const SoundAbsorptionLayer &layer = m_soundAbsorptionLayers[i];
+
+			const AcousticSoundAbsorption *soundAbs = soundAbsDB[layer.m_idSoundAbsorption];
+
+			if(soundAbs == nullptr)
+				continue;
+
+			for(unsigned int j=0; j<AcousticSoundAbsorption::NUM_SF; ++j)
+				absorption[j] += layer.m_para[SoundAbsorptionLayer::P_AreaFraction].value * soundAbs->m_soundAbsorption[j];
 		}
-		html += tr("<li><i>Heat conduction</i><br>%1</li>").arg(heatCondInfo);
-	}
-	if (m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
-		QString info;
-		switch (m_solarAbsorption.m_modelType) {
-			case NANDRAD::InterfaceSolarAbsorption::NUM_MT: break;
-			case NANDRAD::InterfaceSolarAbsorption::MT_Constant:
-				info = tr("Constant, adsorption coeff. = %1").arg(m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
-			break;
-		}
-		html += tr("<li><i>Solar adsorption</i><br>%1</li>").arg(info);
-	}
-	if (m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
-		QString info;
-		switch (m_longWaveEmission.m_modelType) {
-			case NANDRAD::InterfaceLongWaveEmission::NUM_MT: break;
-			case NANDRAD::InterfaceLongWaveEmission::MT_Constant:
-				info = tr("Constant, emissivity = %1").arg(m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
-			break;
-		}
-		html += tr("<li><i>Long wave radiation exchange</i><br>%1</li>").arg(info);
+
+		html += "<table border=\"0\">";
+		html += "<tr><td align=\"left\">Frequency [Hz]</td><td align=\"center\">Absorption [---]</td></tr>";
+
+		for(unsigned int i=0; i<absorption.size(); ++i)
+			html += "<tr><td align=\"left\">" + QString::number(freq[i]) + "</td><td align=\"center\">" + QString::number(absorption[i]) + "</td></tr>";
+
+		html += "</table>";
+
 	}
 
-	html += "</body></html>";  */
+	html += "</body></html>";
 	return html;
 }
 
