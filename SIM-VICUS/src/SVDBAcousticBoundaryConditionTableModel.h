@@ -23,7 +23,7 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVDBAcousticSoundAbsorptionTableModelH
+#ifndef SVDBAcousticBoundaryConditionTableModelH
 #define SVDBAcousticBoundaryConditionTableModelH
 
 #include "SVAbstractDatabaseEditWidget.h"

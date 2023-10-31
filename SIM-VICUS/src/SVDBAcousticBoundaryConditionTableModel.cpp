@@ -87,7 +87,7 @@ QVariant SVDBAcousticBoundaryConditionTableModel::data ( const QModelIndex & ind
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
 				std::string errorMsg = "";
-				if (it->second.isValid(m_db->m_schedules))
+				if (it->second.isValid(m_db->m_acousticSoundAbsorptions))
 					return QIcon(":/gfx/actions/16x16/ok.png");
 				else
 					return QIcon(":/gfx/actions/16x16/error.png");
@@ -115,7 +115,7 @@ QVariant SVDBAcousticBoundaryConditionTableModel::data ( const QModelIndex & ind
 		case Qt::ToolTipRole: {
 			if(index.column() == ColCheck) {
 				std::string errorMsg = "";
-				if (!it->second.isValid(m_db->m_schedules))
+				if (!it->second.isValid(m_db->m_acousticSoundAbsorptions))
 					return QString::fromStdString(it->second.m_errorMsg);
 			}
 		}
