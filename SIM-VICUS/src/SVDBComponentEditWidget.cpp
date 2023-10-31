@@ -175,7 +175,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::AcousticBoundaryCondition *aBcA = m_db->m_acousticBoundaryConditions[comp->m_idSideAAcousticBoundaryCondition];
 	if (aBcA != nullptr){
 		m_ui->lineEditAcousticBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(aBcA->m_displayName));
-		m_ui->textBrowserAcousticBCSideA->setHtml(aBcA->htmlDescription(m_db->m_schedules));
+		m_ui->textBrowserAcousticBCSideA->setHtml(aBcA->htmlDescription(m_db->m_acousticSoundAbsorptions));
 	}
 	else {
 		m_ui->lineEditAcousticBoundaryConditionSideAName->clear();
@@ -185,11 +185,11 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::AcousticBoundaryCondition *aBcB = m_db->m_acousticBoundaryConditions[comp->m_idSideBAcousticBoundaryCondition];
 	if (aBcB != nullptr){
 		m_ui->lineEditAcousticBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(aBcB->m_displayName));
-		m_ui->textBrowserAcousticBCSideB->setHtml(bcB->htmlDescription(m_db->m_schedules));
+		m_ui->textBrowserAcousticBCSideB->setHtml(aBcB->htmlDescription(m_db->m_acousticSoundAbsorptions));
 	}
 	else {
-		m_ui->lineEditBoundaryConditionSideBName->clear();
-		m_ui->textBrowserBCSideB->clear();
+		m_ui->lineEditAcousticBoundaryConditionSideBName->clear();
+		m_ui->textBrowserAcousticBCSideB->clear();
 	}
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
@@ -246,7 +246,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 			m_ui->graphicsViewConstruction->setBackground(Qt::black);
 
 		if(m_current->m_activeLayerIndex != VICUS::INVALID_ID)
-			m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
+			m_ui->graphicsViewConstruction->markLayer((int)m_current->m_activeLayerIndex);
 		else
 			m_ui->graphicsViewConstruction->markLayer(-1);
 
