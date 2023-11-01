@@ -187,12 +187,19 @@
     </property>
     <addaction name="actionPluginsManager"/>
    </widget>
+   <widget class="QMenu" name="menuAcoustic">
+    <property name="title">
+     <string>Acoustic</string>
+    </property>
+    <addaction name="actionAcousticEvaluation"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuDatabases"/>
    <addaction name="menuBuildings"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
+   <addaction name="menuAcoustic"/>
    <addaction name="menuPlugins"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -874,6 +881,11 @@
    </property>
    <property name="toolTip">
     <string>Acoustic sound absorptions</string>
+   </property>
+  </action>
+  <action name="actionAcousticEvaluation">
+   <property name="text">
+    <string>Acoustic evaluation</string>
    </property>
   </action>
  </widget>
