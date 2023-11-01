@@ -139,6 +139,11 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 
 	// iterate over all component instances
 	for(const VICUS::ComponentInstance & ci : project().m_componentInstances){
+
+		// skip all that dont have two surfaces
+		if(ci.m_idSideASurface == VICUS::INVALID_ID || ci.m_idSideBSurface == VICUS::INVALID_ID || ci.m_sideASurface ==nullptr || ci.m_sideBSurface == nullptr)
+			continue;
+
 		// struct that holds relevant data for the table
 
 		//one for walls
@@ -151,10 +156,6 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		teWall.advancedConstraintViolated = VI_No_Constraint;
 		teCeil.basicConstraintViolated = VI_No_Constraint;
 		teCeil.advancedConstraintViolated = VI_No_Constraint;
-
-		// skip all that dont have two surfaces
-		if(ci.m_idSideASurface == VICUS::INVALID_ID || ci.m_idSideBSurface == VICUS::INVALID_ID || ci.m_sideASurface ==nullptr || ci.m_sideBSurface == nullptr)
-			continue;
 
 		// search the rooms of the corresponding surfaces
 		const VICUS::Room * roomA = dynamic_cast<VICUS::Room *>(ci.m_sideASurface->m_parent);
@@ -261,16 +262,16 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					impactSoundLimit = refComp.m_impactSoundDifferentStructure;
 				}
 
-                const VICUS::Construction *con = db.m_constructions[comp->m_idConstruction];
-                if (con == nullptr)
-                    continue;
+				const VICUS::Construction *con = db.m_constructions[comp->m_idConstruction];
+				if (con == nullptr)
+					continue;
 
-                // retrieve the acoustic component to check if it fullfills the limits
-                double airRes = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
-                teWall.actualValue = QString("%1 dB").arg(airRes);
+				// retrieve the acoustic component to check if it fullfills the limits
+				double airRes = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
+				teWall.actualValue = QString("%1 dB").arg(airRes);
 
 				// fill te struct with acoustic component info
-                teWall.acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
+				teWall.acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
 
 				// check wether a limit is provided
 				if(IBK::near_equal(airSoundLimit, -1)){
@@ -287,7 +288,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					// enter the results of the airborne sound check, depending on the requirement type
 					if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
 
-                        if(airRes < airSoundLimit || IBK::near_equal(airSoundLimit, -1))
+						if(airRes < airSoundLimit || IBK::near_equal(airSoundLimit, -1))
 							teWall.basicConstraintViolated = VI_Not_Violated;
 						else {
 							teWall.basicConstraintViolated = VI_Violated;
@@ -295,7 +296,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 						}
 						teWall.expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
 					} else {
-                        if(airRes < airSoundLimit)
+						if(airRes < airSoundLimit)
 							teWall.advancedConstraintViolated = VI_Not_Violated;
 						else {
 							teWall.advancedConstraintViolated = VI_Violated;
@@ -315,8 +316,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					teCeil.isSameStructuralUnit = teWall.isSameStructuralUnit;
 					teCeil.acousticComponentInfo = teWall.acousticComponentInfo;
 
-                    double impact = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
-                    teCeil.actualValue = QString("%1 dB").arg(impact);
+					double impact = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
+					teCeil.actualValue = QString("%1 dB").arg(impact);
 
 					// this entry should be saved in the vector
 					addTableEntryCeilToVector = true;
@@ -334,7 +335,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					} else {
 						// now we modify the teCeil struct in the same way as before with airSound
 						if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
-                            if(impact < impactSoundLimit)
+							if(impact < impactSoundLimit)
 								teCeil.basicConstraintViolated = VI_Not_Violated;
 							else {
 								teCeil.basicConstraintViolated = VI_Violated;
@@ -342,7 +343,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 							}
 							teCeil.expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
 						} else {
-                            if(impact < impactSoundLimit)
+							if(impact < impactSoundLimit)
 								teCeil.advancedConstraintViolated = VI_Not_Violated;
 							else {
 								teCeil.advancedConstraintViolated = VI_Violated;
