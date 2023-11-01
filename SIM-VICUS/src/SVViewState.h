@@ -186,7 +186,8 @@ public:
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,
-		OCM_NetworkHeatExchange,
+        OCM_NetworkHeatExchange,
+        OCM_StructuralUnit,
 		OCM_NetworkSubNetworks,
 		/*! This mode is selected, when user has the results property widget open.
 			Then, the colors of all objects are set by the results property widget (and updateColors() won't be called.

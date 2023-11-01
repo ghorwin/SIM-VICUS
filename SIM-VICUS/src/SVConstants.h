@@ -108,6 +108,16 @@ enum BuildingPropertyType {
 	BT_FloorManager,
 };
 
+/*! Structural unit property modes. */
+enum StructuralUnitPropertyType {
+    /*! Structural Unit property */
+    ST_StructuralUnit,
+    /*! Zone property */
+    ST_ZoneProperty,
+    /*! Floor manager. */
+    ST_FloorManager,
+};
+
 /*! Different edit/coloring modes. */
 enum NetworkPropertyTypes {
 	/*! Assigned node properties. */

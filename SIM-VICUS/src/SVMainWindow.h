@@ -68,6 +68,7 @@ class SVDBZoneTemplateEditDialog;
 class SVDBDuplicatesDialog;
 class SVPluginLoader;
 class SVSimulationSettingsView;
+class SVStructuralUnitCreationDialog;
 
 
 /*! Main window class. */
@@ -201,6 +202,9 @@ public:
 	/*! Returns pointer to the applications preferences dialog. */
 	SVPreferencesDialog * preferencesDialog();
 
+    /*! Returns pointer to the structural unit creation dialog. */
+    SVStructuralUnitCreationDialog * structuralUnitDialog();
+
 public slots:
 
 	void on_actionDBComponents_triggered();
@@ -281,7 +285,6 @@ private slots:
 
 	/*! Updates the device pixel ratio. */
 	void onScreenChanged(QScreen *screen);
-
 
 	// all menu action slots below
 
@@ -573,6 +576,8 @@ private:
 	QTimer								*m_autoSaveTimer 								= nullptr;
 
 	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
+
+    SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
 
 	friend class SVThreadBase;
 };

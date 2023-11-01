@@ -91,7 +91,9 @@ SVDatabase::SVDatabase() :
 	m_zoneTemplates(1082500),
 	//	SubNetworks: 1110000-1112500
 	m_acousticTemplates(1400100),
-	m_acousticSoundAbsorptions(1085001)
+    m_acousticSoundAbsorptions(1085001),
+    m_acousticReferenceComponents(1600000),
+    m_acousticBuildingTemplates(407000)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
   //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen

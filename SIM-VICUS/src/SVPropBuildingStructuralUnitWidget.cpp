@@ -158,7 +158,7 @@ void SVPropBuildingStructuralUnitWidget::on_tableWidgetStructuralUnit_itemSelect
 }
 
 void SVPropBuildingStructuralUnitWidget::on_pushButtonAddStructuralUnit_clicked() {
-	SVMainWindow::instance().createStructuralUnitDialog()->create();
+    SVMainWindow::instance().structuralUnitDialog()->create();
 	// make changes visible
 	updateUi();
 }
@@ -191,9 +191,8 @@ void SVPropBuildingStructuralUnitWidget::on_pushButtonAssignStructuralUnit_click
 
 
 void SVPropBuildingStructuralUnitWidget::on_tableWidgetStructuralUnit_cellDoubleClicked() {
-
-	SVMainWindow::instance().createStructuralUnitDialog()->edit(currentlySelectedStructuralUnit());
-	// input ändern zu direkten structura unit
+    SVMainWindow::instance().structuralUnitDialog()->edit(currentlySelectedStructuralUnit());
+    // input ändern zu direkten structural unit
 	// make changes visible
 	updateUi();
 }

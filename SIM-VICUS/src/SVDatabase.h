@@ -29,6 +29,9 @@
 #include <VICUS_Project.h>
 
 #include "VICUS_AcousticTemplate.h"
+#include "VICUS_AcousticReferenceComponent.h"
+#include "VICUS_AcousticBuildingTemplate.h"
+
 
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
@@ -225,6 +228,11 @@ public:
 	/*! Map of all database acoustic sound absorption templates. */
 	VICUS::Database<VICUS::AcousticSoundAbsorption>		m_acousticSoundAbsorptions;
 
+    /*! Map of all database Acoustic reference components. */
+    VICUS::Database<VICUS::AcousticReferenceComponent>	m_acousticReferenceComponents;
+
+    /*! Map of all database Acoustic Building Templates. */
+    VICUS::Database<VICUS::AcousticBuildingTemplate>	m_acousticBuildingTemplates;
 
 };
 

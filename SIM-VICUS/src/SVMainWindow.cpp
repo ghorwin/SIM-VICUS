@@ -116,6 +116,7 @@
 #include "SVUndoModifySiteData.h"
 
 #include "SVSimulationSettingsView.h"
+#include "SVStructuralUnitCreationDialog.h"
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
@@ -978,7 +979,13 @@ void SVMainWindow::onConfigurePluginTriggered() {
 
 void SVMainWindow::onScreenChanged(QScreen *screen) {
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
-	SVSettings::instance().m_ratio = screen->devicePixelRatio();
+    SVSettings::instance().m_ratio = screen->devicePixelRatio();
+}
+
+SVStructuralUnitCreationDialog *SVMainWindow::structuralUnitDialog() {
+    if (m_structuralUnitCreationDialog == nullptr)
+        m_structuralUnitCreationDialog = new SVStructuralUnitCreationDialog(this);
+    return m_structuralUnitCreationDialog;
 }
 
 
