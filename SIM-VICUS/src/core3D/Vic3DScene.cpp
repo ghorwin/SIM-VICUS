@@ -240,6 +240,10 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		m_drawingGeometryObject.updateBuffers();
 	} break;
 
+    case SVProjectHandler::StructuralUnitsModified :
+        refreshColors();
+        break;
+
 	default:
 		return; // do nothing by default
 	} // switch
@@ -2303,31 +2307,52 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	} break;
 
 
-		// *** OCM_AcousticRoomType
-	case SVViewState::OCM_AcousticRoomType: {
-		for (const VICUS::Building & b : p.m_buildings) {
-			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-				for (const VICUS::Room & r : bl.m_rooms) {
-					// skip all without zone template
-					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
-						continue; // they keep the default gray
-					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
-						// lookup zone template
-						const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
-						if (at == nullptr)
-							continue; // no definition - keep default (gray) color
-						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces) {
-							s.m_color = at->m_color;
-							// TODO : subsurfaces
-							colorSubSurfaces(s, at->m_color);
-							colorChildSurfaces(s, at->m_color);
-						}
-					}
-				}
-			}
-		}
-	} break;
+        // *** OCM_AcousticRoomType
+    case SVViewState::OCM_AcousticRoomType: {
+        for (const VICUS::Building & b : p.m_buildings) {
+            for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+                for (const VICUS::Room & r : bl.m_rooms) {
+                    // skip all without acoustic template
+                    if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+                        continue; // they keep the default gray
+                    if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+                        // lookup zone template
+                        const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
+                        if (at == nullptr)
+                            continue; // no definition - keep default (gray) color
+                        // color all surfaces of room based on zone template color
+                        for (const VICUS::Surface & s : r.m_surfaces)
+                            s.m_color = at->m_color;
+                        // TODO : subsurfaces
+
+                    }
+                }
+            }
+        }
+    } break;
+
+        // *** OCM_StructuralUnit
+    case SVViewState::OCM_StructuralUnit: {
+        // loop over all the units
+        for (const VICUS::StructuralUnit & unit : p.m_structuralUnits) {
+            for(unsigned int roomId : unit.m_roomIds){
+                // find the room and assign color
+                for (const VICUS::Building & b : p.m_buildings) {
+                    for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+                        for (const VICUS::Room & r : bl.m_rooms) {
+                            if(r.m_id != roomId){
+                                continue;
+                            }
+                            for (const VICUS::Surface & s : r.m_surfaces)
+                                s.m_color = unit.m_color;
+                            // TODO : subsurfaces
+                            }
+                        }
+                    }
+                }
+            }
+        } break;
+
 
 
 		// *** Networks

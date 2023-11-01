@@ -69,6 +69,7 @@ class SVDBDuplicatesDialog;
 class SVPluginLoader;
 class SVSimulationSettingsView;
 class SVStructuralUnitCreationDialog;
+class SVAcousticConstraintsCheckDialog;
 
 
 /*! Main window class. */
@@ -393,6 +394,8 @@ private slots:
 
 	void on_actionDBAcousticSoundAbsorptions_triggered();
 
+    void on_actionAcousticEvaluation_triggered();
+
 private:
 
 	void updateMainView();
@@ -578,6 +581,9 @@ private:
 	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
 
     SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
+
+    SVAcousticConstraintsCheckDialog	*m_acousticConstraintsCheckDialog				= nullptr;
+
 
 	friend class SVThreadBase;
 };

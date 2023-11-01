@@ -74,7 +74,6 @@ SVDBAcousticSoundAbsorptionEditWidget::SVDBAcousticSoundAbsorptionEditWidget(QWi
 	connect(m_ui->tableWidgetSoundAbsorptions, SIGNAL(cellDoubleClicked(int,int)),
 			this, SLOT(onCellDoubleClicked(int,int)));
 
-
 	// initial state is "nothing selected"
 	updateInput(-1);
 }

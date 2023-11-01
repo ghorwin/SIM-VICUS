@@ -136,7 +136,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_epdDatasets.readXML(				dbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", true);
-
+        m_acousticReferenceComponents.readXML(		dbDir / "db_acousticReferenceComponents.xml", "AcousticReferenceComponents", "AcousticReferenceComponent", true);
+        m_acousticBuildingTemplates.readXML(		dbDir / "db_acousticBuildingTemplates.xml", "AcousticBuildingTemplates", "AcousticBuildingTemplate", true);
 	}
 
 	// user databases
@@ -293,7 +294,8 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_infiltration.import(db.m_infiltration);
 	m_zoneTemplates.import(db.m_zoneTemplates);
 	m_acousticTemplates.import(db.m_acousticTemplates);
-
+    m_acousticReferenceComponents.import(db.m_acousticReferenceComponents);
+    m_acousticBuildingTemplates.import(db.m_acousticBuildingTemplates);
 }
 
 

@@ -96,6 +96,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+    ../../src/SVAcousticConstraintsCheckDialog.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVCoSimSupplySystemDialog.cpp \
 	../../src/SVColorLegend.cpp \
@@ -122,6 +123,7 @@ SOURCES += \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
     ../../src/SVPluginManager.cpp \
+    ../../src/SVPropAcousticEditWidget.cpp \
     ../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
     ../../src/SVPropBuildingStructuralUnitWidget.cpp \
     ../../src/SVPropNetworkEdgesWidget.cpp \
@@ -321,6 +323,7 @@ SOURCES += \
 	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
+    ../../src/SVAcousticConstraintsCheckDialog.h \
 	../../src/SVCoSimCO2VentilationDialog.h \
 	../../src/SVCoSimSupplySystemDialog.h \
 	../../src/SVColorLegend.h \
@@ -348,6 +351,7 @@ HEADERS  += \
     ../../src/SVNonEquidistantSlider.h \
     ../../src/SVPluginLoader.h \
     ../../src/SVPluginManager.h \
+    ../../src/SVPropAcousticEditWidget.h \
     ../../src/SVPropBuildingAcousticTemplatesWidget.h \
     ../../src/SVPropBuildingStructuralUnitWidget.h \
     ../../src/SVPropNetworkEdgesWidget.h \
@@ -556,6 +560,7 @@ HEADERS  += \
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
+    ../../src/SVAcousticConstraintsCheckDialog.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBAcousticBoundaryConditionEditWidget.ui \
@@ -613,6 +618,7 @@ FORMS    += \
 		../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
+    ../../src/SVPropAcousticEditWidget.ui \
 	../../src/SVPropAddGeometry.ui \
 	../../src/SVPropAddWindowWidget.ui \
 	../../src/SVPropBuildingAcousticTemplatesWidget.ui \

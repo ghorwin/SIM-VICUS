@@ -118,6 +118,12 @@ enum StructuralUnitPropertyType {
     ST_FloorManager,
 };
 
+/*! Acoustic property modes. */
+enum AcousticPropertyType {
+    /*! Acoustic Template */
+    AT_AcousticTemplate,
+};
+
 /*! Different edit/coloring modes. */
 enum NetworkPropertyTypes {
 	/*! Assigned node properties. */

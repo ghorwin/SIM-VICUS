@@ -97,6 +97,7 @@
 #include "SVSimulationShadingOptions.h"
 #include "SVPluginLoader.h"
 #include "SVLcaLccResultsWidget.h"
+#include "SVAcousticConstraintsCheckDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -2301,5 +2302,14 @@ void SVMainWindow::on_actionDBAcousticBoundaryConditions_triggered() {
 void SVMainWindow::on_actionDBAcousticSoundAbsorptions_triggered() {
 
 	dbAcousticSoundAbsorptionEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionAcousticEvaluation_triggered() {
+    // opens a dialog that checks the sound constraints
+    if (m_acousticConstraintsCheckDialog == nullptr)
+        m_acousticConstraintsCheckDialog = new SVAcousticConstraintsCheckDialog();
+
+    m_acousticConstraintsCheckDialog->edit();
 }
 

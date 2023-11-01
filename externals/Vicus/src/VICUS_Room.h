@@ -30,6 +30,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_Surface.h"
 #include "VICUS_Object.h"
+#include "VICUS_StructuralUnit.h"
 
 #include <QString>
 
@@ -85,10 +86,11 @@ public:
 
 	/*! Reference to assigned zone template (optional). */
 	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
+    /*! Reference to assigned acoustic template (optional). */
+    IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
 
-	/*! Reference to assigned acoustic template (optional). */
-	IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
-
+    /*! Stores the building type */
+    IDType								m_acousticBuildingTypeId = INVALID_ID;	// XML:E
 
 	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
@@ -109,6 +111,12 @@ public:
 		zone geometry. If the latter is not possible, user must enter a valid volume.
 	*/
 	double								m_volume = -1;
+
+    // These pointers are updated in VICUS::Project::updatePointers() and can be used
+    // to quicky travers the data model.
+
+    VICUS::StructuralUnit *				m_structuralUnit = nullptr;
+
 };
 
 

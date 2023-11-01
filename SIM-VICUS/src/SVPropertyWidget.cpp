@@ -42,9 +42,9 @@
 #include "SVPropFloorManagerWidget.h"
 #include "SVPropAddWindowWidget.h"
 #include "SVPropNetworkEditWidget.h"
-#include "SVPropBuildingAcousticTemplatesWidget.h"
-#include "SVPropResultsWidget.h"
+#include "SVPropAcousticEditWidget.h"
 #include "SVPropStructuralUnitEditWidget.h"
+#include "SVPropResultsWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -95,24 +95,30 @@ void SVPropertyWidget::setNetworkPropertyType(int networkPropertyType) {
 
 void SVPropertyWidget::updateColorMode() {
     switch (m_propertyWidgetMode) {
-    case SVViewState::PM_BuildingProperties : {
-        // enforce color update
-        SVPropBuildingEditWidget *widget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
-        widget->setPropertyType((int)widget->currentPropertyType());
-    } break;
-    case SVViewState::PM_NetworkProperties : {
-        // enforce color update
-        SVPropNetworkEditWidget *widget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
-        widget->setPropertyType((int)widget->currentPropertyType());
-    } break;
+        case SVViewState::PM_BuildingProperties : {
+            // enforce color update
+            SVPropBuildingEditWidget *widget = qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties]);
+            widget->setPropertyType((int)widget->currentPropertyType());
+        } break;
+        case SVViewState::PM_NetworkProperties : {
+            // enforce color update
+            SVPropNetworkEditWidget *widget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
+            widget->setPropertyType((int)widget->currentPropertyType());
+        } break;
+        case SVViewState::PM_BuildingStructuralUnitProperties : {
+            // enforce color update
+            SVPropStructuralUnitEditWidget *widget = qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties]);
+            widget->setPropertyType((int)widget->currentPropertyType());
+        } break;
+        case SVViewState::PM_BuildingAcousticProperties : {
+            // enforce color update
+            SVPropAcousticEditWidget *widget = qobject_cast<SVPropAcousticEditWidget*>(m_propWidgets[M_BuildingAcousticProperties]);
+            widget->setPropertyType((int)widget->currentPropertyType());
+        } break;
 
-    case SVViewState::PM_BuildingStructuralUnitProperties : {
-        // enforce color update
-        SVPropStructuralUnitEditWidget *widget = qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties]);
-        widget->setPropertyType((int)widget->currentPropertyType());
-    } break;
 
-    default: break;
+
+        default: break;
     }
 }
 
@@ -126,47 +132,46 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
     }
 
     switch (propertyWidgetMode) {
-    case SVViewState::PM_BuildingStructuralUnitProperties:
-        showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
-        break;
-    case SVViewState::PM_AddGeometry :
-        showPropertyWidget<SVPropAddGeometry>(M_AddGeometry);
+        case SVViewState::PM_AddGeometry :
+            showPropertyWidget<SVPropAddGeometry>(M_AddGeometry);
         break;
 
-    case SVViewState::PM_EditGeometry :
-        showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
+        case SVViewState::PM_EditGeometry :
+            showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
         break;
 
-    case SVViewState::PM_VertexList:
-        showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
-        setMinimumWidth(500);
+        case SVViewState::PM_VertexList:
+            showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
+            setMinimumWidth(500);
         break;
 
-    case SVViewState::PM_AddSubSurfaceGeometry:
-        showPropertyWidget<SVPropAddWindowWidget>(M_AddWindowWidget);
-        setMinimumWidth(500);
+        case SVViewState::PM_AddSubSurfaceGeometry:
+            showPropertyWidget<SVPropAddWindowWidget>(M_AddWindowWidget);
+            setMinimumWidth(500);
         break;
 
-    case SVViewState::PM_SiteProperties :
-        showPropertyWidget<SVPropSiteWidget>(M_SiteProperties);
+        case SVViewState::PM_SiteProperties :
+            showPropertyWidget<SVPropSiteWidget>(M_SiteProperties);
         break;
 
-    case SVViewState::PM_BuildingProperties : {
-        showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
-    } break;
+        case SVViewState::PM_BuildingProperties : {
+            showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
+        } break;
 
-    case SVViewState::PM_BuildingAcousticProperties : {
-        showPropertyWidget<SVPropBuildingAcousticTemplatesWidget>(M_BuildingAcousticProperties);
-    } break;
+        case SVViewState::PM_BuildingAcousticProperties : {
+            showPropertyWidget<SVPropAcousticEditWidget>(M_BuildingAcousticProperties);
+        } break;
+        case SVViewState::PM_BuildingStructuralUnitProperties : {
+            showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
+        } break;
+        case SVViewState::PM_NetworkProperties : {
+            showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+        } break;
 
-    case SVViewState::PM_NetworkProperties : {
-        showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
-    } break;
-
-    case SVViewState::PM_ResultsProperties : {
-        showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
-        qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
-    } break;
+        case SVViewState::PM_ResultsProperties : {
+            showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
+            qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
+        } break;
     }
 }
 
@@ -183,5 +188,4 @@ void SVPropertyWidget::onViewStateChanged() {
         setPropertyWidgetVisible(m_propertyWidgetMode);
     }
 }
-
 
