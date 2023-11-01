@@ -115,7 +115,6 @@ HEADERS += \
 	../../src/VICUS_utilities.h
 
 SOURCES += \
-		../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_AcousticBoundaryCondition.cpp \
 	../../src/VICUS_AcousticSoundAbsorption.cpp \
 	../../src/VICUS_AbstractDBElement.cpp \
@@ -186,7 +185,10 @@ SOURCES += \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
 	../../src/ncg/ncg_VICUS_AcousticBoundaryCondition.cpp \
-	../../src/ncg/ncg_VICUS_AcousticSoundAbsorption.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticBuildingTemplate.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticComponent.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticReferenceComponent.cpp \
+    ../../src/ncg/ncg_VICUS_AcousticSoundAbsorption.cpp \
 	../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
@@ -223,7 +225,9 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
-	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
+        ../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
+    ../../src/ncg/ncg_VICUS_SoundAbsorptionLayer.cpp \
+    ../../src/ncg/ncg_VICUS_StructuralUnit.cpp \
 	../../src/ncg/ncg_VICUS_SubNetwork.cpp \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
