@@ -134,7 +134,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 	// clear all the table entries for ceilings
 	m_ceilingTes.clear();
 
-	bool wallCheck = true;
+	bool airBourneSoundCheck = true;
 	bool ceilingCheck = true;
 
 	// iterate over all component instances
@@ -147,15 +147,15 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		// struct that holds relevant data for the table
 
 		//one for walls
-		tableEntry teWall;
+		tableEntry airBourneSoundEntry;
 		//one for ceilings
-		tableEntry teCeil;
+		tableEntry impactSoundEntry;
 
 		// initialize with no constraints specified, might be overwritten later
-		teWall.basicConstraintViolated = VI_No_Constraint;
-		teWall.advancedConstraintViolated = VI_No_Constraint;
-		teCeil.basicConstraintViolated = VI_No_Constraint;
-		teCeil.advancedConstraintViolated = VI_No_Constraint;
+		airBourneSoundEntry.basicConstraintViolated = VI_NoConstraint;
+		airBourneSoundEntry.advancedConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.basicConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.advancedConstraintViolated = VI_NoConstraint;
 
 		// search the rooms of the corresponding surfaces
 		const VICUS::Room * roomA = dynamic_cast<VICUS::Room *>(ci.m_sideASurface->m_parent);
@@ -193,7 +193,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 				// now the direction between the 2 surfaces is relevant
 				// check which surface is on top
 				// reorder so A is on top if B
-				auto tmp = acousticTemplateAId;
+				unsigned int tmp = acousticTemplateAId;
 				acousticTemplateAId = acousticTemplateBId;
 				acousticTemplateBId = tmp;
 			}
@@ -202,62 +202,52 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		// iterate over the acoustic reference components and find the one for these surfaces
 
 		// if we find a match we save the teWall to the vector in the end
-		bool addTableEntryWallToVector = false;
-		bool addTableEntryCeilToVector = false;
+		bool addTableEntryAirSoundToVector = false;
+		bool addTableEntryImpactSoundToVector = false;
 
-		for(std::pair<unsigned int, VICUS::AcousticReferenceComponent>  refEntry: db.m_acousticReferenceComponents){
-			VICUS::AcousticReferenceComponent refComp = refEntry.second;
+		for(std::pair<unsigned int, VICUS::AcousticReferenceComponent>  refEntry : db.m_acousticReferenceComponents){
+			const VICUS::AcousticReferenceComponent &refComp = refEntry.second;
+
+			// skip wrong templates of ref component
+			if(refComp.m_idAcousticTemplateA != acousticTemplateAId ||
+				refComp.m_idAcousticTemplateB != acousticTemplateBId)
+				continue;
+
 			// is true, if the direction between the templates match
 			bool impactSoundTemplatesMatch = false;
-			// is true, if the any the templates match
-			bool airborneSoundTemplatesMatch = false;
 
-			if(isCeiling){
-				// only check in one direction
-				if(refComp.m_idAcousticTemplateA == acousticTemplateAId &&
-						refComp.m_idAcousticTemplateB == acousticTemplateBId){
-					// the reference component type must also be for ceilings
-					if(refComp.m_type == VICUS::AcousticReferenceComponent::CT_Ceiling){
-						impactSoundTemplatesMatch = true;
-					}
-				}
-			}
-			// allow both directions
-			if((refComp.m_idAcousticTemplateA == acousticTemplateAId &&
-				refComp.m_idAcousticTemplateB == acousticTemplateBId) ||
-					(refComp.m_idAcousticTemplateA == acousticTemplateAId &&
-					 refComp.m_idAcousticTemplateB == acousticTemplateBId)){
-				// if it is a ceiling then the type must be a ceiling as well
-				// if its not a ceiling then the type cant be a ceiling
-				if((isCeiling && refComp.m_type == VICUS::AcousticReferenceComponent::CT_Ceiling) ||
-						(!isCeiling && refComp.m_type != VICUS::AcousticReferenceComponent::CT_Ceiling))
-					airborneSoundTemplatesMatch = true;
-			}
 
-			if(airborneSoundTemplatesMatch){
+			// ceiling and ref comp. also is ceiling
+			if(isCeiling && refComp.m_type == VICUS::AcousticReferenceComponent::CT_Ceiling)
+				impactSoundTemplatesMatch = true;
+
+			{
 				// add the walls template
 
 
 				//we have a match for walls, so fill in information for table widget struct
 				const VICUS::AcousticTemplate * tempA = db.m_acousticTemplates[acousticTemplateAId];
 				const VICUS::AcousticTemplate * tempB = db.m_acousticTemplates[acousticTemplateBId];
-				teWall.acousticTemplateAInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempA->m_displayName)).arg(tempA->m_id);
-				teWall.acousticTemplateBInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempB->m_displayName)).arg(tempB->m_id);
+				airBourneSoundEntry.acousticTemplateAInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempA->m_displayName)).arg(tempA->m_id);
+				airBourneSoundEntry.acousticTemplateBInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempB->m_displayName)).arg(tempB->m_id);
+
 				// save the surface ids
-				teWall.surfaceAId = ci.m_idSideASurface;
-				teWall.surfaceBId = ci.m_idSideBSurface;
-				teWall.isSameStructuralUnit = (roomA->m_structuralUnit == roomB->m_structuralUnit && roomB->m_structuralUnit != nullptr);
+				airBourneSoundEntry.surfaceAId = ci.m_idSideASurface;
+				airBourneSoundEntry.surfaceBId = ci.m_idSideBSurface;
+				airBourneSoundEntry.isSameStructuralUnit = (roomA->m_structuralUnit != nullptr &&
+															roomA->m_structuralUnit == roomB->m_structuralUnit);
 
 				// this entry should be saved in the vector
-				addTableEntryWallToVector = true;
+				addTableEntryAirSoundToVector = true;
 
 				// retrieve the limits from the acoustic reference Component
 				double impactSoundLimit;
 				double airSoundLimit;
-				if(teWall.isSameStructuralUnit){
+				if(airBourneSoundEntry.isSameStructuralUnit){
 					airSoundLimit = refComp.m_airborneSoundOneStructureUnit;
 					impactSoundLimit = refComp.m_impactSoundOneStructureUnit;
-				} else {
+				}
+				else {
 					airSoundLimit = refComp.m_airborneSoundDifferentStructure;
 					impactSoundLimit = refComp.m_impactSoundDifferentStructure;
 				}
@@ -268,105 +258,110 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 
 				// retrieve the acoustic component to check if it fullfills the limits
 				double airRes = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
-				teWall.actualValue = QString("%1 dB").arg(airRes);
+				airBourneSoundEntry.actualValue = QString("%1 dB").arg(airRes);
 
 				// fill te struct with acoustic component info
-				teWall.acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
+				airBourneSoundEntry.acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
 
 				// check wether a limit is provided
 				if(IBK::near_equal(airSoundLimit, -1)){
 					// no limit is provided, set to not violated
 					if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
-						teWall.basicConstraintViolated = VI_Not_Violated;
-						teWall.expectedNormalLimit = tr("No limit");
+						airBourneSoundEntry.basicConstraintViolated = VI_Valid;
+						airBourneSoundEntry.expectedNormalLimit = tr("No limit");
 					} else {
-						teWall.advancedConstraintViolated = VI_Not_Violated;
-						teWall.expectedAdvancedLimit = tr("No limit");
+						airBourneSoundEntry.advancedConstraintViolated = VI_Valid;
+						airBourneSoundEntry.expectedAdvancedLimit = tr("No limit");
 					}
 				} else {
 					// there is a limit
 					// enter the results of the airborne sound check, depending on the requirement type
 					if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
 
-						if(airRes < airSoundLimit || IBK::near_equal(airSoundLimit, -1))
-							teWall.basicConstraintViolated = VI_Not_Violated;
+						if(airRes >= airSoundLimit)
+							airBourneSoundEntry.basicConstraintViolated = VI_Valid;
 						else {
-							teWall.basicConstraintViolated = VI_Violated;
-							wallCheck = false;
+							airBourneSoundEntry.basicConstraintViolated = VI_Invalid;
+							airBourneSoundCheck = false;
 						}
-						teWall.expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
-					} else {
-						if(airRes < airSoundLimit)
-							teWall.advancedConstraintViolated = VI_Not_Violated;
+						airBourneSoundEntry.expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
+					}
+					else {
+						if(airRes >= airSoundLimit)
+							airBourneSoundEntry.advancedConstraintViolated = VI_Valid;
 						else {
-							teWall.advancedConstraintViolated = VI_Violated;
-							wallCheck = false;
+							airBourneSoundEntry.advancedConstraintViolated = VI_Invalid;
+							airBourneSoundCheck = false;
 						}
-						teWall.expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
+						airBourneSoundEntry.expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
 					}
 				}
 				// check if there war another match for the impact sound (ceiling)
 				if(impactSoundTemplatesMatch){
 
 					// we have a match for ceilings, we copy identical data from the wall table entry
-					teCeil.acousticTemplateAInfo = teWall.acousticTemplateAInfo;
-					teCeil.acousticTemplateBInfo = teWall.acousticTemplateBInfo;
-					teCeil.surfaceAId = teWall.surfaceAId;
-					teCeil.surfaceBId = teWall.surfaceBId;
-					teCeil.isSameStructuralUnit = teWall.isSameStructuralUnit;
-					teCeil.acousticComponentInfo = teWall.acousticComponentInfo;
+					impactSoundEntry.acousticTemplateAInfo = airBourneSoundEntry.acousticTemplateAInfo;
+					impactSoundEntry.acousticTemplateBInfo = airBourneSoundEntry.acousticTemplateBInfo;
+					impactSoundEntry.surfaceAId = airBourneSoundEntry.surfaceAId;
+					impactSoundEntry.surfaceBId = airBourneSoundEntry.surfaceBId;
+					impactSoundEntry.isSameStructuralUnit = airBourneSoundEntry.isSameStructuralUnit;
+					impactSoundEntry.acousticComponentInfo = airBourneSoundEntry.acousticComponentInfo;
 
 					double impact = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
-					teCeil.actualValue = QString("%1 dB").arg(impact);
+					impactSoundEntry.actualValue = QString("%1 dB").arg(impact);
 
 					// this entry should be saved in the vector
-					addTableEntryCeilToVector = true;
+					addTableEntryImpactSoundToVector = true;
 
 					// check wether a limit is provided
 					if(IBK::near_equal(impactSoundLimit, -1)){
 						// no limit is provided, set to not violated
 						if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
-							teCeil.basicConstraintViolated = VI_Not_Violated;
-							teCeil.expectedNormalLimit = tr("No limit");
-						} else {
-							teCeil.advancedConstraintViolated = VI_Not_Violated;
-							teCeil.expectedAdvancedLimit = tr("No limit");
+							impactSoundEntry.basicConstraintViolated = VI_Valid;
+							impactSoundEntry.expectedNormalLimit = tr("No limit");
 						}
-					} else {
+						else {
+							impactSoundEntry.advancedConstraintViolated = VI_Valid;
+							impactSoundEntry.expectedAdvancedLimit = tr("No limit");
+						}
+					}
+					else {
 						// now we modify the teCeil struct in the same way as before with airSound
 						if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
 							if(impact < impactSoundLimit)
-								teCeil.basicConstraintViolated = VI_Not_Violated;
+								impactSoundEntry.basicConstraintViolated = VI_Valid;
 							else {
-								teCeil.basicConstraintViolated = VI_Violated;
+								impactSoundEntry.basicConstraintViolated = VI_Invalid;
 								ceilingCheck = false;
 							}
-							teCeil.expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
-						} else {
+							impactSoundEntry.expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
+						}
+						else {
 							if(impact < impactSoundLimit)
-								teCeil.advancedConstraintViolated = VI_Not_Violated;
+								impactSoundEntry.advancedConstraintViolated = VI_Valid;
 							else {
-								teCeil.advancedConstraintViolated = VI_Violated;
+								impactSoundEntry.advancedConstraintViolated = VI_Invalid;
 								ceilingCheck = false;
 							}
-							teCeil.expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
+							impactSoundEntry.expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
 						}
 					}
 				}
 			}
 		}
-		if(addTableEntryWallToVector){
-			m_wallTes.push_back(teWall);
-		}
-		if(addTableEntryCeilToVector){
-			m_ceilingTes.push_back(teCeil);
-		}
+
+		if(addTableEntryAirSoundToVector)
+			m_wallTes.push_back(airBourneSoundEntry);
+
+		if(addTableEntryImpactSoundToVector)
+			m_ceilingTes.push_back(impactSoundEntry);
+
 	}
 
 	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks for ceilings passed succesfully." : "Acoustic checks of ceilings not passed.");
-	m_ui->labelWallCheck->setText(wallCheck ? "All acoustic checks for walls passed succesfully." : "Acoustic checks of walls not passed.");
+	m_ui->labelWallCheck->setText(airBourneSoundCheck ? "All acoustic checks for walls passed succesfully." : "Acoustic checks of walls not passed.");
 
-	m_ui->labelIconWall->setPixmap(QPixmap(wallCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+	m_ui->labelIconWall->setPixmap(QPixmap(airBourneSoundCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 	m_ui->labelIconCeiling->setPixmap(   QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 
 	QColor positive(Qt::darkGreen);
@@ -376,7 +371,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 	negative = SVSettings::instance().m_theme == SVSettings::TT_Dark ? negative.lighter() : negative;
 
 	m_ui->labelCeilingCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(ceilingCheck ? positive.name() : negative.name()));
-	m_ui->labelWallCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(wallCheck ? positive.name() : negative.name()));
+	m_ui->labelWallCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(airBourneSoundCheck ? positive.name() : negative.name()));
 
 	updateTable();
 }
@@ -418,8 +413,8 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 		for (tableEntry &te : *tes){
 
 			// if the hide walls selection box is check, skip all entries that dont have a violation
-			if(hideNonViolatedEntries && te.basicConstraintViolated != ViolationInfo::VI_Violated &&
-					te.advancedConstraintViolated != ViolationInfo::VI_Violated)
+			if(hideNonViolatedEntries && te.basicConstraintViolated != ViolationInfo::VI_Invalid &&
+					te.advancedConstraintViolated != ViolationInfo::VI_Invalid)
 				continue;
 
 			tableWidget->setRowCount(row + 1);
@@ -453,10 +448,10 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			// select color according to violation info
 			QColor normalColor;
 			switch (te.basicConstraintViolated) {
-			case VI_Violated:
+			case VI_Invalid:
 				normalColor = Qt::red;
 				break;
-			case VI_Not_Violated:
+			case VI_Valid:
 				normalColor = Qt::green;
 				break;
 			default:
@@ -480,10 +475,10 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			// select color according to violation info
 			QColor advancedColor;
 			switch (te.advancedConstraintViolated) {
-			case VI_Violated:
+			case VI_Invalid:
 				advancedColor = Qt::darkRed;
 				break;
-			case VI_Not_Violated:
+			case VI_Valid:
 				advancedColor = Qt::darkGreen;
 				break;
 			default:

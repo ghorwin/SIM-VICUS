@@ -16,9 +16,9 @@ public:
 
 	/*! Violation information. */
 	enum ViolationInfo {
-		VI_Not_Violated,
-		VI_Violated,
-		VI_No_Constraint,
+		VI_Valid,
+		VI_Invalid,
+		VI_NoConstraint,
 		NUM_VI
 	};
 

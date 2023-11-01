@@ -27,7 +27,7 @@
        <item>
         <widget class="QGroupBox" name="groupBoxAcousticCeilings">
          <property name="title">
-          <string>Acoustic constraints among ceilings</string>
+          <string>Acoustic constraints impact sound</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -70,7 +70,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxAcousticWalls">
             <property name="title">
-             <string>Acoustic constraints among walls</string>
+             <string>Acoustic constraints air bourne sound</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <item row="0" column="0">
