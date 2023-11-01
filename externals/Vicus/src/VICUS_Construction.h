@@ -77,7 +77,7 @@ public:
 	};
 
 	enum para_t{
-		P_ImpactSoundValue,		// Keyword: ImpactSoundValue	[-]	'Impact sound value'
+        P_ImpactSoundValue,         // Keyword: ImpactSoundValue	[-]	'Impact sound value'
 		P_AirSoundResistanceValue,	// Keyword: AirSoundResistanceValue	[-]	'Air sound resistance value'
 		NUM_P
 	};
