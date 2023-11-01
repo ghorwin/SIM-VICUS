@@ -22,8 +22,8 @@ public:
 	explicit SVPropBuildingAcousticTemplatesWidget(QWidget *parent = nullptr);
 	~SVPropBuildingAcousticTemplatesWidget();
 
-	/*! Updates user interface. */
-	void updateUi();
+/*! Updates user interface. */
+void updateUi();
 
 private slots:
 	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
@@ -33,6 +33,8 @@ private slots:
 	void onModified(int modificationType, ModificationInfo * /*data*/);
 
 	void on_pushButtonDeleteTemplate_clicked();
+
+	void on_comboBoxBuildingType_currentIndexChanged(int index);
 
 private:
 

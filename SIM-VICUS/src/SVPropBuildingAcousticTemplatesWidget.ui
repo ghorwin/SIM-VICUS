@@ -13,14 +13,37 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QTableWidget" name="tableWidgetAcousticTemplates"/>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Acoustic templates</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="3" column="1">
+       <widget class="QTableWidget" name="tableWidgetAcousticTemplates"/>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Building type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxBuildingType"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBoxSelectedRooms">
      <property name="title">
-      <string>Selected Rooms</string>
+      <string>Selected rooms</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
@@ -28,7 +51,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Selected Acoustic Template:</string>
+           <string>Selected acoustic template:</string>
           </property>
          </widget>
         </item>

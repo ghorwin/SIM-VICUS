@@ -121,6 +121,8 @@ public:
 		PM_BuildingProperties,
 		/*! Shows the widget with building acoustic properties. */
 		PM_BuildingAcousticProperties,
+        /*! Shows the widget with building structural unit properties. */
+        PM_BuildingStructuralUnitProperties,
 		/*! Shows the widget with network properties. */
 		PM_NetworkProperties,
 		/*! Shows the widget with results visualisation. */

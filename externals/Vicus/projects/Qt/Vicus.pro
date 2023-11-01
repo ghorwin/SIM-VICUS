@@ -34,9 +34,12 @@ INCLUDEPATH = \
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
-		../../src/VICUS_AbstractDBElement.h \
+	../../src/VICUS_AbstractDBElement.h \
 	../../src/VICUS_AcousticBoundaryCondition.h \
 	../../src/VICUS_AcousticSoundAbsorption.h \
+	../../src/VICUS_AcousticBuildingTemplate.h \
+	../../src/VICUS_AcousticComponent.h \
+	../../src/VICUS_AcousticReferenceComponent.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BTFReader.h \
@@ -90,6 +93,7 @@ HEADERS += \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
 	../../src/VICUS_SoundAbsorptionLayer.h \
+	../../src/VICUS_StructuralUnit.h \
 	../../src/VICUS_SubNetwork.h \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
@@ -114,6 +118,10 @@ SOURCES += \
 		../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_AcousticBoundaryCondition.cpp \
 	../../src/VICUS_AcousticSoundAbsorption.cpp \
+	../../src/VICUS_AbstractDBElement.cpp \
+	../../src/VICUS_AcousticBuildingTemplate.cpp \
+	../../src/VICUS_AcousticComponent.cpp \
+	../../src/VICUS_AcousticReferenceComponent.cpp \
 	../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BTFReader.cpp \
@@ -161,6 +169,7 @@ SOURCES += \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_SoundAbsorptionLayer.cpp \
+	../../src/VICUS_StructuralUnit.cpp \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \

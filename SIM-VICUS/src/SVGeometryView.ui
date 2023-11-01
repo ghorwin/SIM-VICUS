@@ -151,6 +151,7 @@
          <addaction name="separator"/>
          <addaction name="actionBuildingParametrization"/>
          <addaction name="actionAcousticParametrization"/>
+         <addaction name="actionStructuralUnits"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
@@ -383,6 +384,21 @@
    </property>
    <property name="toolTip">
     <string>Show Results</string>
+   </property>
+  </action>
+  <action name="actionStructuralUnits">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/icons.qrc">
+     <normaloff>:/gfx/icons8/icons8-box-80.png</normaloff>:/gfx/icons8/icons8-box-80.png</iconset>
+   </property>
+   <property name="text">
+    <string>Structural units parametrization</string>
+   </property>
+   <property name="toolTip">
+    <string>Structural unit parametrization</string>
    </property>
   </action>
  </widget>

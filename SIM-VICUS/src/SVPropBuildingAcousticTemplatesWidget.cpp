@@ -8,6 +8,8 @@
 #include "SVUndoModifyRoomAcousticTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 
+#include "VICUS_AcousticBuildingTemplate.h"
+
 
 SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWidget *parent) :
 	QWidget(parent),
@@ -27,6 +29,15 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingAcousticTemplatesWidget::onModified);
+
+	// init combo box based on the acoustic building template db
+	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
+
+	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
+		 it = dbBt.begin(); it != dbBt.end(); ++it) {
+		m_ui->comboBoxBuildingType->addItem(QtExt::MultiLangString2QString(it->second.m_displayName));
+	}
+
 
 	// update Ui initiallly
 	onModified(SVProjectHandler::AllModified, nullptr);
@@ -65,6 +76,7 @@ void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, Mod
 
 
 void SVPropBuildingAcousticTemplatesWidget::updateUi() {
+	FUNCID(SVPropBuildingAcousticTemplatesWidget::updateUi);
 
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
@@ -77,29 +89,81 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	int currentRow = m_ui->tableWidgetAcousticTemplates->currentRow();
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
 	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
-	int row=0;
 
-	// loads all the templates from db and put them in the table
+    int row=0;
+	// get the current building type based on the selection in the combo box
+	VICUS::AcousticBuildingTemplate::AcousticBuildingType currentType = (VICUS::AcousticBuildingTemplate::AcousticBuildingType)m_ui->comboBoxBuildingType->currentIndex();
+	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
+
+	// get the ids that belong to the currently selected type
+	const std::vector<unsigned int> * idsOfBuildingType = nullptr;
+	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
+		 it = dbBt.begin(); it != dbBt.end(); ++it) {
+		if(it->second.m_buildingType == currentType){
+			idsOfBuildingType = &(it->second.m_idsTemplate);
+		}
+	}
+	if(idsOfBuildingType == nullptr)
+		throw IBK::Exception("Selected building type not found in datebase!", FUNC_ID);
+
+	std::set<const VICUS::AcousticTemplate*> templatesNotInBuildingType;
+	// loads all the templates from db and put them in the table if the right building type is selected
 	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
-		 it = dbAt.begin(); it != dbAt.end(); ++it, ++row) {
+		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 
+		//check if the id is in the id vector of the current type
+		if(std::find(idsOfBuildingType->begin(), idsOfBuildingType->end(), it->second.m_id) != idsOfBuildingType->end()){
+
+			m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
+
+			QTableWidgetItem * item = new QTableWidgetItem();
+			item->setBackground(it->second.m_color);
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
+
+			item = new QTableWidgetItem();
+			item->setText(QtExt::MultiLangString2QString(it->second.m_displayName) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
+
+			item = new QTableWidgetItem();
+			item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
+
+			row++;
+		}
+		else {
+			templatesNotInBuildingType.insert(&(it->second));
+		}
+
+	}
+
+	//now append all the other templates with grey font and disabled
+
+	for(const VICUS::AcousticTemplate * at : templatesNotInBuildingType){
 		m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
 		QTableWidgetItem * item = new QTableWidgetItem();
-		item->setBackground(it->second.m_color);
-		item->setFlags(Qt::ItemIsEnabled);
+		item->setBackground(at->m_color);
+		item->setFlags(Qt::NoItemFlags);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(it->second.m_displayName) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(at->m_displayName) );
+		item->setFlags(Qt::NoItemFlags);
+		//item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(at->m_notes) );
+		item->setFlags(Qt::NoItemFlags);
+//		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
+
+		row++;
 	}
+
 	m_ui->tableWidgetAcousticTemplates->blockSignals(false);
 	m_ui->tableWidgetAcousticTemplates->selectRow(std::min(currentRow, m_ui->tableWidgetAcousticTemplates->rowCount()-1));
 
@@ -161,11 +225,17 @@ void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_item
 const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currentlySelectedAcousticTemplate() const {
 	// check if selected "template" is actually missing
 	int r = m_ui->tableWidgetAcousticTemplates->currentRow();
+
 	if (r == -1)
 		return nullptr;
 	const VICUS::Database<VICUS::AcousticTemplate> & db_at = SVSettings::instance().m_db.m_acousticTemplates;
 	std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator it = db_at.begin();
-	std::advance(it, r);
+	QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
+	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db_at.end())
+		std::advance(it, 1);
+	// if nothing was found
+	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db_at.end())
+		return nullptr;
 	return &(it->second);
 }
 
@@ -213,5 +283,11 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 				tr("Assigned acoustic template"),
 				modifiedRoomIDs, VICUS::INVALID_ID);
 	undo->push();
+}
+
+
+void SVPropBuildingAcousticTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
+	//update the ui
+	updateUi();
 }
 

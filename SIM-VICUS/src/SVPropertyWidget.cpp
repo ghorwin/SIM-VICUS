@@ -44,6 +44,7 @@
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropBuildingAcousticTemplatesWidget.h"
 #include "SVPropResultsWidget.h"
+#include "SVPropStructuralUnitEditWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -77,6 +78,12 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 void SVPropertyWidget::setBuildingPropertyType(int buildingPropertyType) {
 	showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
 	qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(buildingPropertyType);
+}
+
+
+void SVPropertyWidget::setStructuralUnitPropertyType(int buildingPropertyType) {
+    showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
+    qobject_cast<SVPropStructuralUnitEditWidget*>(m_propWidgets[M_BuildingStructuralUnitProperties])->setPropertyType(buildingPropertyType);
 }
 
 
