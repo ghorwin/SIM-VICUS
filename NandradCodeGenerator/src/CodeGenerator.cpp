@@ -425,7 +425,6 @@ void CodeGenerator::generateReadWriteCode() {
 				//   unsigned int with special code that INVALID_ID values are not written
 				// - std::string
 				// - QString
-				// - IBKMK::Vector2D
 				// - IBKMK::Vector3D
 				// - IBK::Unit
 				// - IBK::Time
@@ -633,6 +632,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"	}\n";
 					}
 				}
+				//write vectors
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
 					// extract subtype
 					std::string::size_type pos1 = xmlInfo.typeStr.find("<"); // must be 11
@@ -653,11 +653,6 @@ void CodeGenerator::generateReadWriteCode() {
 						// we generate the parent element and afterwards the loop
 						elements += "	NANDRAD::writeVector3D(e, \""+tagName+"\", m_"+varName+");\n";
 					}
-					else if (childType == "IBKMK::Vector2D") {
-						includes.insert("NANDRAD_Utilities.h");
-						// we generate the parent element and afterwards the loop
-						elements += "	NANDRAD::writeVector2D(e, \""+tagName+"\", m_"+varName+");\n";
-					}
 					else {
 						// we generate the parent element and afterwards the loop
 						elements += "\n"
@@ -667,6 +662,48 @@ void CodeGenerator::generateReadWriteCode() {
 								"\n"
 								"		for (std::vector<"+childType+">::const_iterator it = m_"+varName+".begin();\n"
 								"			it != m_"+varName+".end(); ++it)\n"
+								"		{\n"
+								"			it->writeXML(child);\n"
+								"		}\n"
+								"	}\n"
+								"\n";
+					}
+
+				}
+				else if (xmlInfo.typeStr.find("std::set<") == 0) {
+					// extract subtype
+					std::string::size_type pos1 = xmlInfo.typeStr.find("<"); // must be 11
+					std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+					if (pos2 == std::string::npos)
+						throw IBK::Exception(IBK::FormatString("Invalid type declaration in variable type '%1' of variable '%2' in writeXML.")
+											 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+					std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+
+					//convert to a vector and then handle as a vector
+					elements += "\n"
+								"	//convert into vector\n"
+								"	std::vector<"+childType+"> temp(m_"+varName+".begin(), m_"+varName+".end());\n";
+
+					// special handling for vector of double or vector of int/unsigned int
+					if (childType == "double" || childType == "int" || childType == "unsigned int") {
+						includes.insert("NANDRAD_Utilities.h");
+						// we generate the parent element and afterwards the loop
+						elements += "	NANDRAD::writeVector(e, \""+tagName+"\", temp);\n";
+					}
+					else if (childType == "IBKMK::Vector3D") {
+						includes.insert("NANDRAD_Utilities.h");
+						// we generate the parent element and afterwards the loop
+						elements += "	NANDRAD::writeVector3D(e, \""+tagName+"\", temp);\n";
+					}
+					else {
+						// we generate the parent element and afterwards the loop
+						elements += "\n"
+								"	if (!temp.empty()) {\n"
+								"		TiXmlElement * child = new TiXmlElement(\""+tagName+"\");\n"
+								"		e->LinkEndChild(child);\n"
+								"\n"
+								"		for (std::vector<"+childType+">::const_iterator it = temp.begin();\n"
+								"			it != temp.end(); ++it)\n"
 								"		{\n"
 								"			it->writeXML(child);\n"
 								"		}\n"
@@ -1099,19 +1136,6 @@ void CodeGenerator::generateReadWriteCode() {
 							"			}\n";
 						handledVariables.insert(varName);
 					}
-					else if (xmlInfo.typeStr == "IBKMK::Vector2D") {
-						includes.insert("IBKMK_Vector2D.h");
-						elements +=
-							"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
-							"				try {\n"
-							"					m_"+varName+" = IBKMK::Vector2D::fromString(c->GetText());\n"
-							"				} catch (IBK::Exception & ex) {\n"
-							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
-							"										  .arg(\"Invalid vector data.\"), FUNC_ID);\n"
-							"				}\n"
-							"			}\n";
-						handledVariables.insert(varName);
-					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {
 						includes.insert("NANDRAD_Utilities.h");
 						elements +=
@@ -1476,12 +1500,6 @@ void CodeGenerator::generateReadWriteCode() {
 									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 									"				NANDRAD::readVector3D(c, \""+tagName+"\", m_"+varName+");\n";
 						}
-						else if (childType == "IBKMK::Vector2D") {
-							// we generate the parent element and afterwards the loop
-							elements +=
-									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
-									"				NANDRAD::readVector2D(c, \""+tagName+"\", m_"+varName+");\n";
-						}
 						else {
 							// *** SPECIAL HANDLING FOR NANDRAD AND VICUS NAMESPACES ***
 
@@ -1508,6 +1526,66 @@ void CodeGenerator::generateReadWriteCode() {
 									"				}\n"
 									"			}\n";
 						}
+
+						// generate code for reading std::vector
+						handledVariables.insert(xmlInfo.varName);
+					}
+					// for std::set, create a vector and load the data into there and transfer to set
+					else if (xmlInfo.typeStr.find("std::set<") != std::string::npos) {
+
+						std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+						std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+						std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+
+						//create a vector to read the data
+						elements += "\n"
+									"	//create a vector to read the data\n"
+									"	std::vector<"+childType+"> temp;\n";
+
+						// special handling for vector of double or vector of int/unsigned int
+						if (childType == "double" || childType == "int" || childType == "unsigned int") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\"){\n"
+									"				NANDRAD::readVector(c, \""+tagName+"\", temp);\n";
+						}
+						else if (childType == "IBKMK::Vector3D") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\"){\n"
+									"				NANDRAD::readVector3D(c, \""+tagName+"\", temp);\n";
+						}
+						else {
+							// *** SPECIAL HANDLING FOR NANDRAD AND VICUS NAMESPACES ***
+
+							std::string childTagName = childType;
+							// remove NANDRAD:: prefix
+							if (childTagName.find("NANDRAD::") == 0)
+								childTagName = childTagName.substr(9);
+							// remove VICUS:: prefix
+							if (childTagName.find("VICUS::") == 0)
+								childTagName = childTagName.substr(7);
+
+							// generate code for reading vector of complex data types with own readXML() functions
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
+									"				const TiXmlElement * c2 = c->FirstChildElement();\n"
+									"				while (c2) {\n"
+									"					const std::string & c2Name = c2->ValueStr();\n"
+									"					if (c2Name != \""+childTagName+"\")\n"
+									"						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
+									"					"+childType+" obj;\n"
+									"					obj.readXML(c2);\n"
+									"					temp.push_back(obj);\n"
+									"					c2 = c2->NextSiblingElement();\n"
+									"				}\n";
+						}
+
+						//transfer the data from the temp vector to the set
+						elements +=
+								"				for ("+childType+" &t: temp)\n"
+								"					m_"+varName+".insert(t);\n"
+								"				}\n";
 
 						// generate code for reading std::vector
 						handledVariables.insert(xmlInfo.varName);
