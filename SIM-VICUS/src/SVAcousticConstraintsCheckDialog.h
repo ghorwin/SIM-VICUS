@@ -77,6 +77,9 @@ private:
 	/*! checks the acoustic constraints and outputs the results in the widgets table*/
 	void checkConstraints();
 
+
+	void checkReverberation();
+
 	/*! Pointer to Ui. */
 	Ui::SVAcousticConstraintsCheckDialog *m_ui;
 

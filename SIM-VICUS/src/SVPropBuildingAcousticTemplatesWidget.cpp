@@ -228,17 +228,19 @@ void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_item
 const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currentlySelectedAcousticTemplate() const {
 	// check if selected "template" is actually missing
 	int r = m_ui->tableWidgetAcousticTemplates->currentRow();
-
 	if (r == -1)
 		return nullptr;
+
 	const VICUS::Database<VICUS::AcousticTemplate> & db_at = SVSettings::instance().m_db.m_acousticTemplates;
 	std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator it = db_at.begin();
 	QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
 	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db_at.end())
 		std::advance(it, 1);
+
 	// if nothing was found
 	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db_at.end())
 		return nullptr;
+
 	return &(it->second);
 }
 
