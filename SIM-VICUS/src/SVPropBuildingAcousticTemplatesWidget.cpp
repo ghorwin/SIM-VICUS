@@ -33,9 +33,12 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	// init combo box based on the acoustic building template db
 	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
 
+	unsigned int counter = 0;
 	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
 		 it = dbBt.begin(); it != dbBt.end(); ++it) {
 		m_ui->comboBoxBuildingType->addItem(QtExt::MultiLangString2QString(it->second.m_displayName));
+		m_ui->comboBoxBuildingType->setItemData(counter, it->second.m_id, Qt::UserRole);
+		++counter;
 	}
 
 
@@ -90,7 +93,7 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
 	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
 
-    int row=0;
+	int row=0;
 	// get the current building type based on the selection in the combo box
 	VICUS::AcousticBuildingTemplate::AcousticBuildingType currentType = (VICUS::AcousticBuildingTemplate::AcousticBuildingType)m_ui->comboBoxBuildingType->currentIndex();
 	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
@@ -259,10 +262,11 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_
 	for (const VICUS::Room * ro : rooms)
 		modifiedRoomIDs.push_back(ro->m_id);
 
+	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
 				tr("Assigned acoustic template"),
-				modifiedRoomIDs, at->m_id);
+				modifiedRoomIDs, at->m_id, buildingTypeId);
 	undo->push();
 }
 
@@ -278,10 +282,11 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 	for (const VICUS::Room * ro : rooms)
 		modifiedRoomIDs.push_back(ro->m_id);
 
+	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
 				tr("Assigned acoustic template"),
-				modifiedRoomIDs, VICUS::INVALID_ID);
+				modifiedRoomIDs, VICUS::INVALID_ID, buildingTypeId);
 	undo->push();
 }
 

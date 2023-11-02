@@ -208,14 +208,24 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		for(std::pair<unsigned int, VICUS::AcousticReferenceComponent>  refEntry : db.m_acousticReferenceComponents){
 			const VICUS::AcousticReferenceComponent &refComp = refEntry.second;
 
+			// alle elemente rausfiltern wo:
+			// Komponente =  Decke und die Ref.komp. keine Decke ist
+			// Komponente =  Wand | Tür | Treppe und die Ref.komp. eine Decke ist
+			if((isCeiling && refComp.m_type != VICUS::AcousticReferenceComponent::CT_Ceiling) ||
+					(!isCeiling && refComp.m_type == VICUS::AcousticReferenceComponent::CT_Ceiling))
+				continue;
+
 			// skip wrong templates of ref component
 			if(refComp.m_idAcousticTemplateA != acousticTemplateAId ||
 				refComp.m_idAcousticTemplateB != acousticTemplateBId)
 				continue;
 
+			if ( roomA->m_acousticBuildingTypeId != refComp.m_buildingType ||
+					roomB->m_acousticBuildingTypeId != refComp.m_buildingType )
+				continue;
+
 			// is true, if the direction between the templates match
 			bool impactSoundTemplatesMatch = false;
-
 
 			// ceiling and ref comp. also is ceiling
 			if(isCeiling && refComp.m_type == VICUS::AcousticReferenceComponent::CT_Ceiling)
@@ -248,8 +258,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					impactSoundLimit = refComp.m_impactSoundOneStructureUnit;
 				}
 				else {
-					airSoundLimit = refComp.m_airborneSoundDifferentStructure;
-					impactSoundLimit = refComp.m_impactSoundDifferentStructure;
+					airSoundLimit = refComp.m_airborneSoundDifferentStructureUnit;
+					impactSoundLimit = refComp.m_impactSoundDifferentStructureUnit;
 				}
 
 				const VICUS::Construction *con = db.m_constructions[comp->m_idConstruction];

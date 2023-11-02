@@ -54,11 +54,11 @@ public:
 
 	double								m_impactSoundOneStructureUnit = -1;			// XML:E
 
-	double								m_impactSoundDifferentStructure = -1;		// XML:E
+	double								m_impactSoundDifferentStructureUnit = -1;		// XML:E
 
 	double								m_airborneSoundOneStructureUnit = -1;		// XML:E
 
-	double								m_airborneSoundDifferentStructure = -1;		// XML:E
+	double								m_airborneSoundDifferentStructureUnit = -1;		// XML:E
 
 
 

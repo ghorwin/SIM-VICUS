@@ -74,12 +74,12 @@ void AcousticReferenceComponent::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "ImpactSoundOneStructureUnit")
 				m_impactSoundOneStructureUnit = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "ImpactSoundDifferentStructure")
-				m_impactSoundDifferentStructure = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "ImpactSoundDifferentStructureUnit")
+				m_impactSoundDifferentStructureUnit = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "AirborneSoundOneStructureUnit")
 				m_airborneSoundOneStructureUnit = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "AirborneSoundDifferentStructure")
-				m_airborneSoundDifferentStructure = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "AirborneSoundDifferentStructureUnit")
+				m_airborneSoundDifferentStructureUnit = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IdAcousticTemplateA")
 				m_idAcousticTemplateA = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdAcousticTemplateB")
@@ -126,9 +126,9 @@ TiXmlElement * AcousticReferenceComponent::writeXML(TiXmlElement * parent) const
 	if (m_type != NUM_CT)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("AcousticReferenceComponent::ComponentType",  m_type));
 	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundOneStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_impactSoundOneStructureUnit));
-	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundDifferentStructure", nullptr, std::string(), IBK::val2string<double>(m_impactSoundDifferentStructure));
+	TiXmlElement::appendSingleAttributeElement(e, "ImpactSoundDifferentStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_impactSoundDifferentStructureUnit));
 	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundOneStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundOneStructureUnit));
-	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundDifferentStructure", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundDifferentStructure));
+	TiXmlElement::appendSingleAttributeElement(e, "AirborneSoundDifferentStructureUnit", nullptr, std::string(), IBK::val2string<double>(m_airborneSoundDifferentStructureUnit));
 	if (m_idAcousticTemplateA != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdAcousticTemplateA", nullptr, std::string(), IBK::val2string<unsigned int>(m_idAcousticTemplateA));
 	if (m_idAcousticTemplateB != VICUS::INVALID_ID)
