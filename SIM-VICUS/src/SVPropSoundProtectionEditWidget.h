@@ -1,21 +1,21 @@
-#ifndef SVPropAcousticWidgetH
-#define SVPropAcousticWidgetH
+#ifndef SVPropSoundProtectionWidgetH
+#define SVPropSoundProtectionWidgetH
 
 #include <QWidget>
 #include "SVConstants.h"
 
 namespace Ui {
-class SVPropAcousticEditWidget;
+class SVPropSoundProtectionWidget;
 }
 class ModificationInfo;
 
-class SVPropAcousticEditWidget : public QWidget
+class SVPropSoundProtectionWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit SVPropAcousticEditWidget(QWidget *parent = nullptr);
-    ~SVPropAcousticEditWidget();
+	explicit SVPropSoundProtectionWidget(QWidget *parent = nullptr);
+	~SVPropSoundProtectionWidget();
 	/*! Switches property widget into specific mode.
 		\param buildingPropertyType Type of selected (building) property, see BuildingPropertyTypes
 	*/
@@ -48,7 +48,7 @@ private:
 		calls the updateUi() functions in the individual widgets.
 	*/
 	void updateUi();
-	Ui::SVPropAcousticEditWidget *m_ui;
+	Ui::SVPropSoundProtectionWidget *m_ui;
 };
 
 #endif // SVPropAcousticWidgetH

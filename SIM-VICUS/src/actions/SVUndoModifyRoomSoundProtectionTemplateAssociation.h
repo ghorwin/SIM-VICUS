@@ -1,5 +1,5 @@
-#ifndef SVUndoModifyRoomAcousticTemplateAssociationH
-#define SVUndoModifyRoomAcousticTemplateAssociationH
+#ifndef SVUndoModifyRoomSoundProtectionTemplateAssociationH
+#define SVUndoModifyRoomSoundProtectionTemplateAssociationH
 
 
 #include <vector>
@@ -9,11 +9,11 @@
 #include <VICUS_Room.h>
 
 
-class SVUndoModifyRoomAcousticTemplateAssociation : public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyRoomZoneTemplateAssociation)
+class SVUndoModifyRoomSoundProtectionTemplateAssociation : public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyRoomSoundProtectionTemplateAssociation)
 public:
 	/*! Replaces zone template IDs in all rooms identified by their unique IDs. */
-	SVUndoModifyRoomAcousticTemplateAssociation(const QString & label,
+	SVUndoModifyRoomSoundProtectionTemplateAssociation(const QString & label,
 												const std::vector<unsigned int> & roomIDs,
 												unsigned int zoneTemplateID, unsigned int buildingTypeId);
 
