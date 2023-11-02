@@ -1,10 +1,10 @@
-#include "SVUndoModifyRoomAcousticTemplateAssociation.h"
+#include "SVUndoModifyRoomSoundProtectionTemplateAssociation.h"
 
 #include "SVProjectHandler.h"
 
 #include <VICUS_Project.h>
 
-SVUndoModifyRoomAcousticTemplateAssociation::SVUndoModifyRoomAcousticTemplateAssociation(const QString & label,
+SVUndoModifyRoomSoundProtectionTemplateAssociation::SVUndoModifyRoomSoundProtectionTemplateAssociation(const QString & label,
 	const std::vector<unsigned int> & roomIDs, unsigned int zoneTemplateID, unsigned int buildingTypeId) : m_roomIDs(roomIDs)
 {
 	setText( label );
@@ -14,7 +14,7 @@ SVUndoModifyRoomAcousticTemplateAssociation::SVUndoModifyRoomAcousticTemplateAss
 
 }
 
-void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
+void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 	// exchange acoustic template IDs
 	VICUS::Project & p = theProject();
 
@@ -49,7 +49,7 @@ void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
 }
 
 
-void SVUndoModifyRoomAcousticTemplateAssociation::redo() {
+void SVUndoModifyRoomSoundProtectionTemplateAssociation::redo() {
 	undo(); // same code as undo
 }
 

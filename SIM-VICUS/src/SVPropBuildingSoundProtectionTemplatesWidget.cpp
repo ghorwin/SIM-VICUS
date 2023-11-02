@@ -1,19 +1,19 @@
-#include "SVPropBuildingAcousticTemplatesWidget.h"
-#include "ui_SVPropBuildingAcousticTemplatesWidget.h"
+#include "SVPropBuildingSoundProtectionTemplatesWidget.h"
+#include "ui_SVPropBuildingSoundProtectionTemplatesWidget.h"
 
 #include <SVConversions.h>
 
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
-#include "SVUndoModifyRoomAcousticTemplateAssociation.h"
+#include "SVUndoModifyRoomSoundProtectionTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 
 #include "VICUS_AcousticBuildingTemplate.h"
 
 
-SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWidget *parent) :
+SVPropBuildingSoundProtectionTemplatesWidget::SVPropBuildingSoundProtectionTemplatesWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVPropBuildingAcousticTemplatesWidget)
+	m_ui(new Ui::SVPropBuildingSoundProtectionTemplatesWidget)
 {
 	m_ui->setupUi(this);
 
@@ -28,7 +28,7 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	m_ui->tableWidgetAcousticTemplates->horizontalHeader()->setStretchLastSection(true);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVPropBuildingAcousticTemplatesWidget::onModified);
+			this, &SVPropBuildingSoundProtectionTemplatesWidget::onModified);
 
 	// init combo box based on the acoustic building template db
 	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
@@ -46,13 +46,13 @@ SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWi
 	onModified(SVProjectHandler::AllModified, nullptr);
 }
 
-SVPropBuildingAcousticTemplatesWidget::~SVPropBuildingAcousticTemplatesWidget()
+SVPropBuildingSoundProtectionTemplatesWidget::~SVPropBuildingSoundProtectionTemplatesWidget()
 {
 	delete m_ui;
 }
 
 
-void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, ModificationInfo */*data*/) {
+void SVPropBuildingSoundProtectionTemplatesWidget::onModified(int modificationType, ModificationInfo */*data*/) {
 	// react on selection changes only, then update properties
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
@@ -78,7 +78,7 @@ void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, Mod
 }
 
 
-void SVPropBuildingAcousticTemplatesWidget::updateUi() {
+void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	FUNCID(SVPropBuildingAcousticTemplatesWidget::updateUi);
 
 	// get all visible "building" type objects in the scene
@@ -219,13 +219,13 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 }
 
 
-void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
 	// the assign-from-table button is only available when there is at least one surface selected
 	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedAcousticTemplate() != nullptr);
 }
 
 
-const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currentlySelectedAcousticTemplate() const {
+const VICUS::AcousticTemplate * SVPropBuildingSoundProtectionTemplatesWidget::currentlySelectedAcousticTemplate() const {
 	// check if selected "template" is actually missing
 	int r = m_ui->tableWidgetAcousticTemplates->currentRow();
 	if (r == -1)
@@ -245,7 +245,7 @@ const VICUS::AcousticTemplate * SVPropBuildingAcousticTemplatesWidget::currently
 }
 
 
-void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_clicked() {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonAssignAcousticTemplate_clicked() {
 
 	// find out which component is selected in table
 	// get currently selected acoustic template
@@ -266,7 +266,7 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_
 
 	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
-	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
+	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
 				tr("Assigned acoustic template"),
 				modifiedRoomIDs, at->m_id, buildingTypeId);
 	undo->push();
@@ -274,7 +274,7 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_
 
 
 
-void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked() {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonDeleteTemplate_clicked() {
 	// get all visible _and_ selected "building" type objects in the scene
 	std::vector<const VICUS::Room*> rooms;
 	project().selectedRooms(rooms);
@@ -286,14 +286,14 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 
 	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
-	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
+	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
 				tr("Assigned acoustic template"),
 				modifiedRoomIDs, VICUS::INVALID_ID, buildingTypeId);
 	undo->push();
 }
 
 
-void SVPropBuildingAcousticTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
 	//update the ui
 	updateUi();
 }

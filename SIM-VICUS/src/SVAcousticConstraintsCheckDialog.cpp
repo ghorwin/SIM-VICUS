@@ -438,7 +438,6 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 						reverberationSum *= surfaceArea;
 					}
 
-
 					if (ci->m_idSideBSurface == r.m_id) {
 						const VICUS::AcousticBoundaryCondition *aBC = db.m_acousticBoundaryConditions[comp->m_idSideBAcousticBoundaryCondition];
 

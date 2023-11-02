@@ -31,7 +31,7 @@ bool AcousticBoundaryCondition::isValid(const VICUS::Database<AcousticSoundAbsor
 	if (m_id == VICUS::INVALID_ID)
 		return false;
 
-	if(!m_soundAbsorptionLayers.empty()){
+	if(m_soundAbsorptionLayers.empty()){
 		m_errorMsg = "Sound absorption layer count is not valid!";
 		return false;
 	}
