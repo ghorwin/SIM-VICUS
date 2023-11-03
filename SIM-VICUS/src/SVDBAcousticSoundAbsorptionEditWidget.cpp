@@ -195,6 +195,7 @@ void SVDBAcousticSoundAbsorptionEditWidget::tableItemChanged(QTableWidgetItem *i
 
 	bool ok;
 	double val = QtExt::Locale().toDouble(item->text(), &ok);
+	val = IBK::rounded<3>(val);
 	int row = item->row();
 	int col = item->column();
 
@@ -219,8 +220,8 @@ void SVDBAcousticSoundAbsorptionEditWidget::tableItemChanged(QTableWidgetItem *i
 			QTableWidgetItem * item2 = m_ui->tableWidgetSoundAbsorptions->item(row, col);
 			item2->setBackground(QBrush());
 		}
-		// we only accept changes up to 0.0001  as different
-		if (!IBK::nearly_equal<4>(m_current->m_soundAbsorption[soundAbsLayerIdx], val)) {
+		// we only accept changes up to 0.001  as different
+		if (!IBK::nearly_equal<3>(m_current->m_soundAbsorption[soundAbsLayerIdx], val)) {
 			m_current->m_soundAbsorption[soundAbsLayerIdx] = val;
 			modelModify();
 		}
