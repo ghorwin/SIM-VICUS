@@ -13,7 +13,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE_OVERRIDE
+	VICUS_READWRITE_PRIVATE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Frequencies. */
@@ -27,6 +27,8 @@ public:
 		NUM_SF
 	};
 
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
@@ -39,7 +41,7 @@ public:
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
-	double						m_soundAbsorption[NUM_SF] = {0, 0, 0, 0, 0, 0};			// XML:E
+	double						m_soundAbsorption[NUM_SF] = {0, 0, 0, 0, 0, 0};
 };
 
 } // namespace VICUS

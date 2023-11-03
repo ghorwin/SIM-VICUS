@@ -30,7 +30,7 @@
 
 #include "SVDatabase.h"
 
-/*! Model for accessing the boundary condition in the boundary conditions database.
+/*! Model for accessing Acoustic sound absorptions in the Acoustic Sound absorptions database.
 
 	The individual columns have different values for the DisplayRole (and some
 	also for alignment). The column 'ColCheck' shows an indication if all data
@@ -65,7 +65,7 @@ public:
 	// ** SVAbstractDatabaseTableModel interface **
 
 	int columnIndexId() const override { return ColId; }
-	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_BoundaryConditions; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_AcousticSoundAbsorptions; }
 	virtual void resetModel() override;
 	QModelIndex addNewItem() override;
 	QModelIndex copyItem(const QModelIndex & index) override;

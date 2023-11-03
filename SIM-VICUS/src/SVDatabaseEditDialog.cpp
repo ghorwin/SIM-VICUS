@@ -404,6 +404,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
 			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
 			case SVDatabase::DT_AcousticBoundaryConditions:		SVSettings::instance().m_db.m_acousticBoundaryConditions.removeUserElements(); break;
+			case SVDatabase::DT_AcousticSoundAbsorptions:		SVSettings::instance().m_db.m_acousticSoundAbsorptions.removeUserElements(); break;
 			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
 			case SVDatabase::DT_EpdDatasets:			SVSettings::instance().m_db.m_epdDatasets.removeUserElements(); break;

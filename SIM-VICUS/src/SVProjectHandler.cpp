@@ -724,6 +724,15 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 		);
 	}
 
+	// acoustic sound absorptions
+	std::map<unsigned int, unsigned int> acousticSoundAbsorptionsIDMap;
+	for (VICUS::AcousticSoundAbsorption & e : pro.m_embeddedDB.m_acousticSoundAbsorptions) {
+		importDBElement(e, db.m_acousticSoundAbsorptions, acousticSoundAbsorptionsIDMap,
+						"Sound absorption '%1' with #%2 imported -> new ID #%3.\n",
+						"Sound absorption '%1' with #%2 exists already -> ID #%3.\n"
+						);
+	}
+
 	// component
 	std::map<unsigned int, unsigned int> componentIDMap;
 	for (VICUS::Component & e : pro.m_embeddedDB.m_components) {
