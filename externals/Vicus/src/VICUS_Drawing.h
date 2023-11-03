@@ -115,15 +115,24 @@ public:
 			Point will be recalculated when m_dirty is true;
 		*/
 		virtual const std::vector<IBKMK::Vector2D>& points2D() const = 0 ;
-		virtual const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const = 0;
+		virtual const std::vector<VICUS::PlaneGeometry>& planeGeometries() const = 0;
 
 		/* used to get correct color of entity */
 		const QColor &color() const;
 		/* used to get correct lineWeight of entity */
 		double lineWeight() const;
-
+		/*! Indicates when triangulation has to be redone. */
 		void updateGeometry() {
 			m_dirtyTriangulation = true;
+		}
+
+		/*! Get parent drawing where object is included. */
+		const Drawing *drawing() const {
+			Q_ASSERT(m_parentLayer != nullptr);
+			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(m_parentLayer->m_parent);
+			Q_ASSERT(drawing != nullptr);
+			// Return pointer to drawing
+			return drawing;
 		}
 
 		/*! name of Entity */
@@ -204,7 +213,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 
 		/*! Point coordinate */
@@ -223,7 +232,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 		/*! Point coordinate */
 		IBKMK::Vector2D					m_point1;
@@ -242,7 +251,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 		/*! polyline coordinates */
 		std::vector<IBKMK::Vector2D>    m_polyline;
@@ -260,7 +269,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 		/*! Circle center */
 		IBKMK::Vector2D					m_center;
@@ -278,7 +287,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 
 		/*! Ellipse center */
@@ -303,7 +312,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 
 		/*! Arc center */
@@ -326,7 +335,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 		/*! Point 1 */
 		IBKMK::Vector2D			m_point1;
@@ -348,7 +357,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 
 		/*! Base point. */
@@ -373,7 +382,7 @@ public:
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
-		const std::vector<VICUS::PlaneGeometry>& planeGeometries(const VICUS::Drawing &drawing) const override;
+		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
 
 		/*! Base point. */
@@ -430,7 +439,7 @@ public:
 	const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &pickPoints() const;
 
 	/*! Generates 3D Points from 2D points by applying transformation from drawing. */
-	const std::vector<IBKMK::Vector3D> points3D(const AbstractDrawingObject &obj) const;
+	const std::vector<IBKMK::Vector3D> points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition, const QMatrix4x4 &trans = QMatrix4x4()) const;
 
 	/*! Returns the normal vector of the drawing. */
 	const IBKMK::Vector3D normal() const;
@@ -484,6 +493,7 @@ public:
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;	// XML:E
+
 	/*! Is the default color when no other color was specified */
 	QColor																	m_defaultColor = QColor(); // XML:E
 
@@ -498,24 +508,23 @@ private:
 	void transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId);
 
 	/*! Function to generate plane geometries from a line. */
-	static bool generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
-									  const RotationMatrix &matrix, double width, VICUS::PlaneGeometry &plane,
-									  const QMatrix4x4 &trans);
+	bool generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
+							   double width, VICUS::PlaneGeometry &plane,
+							   const QMatrix4x4 &trans) const;
 
 	/*! Function to generate plane geometries from a polyline. */
-	static bool generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> & polyline, const VICUS::RotationMatrix & matrix,
-										   bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
-										   const QMatrix4x4 &trans);
+	bool generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> & polyline,
+									bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
+									const QMatrix4x4 &trans) const;
 
 	/*! Function to generate plane geometries from text. Heavy operation. Text is polygonised by QPainterPath with font-size 1
 		in order to get a rough letter and less polygons. Some dxfs contain a lot of text and so we would end in having too many
 		polygons.
 	*/
-	static void generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
-									   const VICUS::RotationMatrix &matrix, const IBKMK::Vector3D &origin,
-									   const IBKMK::Vector2D &basePoint, double scalingFactor, double zScale,
-									   std::vector<VICUS::PlaneGeometry> &planeGeometries,
-									   const QMatrix4x4 &trans);
+	void generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
+								const IBKMK::Vector2D &basePoint, double zPositon,
+								std::vector<VICUS::PlaneGeometry> &planeGeometries,
+								const QMatrix4x4 &trans) const;
 
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
@@ -524,7 +533,7 @@ private:
 	std::map<unsigned int, VICUS::Drawing::AbstractDrawingObject*>	m_objectPtr;
 
 	/*! Cached pick points of drawing.
-		\param Key is ID of drawing object, to get better referenced in picking.
+		\param Key is ID of drawing object, to get better referencing in picking.
 		\param Value is vector with 3D pick points
 	*/
 	mutable std::map<unsigned int, std::vector<IBKMK::Vector3D>>	m_pickPoints;

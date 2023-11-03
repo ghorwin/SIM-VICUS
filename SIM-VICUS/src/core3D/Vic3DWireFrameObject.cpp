@@ -130,7 +130,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 		if (!dl->m_selected || !dl->m_visible)
 			continue;
 
-		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries();
 		for (const VICUS::PlaneGeometry &plane : planes) {
 			addPlane(plane.triangulationData(), currentVertexIndex, currentElementIndex,
 					 vertexBufferData, indexBufferData);

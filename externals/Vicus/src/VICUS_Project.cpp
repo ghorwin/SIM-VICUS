@@ -849,7 +849,7 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 		if (!dl->m_visible)
 			continue;
 
-		const std::vector<IBKMK::Vector3D> &points = d.points3D(drawObj);
+		const std::vector<IBKMK::Vector3D> &points = d.points3D(drawObj.points2D(), drawObj.m_zPosition, drawObj.m_trans);
 
 		for (const IBKMK::Vector3D &v : points) {
 

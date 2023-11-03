@@ -1898,7 +1898,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 			continue;
 
 		const QColor color = objectColor(obj);
-		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries(drawing);
+		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries();
 		for (const VICUS::PlaneGeometry &plane : planes) {
 			addPlane(plane.triangulationData(), color, currentVertexIndex, currentElementIndex,
 					 opaqueObject.m_vertexBufferData,
