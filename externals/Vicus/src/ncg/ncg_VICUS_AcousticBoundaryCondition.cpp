@@ -56,6 +56,28 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "SoundAbsorptionLayers") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SoundAbsorptionLayer")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					SoundAbsorptionLayer obj;
+					obj.readXML(c2);
+					m_soundAbsorptionLayers.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticBoundaryCondition' element."), FUNC_ID);
@@ -76,6 +98,18 @@ TiXmlElement * AcousticBoundaryCondition::writeXML(TiXmlElement * parent) const 
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+
+	if (!m_soundAbsorptionLayers.empty()) {
+		TiXmlElement * child = new TiXmlElement("SoundAbsorptionLayers");
+		e->LinkEndChild(child);
+
+		for (std::vector<SoundAbsorptionLayer>::const_iterator it = m_soundAbsorptionLayers.begin();
+			it != m_soundAbsorptionLayers.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

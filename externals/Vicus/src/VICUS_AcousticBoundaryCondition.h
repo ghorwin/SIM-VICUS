@@ -71,11 +71,11 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
-	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
-	//:inherited	QColor							m_color;				// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;			// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
+	//:inherited	QColor							m_color;					// XML:A
 
-	std::vector<SoundAbsorptionLayer>				m_soundAbsorptionLayers;
+	std::vector<SoundAbsorptionLayer>				m_soundAbsorptionLayers;	// XML:E
 
 	/*! Holds error string in order to give users a tooltip in db dialog. */
 	mutable std::string								m_errorMsg;

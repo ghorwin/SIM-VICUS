@@ -724,6 +724,15 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 		);
 	}
 
+	// acoustic boundary conditions
+	std::map<unsigned int, unsigned int> acousticBoundaryConditionsIDMap;
+	for (VICUS::AcousticBoundaryCondition & e : pro.m_embeddedDB.m_acousticBoundaryConditions) {
+		importDBElement(e, db.m_acousticBoundaryConditions, acousticBoundaryConditionsIDMap,
+						"Acoustic Boundary condition '%1' with #%2 imported -> new ID #%3.\n",
+						"Acoustic Boundary condition '%1' with #%2 exists already -> ID #%3.\n"
+						);
+	}
+
 	// acoustic sound absorptions
 	std::map<unsigned int, unsigned int> acousticSoundAbsorptionsIDMap;
 	for (VICUS::AcousticSoundAbsorption & e : pro.m_embeddedDB.m_acousticSoundAbsorptions) {

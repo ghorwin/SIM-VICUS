@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void AcousticSoundAbsorption::readXML(const TiXmlElement * element) {
-	FUNCID(AcousticSoundAbsorption::readXML);
+void AcousticSoundAbsorption::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(AcousticSoundAbsorption::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -54,18 +54,6 @@ void AcousticSoundAbsorption::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
-		// search for mandatory elements
-		// reading elements
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "SoundAbsorption[NUM_SF]")
-				m_soundAbsorption[NUM_SF] = NANDRAD::readPODElement<double>(c, cName);
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
-		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticSoundAbsorption' element."), FUNC_ID);
@@ -75,7 +63,7 @@ void AcousticSoundAbsorption::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * AcousticSoundAbsorption::writeXML(TiXmlElement * parent) const {
+TiXmlElement * AcousticSoundAbsorption::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("AcousticSoundAbsorption");
 	parent->LinkEndChild(e);
@@ -84,7 +72,6 @@ TiXmlElement * AcousticSoundAbsorption::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
-	TiXmlElement::appendSingleAttributeElement(e, "SoundAbsorption[NUM_SF]", nullptr, std::string(), IBK::val2string<double>(m_soundAbsorption[NUM_SF]));
 	return e;
 }
 

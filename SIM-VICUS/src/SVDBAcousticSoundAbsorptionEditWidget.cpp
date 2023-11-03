@@ -154,11 +154,11 @@ void SVDBAcousticSoundAbsorptionEditWidget::updateTable() {
 
 	for (unsigned int i=0; i < rowCount; ++i) {
 		int row = (int)i;
-		QTableWidgetItem *item = new QTableWidgetItem(QString::number(frequencies[i]));
+		QTableWidgetItem *item = new QTableWidgetItem(QString::number(frequencies[i], 'd', 3));
 		m_ui->tableWidgetSoundAbsorptions->setItem(row, ColFrequency, item);
 		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 		item->setTextAlignment(Qt::AlignCenter);
-		m_ui->tableWidgetSoundAbsorptions->setItem((int)i, ColValue, new QTableWidgetItem(QString::number(m_current->m_soundAbsorption[i])));
+		m_ui->tableWidgetSoundAbsorptions->setItem((int)i, ColValue, new QTableWidgetItem(QString::number(m_current->m_soundAbsorption[i], 'd', 3)));
 		m_ui->tableWidgetSoundAbsorptions->item((int)i, ColValue)->setTextAlignment(Qt::AlignCenter);
 
 	}
@@ -219,12 +219,13 @@ void SVDBAcousticSoundAbsorptionEditWidget::tableItemChanged(QTableWidgetItem *i
 			QTableWidgetItem * item2 = m_ui->tableWidgetSoundAbsorptions->item(row, col);
 			item2->setBackground(QBrush());
 		}
-		// we only accept changes up to 0.01  as different
+		// we only accept changes up to 0.0001  as different
 		if (!IBK::nearly_equal<4>(m_current->m_soundAbsorption[soundAbsLayerIdx], val)) {
 			m_current->m_soundAbsorption[soundAbsLayerIdx] = val;
 			modelModify();
 		}
 	}
+	updateTable();
 }
 
 
