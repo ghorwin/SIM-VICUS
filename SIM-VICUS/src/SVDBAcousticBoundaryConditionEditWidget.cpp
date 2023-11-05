@@ -163,12 +163,14 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 		const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 		Q_ASSERT(soundAbs != nullptr);
-		//TODO Maik
+		QTableWidgetItem *idItem = new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption));
+		idItem->setTextAlignment(Qt::AlignCenter);
+		QTableWidgetItem *fractionItem = new QTableWidgetItem(QString::number(layer.m_para[VICUS::SoundAbsorptionLayer::P_AreaFraction].value));
+		fractionItem->setTextAlignment(Qt::AlignCenter);
 
-		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption)));
+		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, idItem);
 		m_ui->tableWidgetSoundAbsorptionLayers->setButtonAndText(i, ColName, QString::fromStdString(soundAbs->m_displayName.string()));
-		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,
-					new QTableWidgetItem(QString::number(layer.m_para[VICUS::SoundAbsorptionLayer::P_AreaFraction].value)));
+		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,fractionItem);
 
 	}
 	m_ui->tableWidgetSoundAbsorptionLayers->setEnabled(!m_current->m_builtIn);

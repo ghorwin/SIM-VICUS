@@ -165,6 +165,20 @@ QModelIndex SVDBAcousticBoundaryConditionTableModel::addNewItem() {
 	bc.m_displayName.setString(tr("<new acoustic boundary condition>").toStdString(), IBK::MultiLanguageString::m_language);
 	bc.m_color = SVStyle::randomColor();
 
+
+	// ensures there is atleast one item int the Acoustic Sound Absorption database
+	if (m_db->m_acousticSoundAbsorptions.empty()){
+			VICUS::AcousticSoundAbsorption ac;
+			ac.m_color = SVStyle::randomColor();
+			ac.m_displayName.setString(tr("<new acoustic sound absorption>").toStdString(), IBK::MultiLanguageString::m_language);
+			m_db->m_acousticSoundAbsorptions.add(ac);
+	}
+
+	unsigned int defaultSoundAbsorptionId = 0;
+	if (!m_db->m_acousticSoundAbsorptions.empty())
+			defaultSoundAbsorptionId = m_db->m_acousticSoundAbsorptions.begin()->first;
+	VICUS::SoundAbsorptionLayer layer(0.1, defaultSoundAbsorptionId);
+	bc.m_soundAbsorptionLayers.push_back(layer);
 	//set default parameters
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
