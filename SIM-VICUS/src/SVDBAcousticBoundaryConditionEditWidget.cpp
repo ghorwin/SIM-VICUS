@@ -63,12 +63,12 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSoundAbsorptionLayers);
 	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setStretchLastSection(true);
 	m_ui->tableWidgetSoundAbsorptionLayers->setSortingEnabled(false);
-
+	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColName, 200);
 	// for changing area fraction
 	connect(m_ui->tableWidgetSoundAbsorptionLayers, SIGNAL(itemChanged(QTableWidgetItem *)),
 		this, SLOT(tableItemChanged(QTableWidgetItem *)));
 	connect(m_ui->tableWidgetSoundAbsorptionLayers, SIGNAL(cellDoubleClicked(int,int)),
-			this, SLOT(onCellDoubleClicked(int,int)));
+			this, SLOT(onLayerChosen(int,int)));
 
 
 	// initial state is "nothing selected"
@@ -164,16 +164,9 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 
 		Q_ASSERT(soundAbs != nullptr);
 		//TODO Maik
-		QWidget *w = new QWidget();
-		QHBoxLayout *l = new QHBoxLayout();
-		w->setLayout(l);
-		l->addWidget(new QLabel(QString::number(layer.m_idSoundAbsorption)));
-		l->addWidget(new QLabel(QString::fromStdString(soundAbs->m_displayName.string())));
-		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption)));
 
-		QPushButton *button = new QPushButton(QString::fromStdString(soundAbs->m_displayName.string()), m_ui->tableWidgetSoundAbsorptionLayers);
-		m_ui->tableWidgetSoundAbsorptionLayers->setCellWidget(i,1,w);
-		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColName, item);
+		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption)));
+		m_ui->tableWidgetSoundAbsorptionLayers->setButtonAndText(i, ColName, QString::fromStdString(soundAbs->m_displayName.string()));
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,
 					new QTableWidgetItem(QString::number(layer.m_para[VICUS::SoundAbsorptionLayer::P_AreaFraction].value)));
 
@@ -245,7 +238,7 @@ void SVDBAcousticBoundaryConditionEditWidget::tableItemChanged(QTableWidgetItem 
 	}
 }
 
-void SVDBAcousticBoundaryConditionEditWidget::onCellDoubleClicked(int row, int column) {
+void SVDBAcousticBoundaryConditionEditWidget::onLayerChosen(int row, int column) {
 	if(column != 1)
 		return;
 

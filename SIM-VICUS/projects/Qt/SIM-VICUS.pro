@@ -103,6 +103,7 @@ SOURCES += \
 	../../src/SVColorMap.cpp \
 	../../src/SVDBAcousticBoundaryConditionEditWidget.cpp \
 	../../src/SVDBAcousticBoundaryConditionTableModel.cpp \
+	../../src/SVDBAcousticBoundaryConditionTableWidget.cpp \
 	../../src/SVDBAcousticSoundAbsorptionEditWidget.cpp \
 	../../src/SVDBAcousticSoundAbsorptionTableModel.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
@@ -333,6 +334,7 @@ HEADERS  += \
 	../../src/SVDBAcousticBoundaryConditionTableModel.h \
 	../../src/SVDBAcousticSoundAbsorptionEditWidget.h \
 	../../src/SVDBAcousticSoundAbsorptionTableModel.h \
+	../../src/SVDBAcousticBoundaryConditionTableWidget.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
 	../../src/SVDBEpdEditWidget.h \

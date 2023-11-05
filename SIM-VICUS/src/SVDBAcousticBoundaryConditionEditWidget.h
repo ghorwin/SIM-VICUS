@@ -51,6 +51,7 @@ class SVDatabase;
 */
 class SVDBAcousticBoundaryConditionEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
+public:
 
 	enum SoundApsortionColumns {
 		ColId,
@@ -59,8 +60,6 @@ class SVDBAcousticBoundaryConditionEditWidget : public SVAbstractDatabaseEditWid
 		NumCol
 	};
 
-
-public:
 	explicit SVDBAcousticBoundaryConditionEditWidget(QWidget *parent = nullptr);
 	~SVDBAcousticBoundaryConditionEditWidget() override;
 
@@ -81,8 +80,9 @@ private slots:
 	/*! Triggered when user modifies a table cell, only needed for 'area fraction'-column. */
 	void tableItemChanged(QTableWidgetItem *);
 
+public slots:
 	/*! Slot for react on double click on table cell.*/
-	void onCellDoubleClicked(int row, int col);
+	void onLayerChosen(int row, int col);
 
 private:
 	/*! Set up the modified variable of the model to true. */

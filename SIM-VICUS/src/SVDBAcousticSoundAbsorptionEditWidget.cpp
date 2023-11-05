@@ -202,7 +202,7 @@ void SVDBAcousticSoundAbsorptionEditWidget::tableItemChanged(QTableWidgetItem *i
 	unsigned int soundAbsLayerIdx = (unsigned int)row;
 	if(col == 1) {
 		Q_ASSERT(soundAbsLayerIdx < VICUS::AcousticSoundAbsorption::NUM_SF);
-		if (!ok || val < 0 || val > 1) {
+		if (!ok || (val < 0) || (val > 1) ) {
 			if (!ok) {
 				QTableWidgetItem * item2 = m_ui->tableWidgetSoundAbsorptions->item(row, col);
 				item2->setBackground(QBrush(SVStyle::instance().m_errorEditFieldBackground));
