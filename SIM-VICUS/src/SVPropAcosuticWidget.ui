@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVPropSoundProtectionWidget</class>
- <widget class="QWidget" name="SVPropSoundProtectionWidget">
+ <class>SVPropAcosuticWidget</class>
+ <widget class="QWidget" name="SVPropAcosuticWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

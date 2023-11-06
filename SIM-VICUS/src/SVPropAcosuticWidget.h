@@ -1,21 +1,20 @@
-#ifndef SVPropSoundProtectionWidgetH
-#define SVPropSoundProtectionWidgetH
+#ifndef SVPropAcosuticWidgetH
+#define SVPropAcosuticWidgetH
 
 #include <QWidget>
-#include "SVConstants.h"
 
 namespace Ui {
 class SVPropSoundProtectionWidget;
 }
 class ModificationInfo;
 
-class SVPropSoundProtectionWidget : public QWidget
+class SVPropAcosuticWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit SVPropSoundProtectionWidget(QWidget *parent = nullptr);
-	~SVPropSoundProtectionWidget();
+	explicit SVPropAcosuticWidget(QWidget *parent = nullptr);
+	~SVPropAcosuticWidget();
 	/*! Switches property widget into specific mode.
 		\param buildingPropertyType Type of selected (building) property, see BuildingPropertyTypes
 	*/
@@ -51,4 +50,4 @@ private:
 	Ui::SVPropSoundProtectionWidget *m_ui;
 };
 
-#endif // SVPropAcousticWidgetH
+#endif // SVPropAcosuticWidgetH

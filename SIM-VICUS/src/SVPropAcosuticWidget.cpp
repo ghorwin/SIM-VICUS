@@ -1,18 +1,19 @@
-#include "SVPropSoundProtectionEditWidget.h"
-#include "ui_SVPropSoundProtectionEditWidget.h"
+#include "SVPropAcosuticWidget.h"
+#include "ui_SVPropAcosuticWidget.h"
 
 #include "SVProjectHandler.h"
 #include "SVPropBuildingSoundProtectionTemplatesWidget.h"
 
+#include "SVConstants.h"
 #include "SVMainWindow.h"
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
 #include "SVPreferencesDialog.h"
 #include "SVPreferencesPageStyle.h"
 
-SVPropSoundProtectionWidget::SVPropSoundProtectionWidget(QWidget *parent) :
+SVPropAcosuticWidget::SVPropAcosuticWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVPropSoundProtectionWidget)
+	m_ui(new Ui::SVPropAcosuticWidget)
 {
 	m_ui->setupUi(this);
 	m_ui->toolBox->layout()->setMargin(0);
@@ -26,16 +27,16 @@ SVPropSoundProtectionWidget::SVPropSoundProtectionWidget(QWidget *parent) :
 	m_ui->toolBox->blockSignals(false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVPropSoundProtectionWidget::onModified);
+			this, &SVPropAcosuticWidget::onModified);
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
-			this, &SVPropSoundProtectionWidget::onColorRefreshNeeded);
+			this, &SVPropAcosuticWidget::onColorRefreshNeeded);
 
 	connect(m_ui->toolBox, &QtExt::ToolBox::indexChanged,
-			this, &SVPropSoundProtectionWidget::onCurrentBuildingPropertyTypeChanged);
+			this, &SVPropAcosuticWidget::onCurrentBuildingPropertyTypeChanged);
 
 	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-			this, &SVPropSoundProtectionWidget::onStyleChanged);
+			this, &SVPropAcosuticWidget::onStyleChanged);
 
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified, nullptr);
@@ -44,15 +45,15 @@ SVPropSoundProtectionWidget::SVPropSoundProtectionWidget(QWidget *parent) :
 	onCurrentBuildingPropertyTypeChanged((BuildingPropertyType)m_ui->toolBox->currentIndex());
 }
 
-SVPropSoundProtectionWidget::~SVPropSoundProtectionWidget() {
+SVPropAcosuticWidget::~SVPropAcosuticWidget() {
 	delete m_ui;
 }
 
-void SVPropSoundProtectionWidget::setPropertyType(int acousticPropertyType) {
+void SVPropAcosuticWidget::setPropertyType(int acousticPropertyType) {
 	m_ui->toolBox->setCurrentIndex((unsigned int)acousticPropertyType);
 }
 
-void SVPropSoundProtectionWidget::onModified(int modificationType, ModificationInfo */*data*/) {
+void SVPropAcosuticWidget::onModified(int modificationType, ModificationInfo */*data*/) {
 	// react on selection changes only, then update properties
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
@@ -82,13 +83,13 @@ void SVPropSoundProtectionWidget::onModified(int modificationType, ModificationI
 	}
 }
 
-void SVPropSoundProtectionWidget::onColorRefreshNeeded() {
+void SVPropAcosuticWidget::onColorRefreshNeeded() {
 	// for now we just rebuild the widgets... this might be changed in the future, if performance issues arise
 	// since updating the table color rows is usually much faster than rebuilding the entire UI
 	updateUi();
 }
 
-void SVPropSoundProtectionWidget::onCurrentBuildingPropertyTypeChanged(int propertyType) {
+void SVPropAcosuticWidget::onCurrentBuildingPropertyTypeChanged(int propertyType) {
 	AcousticPropertyType structuralUnitPropType = AcousticPropertyType(propertyType);
 	// set coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -101,18 +102,18 @@ void SVPropSoundProtectionWidget::onCurrentBuildingPropertyTypeChanged(int prope
 
 }
 
-unsigned int SVPropSoundProtectionWidget::currentPropertyType() {
+unsigned int SVPropAcosuticWidget::currentPropertyType() {
 	return m_ui->toolBox->currentIndex();
 }
 
 
-void SVPropSoundProtectionWidget::onStyleChanged() {
+void SVPropAcosuticWidget::onStyleChanged() {
 	m_ui->toolBox->updatePageBackgroundColorFromStyle();
 }
 
 // *** PRIVATE FUNCTIONS ***
 
-void SVPropSoundProtectionWidget::updateUi() {
+void SVPropAcosuticWidget::updateUi() {
 	// TODO Andreas : this function currently updates all widgets in the stacked widget, regardless of which
 	//                is currently visible. This makes switching property modes very fast, but whenever the project
 	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,

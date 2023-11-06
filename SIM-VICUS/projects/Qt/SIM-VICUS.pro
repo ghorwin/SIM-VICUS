@@ -124,6 +124,7 @@ SOURCES += \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
     ../../src/SVPluginManager.cpp \
+    ../../src/SVPropAcosuticWidget.cpp \
     ../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.cpp \
     ../../src/SVPropBuildingStructuralUnitWidget.cpp \
@@ -134,7 +135,6 @@ SOURCES += \
     ../../src/SVPropNetworkNodesWidget.cpp \
     ../../src/SVPropNetworkSubStationWidget.cpp \
     ../../src/SVPropResultsWidget.cpp \
-	../../src/SVPropSoundProtectionEditWidget.cpp \
     ../../src/SVPropStructuralUnitEditWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
@@ -355,6 +355,7 @@ HEADERS  += \
     ../../src/SVNonEquidistantSlider.h \
     ../../src/SVPluginLoader.h \
     ../../src/SVPluginManager.h \
+    ../../src/SVPropAcosuticWidget.h \
     ../../src/SVPropBuildingAcousticTemplatesWidget.h \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.h \
     ../../src/SVPropBuildingStructuralUnitWidget.h \
@@ -365,7 +366,6 @@ HEADERS  += \
     ../../src/SVPropNetworkNodesWidget.h \
     ../../src/SVPropNetworkSubStationWidget.h \
     ../../src/SVPropResultsWidget.h \
-	../../src/SVPropSoundProtectionEditWidget.h \
     ../../src/SVPropStructuralUnitEditWidget.h \
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
@@ -624,6 +624,7 @@ FORMS    += \
 		../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
+    ../../src/SVPropAcosuticWidget.ui \
 	../../src/SVPropAddGeometry.ui \
 	../../src/SVPropAddWindowWidget.ui \
     ../../src/SVPropBuildingAcousticTemplatesWidget.ui \
@@ -648,7 +649,6 @@ FORMS    += \
 	../../src/SVPropNetworkSubStationWidget.ui \
 	../../src/SVPropResultsWidget.ui \
 	../../src/SVPropSiteWidget.ui \
-	../../src/SVPropSoundProtectionEditWidget.ui \
     ../../src/SVPropStructuralUnitEditWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
