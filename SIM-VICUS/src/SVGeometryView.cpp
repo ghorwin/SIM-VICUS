@@ -301,6 +301,7 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 	m_ui->actionTranslateGeometry->setChecked(false);
 	m_ui->actionAcousticParametrization->setChecked(false);
 	m_ui->actionShowResults->setChecked(false);
+	m_ui->actionStructuralUnits->setChecked(false);
 }
 
 

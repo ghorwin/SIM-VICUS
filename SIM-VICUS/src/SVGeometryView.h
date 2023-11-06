@@ -31,7 +31,7 @@
 #include "Vic3DSceneView.h"
 
 namespace Vic3D {
-	class SceneView;
+class SceneView;
 }
 
 class SVPropertyWidget;
@@ -46,7 +46,7 @@ class QDockWidget;
 class ModificationInfo;
 
 namespace Ui {
-	class SVGeometryView;
+class SVGeometryView;
 }
 
 /*! The main geometry view.
@@ -120,7 +120,7 @@ public:
 
 	SVColorLegend * colorLegend();
 
-		/*! This set stores all parent widgets that may have focus themselves or their children in order to
+	/*! This set stores all parent widgets that may have focus themselves or their children in order to
 		receive navigation key events for the scene.
 		Usually this is the geometryview itself, and the log dock widget and the navigation panel.
 		Pointers are in inserted by the individual classes in their constructors.
@@ -159,18 +159,13 @@ private slots:
 	void on_actionZLock_triggered(bool checked);
 
 	void on_actionBuildingParametrization_triggered();
-
 	void on_actionAddGeometry_triggered();
-
 	void on_actionNetworkParametrization_triggered();
-
 	void on_actionSiteParametrization_triggered();
-
 	void on_actionAcousticParametrization_triggered();
-	
 	void on_actionShowResults_triggered();
 
-    void on_actionStructuralUnits_triggered();
+	void on_actionStructuralUnits_triggered();
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
