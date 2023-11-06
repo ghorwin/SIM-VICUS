@@ -186,9 +186,9 @@ public:
 	static double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
 																double layerThickness, double layerArea);
 private slots:
-	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
+	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *);
 
-	void on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item);
+	void on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *);
 
 private:
 

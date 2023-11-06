@@ -67,7 +67,7 @@ INCLUDEPATH = \
 	../../../externals/TiCPP/src \
 	../../../externals/qwt/src \
 	../../../externals/clipper/src \
-		../../../externals/RoomClipper/src \
+	../../../externals/RoomClipper/src \
 	../../../externals/QuaZIP/src \
 	../../../externals/QuaZIP/src/zlib \
 	../../../externals/IDFReader/src \
@@ -83,7 +83,7 @@ PRE_TARGETDEPS += \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/qwt6.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/clipper.lib \
-		$$PWD/../../../externals/lib$${DIR_PREFIX}/RoomClipper.lib \
+	$$PWD/../../../externals/lib$${DIR_PREFIX}/RoomClipper.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QuaZIP.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Vicus.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Nandrad.lib \

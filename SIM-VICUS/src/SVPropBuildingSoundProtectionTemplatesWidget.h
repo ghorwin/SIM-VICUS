@@ -30,7 +30,7 @@ private slots:
 	void on_pushButtonAssignAcousticTemplate_clicked();
 	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
 	void on_pushButtonDeleteTemplate_clicked();
-	void on_comboBoxBuildingType_currentIndexChanged(int index);
+	void on_comboBoxBuildingType_currentIndexChanged(int);
 
 
 	void onModified(int modificationType, ModificationInfo * /*data*/);

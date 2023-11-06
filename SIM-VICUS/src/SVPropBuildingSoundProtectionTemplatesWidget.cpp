@@ -73,6 +73,11 @@ void SVPropBuildingSoundProtectionTemplatesWidget::onModified(int modificationTy
 		case SVProjectHandler::GridModified:
 		case SVProjectHandler::NetworkGeometryChanged:
 		case SVProjectHandler::NetworkDataChanged:
+		case SVProjectHandler::ClimateLocationAndFileModified:
+		case SVProjectHandler::OutputsModified:
+		case SVProjectHandler::StructuralUnitsModified:
+		case SVProjectHandler::DrawingModified:
+		case SVProjectHandler::LcaLccModified:
 		break;
 	}
 }
@@ -293,7 +298,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonDeleteTemplate_c
 }
 
 
-void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int /*index*/) {
 	//update the ui
 	updateUi();
 }

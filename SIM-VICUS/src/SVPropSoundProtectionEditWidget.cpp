@@ -44,8 +44,7 @@ SVPropSoundProtectionWidget::SVPropSoundProtectionWidget(QWidget *parent) :
 	onCurrentBuildingPropertyTypeChanged((BuildingPropertyType)m_ui->toolBox->currentIndex());
 }
 
-SVPropSoundProtectionWidget::~SVPropSoundProtectionWidget()
-{
+SVPropSoundProtectionWidget::~SVPropSoundProtectionWidget() {
 	delete m_ui;
 }
 
@@ -75,6 +74,10 @@ void SVPropSoundProtectionWidget::onModified(int modificationType, ModificationI
 	case SVProjectHandler::GridModified:
 	case SVProjectHandler::NetworkGeometryChanged:
 	case SVProjectHandler::NetworkDataChanged:
+	case SVProjectHandler::ClimateLocationAndFileModified:
+	case SVProjectHandler::OutputsModified:
+	case SVProjectHandler::DrawingModified:
+	case SVProjectHandler::LcaLccModified:
 		break;
 	}
 }
@@ -90,9 +93,11 @@ void SVPropSoundProtectionWidget::onCurrentBuildingPropertyTypeChanged(int prope
 	// set coloring mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	switch (structuralUnitPropType) {
-		case AT_AcousticTemplate			: vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType; break;
-		}
-		SVViewStateHandler::instance().setViewState(vs);
+		case AT_AcousticTemplate:
+			vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
+		break;
+	}
+	SVViewStateHandler::instance().setViewState(vs);
 
 }
 

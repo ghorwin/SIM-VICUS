@@ -518,7 +518,7 @@ void SVLcaLccResultsDialog::setup() {
 	m_ui->tableWidgetLccOverview->setSortingEnabled(false);
 }
 
-void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item) {
+void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem */*item*/) {
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
@@ -526,7 +526,7 @@ void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem
 }
 
 
-void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item) {
+void SVLcaLccResultsDialog::on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem */*item*/) {
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
