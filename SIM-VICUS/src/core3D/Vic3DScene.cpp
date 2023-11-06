@@ -3716,6 +3716,7 @@ void Scene::setDefaultViewState() {
 		SVViewStateHandler::instance().setViewState(vs);
 		return;
 	case SVViewState::PM_BuildingAcousticProperties:
+	case SVViewState::PM_BuildingStructuralUnitProperties:
 		break;
 	} // switchd
 }

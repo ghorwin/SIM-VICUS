@@ -1295,8 +1295,15 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_ZoneTemplates:
 			Q_ASSERT(m_zoneTemplates[id] != nullptr);
 			m_zoneTemplates[id]->collectLocalChildren(localChildren); break;
+		case DT_AcousticTemplates:
+			Q_ASSERT(m_acousticTemplates[id] != nullptr);
+			m_acousticTemplates[id]->collectLocalChildren(localChildren); break;
+		case DT_SoundProtectionTemplates:
+			Q_ASSERT(m_soundProtectionTemplates[id] != nullptr);
+			m_soundProtectionTemplates[id]->collectLocalChildren(localChildren); break;
+		break;
 		case NUM_DT:
-			break;
+		break;
 	}
 }
 

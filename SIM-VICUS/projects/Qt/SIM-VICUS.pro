@@ -124,6 +124,7 @@ SOURCES += \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
     ../../src/SVPluginManager.cpp \
+    ../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.cpp \
     ../../src/SVPropBuildingStructuralUnitWidget.cpp \
     ../../src/SVPropNetworkEdgesWidget.cpp \
@@ -192,6 +193,7 @@ SOURCES += \
 	../../src/actions/SVUndoModifyNetwork.cpp \
 	../../src/actions/SVUndoModifyObjectName.cpp \
 	../../src/actions/SVUndoModifyProject.cpp \
+    ../../src/actions/SVUndoModifyRoomAcousticTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifyRoomSoundProtectionTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
@@ -353,6 +355,7 @@ HEADERS  += \
     ../../src/SVNonEquidistantSlider.h \
     ../../src/SVPluginLoader.h \
     ../../src/SVPluginManager.h \
+    ../../src/SVPropBuildingAcousticTemplatesWidget.h \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.h \
     ../../src/SVPropBuildingStructuralUnitWidget.h \
     ../../src/SVPropNetworkEdgesWidget.h \
@@ -423,6 +426,7 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyNetwork.h \
 	../../src/actions/SVUndoModifyObjectName.h \
 	../../src/actions/SVUndoModifyProject.h \
+    ../../src/actions/SVUndoModifyRoomAcousticTemplateAssociation.h \
 	../../src/actions/SVUndoModifyRoomSoundProtectionTemplateAssociation.h \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 	../../src/actions/SVUndoModifySiteData.h \
@@ -622,6 +626,7 @@ FORMS    += \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddGeometry.ui \
 	../../src/SVPropAddWindowWidget.ui \
+    ../../src/SVPropBuildingAcousticTemplatesWidget.ui \
 	../../src/SVPropBuildingBoundaryConditionsWidget.ui \
 	../../src/SVPropBuildingComponentOrientationWidget.ui \
 	../../src/SVPropBuildingComponentsWidget.ui \

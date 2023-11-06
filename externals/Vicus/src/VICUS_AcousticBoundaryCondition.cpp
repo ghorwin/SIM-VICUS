@@ -94,7 +94,7 @@ AbstractDBElement::ComparisonResult AcousticBoundaryCondition::equal(const Abstr
 		return Different;
 
 	// check parameters
-	for(int i = 0; i < m_soundAbsorptionLayers.size(); i++){
+	for(unsigned int i = 0; i < m_soundAbsorptionLayers.size(); i++){
 		// check if different?
 	}
 

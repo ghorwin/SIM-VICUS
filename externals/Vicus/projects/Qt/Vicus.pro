@@ -93,6 +93,7 @@ HEADERS += \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
 	../../src/VICUS_SoundAbsorptionLayer.h \
+	../../src/VICUS_SoundProtectionTemplate.h \
 	../../src/VICUS_StructuralUnit.h \
 	../../src/VICUS_SubNetwork.h \
 	../../src/VICUS_SubSurface.h \
@@ -168,6 +169,7 @@ SOURCES += \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_SoundAbsorptionLayer.cpp \
+    ../../src/VICUS_SoundProtectionTemplate.cpp \
 	../../src/VICUS_StructuralUnit.cpp \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \

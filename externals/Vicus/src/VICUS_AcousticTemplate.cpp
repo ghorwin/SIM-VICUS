@@ -1,8 +1,6 @@
 #include "VICUS_AcousticTemplate.h"
 
 namespace VICUS {
-AcousticTemplate::AcousticTemplate() {}
-
 
 AbstractDBElement::ComparisonResult AcousticTemplate::equal(const AbstractDBElement *other) const {
 	const AcousticTemplate * otherEPD = dynamic_cast<const AcousticTemplate*>(other);

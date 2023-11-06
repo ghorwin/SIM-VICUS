@@ -29,25 +29,20 @@
 #include <IBK_IntPara.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_Database.h"
-#include "VICUS_InternalLoad.h"
-#include "VICUS_Schedule.h"
-#include "VICUS_ZoneControlThermostat.h"
-#include "VICUS_Infiltration.h"
-#include "VICUS_VentilationNatural.h"
-#include "VICUS_ZoneIdealHeatingCooling.h"
 
 namespace VICUS {
 
 
 class AcousticTemplate : public AbstractDBElement {
 public:
-	AcousticTemplate();
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
+
+	/*! C'tor */
+	AcousticTemplate() {}
 
 
 	/*! Comparison operator */

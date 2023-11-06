@@ -28,10 +28,10 @@
 
 #include <VICUS_Project.h>
 
-#include "VICUS_AcousticTemplate.h"
-#include "VICUS_AcousticReferenceComponent.h"
-#include "VICUS_AcousticBuildingTemplate.h"
-
+#include <VICUS_AcousticTemplate.h>
+#include <VICUS_AcousticReferenceComponent.h>
+#include <VICUS_AcousticBuildingTemplate.h>
+#include <VICUS_SoundProtectionTemplate.h>
 
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
@@ -70,6 +70,7 @@ public:
 		DT_Infiltration,
 		DT_ZoneTemplates,
 		DT_AcousticTemplates,
+		DT_SoundProtectionTemplates,
 		DT_AcousticSoundAbsorptions,
 		NUM_DT // used for "all"
 	};
@@ -224,6 +225,9 @@ public:
 
 	/*! Map of all database Acoustic templates. */
 	VICUS::Database<VICUS::AcousticTemplate>			m_acousticTemplates;
+
+	/*! Map of all database sound protection templates. */
+	VICUS::Database<VICUS::SoundProtectionTemplate>		m_soundProtectionTemplates;
 
 	/*! Map of all database acoustic sound absorption templates. */
 	VICUS::Database<VICUS::AcousticSoundAbsorption>		m_acousticSoundAbsorptions;
