@@ -93,6 +93,13 @@ void SVPropFloorManagerWidget::onModified(int modificationType, ModificationInfo
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::BuildingTopologyChanged:
 		case SVProjectHandler::AllModified:
+		case SVProjectHandler::ClimateLocationAndFileModified:
+		case SVProjectHandler::OutputsModified:
+		case SVProjectHandler::SubSurfaceComponentInstancesModified:
+		case SVProjectHandler::StructuralUnitsModified:
+		case SVProjectHandler::ObjectRenamed:
+		case SVProjectHandler::DrawingModified:
+		case SVProjectHandler::LcaLccModified:
 		break;
 	}
 

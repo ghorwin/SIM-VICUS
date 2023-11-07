@@ -138,7 +138,7 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		case SVDatabase::DT_EpdDatasets:			dbItem(db.m_epdDatasets, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticTemplates:		dbItem(db.m_acousticTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticSoundAbsorptions:	dbItem(db.m_acousticSoundAbsorptions, leftID, rightID, dbElemLeft, dbElemRight); break;
-		case SVDatabase::DT_SoundProtectionTemplates:	dbItem(db.m_soundProtectionTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_AcousticSoundProtectionTemplates:	dbItem(db.m_acousticSoundProtectionTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::NUM_DT:
 		break;
 	}
@@ -505,10 +505,10 @@ void SVDBDuplicatesDialog::updateUi() {
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_acousticTemplates[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_acousticTemplates[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_SoundProtectionTemplates:
-					item->setText(tr("SoundProtectionTemplates"));
-					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_soundProtectionTemplates[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
-					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_soundProtectionTemplates[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+				case SVDatabase::DT_AcousticSoundProtectionTemplates:
+					item->setText(tr("AcousticSoundProtectionTemplates"));
+                                        left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_acousticSoundProtectionTemplates[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
+                                        right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_acousticSoundProtectionTemplates[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
 				case SVDatabase::DT_AcousticSoundAbsorptions:
 					item->setText(tr("AcousticSoundAbsorptions"));

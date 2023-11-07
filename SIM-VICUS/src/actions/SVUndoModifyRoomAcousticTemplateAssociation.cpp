@@ -1,20 +1,20 @@
-#include "SVUndoModifyRoomSoundProtectionTemplateAssociation.h"
+#include "SVUndoModifyRoomAcousticTemplateAssociation.h"
 
 #include "SVProjectHandler.h"
 
 #include <VICUS_Project.h>
 
-SVUndoModifyRoomSoundProtectionTemplateAssociation::SVUndoModifyRoomSoundProtectionTemplateAssociation(const QString & label,
-	const std::vector<unsigned int> & roomIDs, unsigned int zoneTemplateID, unsigned int buildingTypeId) : m_roomIDs(roomIDs)
+SVUndoModifyRoomAcousticTemplateAssociation::SVUndoModifyRoomAcousticTemplateAssociation(const QString & label,
+																						 const std::vector<unsigned int> & roomIDs,
+																						 unsigned int acousticTemplateID)
+	: m_roomIDs(roomIDs)
 {
 	setText( label );
-	 // populate vector with new zone template ID
-	m_acoutsicTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), zoneTemplateID);
-	m_buildingTypeIDs = std::vector<unsigned int>(m_roomIDs.size(), buildingTypeId);
-
+	// populate vector with new zone template ID
+	m_acousticTemplateIDs	= std::vector<unsigned int>(m_roomIDs.size(), acousticTemplateID);
 }
 
-void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
+void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
 	// exchange acoustic template IDs
 	VICUS::Project & p = theProject();
 
@@ -34,8 +34,7 @@ void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 					continue;
 
 				// swap current template ID and template ID in vector
-				std::swap(m_acoutsicTemplateIDs[idx], r.m_idAcousticTemplate);
-				std::swap(m_buildingTypeIDs[idx], r.m_acousticBuildingTypeId);
+				std::swap(m_acousticTemplateIDs[idx], r.m_idAcousticTemplate);
 
 				// now store also the information, that the room has been updated
 				const VICUS::Object *obj = dynamic_cast<VICUS::Object*>(&r);
@@ -49,7 +48,7 @@ void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 }
 
 
-void SVUndoModifyRoomSoundProtectionTemplateAssociation::redo() {
+void SVUndoModifyRoomAcousticTemplateAssociation::redo() {
 	undo(); // same code as undo
 }
 

@@ -3,6 +3,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVPropBuildingSoundProtectionTemplatesWidget.h"
+#include "SVPropBuildingAcousticTemplatesWidget.h"
 
 #include "SVConstants.h"
 #include "SVMainWindow.h"
@@ -21,7 +22,8 @@ SVPropAcosuticWidget::SVPropAcosuticWidget(QWidget *parent) :
 	// add pages to tool box:
 	// Note: NEVER change the order, it must correspond to StructuralUnitPropertyType enum.
 	m_ui->toolBox->blockSignals(true);
-	m_ui->toolBox->addPage(tr("Acoustic Templates"), new SVPropBuildingSoundProtectionTemplatesWidget(this));
+	m_ui->toolBox->addPage(tr("Sound protection templates"), new SVPropBuildingSoundProtectionTemplatesWidget(this));
+	m_ui->toolBox->addPage(tr("Acoustic templates"), new SVPropBuildingAcousticTemplatesWidget(this));
 
 
 	m_ui->toolBox->blockSignals(false);
@@ -95,7 +97,10 @@ void SVPropAcosuticWidget::onCurrentBuildingPropertyTypeChanged(int propertyType
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	switch (structuralUnitPropType) {
 		case AT_AcousticTemplate:
-			vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
+			vs.m_objectColorMode = SVViewState::OCM_AcousticRoomTemplates;
+		break;
+		case AT_SoundProtectionTemplate:
+			vs.m_objectColorMode = SVViewState::OCM_SoundProtectionRoomTemplates;
 		break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
@@ -121,6 +126,7 @@ void SVPropAcosuticWidget::updateUi() {
 	// Note: It is not meaningful to update the widgets based on their visibility.
 	// It could be that project data changes and then the user switches to a different widget, which has then not be updated yet.
 	dynamic_cast<SVPropBuildingSoundProtectionTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticTemplate))->updateUi();
+	dynamic_cast<SVPropBuildingAcousticTemplatesWidget*>(m_ui->toolBox->widget(AT_SoundProtectionTemplate))->updateUi();
 
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }

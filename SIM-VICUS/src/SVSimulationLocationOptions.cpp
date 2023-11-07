@@ -693,7 +693,7 @@ void SVSimulationLocationOptions::modifyClimateFileAndLocation(const SVClimateFi
 										   NANDRAD::Location::P_Latitude, climateInfoPtr->m_latitudeInDegree);
 		NANDRAD::KeywordList::setParameter(location.m_para, "Location::para_t",
 										   NANDRAD::Location::P_Longitude, climateInfoPtr->m_longitudeInDegree);
-		location.m_timeZone = climateInfoPtr->m_timeZone + 12;
+		location.m_timeZone = climateInfoPtr->m_timeZone /*+ 12*/;
 	}
 
 	SVUndoModifyClimate *undo = new SVUndoModifyClimate("Climate file changed", location, true);

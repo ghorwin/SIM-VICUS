@@ -562,23 +562,25 @@ int StructuralShading::findSimilarNormals(const IBKMK::Vector3D &sunNormal) cons
 void StructuralShading::findVisibleSurfaces(bool useClipping) {
 	// Finding shading partners for all surfaces
 	for(ShadingObject &surf : m_surfaces) {
-		// iterate through all vertex points of surface
-		for(const ShadingObject &obst : m_obstacles) {
 
-			for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+		// iterate through all vertex points of surface
+		for (const ShadingObject &obst : m_obstacles) {
+
 			// iterate through all possible shading objects
+			for (size_t i=0; i<surf.m_polygon.vertexes().size(); ++i) {
+
 				bool obstAdded = false;
 
 				// skip parent objects (wall surface) of sub-surfaces such as windows
-				if(!useClipping && (surf.m_idParent == obst.m_idVicus))
+				if (!useClipping && (surf.m_idParent == obst.m_idVicus))
 					continue;
 
 				// skip parent objects (wall surface) of sub-surfaces such as windows
-				if((obst.m_idParent != INVALID_ID) && (surf.m_idVicus != obst.m_idParent))
+				if ((obst.m_idParent != INVALID_ID) && (surf.m_idVicus != obst.m_idParent))
 					continue;
 
 				// iterate through all vertexes of shading objects
-				for(const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
+				for (const IBKMK::Vector3D v : obst.m_polygon.vertexes()) {
 					double linefactor = 0;
 					IBKMK::Vector3D p;
 
@@ -586,14 +588,14 @@ void StructuralShading::findVisibleSurfaces(bool useClipping) {
 					IBKMK::lineToPointDistance(surf.m_polygon.vertexes()[i], surf.m_polygon.normal(), v, linefactor, p);
 
 					// Tolerance to skip all possible windows that are inside our window
-					if (linefactor>1e-4) {
+					if (linefactor > 1e-4) {
 						// store the surface that lies in front
 						surf.m_visibleSurfaces.insert(obst.m_id);
 						obstAdded = true; // we store that we already added the
 						break;
 					}
 				}
-				if(obstAdded)
+				if (obstAdded)
 					break; // Do not handle all the other surface vertexes
 			}
 		}

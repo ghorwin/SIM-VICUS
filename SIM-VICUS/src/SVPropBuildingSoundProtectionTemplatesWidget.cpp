@@ -91,7 +91,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, false); // we always show all in table
 
 
-	const VICUS::Database<VICUS::AcousticTemplate> & dbAt = SVSettings::instance().m_db.m_acousticTemplates;
+	const VICUS::Database<VICUS::AcousticSoundProtectionTemplate> & dbAt = SVSettings::instance().m_db.m_acousticSoundProtectionTemplates;
 
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetAcousticTemplates->currentRow();
@@ -114,9 +114,9 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	if(idsOfBuildingType == nullptr)
 		throw IBK::Exception("Selected building type not found in datebase!", FUNC_ID);
 
-	std::set<const VICUS::AcousticTemplate*> templatesNotInBuildingType;
+	std::set<const VICUS::AcousticSoundProtectionTemplate *> templatesNotInBuildingType;
 	// loads all the templates from db and put them in the table if the right building type is selected
-	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
+	for (std::map<unsigned int, VICUS::AcousticSoundProtectionTemplate>::const_iterator
 		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 
 		//check if the id is in the id vector of the current type
@@ -149,7 +149,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 
 	//now append all the other templates with grey font and disabled
 
-	for(const VICUS::AcousticTemplate * at : templatesNotInBuildingType){
+	for(const VICUS::AcousticSoundProtectionTemplate * at : templatesNotInBuildingType){
 		m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
 		QTableWidgetItem * item = new QTableWidgetItem();
@@ -226,24 +226,24 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 
 void SVPropBuildingSoundProtectionTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
 	// the assign-from-table button is only available when there is at least one surface selected
-	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedAcousticTemplate() != nullptr);
+	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedSoundProtectionTemplate() != nullptr);
 }
 
 
-const VICUS::AcousticTemplate * SVPropBuildingSoundProtectionTemplatesWidget::currentlySelectedAcousticTemplate() const {
+const VICUS::AcousticSoundProtectionTemplate * SVPropBuildingSoundProtectionTemplatesWidget::currentlySelectedSoundProtectionTemplate() const {
 	// check if selected "template" is actually missing
 	int r = m_ui->tableWidgetAcousticTemplates->currentRow();
 	if (r == -1)
 		return nullptr;
 
-	const VICUS::Database<VICUS::AcousticTemplate> & db_at = SVSettings::instance().m_db.m_acousticTemplates;
-	std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator it = db_at.begin();
+        const VICUS::Database<VICUS::AcousticSoundProtectionTemplate> & db = SVSettings::instance().m_db.m_acousticSoundProtectionTemplates;
+        std::map<unsigned int, VICUS::AcousticSoundProtectionTemplate>::const_iterator it = db.begin();
 	QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
-	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db_at.end())
+	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db.end())
 		std::advance(it, 1);
 
 	// if nothing was found
-	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db_at.end())
+	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db.end())
 		return nullptr;
 
 	return &(it->second);
@@ -254,7 +254,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonAssignAcousticTe
 
 	// find out which component is selected in table
 	// get currently selected acoustic template
-	const VICUS::AcousticTemplate * at = currentlySelectedAcousticTemplate();
+    const VICUS::AcousticSoundProtectionTemplate * at = currentlySelectedSoundProtectionTemplate();
 
 	// if not a valid template, do nothing here
 	if (at == nullptr)
@@ -289,11 +289,10 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonDeleteTemplate_c
 	for (const VICUS::Room * ro : rooms)
 		modifiedRoomIDs.push_back(ro->m_id);
 
-	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
 				tr("Assigned acoustic template"),
-				modifiedRoomIDs, VICUS::INVALID_ID, buildingTypeId);
+				modifiedRoomIDs, VICUS::INVALID_ID, VICUS::INVALID_ID);
 	undo->push();
 }
 

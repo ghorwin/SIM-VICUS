@@ -177,7 +177,7 @@ QModelIndex SVDBAcousticBoundaryConditionTableModel::addNewItem() {
 	unsigned int defaultSoundAbsorptionId = 0;
 	if (!m_db->m_acousticSoundAbsorptions.empty())
 			defaultSoundAbsorptionId = m_db->m_acousticSoundAbsorptions.begin()->first;
-	VICUS::SoundAbsorptionLayer layer(0.1, defaultSoundAbsorptionId);
+        VICUS::AcousticSoundAbsorptionPartition layer(0.1, defaultSoundAbsorptionId);
 	bc.m_soundAbsorptionLayers.push_back(layer);
 	//set default parameters
 

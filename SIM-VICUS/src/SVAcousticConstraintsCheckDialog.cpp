@@ -422,8 +422,8 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 					if (ci->m_idSideASurface == r.m_id) {
 						const VICUS::AcousticBoundaryCondition *aBC = db.m_acousticBoundaryConditions[comp->m_idSideAAcousticBoundaryCondition];
 
-						for (const VICUS::SoundAbsorptionLayer &layer : aBC->m_soundAbsorptionLayers) {
-							double areaFraction = layer.m_para[VICUS::SoundAbsorptionLayer::P_AreaFraction].value;
+                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+                                                    double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 							if (soundAbsorption == nullptr)
@@ -441,8 +441,8 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 					if (ci->m_idSideBSurface == r.m_id) {
 						const VICUS::AcousticBoundaryCondition *aBC = db.m_acousticBoundaryConditions[comp->m_idSideBAcousticBoundaryCondition];
 
-						for (const VICUS::SoundAbsorptionLayer &layer : aBC->m_soundAbsorptionLayers) {
-							double areaFraction = layer.m_para[VICUS::SoundAbsorptionLayer::P_AreaFraction].value;
+                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+                                                    double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 							if (soundAbsorption == nullptr)

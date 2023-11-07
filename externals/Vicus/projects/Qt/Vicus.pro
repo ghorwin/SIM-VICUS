@@ -40,6 +40,8 @@ HEADERS += \
 	../../src/VICUS_AcousticBuildingTemplate.h \
 	../../src/VICUS_AcousticComponent.h \
 	../../src/VICUS_AcousticReferenceComponent.h \
+	../../src/VICUS_AcousticSoundAbsorptionPartition.h \
+	../../src/VICUS_AcousticSoundProtectionTemplate.h \
 	../../src/VICUS_AcousticTemplate.h \
 	../../src/VICUS_ArgsParser.h \
 	../../src/VICUS_BTFReader.h \
@@ -92,8 +94,6 @@ HEADERS += \
 	../../src/VICUS_RotationMatrix.h \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
-	../../src/VICUS_SoundAbsorptionLayer.h \
-	../../src/VICUS_SoundProtectionTemplate.h \
 	../../src/VICUS_StructuralUnit.h \
 	../../src/VICUS_SubNetwork.h \
 	../../src/VICUS_SubSurface.h \
@@ -122,6 +122,8 @@ SOURCES += \
 	../../src/VICUS_AcousticBuildingTemplate.cpp \
 	../../src/VICUS_AcousticComponent.cpp \
 	../../src/VICUS_AcousticReferenceComponent.cpp \
+    ../../src/VICUS_AcousticSoundAbsorptionPartition.cpp \
+    ../../src/VICUS_AcousticSoundProtectionTemplate.cpp \
 	../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BTFReader.cpp \
@@ -168,8 +170,6 @@ SOURCES += \
 	../../src/VICUS_Room.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
-	../../src/VICUS_SoundAbsorptionLayer.cpp \
-    ../../src/VICUS_SoundProtectionTemplate.cpp \
 	../../src/VICUS_StructuralUnit.cpp \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
@@ -227,9 +227,10 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
-        ../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
-    ../../src/ncg/ncg_VICUS_SoundAbsorptionLayer.cpp \
-    ../../src/ncg/ncg_VICUS_StructuralUnit.cpp \
+	 ../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
+	../../src/ncg/ncg_VICUS_AcousticSoundAbsorptionPartition.cpp \
+	../../src/ncg/ncg_VICUS_AcousticSoundProtectionTemplate.cpp \
+	../../src/ncg/ncg_VICUS_StructuralUnit.cpp \
 	../../src/ncg/ncg_VICUS_SubNetwork.cpp \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \

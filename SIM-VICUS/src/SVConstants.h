@@ -110,18 +110,20 @@ enum BuildingPropertyType {
 
 /*! Structural unit property modes. */
 enum StructuralUnitPropertyType {
-    /*! Structural Unit property */
-    ST_StructuralUnit,
-    /*! Zone property */
-    ST_ZoneProperty,
-    /*! Floor manager. */
-    ST_FloorManager,
+	/*! Structural Unit property */
+	ST_StructuralUnit,
+	/*! Zone property */
+	ST_ZoneProperty,
+	/*! Floor manager. */
+	ST_FloorManager,
 };
 
 /*! Acoustic property modes. */
 enum AcousticPropertyType {
-    /*! Acoustic Template */
-    AT_AcousticTemplate,
+	/*! Acoustic Template */
+	AT_AcousticTemplate,
+	/*! Acoustic Template */
+	AT_SoundProtectionTemplate
 };
 
 /*! Different edit/coloring modes. */

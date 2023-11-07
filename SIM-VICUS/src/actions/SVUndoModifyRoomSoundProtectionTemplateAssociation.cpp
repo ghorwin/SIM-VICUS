@@ -5,14 +5,18 @@
 #include <VICUS_Project.h>
 
 SVUndoModifyRoomSoundProtectionTemplateAssociation::SVUndoModifyRoomSoundProtectionTemplateAssociation(const QString & label,
-	const std::vector<unsigned int> & roomIDs, unsigned int zoneTemplateID, unsigned int buildingTypeId) : m_roomIDs(roomIDs)
+																									   const std::vector<unsigned int> & roomIDs,
+																									   unsigned int soundProtectionTemplateID,
+																									   unsigned int buildingTypeId)
+	: m_roomIDs(roomIDs)
 {
 	setText( label );
-	 // populate vector with new zone template ID
-	m_acoutsicTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), zoneTemplateID);
+	// populate vector with new zone template ID
+	m_soundProtectionTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), soundProtectionTemplateID);
 	m_buildingTypeIDs = std::vector<unsigned int>(m_roomIDs.size(), buildingTypeId);
 
 }
+
 
 void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 	// exchange acoustic template IDs
@@ -34,7 +38,7 @@ void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 					continue;
 
 				// swap current template ID and template ID in vector
-				std::swap(m_acoutsicTemplateIDs[idx], r.m_idAcousticTemplate);
+				std::swap(m_soundProtectionTemplateIDs[idx], r.m_idSoundProtectionTemplate);
 				std::swap(m_buildingTypeIDs[idx], r.m_acousticBuildingTypeId);
 
 				// now store also the information, that the room has been updated

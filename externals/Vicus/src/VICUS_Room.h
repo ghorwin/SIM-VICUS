@@ -85,12 +85,14 @@ public:
 	//:inherited	std::string			m_ifcGUID;					// XML:A
 
 	/*! Reference to assigned zone template (optional). */
-	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
+	IDType								m_idZoneTemplate = INVALID_ID;				// XML:E
     /*! Reference to assigned acoustic template (optional). */
-    IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
+	IDType								m_idAcousticTemplate = INVALID_ID;			// XML:E
+	/*! Reference to assigned sound protection (optional). */
+	IDType								m_idSoundProtectionTemplate = INVALID_ID;	// XML:E
 
     /*! Stores the building type */
-    IDType								m_acousticBuildingTypeId = INVALID_ID;	// XML:E
+	IDType								m_acousticBuildingTypeId = INVALID_ID;		// XML:E
 
 	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E

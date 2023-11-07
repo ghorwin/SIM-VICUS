@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_AcousticBoundaryCondition.h>
+#include <VICUS_AcousticSoundProtectionTemplate.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -27,13 +27,14 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
 namespace VICUS {
 
-void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
-	FUNCID(AcousticBoundaryCondition::readXML);
+void AcousticSoundProtectionTemplate::readXML(const TiXmlElement * element) {
+	FUNCID(AcousticSoundProtectionTemplate::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -51,6 +52,14 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else if (attribName == "buildingType")
+				try {
+					m_buildingType = (AcousticBuildingType)KeywordList::Enumeration("AcousticSoundProtectionTemplate::AcousticBuildingType", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -61,18 +70,10 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SoundAbsorptionLayers") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "AcousticSoundAbsorptionPartition")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					AcousticSoundAbsorptionPartition obj;
-					obj.readXML(c2);
-					m_soundAbsorptionLayers.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
+			if (cName == "Notes")
+				m_notes.setEncodedString(c->GetText());
+			else if (cName == "IdsTemplate")
+				NANDRAD::readVector(c, "IdsTemplate", m_idsTemplate);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -80,16 +81,16 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticBoundaryCondition' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticSoundProtectionTemplate' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'AcousticBoundaryCondition' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'AcousticSoundProtectionTemplate' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * AcousticBoundaryCondition::writeXML(TiXmlElement * parent) const {
+TiXmlElement * AcousticSoundProtectionTemplate::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("AcousticBoundaryCondition");
+	TiXmlElement * e = new TiXmlElement("AcousticSoundProtectionTemplate");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
@@ -98,18 +99,11 @@ TiXmlElement * AcousticBoundaryCondition::writeXML(TiXmlElement * parent) const 
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-
-	if (!m_soundAbsorptionLayers.empty()) {
-		TiXmlElement * child = new TiXmlElement("SoundAbsorptionLayers");
-		e->LinkEndChild(child);
-
-		for (std::vector<AcousticSoundAbsorptionPartition>::const_iterator it = m_soundAbsorptionLayers.begin();
-			it != m_soundAbsorptionLayers.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
+	if (m_buildingType != NUM_ABT)
+		e->SetAttribute("buildingType", KeywordList::Keyword("AcousticSoundProtectionTemplate::AcousticBuildingType",  m_buildingType));
+	if (!m_notes.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	NANDRAD::writeVector(e, "IdsTemplate", m_idsTemplate);
 	return e;
 }
 

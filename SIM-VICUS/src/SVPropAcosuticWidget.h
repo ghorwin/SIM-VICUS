@@ -4,7 +4,7 @@
 #include <QWidget>
 
 namespace Ui {
-class SVPropSoundProtectionWidget;
+class SVPropAcosuticWidget;
 }
 class ModificationInfo;
 
@@ -47,7 +47,7 @@ private:
 		calls the updateUi() functions in the individual widgets.
 	*/
 	void updateUi();
-	Ui::SVPropSoundProtectionWidget *m_ui;
+	Ui::SVPropAcosuticWidget *m_ui;
 };
 
 #endif // SVPropAcosuticWidgetH

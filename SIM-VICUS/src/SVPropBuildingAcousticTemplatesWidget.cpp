@@ -5,7 +5,7 @@
 
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
-#include "SVUndoModifyRoomSoundProtectionTemplateAssociation.h"
+#include "SVUndoModifyRoomAcousticTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 
 #include "VICUS_AcousticBuildingTemplate.h"
@@ -224,9 +224,9 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonAssignAcousticTemplate_
 		modifiedRoomIDs.push_back(ro->m_id);
 
 	// now create an undo action for modifying zone template assignments
-//	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
-//				tr("Assigned acoustic template"),
-//				modifiedRoomIDs, at->m_id, buildingTypeId);
+	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
+				tr("Assigned acoustic template"),
+				modifiedRoomIDs, at->m_id);
 	undo->push();
 }
 
@@ -243,9 +243,10 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 		modifiedRoomIDs.push_back(ro->m_id);
 
 	// now create an undo action for modifying zone template assignments
-	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
+	SVUndoModifyRoomAcousticTemplateAssociation * undo = new SVUndoModifyRoomAcousticTemplateAssociation(
 				tr("Assigned acoustic template"),
-				modifiedRoomIDs, VICUS::INVALID_ID, buildingTypeId);
+				modifiedRoomIDs, VICUS::INVALID_ID);
+
 	undo->push();
 }
 

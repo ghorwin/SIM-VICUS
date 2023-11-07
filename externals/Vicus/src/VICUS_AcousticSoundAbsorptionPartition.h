@@ -1,5 +1,5 @@
-#ifndef VICUS_SoundAbsorptionLayerH
-#define VICUS_SoundAbsorptionLayerH
+#ifndef VICUS_AcousticSoundAbsorptionPartitionH
+#define VICUS_AcousticSoundAbsorptionPartitionH
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
@@ -10,32 +10,30 @@
 
 namespace VICUS {
 
-class SoundAbsorptionLayer
-{
+class AcousticSoundAbsorptionPartition {
 public:
 
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Area fraction. */
 		P_AreaFraction,			// Keyword: AreaFraction					[---]	'Fraction of surface area.'
-
 		NUM_P
 	};
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Default c'tor. */
-	SoundAbsorptionLayer(){}
+	AcousticSoundAbsorptionPartition(){}
 
 
 	/*! Simple Constructor with thickness in [m] and material id. */
-	SoundAbsorptionLayer(double areaFraction, unsigned int id):
+	AcousticSoundAbsorptionPartition(double areaFraction, unsigned int id):
 		m_idSoundAbsorption(id)
 	{
 		m_para[P_AreaFraction].set("AreaFraction", areaFraction, IBK::Unit("---"));
 	}
 
 	/*! Simple Constructor with thickness and material id. */
-	SoundAbsorptionLayer(IBK::Parameter areaFraction, unsigned int id):
+	AcousticSoundAbsorptionPartition(IBK::Parameter areaFraction, unsigned int id):
 		m_idSoundAbsorption(id)
 	{
 		m_para[P_AreaFraction] = areaFraction;
@@ -47,12 +45,12 @@ public:
 	bool isValid(const VICUS::Database<VICUS::AcousticSoundAbsorption> & soundAbsorption) const;
 
 	/*! Inequality operator. */
-	bool operator!=(const SoundAbsorptionLayer & other) const {
+	bool operator!=(const AcousticSoundAbsorptionPartition & other) const {
 		return (m_idSoundAbsorption != other.m_idSoundAbsorption||
 				m_para[P_AreaFraction] != other.m_para[P_AreaFraction]);
 	}
 	/*! Equality operator. */
-	bool operator==(const SoundAbsorptionLayer & other) const { return !operator!=(other); }
+	bool operator==(const AcousticSoundAbsorptionPartition & other) const { return !operator!=(other); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -69,4 +67,4 @@ public:
 
 } // namespace VICUS
 
-#endif // VICUS_SoundAbsorptionLayerH
+#endif // VICUS_AcousticSoundAbsorptionPartitionH

@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_SoundAbsorptionLayer.h>
+#include <VICUS_AcousticSoundAbsorptionPartition.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void SoundAbsorptionLayer::readXML(const TiXmlElement * element) {
-	FUNCID(SoundAbsorptionLayer::readXML);
+void AcousticSoundAbsorptionPartition::readXML(const TiXmlElement * element) {
+	FUNCID(AcousticSoundAbsorptionPartition::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -63,7 +63,7 @@ void SoundAbsorptionLayer::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("SoundAbsorptionLayer::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("AcousticSoundAbsorptionPartition::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -77,15 +77,15 @@ void SoundAbsorptionLayer::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SoundAbsorptionLayer' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'AcousticSoundAbsorptionPartition' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'SoundAbsorptionLayer' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'AcousticSoundAbsorptionPartition' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * SoundAbsorptionLayer::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("SoundAbsorptionLayer");
+TiXmlElement * AcousticSoundAbsorptionPartition::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("AcousticSoundAbsorptionPartition");
 	parent->LinkEndChild(e);
 
 	if (m_idSoundAbsorption != VICUS::INVALID_ID)

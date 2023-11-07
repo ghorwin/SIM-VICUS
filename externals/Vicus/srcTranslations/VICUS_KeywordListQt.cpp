@@ -40,6 +40,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Wall");
 	tr("Door");
 	tr("Stairs");
+	tr("Fraction of surface area.");
+	tr("Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen");
+	tr("Hotels und Beherbergungsstätten");
+	tr("Krankenhäuser und Sanatorien");
+	tr("Schulen und vergleichbaren Einrichtungen");
+	tr("Einfamilien-Reihenhäusern und zwischen Doppelhäusern");
+	tr("Büro");
 	tr("Outside wall construction");
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");
@@ -310,7 +317,6 @@ KeywordListQt::KeywordListQt() {
 	tr("If true, default summation models and according output definitions for networks are created.");
 	tr("Floor usable area of the zone");
 	tr("Volume of the zone");
-	tr("Fraction of surface area.");
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");

@@ -9,8 +9,6 @@ namespace VICUS {
 class AcousticSoundAbsorption : public AbstractDBElement
 {
 public:
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE_PRIVATE

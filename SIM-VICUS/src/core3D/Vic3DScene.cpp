@@ -240,9 +240,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		m_drawingGeometryObject.updateBuffers();
 	} break;
 
-    case SVProjectHandler::StructuralUnitsModified :
-        refreshColors();
-        break;
+	case SVProjectHandler::StructuralUnitsModified :
+		refreshColors();
+		break;
 
 	default:
 		return; // do nothing by default
@@ -355,7 +355,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* far */            farDistance
 				);
 	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
-//	m_projection.ortho(-.02*width, .02*width, -.02*height, .02*height, -farDistance, farDistance);
+	//	m_projection.ortho(-.02*width, .02*width, -.02*height, .02*height, -farDistance, farDistance);
 	// the small view projection matrix is constant
 	m_smallViewProjection.setToIdentity();
 	// create projection matrix, i.e. camera lens
@@ -2307,51 +2307,74 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	} break;
 
 
-        // *** OCM_AcousticRoomType
-    case SVViewState::OCM_AcousticRoomType: {
-        for (const VICUS::Building & b : p.m_buildings) {
-            for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-                for (const VICUS::Room & r : bl.m_rooms) {
-                    // skip all without acoustic template
-                    if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
-                        continue; // they keep the default gray
-                    if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
-                        // lookup zone template
-                        const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
-                        if (at == nullptr)
-                            continue; // no definition - keep default (gray) color
-                        // color all surfaces of room based on zone template color
-                        for (const VICUS::Surface & s : r.m_surfaces)
-                            s.m_color = at->m_color;
-                        // TODO : subsurfaces
+		// *** OCM_AcousticRoomType
+	case SVViewState::OCM_AcousticRoomTemplates : {
+		for (const VICUS::Building & b : p.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					// skip all without acoustic template
+					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+						continue; // they keep the default gray
+					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+						// lookup zone template
+						const VICUS::AcousticTemplate * at = db.m_acousticTemplates[r.m_idAcousticTemplate];
+						if (at == nullptr)
+							continue; // no definition - keep default (gray) color
+						// color all surfaces of room based on zone template color
+						for (const VICUS::Surface & s : r.m_surfaces)
+							s.m_color = at->m_color;
+						// TODO : subsurfaces
 
-                    }
-                }
-            }
-        }
-    } break;
+					}
+				}
+			}
+		}
+	} break;
 
-        // *** OCM_StructuralUnit
-    case SVViewState::OCM_StructuralUnit: {
-        // loop over all the units
-        for (const VICUS::StructuralUnit & unit : p.m_structuralUnits) {
-            for(unsigned int roomId : unit.m_roomIds){
-                // find the room and assign color
-                for (const VICUS::Building & b : p.m_buildings) {
-                    for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-                        for (const VICUS::Room & r : bl.m_rooms) {
-                            if(r.m_id != roomId){
-                                continue;
-                            }
-                            for (const VICUS::Surface & s : r.m_surfaces)
-                                s.m_color = unit.m_color;
-                            // TODO : subsurfaces
-                            }
-                        }
-                    }
-                }
-            }
-        } break;
+	// *** OCM_AcousticRoomType
+	case SVViewState::OCM_SoundProtectionRoomTemplates : {
+		for (const VICUS::Building & b : p.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					// skip all without acoustic template
+					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+						continue; // they keep the default gray
+					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+						// lookup zone template
+                                            const VICUS::AcousticSoundProtectionTemplate * spt = db.m_acousticSoundProtectionTemplates[r.m_idSoundProtectionTemplate];
+						if (spt == nullptr)
+							continue; // no definition - keep default (gray) color
+						// color all surfaces of room based on zone template color
+						for (const VICUS::Surface & s : r.m_surfaces)
+							s.m_color = spt->m_color;
+						// TODO : subsurfaces
+					}
+				}
+			}
+		}
+	} break;
+
+		// *** OCM_StructuralUnit
+	case SVViewState::OCM_StructuralUnit: {
+		// loop over all the units
+		for (const VICUS::StructuralUnit & unit : p.m_structuralUnits) {
+			for(unsigned int roomId : unit.m_roomIds){
+				// find the room and assign color
+				for (const VICUS::Building & b : p.m_buildings) {
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+						for (const VICUS::Room & r : bl.m_rooms) {
+							if(r.m_id != roomId){
+								continue;
+							}
+							for (const VICUS::Surface & s : r.m_surfaces)
+								s.m_color = unit.m_color;
+							// TODO : subsurfaces
+						}
+					}
+				}
+			}
+		}
+	} break;
 
 
 
@@ -3386,7 +3409,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							double lineFactor;
 							double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
 
-//							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
+							//							qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
 
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 							// another snap point that's closer.
@@ -3397,7 +3420,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 								snapCandidates.push_back(sc);
 								closestDepthSoFar = dist2;
 
-//								qDebug() << "PICKED";
+								//								qDebug() << "PICKED";
 							}
 						}
 					}

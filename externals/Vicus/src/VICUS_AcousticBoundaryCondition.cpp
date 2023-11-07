@@ -36,7 +36,7 @@ bool AcousticBoundaryCondition::isValid(const VICUS::Database<AcousticSoundAbsor
 		return false;
 	}
 
-	for(const SoundAbsorptionLayer &layer : m_soundAbsorptionLayers){
+        for(const AcousticSoundAbsorptionPartition &layer : m_soundAbsorptionLayers){
 		if(!layer.isValid(soundAbsDB)){
 			m_errorMsg = "Sound absorption ist not valid!";
 			return false;
@@ -62,7 +62,7 @@ QString AcousticBoundaryCondition::htmlDescription(const VICUS::Database<VICUS::
 	if(isValid(soundAbsDB)){
 		// sum up all absorptions
 		for(unsigned int i=0; i<m_soundAbsorptionLayers.size(); ++i){
-			const SoundAbsorptionLayer &layer = m_soundAbsorptionLayers[i];
+                    const AcousticSoundAbsorptionPartition &layer = m_soundAbsorptionLayers[i];
 
 			const AcousticSoundAbsorption *soundAbs = soundAbsDB[layer.m_idSoundAbsorption];
 
@@ -70,7 +70,7 @@ QString AcousticBoundaryCondition::htmlDescription(const VICUS::Database<VICUS::
 				continue;
 
 			for(unsigned int j=0; j<AcousticSoundAbsorption::NUM_SF; ++j)
-				absorption[j] += layer.m_para[SoundAbsorptionLayer::P_AreaFraction].value * soundAbs->m_soundAbsorption[j];
+                            absorption[j] += layer.m_para[AcousticSoundAbsorptionPartition::P_AreaFraction].value * soundAbs->m_soundAbsorption[j];
 		}
 
 		html += "<table border=\"0\">";

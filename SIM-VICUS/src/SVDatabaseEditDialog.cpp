@@ -425,7 +425,8 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
 			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
 			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
-			case SVDatabase::DT_AcousticTemplates:		break;
+			case SVDatabase::DT_AcousticTemplates:		SVSettings::instance().m_db.m_acousticTemplates.removeUserElements(); break;
+			case SVDatabase::DT_AcousticSoundProtectionTemplates:	SVSettings::instance().m_db.m_acousticSoundProtectionTemplates.removeUserElements(); break;
 			case SVDatabase::NUM_DT:; // just to make compiler happy
 		}
 

@@ -9,7 +9,7 @@ class SVPropBuildingSoundProtectionTemplatesWidget;
 }
 
 namespace VICUS {
-	class AcousticTemplate;
+class AcousticSoundProtectionTemplate;
 	class Room;
 }
 
@@ -38,7 +38,7 @@ private slots:
 private:
 
 	/*! Returns a pointer to the currently selected acoustic template in the zone template table. */
-	const VICUS::AcousticTemplate * currentlySelectedAcousticTemplate() const;
+        const VICUS::AcousticSoundProtectionTemplate * currentlySelectedSoundProtectionTemplate() const;
 
 
 	Ui::SVPropBuildingSoundProtectionTemplatesWidget *m_ui;
@@ -46,7 +46,7 @@ private:
 	/*! Maps stores pointers to room objects grouped for assigned acoustic templates.
 		Note: rooms without zone template ID are ignored.
 	*/
-	std::map<const VICUS::AcousticTemplate*, std::vector<const VICUS::Room *> >			m_acousticTemplateAssignments;
+        std::map<const VICUS::AcousticSoundProtectionTemplate *, std::vector<const VICUS::Room *> >		m_acousticTemplateAssignments;
 };
 
 #endif // SVPropBuildingSoundProtectionTemplatesWidgetH

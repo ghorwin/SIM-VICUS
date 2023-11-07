@@ -728,7 +728,7 @@ void SVGeometryView::on_actionAcousticParametrization_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// show building properties widget
 	vs.m_propertyWidgetMode = SVViewState::PM_BuildingAcousticProperties;
-	vs.m_objectColorMode = SVViewState::OCM_AcousticRoomType;
+	vs.m_objectColorMode = SVViewState::OCM_AcousticRoomTemplates;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);

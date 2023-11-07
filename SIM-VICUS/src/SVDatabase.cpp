@@ -32,7 +32,7 @@
 
 #include <QtExt_Directories.h>
 
-#include  <QMessageBox>
+#include <QMessageBox>
 
 #include "SVProjectHandler.h"
 
@@ -91,13 +91,14 @@ SVDatabase::SVDatabase() :
 	m_zoneTemplates(1082500),
 	//	SubNetworks: 1110000-1112500
 	m_acousticTemplates(1400100),
-    m_acousticSoundAbsorptions(1085001),
-    m_acousticReferenceComponents(1600000),
-    m_acousticBuildingTemplates(407000)
+	m_acousticSoundProtectionTemplates(507000),
+	m_acousticSoundAbsorptions(1085001),
+	m_acousticReferenceComponents(1600000),
+	m_acousticBuildingTemplates(407000)
 
   //TODO Anton Start Id ist glaube ich nicht richtig implementiert
-  //wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
-  //davon starten manche bei 1 und manche bei 10.000.000 ???
+  //	 wird beachtet für VICUS::DB.add(), aber beim lesen der XML Dateien werden die in XML Dateinen angegebenen Ids genommen
+  //	 davon starten manche bei 1 und manche bei 10.000.000 ???
 {}
 
 
@@ -136,8 +137,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_acousticTemplates.readXML(		dbDir / "db_acousticTemplates.xml", "AcousticTemplates", "AcousticTemplate", true);
 		m_supplySystems.readXML(			dbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystem", true);
 		m_epdDatasets.readXML(				dbDir / "db_epdDatasets.xml", "EpdDatasets", "EpdDataset", true);
-        m_acousticReferenceComponents.readXML(		dbDir / "db_acousticReferenceComponents.xml", "AcousticReferenceComponents", "AcousticReferenceComponent", true);
-        m_acousticBuildingTemplates.readXML(		dbDir / "db_acousticBuildingTemplates.xml", "AcousticBuildingTemplates", "AcousticBuildingTemplate", true);
+		m_acousticReferenceComponents.readXML(	dbDir / "db_acousticReferenceComponents.xml", "AcousticReferenceComponents", "AcousticReferenceComponent", true);
+		m_acousticBuildingTemplates.readXML(	dbDir / "db_acousticBuildingTemplates.xml", "AcousticBuildingTemplates", "AcousticBuildingTemplate", true);
+		m_acousticSoundProtectionTemplates.readXML(		dbDir / "db_acousticSoundProtectionTemplates.xml", "AcousticSoundProtectionTemplates", "AcousticSoundProtectionTemplate", true);
 	}
 
 	// user databases
@@ -261,6 +263,8 @@ void SVDatabase::writeDatabases(DatabaseTypes t) const {
 		m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 	if (t == NUM_DT || t == DT_EpdDatasets)
 		m_epdDatasets.writeXML(			userDbDir / "db_epdDatasets.xml", "EpdDatasets");
+	if (t == NUM_DT || t == DT_AcousticSoundProtectionTemplates)
+		m_acousticSoundProtectionTemplates.writeXML(	userDbDir / "db_acousticSoundProtectionTemplates.xml", "AcousticSoundProtectionTemplates");
 
 
 }
@@ -296,6 +300,7 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_acousticTemplates.import(db.m_acousticTemplates);
     m_acousticReferenceComponents.import(db.m_acousticReferenceComponents);
     m_acousticBuildingTemplates.import(db.m_acousticBuildingTemplates);
+	m_acousticSoundProtectionTemplates.import(db.m_acousticSoundProtectionTemplates);
 }
 
 
@@ -427,6 +432,8 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 		it->second.m_isReferenced = false;
 	for (auto it=m_epdDatasets.begin(); it!=m_epdDatasets.end(); ++it)
 		it->second.m_isReferenced = false;
+	for (auto it=m_acousticSoundProtectionTemplates.begin(); it!=m_acousticSoundProtectionTemplates.end(); ++it)
+		it->second.m_isReferenced = false;
 
 
 	// Now collect all directly referenced elements from project
@@ -515,6 +522,8 @@ void SVDatabase::updateElementChildren() {
 	m_zoneTemplates.clearChildren();
 	m_supplySystems.clearChildren();
 	m_epdDatasets.clearChildren();
+	m_acousticSoundProtectionTemplates.clearChildren();
+	m_acousticTemplates.clearChildren();
 
 
 	// Now set all children relations
@@ -751,6 +760,8 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_ventilationNatural, duplicatePairs[DT_VentilationNatural]);
 	findDublicates(m_infiltration, duplicatePairs[DT_Infiltration]);
 	findDublicates(m_zoneTemplates, duplicatePairs[DT_ZoneTemplates]);
+	findDublicates(m_acousticTemplates, duplicatePairs[DT_AcousticTemplates]);
+	findDublicates(m_acousticSoundProtectionTemplates, duplicatePairs[DT_AcousticSoundProtectionTemplates]);
 }
 
 
@@ -1030,8 +1041,8 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		case SVDatabase::DT_ZoneControlShading:  {
 			for (const auto & p : m_zoneTemplates) {
 				// TODO Dirk : add as soon as available
-//				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
-				//replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_], m_zoneTemplates);
+				// 	VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				// replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_], m_zoneTemplates);
 			}
 			m_zoneControlShading.remove(elementID);
 			m_zoneControlShading.m_modified = true;
@@ -1088,9 +1099,35 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			m_zoneTemplates.m_modified = true;
 		break;
 
+		case DT_AcousticBoundaryConditions:
+		case DT_AcousticTemplates:
+			// AcousticTemplates are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const VICUS::Building & b : project().m_buildings)
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+						for (const VICUS::Room & r : bl.m_rooms) {
+							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
+							if (c.m_idAcousticTemplate == elementID)
+								c.m_idAcousticTemplate = replacementElementID;
+						}
+			}
+		break;
+		case DT_AcousticSoundProtectionTemplates:
+			// SoundProtectionTemplates are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const VICUS::Building & b : project().m_buildings)
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+						for (const VICUS::Room & r : bl.m_rooms) {
+							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
+							if (c.m_idSoundProtectionTemplate == elementID)
+								c.m_idSoundProtectionTemplate = replacementElementID;
+						}
+			}
+		break;
+		case DT_AcousticSoundAbsorptions:
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
+		break;
 	}
-
 }
 
 
@@ -1119,7 +1156,9 @@ void SVDatabase::removeLocalElements() {
 	m_zoneIdealHeatingCooling.removeLocalElements();
 	m_ventilationNatural.removeLocalElements();
 	m_infiltration.removeLocalElements();
-	m_zoneTemplates.removeLocalElements();
+	m_acousticTemplates.removeLocalElements();
+	m_acousticSoundProtectionTemplates.removeLocalElements();
+	m_acousticSoundAbsorptions.removeLocalElements();
 }
 
 
@@ -1179,8 +1218,14 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_infiltration.removeNotReferencedLocalElements(); break;
 		case DT_ZoneTemplates:
 			m_zoneTemplates.removeNotReferencedLocalElements(); break;
+		break;
+		case DT_AcousticTemplates:
+			m_acousticTemplates.removeNotReferencedLocalElements(); break;
+		break;
+		case DT_AcousticSoundProtectionTemplates:
+			m_acousticSoundProtectionTemplates.removeNotReferencedLocalElements(); break;
 		case NUM_DT:
-			break;
+		break;
 	}
 }
 
@@ -1298,10 +1343,9 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_AcousticTemplates:
 			Q_ASSERT(m_acousticTemplates[id] != nullptr);
 			m_acousticTemplates[id]->collectLocalChildren(localChildren); break;
-		case DT_SoundProtectionTemplates:
-			Q_ASSERT(m_soundProtectionTemplates[id] != nullptr);
-			m_soundProtectionTemplates[id]->collectLocalChildren(localChildren); break;
-		break;
+		case DT_AcousticSoundProtectionTemplates:
+			Q_ASSERT(m_acousticSoundProtectionTemplates[id] != nullptr);
+			m_acousticSoundProtectionTemplates[id]->collectLocalChildren(localChildren); break;
 		case NUM_DT:
 		break;
 	}

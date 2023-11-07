@@ -1,8 +1,8 @@
-#include "VICUS_SoundAbsorptionLayer.h"
+#include "VICUS_AcousticSoundAbsorptionPartition.h"
 
 namespace VICUS {
 
-bool SoundAbsorptionLayer::isValid(const VICUS::Database<AcousticSoundAbsorption> &soundAbsorption) const
+bool AcousticSoundAbsorptionPartition::isValid(const VICUS::Database<AcousticSoundAbsorption> &soundAbsorption) const
 {
 
 		const AcousticSoundAbsorption * soundAbs = soundAbsorption[m_idSoundAbsorption];

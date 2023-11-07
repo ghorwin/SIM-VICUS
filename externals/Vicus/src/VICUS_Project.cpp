@@ -788,12 +788,13 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 			if (selectionCheck(d, takeSelected, takeVisible))
 				selectedObjs.insert(&d);
 		}
-		// Dumb plain geometry
-		if (sg & SG_Obstacle) {
-			for (const VICUS::Surface & s : m_plainGeometry.m_surfaces) {
-				if (selectionCheck(s, takeSelected, takeVisible))
-					selectedObjs.insert(&s);
-			}
+	}
+
+	// Dumb plain geometry
+	if (sg & SG_Obstacle) {
+		for (const VICUS::Surface & s : m_plainGeometry.m_surfaces) {
+			if (selectionCheck(s, takeSelected, takeVisible))
+				selectedObjs.insert(&s);
 		}
 	}
 }

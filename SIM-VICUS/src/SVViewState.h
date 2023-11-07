@@ -182,7 +182,12 @@ public:
 			are shown in orange.
 		*/
 		OCM_SelectedSurfacesHighlighted,
-		OCM_AcousticRoomType,
+		/*! All surfaces of rooms with associated acoustic template are colored based on that acoustic template color.
+		*/
+		OCM_AcousticRoomTemplates,
+		/*! All surfaces of rooms with associated sound protection template are colored based on that sound protection template color.
+		*/
+		OCM_SoundProtectionRoomTemplates,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,
