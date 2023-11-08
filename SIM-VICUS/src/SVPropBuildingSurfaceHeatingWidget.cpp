@@ -355,9 +355,9 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemSelect
 	// UserRole of column 2 stores ID of surface heating object; VICUS::INVALID_ID if not assigned
 	bool haveSurfaceHeating = false;
 
-	double rowCount = m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows().count();
+//	double rowCount = m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows().count();
 
-	for (QModelIndex idx : m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows()) {
+	for (const QModelIndex &idx : m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows()) {
 		// construct model index of second column
 		int row = idx.row();
 		// retrieve item and userrole from second column

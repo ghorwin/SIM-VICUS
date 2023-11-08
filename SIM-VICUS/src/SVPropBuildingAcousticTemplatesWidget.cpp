@@ -8,7 +8,7 @@
 #include "SVUndoModifyRoomAcousticTemplateAssociation.h"
 #include "SVViewStateHandler.h"
 
-#include "VICUS_AcousticBuildingTemplate.h"
+#include <VICUS_AcousticBuildingTemplate.h>
 
 
 SVPropBuildingAcousticTemplatesWidget::SVPropBuildingAcousticTemplatesWidget(QWidget *parent) :
@@ -87,40 +87,25 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 	m_ui->tableWidgetAcousticTemplates->setRowCount(0);
 
 	int row=0;
-	// get the current building type based on the selection in the combo box
-	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
-
-
-	std::set<const VICUS::AcousticTemplate*> templatesNotInBuildingType;
-	// loads all the templates from db and put them in the table if the right building type is selected
-	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
-		 it = dbAt.begin(); it != dbAt.end(); ++it) {
-
-		//check if the id is in the id vector of the current type
-
-
-	}
-
 	//now append all the other templates with grey font and disabled
 
-	for(const VICUS::AcousticTemplate * at : templatesNotInBuildingType){
+	for (std::map<unsigned int, VICUS::AcousticTemplate>::const_iterator
+		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 		m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
 		QTableWidgetItem * item = new QTableWidgetItem();
-		item->setBackground(at->m_color);
-		item->setFlags(Qt::NoItemFlags);
+		item->setBackground(it->second.m_color);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(at->m_displayName) );
-		item->setFlags(Qt::NoItemFlags);
-		//item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(it->second.m_displayName) );
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(at->m_notes) );
-		item->setFlags(Qt::NoItemFlags);
-//		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setText(QtExt::MultiLangString2QString(it->second.m_note) );
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
 
 		row++;

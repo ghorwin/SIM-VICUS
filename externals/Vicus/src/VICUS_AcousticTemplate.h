@@ -55,7 +55,7 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
+	IBK::MultiLanguageString		m_note;									// XML:E
 
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;							// XML:E

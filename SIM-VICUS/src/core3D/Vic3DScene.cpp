@@ -2337,11 +2337,11 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 				for (const VICUS::Room & r : bl.m_rooms) {
 					// skip all without acoustic template
-					if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+					if (r.m_idSoundProtectionTemplate == VICUS::INVALID_ID)
 						continue; // they keep the default gray
-					if (id == VICUS::INVALID_ID || r.m_idAcousticTemplate == id) {
+					if (id == VICUS::INVALID_ID || r.m_idSoundProtectionTemplate == id) {
 						// lookup zone template
-                                            const VICUS::AcousticSoundProtectionTemplate * spt = db.m_acousticSoundProtectionTemplates[r.m_idSoundProtectionTemplate];
+						const VICUS::AcousticSoundProtectionTemplate * spt = db.m_acousticSoundProtectionTemplates[r.m_idSoundProtectionTemplate];
 						if (spt == nullptr)
 							continue; // no definition - keep default (gray) color
 						// color all surfaces of room based on zone template color

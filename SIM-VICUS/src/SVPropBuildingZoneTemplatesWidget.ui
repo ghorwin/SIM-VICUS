@@ -14,16 +14,26 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="4">
-    <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
+   <item row="2" column="3">
+    <spacer name="horizontalSpacer_5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>272</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="checkBoxZoneTemplateColorOnlyActive">
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
      <property name="toolTip">
-      <string>Colors only rooms that are selected in zone template table</string>
+      <string>Replaces the zone template association of all selected zones with the currently selected zone template.</string>
      </property>
      <property name="text">
-      <string>Color only selected</string>
+      <string>Exchange...</string>
      </property>
     </widget>
    </item>
@@ -37,48 +47,15 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="pushButtonEditZoneTemplates">
-     <property name="text">
-      <string>Edit...</string>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="checkBoxZoneTemplateColorOnlyActive">
      <property name="toolTip">
-      <string>Replaces the zone template association of all selected zones with the currently selected zone template.</string>
+      <string>Colors only rooms that are selected in zone template table</string>
      </property>
      <property name="text">
-      <string>Exchange...</string>
+      <string>Color only selected</string>
      </property>
     </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QPushButton" name="pushButtonSelectObjectsWithZoneTemplate">
-     <property name="text">
-      <string>Select</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <spacer name="horizontalSpacer_5">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>272</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="3" column="0" colspan="4">
     <widget class="QGroupBox" name="groupBoxSelectedRooms">
@@ -154,6 +131,29 @@
        </layout>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButtonEditZoneTemplates">
+     <property name="text">
+      <string>Edit...</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="pushButtonSelectObjectsWithZoneTemplate">
+     <property name="text">
+      <string>Select</string>
+     </property>
     </widget>
    </item>
   </layout>

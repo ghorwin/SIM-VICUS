@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <AcousticTemplates>
-	<AcousticTemplate id="410001" displayName="A1 Musik" color="#000000"/>
-	<AcousticTemplate id="410002" displayName="A2 Musik" color="#000000"/>
-	<AcousticTemplate id="410003" displayName="A3 Unterricht/Kommunikation, Sprache/Vortrag inklusiv" color="#000000">
+	<AcousticTemplate id="410001" displayName="A1 Musik" color="#FF0000"/>
+	<AcousticTemplate id="410002" displayName="A2 Musik" color="#00FF00"/>
+	<AcousticTemplate id="410003" displayName="A3 Unterricht/Kommunikation, Sprache/Vortrag inklusiv" color="#0000FF">
 		<Note>Unterricht/Kommunikation bis 1000 m3 sowie Sprache/Vortrag inklusiv bis 5000 m3</Note>
 	</AcousticTemplate>
-	<AcousticTemplate id="410004" displayName="A4 Unterricht/Kommunikation inklusiv" color="#000000"/>
-	<AcousticTemplate id="410005" displayName="A5 Sport" color="#000000"/>
+	<AcousticTemplate id="410004" displayName="A4 Unterricht/Kommunikation inklusiv" color="#0A0000"/>
+	<AcousticTemplate id="410005" displayName="A5 Sport" color="#000A00"/>
 </AcousticTemplates>

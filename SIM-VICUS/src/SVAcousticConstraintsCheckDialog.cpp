@@ -173,7 +173,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 			continue;
 
 		// skip if they dont have the same acoustic building type
-		if(roomA->m_acousticBuildingTypeId != roomB->m_acousticBuildingTypeId)
+                if(roomA->m_idAcousticBuildingType != roomB->m_idAcousticBuildingType)
 			continue;
 
 		// check if they are in the same structural unit or not
@@ -229,8 +229,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					refComp.m_idAcousticTemplateB != acousticTemplateBId)
 				continue;
 
-			if ( roomA->m_acousticBuildingTypeId != refComp.m_buildingType ||
-				 roomB->m_acousticBuildingTypeId != refComp.m_buildingType )
+                        if ( roomA->m_idAcousticBuildingType != refComp.m_buildingType ||
+                             roomB->m_idAcousticBuildingType != refComp.m_buildingType )
 				continue;
 
 			// is true, if the direction between the templates match

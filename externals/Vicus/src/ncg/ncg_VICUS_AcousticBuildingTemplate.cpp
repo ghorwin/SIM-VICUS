@@ -68,8 +68,8 @@ void AcousticBuildingTemplate::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IdsTemplate")
-				NANDRAD::readVector(c, "IdsTemplate", m_idsTemplate);
+			if (cName == "IdsSoundProtectionTemplate")
+				NANDRAD::readVector(c, "IdsSoundProtectionTemplate", m_idsSoundProtectionTemplate);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -95,7 +95,7 @@ TiXmlElement * AcousticBuildingTemplate::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_buildingType != NUM_ABT)
 		e->SetAttribute("buildingType", KeywordList::Keyword("AcousticBuildingTemplate::AcousticBuildingType",  m_buildingType));
-	NANDRAD::writeVector(e, "IdsTemplate", m_idsTemplate);
+	NANDRAD::writeVector(e, "IdsSoundProtectionTemplate", m_idsSoundProtectionTemplate);
 	return e;
 }
 

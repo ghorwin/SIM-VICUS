@@ -70,8 +70,8 @@ void AcousticSoundProtectionTemplate::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes.setEncodedString(c->GetText());
+			if (cName == "Note")
+				m_note.setEncodedString(c->GetText());
 			else if (cName == "IdsTemplate")
 				NANDRAD::readVector(c, "IdsTemplate", m_idsTemplate);
 			else {
@@ -101,8 +101,8 @@ TiXmlElement * AcousticSoundProtectionTemplate::writeXML(TiXmlElement * parent) 
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_buildingType != NUM_ABT)
 		e->SetAttribute("buildingType", KeywordList::Keyword("AcousticSoundProtectionTemplate::AcousticBuildingType",  m_buildingType));
-	if (!m_notes.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	if (!m_note.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Note", nullptr, std::string(), m_note.encodedString());
 	NANDRAD::writeVector(e, "IdsTemplate", m_idsTemplate);
 	return e;
 }

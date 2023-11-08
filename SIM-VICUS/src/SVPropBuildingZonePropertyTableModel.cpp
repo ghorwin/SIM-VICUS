@@ -3,6 +3,7 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifyBuildingTopology.h"
 #include "SVUndoModifyRoom.h"
+#include "SVZoneInformationDialog.h"
 
 #include <IBK_StopWatch.h>
 
@@ -435,5 +436,16 @@ bool SVPropBuildingZonePropertyTableModel::assignSurfaces(const QModelIndex & in
 		return false;
 	}
 
+}
+
+void SVPropBuildingZonePropertyTableModel::showZoneInformation(const QModelIndex &index) {
+	// udate a project copy
+	VICUS::Project vp = project();
+	vp.updatePointers();
+
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
+	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
+
+	SVZoneInformationDialog::showZoneInformation(tr("Room informations"), vp, m_rooms[(size_t)index.row()]->m_id);
 }
 

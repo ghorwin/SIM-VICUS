@@ -80,6 +80,9 @@ public:
 	/*! Shows the network property widget and sets the corresponding property type */
 	void setNetworkPropertyType(int networkPropertyType);
 
+	/*! Shows the network property widget and sets the corresponding property type */
+	void setAcousticPropertyType(int acousticPropertyType);
+
 	/*! Manually re-sets the index of the according tool boxes of building and network parametrization widgets,
 	 *  in order to update the color mode. */
 	void updateColorMode();

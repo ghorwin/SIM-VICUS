@@ -92,6 +92,11 @@ void SVPropertyWidget::setNetworkPropertyType(int networkPropertyType) {
 	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyType(networkPropertyType);
 }
 
+void SVPropertyWidget::setAcousticPropertyType(int acousticPropertyType) {
+	showPropertyWidget<SVPropAcosuticWidget>(M_BuildingAcousticProperties);
+	qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_BuildingAcousticProperties])->setPropertyType(acousticPropertyType);
+}
+
 
 void SVPropertyWidget::updateColorMode() {
 	switch (m_propertyWidgetMode) {

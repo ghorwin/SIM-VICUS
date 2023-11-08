@@ -14,20 +14,43 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="mainGridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Building:</string>
+   <item row="6" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Other</string>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QPushButton" name="pushButtonAssignSurface">
+        <property name="text">
+         <string>Assign selected surfaces to room</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="comboBoxBuildingFilter"/>
+   <item row="4" column="0" colspan="2">
+    <widget class="QTableView" name="tableViewZones">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Building level:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Rooms/Zones:</string>
      </property>
     </widget>
    </item>
@@ -43,23 +66,6 @@
    </item>
    <item row="2" column="1">
     <widget class="QLineEdit" name="lineEditNameFilter"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Rooms/Zones:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QTableView" name="tableViewZones">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
    <item row="5" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBoxSelectedComponent2">
@@ -159,20 +165,14 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Other</string>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboBoxBuildingFilter"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Building:</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButtonAssignSurface">
-        <property name="text">
-         <string>Assign selected surfaces to room</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>

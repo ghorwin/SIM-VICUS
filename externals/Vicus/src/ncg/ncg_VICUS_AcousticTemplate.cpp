@@ -61,8 +61,8 @@ void AcousticTemplate::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes.setEncodedString(c->GetText());
+			if (cName == "Note")
+				m_note.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
 			else {
@@ -90,8 +90,8 @@ TiXmlElement * AcousticTemplate::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (!m_notes.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	if (!m_note.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Note", nullptr, std::string(), m_note.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 	return e;

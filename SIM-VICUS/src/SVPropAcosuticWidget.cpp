@@ -99,7 +99,7 @@ void SVPropAcosuticWidget::onCurrentBuildingPropertyTypeChanged(int propertyType
 		case AT_AcousticTemplate:
 			vs.m_objectColorMode = SVViewState::OCM_AcousticRoomTemplates;
 		break;
-		case AT_SoundProtectionTemplate:
+		case AT_AcousticSoundProtectionTemplate:
 			vs.m_objectColorMode = SVViewState::OCM_SoundProtectionRoomTemplates;
 		break;
 	}
@@ -125,8 +125,8 @@ void SVPropAcosuticWidget::updateUi() {
 	//                modify the update logic.
 	// Note: It is not meaningful to update the widgets based on their visibility.
 	// It could be that project data changes and then the user switches to a different widget, which has then not be updated yet.
-	dynamic_cast<SVPropBuildingSoundProtectionTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticTemplate))->updateUi();
-	dynamic_cast<SVPropBuildingAcousticTemplatesWidget*>(m_ui->toolBox->widget(AT_SoundProtectionTemplate))->updateUi();
+	dynamic_cast<SVPropBuildingSoundProtectionTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticSoundProtectionTemplate))->updateUi();
+	dynamic_cast<SVPropBuildingAcousticTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticTemplate))->updateUi();
 
 	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }

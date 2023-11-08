@@ -42,10 +42,10 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
+	IBK::MultiLanguageString						m_note;					// XML:E
 
-	AcousticBuildingType			m_buildingType;			// XML:A
-	std::vector<unsigned int>		m_idsTemplate;			// XML:E
+	AcousticBuildingType							m_buildingType;			// XML:A
+	std::vector<unsigned int>						m_idsTemplate;			// XML:E
 
 
 };

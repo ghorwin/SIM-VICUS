@@ -12,8 +12,8 @@ SVUndoModifyRoomSoundProtectionTemplateAssociation::SVUndoModifyRoomSoundProtect
 {
 	setText( label );
 	// populate vector with new zone template ID
-	m_soundProtectionTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), soundProtectionTemplateID);
-	m_buildingTypeIDs = std::vector<unsigned int>(m_roomIDs.size(), buildingTypeId);
+	m_soundProtectionTemplateIDs	= std::vector<unsigned int>(m_roomIDs.size(), soundProtectionTemplateID);
+	m_buildingTypeIDs				= std::vector<unsigned int>(m_roomIDs.size(), buildingTypeId);
 
 }
 
@@ -38,8 +38,8 @@ void SVUndoModifyRoomSoundProtectionTemplateAssociation::undo() {
 					continue;
 
 				// swap current template ID and template ID in vector
-				std::swap(m_soundProtectionTemplateIDs[idx], r.m_idSoundProtectionTemplate);
-				std::swap(m_buildingTypeIDs[idx], r.m_acousticBuildingTypeId);
+				std::swap(m_soundProtectionTemplateIDs[idx],	r.m_idSoundProtectionTemplate);
+				std::swap(m_buildingTypeIDs[idx],				r.m_idAcousticBuildingType);
 
 				// now store also the information, that the room has been updated
 				const VICUS::Object *obj = dynamic_cast<VICUS::Object*>(&r);

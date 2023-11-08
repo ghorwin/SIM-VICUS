@@ -142,11 +142,11 @@ private:
 
 	VICUS::Project									m_prj;						///< Copy of VICUS Project
 
-	std::vector<VICUS::Building>                    m_vicusBuildings;           ///< Original VICUS buildings
-	std::vector<VICUS::Building>                    m_vicusBuildingsClipped;    ///< VICUS buildings with newly added data
+	std::vector<VICUS::Building>					m_vicusBuildings;			///< Original VICUS buildings
+	std::vector<VICUS::Building>					m_vicusBuildingsClipped;	///< VICUS buildings with newly added data
 
 
-	std::vector<VICUS::ComponentInstance>           m_vicusCompInstances;       ///< VICUS component instances
+	std::vector<VICUS::ComponentInstance>			m_vicusCompInstances;		///< VICUS component instances
 
 	std::vector<VICUS::SubSurfaceComponentInstance> m_vicusSubSurfCompInstances;///< VICUS Sub surface component instances
 

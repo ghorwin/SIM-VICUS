@@ -60,6 +60,9 @@ public:
 	// assignes surfaces to a chosen room and returns true if succeeded (false otherwise)
 	bool assignSurfaces(const QModelIndex &index, QString &msg);
 
+	// Show additional zone information
+	void showZoneInformation(const QModelIndex &index);
+
 	QFont	m_itemFont;
 
 	// list of all rooms by filter selection (for constant fast access)

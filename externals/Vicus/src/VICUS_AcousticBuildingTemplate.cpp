@@ -7,12 +7,12 @@ AbstractDBElement::ComparisonResult AcousticBuildingTemplate::equal(const Abstra
 	if (otherABT == nullptr)
 		return Different;
 
-	if (m_idsTemplate.size() != otherABT->m_idsTemplate.size())
+        if (m_idsSoundProtectionTemplate.size() != otherABT->m_idsSoundProtectionTemplate.size())
 		return Different;
 
 	// check if the entries are identical
-	for(unsigned int i = 0; i < m_idsTemplate.size(); ++i){
-		if(m_idsTemplate[i] != otherABT->m_idsTemplate[i])
+        for(unsigned int i = 0; i < m_idsSoundProtectionTemplate.size(); ++i){
+            if(m_idsSoundProtectionTemplate[i] != otherABT->m_idsSoundProtectionTemplate[i])
 			return Different;
 	}
 

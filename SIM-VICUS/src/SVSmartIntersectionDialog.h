@@ -18,12 +18,12 @@ namespace Ui {
 class SVSmartIntersectionDialog;
 }
 
-class SVSmartIntersectionDialog : public QDialog
-{
+/*! Smart Intersection Dialog, is used
+	to perform clipping and Geometry generation. */
+class SVSmartIntersectionDialog : public QDialog {
     Q_OBJECT
 
 public:
-
     enum ClippingResults {
         AcceptClipping,
         CancelledClipping
@@ -35,27 +35,23 @@ public:
     /*! Starts Clipping Dialog and returns clipping result. */
     ClippingResults clipProject();
 
+	/*! Retruns all buildings. */
 	const std::vector<VICUS::Building> &buildings() const;
 
+	/*! Retruns all component instances. */
 	const std::vector<VICUS::ComponentInstance> &componentInstances() const;
 
+	/*! Retruns all sub-surface component instances. */
 	const std::vector<VICUS::SubSurfaceComponentInstance> &subSurfaceComponentInstances() const;
 
 private slots:
     void on_pushButtonStartClipping_clicked();
-
     void on_pushButtonApply_clicked();
-
     void on_pushButtonCancel_clicked();
-
 	void on_toolButtonSelectInteriorWall_clicked();
-
 	void on_toolButtonSelectExteriorWall_clicked();
-
 	void on_toolButtonSelectCeiling_clicked();
-
 	void on_toolButtonSelectFloor_clicked();
-
 	void on_toolButtonSelectRoof_clicked();
 
 private:

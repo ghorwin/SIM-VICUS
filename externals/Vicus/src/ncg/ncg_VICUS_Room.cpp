@@ -69,8 +69,8 @@ void Room::readXML(const TiXmlElement * element) {
 				m_idAcousticTemplate = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSoundProtectionTemplate")
 				m_idSoundProtectionTemplate = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "AcousticBuildingTypeId")
-				m_acousticBuildingTypeId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdAcousticBuildingType")
+				m_idAcousticBuildingType = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -129,8 +129,8 @@ TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IdAcousticTemplate", nullptr, std::string(), IBK::val2string<unsigned int>(m_idAcousticTemplate));
 	if (m_idSoundProtectionTemplate != VICUS::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "IdSoundProtectionTemplate", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSoundProtectionTemplate));
-	if (m_acousticBuildingTypeId != VICUS::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "AcousticBuildingTypeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_acousticBuildingTypeId));
+	if (m_idAcousticBuildingType != VICUS::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "IdAcousticBuildingType", nullptr, std::string(), IBK::val2string<unsigned int>(m_idAcousticBuildingType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

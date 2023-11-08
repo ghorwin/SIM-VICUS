@@ -10,13 +10,12 @@ class SVPropBuildingSoundProtectionTemplatesWidget;
 
 namespace VICUS {
 class AcousticSoundProtectionTemplate;
-	class Room;
+class Room;
 }
 
 class ModificationInfo;
 
-class SVPropBuildingSoundProtectionTemplatesWidget : public QWidget
-{
+class SVPropBuildingSoundProtectionTemplatesWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -30,23 +29,24 @@ private slots:
 	void on_pushButtonAssignAcousticTemplate_clicked();
 	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
 	void on_pushButtonDeleteTemplate_clicked();
-	void on_comboBoxBuildingType_currentIndexChanged(int);
-
+	void on_comboBoxBuildingType_currentIndexChanged(int index);
 
 	void onModified(int modificationType, ModificationInfo * /*data*/);
 
 private:
+	/*! Pointer to Ui. */
+	Ui::SVPropBuildingSoundProtectionTemplatesWidget	*m_ui;
 
 	/*! Returns a pointer to the currently selected acoustic template in the zone template table. */
-        const VICUS::AcousticSoundProtectionTemplate * currentlySelectedSoundProtectionTemplate() const;
+	const VICUS::AcousticSoundProtectionTemplate		*currentlySelectedSoundProtectionTemplate() const;
 
-
-	Ui::SVPropBuildingSoundProtectionTemplatesWidget *m_ui;
+	/*! Currently selected building index. */
+	unsigned int										m_currentBuildingIndex;
 
 	/*! Maps stores pointers to room objects grouped for assigned acoustic templates.
 		Note: rooms without zone template ID are ignored.
 	*/
-        std::map<const VICUS::AcousticSoundProtectionTemplate *, std::vector<const VICUS::Room *> >		m_acousticTemplateAssignments;
+	std::map<const VICUS::AcousticSoundProtectionTemplate *, std::vector<const VICUS::Room *> >		m_acousticTemplateAssignments;
 };
 
 #endif // SVPropBuildingSoundProtectionTemplatesWidgetH

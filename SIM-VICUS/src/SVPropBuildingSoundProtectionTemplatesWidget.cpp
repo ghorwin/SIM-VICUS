@@ -34,20 +34,22 @@ SVPropBuildingSoundProtectionTemplatesWidget::SVPropBuildingSoundProtectionTempl
 	const VICUS::Database<VICUS::AcousticBuildingTemplate> & dbBt = SVSettings::instance().m_db.m_acousticBuildingTemplates;
 
 	unsigned int counter = 0;
+	m_ui->comboBoxBuildingType->blockSignals(true);
 	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
 		 it = dbBt.begin(); it != dbBt.end(); ++it) {
 		m_ui->comboBoxBuildingType->addItem(QtExt::MultiLangString2QString(it->second.m_displayName));
 		m_ui->comboBoxBuildingType->setItemData(counter, it->second.m_id, Qt::UserRole);
 		++counter;
 	}
-
+	m_ui->comboBoxBuildingType->blockSignals(false);
+	on_comboBoxBuildingType_currentIndexChanged(0); // Sets first building type
 
 	// update Ui initiallly
 	onModified(SVProjectHandler::AllModified, nullptr);
+
 }
 
-SVPropBuildingSoundProtectionTemplatesWidget::~SVPropBuildingSoundProtectionTemplatesWidget()
-{
+SVPropBuildingSoundProtectionTemplatesWidget::~SVPropBuildingSoundProtectionTemplatesWidget() {
 	delete m_ui;
 }
 
@@ -108,7 +110,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	for (std::map<unsigned int, VICUS::AcousticBuildingTemplate>::const_iterator
 		 it = dbBt.begin(); it != dbBt.end(); ++it) {
 		if(it->second.m_buildingType == currentType){
-			idsOfBuildingType = &(it->second.m_idsTemplate);
+			idsOfBuildingType = &(it->second.m_idsSoundProtectionTemplate);
 		}
 	}
 	if(idsOfBuildingType == nullptr)
@@ -120,13 +122,14 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 		 it = dbAt.begin(); it != dbAt.end(); ++it) {
 
 		//check if the id is in the id vector of the current type
-		if(std::find(idsOfBuildingType->begin(), idsOfBuildingType->end(), it->second.m_id) != idsOfBuildingType->end()){
+		if(std::find(idsOfBuildingType->begin(), idsOfBuildingType->end(),
+					 it->second.m_id) != idsOfBuildingType->end()){
 
 			m_ui->tableWidgetAcousticTemplates->setRowCount(row + 1);
 
 			QTableWidgetItem * item = new QTableWidgetItem();
 			item->setBackground(it->second.m_color);
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			item->setFlags(Qt::ItemIsEnabled);
 			m_ui->tableWidgetAcousticTemplates->setItem(row, 0, item);
 
 			item = new QTableWidgetItem();
@@ -135,7 +138,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 			m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
 
 			item = new QTableWidgetItem();
-			item->setText(QtExt::MultiLangString2QString(it->second.m_notes) );
+			item->setText(QtExt::MultiLangString2QString(it->second.m_note) );
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
 
@@ -160,13 +163,11 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 		item = new QTableWidgetItem();
 		item->setText(QtExt::MultiLangString2QString(at->m_displayName) );
 		item->setFlags(Qt::NoItemFlags);
-		//item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 1, item);
 
 		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(at->m_notes) );
+		item->setText(QtExt::MultiLangString2QString(at->m_note) );
 		item->setFlags(Qt::NoItemFlags);
-//		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetAcousticTemplates->setItem(row, 2, item);
 
 		row++;
@@ -193,21 +194,21 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// update selection-related info
-	std::set<const VICUS::AcousticTemplate *> selectedAcousticTemplate;
+	std::set<const VICUS::AcousticSoundProtectionTemplate *> selectedAcousticSoundProtectionTemplate;
 	// loop over all selected rooms and store pointer to assigned zone template
 	for (const VICUS::Room* r : rooms) {
 		//TODO Anton laut dieser implementierung wird das falsch angezeigt wenn ein Room ohne Template selektiert wird und ein Room mit einem Template+
 		// sieht so aus als ob beide Rooms das eine Template besitzen, obwohl einer gar keins hat
-		if (r->m_idAcousticTemplate != VICUS::INVALID_ID) {
-			const VICUS::AcousticTemplate * at= db.m_acousticTemplates[r->m_idAcousticTemplate];
-			selectedAcousticTemplate.insert(at);
+		if (r->m_idSoundProtectionTemplate != VICUS::INVALID_ID) {
+			const VICUS::AcousticSoundProtectionTemplate * at = db.m_acousticSoundProtectionTemplates[r->m_idSoundProtectionTemplate];
+			selectedAcousticSoundProtectionTemplate.insert(at);
 		}
 	}
-	if (selectedAcousticTemplate.empty()) {
+	if (selectedAcousticSoundProtectionTemplate.empty()) {
 		m_ui->labelSelectedAcousticTemplate->setText(tr("None"));
 	}
-	else if (selectedAcousticTemplate.size() == 1) {
-		const VICUS::AcousticTemplate * at = *selectedAcousticTemplate.begin();
+	else if (selectedAcousticSoundProtectionTemplate.size() == 1) {
+		const VICUS::AcousticSoundProtectionTemplate * at = *selectedAcousticSoundProtectionTemplate.begin();
 		// special handling: exactly one room with invalid zone template ID is selected
 		if (at == nullptr)
 			m_ui->labelSelectedAcousticTemplate->setText(tr("Acoustic template with invalid/unknown ID"));
@@ -217,7 +218,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 	}
 	else {
 		m_ui->labelSelectedAcousticTemplate->setText(tr("%1 different templates")
-		   .arg(selectedAcousticTemplate.size()));
+		   .arg(selectedAcousticSoundProtectionTemplate.size()));
 	}
 	// update table related button states
 	on_tableWidgetAcousticTemplates_itemSelectionChanged();
@@ -269,11 +270,10 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonAssignAcousticTe
 	for (const VICUS::Room * ro : rooms)
 		modifiedRoomIDs.push_back(ro->m_id);
 
-	unsigned int buildingTypeId = m_ui->comboBoxBuildingType->currentData().toUInt();
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomSoundProtectionTemplateAssociation * undo = new SVUndoModifyRoomSoundProtectionTemplateAssociation(
 				tr("Assigned acoustic template"),
-				modifiedRoomIDs, at->m_id, buildingTypeId);
+				modifiedRoomIDs, at->m_id, m_currentBuildingIndex);
 	undo->push();
 }
 
@@ -297,7 +297,15 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonDeleteTemplate_c
 }
 
 
-void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int /*index*/) {
+void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int index) {
+	FUNCID(SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged);
+
+	bool ok;
+	m_currentBuildingIndex = m_ui->comboBoxBuildingType->itemData(index, Qt::UserRole).toUInt(&ok);
+
+	if (!ok)
+		throw IBK::Exception(IBK::FormatString("Could not update building type ID."), FUNC_ID);
+
 	//update the ui
 	updateUi();
 }

@@ -171,6 +171,7 @@ SOURCES += \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DCalculation.cpp \
+    ../../src/SVZoneInformationDialog.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -403,6 +404,7 @@ HEADERS  += \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DCalculation.h \
+    ../../src/SVZoneInformationDialog.h \
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
@@ -668,6 +670,7 @@ FORMS    += \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \
 	../../src/SVWelcomeScreen.ui \
+    ../../src/SVZoneInformationDialog.ui \
 	../../src/SVZoneSelectionDialog.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
