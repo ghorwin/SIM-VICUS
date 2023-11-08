@@ -47,6 +47,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Schulen und vergleichbaren Einrichtungen");
 	tr("Einfamilien-Reihenhäusern und zwischen Doppelhäusern");
 	tr("Büro");
+	tr("Max values for evaluation");
+	tr("Max values for evaluation");
 	tr("Outside wall construction");
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");

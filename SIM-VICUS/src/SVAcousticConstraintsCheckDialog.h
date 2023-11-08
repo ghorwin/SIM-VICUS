@@ -23,32 +23,46 @@ public:
 	};
 
 	/*! Enum for columns. */
-	enum Columns {
-		ColAcousticTemplateA,
-		ColAcousticTemplateB,
-		ColAcousticComponent,
-		ColActualAirSoundValue,
-		ColNormalConstraints,
-		ColAdvancedConstraints,
-		ColSameStructure,
-		ColSelectButton,
+	enum ColumnsSoundProtection {
+		CSP_AcousticTemplateA,
+		CSP_AcousticTemplateB,
+		CSP_AcousticComponent,
+		CSP_ActualAirSoundValue,
+		CSP_NormalConstraints,
+		CSP_AdvancedConstraints,
+		CSP_SameStructure,
+		CSP_SelectButton,
+		NUM_CSP
+	};
+
+	/*! Enum for columns. */
+	enum ColumnsReverberationTime {
+		CRT_RoomID,
+		CRT_RoomName,
+		CRT_Reverb125Hz,
+		CRT_Reverb250Hz,
+		CRT_Reverb500Hz,
+		CRT_Reverb1000Hz,
+		CRT_Reverb2000Hz,
+		CRT_Reverb4000Hz,
+		NUM_CRT
 	};
 
 	/*! Struct for table entries. */
 	struct tableEntry{
-		bool isImpact;
-		bool isSameStructuralUnit;
-		QString acousticTemplateAInfo;
-		QString acousticTemplateBInfo;
-		QString acousticComponentInfo;
-		ViolationInfo basicConstraintViolated;
-		QString actualValue;
-		QString expectedNormalLimit;
-		ViolationInfo advancedConstraintViolated;
-		QString expectedAdvancedLimit;
+		bool			m_isImpact;
+		bool			m_isSameStructuralUnit;
+		QString			m_acousticTemplateAInfo;
+		QString			m_acousticTemplateBInfo;
+		QString			m_acousticComponentInfo;
+		ViolationInfo	m_basicConstraintViolated;
+		QString			m_actualValue;
+		QString			m_expectedNormalLimit;
+		ViolationInfo	m_advancedConstraintViolated;
+		QString			m_expectedAdvancedLimit;
 		// those are not directely displayed, but needed to select the surfaces on the show button
-		unsigned int surfaceAId;
-		unsigned int surfaceBId;
+		unsigned int	m_surfaceAId;
+		unsigned int	m_surfaceBId;
 	};
 
 

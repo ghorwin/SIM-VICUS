@@ -31,6 +31,8 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_AbstractDBElement.h"
 
+#include "NANDRAD_LinearSplineParameter.h"
+
 namespace VICUS {
 
 
@@ -40,6 +42,13 @@ public:
 
 	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
+
+	/*! Enum type with all possible parameters for evaluation.*/
+	enum splinePara_t {
+		SP_MaxValue,						// Keyword: MaxValue						[-]		'Max values for evaluation'
+		SP_MinValue,						// Keyword: MinValue						[-]		'Max values for evaluation'
+		NUM_SP
+	};
 
 	/*! C'tor */
 	AcousticTemplate() {}
@@ -55,12 +64,18 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_note;									// XML:E
+	IBK::MultiLanguageString			m_note;									// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;							// XML:E
+	IBK::MultiLanguageString			m_dataSource;							// XML:E
 
-	};
+	double								m_evaluationOffset;						// XML:E
+	double								m_evaluationFactor;						// XML:E
+
+
+	/*! Normalized angle-dependent SHGC values. */
+	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];					// XML:E
+};
 
 }
 

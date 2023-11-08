@@ -53,43 +53,52 @@ SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *pare
 	m_ui->tableWidgetCeilings->resizeColumnsToContents();
 
 	double width = 130;
-	m_ui->tableWidgetCeilings->setColumnWidth(ColAcousticTemplateB, 200);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColAcousticComponent, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColActualAirSoundValue, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColAdvancedConstraints, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColNormalConstraints, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColSameStructure, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(ColSelectButton, 230);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticTemplateB, 200);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticComponent, width);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_ActualAirSoundValue, width);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AdvancedConstraints, width);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_NormalConstraints, width);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SameStructure, width);
+	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SelectButton, 230);
 
-	m_ui->tableWidgetWalls->setColumnWidth(ColAcousticTemplateB, 200);
-	m_ui->tableWidgetWalls->setColumnWidth(ColAcousticComponent, width);
-	m_ui->tableWidgetWalls->setColumnWidth(ColActualAirSoundValue, width);
-	m_ui->tableWidgetWalls->setColumnWidth(ColAdvancedConstraints, width);
-	m_ui->tableWidgetWalls->setColumnWidth(ColNormalConstraints, width);
-	m_ui->tableWidgetWalls->setColumnWidth(ColSameStructure, width);
-	m_ui->tableWidgetWalls->setColumnWidth(ColSelectButton, 230);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticTemplateB, 200);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticComponent, width);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_ActualAirSoundValue, width);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_AdvancedConstraints, width);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_NormalConstraints, width);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_SameStructure, width);
+	m_ui->tableWidgetWalls->setColumnWidth(CSP_SelectButton, 230);
 
 	QHeaderView *headerView = m_ui->tableWidgetCeilings->horizontalHeader();
-	headerView->setSectionResizeMode(ColAcousticTemplateA, QHeaderView::Stretch);
+	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
 	headerView = m_ui->tableWidgetWalls->horizontalHeader();
-	headerView->setSectionResizeMode(ColAcousticTemplateA, QHeaderView::Stretch);
+	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
-	m_ui->tableWidgetWalls->horizontalHeaderItem(ColAcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-	m_ui->tableWidgetWalls->horizontalHeaderItem(ColAcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
-	m_ui->tableWidgetCeilings->horizontalHeaderItem(ColAcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-	m_ui->tableWidgetCeilings->horizontalHeaderItem(ColAcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
 	m_ui->checkBoxHideCeilings->setChecked(false);
 	m_ui->checkBoxHideWalls->setChecked(false);
 
 	resize(1500, 800);
 
-	m_ui->tableWidgetReverberation->setColumnCount(2);
+	m_ui->tableWidgetReverberation->setColumnCount(NUM_CRT);
 
 	QStringList headers;
-	headers << "Room name" << "Reverberation time [s]";
+	headers << "Room ID"
+			<< "Room name"
+			<< "Reverberation time 125 Hz [s]"
+			<< "Reverberation time 250 Hz [s]"
+			<< "Reverberation time 500 Hz [s]"
+			<< "Reverberation time 1000 Hz [s]"
+			<< "Reverberation time 2000 Hz [s]"
+			<< "Reverberation time 4000 Hz [s]"
+			<< "Room name";
+
 	m_ui->tableWidgetReverberation->setHorizontalHeaderLabels(headers);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetReverberation);
@@ -161,10 +170,10 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 		tableEntry impactSoundEntry;
 
 		// initialize with no constraints specified, might be overwritten later
-		airBourneSoundEntry.basicConstraintViolated = VI_NoConstraint;
-		airBourneSoundEntry.advancedConstraintViolated = VI_NoConstraint;
-		impactSoundEntry.basicConstraintViolated = VI_NoConstraint;
-		impactSoundEntry.advancedConstraintViolated = VI_NoConstraint;
+		airBourneSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
+		airBourneSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
 
 		// search the rooms of the corresponding surfaces
 		const VICUS::Room * roomA = dynamic_cast<VICUS::Room *>(ci.m_sideASurface->m_parent);
@@ -173,23 +182,23 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 			continue;
 
 		// skip if they dont have the same acoustic building type
-                if(roomA->m_idAcousticBuildingType != roomB->m_idAcousticBuildingType)
+		if(roomA->m_idAcousticBuildingType != roomB->m_idAcousticBuildingType)
 			continue;
 
 		// check if they are in the same structural unit or not
 
 		// get the ids of the acoustic template of the corresponding room
-		unsigned int acousticTemplateAId = roomA->m_idAcousticTemplate;
-		unsigned int acousticTemplateBId = roomB->m_idAcousticTemplate;
+		unsigned int acousticTemplateAId = roomA->m_idSoundProtectionTemplate;
+		unsigned int acousticTemplateBId = roomB->m_idSoundProtectionTemplate;
 
 		// skip if one of them does not have an acoustic template
 		if(acousticTemplateAId == VICUS::INVALID_ID || acousticTemplateBId == VICUS::INVALID_ID)
 			continue;
 
+		// Refernece to db
 		const SVDatabase & db = SVSettings::instance().m_db;
 
 		// fill table Entry with acoustic template info
-
 		// check the part type, if its a ceiling
 		const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 		bool isCeiling = comp->m_type == VICUS::Component::CT_Ceiling;
@@ -229,8 +238,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 					refComp.m_idAcousticTemplateB != acousticTemplateBId)
 				continue;
 
-                        if ( roomA->m_idAcousticBuildingType != refComp.m_buildingType ||
-                             roomB->m_idAcousticBuildingType != refComp.m_buildingType )
+			if ( roomA->m_idAcousticBuildingType != refComp.m_buildingType ||
+				 roomB->m_idAcousticBuildingType != refComp.m_buildingType )
 				continue;
 
 			// is true, if the direction between the templates match
@@ -243,15 +252,19 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 
 			// add the walls template
 			//we have a match for walls, so fill in information for table widget struct
-			const VICUS::AcousticTemplate * tempA = db.m_acousticTemplates[acousticTemplateAId];
-			const VICUS::AcousticTemplate * tempB = db.m_acousticTemplates[acousticTemplateBId];
-			airBourneSoundEntry.acousticTemplateAInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempA->m_displayName)).arg(tempA->m_id);
-			airBourneSoundEntry.acousticTemplateBInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempB->m_displayName)).arg(tempB->m_id);
+			const VICUS::AcousticSoundProtectionTemplate * tempA = db.m_acousticSoundProtectionTemplates[acousticTemplateAId];
+			const VICUS::AcousticSoundProtectionTemplate * tempB = db.m_acousticSoundProtectionTemplates[acousticTemplateBId];
+
+			Q_ASSERT(tempA != nullptr);
+			Q_ASSERT(tempA != nullptr);
+
+			airBourneSoundEntry.m_acousticTemplateAInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempA->m_displayName)).arg(tempA->m_id);
+			airBourneSoundEntry.m_acousticTemplateBInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(tempB->m_displayName)).arg(tempB->m_id);
 
 			// save the surface ids
-			airBourneSoundEntry.surfaceAId = ci.m_idSideASurface;
-			airBourneSoundEntry.surfaceBId = ci.m_idSideBSurface;
-			airBourneSoundEntry.isSameStructuralUnit = (roomA->m_structuralUnit != nullptr &&
+			airBourneSoundEntry.m_surfaceAId = ci.m_idSideASurface;
+			airBourneSoundEntry.m_surfaceBId = ci.m_idSideBSurface;
+			airBourneSoundEntry.m_isSameStructuralUnit = (roomA->m_structuralUnit != nullptr &&
 					roomA->m_structuralUnit == roomB->m_structuralUnit);
 
 			// this entry should be saved in the vector
@@ -260,7 +273,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 			// retrieve the limits from the acoustic reference Component
 			double impactSoundLimit;
 			double airSoundLimit;
-			if(airBourneSoundEntry.isSameStructuralUnit){
+			if(airBourneSoundEntry.m_isSameStructuralUnit){
 				airSoundLimit = refComp.m_airborneSoundOneStructureUnit;
 				impactSoundLimit = refComp.m_impactSoundOneStructureUnit;
 			}
@@ -275,21 +288,21 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 
 			// retrieve the acoustic component to check if it fullfills the limits
 			double airRes = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
-			airBourneSoundEntry.actualValue = QString("%1 dB").arg(airRes);
+			airBourneSoundEntry.m_actualValue = QString("%1 dB").arg(airRes);
 
 			// fill te struct with acoustic component info
-			airBourneSoundEntry.acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
+			airBourneSoundEntry.m_acousticComponentInfo = QString("%1 [%2]").arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id);
 
 			// check wether a limit is provided
 			if(IBK::near_equal(airSoundLimit, -1)){
 				// no limit is provided, set to not violated
 				if (refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic) {
-					airBourneSoundEntry.basicConstraintViolated = VI_Valid;
-					airBourneSoundEntry.expectedNormalLimit = tr("No limit");
+					airBourneSoundEntry.m_basicConstraintViolated = VI_Valid;
+					airBourneSoundEntry.m_expectedNormalLimit = tr("No limit");
 				}
 				else {
-					airBourneSoundEntry.advancedConstraintViolated = VI_Valid;
-					airBourneSoundEntry.expectedAdvancedLimit = tr("No limit");
+					airBourneSoundEntry.m_advancedConstraintViolated = VI_Valid;
+					airBourneSoundEntry.m_expectedAdvancedLimit = tr("No limit");
 				}
 			} else {
 				// there is a limit
@@ -297,36 +310,36 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 				if (refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic) {
 
 					if(airRes >= airSoundLimit)
-						airBourneSoundEntry.basicConstraintViolated = VI_Valid;
+						airBourneSoundEntry.m_basicConstraintViolated = VI_Valid;
 					else {
-						airBourneSoundEntry.basicConstraintViolated = VI_Invalid;
+						airBourneSoundEntry.m_basicConstraintViolated = VI_Invalid;
 						airBourneSoundCheck = false;
 					}
-					airBourneSoundEntry.expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
+					airBourneSoundEntry.m_expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
 				}
 				else {
 					if(airRes >= airSoundLimit)
-						airBourneSoundEntry.advancedConstraintViolated = VI_Valid;
+						airBourneSoundEntry.m_advancedConstraintViolated = VI_Valid;
 					else {
-						airBourneSoundEntry.advancedConstraintViolated = VI_Invalid;
+						airBourneSoundEntry.m_advancedConstraintViolated = VI_Invalid;
 						airBourneSoundCheck = false;
 					}
-					airBourneSoundEntry.expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
+					airBourneSoundEntry.m_expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
 				}
 			}
 			// check if there war another match for the impact sound (ceiling)
 			if(impactSoundTemplatesMatch){
 
 				// we have a match for ceilings, we copy identical data from the wall table entry
-				impactSoundEntry.acousticTemplateAInfo = airBourneSoundEntry.acousticTemplateAInfo;
-				impactSoundEntry.acousticTemplateBInfo = airBourneSoundEntry.acousticTemplateBInfo;
-				impactSoundEntry.surfaceAId = airBourneSoundEntry.surfaceAId;
-				impactSoundEntry.surfaceBId = airBourneSoundEntry.surfaceBId;
-				impactSoundEntry.isSameStructuralUnit = airBourneSoundEntry.isSameStructuralUnit;
-				impactSoundEntry.acousticComponentInfo = airBourneSoundEntry.acousticComponentInfo;
+				impactSoundEntry.m_acousticTemplateAInfo = airBourneSoundEntry.m_acousticTemplateAInfo;
+				impactSoundEntry.m_acousticTemplateBInfo = airBourneSoundEntry.m_acousticTemplateBInfo;
+				impactSoundEntry.m_surfaceAId = airBourneSoundEntry.m_surfaceAId;
+				impactSoundEntry.m_surfaceBId = airBourneSoundEntry.m_surfaceBId;
+				impactSoundEntry.m_isSameStructuralUnit = airBourneSoundEntry.m_isSameStructuralUnit;
+				impactSoundEntry.m_acousticComponentInfo = airBourneSoundEntry.m_acousticComponentInfo;
 
 				double impact = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
-				impactSoundEntry.actualValue = QString("%1 dB").arg(impact);
+				impactSoundEntry.m_actualValue = QString("%1 dB").arg(impact);
 
 				// this entry should be saved in the vector
 				addTableEntryImpactSoundToVector = true;
@@ -335,33 +348,33 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 				if(IBK::near_equal(impactSoundLimit, -1)){
 					// no limit is provided, set to not violated
 					if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
-						impactSoundEntry.basicConstraintViolated = VI_Valid;
-						impactSoundEntry.expectedNormalLimit = tr("No limit");
+						impactSoundEntry.m_basicConstraintViolated = VI_Valid;
+						impactSoundEntry.m_expectedNormalLimit = tr("No limit");
 					}
 					else {
-						impactSoundEntry.advancedConstraintViolated = VI_Valid;
-						impactSoundEntry.expectedAdvancedLimit = tr("No limit");
+						impactSoundEntry.m_advancedConstraintViolated = VI_Valid;
+						impactSoundEntry.m_expectedAdvancedLimit = tr("No limit");
 					}
 				}
 				else {
 					// now we modify the teCeil struct in the same way as before with airSound
 					if(refComp.m_requirementType == VICUS::AcousticReferenceComponent::RT_Basic){
 						if(impact < impactSoundLimit)
-							impactSoundEntry.basicConstraintViolated = VI_Valid;
+							impactSoundEntry.m_basicConstraintViolated = VI_Valid;
 						else {
-							impactSoundEntry.basicConstraintViolated = VI_Invalid;
+							impactSoundEntry.m_basicConstraintViolated = VI_Invalid;
 							ceilingCheck = false;
 						}
-						impactSoundEntry.expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
+						impactSoundEntry.m_expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
 					}
 					else {
 						if(impact < impactSoundLimit)
-							impactSoundEntry.advancedConstraintViolated = VI_Valid;
+							impactSoundEntry.m_advancedConstraintViolated = VI_Valid;
 						else {
-							impactSoundEntry.advancedConstraintViolated = VI_Invalid;
+							impactSoundEntry.m_advancedConstraintViolated = VI_Invalid;
 							ceilingCheck = false;
 						}
-						impactSoundEntry.expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
+						impactSoundEntry.m_expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
 					}
 				}
 			}
@@ -399,17 +412,52 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 	const VICUS::Project &prj = project();
 	const SVDatabase & db = SVSettings::instance().m_db;
 
-	std::vector<std::pair<QString, double>> entries;
+	struct ReverberationResult {
+
+		ReverberationResult() {}
+
+		ReverberationResult(unsigned int roomID, const QString &roomName,
+							const std::vector<double> &reverberationTime,
+							const std::vector<bool> &reverberationEvaluation) :
+			m_idRoom(roomID),
+			m_roomName(roomName),
+			m_reverberationTime(reverberationTime),
+			m_evaluation(reverberationEvaluation)
+		{}
+
+		// Room ID
+		unsigned int	m_idRoom;
+		// Room name
+		QString			m_roomName;
+		// Reverberation times
+		std::vector<double>			m_reverberationTime;
+		// Evaluation
+		std::vector<bool>			m_evaluation;
+	};
+
+	std::vector<ReverberationResult> tableEntries;
 
 	for (const VICUS::Building &b : prj.m_buildings) {
 		for (const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for (const VICUS::Room &r : bl.m_rooms) {
 
-				double roomVolume = r.m_volume;
-				double reverberationSum = 0.0;
+				double roomVolume = r.m_para[VICUS::Room::P_Volume].value;
 
+				if (r.m_idAcousticTemplate == VICUS::INVALID_ID)
+					continue;
+
+				const VICUS::AcousticTemplate *at = db.m_acousticTemplates[r.m_idAcousticTemplate];
+
+				Q_ASSERT(at != nullptr);
+
+				std::vector<int> frequencies				= {125, 250, 500, 1000, 2000, 4000};
+				std::vector<double> reverberationSum		= {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+				std::vector<double> reverberationTime		= {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+				std::vector<bool> reverberationEvaluation	= {false, false, false, false, false, false};
+
+				double totalArea = 0.0;
 				for (const VICUS::Surface &s : r.m_surfaces) {
-					double surfaceArea = s.geometry().area();
+					double surfaceArea = s.areaWithoutSubsurfaces();
 
 					const VICUS::ComponentInstance *ci = s.m_componentInstance;
 					if (ci == nullptr)
@@ -419,59 +467,100 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 					if (comp == nullptr)
 						continue;
 
-					if (ci->m_idSideASurface == r.m_id) {
+					if (ci->m_idSideASurface == s.m_id) {
 						const VICUS::AcousticBoundaryCondition *aBC = db.m_acousticBoundaryConditions[comp->m_idSideAAcousticBoundaryCondition];
 
-                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
-                                                    double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
+						if (aBC == nullptr)
+							continue;
+
+						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 							if (soundAbsorption == nullptr)
 								continue;
 
 							for (unsigned int i=0; i<VICUS::AcousticSoundAbsorption::NUM_SF; ++i) {
-								reverberationSum += areaFraction * soundAbsorption->m_soundAbsorption[i];
+								reverberationSum[i] += surfaceArea * areaFraction * soundAbsorption->m_soundAbsorption[i];
 							}
 
+							totalArea += surfaceArea;
 						}
-
-						reverberationSum *= surfaceArea;
 					}
 
-					if (ci->m_idSideBSurface == r.m_id) {
+					if (ci->m_idSideBSurface == s.m_id) {
 						const VICUS::AcousticBoundaryCondition *aBC = db.m_acousticBoundaryConditions[comp->m_idSideBAcousticBoundaryCondition];
 
-                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
-                                                    double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
+						if (aBC == nullptr)
+							continue;
+
+						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 							if (soundAbsorption == nullptr)
 								continue;
 
 							for (unsigned int i=0; i<VICUS::AcousticSoundAbsorption::NUM_SF; ++i) {
-								reverberationSum += areaFraction * soundAbsorption->m_soundAbsorption[i];
+								reverberationSum[i] += surfaceArea * areaFraction * soundAbsorption->m_soundAbsorption[i];
 							}
 
+							totalArea += surfaceArea;
 						}
-
-						reverberationSum *= surfaceArea;
 					}
 				}
 
-				double reverberationTime = 0.163 * reverberationSum / roomVolume;
-				entries.push_back(std::pair<QString, double>(r.m_displayName, reverberationTime));
+				for (unsigned int i=0; i<VICUS::AcousticSoundAbsorption::NUM_SF; ++i) {
+					double &reverbTime = reverberationTime[i];
+
+					// reverberation time
+					reverbTime = 0.163 * roomVolume / reverberationSum[i];
+
+					// T_Soll in seconds
+					double reverbTimeGoal = at->m_evaluationOffset + at->m_evaluationFactor * std::log(roomVolume);
+
+					double minVal = 0.01 * reverbTimeGoal * at->m_splinePara[VICUS::AcousticTemplate::SP_MinValue].m_values.value(frequencies[i]);
+					double maxVal = 0.01 * reverbTimeGoal * at->m_splinePara[VICUS::AcousticTemplate::SP_MaxValue].m_values.value(frequencies[i]);
+
+					// Evaluation
+					reverberationEvaluation[i] = ( minVal < reverbTime ) && ( maxVal > reverbTime );
+				}
+
+				tableEntries.push_back(ReverberationResult (r.m_id, r.m_displayName, reverberationTime, reverberationEvaluation));
 			}
 		}
 	}
 
-	m_ui->tableWidgetReverberation->setRowCount(entries.size());
+	m_ui->tableWidgetReverberation->setRowCount(tableEntries.size());
 
-	for (unsigned int i=0; i < entries.size(); ++i) {
-		const std::pair<QString, double> entry = entries[i];
-		m_ui->tableWidgetReverberation->setItem(i, 0, new QTableWidgetItem(entry.first));
-		m_ui->tableWidgetReverberation->setItem(i, 1, new QTableWidgetItem(QString::number(entry.second)));
+	for (unsigned int i=0; i < tableEntries.size(); ++i) {
 
-		m_ui->tableWidgetReverberation->item(i, 1)->setBackground(Qt::green);
+		const ReverberationResult &res = tableEntries[i];
+
+		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomID, new QTableWidgetItem(QString::number(res.m_idRoom)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomName, new QTableWidgetItem(res.m_roomName));
+
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb125Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_125Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb250Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_250Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb500Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_500Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb1000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_1000Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb2000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_2000Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb4000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_4000Hz])));
+
+		QColor valid(Qt::darkGreen);
+		QColor invalid(Qt::darkRed);
+
+		if (SVSettings::instance().m_theme == SVSettings::TT_White) {
+			valid = valid.lighter(250);
+			invalid = invalid.lighter(250);
+		}
+
+		for (unsigned int j = 0; j < VICUS::AcousticSoundAbsorption::NUM_SF; ++j) {
+			if (res.m_evaluation[j])
+				m_ui->tableWidgetReverberation->item(i, 2 + j)->setBackground(valid);
+			else
+				m_ui->tableWidgetReverberation->item(i, 2 + j)->setBackground(invalid);
+		}
 	}
 }
 
@@ -512,41 +601,41 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 		for (tableEntry &te : *tes){
 
 			// if the hide walls selection box is check, skip all entries that dont have a violation
-			if(hideNonViolatedEntries && te.basicConstraintViolated != ViolationInfo::VI_Invalid &&
-					te.advancedConstraintViolated != ViolationInfo::VI_Invalid)
+			if(hideNonViolatedEntries && te.m_basicConstraintViolated != ViolationInfo::VI_Invalid &&
+					te.m_advancedConstraintViolated != ViolationInfo::VI_Invalid)
 				continue;
 
 			tableWidget->setRowCount(row + 1);
 
 			QTableWidgetItem * item;
 			item = new QTableWidgetItem();
-			item->setText(te.acousticTemplateAInfo);
+			item->setText(te.m_acousticTemplateAInfo);
 			item->setFlags(Qt::ItemIsEnabled);
-			tableWidget->setItem(row, ColAcousticTemplateA, item);
+			tableWidget->setItem(row, CSP_AcousticTemplateA, item);
 
 			item = new QTableWidgetItem();
-			item->setText(te.acousticTemplateBInfo);
+			item->setText(te.m_acousticTemplateBInfo);
 			item->setFlags(Qt::ItemIsEnabled);
-			tableWidget->setItem(row, ColAcousticTemplateB, item);
+			tableWidget->setItem(row, CSP_AcousticTemplateB, item);
 
 			item = new QTableWidgetItem();
-			item->setText(te.acousticComponentInfo);
+			item->setText(te.m_acousticComponentInfo);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			item->setFlags(Qt::ItemIsEnabled);
-			tableWidget->setItem(row, ColAcousticComponent, item);
-
-			item = new QTableWidgetItem();
-			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			item->setText(te.actualValue);
-			item->setFlags(Qt::ItemIsEnabled);
-			tableWidget->setItem(row, ColActualAirSoundValue, item);
+			tableWidget->setItem(row, CSP_AcousticComponent, item);
 
 			item = new QTableWidgetItem();
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			item->setText(te.expectedNormalLimit);
+			item->setText(te.m_actualValue);
+			item->setFlags(Qt::ItemIsEnabled);
+			tableWidget->setItem(row, CSP_ActualAirSoundValue, item);
+
+			item = new QTableWidgetItem();
+			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+			item->setText(te.m_expectedNormalLimit);
 			// select color according to violation info
 			QColor normalColor;
-			switch (te.basicConstraintViolated) {
+			switch (te.m_basicConstraintViolated) {
 			case VI_Invalid:
 				normalColor = Qt::red;
 				break;
@@ -566,14 +655,14 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			item->setBackground(backgroundBrush);
 			item->setFlags(Qt::ItemIsEnabled);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			tableWidget->setItem(row, ColNormalConstraints, item);
+			tableWidget->setItem(row, CSP_NormalConstraints, item);
 
 			item = new QTableWidgetItem();
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			item->setText(te.expectedAdvancedLimit);
+			item->setText(te.m_expectedAdvancedLimit);
 			// select color according to violation info
 			QColor advancedColor;
-			switch (te.advancedConstraintViolated) {
+			switch (te.m_advancedConstraintViolated) {
 			case VI_Invalid:
 				advancedColor = Qt::darkRed;
 				break;
@@ -593,18 +682,18 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			item->setBackground(backgroundBrush);
 			item->setFlags(Qt::ItemIsEnabled);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			tableWidget->setItem(row, ColAdvancedConstraints, item);
+			tableWidget->setItem(row, CSP_AdvancedConstraints, item);
 
 			item = new QTableWidgetItem();
-			item->setText(te.isSameStructuralUnit ? "same structure" : "different structure");
+			item->setText(te.m_isSameStructuralUnit ? "same structure" : "different structure");
 			item->setFlags(Qt::ItemIsEnabled);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			tableWidget->setItem(row, ColSameStructure, item);
+			tableWidget->setItem(row, CSP_SameStructure, item);
 
 			QPushButton * btn = new QPushButton(tr("Select components in scene..."));
 
-			unsigned int surfaceAId = te.surfaceAId;
-			unsigned int surfaceBId = te.surfaceBId;
+			unsigned int surfaceAId = te.m_surfaceAId;
+			unsigned int surfaceBId = te.m_surfaceBId;
 
 			// Connecting the clicked signal to a lambda function to pass the surface ids
 			QObject::connect(btn, &QPushButton::clicked, [=]() {
@@ -612,7 +701,7 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			});
 
 			// table widget takes ownership of btn and memory will be freed on destruction
-			tableWidget->setCellWidget(row, ColSelectButton, btn);
+			tableWidget->setCellWidget(row, CSP_SelectButton, btn);
 
 			tableWidget->resizeRowsToContents();
 

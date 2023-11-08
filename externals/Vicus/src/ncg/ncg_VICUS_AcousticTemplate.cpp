@@ -65,6 +65,23 @@ void AcousticTemplate::readXML(const TiXmlElement * element) {
 				m_note.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
+			else if (cName == "EvaluationOffset")
+				m_evaluationOffset = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "EvaluationFactor")
+				m_evaluationFactor = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("AcousticTemplate::splinePara_t", p.m_name);
+					m_splinePara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -94,6 +111,13 @@ TiXmlElement * AcousticTemplate::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Note", nullptr, std::string(), m_note.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
+	TiXmlElement::appendSingleAttributeElement(e, "EvaluationOffset", nullptr, std::string(), IBK::val2string<double>(m_evaluationOffset));
+	TiXmlElement::appendSingleAttributeElement(e, "EvaluationFactor", nullptr, std::string(), IBK::val2string<double>(m_evaluationFactor));
+	for (int i=0; i<NUM_SP; ++i) {
+		if (!m_splinePara[i].m_name.empty()) {
+			m_splinePara[i].writeXML(e);
+		}
+	}
 	return e;
 }
 
