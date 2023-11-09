@@ -52,7 +52,8 @@ public:
 	/*! Returns true if we are editing properties (for networks or buildings) and
 	 *  we want to use different coloring of the objects. */
 	bool inPropertyEditingMode() const {
-		return m_propertyWidgetMode == PM_NetworkProperties || m_propertyWidgetMode == PM_BuildingProperties;
+		return m_propertyWidgetMode == PM_NetworkProperties || m_propertyWidgetMode == PM_BuildingProperties ||
+				m_propertyWidgetMode == PM_BuildingAcousticProperties || m_propertyWidgetMode == PM_BuildingStructuralUnitProperties;
 	}
 
 

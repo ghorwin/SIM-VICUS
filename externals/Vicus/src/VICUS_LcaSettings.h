@@ -149,10 +149,13 @@ inline bool LcaSettings::operator!=(const LcaSettings & other) const {
 		if (m_para[i] != other.m_para[i]) return true;
 
 	for(unsigned int i=0; i<NUM_M; ++i)
-		if(m_flags[i].isEnabled() != other.m_flags[i].isEnabled()) return true;
+		if (m_flags[i].isEnabled() != other.m_flags[i].isEnabled()) return true;
 
-	if(m_calculationMode != other.m_calculationMode) return true;
-	if(m_certificationSystem != other.m_certificationSystem) return true;
+	for(unsigned int i=0; i<NUM_UT; ++i)
+		if (m_idUsage[i] != other.m_idUsage[i]) return true;
+
+	if (m_calculationMode != other.m_calculationMode) return true;
+	if (m_certificationSystem != other.m_certificationSystem) return true;
 
 	return false;
 }

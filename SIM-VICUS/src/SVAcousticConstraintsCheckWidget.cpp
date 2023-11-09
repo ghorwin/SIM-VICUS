@@ -413,19 +413,25 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 
 		ReverberationResult() {}
 
-		ReverberationResult(unsigned int roomID, const QString &roomName,
+		ReverberationResult(unsigned int roomID, const QString &roomName, const QString &templateName, double reverbTime,
 							const std::vector<double> &reverberationTime,
 							const std::vector<bool> &reverberationEvaluation) :
 			m_idRoom(roomID),
 			m_roomName(roomName),
+			m_templateName(templateName),
+			m_reverbTime(reverbTime),
 			m_reverberationTime(reverberationTime),
 			m_evaluation(reverberationEvaluation)
 		{}
 
 		// Room ID
-		unsigned int	m_idRoom;
+		unsigned int				m_idRoom;
 		// Room name
-		QString			m_roomName;
+		QString						m_roomName;
+		// Template name
+		QString						m_templateName;
+		// Template name
+		double						m_reverbTime;
 		// Reverberation times
 		std::vector<double>			m_reverberationTime;
 		// Evaluation
@@ -522,7 +528,8 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 					reverberationEvaluation[i] = ( minVal < reverbTime ) && ( maxVal > reverbTime );
 				}
 
-				tableEntries.push_back(ReverberationResult (r.m_id, r.m_displayName, reverberationTime, reverberationEvaluation));
+				tableEntries.push_back(ReverberationResult (r.m_id, r.m_displayName, QString::fromStdString(at->m_displayName.string()),
+															reverbTimeGoal, reverberationTime, reverberationEvaluation));
 			}
 		}
 	}
@@ -535,6 +542,9 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 
 		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomID, new QTableWidgetItem(QString::number(res.m_idRoom)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomName, new QTableWidgetItem(res.m_roomName));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Template, new QTableWidgetItem(res.m_templateName));
+
+		m_ui->tableWidgetReverberation->setItem(i, CRT_TGoal, new QTableWidgetItem(QString("%1").arg(res.m_reverbTime, 0, 'g', 3)));
 
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb125Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_125Hz], 0, 'g', 3)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb250Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_250Hz], 0, 'g', 3)));
@@ -542,6 +552,13 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb1000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_1000Hz], 0, 'g', 3)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb2000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_2000Hz], 0, 'g', 3)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb4000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_4000Hz], 0, 'g', 3)));
+
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb250Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb500Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb1000Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb2000Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb4000Hz)->setTextAlignment(Qt::AlignCenter);
 
 		QColor valid(Qt::darkGreen);
 		QColor invalid(Qt::darkRed);
@@ -553,9 +570,9 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 
 		for (unsigned int j = 0; j < VICUS::AcousticSoundAbsorption::NUM_SF; ++j) {
 			if (res.m_evaluation[j])
-				m_ui->tableWidgetReverberation->item(i, 2 + j)->setBackground(valid);
+				m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz + j)->setBackground(valid);
 			else
-				m_ui->tableWidgetReverberation->item(i, 2 + j)->setBackground(invalid);
+				m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz + j)->setBackground(invalid);
 		}
 	}
 

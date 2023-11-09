@@ -39,6 +39,8 @@ public:
 	enum ColumnsReverberationTime {
 		CRT_RoomID,
 		CRT_RoomName,
+		CRT_Template,
+		CRT_TGoal,
 		CRT_Reverb125Hz,
 		CRT_Reverb250Hz,
 		CRT_Reverb500Hz,

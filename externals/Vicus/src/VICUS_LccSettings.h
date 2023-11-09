@@ -57,9 +57,9 @@ public:
 
 	// TODO : refactor to allow double values as prices are defined in xx,xx ct/kWh in data tables
 	enum intPara_t {
-		IP_CoalPrice,					// Keyword: CoalPrice					'Price of Coal in ct per kWh.'
-		IP_GasPrice,					// Keyword: GasPrice					'Price of Gas in ct per kWh.'
-		IP_ElectricityPrice,			// Keyword: ElectricityPrice			'Price of Electricity in ct per kWh.'
+		IP_CoalPrice,						// Keyword: CoalPrice					'Price of Coal in ct per kWh.'
+		IP_GasPrice,						// Keyword: GasPrice					'Price of Gas in ct per kWh.'
+		IP_ElectricityPrice,				// Keyword: ElectricityPrice			'Price of Electricity in ct per kWh.'
 		NUM_IP
 	};
 
