@@ -539,12 +539,12 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomID, new QTableWidgetItem(QString::number(res.m_idRoom)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_RoomName, new QTableWidgetItem(res.m_roomName));
 
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb125Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_125Hz])));
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb250Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_250Hz])));
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb500Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_500Hz])));
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb1000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_1000Hz])));
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb2000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_2000Hz])));
-		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb4000Hz, new QTableWidgetItem(QString::number(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_4000Hz])));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb125Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_125Hz], 0, 'g', 3)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb250Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_250Hz], 0, 'g', 3)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb500Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_500Hz], 0, 'g', 3)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb1000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_1000Hz], 0, 'g', 3)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb2000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_2000Hz], 0, 'g', 3)));
+		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb4000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_4000Hz], 0, 'g', 3)));
 
 		QColor valid(Qt::darkGreen);
 		QColor invalid(Qt::darkRed);
