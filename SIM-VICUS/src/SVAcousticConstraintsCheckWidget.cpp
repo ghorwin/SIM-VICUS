@@ -91,6 +91,8 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	QStringList headers;
 	headers << "Room ID"
 			<< "Room name"
+			<< "Acoustic template"
+			<< "Reverberation goal [s]"
 			<< "125 Hz [s]"
 			<< "250 Hz [s]"
 			<< "500 Hz [s]"
@@ -528,7 +530,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 					reverberationEvaluation[i] = ( minVal < reverbTime ) && ( maxVal > reverbTime );
 				}
 
-				tableEntries.push_back(ReverberationResult (r.m_id, r.m_displayName, QString::fromStdString(at->m_displayName.string()),
+				tableEntries.push_back(ReverberationResult (r.m_id, r.m_displayName, QString::fromStdString(at->m_displayName.encodedString()),
 															reverbTimeGoal, reverberationTime, reverberationEvaluation));
 			}
 		}
@@ -553,6 +555,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb2000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_2000Hz], 0, 'g', 3)));
 		m_ui->tableWidgetReverberation->setItem(i, CRT_Reverb4000Hz, new QTableWidgetItem(QString("%1").arg(res.m_reverberationTime[VICUS::AcousticSoundAbsorption::SF_4000Hz], 0, 'g', 3)));
 
+		m_ui->tableWidgetReverberation->item(i, CRT_TGoal)->setTextAlignment(Qt::AlignCenter);
 		m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz)->setTextAlignment(Qt::AlignCenter);
 		m_ui->tableWidgetReverberation->item(i, CRT_Reverb250Hz)->setTextAlignment(Qt::AlignCenter);
 		m_ui->tableWidgetReverberation->item(i, CRT_Reverb500Hz)->setTextAlignment(Qt::AlignCenter);
