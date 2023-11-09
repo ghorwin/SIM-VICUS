@@ -326,13 +326,13 @@ void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 
 		VICUS::EpdModuleDataset epdCatDataset = epdGas->calcTotalEpdByCategory(VICUS::EpdDataset::C_CategoryB, settings);
-		epdCatDataset = epdCatDataset.scaleByFactor(paraCoal.get_value(epdGas->m_referenceUnit));
+		epdCatDataset = epdCatDataset.scaleByFactor(paraGas.get_value(epdGas->m_referenceUnit));
 
 		epdDataset += epdCatDataset;
 
 		item->setText(ColComponentType, "Gas Consumption");
 		item->setTextAlignment(ColArea, Qt::AlignRight);
-		item->setText(ColArea, QString( "%1 kWh" ).arg( coalConsumption, 7, 'f', 2 ));
+		item->setText(ColArea, QString( "%1 kWh" ).arg( gasConsumption, 7, 'f', 2 ));
 
 		item->setText(ColGWP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
 		item->setText(ColAP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));

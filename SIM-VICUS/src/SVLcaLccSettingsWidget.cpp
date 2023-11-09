@@ -940,9 +940,10 @@ void SVLcaLccSettingsWidget::on_pushButtonImportOkoebaudat_clicked() {
 
 void SVLcaLccSettingsWidget::on_comboBoxCalculationMode_currentIndexChanged(int mode) {
 	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+	VICUS::LcaSettings::CalculationMode cm = (VICUS::LcaSettings::CalculationMode)mode;
 
-	lcaSettings.m_calculationMode = (mode == 1 ? VICUS::LcaSettings::CM_Detailed : VICUS::LcaSettings::CM_Simple);
-	m_ui->comboBoxCertificationSystem->setEnabled(mode == 0);
+	lcaSettings.m_calculationMode = cm;
+	m_ui->comboBoxCertificationSystem->setEnabled(cm == VICUS::LcaSettings::CM_Detailed);
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
 	undo->push();
@@ -951,8 +952,9 @@ void SVLcaLccSettingsWidget::on_comboBoxCalculationMode_currentIndexChanged(int 
 
 void SVLcaLccSettingsWidget::on_comboBoxCertificationSystem_currentIndexChanged(int certiSystem) {
 	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+	lcaSettings.m_certificationSystem = (VICUS::LcaSettings::CertificationSytem)certiSystem;
 
-	switch(lcaSettings.m_certificationSystem) {
+	switch (lcaSettings.m_certificationSystem) {
 		case (VICUS::LcaSettings::CS_BNB) :	lcaSettings.m_certificationModules = VICUS::LcaSettings::CT_BNB;  break;
 		case (VICUS::LcaSettings::NUM_CS) : break;
 	}
@@ -1046,11 +1048,11 @@ void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 
 
 void SVLcaLccSettingsWidget::on_lineEditArea_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditArea->isValid())
+		return;
+
 	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
-	if(m_ui->lineEditArea->isValid())
-		VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
-	else
-		m_ui->lineEditArea->setValue(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].value);
+	VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
 	undo->push();
@@ -1058,61 +1060,61 @@ void SVLcaLccSettingsWidget::on_lineEditArea_editingFinishedSuccessfully() {
 
 
 void SVLcaLccSettingsWidget::on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditPriceIncreaseGeneral->isValid())
-		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
-	else
-		m_ui->lineEditPriceIncreaseGeneral->setValue(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseGeneral].value);
+	if (!m_ui->lineEditPriceIncreaseGeneral->isValid())
+		return;
 
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+	VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseGeneral, m_ui->lineEditPriceIncreaseGeneral->value());
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCC", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
 
 void SVLcaLccSettingsWidget::on_lineEditGasConsumption_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditGasConsumption->isValid())
-		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
-	else
-		m_ui->lineEditGasConsumption->setValue(lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].value);
+	if (!m_ui->lineEditGasConsumption->isValid())
+		return;
 
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+	VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_GasConsumption, m_ui->lineEditGasConsumption->value());
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCC", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
 
 void SVLcaLccSettingsWidget::on_lineEditElectricityConsumption_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditElectricityConsumption->isValid())
-		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
-	else
-		m_ui->lineEditElectricityConsumption->setValue(lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].value);
+	if (!m_ui->lineEditElectricityConsumption->isValid())
+		return;
 
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+	VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_ElectricityConsumption, m_ui->lineEditElectricityConsumption->value());
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCC", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
 
 void SVLcaLccSettingsWidget::on_lineEditCoalConsumption_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditCoalConsumption->isValid())
-		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
-	else
-		m_ui->lineEditArea->setValue(lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].value);
+	if (!m_ui->lineEditCoalConsumption->isValid())
+		return;
 
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+	VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_CoalConsumption, m_ui->lineEditCoalConsumption->value());
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCC", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
 
 void SVLcaLccSettingsWidget::on_lineEditPriceIncreaseEnergy_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditPriceIncreaseEnergy->isValid())
-		VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
-	else
-		m_ui->lineEditPriceIncreaseEnergy->setValue(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].value);
+	if (!m_ui->lineEditPriceIncreaseEnergy->isValid())
+		return;
 
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+	VICUS::KeywordList::setParameter(lccSettings.m_para, "LccSettings::para_t", VICUS::LccSettings::P_PriceIncreaseEnergy, m_ui->lineEditPriceIncreaseEnergy->value());
+
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCC", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
@@ -1171,19 +1173,36 @@ void SVLcaLccSettingsWidget::on_toolButtonSelectCoal_clicked() {
 
 
 void SVLcaLccSettingsWidget::on_lineEditCoalPrice_editingFinishedSuccessfully() {
-	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditCoalPrice->isValid())
-		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, (int)m_ui->lineEditCoalPrice->value()*100);
+	if (!m_ui->lineEditCoalPrice->isValid())
+		return;
 
+	VICUS::LccSettings lccSettings = project().m_lccSettings;
+
+	int newVal = (int)(m_ui->lineEditCoalPrice->value()*100);
+	int oldVal = lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value;
+
+	if (newVal == oldVal)
+		return;
+
+	VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_CoalPrice, newVal);
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
 	undo->push();
 }
 
 
 void SVLcaLccSettingsWidget::on_lineEditGasPrice_editingFinishedSuccessfully() {
+	if (!m_ui->lineEditGasPrice->isValid())
+		return;
+
 	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditGasPrice->isValid())
-		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, (int)m_ui->lineEditGasPrice->value()*100);
+
+	int newVal = (int)(m_ui->lineEditGasPrice->value()*100);
+	int oldVal = lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value;
+
+	if (newVal == oldVal)
+		return;
+
+	VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_GasPrice, newVal);
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
 	undo->push();
@@ -1191,9 +1210,18 @@ void SVLcaLccSettingsWidget::on_lineEditGasPrice_editingFinishedSuccessfully() {
 
 
 void SVLcaLccSettingsWidget::on_lineEditElectricityPrice_editingFinishedSuccessfully() {
+	if (m_ui->lineEditElectricityPrice->isValid())
+		return;
+
 	VICUS::LccSettings lccSettings = project().m_lccSettings;
-	if(m_ui->lineEditElectricityPrice->isValid())
-		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, (int)m_ui->lineEditElectricityPrice->value()*100);
+
+	int newVal = (int)(m_ui->lineEditElectricityPrice->value()*100);
+	int oldVal = lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value;
+
+	if (newVal == oldVal)
+		return;
+
+	VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, newVal);
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
 	undo->push();
