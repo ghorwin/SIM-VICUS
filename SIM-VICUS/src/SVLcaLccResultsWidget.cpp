@@ -42,6 +42,12 @@ SVLcaLccResultsWidget::SVLcaLccResultsWidget(QWidget *parent) :
 	m_ui(new Ui::SVLcaLccResultsWidget)
 {
 	m_ui->setupUi(this);
+
+	QStringList headersLca;
+	headersLca << tr("Category") << "" << tr("Type") << tr("Name") << tr("Name") << tr("EPD") << tr("Amount") << tr("Invest-Cost [€]") << tr("GWP (CO2-Äqu.) [kg/(m2a)");
+	headersLca << tr("ODP (R11-Äqu.) [kg/(m2a)]") << tr("POCP (C2H4-Äqu.) [kg/(m2a)]") << tr("AP (SO2-Äqu.) [kg/(m2a)]") << tr("EP (PO4-Äqu.) [kg/(m2a)]");
+
+	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);
 }
 
 

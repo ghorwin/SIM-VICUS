@@ -386,8 +386,8 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 
 	}
 
-	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks for ceilings passed succesfully." : "Acoustic checks of ceilings not passed.");
-	m_ui->labelWallCheck->setText(airBourneSoundCheck ? "All acoustic checks for walls passed succesfully." : "Acoustic checks of walls not passed.");
+	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
+	m_ui->labelWallCheck->setText(airBourneSoundCheck ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
 
 	m_ui->labelIconWall->setPixmap( QPixmap(airBourneSoundCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 	m_ui->labelIconCeiling->setPixmap( QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));

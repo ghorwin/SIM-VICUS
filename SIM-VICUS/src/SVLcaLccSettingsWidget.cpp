@@ -120,6 +120,8 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 
 	m_resultsWidget = dynamic_cast<SVLcaLccResultsWidget *>(m_ui->widgetResults);
 
+	m_ui->tabResults->setEnabled(false);
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVLcaLccSettingsWidget::onModified);
 }
@@ -154,6 +156,9 @@ void SVLcaLccSettingsWidget::calculateLCA() {
 
 	// Write calculation to file
 	//writeLcaDataToTxtFile(path);
+
+	m_ui->tabResults->setEnabled(true);
+	m_ui->tabWidget->setCurrentIndex(1);
 }
 
 
