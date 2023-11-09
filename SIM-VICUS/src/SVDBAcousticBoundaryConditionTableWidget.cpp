@@ -16,34 +16,27 @@ SVDBAcousticBoundaryConditionTableWidget::SVDBAcousticBoundaryConditionTableWidg
 
 void SVDBAcousticBoundaryConditionTableWidget::onSectionResized()
 {
-	if(columnCount() >= SVDBAcousticBoundaryConditionEditWidget::NumCol){
-		if(columnWidth(SVDBAcousticBoundaryConditionEditWidget::ColName) < 50)
-			setColumnWidth(SVDBAcousticBoundaryConditionEditWidget::ColName, 50);
+	if(columnCount() >= SVDBAcousticBoundaryConditionEditWidget::ColNameButton){
 		for(int i = 0; i < rowCount(); ++i){
-			QWidget * widget = cellWidget(i, SVDBAcousticBoundaryConditionEditWidget::ColName);
-			if(widget){
-				widget->setFixedWidth(columnWidth(SVDBAcousticBoundaryConditionEditWidget::ColName));
+			QWidget * widgetButton = cellWidget(i, SVDBAcousticBoundaryConditionEditWidget::ColNameButton);
+			if(widgetButton){
+				int newX = columnViewportPosition(SVDBAcousticBoundaryConditionEditWidget::ColNameButton);
+				int width = columnWidth(SVDBAcousticBoundaryConditionEditWidget::ColNameButton);
+				widgetButton->setGeometry(newX, widgetButton->y(), width, rowHeight(i));
 			}
 		}
+
 	}
 }
 
-void SVDBAcousticBoundaryConditionTableWidget::setButtonAndText(int row, int column, QString text)
+
+void SVDBAcousticBoundaryConditionTableWidget::setButton(int row, int column)
 {
-	QWidget *w = new QWidget();
-	QHBoxLayout *l = new QHBoxLayout();
-	l->setMargin(0);
-	l->setSpacing(0);
-	w->setLayout(l);
 	QPushButton *button = new QPushButton(QString("..."), this);
-	button->setFixedSize(24, 24);
-	QString name = QString(" %1 ").arg(text);
-	QLabel *nameLabel = new QLabel(name);
-	nameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	nameLabel->setMinimumWidth(100);
-	l->addWidget(nameLabel);
-	l->addWidget(button);
-	setCellWidget(row, column, w);
+	button->setFixedSize(24, 21);
+	button->setStyleSheet("QPushButton{padding-top: 2px; padding-bottom: 2px; padding-left: 3px; padding-right: 3px;}");
+	setCellWidget(row, column, button);
+
 	SVDBAcousticBoundaryConditionEditWidget* parent = static_cast<SVDBAcousticBoundaryConditionEditWidget*>(this->parent());
 	connect(button, &QPushButton::clicked, parent, [parent, row](){
 		parent->onLayerChosen(row, SVDBAcousticBoundaryConditionEditWidget::ColName);

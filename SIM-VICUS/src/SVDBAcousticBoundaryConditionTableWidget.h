@@ -14,8 +14,8 @@ public:
 	*	when the mouse button is released*/
 	void onSectionResized();
 
-	/* adds new widget with button and text, connects to onLayerChosen slot in SVDBAcousticBoundaryConditionEditWidget */
-	void setButtonAndText(int row, int column, QString text);
+	/* adds button to column, connects to onLayerChosen slot in SVDBAcousticBoundaryConditionEditWidget */
+	void setButton(int row, int column);
 
 signals:
 
