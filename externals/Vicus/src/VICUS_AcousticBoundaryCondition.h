@@ -75,10 +75,10 @@ public:
 	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
 	//:inherited	QColor							m_color;					// XML:A
 
-        std::vector<AcousticSoundAbsorptionPartition>				m_soundAbsorptionLayers;	// XML:E
+	std::vector<AcousticSoundAbsorptionPartition>		m_soundAbsorptionPartition;	// XML:E
 
 	/*! Holds error string in order to give users a tooltip in db dialog. */
-	mutable std::string								m_errorMsg;
+	mutable std::string									m_errorMsg;
 
 };
 

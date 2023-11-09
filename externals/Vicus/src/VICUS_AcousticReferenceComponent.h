@@ -58,7 +58,6 @@ public:
 	double					m_airborneSoundOneStructureUnit = -1;		// XML:E
 	double					m_airborneSoundDifferentStructureUnit = -1;	// XML:E
 
-
 	unsigned int			m_idAcousticTemplateA = VICUS::INVALID_ID;	// XML:E
 	unsigned int			m_idAcousticTemplateB = VICUS::INVALID_ID;	// XML:E
 

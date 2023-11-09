@@ -15,6 +15,16 @@ class SVSimulationSettingsView : public QWidget
 {
 	Q_OBJECT
 
+	/*! Enum for simulation page. */
+	enum SimulationPage {
+		SP_Location,
+		SP_Shading,
+		SP_ThermalSimulation,
+		SP_LifeCycle,
+		SP_Acoustic,
+		NUM_SP
+	};
+
 public:
 	explicit SVSimulationSettingsView(QWidget *parent = nullptr);
 	~SVSimulationSettingsView();

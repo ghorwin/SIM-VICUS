@@ -1,5 +1,5 @@
-#ifndef SVLcaLccSettingsDialogH
-#define SVLcaLccSettingsDialogH
+#ifndef SVLcaLccSettingsWidgetH
+#define SVLcaLccSettingsWidgetH
 
 
 #include <QWidget>
@@ -16,7 +16,7 @@
 class ModificationInfo;
 
 namespace Ui {
-class SVLcaLccSettingsDialog;
+class SVLcaLccSettingsWidget;
 }
 
 class SVLcaLccSettingsWidget : public QWidget {
@@ -135,8 +135,6 @@ private slots:
 
 	void on_lineEditArea_editingFinishedSuccessfully();
 
-	void on_lineEditTimePeriod_editingFinishedSuccessfully();
-
 	void on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully();
 
 	void on_lineEditGasConsumption_editingFinishedSuccessfully();
@@ -158,6 +156,8 @@ private slots:
 	void on_lineEditGasPrice_editingFinishedSuccessfully();
 
 	void on_lineEditElectricityPrice_editingFinishedSuccessfully();
+
+	void on_spinBoxTimePeriod_valueChanged(int arg1);
 
 private:
 	/*! Import ÖKOBAUDAT as csv from
@@ -200,7 +200,10 @@ private:
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
 	/*! Pointer to Ui */
-	Ui::SVLcaLccSettingsDialog							*m_ui;
+	Ui::SVLcaLccSettingsWidget							*m_ui;
+
+	/*! Results Widget. */
+	SVLcaLccResultsWidget								*m_resultsWidget = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;

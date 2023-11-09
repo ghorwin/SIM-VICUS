@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVLcaLccResultsDialog</class>
- <widget class="QWidget" name="SVLcaLccResultsDialog">
+ <class>SVLcaLccResultsWidget</class>
+ <widget class="QWidget" name="SVLcaLccResultsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,26 +14,18 @@
    <string>LCA/LCC Results</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="QPushButton" name="pushButtonClose">
-     <property name="text">
-      <string>Close</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="tabPosition">
@@ -44,7 +36,7 @@
      </property>
      <widget class="QWidget" name="LCA">
       <attribute name="title">
-       <string>LCA</string>
+       <string>Life-Cycle Assessment</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -60,7 +52,7 @@
      </widget>
      <widget class="QWidget" name="LCC">
       <attribute name="title">
-       <string>LCC</string>
+       <string>Life-Cycle-Cost</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0" colspan="2">

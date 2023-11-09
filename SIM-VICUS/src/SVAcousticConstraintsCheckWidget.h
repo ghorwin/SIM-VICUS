@@ -1,15 +1,15 @@
-#ifndef SVACOUSTICCONSTRAINTSCHECKDIALOG_H
-#define SVACOUSTICCONSTRAINTSCHECKDIALOG_H
+#ifndef SVAcousticConstraintsCheckWidgetH
+#define SVAcousticConstraintsCheckWidgetH
 
 #include <QDialog>
 
 namespace Ui {
-class SVAcousticConstraintsCheckDialog;
+class SVAcousticConstraintsCheckWidget;
 }
 
 
 /*! Dialog for checking acoustic constrains dynamically. */
-class SVAcousticConstraintsCheckDialog : public QDialog {
+class SVAcousticConstraintsCheckWidget : public QDialog {
 	Q_OBJECT
 
 public:
@@ -66,8 +66,8 @@ public:
 	};
 
 
-	explicit SVAcousticConstraintsCheckDialog(QWidget *parent = nullptr);
-	~SVAcousticConstraintsCheckDialog();
+	explicit SVAcousticConstraintsCheckWidget(QWidget *parent = nullptr);
+	~SVAcousticConstraintsCheckWidget();
 
 	/*! Always start the dialog with this function.
 		\return Returns true if dialog was confirmed and data can be added to project.
@@ -95,7 +95,7 @@ private:
 	void checkReverberation();
 
 	/*! Pointer to Ui. */
-	Ui::SVAcousticConstraintsCheckDialog *m_ui;
+	Ui::SVAcousticConstraintsCheckWidget *m_ui;
 
 	/*! stores all the table entries for walls*/
 	std::vector<tableEntry> m_wallTes;
@@ -111,4 +111,4 @@ private:
 
 };
 
-#endif // SVACOUSTICCONSTRAINTSCHECKDIALOG_H
+#endif // SVAcousticConstraintsCheckWidgetH

@@ -11,6 +11,7 @@
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
 #include "SVLcaLccSettingsWidget.h"
+#include "SVAcousticConstraintsCheckWidget.h"
 
 
 SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
@@ -27,10 +28,11 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/shades.png");
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/simulation-temperature.png");
 	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
+	addCustomWidgetToListWidget(tr(" Acoustic"), ":/gfx/actions/sound-wave.png");
 
 	// disable LCA
-	QListWidgetItem *item = m_ui->listWidget->item(3);
-	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+//	QListWidgetItem *item = m_ui->listWidget->item(3);
+//	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
 	QFont fnt;
 	fnt.setPixelSize(14);
@@ -38,29 +40,31 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	m_ui->listWidget->setIconSize(QSize(32,32));
 	m_ui->listWidget->setSpacing(5);
 
-
-
 	// *** add widgets to stacked widget
 
 	SVSimulationLocationOptions *locationOptions = new SVSimulationLocationOptions(this);
 	QHBoxLayout *lay1 = new QHBoxLayout;
 	lay1->addWidget(locationOptions);
 	lay1->setContentsMargins(10,0,10,0);
-	m_ui->stackedWidget->widget(0)->setLayout(lay1);
+	m_ui->stackedWidget->widget(SP_Location)->setLayout(lay1);
 
 	SVSimulationShadingOptions *shadingOptions = new SVSimulationShadingOptions(this);
 	QHBoxLayout *lay2 = new QHBoxLayout;
 	lay2->addWidget(shadingOptions);
 	lay2->setContentsMargins(10,0,10,0);
-	m_ui->stackedWidget->widget(1)->setLayout(lay2);
+	m_ui->stackedWidget->widget(SP_Shading)->setLayout(lay2);
 
 	SVLcaLccSettingsWidget *lcaSettings = new SVLcaLccSettingsWidget(this);
 	QHBoxLayout *lay3 = new QHBoxLayout;
 	lay3->addWidget(lcaSettings);
 	lay3->setContentsMargins(10,0,10,0);
-	m_ui->stackedWidget->widget(3)->setLayout(lay3);
+	m_ui->stackedWidget->widget(SP_LifeCycle)->setLayout(lay3);
 
-
+	SVAcousticConstraintsCheckWidget *acousticSettings = new SVAcousticConstraintsCheckWidget(this);
+	QHBoxLayout *lay4 = new QHBoxLayout;
+	lay4->addWidget(acousticSettings);
+	lay4->setContentsMargins(10,0,10,0);
+	m_ui->stackedWidget->widget(SP_Acoustic)->setLayout(lay4);
 
 	// sim start widget
 
