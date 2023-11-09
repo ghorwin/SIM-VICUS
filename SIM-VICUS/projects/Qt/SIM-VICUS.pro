@@ -210,8 +210,8 @@ SOURCES += \
 	../../src/core3D/Vic3DNewSubSurfaceObject.cpp \
 	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 	../../src/core3D/Vic3DOpenGLWindow.cpp \
-		../../src/core3D/Vic3DOrbitControllerObject.cpp \
-		../../src/core3D/Vic3DRubberbandObject.cpp \
+	../../src/core3D/Vic3DOrbitControllerObject.cpp \
+	../../src/core3D/Vic3DRubberbandObject.cpp \
 	../../src/core3D/Vic3DScene.cpp \
 	../../src/core3D/Vic3DSceneView.cpp \
 	../../src/core3D/Vic3DShaderProgram.cpp \
@@ -383,9 +383,9 @@ HEADERS  += \
 	../../src/SVPropBuildingZoneProperty.h \
 	../../src/SVPropBuildingZonePropertyTableModel.h \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.h \
-		../../src/SVPropBuildingZoneTemplatesWidget.h \
+	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
-		../../src/SVPropZonePropertyDelegate.h \
+	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
@@ -449,7 +449,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DOpenGLWindow.h \
 	../../src/core3D/Vic3DOrbitControllerObject.h \
 	../../src/core3D/Vic3DPickObject.h \
-		../../src/core3D/Vic3DRubberbandObject.h \
+	../../src/core3D/Vic3DRubberbandObject.h \
 	../../src/core3D/Vic3DScene.h \
 	../../src/core3D/Vic3DSceneView.h \
 	../../src/core3D/Vic3DShaderProgram.h \
@@ -623,7 +623,7 @@ FORMS    += \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPluginManager.ui \
 	../../src/SVPreferencesDialog.ui \
-		../../src/SVPreferencesPageMisc.ui \
+	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
     ../../src/SVPropAcosuticWidget.ui \
@@ -641,20 +641,20 @@ FORMS    += \
 	../../src/SVPropBuildingSurfaceHeatingWidget.ui \
 	../../src/SVPropBuildingZoneProperty.ui \
 	../../src/SVPropBuildingZoneTemplatesWidget.ui \
-		../../src/SVPropEditGeometry.ui \
+	../../src/SVPropEditGeometry.ui \
 	../../src/SVPropFloorManagerWidget.ui \
 	../../src/SVPropNetworkEdgesWidget.ui \
 	../../src/SVPropNetworkEditWidget.ui \
 	../../src/SVPropNetworkGeometryWidget.ui \
 	../../src/SVPropNetworkHeatExchangeWidget.ui \
-		../../src/SVPropNetworkNodesWidget.ui \
+	../../src/SVPropNetworkNodesWidget.ui \
 	../../src/SVPropNetworkSubStationWidget.ui \
 	../../src/SVPropResultsWidget.ui \
 	../../src/SVPropSiteWidget.ui \
     ../../src/SVPropStructuralUnitEditWidget.ui \
 	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
-		../../src/SVScheduleHolidayWidget.ui \
+	../../src/SVScheduleHolidayWidget.ui \
 	../../src/SVSimulationLocationOptions.ui \
 	../../src/SVSimulationModelOptions.ui \
 	../../src/SVSimulationNetworkOptions.ui \

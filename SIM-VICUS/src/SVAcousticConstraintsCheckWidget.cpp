@@ -2,7 +2,6 @@
 #include "ui_SVAcousticConstraintsCheckWidget.h"
 
 #include "SVStyle.h"
-#include <VICUS_Project.h>
 #include "SVProjectHandler.h"
 #include "QtExt_Conversions.h"
 #include "SVUndoTreeNodeState.h"
@@ -10,6 +9,7 @@
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
 
+#include <VICUS_Project.h>
 
 SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *parent) :
 	QDialog(parent),
@@ -52,34 +52,34 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	m_ui->tableWidgetCeilings->setSortingEnabled(false);
 	m_ui->tableWidgetCeilings->resizeColumnsToContents();
 
-	double width = 130;
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticTemplateB, 200);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticComponent, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_ActualAirSoundValue, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AdvancedConstraints, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_NormalConstraints, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SameStructure, width);
-	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SelectButton, 230);
+//	double width = 130;
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticTemplateB, 200);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticComponent, width);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_ActualAirSoundValue, width);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AdvancedConstraints, width);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_NormalConstraints, width);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SameStructure, width);
+//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SelectButton, 230);
 
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticTemplateB, 200);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticComponent, width);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_ActualAirSoundValue, width);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_AdvancedConstraints, width);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_NormalConstraints, width);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_SameStructure, width);
-	m_ui->tableWidgetWalls->setColumnWidth(CSP_SelectButton, 230);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticTemplateB, 200);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticComponent, width);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_ActualAirSoundValue, width);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AdvancedConstraints, width);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_NormalConstraints, width);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_SameStructure, width);
+//	m_ui->tableWidgetWalls->setColumnWidth(CSP_SelectButton, 230);
 
-	QHeaderView *headerView = m_ui->tableWidgetCeilings->horizontalHeader();
-	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
+//	QHeaderView *headerView = m_ui->tableWidgetCeilings->horizontalHeader();
+//	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
-	headerView = m_ui->tableWidgetWalls->horizontalHeader();
-	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
+//	headerView = m_ui->tableWidgetWalls->horizontalHeader();
+//	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
-	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
-	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
 	m_ui->checkBoxHideCeilings->setChecked(false);
 	m_ui->checkBoxHideWalls->setChecked(false);
@@ -99,9 +99,7 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 			<< "4000 Hz [s]";
 
 	m_ui->tableWidgetReverberation->setHorizontalHeaderLabels(headers);
-
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetReverberation);
-
 	setWindowTitle(tr("Acoustic component check"));
 }
 
@@ -472,7 +470,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 						if (aBC == nullptr)
 							continue;
 
-						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionPartition) {
 							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
@@ -493,7 +491,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 						if (aBC == nullptr)
 							continue;
 
-						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionLayers) {
+                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionPartition) {
 							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
@@ -693,7 +691,7 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 		}
 
 		tableWidget->blockSignals(false);
-		// tableWidget->resizeColumnsToContents();
+		tableWidget->resizeColumnsToContents();
 
 	}
 }

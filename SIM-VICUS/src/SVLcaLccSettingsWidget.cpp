@@ -113,11 +113,12 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
 	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "Energy Price increase", true, true);
 	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "General Price increase", true, true);
-	m_ui->lineEditTimePeriod->setup(0, 1e10, "Time period for evaluation", false, true);
 
 	m_ui->lineEditGasPrice->setup(0, 1e10, "Gas price for evaluation in €/kWh", false, true);
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
 	m_ui->lineEditElectricityPrice->setup(0, 1e10, "Electricity price for evaluation in €/kWh", false, true);
+
+	m_resultsWidget = dynamic_cast<SVLcaLccResultsWidget *>(m_ui->widgetResults);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVLcaLccSettingsWidget::onModified);
@@ -704,7 +705,8 @@ void SVLcaLccSettingsWidget::updateUi() {
 
 	m_ui->lineEditArea->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
-	m_ui->lineEditTimePeriod->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a")));
+	int years = lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+	m_ui->spinBoxTimePeriod->setValue(years);
 
 	m_ui->lineEditInterestRate->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_DiscountingInterestRate].get_value("%")));
 	m_ui->lineEditPriceIncreaseEnergy->setText(QString("%1").arg(lccSettings.m_para[VICUS::LccSettings::P_PriceIncreaseEnergy].get_value("%")));
@@ -882,22 +884,22 @@ void SVLcaLccSettingsWidget::calculateTotalLcaDataForComponents() {
 			if(epdCatA != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryA]
 						= epdCatA->scaleByFactor( renewingFactor *
-							SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
+							SVLcaLccResultsWidget::conversionFactorEpdReferenceUnit(epdCatA->m_referenceUnit,
 															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatB != nullptr) // no renewing period scaling since it is already normated for 1 a
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryB]
 						= epdCatB->scaleByFactor(
-							SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
+							SVLcaLccResultsWidget::conversionFactorEpdReferenceUnit(epdCatB->m_referenceUnit,
 															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatC != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryC]
 						= epdCatC->scaleByFactor( renewingFactor *
-							SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
+							SVLcaLccResultsWidget::conversionFactorEpdReferenceUnit(epdCatC->m_referenceUnit,
 															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 			if(epdCatD != nullptr)
 				itAggregatedComp->second.m_totalEpdData[VICUS::EpdDataset::C_CategoryD]
 						= epdCatD->scaleByFactor( renewingFactor *
-							SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
+							SVLcaLccResultsWidget::conversionFactorEpdReferenceUnit(epdCatD->m_referenceUnit,
 															 mat, matLayer.m_para[VICUS::MaterialLayer::P_Thickness].get_value("m"), area));
 
 		}
@@ -1000,37 +1002,41 @@ void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
 
 	try {
-		const double &coalConsumption			= lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].value;
-		const double &gasConsumption			= lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].value;
-		const double &electricityConsumption	= lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].value;
+			// TODO : kWh/a  -> Energy/Time -> Power     --> J/s is SI base unit
 
-		double totalEnergyCost =  gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value
-								+ electricityConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
-								+ coalConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
-		totalEnergyCost /= 100; // Mind we store our Prices in cent --> convert to € by /100
+			// get annual consumptions in kWh/a
 
-		calculateLCA();
+			double coalConsumption			= lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a");
+			double gasConsumption			= lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a");
+			double electricityConsumption	= lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a");
 
-		std::vector<double> investCost(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"), 0.0);
+	//		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
+	//								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
+	//								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
+	//		totalEnergyCost /= 100.0; // Mind we store our Prices in cent --> convert to € by /100
 
-		// TODO:
+			calculateLCA();
 
-		// Results ??
+			unsigned int numberOfYears = lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
+			std::vector<double> investCost(numberOfYears, 0.0);
 
-//		lcaResultsDialog()->setup();
-//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, *m_lcaSettings, investCost);
-//		lcaResultsDialog()->setUsageResults(*m_lcaSettings, gasConsumption, coalConsumption, electricityConsumption);
-//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, *m_lcaSettings, investCost);
-//		lcaResultsDialog()->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, *m_lcaSettings, investCost);
+			m_resultsWidget->setup();
+			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, lcaSettings, investCost);
+			m_resultsWidget->setUsageResults(lcaSettings, gasConsumption, electricityConsumption, coalConsumption);
+			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, lcaSettings, investCost);
+			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, lcaSettings, investCost);
 
-//		lcaResultsDialog()->setCostResults(*m_lccSettings, *m_lcaSettings, totalEnergyCost, investCost);
+			// Mind: cost values are in ct/kWh and we convert to EUR/kWh
+			m_resultsWidget->setCostResults(lccSettings, lcaSettings,
+					electricityConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100.0,
+					coalConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100.0,
+					gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0,
+					investCost);
 
-//		m_lcaResultDialog->showMaximized();
-
-	}
-	catch (IBK::Exception &ex) {
-		QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
-	}
+		}
+		catch (IBK::Exception &ex) {
+			QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
+		}
 }
 
 
@@ -1040,20 +1046,6 @@ void SVLcaLccSettingsWidget::on_lineEditArea_editingFinishedSuccessfully() {
 		VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_NetUsageArea, m_ui->lineEditArea->value());
 	else
 		m_ui->lineEditArea->setValue(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].value);
-
-	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
-	undo->push();
-}
-
-
-void SVLcaLccSettingsWidget::on_lineEditTimePeriod_editingFinishedSuccessfully() {
-	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
-	if(m_ui->lineEditTimePeriod->isValid()) {
-		double years = m_ui->lineEditTimePeriod->value();
-		VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
-	}
-	else
-		m_ui->lineEditArea->setValue(lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a"));
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
 	undo->push();
@@ -1199,6 +1191,14 @@ void SVLcaLccSettingsWidget::on_lineEditElectricityPrice_editingFinishedSuccessf
 		VICUS::KeywordList::setIntPara(lccSettings.m_intPara, "LccSettings::intPara_t", VICUS::LccSettings::IP_ElectricityPrice, (int)m_ui->lineEditElectricityPrice->value()*100);
 
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", project().m_lcaSettings, lccSettings);
+	undo->push();
+}
+
+
+void SVLcaLccSettingsWidget::on_spinBoxTimePeriod_valueChanged(int years) {
+	VICUS::LcaSettings lcaSettings = project().m_lcaSettings;
+	VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
+	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
 	undo->push();
 }
 

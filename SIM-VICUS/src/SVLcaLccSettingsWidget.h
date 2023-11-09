@@ -135,8 +135,6 @@ private slots:
 
 	void on_lineEditArea_editingFinishedSuccessfully();
 
-	void on_lineEditTimePeriod_editingFinishedSuccessfully();
-
 	void on_lineEditPriceIncreaseGeneral_editingFinishedSuccessfully();
 
 	void on_lineEditGasConsumption_editingFinishedSuccessfully();
@@ -158,6 +156,8 @@ private slots:
 	void on_lineEditGasPrice_editingFinishedSuccessfully();
 
 	void on_lineEditElectricityPrice_editingFinishedSuccessfully();
+
+	void on_spinBoxTimePeriod_valueChanged(int arg1);
 
 private:
 	/*! Import ÖKOBAUDAT as csv from
@@ -201,6 +201,9 @@ private:
 
 	/*! Pointer to Ui */
 	Ui::SVLcaLccSettingsWidget							*m_ui;
+
+	/*! Results Widget. */
+	SVLcaLccResultsWidget								*m_resultsWidget = nullptr;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
