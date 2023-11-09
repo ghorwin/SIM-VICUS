@@ -194,7 +194,7 @@ void SVDBAcousticSoundAbsorptionEditWidget::tableItemChanged(QTableWidgetItem *i
 	Q_ASSERT(m_current != nullptr);
 
 	bool ok;
-	double val = item->text().toDouble(&ok);
+	double val = QtExt::Locale().toDouble(item->text(), &ok);
 	val = IBK::rounded<3>(val);
 	int row = item->row();
 	int col = item->column();
