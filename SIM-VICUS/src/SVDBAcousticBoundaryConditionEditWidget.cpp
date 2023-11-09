@@ -61,9 +61,13 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 	headers << tr("ID") << tr("Name") << "" << tr("Area fraction [---]");
 	m_ui->tableWidgetSoundAbsorptionLayers->setHorizontalHeaderLabels(headers);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSoundAbsorptionLayers);
-	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(ColNameButton, QHeaderView::Fixed);
+	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(ColId, QHeaderView::Fixed);
+	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(ColFraction, QHeaderView::Fixed);
 	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColNameButton, 24);
+	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColId, 100);
+	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColFraction, 130);
 	m_ui->tableWidgetSoundAbsorptionLayers->setSortingEnabled(false);
 
 	// for changing area fraction
@@ -161,22 +165,37 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 	m_ui->tableWidgetSoundAbsorptionLayers->setRowCount(rowCount);
 
     for (unsigned int i=0; i < rowCount; ++i) {
-            const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_soundAbsorptionLayers[i];
+        const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_soundAbsorptionLayers[i];
         const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
-		Q_ASSERT(soundAbs != nullptr);
-		QTableWidgetItem *idItem = new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption));
+		QTableWidgetItem *idItem;
+		QTableWidgetItem *nameItem;
+		QTableWidgetItem *fractionItem;
+
+		if(soundAbs == nullptr){
+			QBrush brush(Qt::red);
+			idItem = new QTableWidgetItem(QString("Invalid"));
+			nameItem = new QTableWidgetItem(QString("Invalid"));
+			fractionItem = new QTableWidgetItem(QString::number(0));
+			idItem->setForeground(brush);
+			nameItem->setForeground(brush);
+			fractionItem->setForeground(brush);
+		} else
+		{
+			idItem = new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption));
+			nameItem = new QTableWidgetItem(QString::fromStdString(soundAbs->m_displayName.string()));
+			fractionItem = new QTableWidgetItem(QString::number(layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value));
+		}
+
 		idItem->setTextAlignment(Qt::AlignCenter);
-		QTableWidgetItem *nameItem = new QTableWidgetItem(QString::fromStdString(soundAbs->m_displayName.string()));
 		nameItem->setTextAlignment(Qt::AlignCenter);
-		QTableWidgetItem *fractionItem = new QTableWidgetItem(QString::number(layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value));
 		fractionItem->setTextAlignment(Qt::AlignCenter);
 
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, idItem);
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColName, nameItem);
 		m_ui->tableWidgetSoundAbsorptionLayers->setButton(i, ColNameButton);
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,fractionItem);
-
+		QBrush brush(Qt::red);
 	}
 	m_ui->tableWidgetSoundAbsorptionLayers->setEnabled(!m_current->m_builtIn);
 	m_ui->tableWidgetSoundAbsorptionLayers->blockSignals(false);
@@ -261,7 +280,18 @@ void SVDBAcousticBoundaryConditionEditWidget::showSoundAbsorptionSelectionDialog
 	// get material edit dialog (owned/managed by main window)
 	SVDatabaseEditDialog * soundAbsSelect = SVMainWindow::instance().dbAcousticSoundAbsorptionEditDialog();
 	// ask to select a material
-	unsigned int soundAbsId = soundAbsSelect->select(m_current->m_soundAbsorptionLayers[(unsigned int)index].m_idSoundAbsorption);
+	unsigned int idSoundAbsorption = m_current->m_soundAbsorptionLayers[index].m_idSoundAbsorption;
+	VICUS::AcousticSoundAbsorption *ac = m_db->m_acousticSoundAbsorptions[idSoundAbsorption];
+
+	unsigned int soundAbsId;
+
+	if( ac != nullptr){
+		soundAbsId = soundAbsSelect->select(idSoundAbsorption);
+	} else {
+		soundAbsId = soundAbsSelect->select(VICUS::INVALID_ID);
+	}
+
+
 	if (soundAbsId == VICUS::INVALID_ID)
 		return; // dialog was canceled, no change here
 	if (soundAbsId != m_current->m_soundAbsorptionLayers[(unsigned int)index].m_idSoundAbsorption) {
