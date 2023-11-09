@@ -515,7 +515,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 					}
 				}
 
-				double reverbTimeGoal = at->m_evaluationOffset + at->m_evaluationFactor * std::log(roomVolume);
+				double reverbTimeGoal = at->m_evaluationOffset + at->m_evaluationFactor * std::log10(roomVolume);
 				for (unsigned int i=0; i<VICUS::AcousticSoundAbsorption::NUM_SF; ++i) {
 					double &reverbTime = reverberationTime[i];
 
