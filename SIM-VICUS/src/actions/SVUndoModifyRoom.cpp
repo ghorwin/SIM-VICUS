@@ -40,6 +40,7 @@ SVUndoModifyRoom::SVUndoModifyRoom(const QString & label,
 
 void SVUndoModifyRoom::undo() {
 	// exchange room meta data
+	VICUS::Project prj = theProject();
 	std::swap( theProject().m_buildings[m_buildingIndex].m_buildingLevels[m_buildingLevelIndex].m_rooms[m_roomIndex], m_room);
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 	theProject().updatePointers();

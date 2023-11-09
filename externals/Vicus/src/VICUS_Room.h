@@ -53,6 +53,8 @@ public:
 		P_Area,					// Keyword: Area					[m2]	'Floor usable area of the zone'
 		/*! Geometrical violume of the zone, used for air exchange calulation + energy balance. */
 		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone'
+		/*! */
+		P_HeatCapacity,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity'
 		NUM_P
 	};
 
@@ -86,7 +88,7 @@ public:
 
 	/*! Reference to assigned zone template (optional). */
 	IDType								m_idZoneTemplate = INVALID_ID;				// XML:E
-    /*! Reference to assigned acoustic template (optional). */
+	/*! Reference to assigned acoustic template (optional). */
 	IDType								m_idAcousticTemplate = INVALID_ID;			// XML:E
 	/*! Reference to assigned sound protection (optional). */
 	IDType								m_idSoundProtectionTemplate = INVALID_ID;	// XML:E

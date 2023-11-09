@@ -3,10 +3,11 @@
 
 #include "SVSettings.h"
 #include "SVStyle.h"
+#include "SVUndoModifyRoom.h"
 
-SVZoneInformationDialog::SVZoneInformationDialog(QWidget *parent) :
+SVZoneInformationDialog::SVZoneInformationDialog(QWidget *parent, VICUS::Room *room) :
 	QDialog(parent),
-	m_ui(new Ui::SVZoneInformationDialog)
+	m_ui(new Ui::SVZoneInformationDialog), m_room(room)
 {
 	m_ui->setupUi(this);
 
@@ -35,13 +36,15 @@ SVZoneInformationDialog::~SVZoneInformationDialog() {
 void SVZoneInformationDialog::showZoneInformation(const QString &title, const VICUS::Project &prj, unsigned int zoneId) {
 
 	// create and configure dialog
-	SVZoneInformationDialog dlg(nullptr); // top level
+
 
 	const VICUS::Object *obj = prj.objectById(zoneId);
 	const VICUS::Room *room = dynamic_cast<const VICUS::Room *>(obj);
 
 	if (room == nullptr)
 		return;
+
+	SVZoneInformationDialog dlg(nullptr, const_cast<VICUS::Room *>(room)); // top level
 
 	const SVDatabase &db = SVSettings::instance().m_db;
 
@@ -84,6 +87,8 @@ void SVZoneInformationDialog::showZoneInformation(const QString &title, const VI
 
 	dlg.m_ui->labelArea->setText(QString("%1 m<sup>2</sup>").arg(room->m_para[VICUS::Room::P_Area].value));
 	dlg.m_ui->labelVolume->setText(QString("%1 m<sup>3</sup>").arg(room->m_para[VICUS::Room::P_Volume].value));
+	dlg.m_ui->heatCapacityLineEdit->setText(QString("%1").arg(room->m_para[VICUS::Room::P_HeatCapacity].value));
+	qDebug() << "Heat Capacity set to: " << room->m_para[VICUS::Room::P_HeatCapacity].value;
 
 	dlg.m_ui->labelName->setText(room->m_displayName);
 
@@ -143,4 +148,26 @@ void SVZoneInformationDialog::showZoneInformation(const QString &title, const VI
 
 	return;
 
+}
+
+void SVZoneInformationDialog::on_heatCapacityLineEdit_editingFinished()
+{
+	if (!m_ui->heatCapacityLineEdit->isValid() || m_room == nullptr)
+		return;
+
+	VICUS::Room newRoom = *m_room;
+
+	const VICUS::BuildingLevel *bl = dynamic_cast<const VICUS::BuildingLevel *>(newRoom.m_parent);
+	Q_ASSERT(bl != nullptr);
+
+	const VICUS::Building *b = dynamic_cast<const VICUS::Building *>(bl->m_parent);
+	Q_ASSERT(b != nullptr);
+
+	double val = m_ui->heatCapacityLineEdit->value();
+	VICUS::KeywordList::setParameter(newRoom.m_para,"Room::para_t", VICUS::Room::P_HeatCapacity, val);
+
+	SVUndoModifyRoom *undo = new SVUndoModifyRoom(tr("Updated heat capacity of room"), newRoom, b->m_id, bl->m_id, m_room->m_id);
+	undo->push();
+
+	qDebug() << "Heat capacity set to " << m_room->m_para[VICUS::Room::P_HeatCapacity].value;
 }

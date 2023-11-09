@@ -660,6 +660,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
+				case 2 : return "HeatCapacity";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -1344,6 +1345,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
+				case 2 : return "HeatCapacity";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -2029,6 +2031,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Floor usable area of the zone";
 				case 1 : return "Volume of the zone";
+				case 2 : return "Extra heat capacity";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -2713,6 +2716,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "m2";
 				case 1 : return "m3";
+				case 2 : return "J/K";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -3397,6 +3401,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -4081,6 +4086,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 :
@@ -4353,7 +4359,7 @@ namespace VICUS {
 			// Outputs::flag_t
 			case 57 : return 4;
 			// Room::para_t
-			case 58 : return 2;
+			case 58 : return 3;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 : return 3;
 			// SupplySystem::SupplyType
@@ -4521,7 +4527,7 @@ namespace VICUS {
 			// Outputs::flag_t
 			case 57 : return 3;
 			// Room::para_t
-			case 58 : return 1;
+			case 58 : return 2;
 			// SubSurfaceComponent::SubSurfaceComponentType
 			case 59 : return 2;
 			// SupplySystem::SupplyType
