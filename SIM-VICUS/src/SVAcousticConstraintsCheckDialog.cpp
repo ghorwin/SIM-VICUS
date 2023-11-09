@@ -510,6 +510,7 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 					}
 				}
 
+				double reverbTimeGoal = at->m_evaluationOffset + at->m_evaluationFactor * std::log(roomVolume);
 				for (unsigned int i=0; i<VICUS::AcousticSoundAbsorption::NUM_SF; ++i) {
 					double &reverbTime = reverberationTime[i];
 
@@ -517,8 +518,6 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 					reverbTime = 0.163 * roomVolume / reverberationSum[i];
 
 					// T_Soll in seconds
-					double reverbTimeGoal = at->m_evaluationOffset + at->m_evaluationFactor * std::log(roomVolume);
-
 					double minVal = 0.01 * reverbTimeGoal * at->m_splinePara[VICUS::AcousticTemplate::SP_MinValue].m_values.value(frequencies[i]);
 					double maxVal = 0.01 * reverbTimeGoal * at->m_splinePara[VICUS::AcousticTemplate::SP_MaxValue].m_values.value(frequencies[i]);
 
