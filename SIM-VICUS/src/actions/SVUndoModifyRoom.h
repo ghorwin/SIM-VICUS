@@ -43,7 +43,7 @@ public:
 	virtual void redo();
 
 private:
-	VICUS::Room	m_room;
+	VICUS::Room				m_room;
 	unsigned int			m_buildingIndex;
 	unsigned int			m_buildingLevelIndex;
 	unsigned int			m_roomIndex;
