@@ -46,15 +46,16 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	enum para_t {
-        P_PriceIncreaseGeneral,				// Keyword: PriceIncreaseGeneral			[%]		'Yearly general price increase [%].'
-        P_PriceIncreaseEnergy,				// Keyword: PriceIncreaseEnergy             [%]		'Yearly energy price increase [%].'
-		P_DiscountingInterestRate,			// Keyword: DiscountingInterestRate         [%]		'Interest rate for discounting [%].'
+		P_PriceIncreaseGeneral,				// Keyword: PriceIncreaseGeneral			[%]		'Yearly general price increase [%].'
+		P_PriceIncreaseEnergy,				// Keyword: PriceIncreaseEnergy				[%]		'Yearly energy price increase [%].'
+		P_DiscountingInterestRate,			// Keyword: DiscountingInterestRate			[%]		'Interest rate for discounting [%].'
 		P_CoalConsumption,					// Keyword: CoalConsumption					[kWh/a]	'Coal consumption [kWh/a].'
 		P_GasConsumption,					// Keyword: GasConsumption					[kWh/a]	'Gas consumption [kWh/a].'
 		P_ElectricityConsumption,			// Keyword: ElectricityConsumption			[kWh/a]	'Electricity consumption [kWh/a].'
-        NUM_P
+		NUM_P
 	};
 
+	// TODO : refactor to allow double values as prices are defined in xx,xx ct/kWh in data tables
 	enum intPara_t {
 		IP_CoalPrice,					// Keyword: CoalPrice					'Price of Coal in ct per kWh.'
 		IP_GasPrice,					// Keyword: GasPrice					'Price of Gas in ct per kWh.'
@@ -62,20 +63,23 @@ public:
 		NUM_IP
 	};
 
-    VICUS_READWRITE_IFNOTEMPTY(LccSettings)
-    VICUS_COMP(LccSettings)
+	VICUS_READWRITE_IFNOTEMPTY(LccSettings)
+	VICUS_COMP(LccSettings)
 
 	/*! Constructor. */
-    LccSettings() {
+	LccSettings() {
 		initDefaults();
 	}
-
 
 	/*! Init default values. */
 	void initDefaults();
 
 	/*! Returns whether a Category is defined in LCA Settings. */
 	bool isLcaCategoryDefined(EpdModuleDataset::Module mod) const;
+
+
+	// TODO : add checkParameters() function, to be called after reading project data to check for correct units
+	//        otherwise users may specify "ElectricityConsumption = 50 C" and the software/UI would crash
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

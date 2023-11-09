@@ -56,6 +56,9 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));
 
+	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditDataSource->setDialog3Caption(tr("Construction data-source name"));
+
 	m_ui->tableWidget->setColumnCount(5+2); // 2 added for cost and lifetime
 	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
 	m_ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -328,7 +331,7 @@ void SVDBConstructionEditWidget::updateTable() {
 			m_ui->tableWidget->setItem(i+1,4,item);
 			item->setBackground(QBrush(SVStyle::instance().m_readOnlyEditFieldBackground));
 
-			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 1));
+			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 2));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,5,item);
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -552,6 +555,9 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
+
+	// Rounds the numbers inside the table for lifetime and cost
+	updateTable();
 }
 
 

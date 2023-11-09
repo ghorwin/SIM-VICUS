@@ -45,6 +45,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	enum para_t {
+		// FIXME: TimePeriod must be an integer and moved to intPara_t
 		P_TimePeriod,					// Keyword: TimePeriod					[a]		'Time period for consideration [a].'
 		P_FactorBnbSimpleMode,			// Keyword: FactorSimpleMode			[-]		'Calculation factor for simple mode calculation (BNB). [-]'
 		P_NetUsageArea,					// Keyword: NetUsageArea				[m2]	'Net usage area [m2].'

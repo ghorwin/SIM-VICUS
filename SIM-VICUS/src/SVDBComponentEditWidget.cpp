@@ -386,7 +386,7 @@ void SVDBComponentEditWidget::modelModify(){
 
 
 void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd,
-				   const VICUS::EpdDataset::Category &cat, unsigned int row, unsigned int col) {
+				   const VICUS::EpdDataset::Category &cat, int col, int row) {
 	QIcon icon;
 	QTableWidgetItem *item = new QTableWidgetItem;
 	item->setFlags(item->flags() & ~Qt::ItemIsEditable);
@@ -396,7 +396,7 @@ void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd
 
 		if(epd == nullptr) {
 			item->setText("-");
-			table->setItem((int)row, (int)col, item);
+			table->setItem(row, col, item);
 			return;
 		}
 
@@ -408,12 +408,12 @@ void setEpdInTable(const SVDatabase &db, QTableWidget *table, unsigned int idEpd
 	}
 	else {
 		item->setText("-");
-		table->setItem((int)row, (int)col, item);
+		table->setItem(row, col, item);
 		return;
 	}
 
 	item->setIcon(icon);
-	table->setItem((int)row, (int)col, item);
+	table->setItem(row, col, item);
 }
 
 

@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 
 	// Compose program name using the always use the major.minor version variant,
 	// since this string is used to identify the registry/config file location.
-	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION);
+	const QString ProgramVersionName = QString("HBO %1").arg(VICUS::LONG_VERSION);
 
 	// *** Create and initialize setting object ***
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 		unsigned int major, minor, patch;
 		IBK::decode_version_number(VICUS::VERSION, major, minor, patch);
 		for (int i=(int)minor-1; i>0; --i) {
-			QString VersionName = QString("SIM-VICUS %1.%2").arg(major).arg(i);
+			QString VersionName = QString("HOME & BUILDING OPTIMIZATION %1.%2").arg(major).arg(i);
 			settings.m_appName = VersionName;
 			settings.read();
 			if (!settings.m_versionIdentifier.isEmpty() || !settings.m_lastProjectFile.isEmpty())
@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
 	IBK::ArgParser argParser;
 	settings.updateArgParser(argParser);
 	argParser.setAppName(ProgramVersionName.toStdString());
-	argParser.m_appname = "SIM-VICUS";
+	argParser.m_appname = "HBO";
 	argParser.m_syntaxArguments = "[flags] [options] [<project file>]";
 	// configure man page output
 	argParser.m_manManualName = "SIM-VICUS Manual";
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 	argParser.m_manVersionString = VICUS::LONG_VERSION;
 	argParser.m_manShortDescription = "Building energy and district simulation modeling environment";
 	// Note: mind the line breaks that end format commands!
-	argParser.m_manLongDescription = ".B SIM-VICUS\n"
+	argParser.m_manLongDescription = ".B HBO\n"
 			"is a graphical modeling environment for building energy models and district networks.";
 
 	// *** Apply command line arguments ***
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
 	// *** Install translator ***
 	QtExt::LanguageHandler::instance().setup(SVSettings::instance().m_organization,
 											 SVSettings::instance().m_appName,
-											 "SIM-VICUS" );
+											 "HBO" );
 	if (argParser.hasOption("lang")) {
 		std::string dummy = argParser.option("lang");
 		QString langid = QString::fromStdString(dummy);
@@ -223,7 +223,7 @@ int main(int argc, char *argv[]) {
 		int pixmapIdx = std::rand()*imageCount/RAND_MAX;
 #endif
 
-		pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
+		pixmap.load(QString(":/gfx/saint-gobain/logo-sg.png"));
 
 		// is needed for high dpi screens to prevent bluring
 		double ratio = a.primaryScreen()->devicePixelRatio();
@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
 		QString family = QFontDatabase::applicationFontFamilies(id).at(0);
 		QFont font(family);
 		font.setBold(true);
-		font.setPixelSize(22/ratio);
+		font.setPixelSize(25/ratio);
 
 		// Create painter
 		QPainter painter(&pixmap);
@@ -242,19 +242,15 @@ int main(int argc, char *argv[]) {
 		painter.setRenderHint(QPainter::Antialiasing);
 
 		// draw "Version"
-		painter.setPen(Qt::white);
-		painter.drawText(615.0/ratio, 541.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("v %1").arg(VICUS::LONG_VERSION));
+		painter.setPen(Qt::black);
+		painter.drawText(45.0/ratio, 430.0/ratio, 400.0/ratio, 30.0/ratio, Qt::AlignRight, QString("HOME & BUILDING OPTIMIZATION"));
 
 		id = QFontDatabase::addApplicationFont(":/fonts/Manrope-Medium.otf");
 		family = QFontDatabase::applicationFontFamilies(id).at(0);
 		font = QFont(family);
-		font.setPixelSize(14/ratio);
+		font.setPixelSize(25/ratio);
 		painter.setFont(font);
-
-		// Add beta information
-		painter.setPen(QColor("#CE4A4A"));
-		if (VICUS::VERSION[0] == '0')
-			painter.drawText(615.0/ratio, 572.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("BETA-VERSION"));
+		painter.drawText(580.0/ratio, 430.0/ratio, 200.0/ratio, 30.0/ratio, Qt::AlignRight, QString("VERSION %1").arg(VICUS::LONG_VERSION));
 		painter.end();
 
 		// show splash screen
