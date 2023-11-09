@@ -17,6 +17,8 @@ public:
 	/* adds new widget with button and text, connects to onLayerChosen slot in SVDBAcousticBoundaryConditionEditWidget */
 	void setButtonAndText(int row, int column, QString text);
 
+	void setButton(int row, int column);
+
 signals:
 
 

@@ -58,12 +58,14 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 	m_ui->tableWidgetSoundAbsorptionLayers->setColumnCount(NumCol);
 
 	QStringList headers;
-	headers << tr("ID") << tr("Name") << tr("Area fraction [---]");
+	headers << tr("ID") << tr("Name") << "" << tr("Area fraction [---]");
 	m_ui->tableWidgetSoundAbsorptionLayers->setHorizontalHeaderLabels(headers);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSoundAbsorptionLayers);
 	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(ColNameButton, QHeaderView::Fixed);
+	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColNameButton, 24);
 	m_ui->tableWidgetSoundAbsorptionLayers->setSortingEnabled(false);
-	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColName, 200);
+
 	// for changing area fraction
 	connect(m_ui->tableWidgetSoundAbsorptionLayers, SIGNAL(itemChanged(QTableWidgetItem *)),
 		this, SLOT(tableItemChanged(QTableWidgetItem *)));
@@ -158,18 +160,21 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 	m_ui->tableWidgetSoundAbsorptionLayers->blockSignals(true);
 	m_ui->tableWidgetSoundAbsorptionLayers->setRowCount(rowCount);
 
-	for (unsigned int i=0; i < rowCount; ++i) {
+    for (unsigned int i=0; i < rowCount; ++i) {
             const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_soundAbsorptionLayers[i];
-		const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
+        const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 		Q_ASSERT(soundAbs != nullptr);
 		QTableWidgetItem *idItem = new QTableWidgetItem(QString::number(layer.m_idSoundAbsorption));
 		idItem->setTextAlignment(Qt::AlignCenter);
+		QTableWidgetItem *nameItem = new QTableWidgetItem(QString::fromStdString(soundAbs->m_displayName.string()));
+		nameItem->setTextAlignment(Qt::AlignCenter);
 		QTableWidgetItem *fractionItem = new QTableWidgetItem(QString::number(layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value));
 		fractionItem->setTextAlignment(Qt::AlignCenter);
 
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, idItem);
-		m_ui->tableWidgetSoundAbsorptionLayers->setButtonAndText(i, ColName, QString::fromStdString(soundAbs->m_displayName.string()));
+		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColName, nameItem);
+		m_ui->tableWidgetSoundAbsorptionLayers->setButton(i, ColNameButton);
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,fractionItem);
 
 	}
@@ -189,7 +194,7 @@ void SVDBAcousticBoundaryConditionEditWidget::on_spinBoxLayerCount_valueChanged(
 			unsigned int defaultSoundAbsorptionId = 0;
 			if (!m_db->m_acousticSoundAbsorptions.empty())
 				defaultSoundAbsorptionId = m_db->m_acousticSoundAbsorptions.begin()->first;
-                        VICUS::AcousticSoundAbsorptionPartition layer(0.1, defaultSoundAbsorptionId);
+						VICUS::AcousticSoundAbsorptionPartition layer(0.1, defaultSoundAbsorptionId);
 			m_current->m_soundAbsorptionLayers.push_back(layer);
 		}
 		// shrink vectors
@@ -233,8 +238,8 @@ void SVDBAcousticBoundaryConditionEditWidget::tableItemChanged(QTableWidgetItem 
 			item2->setBackground(QBrush());
 		}
 		// we only accept changes up to 0.01  as different
-                if (!IBK::nearly_equal<4>(m_current->m_soundAbsorptionLayers[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value, val)) {
-                    m_current->m_soundAbsorptionLayers[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value = val;
+				if (!IBK::nearly_equal<4>(m_current->m_soundAbsorptionLayers[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value, val)) {
+					m_current->m_soundAbsorptionLayers[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value = val;
 			modelModify();
 		}
 	}

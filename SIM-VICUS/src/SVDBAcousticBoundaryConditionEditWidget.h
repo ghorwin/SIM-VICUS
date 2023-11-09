@@ -56,6 +56,7 @@ public:
 	enum SoundApsortionColumns {
 		ColId,
 		ColName,
+		ColNameButton,
 		ColFraction,
 		NumCol
 	};
