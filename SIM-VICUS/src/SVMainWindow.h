@@ -69,7 +69,7 @@ class SVDBDuplicatesDialog;
 class SVPluginLoader;
 class SVSimulationSettingsView;
 class SVStructuralUnitCreationDialog;
-class SVAcousticConstraintsCheckDialog;
+class SVAcousticConstraintsCheckWidget;
 
 
 /*! Main window class. */
@@ -582,7 +582,7 @@ private:
 
     SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
 
-    SVAcousticConstraintsCheckDialog	*m_acousticConstraintsCheckDialog				= nullptr;
+    SVAcousticConstraintsCheckWidget	*m_acousticConstraintsCheckDialog				= nullptr;
 
 
 	friend class SVThreadBase;

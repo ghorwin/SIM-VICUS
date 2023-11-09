@@ -1,5 +1,5 @@
-#include "SVAcousticConstraintsCheckDialog.h"
-#include "ui_SVAcousticConstraintsCheckDialog.h"
+#include "SVAcousticConstraintsCheckWidget.h"
+#include "ui_SVAcousticConstraintsCheckWidget.h"
 
 #include "SVStyle.h"
 #include <VICUS_Project.h>
@@ -11,9 +11,9 @@
 #include "Vic3DSceneView.h"
 
 
-SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *parent) :
+SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVAcousticConstraintsCheckDialog)
+	m_ui(new Ui::SVAcousticConstraintsCheckWidget)
 {
 	m_ui->setupUi(this);
 
@@ -91,13 +91,12 @@ SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *pare
 	QStringList headers;
 	headers << "Room ID"
 			<< "Room name"
-			<< "Reverberation time 125 Hz [s]"
-			<< "Reverberation time 250 Hz [s]"
-			<< "Reverberation time 500 Hz [s]"
-			<< "Reverberation time 1000 Hz [s]"
-			<< "Reverberation time 2000 Hz [s]"
-			<< "Reverberation time 4000 Hz [s]"
-			<< "Room name";
+			<< "125 Hz [s]"
+			<< "250 Hz [s]"
+			<< "500 Hz [s]"
+			<< "1000 Hz [s]"
+			<< "2000 Hz [s]"
+			<< "4000 Hz [s]";
 
 	m_ui->tableWidgetReverberation->setHorizontalHeaderLabels(headers);
 
@@ -107,12 +106,12 @@ SVAcousticConstraintsCheckDialog::SVAcousticConstraintsCheckDialog(QWidget *pare
 }
 
 
-SVAcousticConstraintsCheckDialog::~SVAcousticConstraintsCheckDialog() {
+SVAcousticConstraintsCheckWidget::~SVAcousticConstraintsCheckWidget() {
 	delete m_ui;
 }
 
 
-bool SVAcousticConstraintsCheckDialog::edit(){
+bool SVAcousticConstraintsCheckWidget::edit(){
 	// Check already on start-up
 	checkConstraints();
 
@@ -121,7 +120,7 @@ bool SVAcousticConstraintsCheckDialog::edit(){
 }
 
 
-void SVAcousticConstraintsCheckDialog::showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId) {
+void SVAcousticConstraintsCheckWidget::showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId) {
 	std::set<unsigned int> surfIds;
 	surfIds.insert(surfaceAId);
 	surfIds.insert(surfaceBId);
@@ -143,7 +142,7 @@ void SVAcousticConstraintsCheckDialog::showSurfaces(unsigned int surfaceAId, uns
 }
 
 
-void SVAcousticConstraintsCheckDialog::checkConstraints() {
+void SVAcousticConstraintsCheckWidget::checkConstraints() {
 
 	// clear all the table entries for walls and doors
 	m_wallTes.clear();
@@ -392,8 +391,8 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks for ceilings passed succesfully." : "Acoustic checks of ceilings not passed.");
 	m_ui->labelWallCheck->setText(airBourneSoundCheck ? "All acoustic checks for walls passed succesfully." : "Acoustic checks of walls not passed.");
 
-	m_ui->labelIconWall->setPixmap(QPixmap(airBourneSoundCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
-	m_ui->labelIconCeiling->setPixmap(   QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+	m_ui->labelIconWall->setPixmap( QPixmap(airBourneSoundCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+	m_ui->labelIconCeiling->setPixmap( QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
 
 	QColor positive(Qt::darkGreen);
 	QColor negative(Qt::darkRed);
@@ -408,7 +407,7 @@ void SVAcousticConstraintsCheckDialog::checkConstraints() {
 	checkReverberation();
 }
 
-void SVAcousticConstraintsCheckDialog::checkReverberation() {
+void SVAcousticConstraintsCheckWidget::checkReverberation() {
 	const VICUS::Project &prj = project();
 	const SVDatabase & db = SVSettings::instance().m_db;
 
@@ -561,10 +560,12 @@ void SVAcousticConstraintsCheckDialog::checkReverberation() {
 				m_ui->tableWidgetReverberation->item(i, 2 + j)->setBackground(invalid);
 		}
 	}
+
+	m_ui->tableWidgetReverberation->resizeColumnsToContents();
 }
 
 
-void SVAcousticConstraintsCheckDialog::updateTable() {
+void SVAcousticConstraintsCheckWidget::updateTable() {
 
 
 	QTableWidget * tableWidget = nullptr;
@@ -632,26 +633,22 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			item = new QTableWidgetItem();
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			item->setText(te.m_expectedNormalLimit);
-			// select color according to violation info
-			QColor normalColor;
-			switch (te.m_basicConstraintViolated) {
-			case VI_Invalid:
-				normalColor = Qt::red;
-				break;
-			case VI_Valid:
-				normalColor = Qt::green;
-				break;
-			default:
-				break;
+
+			QColor valid(Qt::darkGreen);
+			QColor invalid(Qt::darkRed);
+
+			if (SVSettings::instance().m_theme == SVSettings::TT_White) {
+				valid = valid.lighter(250);
+				invalid = invalid.lighter(250);
 			}
 
-			QBrush backgroundBrush;
-			if (SVSettings::instance().m_theme == SVSettings::TT_White)
-				backgroundBrush = QBrush(normalColor.lighter());
-			else
-				backgroundBrush = QBrush(normalColor);
+			// select color according to violation info
+			switch (te.m_basicConstraintViolated) {
+				case VI_Invalid:	item->setBackground(invalid);	break;
+				case VI_Valid:		item->setBackground(valid);		break;
+				default: break;
+			}
 
-			item->setBackground(backgroundBrush);
 			item->setFlags(Qt::ItemIsEnabled);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			tableWidget->setItem(row, CSP_NormalConstraints, item);
@@ -659,26 +656,14 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 			item = new QTableWidgetItem();
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			item->setText(te.m_expectedAdvancedLimit);
+
 			// select color according to violation info
-			QColor advancedColor;
 			switch (te.m_advancedConstraintViolated) {
-			case VI_Invalid:
-				advancedColor = Qt::darkRed;
-				break;
-			case VI_Valid:
-				advancedColor = Qt::darkGreen;
-				break;
-			default:
-				break;
+				case VI_Invalid:	item->setBackground(invalid);	break;
+				case VI_Valid:		item->setBackground(valid);		break;
+				default: break;
 			}
 
-
-			if (SVSettings::instance().m_theme == SVSettings::TT_White)
-				backgroundBrush = QBrush(normalColor.lighter());
-			else
-				backgroundBrush = QBrush(normalColor);
-
-			item->setBackground(backgroundBrush);
 			item->setFlags(Qt::ItemIsEnabled);
 			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 			tableWidget->setItem(row, CSP_AdvancedConstraints, item);
@@ -696,7 +681,7 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 
 			// Connecting the clicked signal to a lambda function to pass the surface ids
 			QObject::connect(btn, &QPushButton::clicked, [=]() {
-				SVAcousticConstraintsCheckDialog::showSurfaces(surfaceAId, surfaceBId);
+				SVAcousticConstraintsCheckWidget::showSurfaces(surfaceAId, surfaceBId);
 			});
 
 			// table widget takes ownership of btn and memory will be freed on destruction
@@ -708,25 +693,25 @@ void SVAcousticConstraintsCheckDialog::updateTable() {
 		}
 
 		tableWidget->blockSignals(false);
-		//tableWidget->resizeColumnsToContents();
+		// tableWidget->resizeColumnsToContents();
 
 	}
 }
 
 
-void SVAcousticConstraintsCheckDialog::on_pushButtonCheckConstraints_clicked() {
+void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 	checkConstraints();
 }
 
 
-void SVAcousticConstraintsCheckDialog::on_checkBoxHideWalls_stateChanged(int arg1) {
+void SVAcousticConstraintsCheckWidget::on_checkBoxHideWalls_stateChanged(int arg1) {
 	m_hideWalls = arg1;
 	// render constraints again
 	updateTable();
 }
 
 
-void SVAcousticConstraintsCheckDialog::on_checkBoxHideCeilings_stateChanged(int arg1) {
+void SVAcousticConstraintsCheckWidget::on_checkBoxHideCeilings_stateChanged(int arg1) {
 	m_hideCeilings = arg1;
 	// render constraints again
 	updateTable();

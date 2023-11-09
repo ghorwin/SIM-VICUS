@@ -96,7 +96,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
-    ../../src/SVAcousticConstraintsCheckDialog.cpp \
+    ../../src/SVAcousticConstraintsCheckWidget.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVCoSimSupplySystemDialog.cpp \
 	../../src/SVColorLegend.cpp \
@@ -327,7 +327,7 @@ SOURCES += \
 	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
-    ../../src/SVAcousticConstraintsCheckDialog.h \
+    ../../src/SVAcousticConstraintsCheckWidget.h \
 	../../src/SVCoSimCO2VentilationDialog.h \
 	../../src/SVCoSimSupplySystemDialog.h \
 	../../src/SVColorLegend.h \
@@ -568,7 +568,7 @@ HEADERS  += \
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
-    ../../src/SVAcousticConstraintsCheckDialog.ui \
+    ../../src/SVAcousticConstraintsCheckWidget.ui \
 	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVCoSimSupplySystemDialog.ui \
 	../../src/SVDBAcousticBoundaryConditionEditWidget.ui \

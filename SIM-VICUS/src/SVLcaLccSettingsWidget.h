@@ -1,5 +1,5 @@
-#ifndef SVLcaLccSettingsDialogH
-#define SVLcaLccSettingsDialogH
+#ifndef SVLcaLccSettingsWidgetH
+#define SVLcaLccSettingsWidgetH
 
 
 #include <QWidget>
@@ -16,7 +16,7 @@
 class ModificationInfo;
 
 namespace Ui {
-class SVLcaLccSettingsDialog;
+class SVLcaLccSettingsWidget;
 }
 
 class SVLcaLccSettingsWidget : public QWidget {
@@ -200,7 +200,7 @@ private:
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
 	/*! Pointer to Ui */
-	Ui::SVLcaLccSettingsDialog							*m_ui;
+	Ui::SVLcaLccSettingsWidget							*m_ui;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
