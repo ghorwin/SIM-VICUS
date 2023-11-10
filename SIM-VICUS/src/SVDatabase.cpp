@@ -571,7 +571,7 @@ void SVDatabase::updateElementChildren() {
 		if (abcA != nullptr) {
 			c.m_childrenRefs.insert(abcA);
 
-			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcA->m_soundAbsorptionPartitions) {
+			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcA->m_acousticSoundAbsorptionPartitions) {
 				VICUS::AcousticSoundAbsorption *asa = m_acousticSoundAbsorptions[asap.m_idSoundAbsorption];
 				c.m_childrenRefs.insert(asa);
 			}
@@ -581,7 +581,7 @@ void SVDatabase::updateElementChildren() {
 		if (abcB != nullptr) {
 			c.m_childrenRefs.insert(abcB);
 
-			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcB->m_soundAbsorptionPartitions) {
+			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcB->m_acousticSoundAbsorptionPartitions) {
 				VICUS::AcousticSoundAbsorption *asa = m_acousticSoundAbsorptions[asap.m_idSoundAbsorption];
 				c.m_childrenRefs.insert(asa);
 			}
