@@ -36,17 +36,13 @@ class SVUndoModifyRoom : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyRoom)
 public:
 	/*! Replaces building entity at given index in buildings vector. */
-	SVUndoModifyRoom(const QString & label, const VICUS::Room & r, unsigned int buildingIndex,
-							  unsigned intbuildingLevelIndex, unsigned int roomIndex);
+	SVUndoModifyRoom(const QString & label, const VICUS::Room & r);
 
 	virtual void undo();
 	virtual void redo();
 
 private:
 	VICUS::Room				m_room;
-	unsigned int			m_buildingIndex;
-	unsigned int			m_buildingLevelIndex;
-	unsigned int			m_roomIndex;
 };
 
 #endif // SVUndoModifyRoomH

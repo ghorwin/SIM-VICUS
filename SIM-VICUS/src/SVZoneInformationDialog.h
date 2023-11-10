@@ -27,17 +27,23 @@ class SVZoneInformationDialog : public QDialog {
 	};
 
 public:
-	explicit SVZoneInformationDialog(QWidget *parent = nullptr, VICUS::Room *room = nullptr);
+	explicit SVZoneInformationDialog(QWidget *parent = nullptr);
 	~SVZoneInformationDialog();
-	static void showZoneInformation(const QString & title, const VICUS::Project &prj, unsigned int zoneId);
+
+	/*! Shows Information of current Room. */
+	void showZoneInformation(const VICUS::Project &prj, unsigned int zoneId);
 
 private slots:
-
-	void on_heatCapacityLineEdit_editingFinished();
+	void on_lineEditHeatCapacityFinishedSuccessfully();
+	void on_lineEditAreaFinishedSuccessfully();
+	void on_lineEditVolumeFinishedSuccessfully();
 
 private:
-	Ui::SVZoneInformationDialog *m_ui;
-	VICUS::Room *m_room =				nullptr;
+	/*! Pointer to Ui. */
+	Ui::SVZoneInformationDialog			*m_ui;
+
+	/*! Current room selection. */
+	VICUS::Room							*m_currentRoom = nullptr;
 
 };
 

@@ -367,8 +367,9 @@ public:
 		std::string								m_nameRoomVicus;
 		std::string								m_nameRoomNandrad;
 		std::string								m_zonetemplateName;
-		double									m_floorArea = 0;		// in m2
-		double									m_volume = 0;			// in m3
+		double									m_floorArea = 0;			// in m2
+		double									m_volume = 0;				// in m3
+		double									m_heatCapacity = 0;			// in J/K
 	};
 
 
