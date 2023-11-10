@@ -196,7 +196,7 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 	}
 
 	// create undo action for room parameter change
-	SVUndoModifyRoom * undo = new SVUndoModifyRoom(text, room, i, j, k);
+	SVUndoModifyRoom * undo = new SVUndoModifyRoom(text, room);
 	// copy new room parametrization into VICUS data structure
 	undo->push();
 
@@ -439,13 +439,18 @@ bool SVPropBuildingZonePropertyTableModel::assignSurfaces(const QModelIndex & in
 }
 
 void SVPropBuildingZonePropertyTableModel::showZoneInformation(const QModelIndex &index) {
-	// udate a project copy
-	VICUS::Project vp = project();
-	vp.updatePointers();
-
 	Q_ASSERT((size_t)index.row() < m_rooms.size());
 	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
 
-	SVZoneInformationDialog::showZoneInformation(tr("Room informations"), vp, m_rooms[(size_t)index.row()]->m_id);
+	zoneInformationDialog()->showZoneInformation(project(), m_rooms[(size_t)index.row()]->m_id);
+}
+
+
+SVZoneInformationDialog *SVPropBuildingZonePropertyTableModel::zoneInformationDialog() {
+	if (m_zoneInformationDialog == nullptr) {
+		m_zoneInformationDialog = new SVZoneInformationDialog();
+	}
+
+	return m_zoneInformationDialog;
 }
 

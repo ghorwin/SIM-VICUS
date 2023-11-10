@@ -1,6 +1,7 @@
 #ifndef SVPropBuildingZonePropertyTableModelH
 #define SVPropBuildingZonePropertyTableModelH
 
+#include "SVZoneInformationDialog.h"
 #include <NANDRAD_FMIVariableDefinition.h>
 
 #include <IBK_NotificationHandler.h>
@@ -63,12 +64,19 @@ public:
 	// Show additional zone information
 	void showZoneInformation(const QModelIndex &index);
 
+	/*! Returns pointer to zone information dialog. */
+	SVZoneInformationDialog* zoneInformationDialog();
+
+private:
+	// QFont
 	QFont	m_itemFont;
 
 	// list of all rooms by filter selection (for constant fast access)
 	std::vector<const VICUS::Room*>		m_rooms;
 	// corresponding room locations for each room in list
 	std::vector<roomLocation>			m_roomLocations;
+	// Zone information dialgo
+	SVZoneInformationDialog				*m_zoneInformationDialog = nullptr;
 };
 
 
