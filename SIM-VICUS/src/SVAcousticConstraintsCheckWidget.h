@@ -9,7 +9,7 @@ class SVAcousticConstraintsCheckWidget;
 
 
 /*! Dialog for checking acoustic constrains dynamically. */
-class SVAcousticConstraintsCheckWidget : public QDialog {
+class SVAcousticConstraintsCheckWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -70,11 +70,6 @@ public:
 
 	explicit SVAcousticConstraintsCheckWidget(QWidget *parent = nullptr);
 	~SVAcousticConstraintsCheckWidget();
-
-	/*! Always start the dialog with this function.
-		\return Returns true if dialog was confirmed and data can be added to project.
-	*/
-	bool edit();
 
 private slots:
 	void on_pushButtonCheckConstraints_clicked();

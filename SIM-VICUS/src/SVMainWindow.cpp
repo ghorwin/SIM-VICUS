@@ -2300,16 +2300,6 @@ void SVMainWindow::on_actionDBAcousticBoundaryConditions_triggered() {
 
 
 void SVMainWindow::on_actionDBAcousticSoundAbsorptions_triggered() {
-
 	dbAcousticSoundAbsorptionEditDialog()->edit();
-}
-
-
-void SVMainWindow::on_actionAcousticEvaluation_triggered() {
-    // opens a dialog that checks the sound constraints
-    if (m_acousticConstraintsCheckDialog == nullptr)
-        m_acousticConstraintsCheckDialog = new SVAcousticConstraintsCheckWidget();
-
-    m_acousticConstraintsCheckDialog->edit();
 }
 

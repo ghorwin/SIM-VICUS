@@ -12,7 +12,7 @@
 #include <VICUS_Project.h>
 
 SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *parent) :
-	QDialog(parent),
+	QWidget(parent),
 	m_ui(new Ui::SVAcousticConstraintsCheckWidget)
 {
 	m_ui->setupUi(this);
@@ -108,15 +108,6 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 
 SVAcousticConstraintsCheckWidget::~SVAcousticConstraintsCheckWidget() {
 	delete m_ui;
-}
-
-
-bool SVAcousticConstraintsCheckWidget::edit(){
-	// Check already on start-up
-	checkConstraints();
-
-	int res = exec();
-	return res;
 }
 
 

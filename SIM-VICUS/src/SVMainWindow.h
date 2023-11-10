@@ -36,7 +36,7 @@
 #include "SVProjectHandler.h"
 
 namespace Ui {
-	class SVMainWindow;
+class SVMainWindow;
 }
 
 class QProgressDialog;
@@ -77,7 +77,6 @@ class SVMainWindow : public QMainWindow {
 	Q_OBJECT
 public:
 
-
 	enum MainViewMode {
 		/*! None of the main views is shown, the welcome screen should then be present */
 		MV_None,
@@ -97,7 +96,6 @@ public:
 		Ownership of the command object will be transferred to the stack.
 	*/
 	static void addUndoCommand(QUndoCommand * command);
-
 
 
 	/*! Default SVMainWindow constructor. */
@@ -203,8 +201,8 @@ public:
 	/*! Returns pointer to the applications preferences dialog. */
 	SVPreferencesDialog * preferencesDialog();
 
-    /*! Returns pointer to the structural unit creation dialog. */
-    SVStructuralUnitCreationDialog * structuralUnitDialog();
+	/*! Returns pointer to the structural unit creation dialog. */
+	SVStructuralUnitCreationDialog * structuralUnitDialog();
 
 public slots:
 
@@ -394,7 +392,6 @@ private slots:
 
 	void on_actionDBAcousticSoundAbsorptions_triggered();
 
-    void on_actionAcousticEvaluation_triggered();
 
 private:
 
@@ -580,9 +577,7 @@ private:
 
 	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
 
-    SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
-
-    SVAcousticConstraintsCheckWidget	*m_acousticConstraintsCheckDialog				= nullptr;
+	SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
 
 
 	friend class SVThreadBase;
