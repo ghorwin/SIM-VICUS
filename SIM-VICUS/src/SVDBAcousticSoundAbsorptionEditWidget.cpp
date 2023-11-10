@@ -65,6 +65,22 @@ SVDBAcousticSoundAbsorptionEditWidget::SVDBAcousticSoundAbsorptionEditWidget(QWi
 	m_ui->tableWidgetSoundAbsorptions->horizontalHeader()->setStretchLastSection(true);
 	m_ui->tableWidgetSoundAbsorptions->setSortingEnabled(false);
 
+
+	unsigned int rowCount = VICUS::AcousticSoundAbsorption::NUM_SF;
+
+	m_ui->tableWidgetSoundAbsorptions->setRowCount((int)rowCount);
+
+	std::vector<double> frequencies{125,250,500,1000,2000,4000};
+
+	for (unsigned int i=0; i < rowCount; ++i) {
+		int row = (int)i;
+		QTableWidgetItem *item = new QTableWidgetItem(QString::number(frequencies[i], 'd', 0));
+		m_ui->tableWidgetSoundAbsorptions->setItem(row, ColFrequency, item);
+		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+		item->setTextAlignment(Qt::AlignCenter);
+	}
+
+
 	// for changing thickness
 	connect(m_ui->tableWidgetSoundAbsorptions, SIGNAL(itemChanged(QTableWidgetItem *)),
 		this, SLOT(tableItemChanged(QTableWidgetItem *)));
@@ -146,21 +162,10 @@ void SVDBAcousticSoundAbsorptionEditWidget::modelModify() {
 
 void SVDBAcousticSoundAbsorptionEditWidget::updateTable() {
 	unsigned int rowCount = VICUS::AcousticSoundAbsorption::NUM_SF;
-
 	m_ui->tableWidgetSoundAbsorptions->blockSignals(true);
-	m_ui->tableWidgetSoundAbsorptions->setRowCount((int)rowCount);
-
-	std::vector<double> frequencies{125,250,500,1000,2000,4000};
 
 	for (unsigned int i=0; i < rowCount; ++i) {
-		int row = (int)i;
-		QTableWidgetItem *item = new QTableWidgetItem(QString::number(frequencies[i], 'd', 3));
-		m_ui->tableWidgetSoundAbsorptions->setItem(row, ColFrequency, item);
-		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-		item->setTextAlignment(Qt::AlignCenter);
 		m_ui->tableWidgetSoundAbsorptions->setItem((int)i, ColValue, new QTableWidgetItem(QString::number(m_current->m_soundAbsorption[i], 'd', 3)));
-		m_ui->tableWidgetSoundAbsorptions->item((int)i, ColValue)->setTextAlignment(Qt::AlignCenter);
-
 	}
 	m_ui->tableWidgetSoundAbsorptions->setEnabled(!m_current->m_builtIn);
 	m_ui->tableWidgetSoundAbsorptions->blockSignals(false);

@@ -97,6 +97,16 @@
     <widget class="SVDBAcousticBoundaryConditionTableWidget" name="tableWidgetSoundAbsorptionLayers"/>
    </item>
    <item>
+    <widget class="QTableWidget" name="tableWidgetResult">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
