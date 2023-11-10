@@ -560,11 +560,31 @@ void SVDatabase::updateElementChildren() {
 		}
 
 		VICUS::BoundaryCondition *bcB = m_boundaryConditions[c.m_idSideBBoundaryCondition];
-		c.m_childrenRefs.insert(bcB);
 		if (bcB != nullptr) {
+			c.m_childrenRefs.insert(bcB);
 			// schedules
 			if(bcB->m_heatConduction.m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled)
 				bcB->m_childrenRefs.insert(m_schedules[bcB->m_heatConduction.m_idSchedule]);
+		}
+
+		VICUS::AcousticBoundaryCondition *abcA = m_acousticBoundaryConditions[c.m_idSideAAcousticBoundaryCondition];
+		if (abcA != nullptr) {
+			c.m_childrenRefs.insert(abcA);
+
+			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcA->m_soundAbsorptionPartitions) {
+				VICUS::AcousticSoundAbsorption *asa = m_acousticSoundAbsorptions[asap.m_idSoundAbsorption];
+				c.m_childrenRefs.insert(asa);
+			}
+		}
+
+		VICUS::AcousticBoundaryCondition *abcB = m_acousticBoundaryConditions[c.m_idSideBAcousticBoundaryCondition];
+		if (abcB != nullptr) {
+			c.m_childrenRefs.insert(abcB);
+
+			for (const VICUS::AcousticSoundAbsorptionPartition &asap : abcB->m_soundAbsorptionPartitions) {
+				VICUS::AcousticSoundAbsorption *asa = m_acousticSoundAbsorptions[asap.m_idSoundAbsorption];
+				c.m_childrenRefs.insert(asa);
+			}
 		}
 	}
 

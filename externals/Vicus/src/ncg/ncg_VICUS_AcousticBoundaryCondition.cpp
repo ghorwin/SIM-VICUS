@@ -61,7 +61,7 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SoundAbsorptionPartition") {
+			if (cName == "AcousticSoundAbsorptionPartitions") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -69,7 +69,7 @@ void AcousticBoundaryCondition::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					AcousticSoundAbsorptionPartition obj;
 					obj.readXML(c2);
-					m_soundAbsorptionPartition.push_back(obj);
+					m_acousticSoundAbsorptionPartitions.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -99,12 +99,12 @@ TiXmlElement * AcousticBoundaryCondition::writeXML(TiXmlElement * parent) const 
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 
-	if (!m_soundAbsorptionPartition.empty()) {
-		TiXmlElement * child = new TiXmlElement("SoundAbsorptionPartition");
+	if (!m_acousticSoundAbsorptionPartitions.empty()) {
+		TiXmlElement * child = new TiXmlElement("AcousticSoundAbsorptionPartitions");
 		e->LinkEndChild(child);
 
-		for (std::vector<AcousticSoundAbsorptionPartition>::const_iterator it = m_soundAbsorptionPartition.begin();
-			it != m_soundAbsorptionPartition.end(); ++it)
+		for (std::vector<AcousticSoundAbsorptionPartition>::const_iterator it = m_acousticSoundAbsorptionPartitions.begin();
+			it != m_acousticSoundAbsorptionPartitions.end(); ++it)
 		{
 			it->writeXML(child);
 		}

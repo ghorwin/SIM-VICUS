@@ -478,7 +478,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 						if (aBC == nullptr)
 							continue;
 
-                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionPartition) {
+						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_acousticSoundAbsorptionPartitions) {
 							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
@@ -499,7 +499,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 						if (aBC == nullptr)
 							continue;
 
-                                                for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_soundAbsorptionPartition) {
+						for (const VICUS::AcousticSoundAbsorptionPartition &layer : aBC->m_acousticSoundAbsorptionPartitions) {
 							double areaFraction = layer.m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
 							const VICUS::AcousticSoundAbsorption *soundAbsorption = db.m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 

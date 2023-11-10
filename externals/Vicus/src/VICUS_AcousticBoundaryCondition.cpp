@@ -31,12 +31,12 @@ bool AcousticBoundaryCondition::isValid(const VICUS::Database<AcousticSoundAbsor
 	if (m_id == VICUS::INVALID_ID)
 		return false;
 
-        if(m_soundAbsorptionPartition.empty()){
+        if(m_acousticSoundAbsorptionPartitions.empty()){
 		m_errorMsg = "Sound absorption layer count is not valid!";
 		return false;
 	}
 
-        for(const AcousticSoundAbsorptionPartition &layer : m_soundAbsorptionPartition){
+        for(const AcousticSoundAbsorptionPartition &layer : m_acousticSoundAbsorptionPartitions){
 		if(!layer.isValid(soundAbsDB)){
 			m_errorMsg = "Sound absorption ist not valid!";
 			return false;
@@ -61,8 +61,8 @@ QString AcousticBoundaryCondition::htmlDescription(const VICUS::Database<VICUS::
 
 	if(isValid(soundAbsDB)){
 		// sum up all absorptions
-            for(unsigned int i=0; i<m_soundAbsorptionPartition.size(); ++i){
-                const AcousticSoundAbsorptionPartition &layer = m_soundAbsorptionPartition[i];
+            for(unsigned int i=0; i<m_acousticSoundAbsorptionPartitions.size(); ++i){
+                const AcousticSoundAbsorptionPartition &layer = m_acousticSoundAbsorptionPartitions[i];
 
 			const AcousticSoundAbsorption *soundAbs = soundAbsDB[layer.m_idSoundAbsorption];
 
@@ -94,7 +94,7 @@ AbstractDBElement::ComparisonResult AcousticBoundaryCondition::equal(const Abstr
 		return Different;
 
 	// check parameters
-        for(unsigned int i = 0; i < m_soundAbsorptionPartition.size(); i++){
+        for(unsigned int i = 0; i < m_acousticSoundAbsorptionPartitions.size(); i++){
 		// check if different?
 	}
 

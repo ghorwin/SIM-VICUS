@@ -178,7 +178,7 @@ QModelIndex SVDBAcousticBoundaryConditionTableModel::addNewItem() {
 	if (!m_db->m_acousticSoundAbsorptions.empty())
 			defaultSoundAbsorptionId = m_db->m_acousticSoundAbsorptions.begin()->first;
         VICUS::AcousticSoundAbsorptionPartition layer(0.1, defaultSoundAbsorptionId);
-        bc.m_soundAbsorptionPartition.push_back(layer);
+		bc.m_acousticSoundAbsorptionPartitions.push_back(layer);
 	//set default parameters
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
