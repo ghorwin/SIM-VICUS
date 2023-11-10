@@ -57,9 +57,9 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 
 	m_ui->tableWidgetSoundAbsorptionLayers->setColumnCount(NumCol);
 
-	QStringList headers;
-	headers << tr("ID") << tr("Name") << "" << tr("Area fraction [---]");
-	m_ui->tableWidgetSoundAbsorptionLayers->setHorizontalHeaderLabels(headers);
+	QStringList headerSAL;
+	headerSAL << tr("ID") << tr("Name") << "" << tr("Area fraction [---]");
+	m_ui->tableWidgetSoundAbsorptionLayers->setHorizontalHeaderLabels(headerSAL);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSoundAbsorptionLayers);
 	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	m_ui->tableWidgetSoundAbsorptionLayers->horizontalHeader()->setSectionResizeMode(ColNameButton, QHeaderView::Fixed);
@@ -69,6 +69,34 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColId, 100);
 	m_ui->tableWidgetSoundAbsorptionLayers->setColumnWidth(ColFraction, 130);
 	m_ui->tableWidgetSoundAbsorptionLayers->setSortingEnabled(false);
+
+
+	unsigned int rowCount = VICUS::AcousticSoundAbsorption::NUM_SF;
+	m_ui->tableWidgetResult->setColumnCount(R_NumCol);
+	m_ui->tableWidgetResult->setRowCount(rowCount);
+
+	QStringList headerResult;
+	headerResult << tr("Frequency [Hz]") << tr("Result");
+	m_ui->tableWidgetResult->setHorizontalHeaderLabels(headerResult);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetResult);
+	m_ui->tableWidgetResult->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetResult->setSortingEnabled(false);
+
+	std::vector<double> frequencies{125,250,500,1000,2000,4000};
+
+
+	for(unsigned int i = 0; i < rowCount; ++i){
+		QTableWidgetItem *itemFreq = new QTableWidgetItem(QString::number(frequencies[i], 'd', 0));
+		itemFreq->setTextAlignment(Qt::AlignCenter);
+		itemFreq->setFlags(itemFreq->flags() ^ Qt::ItemIsEditable);
+		m_ui->tableWidgetResult->setItem((int)i, ColFrequency, itemFreq);
+
+		QTableWidgetItem *itemResult = new QTableWidgetItem("---");
+		itemResult->setTextAlignment(Qt::AlignCenter);
+		itemResult->setFlags(itemResult->flags() ^ Qt::ItemIsEditable);
+		m_ui->tableWidgetResult->setItem((int)i, ColResult, itemResult);
+	}
+
 
 	// for changing area fraction
 	connect(m_ui->tableWidgetSoundAbsorptionLayers, SIGNAL(itemChanged(QTableWidgetItem *)),
@@ -116,7 +144,7 @@ void SVDBAcousticBoundaryConditionEditWidget::updateInput(int id) {
 	m_current = bc;
 	m_ui->lineEditName->setString(bc->m_displayName);
 
-        int n = std::max<int>(0, bc->m_acousticSoundAbsorptionPartitions.size());
+    int n = std::max<int>(0, bc->m_acousticSoundAbsorptionPartitions.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 	m_ui->lineEditName->setEnabled(!bc->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!bc->m_builtIn);
@@ -159,14 +187,16 @@ void SVDBAcousticBoundaryConditionEditWidget::modelModify() {
 }
 
 void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
-    unsigned int rowCount = m_current->m_acousticSoundAbsorptionPartitions.size();
+	Q_ASSERT(m_current != nullptr);
+
+	unsigned int rowCount = m_current->m_acousticSoundAbsorptionPartitions.size();
 
 	m_ui->tableWidgetSoundAbsorptionLayers->blockSignals(true);
 	m_ui->tableWidgetSoundAbsorptionLayers->setRowCount(rowCount);
 
-	for (unsigned int i=0; i < rowCount; ++i) {
-            const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_acousticSoundAbsorptionPartitions[i];
-		const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
+    for (unsigned int i=0; i < rowCount; ++i) {
+        const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_acousticSoundAbsorptionPartitions[i];
+        const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 		QTableWidgetItem *idItem;
 		QTableWidgetItem *nameItem;
@@ -191,14 +221,66 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 		nameItem->setTextAlignment(Qt::AlignCenter);
 		fractionItem->setTextAlignment(Qt::AlignCenter);
 
+		idItem->setFlags(idItem->flags() ^ Qt::ItemIsEditable);
+		nameItem->setFlags(nameItem->flags() ^ Qt::ItemIsEditable);
+
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColId, idItem);
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColName, nameItem);
 		m_ui->tableWidgetSoundAbsorptionLayers->setButton(i, ColNameButton);
 		m_ui->tableWidgetSoundAbsorptionLayers->setItem(i, ColFraction,fractionItem);
-		QBrush brush(Qt::red);
 	}
+
+	fillTableWidgetResult();
 	m_ui->tableWidgetSoundAbsorptionLayers->setEnabled(!m_current->m_builtIn);
 	m_ui->tableWidgetSoundAbsorptionLayers->blockSignals(false);
+}
+
+void SVDBAcousticBoundaryConditionEditWidget::fillTableWidgetResult()
+{
+	if(m_current->m_acousticSoundAbsorptionPartitions.size() == 0){
+		m_ui->tableWidgetResult->setEnabled(false);
+		for(int i = 0; i < VICUS::AcousticSoundAbsorption::NUM_SF ; ++i){
+			QTableWidgetItem *item = m_ui->tableWidgetResult->item(i, ColResult);
+			item->setText("---");
+		}
+	} else {
+		m_ui->tableWidgetResult->setEnabled(true);
+	}
+
+	m_ui->tableWidgetResult->blockSignals(true);
+
+	// initialises vector to hold all sums while iterating over all layers
+	// initialises values to 0
+	std::vector<double> sums(VICUS::AcousticSoundAbsorption::NUM_SF, 0);
+
+	//iterates over all layers
+	for(unsigned int i = 0; i < m_current->m_acousticSoundAbsorptionPartitions.size(); ++i){
+		VICUS::AcousticSoundAbsorption* ac = m_db->m_acousticSoundAbsorptions[m_current->m_acousticSoundAbsorptionPartitions[i].m_idSoundAbsorption];
+
+		if(ac == nullptr){
+			// if sound absorption is invalid, table is filled with invalid values
+			for(int k = 0; k < VICUS::AcousticSoundAbsorption::NUM_SF ; ++k){
+				QTableWidgetItem *item = m_ui->tableWidgetResult->item(i, ColResult);
+				item->setText("---");
+			}
+			m_ui->tableWidgetResult->blockSignals(false);
+			return;
+		}
+
+		//iterates over all frequencies
+		for(unsigned int j = 0; j < VICUS::AcousticSoundAbsorption::NUM_SF; j++){
+			sums[j] += ac->m_soundAbsorption[j] * m_current->m_acousticSoundAbsorptionPartitions[i].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value;
+		}
+	}
+
+
+	//updates table with calculated sums
+	for(unsigned int i = 0; i < VICUS::AcousticSoundAbsorption::NUM_SF; i++){
+		QTableWidgetItem *item = m_ui->tableWidgetResult->item(i, ColResult);
+		item->setText(QString::number(sums[i]));
+	}
+
+	m_ui->tableWidgetResult->blockSignals(false);
 }
 
 
@@ -258,8 +340,10 @@ void SVDBAcousticBoundaryConditionEditWidget::tableItemChanged(QTableWidgetItem 
 	// we only accept changes up to 0.01  as different
         if (!IBK::nearly_equal<4>(m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value, val)) {
             m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value = val;
-		modelModify();
-	}
+        modelModify();
+    }
+
+    updateTable();
 
 }
 
@@ -279,7 +363,7 @@ void SVDBAcousticBoundaryConditionEditWidget::showSoundAbsorptionSelectionDialog
 	// get material edit dialog (owned/managed by main window)
 	SVDatabaseEditDialog * soundAbsSelect = SVMainWindow::instance().dbAcousticSoundAbsorptionEditDialog();
 	// ask to select a material
-        unsigned int idSoundAbsorption = m_current->m_acousticSoundAbsorptionPartitions[index].m_idSoundAbsorption;
+		unsigned int idSoundAbsorption = m_current->m_acousticSoundAbsorptionPartitions[index].m_idSoundAbsorption;
 	VICUS::AcousticSoundAbsorption *ac = m_db->m_acousticSoundAbsorptions[idSoundAbsorption];
 
 	unsigned int soundAbsId;
@@ -293,8 +377,8 @@ void SVDBAcousticBoundaryConditionEditWidget::showSoundAbsorptionSelectionDialog
 
 	if (soundAbsId == VICUS::INVALID_ID)
 		return; // dialog was canceled, no change here
-        if (soundAbsId != m_current->m_acousticSoundAbsorptionPartitions[(unsigned int)index].m_idSoundAbsorption) {
-            m_current->m_acousticSoundAbsorptionPartitions[(unsigned int)index].m_idSoundAbsorption = soundAbsId;
+		if (soundAbsId != m_current->m_acousticSoundAbsorptionPartitions[(unsigned int)index].m_idSoundAbsorption) {
+			m_current->m_acousticSoundAbsorptionPartitions[(unsigned int)index].m_idSoundAbsorption = soundAbsId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateTable();

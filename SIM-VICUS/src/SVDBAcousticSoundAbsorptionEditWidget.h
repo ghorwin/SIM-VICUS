@@ -52,7 +52,7 @@ class SVDatabase;
 class SVDBAcousticSoundAbsorptionEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
-	enum SoundApsortionColumns {
+	enum SoundAbsortionColumns {
 		ColFrequency,
 		ColValue,
 		NumCol

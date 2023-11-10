@@ -42,6 +42,8 @@
 - Components: 1000001-1010000
 - BC: 1030000-1031000
 - WindowGlazingSystems: 1031000-1035000
+- AcousticBoundaryConditions 1085001-1090000
+- AcousticSoundAbsorption 1090001-1950000
 - Windows: 1035000-1040000
 - SubSurfaceComponents: 1040000-1042000
 - SurfaceHeatings: 1050000-1050500
@@ -68,7 +70,7 @@ SVDatabase::SVDatabase() :
 	m_constructions(1020000),
 	m_windows(1035000),
 	m_windowGlazingSystems(1031000),
-	m_acousticBoundaryConditions(1030000),
+	m_acousticBoundaryConditions(1085001),
 	m_boundaryConditions(1030000),
 	m_components(1000001),
 	m_subSurfaceComponents(1040000),
@@ -92,7 +94,7 @@ SVDatabase::SVDatabase() :
 	//	SubNetworks: 1110000-1112500
 	m_acousticTemplates(1400100),
 	m_acousticSoundProtectionTemplates(507000),
-	m_acousticSoundAbsorptions(1085001),
+	m_acousticSoundAbsorptions(1035000),
 	m_acousticReferenceComponents(1600000),
 	m_acousticBuildingTemplates(407000)
 
@@ -298,8 +300,8 @@ void SVDatabase::mergeDatabases(const SVDatabase & db) {
 	m_infiltration.import(db.m_infiltration);
 	m_zoneTemplates.import(db.m_zoneTemplates);
 	m_acousticTemplates.import(db.m_acousticTemplates);
-    m_acousticReferenceComponents.import(db.m_acousticReferenceComponents);
-    m_acousticBuildingTemplates.import(db.m_acousticBuildingTemplates);
+	m_acousticReferenceComponents.import(db.m_acousticReferenceComponents);
+	m_acousticBuildingTemplates.import(db.m_acousticBuildingTemplates);
 	m_acousticSoundProtectionTemplates.import(db.m_acousticSoundProtectionTemplates);
 }
 

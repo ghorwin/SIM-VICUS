@@ -155,6 +155,10 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		// disable the line edits (they change background color)
 		m_ui->lineEditName->setEnabled(false);
 		m_ui->lineEditDataSource->setEnabled(false);
+		m_ui->lineEditImpactSound->setEnabled(false);
+		m_ui->lineEditAirSoundRes->setEnabled(false);
+		m_ui->label_9->setEnabled(false);
+		m_ui->label_10->setEnabled(false);
 
 		m_ui->comboBoxMaterialKind->setCurrentIndex(-1);
 		m_ui->comboBoxInsulationKind->setCurrentIndex(-1);
@@ -175,6 +179,13 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// construction name and layer count
 	m_ui->lineEditName->setString(con->m_displayName);
 	m_ui->lineEditDataSource->setString(con->m_dataSource);
+
+	double impactSoundValue = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
+	m_ui->lineEditImpactSound->setValue(impactSoundValue);
+
+	double airSoundResValue = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
+	m_ui->lineEditAirSoundRes->setValue(airSoundResValue);
+
 	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 
@@ -195,6 +206,10 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// update read-only/enabled states
 	m_ui->lineEditName->setEnabled(!con->m_builtIn);
 	m_ui->lineEditDataSource->setEnabled(!con->m_builtIn);
+	m_ui->lineEditImpactSound->setEnabled(!con->m_builtIn);
+	m_ui->lineEditAirSoundRes->setEnabled(!con->m_builtIn);
+	m_ui->label_9->setEnabled(!con->m_builtIn);
+	m_ui->label_10->setEnabled(!con->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);

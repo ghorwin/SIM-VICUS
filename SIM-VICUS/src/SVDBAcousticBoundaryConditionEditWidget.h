@@ -53,13 +53,20 @@ class SVDBAcousticBoundaryConditionEditWidget : public SVAbstractDatabaseEditWid
 	Q_OBJECT
 public:
 
-	enum SoundApsortionColumns {
+	enum SoundAbsortionColumns {
 		ColId,
 		ColName,
 		ColNameButton,
 		ColFraction,
 		NumCol
 	};
+
+	enum ResultsColumns {
+		ColFrequency,
+		ColResult,
+		R_NumCol
+	};
+
 
 	explicit SVDBAcousticBoundaryConditionEditWidget(QWidget *parent = nullptr);
 	~SVDBAcousticBoundaryConditionEditWidget() override;
@@ -91,6 +98,9 @@ private:
 
 	/*! Updates sound absorption layers in table. */
 	void updateTable();
+
+	/*! Fills the Results table by iterating over all Acoustic Sound absorption layers and calculating the results. */
+	void fillTableWidgetResult();
 
 	/*! Show a sound absorption database view in order to select a new sound absorption layer
 	 *   and change the current selection.
