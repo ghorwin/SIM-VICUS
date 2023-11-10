@@ -93,6 +93,7 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 
 		QTableWidgetItem *itemResult = new QTableWidgetItem("---");
 		itemResult->setTextAlignment(Qt::AlignCenter);
+		itemResult->setFlags(itemResult->flags() ^ Qt::ItemIsEditable);
 		m_ui->tableWidgetResult->setItem((int)i, ColResult, itemResult);
 	}
 
@@ -239,7 +240,8 @@ void SVDBAcousticBoundaryConditionEditWidget::fillTableWidgetResult()
 	if(m_current->m_acousticSoundAbsorptionPartitions.size() == 0){
 		m_ui->tableWidgetResult->setEnabled(false);
 		for(int i = 0; i < VICUS::AcousticSoundAbsorption::NUM_SF ; ++i){
-			m_ui->tableWidgetResult->setItem(i, ColResult, new QTableWidgetItem(QString("---")));
+			QTableWidgetItem *item = m_ui->tableWidgetResult->item(i, ColResult);
+			item->setText("---");
 		}
 	} else {
 		m_ui->tableWidgetResult->setEnabled(true);
@@ -258,7 +260,8 @@ void SVDBAcousticBoundaryConditionEditWidget::fillTableWidgetResult()
 		if(ac == nullptr){
 			// if sound absorption is invalid, table is filled with invalid values
 			for(int k = 0; k < VICUS::AcousticSoundAbsorption::NUM_SF ; ++k){
-				m_ui->tableWidgetResult->setItem(k, ColResult, new QTableWidgetItem(QString("---")));
+				QTableWidgetItem *item = m_ui->tableWidgetResult->item(i, ColResult);
+				item->setText("---");
 			}
 			m_ui->tableWidgetResult->blockSignals(false);
 			return;
