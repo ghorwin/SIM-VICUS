@@ -554,12 +554,24 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 		m_ui->tableWidgetReverberation->item(i, CRT_Reverb2000Hz)->setTextAlignment(Qt::AlignCenter);
 		m_ui->tableWidgetReverberation->item(i, CRT_Reverb4000Hz)->setTextAlignment(Qt::AlignCenter);
 
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb250Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb500Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb1000Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb2000Hz)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetReverberation->item(i, CRT_Reverb4000Hz)->setTextAlignment(Qt::AlignCenter);
+
 		QColor valid(Qt::darkGreen);
 		QColor invalid(Qt::darkRed);
 
 		if (SVSettings::instance().m_theme == SVSettings::TT_White) {
 			valid = valid.lighter(250);
 			invalid = invalid.lighter(250);
+		}
+
+		for (unsigned int j = 0; j < NUM_CRT; ++j) {
+			QTableWidgetItem *item = m_ui->tableWidgetReverberation->item(i, j);
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 		}
 
 		for (unsigned int j = 0; j < VICUS::AcousticSoundAbsorption::NUM_SF; ++j) {
