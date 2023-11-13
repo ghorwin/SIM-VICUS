@@ -4809,7 +4809,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			out << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
 			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
 			for (const NetworkEdge * edge: shortestPath){
-				out << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+				out << edge->m_id << "\t";
 			}
 			out << std::endl;
 		}
