@@ -26,7 +26,7 @@ bool SVStructuralUnitCreationDialog::edit(const VICUS::StructuralUnit * unit) {
 	setWindowTitle(tr("Edit Structural Unit"));
 	m_ui->lineEditUnitName->setText(unit->m_displayName);
 	m_ui->pushButtonColor->setColor(unit->m_color);
-	m_structuralUnit = unit;
+	m_currentStructuralUnit = unit;
 	return exec();
 }
 
@@ -40,7 +40,7 @@ bool SVStructuralUnitCreationDialog::create() {
 	m_ui->lineEditUnitName->setText(defaultName);
 	m_ui->pushButtonColor->setColor(SVStyle::randomColor());
 	// reset structural unit
-	m_structuralUnit = nullptr;
+	m_currentStructuralUnit = nullptr;
 	return exec();
 }
 
@@ -49,22 +49,22 @@ void SVStructuralUnitCreationDialog::on_buttonBoxCreateUnit_accepted() {
 	QString name = m_ui->lineEditUnitName->text();
 	QColor color = m_ui->pushButtonColor->color();
 
-	if(m_structuralUnit != nullptr){
+	if(m_currentStructuralUnit != nullptr){
 		// is in editing mode
 		// create UNDO Action for modifications
-		VICUS::StructuralUnit unit;
-		unit.m_id = m_structuralUnit->m_id;
-		unit.m_displayName = name;
-		unit.m_color = color;
-		SVUndoModifyStructuralUnit * undo = new SVUndoModifyStructuralUnit(tr("Modifying structural unit [%1]").arg(unit.m_id), unit);
+		VICUS::StructuralUnit newUnit(*m_currentStructuralUnit);
+		newUnit.m_color = color;
+		newUnit.m_displayName = name;
+		SVUndoModifyStructuralUnit * undo = new SVUndoModifyStructuralUnit(tr("Modifying structural unit #%1 '%2")
+																		   .arg(newUnit.m_id)
+																		   .arg(newUnit.m_displayName), newUnit);
 		undo->push(); // this will update our tree widget
-
 	} else {
-		VICUS::StructuralUnit unit;
-		unit.m_id = project().nextUnusedID();
-		unit.m_displayName = name;
-		unit.m_color = color;
-		SVUndoAddStructuralUnit * undo = new SVUndoAddStructuralUnit(tr("Adding structural unit '%1'").arg(unit.m_displayName), unit);
+		VICUS::StructuralUnit newUnit;
+		newUnit.m_id = project().nextUnusedID();
+		newUnit.m_displayName = name;
+		newUnit.m_color = color;
+		SVUndoAddStructuralUnit * undo = new SVUndoAddStructuralUnit(tr("Adding structural unit '%1'").arg(newUnit.m_displayName), newUnit);
 		undo->push(); // this will update our tree widget
 	}
 

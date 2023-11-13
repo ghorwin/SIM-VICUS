@@ -26,7 +26,8 @@ private slots:
 private:
 	Ui::SVStructuralUnitCreationDialog *m_ui;
 
-	const VICUS::StructuralUnit *  m_structuralUnit = nullptr;
+	/*! Current structural unit. */
+	const VICUS::StructuralUnit			*m_currentStructuralUnit = nullptr;
 };
 
 #endif // SVSTRUCTURALUNITCREATIONDIALOG_H

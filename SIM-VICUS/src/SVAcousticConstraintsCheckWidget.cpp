@@ -103,6 +103,8 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	m_ui->tableWidgetReverberation->setHorizontalHeaderLabels(headers);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetReverberation);
 	setWindowTitle(tr("Acoustic component check"));
+
+	m_ui->tabWidget->setEnabled(false);
 }
 
 
@@ -722,6 +724,8 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 
 void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 	checkConstraints();
+
+	m_ui->tabWidget->setEnabled(true);
 }
 
 
