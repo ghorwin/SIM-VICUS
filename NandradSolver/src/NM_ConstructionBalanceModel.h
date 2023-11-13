@@ -174,8 +174,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
-	/*! True if moisture balance is enabled. */
-	bool											m_moistureBalanceEnabled;
+	/*! True if moisture balance is calculated in construction. */
+	bool											m_moistureBalanceConstruction;
 	/*! Net cross section of construction in [m2]. */
 	double											m_area;
 	/*! Data cache for calculated results (updated in call to update()).

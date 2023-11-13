@@ -43,7 +43,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 {
 	m_con = &con;
 	m_statesModel = statesModel;
-	m_moistureBalanceEnabled = statesModel->m_moistureBalanceEnabled;
+	m_moistureBalanceConstruction = statesModel->m_moistureBalanceConstruction;
 
 	// cache total absorption surface areas
 	m_totalAdsorptionAreaA = totalAdsorptionAreaA;
@@ -493,7 +493,7 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 			resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
 	}
 
-	if (m_moistureBalanceEnabled) {
+	if (m_moistureBalanceConstruction) {
 		/// \todo hygrothermal code
 	}
 
@@ -611,7 +611,7 @@ int ConstructionBalanceModel::update() {
 
 	// now compute all divergences in all elements
 
-	if (m_moistureBalanceEnabled) {
+	if (m_moistureBalanceConstruction) {
 		/// \todo hygrothermal code
 	}
 	else {
