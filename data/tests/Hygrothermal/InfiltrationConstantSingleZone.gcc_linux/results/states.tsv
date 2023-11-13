@@ -1,4 +1,4 @@
-Time [h]	Office.AirTemperature [C]	Office.MoistureDensity [kg/m3]	Office.RelativeHumidity [%]
+Time [h]	Office.AirTemperature [C]	Office.AbsoluteHumidity [kg/m3]	Office.RelativeHumidity [%]
 0	20	0.00863022	50
 0.1666666667	20	0.00904419	52.3984
 0.3333333333	20	0.00942529	54.6063

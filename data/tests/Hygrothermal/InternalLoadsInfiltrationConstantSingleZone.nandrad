@@ -74,7 +74,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>MoistureDensity</Quantity>
+					<Quantity>AbsoluteHumidity</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

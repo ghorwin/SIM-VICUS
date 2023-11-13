@@ -1,4 +1,4 @@
-Time [h]	Office.AirTemperature [C]	Office.MoistureDensity [kg/m3]	Office.RelativeHumidity [%]	Model(id=501).VentilationRate(id=1) [1/h]
+Time [h]	Office.AirTemperature [C]	Office.AbsoluteHumidity [kg/m3]	Office.RelativeHumidity [%]	Model(id=501).VentilationRate(id=1) [1/h]
 0	20	0.00690417	40	0
 1	20	0.00726417	42.0857	0
 2	20	0.00762417	44.1714	0

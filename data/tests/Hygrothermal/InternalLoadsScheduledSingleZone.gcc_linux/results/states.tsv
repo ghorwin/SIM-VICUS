@@ -1,4 +1,4 @@
-Time [h]	Room.AirTemperature [C]	Room.MoistureDensity [kg/m3]
+Time [h]	Room.AirTemperature [C]	Room.AbsoluteHumidity [kg/m3]
 0	20	0.00863022
 0.1666666667	20	0.00863022
 0.3333333333	20	0.00863022

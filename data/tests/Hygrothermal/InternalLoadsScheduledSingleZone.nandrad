@@ -67,7 +67,7 @@
 					<GridName>10 mins</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>MoistureDensity</Quantity>
+					<Quantity>AbsoluteHumidity</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>10 mins</GridName>
 				</OutputDefinition>
