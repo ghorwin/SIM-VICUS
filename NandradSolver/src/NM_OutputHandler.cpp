@@ -40,7 +40,7 @@
 
 const char * const STATE_QUANTITIES[] = {
 	"AirTemperature",
-	"MoistureDensity",
+	"AbsoluteHumidity",
 	"RelativeHumidity",
 	"OperativeTemperature",
 	"VentilationRate",
@@ -50,6 +50,7 @@ const char * const STATE_QUANTITIES[] = {
 	"ActiveLayerTemperature",
 	"ShadingFactor",
 	"ShadingControlValue",
+	"SpecificHumidity",
 	"ReturnTemperature"
 };
 

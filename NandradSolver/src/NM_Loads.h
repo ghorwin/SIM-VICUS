@@ -69,7 +69,7 @@ public:
 		R_WindVelocity,				// Keyword: WindVelocity				[m/s]	'Wind velocity.'
 		R_AirPressure,				// Keyword: AirPressure					[Pa]	'Air pressure.'
 		R_VaporPressure,			// Keyword: VaporPressure				[Pa]	'Ambient vapor pressure.'
-		R_MoistureDensity,			// Keyword: MoistureDensity				[kg/m3]	'Ambient moisture density.'
+		R_AbsoluteHumidity,			// Keyword: AbsoluteHumidity			[kg/m3]	'Absolute air humidity.'
 		R_CO2Concentration,			// Keyword: CO2Concentration			[---]	'Ambient CO2 concentration.'
 		R_CO2Density,				// Keyword: CO2Density					[kg/m3]	'Ambient CO2 density.'
 		R_DeclinationAngle,			// Keyword: DeclinationAngle			[Deg]	'Solar declination (0 - north).'

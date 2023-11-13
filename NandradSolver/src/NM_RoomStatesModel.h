@@ -59,7 +59,8 @@ public:
 		R_AirTemperature,						// Keyword: AirTemperature				[C]		'Room air temperature'
 		R_RelativeHumidity,						// Keyword: RelativeHumidity			[%]		'Room air relative humidity'
 		R_VaporPressure,						// Keyword: VaporPressure				[Pa]	'Room air vapor pressure'
-		R_MoistureDensity,						// Keyword: MoistureDensity				[kg/m3]	'Room air moisture density'
+		R_AbsoluteHumidity,						// Keyword: AbsoluteHumidity			[kg/m3]	'Absolute air humidity per volume'
+		R_SpecificHumidity,						// Keyword: SpecificHumidity			[kg/kg]	'Mass specific air humidity'
 		NUM_R
 	};
 

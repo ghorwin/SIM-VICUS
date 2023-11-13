@@ -213,7 +213,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 	inputRefs.push_back(ref); ++m_zoneVariableOffset;
 
 	if (m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
-		ref.m_name.m_name = "MoistureDensity";
+		ref.m_name.m_name = "AbsoluteHumidity";
 		inputRefs.push_back(ref);  ++m_zoneVariableOffset;
 	}
 
@@ -237,7 +237,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		inputRefs.push_back(ref); ++zoneVarCount;
 
 		if (m_simPara->m_flags[NANDRAD::SimulationParameter::F_EnableMoistureBalance].isEnabled()) {
-			ref.m_name.m_name = "MoistureDensity";
+			ref.m_name.m_name = "AbsoluteHumidity";
 			inputRefs.push_back(ref); ++zoneVarCount;
 		}
 

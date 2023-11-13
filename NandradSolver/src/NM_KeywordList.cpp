@@ -169,7 +169,7 @@ namespace NANDRAD_MODEL {
 				case 6 : return "WindVelocity";
 				case 7 : return "AirPressure";
 				case 8 : return "VaporPressure";
-				case 9 : return "MoistureDensity";
+				case 9 : return "AbsoluteHumidity";
 				case 10 : return "CO2Concentration";
 				case 11 : return "CO2Density";
 				case 12 : return "DeclinationAngle";
@@ -241,7 +241,8 @@ namespace NANDRAD_MODEL {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
-				case 3 : return "MoistureDensity";
+				case 3 : return "AbsoluteHumidity";
+				case 4 : return "SpecificHumidity";
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -397,7 +398,7 @@ namespace NANDRAD_MODEL {
 				case 6 : return "WindVelocity";
 				case 7 : return "AirPressure";
 				case 8 : return "VaporPressure";
-				case 9 : return "MoistureDensity";
+				case 9 : return "AbsoluteHumidity";
 				case 10 : return "CO2Concentration";
 				case 11 : return "CO2Density";
 				case 12 : return "DeclinationAngle";
@@ -469,7 +470,8 @@ namespace NANDRAD_MODEL {
 				case 0 : return "AirTemperature";
 				case 1 : return "RelativeHumidity";
 				case 2 : return "VaporPressure";
-				case 3 : return "MoistureDensity";
+				case 3 : return "AbsoluteHumidity";
+				case 4 : return "SpecificHumidity";
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -626,7 +628,7 @@ namespace NANDRAD_MODEL {
 				case 6 : return "Wind velocity.";
 				case 7 : return "Air pressure.";
 				case 8 : return "Ambient vapor pressure.";
-				case 9 : return "Ambient moisture density.";
+				case 9 : return "Absolute air humidity.";
 				case 10 : return "Ambient CO2 concentration.";
 				case 11 : return "Ambient CO2 density.";
 				case 12 : return "Solar declination (0 - north).";
@@ -698,7 +700,8 @@ namespace NANDRAD_MODEL {
 				case 0 : return "Room air temperature";
 				case 1 : return "Room air relative humidity";
 				case 2 : return "Room air vapor pressure";
-				case 3 : return "Room air moisture density";
+				case 3 : return "Absolute air humidity per volume";
+				case 4 : return "Mass specific air humidity";
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -927,6 +930,7 @@ namespace NANDRAD_MODEL {
 				case 1 : return "%";
 				case 2 : return "Pa";
 				case 3 : return "kg/m3";
+				case 4 : return "kg/kg";
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -1155,6 +1159,7 @@ namespace NANDRAD_MODEL {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -1383,6 +1388,7 @@ namespace NANDRAD_MODEL {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Schedules::KnownQuantities
 			case 19 :
@@ -1480,7 +1486,7 @@ namespace NANDRAD_MODEL {
 			// RoomRadiationLoadsModel::Results
 			case 17 : return 1;
 			// RoomStatesModel::Results
-			case 18 : return 4;
+			case 18 : return 5;
 			// Schedules::KnownQuantities
 			case 19 : return 23;
 			// ThermalComfortModel::Results
@@ -1534,7 +1540,7 @@ namespace NANDRAD_MODEL {
 			// RoomRadiationLoadsModel::Results
 			case 17 : return 0;
 			// RoomStatesModel::Results
-			case 18 : return 3;
+			case 18 : return 4;
 			// Schedules::KnownQuantities
 			case 19 : return 22;
 			// ThermalComfortModel::Results

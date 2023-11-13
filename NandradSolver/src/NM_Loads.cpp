@@ -391,7 +391,7 @@ int Loads::setTime(double t) {
 		IBK::GASPRESS_REF /(IBK::R_IDEAL_GAS * airTemperature);
 
 	m_results[R_VaporPressure] = vaporPressure;
-	m_results[R_MoistureDensity] = moistureDensity;
+	m_results[R_AbsoluteHumidity] = moistureDensity;
 	m_results[R_CO2Density] = CO2Density;
 
 	// calculate shading factors for current time points
