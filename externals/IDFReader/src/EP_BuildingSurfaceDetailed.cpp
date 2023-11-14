@@ -129,12 +129,86 @@ void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigne
 
 void BuildingSurfaceDetailed::calcViewFactorToGround() {
 	//NSG::Polygon poly(m_polyline);
-	//IBKMK::Vector3D normal = poly.calcNormal();
-	//m_viewFactorToGround = (1 - normal.m_z)*0.5;
+	std::vector<IBKMK::Vector3D> polygon;
+	if (polygon.size() < 3){
+		m_viewFactorToGround = -1;
+		return;
+	}
+
+	IBKMK::Vector3D n(0,0,0);
+	IBKMK::Vector3D e(0,0,0);
+
+	for(unsigned int i=0; i<polygon.size(); ++i)
+		e += polygon[i];
+
+	e /= polygon.size();
+
+
+	for(unsigned int i=0; i<polygon.size(); ++i) {
+		unsigned int s = polygon.size();
+		unsigned int j = (i + s - 1)%s;
+
+		IBKMK::Vector3D v1 = polygon[j] - e;
+		IBKMK::Vector3D v2 = polygon[i] - e;
+
+		n += v1.crossProduct(v2).normalized();
+	}
+
+	if (n.magnitudeSquared() < 0.01) {
+
+		n = IBKMK::Vector3D(0,0,0);
+
+		for(unsigned int i=0; i<polygon.size()-1; ++i) {
+			unsigned int s = polygon.size();
+			unsigned int j = (i + s - 1)%s;
+
+			IBKMK::Vector3D v1 = polygon[j] - e;
+			IBKMK::Vector3D v2 = polygon[i] - e;
+
+			n += v1.crossProduct(v2).normalized();
+		}
+
+		if (n.magnitudeSquared() > 0.01)
+			n.normalized();
+			// return;
+
+//		IBK::IBK_Message(IBK::FormatString("Start point:\t%1\t%2\t%3")
+//						 .arg(e.m_x)
+//						 .arg(e.m_y)
+//						 .arg(e.m_z), IBK::MSG_ERROR);
+
+		// falls wir hier rein kommen ist was kaputt
+		if(false){
+			for (unsigned int i=0; i<polygon.size(); ++i) {
+
+				unsigned int s = polygon.size();
+				unsigned int j = (i + s -1)%s;
+
+				IBKMK::Vector3D v1 = polygon[j] - e;
+				IBKMK::Vector3D v2 = polygon[i] - e;
+
+				IBKMK::Vector3D ntest = v1.crossProduct(v2).normalized();
+
+	//			IBK::IBK_Message(IBK::FormatString("Poly point %4:\t%1\t%2\t%3\t\tNormal:\t%5\t%6\t%7")
+	//							 .arg(polygon[i].m_x)
+	//							 .arg(polygon[i].m_y)
+	//							 .arg(polygon[i].m_z)
+	//							 .arg(i)
+	//							 .arg(ntest.m_x)
+	//							 .arg(ntest.m_y)
+	//							 .arg(ntest.m_z),IBK::MSG_ERROR);
+			}
+
+		}
+
+		//throw IBK::Exception(IBK::FormatString("Could not determine normal of polygon 3D."), FUNC_ID);
+	}
+
+	n.normalized();
+	m_viewFactorToGround = (1 - n.m_z)*0.5;
 }
 
-void BuildingSurfaceDetailed::write(std::string & outStr, unsigned int version) const
-{
+void BuildingSurfaceDetailed::write(std::string & outStr, unsigned int version) const {
 
 	if(m_polyline.size()<3)
 		return;
@@ -176,7 +250,10 @@ void BuildingSurfaceDetailed::write(std::string & outStr, unsigned int version) 
 	ss << m_viewFactorToGround << "," << std::endl;
 	ss << m_polyline.size() << "," << std::endl;
 	for (size_t i=0; i<m_polyline.size(); ++i) {
-		ss << m_polyline[i].m_x << "," << m_polyline[i].m_y << "," << m_polyline[i].m_z;
+
+		ss << IBK::val2string(m_polyline[i].m_x, 10, 10, ' ') << ","
+		   << IBK::val2string(m_polyline[i].m_y, 10, 10, ' ') << ","
+		   << IBK::val2string(m_polyline[i].m_z, 10, 10, ' ');
 		if(i== m_polyline.size()-1)
 			ss << ";" << std::endl<< std::endl;
 		else

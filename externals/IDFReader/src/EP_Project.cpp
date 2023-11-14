@@ -2,6 +2,8 @@
 
 #include "EP_IDFParser.h"
 
+#include <fstream>
+
 namespace EP {
 
 void Project::readIDF(const IDFParser & idfData) {
@@ -31,8 +33,8 @@ void Project::readIDF(const IDFParser & idfData) {
 }
 
 
-void Project::writeIDF(const IBK::Path & /*filename*/) {
-#if 0
+void Project::writeIDF(const IBK::Path & filename) {
+#if 1
 
 #if defined(_WIN32)
 	std::ofstream out(IBK::UTF8ToANSIString(filename.str()));
@@ -47,12 +49,13 @@ void Project::writeIDF(const IBK::Path & /*filename*/) {
 
 	m_version = EP::Version::VN_8_3 ;
 
-	out << writeClassObj(m_bsd, m_version);
-	out << writeClassObj(m_zones, m_version);
-	out << writeClassObj(m_windowMaterial, m_version);
-	out << writeClassObj(m_materials, m_version);
-	out << writeClassObj(m_constructions, m_version);
-	out << writeClassObj(m_fsd, m_version);
+	out << writeClassObj(m_bsd);
+	out << writeClassObj(m_zones);
+	out << writeClassObj(m_windowMaterial);
+	out << writeClassObj(m_materials);
+	out << writeClassObj(m_constructions);
+	out << writeClassObj(m_fsd);
+
 	//out.close();
 //	for (size_t i=0; i<m_bsd.size(); ++i) {
 //		const BuildingSurfaceDetailed &bsd = m_bsd[i];
