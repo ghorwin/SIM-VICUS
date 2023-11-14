@@ -1517,8 +1517,6 @@ void SVMainWindow::onUpdateActions() {
 
 	// *** View configuration ***
 
-	// show welcome page only when we have no project
-	m_welcomeScreen->setVisible(!have_project);
 	// navigation bar is only visible when we have a project
 	m_ui->toolBar->setVisible(have_project);
 	m_ui->toolBar->setEnabled(have_project);
@@ -1593,23 +1591,25 @@ void SVMainWindow::updateMainView() {
 	// uncheck all button bar actions
 	m_ui->actionGeometryView->setChecked(false);
 	m_ui->actionSimulationSettings->setChecked(false);
-	m_geometryViewSplitter->setVisible(false);
 
 	switch (m_mainViewMode) {
 		case MV_None: {
 			m_geometryViewSplitter->setVisible(false);
 			m_simulationSettingsView->setVisible(false);
+			m_welcomeScreen->setVisible(true);
 		} break;
 		case MV_GeometryView: {
+			m_welcomeScreen->setVisible(false);
 			m_simulationSettingsView->setVisible(false);
-			m_ui->actionGeometryView->setChecked(true);
 			m_geometryViewSplitter->setVisible(true);
+			m_ui->actionGeometryView->setChecked(true);
 			m_geometryView->setFocus();
 		} break;
 		case MV_SimulationView: {
+			m_welcomeScreen->setVisible(false);
 			m_geometryViewSplitter->setVisible(false);
-			m_ui->actionSimulationSettings->setChecked(true);
 			m_simulationSettingsView->setVisible(true);
+			m_ui->actionSimulationSettings->setChecked(true);
 		} break;
 	}
 }
