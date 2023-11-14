@@ -952,7 +952,7 @@ void Project::generateBuildingProjectData(const QString &modelName, NANDRAD::Pro
 	}
 	for (const Schedule & sched : m_embeddedDB.m_schedules) {
 		std::string err;
-		if (!sched.isValid(err, true, p.m_placeholders))
+		if (sched.m_isReferenced && !sched.isValid(err, true, p.m_placeholders))
 			errorStack.append(tr("Schedule #%1 '%2' is invalid.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
 	}
 	if (!errorStack.isEmpty())	return;
