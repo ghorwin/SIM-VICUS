@@ -70,6 +70,12 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	// Note: valid column is self-explanatory and does not need a caption
 	m_ui->tableWidgetPeriods->setHorizontalHeaderLabels(QStringList() << tr("Start date") << QString() << tr("Name"));
 
+	// set period table column sizes
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+	m_ui->tableWidgetPeriods->setColumnWidth(0, 120);
+	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+
 	// styling of tables
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
@@ -100,19 +106,6 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	// initial state is "nothing selected"
 	updateInput(-1);
 
-
-	// set period table column sizes
-
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-	QFontMetrics fm(m_ui->tableWidgetPeriods->horizontalHeader()->font());
-	int width = fm.boundingRect(tr("Start date")).width();
-#ifdef Q_OS_LINUX
-	width = fm.boundingRect(tr("Start datexxxx")).width();
-#endif
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
-	m_ui->tableWidgetPeriods->setColumnWidth(0, width);
-	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 }
 
 
