@@ -392,8 +392,8 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 	for(const QJsonValue & feature :  features) {
 
 		QJsonObject geometry = feature.toObject()["geometry"].toObject();
-		bool validObject = geometry["type"].toString() ==  "LineString" || geometry["type"].toString() ==  "MultiLineString";
-		if(!validObject)
+		bool validObject = (geometry["type"].toString() ==  "LineString" || geometry["type"].toString() ==  "MultiLineString") && geometry.contains("coordinates");
+		if (!validObject)
 			continue;
 
 		unsigned int pipeId = m_defaultPipeId;
@@ -430,10 +430,14 @@ void SVNetworkImportDialog::readGridFromGeoJson(VICUS::Network & network, const 
 
 
 void SVNetworkImportDialog::importLineString(VICUS::Network &network, const QJsonArray &lineString, unsigned int pipeId, unsigned int &nextId) const {
+	FUNCID(SVNetworkImportDialog::importLineString);
 
 	std::vector<std::vector<double> > polyLine;
-
 	for(const QJsonValue coordinates : lineString){
+
+		if (coordinates.toArray().empty())
+			continue;
+
 		double x,y;
 		double z = 0;
 		if (m_ui->groupBoxUTM->isChecked()) {
@@ -453,10 +457,24 @@ void SVNetworkImportDialog::importLineString(VICUS::Network &network, const QJso
 		polyLine.push_back({x, y, z});
 	}
 
+	// guard against empty coordinates
+	if (polyLine.empty())
+		return;
+
+	std::vector<QString> errStrings;
 	for (unsigned i=0; i<polyLine.size()-1; ++i){
 		unsigned n1 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], polyLine[i][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
 		unsigned n2 = network.addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], polyLine[i+1][2]) - network.m_origin, VICUS::NetworkNode::NT_Mixer);
+		if (n1==n2) {
+			errStrings.push_back(QString("Line with coordinates from (%1, %2, %3) to (%4, %5, %6)").arg(polyLine[i][0]).arg(polyLine[i][1]).arg(polyLine[i][2]).arg(polyLine[i+1][0]).arg(polyLine[i+1][1]).arg(polyLine[i+1][2]));
+			continue;
+		}
 		network.addEdge(++nextId, n1, n2, true, pipeId);
+	}
+	if (!errStrings.empty()) {
+		qInfo() << "Skipped following lines, which are below the geometric resolution:";
+		for (const QString &str: errStrings)
+			qInfo() << str;
 	}
 }
 
