@@ -178,12 +178,14 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 
 	m_ui->tableView->installEventFilter(this);
 
-	m_ui->frameBuildInDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_alternativeBackgroundBright.name()));
-	m_ui->frameBuildInDB->setFrameShape(QFrame::NoFrame);
-	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
-	m_ui->frameUserDB->setFrameShape(QFrame::NoFrame);
-
 	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged, this, &SVDatabaseEditDialog::onStyleChanged);
+
+	// modify frames and update colors
+	m_ui->frameBuildInDB->setFrameShape(QFrame::NoFrame);
+	m_ui->frameUserDB->setFrameShape(QFrame::NoFrame);
+	// this update colors of frames but also the table view selection color
+	onStyleChanged();
+
 
 	for (int i=0; i<m_dbModel->columnCount(); ++i){
 		QString name = m_dbModel->headerData(i, Qt::Horizontal).toString();
@@ -496,6 +498,7 @@ void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
 void SVDatabaseEditDialog::onStyleChanged() {
 	m_ui->frameBuildInDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_alternativeBackgroundBright.name()));
 	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
+	m_ui->tableView->setStyleSheet(QString("QTableView {selection-background-color: %1;}").arg(SVStyle::instance().m_DBSelectionColor.name()));
 }
 
 

@@ -249,6 +249,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_userDBBackgroundDark						= "#012a4a";
 		m_userDBBackgroundBright					= "#013a63";
 		m_regularDBEntryColorDark					= "#e0e0e0";
+		m_DBSelectionColor							= "#2c6e49";
 
 		m_logProgressText							= "#c0c0c0";
 		m_logErrorText								= "#ff2222";
@@ -286,6 +287,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 		m_userDBBackgroundDark						= "#cddafd";
 		m_userDBBackgroundBright					= "#dfe7fd";
+		m_DBSelectionColor							= "#4c956c";
 
 		m_logProgressText							= "#202020";
 		m_logErrorText								= "#ab0000";

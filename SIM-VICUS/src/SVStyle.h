@@ -88,6 +88,7 @@ public:
 
 	QColor				m_userDBBackgroundBright;
 	QColor				m_userDBBackgroundDark;
+	QColor				m_DBSelectionColor;
 	/*! Regular text color to be used for not-referenced DB entries in database tables. */
 	QColor				m_regularDBEntryColorDark;
 
