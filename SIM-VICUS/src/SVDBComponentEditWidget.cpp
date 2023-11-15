@@ -148,7 +148,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	}
 	else {
 		m_ui->lineEditBoundaryConditionSideAName->clear();
-		m_ui->textBrowserBCSideA->clear();
+		m_ui->textBrowserBCSideA->setHtml(tr("<div style='text-align: center;'>"
+											 "<p><b>Adiabatic</b></p>"
+											 "</div>"
+											 ));
 	}
 
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
@@ -163,7 +166,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	}
 	else {
 		m_ui->lineEditBoundaryConditionSideBName->clear();
-		m_ui->textBrowserBCSideB->clear();
+		m_ui->textBrowserBCSideB->setHtml(tr("<div style='text-align: center;'>"
+											 "<p><b>Adiabatic</b></p>"
+											 "</div>"
+											 ));
 	}
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
