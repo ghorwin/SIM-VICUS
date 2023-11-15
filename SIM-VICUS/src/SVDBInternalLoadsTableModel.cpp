@@ -184,8 +184,10 @@ QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_LossHeatFactor, 0.0);
 		break;
 		case VICUS::InternalLoad::IC_Lighting:
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
 		break;
 		case VICUS::InternalLoad::IC_Other:
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
 		break;
 		case VICUS::InternalLoad::NUM_MC:
 		break;

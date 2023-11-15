@@ -352,7 +352,7 @@ void SVDBInternalLoadsPersonEditWidget::updateLabelPersonCount() {
 		case VICUS::InternalLoad::PCM_PersonCount:
 		case VICUS::InternalLoad::NUM_PCM:{
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
-			unitPersonCount = "-";
+			unitPersonCount = "Pers.";
 		}break;
 	}
 	m_ui->labelPersonCountUnit->setText(unitPersonCount);

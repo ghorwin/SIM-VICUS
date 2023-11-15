@@ -67,9 +67,7 @@ SVDBInternalLoadsLightsEditWidget::SVDBInternalLoadsLightsEditWidget(QWidget *pa
 	m_ui->lineEditName->setDialog3Caption(tr("Internal loads lights model name"));
 
 	m_ui->lineEditPower->setup(0, 250000, tr("Lights power according to the given unit"), true, true);
-	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);
-	//m_ui->lineEditLatentFactor->setup(0, 1, tr("Latent heat factor"), true, true);
-	//m_ui->lineEditLossFactor->setup(0, 1, tr("Loss heat factor"), true, true);
+	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), false, true);
 
 	configureChart(m_ui->widgetPlot);
 
@@ -125,8 +123,6 @@ void SVDBInternalLoadsLightsEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->blockSignals(false);
 
 	m_ui->lineEditConvectiveFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].value);
-	//m_ui->lineEditLatentFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_LatentHeatFactor].value);
-	//m_ui->lineEditLossFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_LossHeatFactor].value);
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idPowerManagementSchedule ]);
 	if (sched != nullptr)

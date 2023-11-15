@@ -6,17 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1244</width>
-    <height>330</height>
+    <width>989</width>
+    <height>324</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayoutMaster" columnstretch="0,0,1,0,0,0">
-   <item row="0" column="2" colspan="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-   </item>
+  <layout class="QGridLayout" name="gridLayoutMaster" columnstretch="0,0,1,0,0,0,0">
    <item row="2" column="0" colspan="2">
     <widget class="QLabel" name="labelOtherInput">
      <property name="text">
@@ -24,53 +21,15 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2" colspan="2">
-    <widget class="QComboBox" name="comboBoxMethod"/>
-   </item>
-   <item row="3" column="4">
+   <item row="3" column="5">
     <widget class="QToolButton" name="toolButtonSelectSchedule">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="labelDisplayName">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" colspan="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditPower">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="4" colspan="2">
-    <widget class="QLabel" name="labelConvectiveFactorUnit">
-     <property name="text">
-      <string>-</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="5">
-    <widget class="QToolButton" name="toolButtonRemovePowerManagementSchedule">
-     <property name="icon">
-      <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-     </property>
-    </widget>
+   <item row="1" column="2" colspan="2">
+    <widget class="QComboBox" name="comboBoxMethod"/>
    </item>
    <item row="4" column="2" colspan="2">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
@@ -82,23 +41,13 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="6">
-    <widget class="QwtPlot" name="widgetPlot" native="true"/>
+   <item row="0" column="2" colspan="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
-   <item row="0" column="4" colspan="2">
-    <widget class="QtExt::ColorButton" name="pushButtonColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4" colspan="2">
-    <widget class="QLabel" name="labelOtherInputUnit">
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="labelConvectiveFactor">
      <property name="text">
-      <string>W/m2</string>
+      <string>Convective Factor:</string>
      </property>
     </widget>
    </item>
@@ -115,19 +64,26 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLabel" name="labelConvectiveFactor">
-     <property name="text">
-      <string>Convective Factor:</string>
+   <item row="2" column="2" colspan="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditPower">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QLineEdit" name="lineEditManagementScheduleName">
-     <property name="readOnly">
-      <bool>true</bool>
+   <item row="3" column="6">
+    <widget class="QToolButton" name="toolButtonRemovePowerManagementSchedule">
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
      </property>
     </widget>
+   </item>
+   <item row="5" column="0" colspan="7">
+    <widget class="QwtPlot" name="widgetPlot" native="true"/>
    </item>
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="labelCategory_2">
@@ -142,6 +98,57 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="labelDisplayName">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" colspan="2">
+    <widget class="QLineEdit" name="lineEditManagementScheduleName">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QLabel" name="labelOtherSchedInputUnit">
+     <property name="text">
+      <string>W</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4" colspan="3">
+    <widget class="QLabel" name="labelConvectiveFactorUnit">
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" colspan="3">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4" colspan="2">
+    <widget class="QLabel" name="labelOtherInputUnit">
+     <property name="text">
+      <string>W/m2</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -149,6 +156,12 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -166,12 +179,6 @@
    <slots>
     <signal>colorChanged()</signal>
    </slots>
-  </customwidget>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QWidget</extends>
-   <header location="global">qwt_plot.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
