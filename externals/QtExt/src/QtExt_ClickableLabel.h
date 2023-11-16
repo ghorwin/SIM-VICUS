@@ -14,9 +14,11 @@ class ClickableLabel : public QLabel {
 	Q_OBJECT
 
 public:
+	explicit ClickableLabel( QWidget* parent = Q_NULLPTR);
 	explicit ClickableLabel(const QString &text="", QWidget* parent = Q_NULLPTR);
 	explicit ClickableLabel(int id, const QString &text="", QWidget* parent = Q_NULLPTR);
 
+	void setId(unsigned int id)  {m_id = id; }
 	unsigned int id() const { return m_id; }
 
 	void setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet);

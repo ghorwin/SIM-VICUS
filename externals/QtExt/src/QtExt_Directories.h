@@ -77,6 +77,9 @@ public:
 	/*! Returns the platform-specific root directory of all user database files. */
 	static QString userDataDir();
 
+	/*! Returns the platform-specific user directory, where examples can be stored. */
+	static QString userExampleFileDir();
+
 	/*! Returns the platform-specific temporary directory. */
 	static QString tmpDir();
 

@@ -170,6 +170,11 @@ QString Directories::userDataDir() {
 }
 
 
+QString Directories::userExampleFileDir() {
+	return QDir::homePath() + "/" + appname + "/examples";
+}
+
+
 QString Directories::tmpDir() {
 #if defined(Q_OS_WIN)
 	// on Windows, we store user data unter %TMP%
