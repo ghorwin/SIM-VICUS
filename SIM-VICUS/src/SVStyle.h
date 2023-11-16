@@ -59,7 +59,7 @@ public:
 	static void formatListView(QListView * v);
 
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
-	static void formatWelcomePage(QString & htmlCode);
+	static void setHtmlColors(QString & htmlCode);
 
 	/*! Resizes column to contents, yet honors the enlargeOnly flag.
 		Useful if user can adjust column width manually, but data changes may require enlarging

@@ -263,8 +263,6 @@ private slots:
 	/*! Triggered whenever a project was read successfully. */
 	void onFixProjectAfterRead();
 
-	/*! Connected to SVPreferencesPageStyle */
-	void onStyleChanged();
 	/*! Connected to SVPreferencesPageMisc */
 	void onAutosaveSettingsChanged();
 
@@ -297,7 +295,6 @@ private slots:
 	void on_actionEditCleanProject_triggered();
 	void on_actionEditApplicationLog_triggered();
 
-	void on_actionDBEpdElements_triggered();
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
 	void on_actionDBWindowGlazingSystems_triggered();

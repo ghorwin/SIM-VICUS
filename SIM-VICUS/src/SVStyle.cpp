@@ -188,7 +188,7 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 #endif
 }
 
-void SVStyle::formatWelcomePage(QString & htmlCode) {
+void SVStyle::setHtmlColors(QString & htmlCode) {
 	switch (SVSettings::instance().m_theme) {
 		case SVSettings::TT_Dark :
 		{
@@ -206,7 +206,7 @@ void SVStyle::formatWelcomePage(QString & htmlCode) {
 		default:
 		{
 			htmlCode.replace("${STYLE_TEXT_COLOR}", qApp->palette().color(QPalette::Text).name());
-			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", "#FFFFFF");
+			htmlCode.replace("${STYLE_BACKGROUND_COLOR}", qApp->palette().color(QPalette::Background).name());
 			htmlCode.replace("${STYLE_LINKTEXT_COLOR}", "#0053A6");
 			htmlCode.replace("${STYLE_LINKTEXT_HOVER_COLOR}", "#1C7DEF");
 			htmlCode.replace("${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}", qApp->palette().color(QPalette::Background).name());

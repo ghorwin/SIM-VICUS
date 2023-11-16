@@ -47,6 +47,7 @@
 #include "SVStyle.h"
 
 extern const char * const HTML_TEMPLATE;
+extern const char * const HTML_NEWS_TEMPLATE;
 extern const char * const RECENT_PROJECT_TABLE_TEMPLATE;
 
 SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
@@ -59,13 +60,22 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 	m_ui->setupUi(this);
 	connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
 			this, SLOT(downloadFinished(QNetworkReply*)));
-	connect(m_ui->textBrowser, SIGNAL(anchorClicked(QUrl)),
+	connect(m_ui->textBrowserMain, SIGNAL(anchorClicked(QUrl)),
 			this, SLOT(onAnchorClicked(QUrl)));
 	connect(m_autoUpdater, SIGNAL(updateInfoRetrieved(int, QString)),
 			this, SLOT(onUpdateInfoRetrieved(int, QString)) );
 	if (UPDATE_FILE_URL != QString("..."))
 		m_autoUpdater->checkForUpdateInfo(UPDATE_FILE_URL,
 									  VICUS::LONG_VERSION, false, QString(), QString());
+
+	// format text browser
+	m_ui->textBrowserMain->setStyleSheet("QTextBrowser { border: none; }");
+	m_ui->textBrowserNews->setStyleSheet("QTextBrowser { border: none; }");
+
+	connect(m_ui->labelRecent, SIGNAL(clicked()), this, SLOT(on_labelRecentClicked()));
+	connect(m_ui->labelExample, SIGNAL(clicked()), this, SLOT(on_labelExampleClicked()));
+
+	on_labelRecentClicked();
 }
 
 
@@ -76,6 +86,8 @@ SVWelcomeScreen::~SVWelcomeScreen() {
 
 
 void SVWelcomeScreen::updateWelcomePage() {
+	// news text
+	QString htmlPageNews = HTML_NEWS_TEMPLATE;
 	QString welcomePageSideBar = QString("<p>&nbsp;<p><hr>"); // top-rule starts the side-bar column
 	// add update info section
 	if (!m_updateInfoNews.isEmpty())
@@ -85,9 +97,6 @@ void SVWelcomeScreen::updateWelcomePage() {
 		QNetworkRequest request(QUrl(QString::fromLatin1(NEWS_FILE_URL)));
 		/*QNetworkReply *reply = */m_networkManager->get(request);
 	}
-	// now create overall page
-	QString htmlPage = HTML_TEMPLATE;
-	SVStyle::formatWelcomePage(htmlPage);
 	// insert news
 	if (m_welcomePageNews.isEmpty()) {
 		welcomePageSideBar.append(QString("<i>%1</i>").arg(tr("Retrieving news content...")));
@@ -95,17 +104,21 @@ void SVWelcomeScreen::updateWelcomePage() {
 	else {
 		welcomePageSideBar.append(m_welcomePageNews);
 	}
-	htmlPage.replace("${SIDE_BAR}", welcomePageSideBar);
-	htmlPage.replace("${RECENT_PROJECTS_LINK}", tr("Recently opened projects"));
-	htmlPage.replace("${DEMO_CASES_LINK}", tr("Examples/Validation cases"));
-	htmlPage.replace("${TEMPLATES_LINK}", tr("Project templates"));
+	htmlPageNews.replace("${NEWS_CONTENT}", welcomePageSideBar);
+	SVStyle::setHtmlColors(htmlPageNews);
+	m_ui->textBrowserNews->setHtml(htmlPageNews);
+
+	// now main page
+	QString htmlPage = HTML_TEMPLATE;
+	SVStyle::setHtmlColors(htmlPage);
 
 	int size = (int)SVSettings::instance().m_thumbNailSize;
 
 	if (m_pageType == PT_RecentFiles) {
 		// compose recent project file list table
 
-		QString recentProjects = "<h1>" + tr("Recently opened projects") + "</h1><p>\n";
+		QString infoString;
+
 		for (int i=0; i<SVSettings::instance().m_recentProjects.count(); ++i) {
 			QFileInfo finfo(SVSettings::instance().m_recentProjects[i]);
 			QString projectInfoBlock = RECENT_PROJECT_TABLE_TEMPLATE;
@@ -135,7 +148,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			}
 			else {
 				description = tr("<i><font color=\"${STYLE_H3_COLOR}\">Project not accessible</font></i> <a href=\"premove:%1\">Remove %2 from list</a>").arg( i ).arg( finfo.fileName() );
-				SVStyle::formatWelcomePage(description);
+				SVStyle::setHtmlColors(description);
 			}
 
 			// thumb name is full file path with replces
@@ -160,71 +173,76 @@ void SVWelcomeScreen::updateWelcomePage() {
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);
 			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
-			recentProjects += projectInfoBlock;
-		}
-		htmlPage.replace("${RECENT_PROJECT_FILELIST}", recentProjects);
-	}
-	else if(m_pageType == PT_TemplateFiles) {
-		QString templates = "<h1>" + tr("Project templates") + "</h1><p>\n";
-
-		// process all project packages in template directory
-		QDir templatesDir(QtExt::Directories::userDataDir()+"/DB_templates");
-
-		QStringList templateFiles;
-		SVSettings::recursiveSearch(templatesDir, templateFiles,
-									QStringList() << SVSettings::instance().m_projectPackageSuffix.mid(1));
-
-		// for each file, parse its header, extract comments, open thumbnail image and compose table with information
-		foreach (QString fname, templateFiles) {
-			QString projectInfoBlock = RECENT_PROJECT_TABLE_TEMPLATE;
-			// for templates we use a special link handler
-			projectInfoBlock.replace("pfile:$", "ptemplate:$");
-			VICUS::Project pro;
-			QFileInfo finfo(fname);
-			try {
-				pro.parseHeader(IBK::Path(finfo.filePath().toStdString()));
-			}
-			catch (IBK::Exception &) {
-				// error reading project file, missing permissions?
-				pro = VICUS::Project(); // reset with empty instance
-			}
-			QString created;
-			if (pro.m_projectInfo.m_created.empty())
-				created = "---";
-			else
-				created = QString::fromStdString(pro.m_projectInfo.m_created);
-			QString description = QString::fromStdString(pro.m_projectInfo.m_comment);
-
-			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.baseName());
-			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
-			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);
-
-			// open thumbnail image for this project
-			QString thumbPath = fname+".png";
-
-			QFileInfo thumbFileInfo(thumbPath);
-			QPixmap p;
-			// check if file exists
-			if (thumbFileInfo.exists() && p.load(thumbPath)) {
-				/// \todo Andreas: fix warning about bad resource loading (related to image files)
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
-				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
-				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
-			}
-			else {
-				thumbPath = "&nbsp;";
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
-			}
-
-			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
-			templates += projectInfoBlock;
+			infoString += projectInfoBlock;
 		}
 
-		htmlPage.replace("${RECENT_PROJECT_FILELIST}", templates);
+		htmlPage.replace("${RECENT_PROJECT_FILELIST}", infoString);
+		m_ui->textBrowserMain->setHtml(htmlPage);
 	}
-	else {
-		QString recentProjects = "<h1>" + tr("Examples/Validation cases") + "</h1><p>\n";
+
+//	else if(m_pageType == PT_TemplateFiles) {
+//		QString templates = "<h1>" + tr("Project templates") + "</h1><p>\n";
+
+//		// process all project packages in template directory
+//		QDir templatesDir(QtExt::Directories::userDataDir()+"/DB_templates");
+
+//		QStringList templateFiles;
+//		SVSettings::recursiveSearch(templatesDir, templateFiles,
+//									QStringList() << SVSettings::instance().m_projectPackageSuffix.mid(1));
+
+//		// for each file, parse its header, extract comments, open thumbnail image and compose table with information
+//		foreach (QString fname, templateFiles) {
+//			QString projectInfoBlock = RECENT_PROJECT_TABLE_TEMPLATE;
+//			// for templates we use a special link handler
+//			projectInfoBlock.replace("pfile:$", "ptemplate:$");
+//			VICUS::Project pro;
+//			QFileInfo finfo(fname);
+//			try {
+//				pro.parseHeader(IBK::Path(finfo.filePath().toStdString()));
+//			}
+//			catch (IBK::Exception &) {
+//				// error reading project file, missing permissions?
+//				pro = VICUS::Project(); // reset with empty instance
+//			}
+//			QString created;
+//			if (pro.m_projectInfo.m_created.empty())
+//				created = "---";
+//			else
+//				created = QString::fromStdString(pro.m_projectInfo.m_created);
+//			QString description = QString::fromStdString(pro.m_projectInfo.m_comment);
+
+//			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.baseName());
+//			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
+//			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);
+
+//			// open thumbnail image for this project
+//			QString thumbPath = fname+".png";
+
+//			QFileInfo thumbFileInfo(thumbPath);
+//			QPixmap p;
+//			// check if file exists
+//			if (thumbFileInfo.exists() && p.load(thumbPath)) {
+//				/// \todo Andreas: fix warning about bad resource loading (related to image files)
+//				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+//				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
+//				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
+//				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
+//			}
+//			else {
+//				thumbPath = "&nbsp;";
+//				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
+//			}
+
+//			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
+//			templates += projectInfoBlock;
+//		}
+
+//		// TODO
+////		htmlPage.replace("${RECENT_PROJECT_FILELIST}", templates);
+//	}
+	else if (m_pageType==PT_DemoFiles) {
+
+		QString infoString;
 
 		// process all files in examples directory
 		QDir examplesDir(QtExt::Directories::databasesDir() + "/examples");
@@ -279,14 +297,18 @@ void SVWelcomeScreen::updateWelcomePage() {
 			}
 
 			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
-			recentProjects += projectInfoBlock;
+			infoString += projectInfoBlock;
 		}
 
-		htmlPage.replace("${RECENT_PROJECT_FILELIST}", recentProjects);
+		htmlPage.replace("${RECENT_PROJECT_FILELIST}", infoString);
+		m_ui->textBrowserMain->setHtml(htmlPage);
 	}
+}
 
-	// finally set welcome page in textbrowser
-	m_ui->textBrowser->setHtml(htmlPage);
+
+void SVWelcomeScreen::setLabelColors(QString color) {
+	m_ui->labelRecent->setStyleSheet(QString("QLabel { font-weight: normal; color: %1}").arg(color), QString("QLabel { font-weight: bold; color: %1}").arg(color));
+	m_ui->labelExample->setStyleSheet(QString("QLabel { font-weight: normal; color: %1}").arg(color), QString("QLabel { font-weight: bold; color: %1}").arg(color));
 }
 
 
@@ -335,20 +357,7 @@ void SVWelcomeScreen::onAnchorClicked( const QUrl & link ) {
 		emit softwareUpdateRequested();
 		return;
 	}
-	else if (link.toString().startsWith("page:")) {
-		QString page = link.toString().right(link.toString().length()-5);
-		if (page == "recentFiles") {
-			m_pageType = PT_RecentFiles;
-		}
-		else if (page == "demoFiles") {
-			m_pageType = PT_DemoFiles;
-		}
-		else if (page == "templateFiles") {
-			m_pageType = PT_TemplateFiles;
-		}
-		updateWelcomePage();
-		return;
-	}
+
 	// must be an external link, call desktop services to open webbrowser
 	QDesktopServices::openUrl(link);
 }
@@ -412,10 +421,37 @@ void SVWelcomeScreen::onUpdateInfoRetrieved(int res, QString newVersion) {
 			m_updateInfoNews += tr("Current version: <b>%1</b><br>").arg(VICUS::LONG_VERSION);
 			m_updateInfoNews += tr("New Version: <b><font style=\"color:${STYLE_LINKTEXT_COLOR}\">%1</font></b></p><p><a href=\"update:\">Download update</a>").arg(newVersion);
 			m_updateInfoNews += "</p><hr>";
-			SVStyle::formatWelcomePage(m_updateInfoNews);
+			SVStyle::setHtmlColors(m_updateInfoNews);
 		}
 	}
 	updateWelcomePage();
+}
+
+
+void SVWelcomeScreen::on_labelRecentClicked() {
+	m_ui->labelExample->setActive(false);
+	m_ui->labelRecent->setActive(true);
+	m_pageType = PT_RecentFiles;
+	updateWelcomePage();
+}
+
+
+void SVWelcomeScreen::on_labelExampleClicked() {
+	m_ui->labelExample->setActive(true);
+	m_ui->labelRecent->setActive(false);
+	m_pageType = PT_DemoFiles;
+	updateWelcomePage();
+}
+
+
+void SVWelcomeScreen::onStyleChanged() {
+	// set colors of clickable labels
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		setLabelColors("#ff7e16");
+	else
+		setLabelColors("#003264");
+	updateWelcomePage(); // this also updates html colors
+	update();
 }
 
 
@@ -424,8 +460,8 @@ const char * const HTML_TEMPLATE =
 		"<html>\n"
 		"<head>\n"
 		"<style type=\"text/css\">\n"
-		"body     { font-size: medium; color: ${STYLE_TEXT_COLOR}; background-color: ${STYLE_BACKGROUND_COLOR} }\n"
-		"a        { color: ${STYLE_LINKTEXT_COLOR}; text-decoration:none }\n"
+		"body     { font-size: medium; color: ${STYLE_TEXT_COLOR}; background-color: ${STYLE_BACKGROUND_COLOR}; margin-left:0px }\n"
+		"a        { color: ${STYLE_LINKTEXT_COLOR}; text-decoration:none; }\n"
 		"a:hover  { color: ${STYLE_LINKTEXT_HOVER_COLOR}; background-color: ${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}; }\n"
 		"p        { font-size: medium; text-align: justify; margin-top:0px; margin-bottom:8px;   }\n"
 		"h1       { font-size: large; color: ${STYLE_H1_COLOR}; font-weight:bold; \n"
@@ -440,25 +476,33 @@ const char * const HTML_TEMPLATE =
 		"\n"
 		"</head>\n"
 		"<body>\n"
-		"<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\" width=\"100%\">\n"
-		"<tr valign=\"top\">\n"
-		"<td>\n"
-		"<p>\n"
-		"[ <a href=\"page:recentFiles\">${RECENT_PROJECTS_LINK}</a> ] [ <a href=\"page:demoFiles\">${DEMO_CASES_LINK}</a> ]\n"
-//		" [ <a href=\"page:templateFiles\">${TEMPLATES_LINK}</a> ]\n"
-		"<p>\n"
-		"<hr>\n"
 		"${RECENT_PROJECT_FILELIST}\n"
+		"</body>\n"
+		"</html>\n"
+		"\n";
+
+
+const char * const HTML_NEWS_TEMPLATE =
+		"<html>\n"
+		"<head>\n"
+		"<style type=\"text/css\">\n"
+		"body     { font-size: medium; color: ${STYLE_TEXT_COLOR}; background-color: ${STYLE_BACKGROUND_COLOR} }\n"
+		"a        { color: ${STYLE_LINKTEXT_COLOR}; text-decoration:none; }\n"
+		"a:hover  { color: ${STYLE_LINKTEXT_HOVER_COLOR}; background-color: ${STYLE_LINKTEXT_HOVER_BACKGROUND_COLOR}; }\n"
+		"p        { font-size: medium; text-align: justify; margin-top:0px; margin-bottom:8px;   }\n"
+		"h1       { font-size: large; color: ${STYLE_H1_COLOR}; font-weight:bold; \n"
+		"           text-decoration: none; margin-top:15px; margin-bottom:15px }\n"
+		"h2       { font-size: medium; color: ${STYLE_H2_COLOR}; font-weight:bold; margin-top:15px; margin-bottom:6px }\n"
+		"h3       { font-size: medium; color: ${STYLE_H3_COLOR}; font-weight:bold; margin-top:10px; margin-bottom:2px}\n"
+		"table    { font-size: medium }\n"
+		"b        { color: black }\n"
+		"pre      { font-size: small; font-family: monospace;courier }\n"
+		"li       { text-align: justify }\n"
+		"</style>\n"
 		"\n"
-		"</td>\n"
-		"<td width=30>&nbsp;</td>\n"
-		"<td width=\"20%\">\n"
-		"${SIDE_BAR}\n"
-		"</td>\n"
-		"\n"
-		"</tr>\n"
-		"</table>\n"
-		"\n"
+		"</head>\n"
+		"<body>\n"
+		"${NEWS_CONTENT}\n"
 		"</body>\n"
 		"</html>\n"
 		"\n";
@@ -472,6 +516,4 @@ const char * const RECENT_PROJECT_TABLE_TEMPLATE =
 		"</table>\n"
 		"<br>\n"
 		"\n";
-
-
 

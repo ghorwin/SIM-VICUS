@@ -680,7 +680,9 @@ void SVMainWindow::setup() {
 	mainLayout->setMargin(0);
 	mainLayout->setSpacing(0);
 	m_ui->centralWidget->setLayout(mainLayout);
-	m_welcomeScreen->updateWelcomePage();
+	// updates colors and entire content of welcome page
+	m_welcomeScreen->onStyleChanged();
+
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
@@ -802,9 +804,6 @@ void SVMainWindow::setup() {
 		}
 	}
 
-	// final style touches (icon themes etc.)
-	onStyleChanged();
-
 	// add user settings related window resize at program start
 #if defined(Q_OS_WIN)
 	showMaximized();
@@ -827,27 +826,6 @@ void SVMainWindow::setup() {
 	// apply settings
 	onAutosaveSettingsChanged();
 
-}
-
-
-void SVMainWindow::onStyleChanged() {
-	m_welcomeScreen->updateWelcomePage();
-	m_welcomeScreen->update();
-
-	// manually change icons
-	// if we have, at some point, really different icon sets for dark and bright themes, we
-	// may just centrally replace the entire icon set, but this is tricky and also would require
-	// a lot of work maintaining two icon themes. So for now, we just manually switch between the icon sets
-#if 0
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube.svg"));
-		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h.svg"));
-	}
-	else {
-		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube-dark.svg"));
-		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
-	}
-#endif
 }
 
 
@@ -1683,35 +1661,42 @@ void SVMainWindow::onOpenProjectByFilename(const QString & filename) {
 
 void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 	// This function is only called from the welcome page, so there must not be a project opened!
-	QFile f1(filename);
-	if (!f1.exists()) {
+	QFileInfo finfo(filename);
+	if (!finfo.exists()) {
 		QMessageBox::critical(this, tr("File not found"), tr("The file '%1' cannot be found or does not exist.").arg(filename));
 		return;
 	}
-	// determine parent directory and ask user to select an example base directory to copy the input data into
-	QFileInfo finfo(filename);
+
+	// soruce and target dirs
 	QDir srcDir = finfo.absoluteDir();
-	QSettings settings( SVSettings::instance().m_organization, SVSettings::instance().m_appName );
-	QString lastExampleTargetDir = settings.value("LastExampleSaveDirectory", QDir::homePath()).toString();
-	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir,
-														  SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
-																										  );
-	if (targetDir.isEmpty())
-		return;
-	settings.setValue("LastExampleSaveDirectory", targetDir);
+	QDir targetDir(QtExt::Directories::userExampleFileDir());
 
-	// append base directory name to target Dir
-	targetDir = QDir(targetDir).absoluteFilePath( srcDir.dirName() );
+	// create targetDir, if required
+	if (!targetDir.exists())
+		targetDir.mkpath(".");
 
-	// now recursively copy 'srcDir' into targetDir
-	if (!copyRecursively(srcDir.absolutePath(), targetDir)) {
-		QMessageBox::critical(this, tr("Write error"), tr("Cannot copy example, maybe missing permissions?"));
-		return;
+	// copy target file, ask permission if existing
+	QString targetFile = targetDir.absoluteFilePath(finfo.fileName());
+	if (QFile::exists(targetFile)) {
+		QMessageBox::StandardButton reply = QMessageBox::question(this, tr("Overwrite example"), tr("Example project exists already user directory, overwrite it?"), QMessageBox::Yes|QMessageBox::No);
+		if (reply == QMessageBox::No)
+			return;
+	}
+	QFile::copy(filename, targetFile);
+
+	// now also copy the "DataFiles" directory needed for network examples, we don't ask permission for that
+	srcDir.cd("DataFiles");
+	targetDir.mkpath("DataFiles");
+	targetDir.cd("DataFiles");
+	if (srcDir.exists()) {
+		if (!copyRecursively(srcDir.absolutePath(), targetDir.absolutePath())) {
+			QMessageBox::critical(this, tr("Write error"), tr("Cannot copy example, maybe missing permissions?"));
+			return;
+		}
 	}
 
 	// and finally open the copied project file and hope for the best
-	QString newFName = QDir(targetDir).absoluteFilePath(finfo.fileName());
-	onOpenProjectByFilename(newFName);
+	onOpenProjectByFilename(targetFile);
 }
 
 
@@ -2123,8 +2108,8 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 	if (m_preferencesDialog == nullptr) {
 		m_preferencesDialog = new SVPreferencesDialog(this);
-		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-				this, &SVMainWindow::onStyleChanged);
+		connect(preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				m_welcomeScreen, &SVWelcomeScreen::onStyleChanged);
 		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
 				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
 		connect(m_preferencesDialog->pageMisc(), &SVPreferencesPageMisc::autosaveSettingsChanged,
@@ -2172,11 +2157,6 @@ static bool copyRecursively(const QString &srcFilePath,
 void SVMainWindow::onShortCutStartSimulation() {
 	on_actionSimulationSettings_triggered();
 	m_simulationSettingsView->setCurrentPage(2); // page 2 is simulation start
-}
-
-
-void SVMainWindow::on_actionDBEpdElements_triggered() {
-	dbEpdEditDialog()->edit();
 }
 
 

@@ -66,7 +66,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 				"font-size:12pt; color: #3caed0; text-decoration:none"
 				);
 
-	SVStyle::formatWelcomePage(labelStyle);
+	SVStyle::setHtmlColors(labelStyle);
 
 	QString infoText = QString("<a href=\"https://sim-vicus.de\"><span style=\"%1\">https://sim-vicus.de</span></a><br><br>"
 							   "<a href=\"https://icons8.de\"><span style=\"%1\">https://icons8.de</span></a>").arg(labelStyle);
