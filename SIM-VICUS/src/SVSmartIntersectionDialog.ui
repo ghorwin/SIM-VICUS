@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1403</width>
-    <height>1111</height>
+    <width>968</width>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -223,8 +223,24 @@
    </item>
    <item>
     <widget class="QPushButton" name="pushButtonStartClipping">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>150</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>Start smart-clipping</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
      </property>
     </widget>
    </item>
@@ -290,6 +306,8 @@
    </slots>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>
