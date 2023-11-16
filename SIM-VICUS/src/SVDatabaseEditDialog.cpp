@@ -532,6 +532,8 @@ void SVDatabaseEditDialog::writeUserDB() {
 		(m_dbModel->databaseType() == SVDatabase::DT_Windows && db.m_windows.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_WindowGlazingSystems && db.m_windowGlazingSystems.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_BoundaryConditions && db.m_boundaryConditions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_AcousticSoundAbsorptions && db.m_acousticSoundAbsorptions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_AcousticBoundaryConditions && db.m_acousticBoundaryConditions.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_Components && db.m_components.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_SubSurfaceComponents && db.m_subSurfaceComponents.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_SurfaceHeating && db.m_surfaceHeatings.m_modified) ||

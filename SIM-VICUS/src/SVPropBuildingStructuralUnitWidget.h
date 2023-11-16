@@ -44,6 +44,9 @@ private slots:
 	/*! Removes the all assignments from the selected rooms. */
 	void on_pushButtonRemoveAssignment_clicked();
 
+	/*! Selects structural unit in view */
+	void on_pushButtonSelect_clicked();
+
 private:
 	const VICUS::StructuralUnit * currentlySelectedStructuralUnit() const;
 

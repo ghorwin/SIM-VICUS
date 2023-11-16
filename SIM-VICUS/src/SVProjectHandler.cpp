@@ -976,6 +976,13 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 		}
 	}
 
+	// ** Acoustic Boundary Conditions **
+	for(VICUS::AcousticBoundaryCondition &abc : pro.m_embeddedDB.m_acousticBoundaryConditions) {
+		for(VICUS::AcousticSoundAbsorptionPartition &asp : abc.m_acousticSoundAbsorptionPartitions){
+			replaceID(asp.m_idSoundAbsorption, acousticSoundAbsorptionsIDMap);
+		}
+	}
+
 	// ** Network (Nodes, Edges, Pipes, Fluid) **
 
 	for (VICUS::Network & n : pro.m_geometricNetworks) {
@@ -1014,6 +1021,9 @@ bool SVProjectHandler::importEmbeddedDB(VICUS::Project & pro) {
 	idsModified |= !netComponentsIDMap.empty();
 	idsModified |= !netControllersIDMap.empty();
 	idsModified |= !subNetworksIDMap.empty();
+	idsModified |= !acousticBoundaryConditionsIDMap.empty();
+	idsModified |= !acousticSoundAbsorptionsIDMap.empty();
+	idsModified |= !materialIDMap.empty();
 
 	return idsModified;
 }

@@ -875,6 +875,17 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			m_boundaryConditions.m_modified = true;
 		} break;
 
+		case SVDatabase::DT_AcousticSoundAbsorptions: {
+			// Acoustic Sound Absorptions are referenced in AcousticBoundaryConditions via Acoustic Sound Absorption Partiions
+			for(const auto & p : m_acousticBoundaryConditions) {
+				VICUS::AcousticBoundaryCondition & abc = const_cast<VICUS::AcousticBoundaryCondition &>(p.second); // const-cast is ok here
+				for (VICUS::AcousticSoundAbsorptionPartition & asap : abc.m_acousticSoundAbsorptionPartitions)
+					if (asap.m_idSoundAbsorption == elementID) {
+						asap.m_idSoundAbsorption = replacementElementID;
+					}
+				}
+		} break;
+
 		case SVDatabase::DT_Components: {
 			// components are referenced from project
 			if (SVProjectHandler::instance().isValid()) {
@@ -1146,7 +1157,6 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 						}
 			}
 		break;
-		case DT_AcousticSoundAbsorptions:
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
 		break;
 	}

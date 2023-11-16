@@ -6,6 +6,7 @@
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyRoomSoundProtectionTemplateAssociation.h"
+#include "SVUndoTreeNodeState.h"
 #include "SVViewStateHandler.h"
 
 #include "VICUS_AcousticBuildingTemplate.h"
@@ -239,9 +240,9 @@ const VICUS::AcousticSoundProtectionTemplate * SVPropBuildingSoundProtectionTemp
 
         const VICUS::Database<VICUS::AcousticSoundProtectionTemplate> & db = SVSettings::instance().m_db.m_acousticSoundProtectionTemplates;
         std::map<unsigned int, VICUS::AcousticSoundProtectionTemplate>::const_iterator it = db.begin();
-	QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
-	while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db.end())
-		std::advance(it, 1);
+    QString name = m_ui->tableWidgetAcousticTemplates->item(r,1)->text();
+    while(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it != db.end())
+        std::advance(it, 1);
 
 	// if nothing was found
 	if(QtExt::MultiLangString2QString(it->second.m_displayName ) != name && it == db.end())
@@ -255,7 +256,7 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonAssignAcousticTe
 
 	// find out which component is selected in table
 	// get currently selected acoustic template
-    const VICUS::AcousticSoundProtectionTemplate * at = currentlySelectedSoundProtectionTemplate();
+	const VICUS::AcousticSoundProtectionTemplate * at = currentlySelectedSoundProtectionTemplate();
 
 	// if not a valid template, do nothing here
 	if (at == nullptr)
@@ -310,3 +311,21 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_curre
 	updateUi();
 }
 
+
+void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonSelect_clicked()
+{
+//	const VICUS::AcousticSoundProtectionTemplate * ast = currentlySelectedSoundProtectionTemplate();
+//
+//	Q_ASSERT(ast != nullptr);
+//
+//	std::set<unsigned int> surfIds;
+//	for (const VICUS::Room * r : m_acousticTemplateAssignments[ast] ) {
+//		for (const VICUS::Surface &s : r->m_surfaces)
+//			surfIds.insert(s.m_id);
+//	}
+//
+//	QString undoText = tr("Select objects with Acoustic Building type '%1'").arg(ast->m_buildingType);
+//
+//	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds,true);
+//	undo->push();
+}

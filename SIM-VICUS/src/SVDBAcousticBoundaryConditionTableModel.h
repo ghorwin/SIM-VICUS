@@ -65,7 +65,7 @@ public:
 	// ** SVAbstractDatabaseTableModel interface **
 
 	int columnIndexId() const override { return ColId; }
-	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_BoundaryConditions; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_AcousticBoundaryConditions; }
 	virtual void resetModel() override;
 	QModelIndex addNewItem() override;
 	QModelIndex copyItem(const QModelIndex & index) override;

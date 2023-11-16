@@ -33,6 +33,8 @@ private slots:
 
 	void onModified(int modificationType, ModificationInfo * /*data*/);
 
+	void on_pushButtonSelect_clicked();
+
 private:
 	/*! Pointer to Ui. */
 	Ui::SVPropBuildingSoundProtectionTemplatesWidget	*m_ui;

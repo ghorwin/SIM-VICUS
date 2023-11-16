@@ -9,6 +9,7 @@
 #include "SVViewStateHandler.h"
 #include "SVUndoModifyStructuralUnitRoomAssociation.h"
 #include "SVUndoDeleteStructuralUnit.h"
+#include "SVUndoTreeNodeState.h"
 #include "SVStructuralUnitCreationDialog.h"
 #include "SVMainWindow.h"
 
@@ -152,13 +153,15 @@ void SVPropBuildingStructuralUnitWidget::on_tableWidgetStructuralUnit_itemSelect
 	m_ui->pushButtonAssignStructuralUnit->setEnabled(currentlySelectedStructuralUnit() != nullptr);
 
 	//enable remove button if a structural unit is selected
+	m_ui->pushButtonSelect->setEnabled(currentlySelectedStructuralUnit() != nullptr);
+
 	m_ui->pushButtonRemoveStructuralUnit->setEnabled(currentlySelectedStructuralUnit() != nullptr);
 
 
 }
 
 void SVPropBuildingStructuralUnitWidget::on_pushButtonAddStructuralUnit_clicked() {
-    SVMainWindow::instance().structuralUnitDialog()->create();
+	SVMainWindow::instance().structuralUnitDialog()->create();
 	// make changes visible
 	updateUi();
 }
@@ -193,8 +196,8 @@ void SVPropBuildingStructuralUnitWidget::on_pushButtonAssignStructuralUnit_click
 void SVPropBuildingStructuralUnitWidget::on_tableWidgetStructuralUnit_cellDoubleClicked() {
     SVMainWindow::instance().structuralUnitDialog()->edit(currentlySelectedStructuralUnit());
     // input ändern zu direkten structural unit
-	// make changes visible
-	updateUi();
+    // make changes visible
+    updateUi();
 }
 
 
@@ -233,3 +236,29 @@ void SVPropBuildingStructuralUnitWidget::on_pushButtonRemoveAssignment_clicked()
 	undo->push();
 }
 
+
+void SVPropBuildingStructuralUnitWidget::on_pushButtonSelect_clicked()
+{
+	int row = m_ui->tableWidgetStructuralUnit->currentRow();
+	Q_ASSERT(row != -1);
+	const VICUS::StructuralUnit & unit = project().m_structuralUnits[row];
+
+	qDebug() << unit.typeinfo();
+
+	std::set<unsigned int> strUnitIds;
+	for(unsigned int roomID : unit.m_roomIds){
+		const VICUS::Room *room = project().roomByID(roomID);
+
+		strUnitIds.insert(room->m_id);
+
+		for(const VICUS::Surface &s : room->m_surfaces){
+			strUnitIds.insert(s.m_id);
+		}
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select Structural unit '%1'").arg(unit.m_displayName),
+	SVUndoTreeNodeState::SelectedState, strUnitIds, true);
+	undo->push();
+
+
+}
