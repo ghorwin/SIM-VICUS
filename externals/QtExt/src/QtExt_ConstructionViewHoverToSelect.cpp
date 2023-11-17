@@ -77,6 +77,8 @@ void ConstructionViewHoverToSelect::leaveEvent(QEvent * event) {
 		m_diagramScene->removeItem(m_iconItem);
 	if (m_transparentRect->scene()!=nullptr)
 		m_diagramScene->removeItem(m_transparentRect);
+
+	ConstructionView::leaveEvent(event);
 }
 
 
