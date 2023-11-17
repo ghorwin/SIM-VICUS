@@ -253,8 +253,8 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 			// save the surface ids
 			airBourneSoundEntry.m_surfaceAId = ci.m_idSideASurface;
 			airBourneSoundEntry.m_surfaceBId = ci.m_idSideBSurface;
-			airBourneSoundEntry.m_isSameStructuralUnit = (roomA->m_structuralUnit != nullptr &&
-					roomA->m_structuralUnit == roomB->m_structuralUnit);
+			airBourneSoundEntry.m_isSameStructuralUnit = (roomA->m_structuralUnit != nullptr && roomB->m_structuralUnit != nullptr &&
+					roomA->m_structuralUnit->m_id == roomB->m_structuralUnit->m_id);
 
 			// this entry should be saved in the vector
 			addTableEntryAirSoundToVector = true;

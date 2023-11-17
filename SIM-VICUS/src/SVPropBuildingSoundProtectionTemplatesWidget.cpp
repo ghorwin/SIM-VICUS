@@ -96,6 +96,21 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 
 	const VICUS::Database<VICUS::AcousticSoundProtectionTemplate> & dbAt = SVSettings::instance().m_db.m_acousticSoundProtectionTemplates;
 
+	m_acousticTemplateAssignments.clear();
+	// loop over all rooms and store zone template associations
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		// skip rooms without zone template
+		if (room->m_idSoundProtectionTemplate == VICUS::INVALID_ID)
+			continue;
+		// lookup zone template in DB
+		const VICUS::AcousticSoundProtectionTemplate * spt = dbAt[room->m_idSoundProtectionTemplate];
+		// Note: might be a nullptr if id is invalid
+		m_acousticTemplateAssignments[spt].push_back(room);
+	}
+
+
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetAcousticTemplates->currentRow();
 	m_ui->tableWidgetAcousticTemplates->blockSignals(true);
@@ -229,6 +244,9 @@ void SVPropBuildingSoundProtectionTemplatesWidget::updateUi() {
 void SVPropBuildingSoundProtectionTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
 	// the assign-from-table button is only available when there is at least one surface selected
 	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedSoundProtectionTemplate() != nullptr);
+
+	// Select button only available when there is at least one sound protection template selected
+	m_ui->pushButtonSelect->setEnabled(currentlySelectedSoundProtectionTemplate() != nullptr);
 }
 
 
@@ -314,18 +332,18 @@ void SVPropBuildingSoundProtectionTemplatesWidget::on_comboBoxBuildingType_curre
 
 void SVPropBuildingSoundProtectionTemplatesWidget::on_pushButtonSelect_clicked()
 {
-//	const VICUS::AcousticSoundProtectionTemplate * ast = currentlySelectedSoundProtectionTemplate();
-//
-//	Q_ASSERT(ast != nullptr);
-//
-//	std::set<unsigned int> surfIds;
-//	for (const VICUS::Room * r : m_acousticTemplateAssignments[ast] ) {
-//		for (const VICUS::Surface &s : r->m_surfaces)
-//			surfIds.insert(s.m_id);
-//	}
-//
-//	QString undoText = tr("Select objects with Acoustic Building type '%1'").arg(ast->m_buildingType);
-//
-//	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds,true);
-//	undo->push();
+	const VICUS::AcousticSoundProtectionTemplate * ast = currentlySelectedSoundProtectionTemplate();
+
+	Q_ASSERT(ast != nullptr);
+
+	std::set<unsigned int> surfIds;
+	for (const VICUS::Room * r : m_acousticTemplateAssignments[ast] ) {
+		for (const VICUS::Surface &s : r->m_surfaces)
+			surfIds.insert(s.m_id);
+	}
+
+	QString undoText = tr("Select objects with Acoustic Building type '%1'").arg(ast->m_buildingType);
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds,true);
+	undo->push();
 }

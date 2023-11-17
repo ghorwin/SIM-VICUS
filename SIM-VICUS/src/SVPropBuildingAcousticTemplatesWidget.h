@@ -32,8 +32,9 @@ private slots:
 	void on_pushButtonDeleteTemplate_clicked();
 	void on_comboBoxBuildingType_currentIndexChanged(int);
 
-
 	void onModified(int modificationType, ModificationInfo * /*data*/);
+
+	void on_pushButtonSelect_clicked();
 
 private:
 

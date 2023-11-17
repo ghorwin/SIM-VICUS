@@ -6,6 +6,7 @@
 #include "SVStyle.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyRoomAcousticTemplateAssociation.h"
+#include "SVUndoTreeNodeState.h"
 #include "SVViewStateHandler.h"
 
 #include <VICUS_AcousticBuildingTemplate.h>
@@ -80,6 +81,20 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 
 
 	const VICUS::Database<VICUS::AcousticTemplate> & dbAt = SVSettings::instance().m_db.m_acousticTemplates;
+
+	m_acousticTemplateAssignments.clear();
+	// loop over all rooms and store zone template associations
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		// skip rooms without zone template
+		if (room->m_idAcousticTemplate == VICUS::INVALID_ID)
+			continue;
+		// lookup zone template in DB
+		const VICUS::AcousticTemplate * spt = dbAt[room->m_idAcousticTemplate];
+		// Note: might be a nullptr if id is invalid
+		m_acousticTemplateAssignments[spt].push_back(room);
+	}
 
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetAcousticTemplates->currentRow();
@@ -166,6 +181,9 @@ void SVPropBuildingAcousticTemplatesWidget::updateUi() {
 void SVPropBuildingAcousticTemplatesWidget::on_tableWidgetAcousticTemplates_itemSelectionChanged() {
 	// the assign-from-table button is only available when there is at least one surface selected
 	m_ui->pushButtonAssignAcousticTemplate->setEnabled(currentlySelectedAcousticTemplate() != nullptr);
+
+	// select Button only available if there is atleast one template selected
+	m_ui->pushButtonSelect->setEnabled(currentlySelectedAcousticTemplate() != nullptr);
 }
 
 
@@ -239,5 +257,27 @@ void SVPropBuildingAcousticTemplatesWidget::on_pushButtonDeleteTemplate_clicked(
 void SVPropBuildingAcousticTemplatesWidget::on_comboBoxBuildingType_currentIndexChanged(int /*index*/) {
 	//update the ui
 	updateUi();
+}
+
+
+void SVPropBuildingAcousticTemplatesWidget::on_pushButtonSelect_clicked()
+{
+	qDebug() << "On Pushbutton clicked";
+	const VICUS::AcousticTemplate * at = currentlySelectedAcousticTemplate();
+
+	Q_ASSERT(at != nullptr);
+
+	std::set<unsigned int> surfIds;
+	for (const VICUS::Room *r :m_acousticTemplateAssignments[at] ) {
+		for (const VICUS::Surface &s : r->m_surfaces) {
+			surfIds.insert(s.m_id);
+		}
+	}
+
+	QString undoText = tr("Select objects with Acoustic Template '%1'").arg(at->m_id);
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds,true);
+	undo->push();
+
 }
 
