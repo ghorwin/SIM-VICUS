@@ -277,6 +277,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 }
 
+
 void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 	m_ui->tableWidgetPeriods->blockSignals(true);
 

@@ -210,6 +210,11 @@ protected:
 	/*! Called when the window is moved. Repositions measurement widget. */
 	void moveEvent(QMoveEvent *event) override;
 
+signals:
+
+	void screenHasChanged(const QScreen *screen);
+
+
 private slots:
 	/*! Does the entire UI initialization.
 		Triggered with slight delay from the event loop. Make sure no other events kick in before setup has

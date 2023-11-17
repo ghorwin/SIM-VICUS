@@ -175,12 +175,11 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	QShortcut *shortCutStartSim = new QShortcut(QKeySequence((int)Qt::Key_F9), this);
 	connect(shortCutStartSim, &QShortcut::activated, this, &SVMainWindow::onShortCutStartSimulation);
 
-//	on_shortCutStartSimulation().set
-
 	// enforce using a native window; we need this so we can call window() and retrieve scaling information
 	setAttribute(Qt::WA_NativeWindow);
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
+
 }
 
 
@@ -263,6 +262,7 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 	if (m_dbMaterialEditDialog == nullptr) {
 		m_dbMaterialEditDialog = SVDatabaseEditDialog::createMaterialEditDialog(this);
 	}
+	m_dbMaterialEditDialog->resizeDBDialog(0.65);
 	return m_dbMaterialEditDialog;
 }
 
@@ -270,6 +270,7 @@ SVDatabaseEditDialog * SVMainWindow::dbEpdEditDialog() {
 	if (m_dbEpdEditDialog == nullptr) {
 		m_dbEpdEditDialog = SVDatabaseEditDialog::createEpdEditDialog(this);
 	}
+	m_dbEpdEditDialog->resizeDBDialog(0.6);
 	return m_dbEpdEditDialog;
 }
 
@@ -277,141 +278,161 @@ SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	if (m_dbConstructionEditDialog == nullptr) {
 		m_dbConstructionEditDialog = SVDatabaseEditDialog::createConstructionEditDialog(this);
 	}
+	m_dbConstructionEditDialog->resizeDBDialog(0.7);
 	return m_dbConstructionEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	if (m_dbComponentEditDialog == nullptr)
 		m_dbComponentEditDialog = SVDatabaseEditDialog::createComponentEditDialog(this);
+	m_dbComponentEditDialog->resizeDBDialog(0.6);
 	return m_dbComponentEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbSubSurfaceComponentEditDialog() {
 	if (m_dbSubSurfaceComponentEditDialog == nullptr)
 		m_dbSubSurfaceComponentEditDialog = SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(this);
+	m_dbSubSurfaceComponentEditDialog->resizeDBDialog(0.6);
 	return m_dbSubSurfaceComponentEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = SVDatabaseEditDialog::createBoundaryConditionsEditDialog(this);
+	m_dbBoundaryConditionEditDialog->resizeDBDialog();
 	return m_dbBoundaryConditionEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbWindowEditDialog() {
 	if (m_dbWindowEditDialog == nullptr)
 		m_dbWindowEditDialog = SVDatabaseEditDialog::createWindowEditDialog(this);
+	m_dbWindowEditDialog->resizeDBDialog();
 	return m_dbWindowEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbWindowGlazingSystemEditDialog() {
 	if (m_dbWindowGlazingSystemEditDialog == nullptr)
 		m_dbWindowGlazingSystemEditDialog = SVDatabaseEditDialog::createWindowGlazingSystemEditDialog(this);
+	m_dbWindowGlazingSystemEditDialog->resizeDBDialog();
 	return m_dbWindowGlazingSystemEditDialog;
 }
 
-SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog(){
+SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog() {
 	if (m_dbPipeEditDialog == nullptr)
 		m_dbPipeEditDialog = SVDatabaseEditDialog::createPipeEditDialog(this);
+	m_dbPipeEditDialog->resizeDBDialog();
 	return m_dbPipeEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbSupplySystemEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbSupplySystemEditDialog() {
 	if (m_dbSupplySystemEditDialog == nullptr)
 		m_dbSupplySystemEditDialog = SVDatabaseEditDialog::createSupplySystemsEditDialog(this);
+	m_dbSupplySystemEditDialog->resizeDBDialog();
 	return m_dbSupplySystemEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbNetworkComponentEditDialog() {
 	if (m_dbNetworkComponentEditDialog == nullptr)
 		m_dbNetworkComponentEditDialog = SVDatabaseEditDialog::createNetworkComponentEditDialog(this);
+	m_dbNetworkComponentEditDialog->resizeDBDialog();
 	return m_dbNetworkComponentEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbFluidEditDialog()
-{
+SVDatabaseEditDialog * SVMainWindow::dbFluidEditDialog() {
 	if (m_dbFluidEditDialog == nullptr)
-		m_dbFluidEditDialog  = SVDatabaseEditDialog::createFluidEditDialog(this);
+		m_dbFluidEditDialog = SVDatabaseEditDialog::createFluidEditDialog(this);
+	m_dbFluidEditDialog->resizeDBDialog();
 	return m_dbFluidEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbNetworkControllerEditDialog()
-{
+SVDatabaseEditDialog * SVMainWindow::dbNetworkControllerEditDialog() {
 	if (m_dbNetworkControllerEditDialog == nullptr)
 		m_dbNetworkControllerEditDialog = SVDatabaseEditDialog::createNetworkControllerEditDialog(this);
+	m_dbNetworkControllerEditDialog->resizeDBDialog();
 	return m_dbNetworkControllerEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbSubNetworkEditDialog()
-{
+SVDatabaseEditDialog * SVMainWindow::dbSubNetworkEditDialog() {
 	if (m_dbSubNetworkEditDialog == nullptr)
 		m_dbSubNetworkEditDialog = SVDatabaseEditDialog::createSubNetworkEditDialog(this);
+	m_dbSubNetworkEditDialog->resizeDBDialog();
 	return m_dbSubNetworkEditDialog;
 }
 
-SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbScheduleEditDialog() {
 	if (m_dbScheduleEditDialog == nullptr)
 		m_dbScheduleEditDialog = SVDatabaseEditDialog::createScheduleEditDialog(this);
+	m_dbScheduleEditDialog->resizeDBDialog();
 	return m_dbScheduleEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsPersonEditDialog() {
 	if (m_dbInternalLoadsPersonEditDialog == nullptr)
 		m_dbInternalLoadsPersonEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Person);
+	m_dbInternalLoadsPersonEditDialog->resizeDBDialog();
 	return m_dbInternalLoadsPersonEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsElectricEquipmentEditDialog() {
 	if (m_dbInternalLoadsElectricEquipmentEditDialog == nullptr)
 		m_dbInternalLoadsElectricEquipmentEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_ElectricEquiment);
+	m_dbInternalLoadsElectricEquipmentEditDialog->resizeDBDialog();
 	return m_dbInternalLoadsElectricEquipmentEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsLightsEditDialog() {
 	if (m_dbInternalLoadsLightsEditDialog == nullptr)
 		m_dbInternalLoadsLightsEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Lighting);
+	m_dbInternalLoadsLightsEditDialog->resizeDBDialog();
 	return m_dbInternalLoadsLightsEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsOtherEditDialog() {
 	if (m_dbInternalLoadsOtherEditDialog == nullptr)
 		m_dbInternalLoadsOtherEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Other);
+	m_dbInternalLoadsOtherEditDialog->resizeDBDialog();
 	return m_dbInternalLoadsOtherEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbZoneControlThermostatEditDialog() {
 	if (m_dbZoneControlThermostatEditDialog == nullptr)
 		m_dbZoneControlThermostatEditDialog = SVDatabaseEditDialog::createZoneControlThermostatEditDialog(this);
+	m_dbZoneControlThermostatEditDialog->resizeDBDialog();
 	return m_dbZoneControlThermostatEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbZoneControlVentilationNaturalEditDialog() {
 	if (m_dbZoneControlVentilationNaturalEditDialog == nullptr)
 		m_dbZoneControlVentilationNaturalEditDialog = SVDatabaseEditDialog::createZoneControlVentilationNaturalEditDialog(this);
+	m_dbZoneControlVentilationNaturalEditDialog->resizeDBDialog();
 	return m_dbZoneControlVentilationNaturalEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbZoneControlShadingEditDialog() {
 	if (m_dbZoneControlShadingEditDialog == nullptr)
 		m_dbZoneControlShadingEditDialog = SVDatabaseEditDialog::createZoneControlShadingEditDialog(this);
+	m_dbZoneControlShadingEditDialog->resizeDBDialog();
 	return m_dbZoneControlShadingEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbVentilationNaturalEditDialog() {
 	if (m_dbVentilationNaturalEditDialog == nullptr)
 		m_dbVentilationNaturalEditDialog = SVDatabaseEditDialog::createVentilationNaturalEditDialog(this);
+	m_dbVentilationNaturalEditDialog->resizeDBDialog();
 	return m_dbVentilationNaturalEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbInfiltrationEditDialog() {
 	if (m_dbInfiltrationEditDialog == nullptr)
 		m_dbInfiltrationEditDialog = SVDatabaseEditDialog::createInfiltrationEditDialog(this);
+	m_dbInfiltrationEditDialog->resizeDBDialog();
 	return m_dbInfiltrationEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbZoneIdealHeatingCoolingEditDialog() {
 	if (m_dbZoneIdealHeatingCoolingEditDialog == nullptr)
 		m_dbZoneIdealHeatingCoolingEditDialog = SVDatabaseEditDialog::createZoneIdealHeatingCoolingEditDialog(this);
+	m_dbZoneIdealHeatingCoolingEditDialog->resizeDBDialog();
 	return m_dbZoneIdealHeatingCoolingEditDialog;
 }
 
@@ -424,6 +445,7 @@ SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 SVDatabaseEditDialog * SVMainWindow::dbSurfaceHeatingSystemEditDialog() {
 	if (m_dbVSurfaceHeatingSystemEditDialog == nullptr)
 		m_dbVSurfaceHeatingSystemEditDialog = SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog(this);
+	m_dbVSurfaceHeatingSystemEditDialog->resizeDBDialog();
 	return m_dbVSurfaceHeatingSystemEditDialog;
 }
 
@@ -945,6 +967,8 @@ void SVMainWindow::onConfigurePluginTriggered() {
 void SVMainWindow::onScreenChanged(QScreen *screen) {
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
 	SVSettings::instance().m_ratio = screen->devicePixelRatio();
+	// let others know (e.g. DB dialogs)
+	emit screenHasChanged(screen);
 }
 
 
