@@ -343,11 +343,11 @@ void SVDBInternalLoadsPersonEditWidget::updateLabelPersonCount() {
 	switch (m_current->m_personCountMethod) {
 		case VICUS::InternalLoad::PCM_AreaPerPerson:{
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
-			unitPersonCount = "m²";
+			unitPersonCount = "m²/Pers.";
 		}break;
 		case VICUS::InternalLoad::PCM_PersonPerArea: {
 			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
-			unitPersonCount = "1/m²";
+			unitPersonCount = "Pers./m²";
 		}break;
 		case VICUS::InternalLoad::PCM_PersonCount:
 		case VICUS::InternalLoad::NUM_PCM:{
@@ -356,7 +356,6 @@ void SVDBInternalLoadsPersonEditWidget::updateLabelPersonCount() {
 		}break;
 	}
 	m_ui->labelPersonCountUnit->setText(unitPersonCount);
-	m_ui->labelPersonCount->setText(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", m_current->m_personCountMethod));
 }
 
 
