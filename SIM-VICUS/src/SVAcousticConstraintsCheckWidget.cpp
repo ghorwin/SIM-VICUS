@@ -50,6 +50,7 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetImpactSound);
 
 	m_ui->tableWidgetImpactSound->setSortingEnabled(false);
+	m_ui->tableWidgetReverberation->setSortingEnabled(false);
 	m_ui->tableWidgetImpactSound->resizeColumnsToContents();
 
 //	double width = 130;
@@ -508,6 +509,7 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 
 	m_ui->tableWidgetReverberation->setRowCount(tableEntries.size());
 
+	bool checkReverberation = true;
 	for (unsigned int i=0; i < tableEntries.size(); ++i) {
 
 		const ReverberationResult &res = tableEntries[i];
@@ -556,10 +558,23 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 		for (unsigned int j = 0; j < VICUS::AcousticSoundAbsorption::NUM_SF; ++j) {
 			if (res.m_evaluation[j])
 				m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz + j)->setBackground(valid);
-			else
+			else {
 				m_ui->tableWidgetReverberation->item(i, CRT_Reverb125Hz + j)->setBackground(invalid);
+				checkReverberation = false;
+			}
 		}
 	}
+
+	m_ui->labelReverberation->setText(checkReverberation ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
+	m_ui->labelReverberationIcon->setPixmap( QPixmap(checkReverberation ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+
+	QColor positive(Qt::darkGreen);
+	QColor negative(Qt::darkRed);
+
+	positive = SVSettings::instance().m_theme == SVSettings::TT_Dark ? positive.lighter() : positive;
+	negative = SVSettings::instance().m_theme == SVSettings::TT_Dark ? negative.lighter() : negative;
+
+	m_ui->labelReverberation->setStyleSheet(QString("QLabel { color : %1; }").arg(checkReverberation ? positive.name() : negative.name()));
 
 	m_ui->tableWidgetReverberation->resizeColumnsToContents();
 }
