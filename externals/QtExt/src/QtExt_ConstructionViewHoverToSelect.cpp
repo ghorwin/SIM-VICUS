@@ -23,9 +23,6 @@ void ConstructionViewHoverToSelect::updateEditIcon() {
 		m_iconItem = m_diagramScene->addPixmap(m_icon);
 		m_iconItem->setPos(sceneRect.center() - m_iconItem->boundingRect().center());
 	}
-	else if (m_iconItem!=nullptr && m_diagramScene!=nullptr){
-		m_diagramScene->removeItem(m_iconItem);
-	}
 }
 
 
@@ -67,15 +64,6 @@ void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
 		m_iconItem->setPos(sceneRect.center() - m_iconItem->boundingRect().center());
 	}
 
-//	// add text
-//	QFont ft;
-//	ft.setPointSize(12);
-//	ft.setBold(true);
-//	m_textItem = m_diagramScene->addSimpleText(tr("edit ..."), ft);
-//	QPointF pos = sceneRect.center() - m_textItem->boundingRect().center();
-//	m_textItem->setPos(pos-QPoint(0, -sceneRect.height()/3.));
-//	m_textItem->setBrush(col1);
-
 	update();
 
 	ConstructionView::enterEvent(event);
@@ -85,11 +73,10 @@ void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
 void ConstructionViewHoverToSelect::leaveEvent(QEvent * event) {
 	if (m_diagramScene==nullptr)
 		return;
-	if (m_iconItem!=nullptr)
+	if (!m_isReadOnly && m_iconItem->scene()!=nullptr)
 		m_diagramScene->removeItem(m_iconItem);
-	if (m_transparentRect!=nullptr)
+	if (m_transparentRect->scene()!=nullptr)
 		m_diagramScene->removeItem(m_transparentRect);
-//	m_diagramScene->removeItem(m_textItem);
 }
 
 
