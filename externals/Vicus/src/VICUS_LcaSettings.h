@@ -120,6 +120,7 @@ public:
 
 	/*! Returns whether a Category is defined in LCA Settings. */
 	bool isLcaCategoryDefined(EpdModuleDataset::Module mod) const;
+	static bool isLcaCategoryDefined(EpdModuleDataset::Module mod, CertificationModules modules);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

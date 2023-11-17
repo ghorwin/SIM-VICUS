@@ -146,7 +146,7 @@ private:
 	VICUS::Material				*m_current;
 
 	/*! Pointer to LCA Settings .*/
-	const VICUS::LcaSettings	*m_lcaSettings;
+	const VICUS::LcaSettings	*m_lcaSettings = nullptr;
 
 	/*! Map with all table widget items. Key is module enum.
 	*/
