@@ -150,9 +150,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					case ColType	: return VICUS::KeywordListQt::Description("ZoneTemplate::SubTemplateType", subType);
 					case ColName	: {
 						if (dbElement == nullptr)
-							return tr("<invalid ID reference>");
+							return QString("     ") + tr("<invalid ID reference>");
 						else
-							return QtExt::MultiLangString2QString(dbElement->m_displayName);
+							return QString("     ") + QtExt::MultiLangString2QString(dbElement->m_displayName);
 					}
 				}
 			} break;
