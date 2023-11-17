@@ -883,7 +883,10 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 					if (asap.m_idSoundAbsorption == elementID) {
 						asap.m_idSoundAbsorption = replacementElementID;
 					}
+
 				}
+			m_acousticSoundAbsorptions.remove(elementID);
+			m_acousticSoundAbsorptions.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_Components: {
@@ -1133,6 +1136,10 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		break;
 
 		case DT_AcousticBoundaryConditions:
+			m_acousticBoundaryConditions.remove(elementID);
+			m_acousticBoundaryConditions.m_modified = true;
+		break;
+
 		case DT_AcousticTemplates:
 			// AcousticTemplates are referenced from project
 			if (SVProjectHandler::instance().isValid()) {
