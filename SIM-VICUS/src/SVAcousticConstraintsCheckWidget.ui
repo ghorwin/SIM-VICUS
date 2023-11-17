@@ -64,7 +64,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="resistance">
       <attribute name="title">
@@ -114,54 +114,54 @@
           <item>
            <widget class="QTableWidget" name="tableWidgetImpactSound"/>
           </item>
-          <item>
-           <widget class="QGroupBox" name="groupBoxAcousticWalls">
-            <property name="title">
-             <string>Acoustic constraints air bourne sound</string>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxAcousticWalls">
+         <property name="title">
+          <string>Acoustic constraints air bourne sound</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="labelAirBourneSoundIcon">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelAirBourneSound">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBoxHideWalls">
+            <property name="text">
+             <string>Hide non violated instances</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLabel" name="labelAirBourneSoundIcon">
-                 <property name="maximumSize">
-                  <size>
-                   <width>20</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="labelAirBourneSound">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBoxHideWalls">
-               <property name="text">
-                <string>Hide non violated instances</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-               <property name="tristate">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QTableWidget" name="tableWidgetAirBorneSound"/>
-             </item>
-            </layout>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="tristate">
+             <bool>false</bool>
+            </property>
            </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QTableWidget" name="tableWidgetAirBorneSound"/>
           </item>
          </layout>
         </widget>
