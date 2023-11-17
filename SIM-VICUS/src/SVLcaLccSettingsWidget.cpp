@@ -124,6 +124,7 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	m_resultsWidget = dynamic_cast<SVLcaLccResultsWidget *>(m_ui->widgetResults);
 
 	m_ui->tabResults->setEnabled(false);
+	m_ui->tabWidget->widget(3)->setEnabled(false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVLcaLccSettingsWidget::onModified);
@@ -805,9 +806,9 @@ void SVLcaLccSettingsWidget::updateUi() {
 	m_ui->groupBoxCatC->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
 	m_ui->groupBoxCatD->setEnabled(lcaSettings.m_calculationMode != VICUS::LcaSettings::CM_Simple);
 
-	m_ui->groupBoxLcaCalc->blockSignals(false);
-	m_ui->groupBoxLccSettings->blockSignals(false);
-	m_ui->groupBoxGeneral->blockSignals(false);
+//	m_ui->groupBoxLcaCalc->blockSignals(false);
+//	m_ui->groupBoxLccSettings->blockSignals(false);
+//	m_ui->groupBoxGeneral->blockSignals(false);
 
 	VICUS::EpdDataset *epdCoal = nullptr;
 	VICUS::EpdDataset *epdGas = nullptr;
@@ -1067,10 +1068,14 @@ void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 					gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0,
 					investCost);
 
+
+			m_ui->tabWidget->widget(3)->setEnabled(true);
+
 		}
 		catch (IBK::Exception &ex) {
 			QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
 		}
+
 }
 
 
