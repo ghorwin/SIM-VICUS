@@ -59,7 +59,7 @@ public:
 	/*! Default constructor.
 		\param parent Parent widget.
 	*/
-	explicit ConstructionView(QWidget *parent = 0);
+	explicit ConstructionView(QWidget *parent = nullptr);
 
 	~ConstructionView();
 
@@ -144,6 +144,18 @@ protected:
 	/*! New paint event can draw items independently from scene.*/
 	void paintEvent ( QPaintEvent * event );
 
+	/*! Paints the diagram.*/
+	ConstructionGraphicsScene*	m_diagramScene;
+
+	/*! Local copy of all input data to be used by the drawing code.
+		We store a local copy of the data so that graphics updates can be
+		done individually from outer code.
+	*/
+	QVector<ConstructionLayer> m_inputData;
+
+	/*! Margins between view and scene.*/
+	int				m_margins;
+
 private slots:
 	/*! Connected to graphicsscene selectionChanged signal.*/
 	void sceneSelectionChanged();
@@ -152,18 +164,6 @@ private slots:
 
 private:
 	QPaintDevice*		m_device;					///< Paintdevice.
-
-	/*! Local copy of all input data to be used by the drawing code.
-		We store a local copy of the data so that graphics updates can be
-		done individually from outer code.
-	*/
-	QVector<ConstructionLayer> m_inputData;
-
-	/*! Paints the diagram.*/
-	ConstructionGraphicsScene*	m_diagramScene;
-
-	/*! Margins between view and scene.*/
-	int				m_margins;
 
 	/*! Resolution of page (pixel per millimeter).*/
 	double			m_resolution;

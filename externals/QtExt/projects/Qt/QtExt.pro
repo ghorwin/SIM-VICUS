@@ -56,6 +56,7 @@ HEADERS += \
 	../../src/QtExt_ConstructionGraphicsScene.h \
 	../../src/QtExt_ConstructionLayer.h \
 	../../src/QtExt_ConstructionView.h \
+	../../src/QtExt_ConstructionViewHoverToSelect.h \
 	../../src/QtExt_ConstructionViewWidget.h \
 	../../src/QtExt_Conversions.h \
 	../../src/QtExt_CoordinateIndexEdit.h \
@@ -140,6 +141,7 @@ SOURCES += \
 	../../src/QtExt_ConstructionGraphicsScene.cpp \
 	../../src/QtExt_ConstructionLayer.cpp \
 	../../src/QtExt_ConstructionView.cpp \
+	../../src/QtExt_ConstructionViewHoverToSelect.cpp \
 	../../src/QtExt_ConstructionViewWidget.cpp \
 	../../src/QtExt_Conversions.cpp \
 	../../src/QtExt_CoordinateIndexEdit.cpp \

@@ -23,5 +23,6 @@
         <file>gfx/master/zoomout.png</file>
         <file>gfx/master/arrow_down.png</file>
         <file>gfx/master/arrow_right.png</file>
+        <file>gfx/master/editscene_green.png</file>
     </qresource>
 </RCC>

@@ -122,7 +122,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QtExt::ConstructionView" name="graphicsViewConstruction"/>
+    <widget class="QtExt::ConstructionViewHoverToSelect" name="graphicsViewConstruction"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -390,9 +390,9 @@
    </slots>
   </customwidget>
   <customwidget>
-   <class>QtExt::ConstructionView</class>
+   <class>QtExt::ConstructionViewHoverToSelect</class>
    <extends>QGraphicsView</extends>
-   <header>QtExt_ConstructionView.h</header>
+   <header location="global">QtExt_ConstructionViewHoverToSelect.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -31,6 +31,7 @@
 
 #include <QtExt_LanguageHandler.h>
 #include <SVConversions.h>
+#include <QtExt_ConstructionViewHoverToSelect.h>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -71,6 +72,9 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->tableWidgetLca->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
 	m_ui->tableWidgetLca->setSortingEnabled(false);
+
+	connect(m_ui->graphicsViewConstruction, &QtExt::ConstructionViewHoverToSelect::sceneClicked,
+			this, &SVDBComponentEditWidget::onConstrcutionsSceneClicked);
 
 	updateInput(-1);
 }
@@ -247,6 +251,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->graphicsViewConstruction->clear();
 	}
 
+	m_ui->graphicsViewConstruction->updateEditIcon();
+
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
@@ -259,6 +265,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
 	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
+
+	m_ui->graphicsViewConstruction->setReadOnly(!isEditable);
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
@@ -501,4 +509,8 @@ void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) 
 	m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
 	modelModify();
 	m_ui->graphicsViewConstruction->updateView();
+}
+
+void SVDBComponentEditWidget::onConstrcutionsSceneClicked() {
+	on_toolButtonSelectConstruction_clicked();
 }

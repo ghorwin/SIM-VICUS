@@ -1,0 +1,96 @@
+#include "QtExt_ConstructionViewHoverToSelect.h"
+
+#include <QDebug>
+
+namespace QtExt {
+
+
+ConstructionViewHoverToSelect::ConstructionViewHoverToSelect(QWidget *parent):
+	ConstructionView(parent)
+{
+}
+
+void ConstructionViewHoverToSelect::updateEditIcon() {
+
+	if (m_inputData.isEmpty() && m_diagramScene!=nullptr) {
+		// set scene rect and get size
+		int w = width();
+		int h = height();
+		QRectF frame(m_margins, m_margins, w - m_margins * 2, h - m_margins * 2);
+		m_diagramScene->setSceneRect(frame);
+		QRectF sceneRect = m_diagramScene->sceneRect();
+		// add pixmap
+		m_iconItem = m_diagramScene->addPixmap(m_icon);
+		m_iconItem->setPos(sceneRect.center() - m_iconItem->boundingRect().center());
+	}
+	else if (m_iconItem!=nullptr && m_diagramScene!=nullptr){
+		m_diagramScene->removeItem(m_iconItem);
+	}
+}
+
+
+void ConstructionViewHoverToSelect::mouseReleaseEvent(QMouseEvent * event) {
+	if (!m_isReadOnly)
+		emit sceneClicked();
+	ConstructionView::mouseReleaseEvent(event);
+}
+
+
+void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
+	if (m_diagramScene==nullptr)
+		return;
+
+	QColor col1;
+	if (m_isReadOnly)
+		col1 = QColor("#727571");
+	else
+		col1 = QColor("#4a8522");
+
+	// Create a gradient
+	QRectF sceneRect = m_diagramScene->sceneRect();
+	QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
+	col1.setAlpha(200);
+	QColor col2("#ffffff");
+	col2.setAlpha(0);
+	gradient.setColorAt(0, col2);  // Starting color
+	gradient.setColorAt(1, col1);  // Ending color
+	QBrush brush(gradient);
+
+	// add background
+	QRectF r = sceneRect.adjusted(-0.1*sceneRect.width(), -0.1*sceneRect.height(),
+								  0.1*sceneRect.width(), 0.1*sceneRect.height());
+	m_transparentRect = m_diagramScene->addRect(r, QPen(Qt::NoPen), brush);
+
+	// add icon if editable
+	if (!m_isReadOnly) {
+		m_iconItem = m_diagramScene->addPixmap(m_icon);
+		m_iconItem->setPos(sceneRect.center() - m_iconItem->boundingRect().center());
+	}
+
+//	// add text
+//	QFont ft;
+//	ft.setPointSize(12);
+//	ft.setBold(true);
+//	m_textItem = m_diagramScene->addSimpleText(tr("edit ..."), ft);
+//	QPointF pos = sceneRect.center() - m_textItem->boundingRect().center();
+//	m_textItem->setPos(pos-QPoint(0, -sceneRect.height()/3.));
+//	m_textItem->setBrush(col1);
+
+	update();
+
+	ConstructionView::enterEvent(event);
+}
+
+
+void ConstructionViewHoverToSelect::leaveEvent(QEvent * event) {
+	if (m_diagramScene==nullptr)
+		return;
+	if (m_iconItem!=nullptr)
+		m_diagramScene->removeItem(m_iconItem);
+	if (m_transparentRect!=nullptr)
+		m_diagramScene->removeItem(m_transparentRect);
+//	m_diagramScene->removeItem(m_textItem);
+}
+
+
+} // namespace QtExt

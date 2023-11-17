@@ -81,6 +81,8 @@ private slots:
 
 	void on_spinBoxActiveLayerIndex_valueChanged(int arg1);
 
+	void onConstrcutionsSceneClicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
