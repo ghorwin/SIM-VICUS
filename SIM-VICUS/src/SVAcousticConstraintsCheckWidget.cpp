@@ -20,8 +20,8 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	// set up table widgets
 
 	// for walls
-	m_ui->tableWidgetWalls->setColumnCount(8);
-	m_ui->tableWidgetWalls->setHorizontalHeaderLabels(QStringList()
+	m_ui->tableWidgetAirBorneSound->setColumnCount(8);
+	m_ui->tableWidgetAirBorneSound->setHorizontalHeaderLabels(QStringList()
 													  << tr("Acoustic template A")
 													  << tr("Acoustic Template B")
 													  << tr("Acoustic component")
@@ -30,14 +30,14 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 													  << tr("Advanced constraints")
 													  << tr("Structure type")
 													  << "");
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetWalls);
-	m_ui->tableWidgetWalls->setSortingEnabled(false);
-	m_ui->tableWidgetWalls->resizeColumnsToContents();
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetAirBorneSound);
+	m_ui->tableWidgetAirBorneSound->setSortingEnabled(false);
+	m_ui->tableWidgetAirBorneSound->resizeColumnsToContents();
 
 
 	//for ceilings
-	m_ui->tableWidgetCeilings->setColumnCount(8);
-	m_ui->tableWidgetCeilings->setHorizontalHeaderLabels(QStringList()
+	m_ui->tableWidgetImpactSound->setColumnCount(8);
+	m_ui->tableWidgetImpactSound->setHorizontalHeaderLabels(QStringList()
 														 << tr("Acoustic template above")
 														 << tr("Acoustic Template beneth")
 														 << tr("Acoustic component")
@@ -47,39 +47,39 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 														 << tr("Structure type")
 														 << "");
 
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetCeilings);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetImpactSound);
 
-	m_ui->tableWidgetCeilings->setSortingEnabled(false);
-	m_ui->tableWidgetCeilings->resizeColumnsToContents();
+	m_ui->tableWidgetImpactSound->setSortingEnabled(false);
+	m_ui->tableWidgetImpactSound->resizeColumnsToContents();
 
 //	double width = 130;
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticTemplateB, 200);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AcousticComponent, width);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_ActualAirSoundValue, width);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_AdvancedConstraints, width);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_NormalConstraints, width);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SameStructure, width);
-//	m_ui->tableWidgetCeilings->setColumnWidth(CSP_SelectButton, 230);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_AcousticTemplateB, 200);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_AcousticComponent, width);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_ActualAirSoundValue, width);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_AdvancedConstraints, width);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_NormalConstraints, width);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_SameStructure, width);
+//	m_ui->tableWidgetImpactSound->setColumnWidth(CSP_SelectButton, 230);
 
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticTemplateB, 200);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AcousticComponent, width);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_ActualAirSoundValue, width);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_AdvancedConstraints, width);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_NormalConstraints, width);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_SameStructure, width);
-//	m_ui->tableWidgetWalls->setColumnWidth(CSP_SelectButton, 230);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_AcousticTemplateB, 200);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_AcousticComponent, width);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_ActualAirSoundValue, width);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_AdvancedConstraints, width);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_NormalConstraints, width);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_SameStructure, width);
+//	m_ui->tableWidgetAirBorneSound->setColumnWidth(CSP_SelectButton, 230);
 
-//	QHeaderView *headerView = m_ui->tableWidgetCeilings->horizontalHeader();
+//	QHeaderView *headerView = m_ui->tableWidgetImpactSound->horizontalHeader();
 //	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
-//	headerView = m_ui->tableWidgetWalls->horizontalHeader();
+//	headerView = m_ui->tableWidgetAirBorneSound->horizontalHeader();
 //	headerView->setSectionResizeMode(CSP_AcousticTemplateA, QHeaderView::Stretch);
 
-//	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-//	m_ui->tableWidgetWalls->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetAirBorneSound->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetAirBorneSound->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
-//	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
-//	m_ui->tableWidgetCeilings->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
+//	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
 	m_ui->checkBoxHideCeilings->setChecked(false);
 	m_ui->checkBoxHideWalls->setChecked(false);
@@ -138,13 +138,10 @@ void SVAcousticConstraintsCheckWidget::showSurfaces(unsigned int surfaceAId, uns
 void SVAcousticConstraintsCheckWidget::checkConstraints() {
 
 	// clear all the table entries for walls and doors
-	m_wallTes.clear();
+	m_airBourneSoundTableEntries.clear();
 
 	// clear all the table entries for ceilings
-	m_ceilingTes.clear();
-
-	bool airBourneSoundCheck = true;
-	bool ceilingCheck = true;
+	m_impactSoundTableEntries.clear();
 
 	// iterate over all component instances
 	for(const VICUS::ComponentInstance & ci : project().m_componentInstances){
@@ -155,7 +152,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 			continue;
 
 		// struct that holds relevant data for the table
-
 		//one for walls
 		tableEntry airBourneSoundEntry;
 		//one for ceilings
@@ -305,7 +301,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 						airBourneSoundEntry.m_basicConstraintViolated = VI_Valid;
 					else {
 						airBourneSoundEntry.m_basicConstraintViolated = VI_Invalid;
-						airBourneSoundCheck = false;
 					}
 					airBourneSoundEntry.m_expectedNormalLimit = QString("%1 dB").arg(airSoundLimit);
 				}
@@ -314,7 +309,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 						airBourneSoundEntry.m_advancedConstraintViolated = VI_Valid;
 					else {
 						airBourneSoundEntry.m_advancedConstraintViolated = VI_Invalid;
-						airBourneSoundCheck = false;
 					}
 					airBourneSoundEntry.m_expectedAdvancedLimit = QString("%1 dB").arg(airSoundLimit);
 				}
@@ -355,7 +349,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 							impactSoundEntry.m_basicConstraintViolated = VI_Valid;
 						else {
 							impactSoundEntry.m_basicConstraintViolated = VI_Invalid;
-							ceilingCheck = false;
 						}
 						impactSoundEntry.m_expectedNormalLimit = QString("%1 dB").arg(impactSoundLimit);
 					}
@@ -364,7 +357,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 							impactSoundEntry.m_advancedConstraintViolated = VI_Valid;
 						else {
 							impactSoundEntry.m_advancedConstraintViolated = VI_Invalid;
-							ceilingCheck = false;
 						}
 						impactSoundEntry.m_expectedAdvancedLimit = QString("%1 dB").arg(impactSoundLimit);
 					}
@@ -374,27 +366,12 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 
 
 		if(addTableEntryAirSoundToVector)
-			m_wallTes.push_back(airBourneSoundEntry);
+			m_airBourneSoundTableEntries.push_back(airBourneSoundEntry);
 
 		if(addTableEntryImpactSoundToVector)
-			m_ceilingTes.push_back(impactSoundEntry);
+			m_impactSoundTableEntries.push_back(impactSoundEntry);
 
 	}
-
-	m_ui->labelCeilingCheck->setText(ceilingCheck ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
-	m_ui->labelWallCheck->setText(airBourneSoundCheck ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
-
-	m_ui->labelIconWall->setPixmap( QPixmap(airBourneSoundCheck    ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
-	m_ui->labelIconCeiling->setPixmap( QPixmap(ceilingCheck ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
-
-	QColor positive(Qt::darkGreen);
-	QColor negative(Qt::darkRed);
-
-	positive = SVSettings::instance().m_theme == SVSettings::TT_Dark ? positive.lighter() : positive;
-	negative = SVSettings::instance().m_theme == SVSettings::TT_Dark ? negative.lighter() : negative;
-
-	m_ui->labelCeilingCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(ceilingCheck ? positive.name() : negative.name()));
-	m_ui->labelWallCheck->setStyleSheet(QString("QLabel { color : %1; }").arg(airBourneSoundCheck ? positive.name() : negative.name()));
 
 	updateTable();
 	checkReverberation();
@@ -590,25 +567,25 @@ void SVAcousticConstraintsCheckWidget::checkReverberation() {
 
 void SVAcousticConstraintsCheckWidget::updateTable() {
 
-
 	QTableWidget * tableWidget = nullptr;
 	std::vector<tableEntry> * tes = nullptr;
 	bool hideNonViolatedEntries = false;
 
+	bool check[NUM_TT] = {true, true};
 
 	// filling the table is identical, so only the tableWidget, the data & (hiding entries) changes during the iterations
-	for(unsigned int i = 0; i<2 ; ++i){
+	for(unsigned int i = 0; i < NUM_TT ; ++i){
 
 		switch (i) {
-		case 0:
-			tableWidget = m_ui->tableWidgetWalls;
-			tes = &m_wallTes;
-			hideNonViolatedEntries = m_hideWalls;
+		case TT_AirBourneSound:
+			tableWidget = m_ui->tableWidgetAirBorneSound;
+			tes = &m_airBourneSoundTableEntries;
+			hideNonViolatedEntries = m_hideAirBourneSound;
 			break;
-		case 1:
-			tableWidget = m_ui->tableWidgetCeilings;
-			tes = &m_ceilingTes;
-			hideNonViolatedEntries = m_hideCeilings;
+		case TT_ImpactSound:
+			tableWidget = m_ui->tableWidgetImpactSound;
+			tes = &m_impactSoundTableEntries;
+			hideNonViolatedEntries = m_hideImpactSound;
 			break;
 
 		}
@@ -667,7 +644,10 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 
 			// select color according to violation info
 			switch (te.m_basicConstraintViolated) {
-				case VI_Invalid:	item->setBackground(invalid);	break;
+				case VI_Invalid:
+					item->setBackground(invalid);
+					check[i] = false;
+				break;
 				case VI_Valid:		item->setBackground(valid);		break;
 				default: break;
 			}
@@ -682,7 +662,10 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 
 			// select color according to violation info
 			switch (te.m_advancedConstraintViolated) {
-				case VI_Invalid:	item->setBackground(invalid);	break;
+				case VI_Invalid:
+					item->setBackground(invalid);
+					check[i] = false;
+				break;
 				case VI_Valid:		item->setBackground(valid);		break;
 				default: break;
 			}
@@ -719,6 +702,22 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 		tableWidget->resizeColumnsToContents();
 
 	}
+
+	m_ui->labelImpactSound->setText(check[TT_ImpactSound] ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
+	m_ui->labelImpactSoundIcon->setPixmap( QPixmap(check[TT_ImpactSound] ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+
+	m_ui->labelAirBourneSound->setText(check[TT_AirBourneSound] ? "All acoustic checks passed succesfully." : "Acoustic checks not passed.");
+	m_ui->labelAirBourneSoundIcon->setPixmap( QPixmap(check[TT_AirBourneSound] ? ":/gfx/actions/16x16/ok.png" : ":/gfx/actions/16x16/error.png"));
+
+	QColor positive(Qt::darkGreen);
+	QColor negative(Qt::darkRed);
+
+	positive = SVSettings::instance().m_theme == SVSettings::TT_Dark ? positive.lighter() : positive;
+	negative = SVSettings::instance().m_theme == SVSettings::TT_Dark ? negative.lighter() : negative;
+
+	m_ui->labelImpactSound->setStyleSheet(QString("QLabel { color : %1; }").arg(check[TT_ImpactSound] ? positive.name() : negative.name()));
+	m_ui->labelAirBourneSound->setStyleSheet(QString("QLabel { color : %1; }").arg(check[TT_AirBourneSound] ? positive.name() : negative.name()));
+
 }
 
 
@@ -730,14 +729,14 @@ void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 
 
 void SVAcousticConstraintsCheckWidget::on_checkBoxHideWalls_stateChanged(int arg1) {
-	m_hideWalls = arg1;
+	m_hideAirBourneSound = arg1;
 	// render constraints again
 	updateTable();
 }
 
 
 void SVAcousticConstraintsCheckWidget::on_checkBoxHideCeilings_stateChanged(int arg1) {
-	m_hideCeilings = arg1;
+	m_hideImpactSound = arg1;
 	// render constraints again
 	updateTable();
 }

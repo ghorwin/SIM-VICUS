@@ -14,6 +14,13 @@ class SVAcousticConstraintsCheckWidget : public QWidget {
 
 public:
 
+	/*! Enum for tables. */
+	enum TableType {
+		TT_ImpactSound,
+		TT_AirBourneSound,
+		NUM_TT
+	};
+
 	/*! Violation information. */
 	enum ViolationInfo {
 		VI_Valid,
@@ -95,16 +102,16 @@ private:
 	Ui::SVAcousticConstraintsCheckWidget *m_ui;
 
 	/*! stores all the table entries for walls*/
-	std::vector<tableEntry> m_wallTes;
+	std::vector<tableEntry>				m_airBourneSoundTableEntries;
 
 	/*! stores all the table entries for ceilings*/
-	std::vector<tableEntry> m_ceilingTes;
+	std::vector<tableEntry>				m_impactSoundTableEntries;
 
 	/*! Indicates wheather walls should be hidden. */
-	bool m_hideWalls = true;
+	bool								m_hideAirBourneSound = true;
 
 	/*! Indicates wheather walls should be hidden. */
-	bool m_hideCeilings = true;
+	bool								m_hideImpactSound = true;
 
 };
 
