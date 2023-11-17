@@ -35,7 +35,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabImpatSound">
       <attribute name="title">
@@ -69,7 +69,7 @@
        <item>
         <widget class="QCheckBox" name="checkBoxHideCeilings">
          <property name="text">
-          <string>Hide non violated instances</string>
+          <string>Hide valid components</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -113,7 +113,7 @@
        <item>
         <widget class="QCheckBox" name="checkBoxHideWalls">
          <property name="text">
-          <string>Hide non violated instances</string>
+          <string>Hide valid components</string>
          </property>
          <property name="checked">
           <bool>true</bool>

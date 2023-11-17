@@ -27,7 +27,7 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	addCustomWidgetToListWidget(tr(" Climate & Location"), ":/gfx/actions/Location_Climate_32x32.svg");
 	addCustomWidgetToListWidget(tr(" Shading"), ":/gfx/actions/shades.png");
 	addCustomWidgetToListWidget(tr(" Thermal Simulation"), ":/gfx/actions/simulation-temperature.png");
-	addCustomWidgetToListWidget(tr(" Life Cycle Assessment"), ":/gfx/actions/leaf.png");
+	addCustomWidgetToListWidget(tr(" Life Cycle"), ":/gfx/actions/leaf.png");
 	addCustomWidgetToListWidget(tr(" Acoustic"), ":/gfx/actions/sound-wave.png");
 
 	// disable LCA

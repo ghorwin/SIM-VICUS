@@ -1562,7 +1562,7 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->blockSignals(false);
 
 		// window caption
-		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+		setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
 
 		// if no recent projects set welcome page to demo files
 		if (SVSettings::instance().m_recentProjects.empty())
