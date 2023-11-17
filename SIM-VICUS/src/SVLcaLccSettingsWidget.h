@@ -12,7 +12,6 @@
 #include <VICUS_LccSettings.h>
 #include <VICUS_Project.h>
 
-
 class ModificationInfo;
 
 namespace Ui {
@@ -56,7 +55,11 @@ public:
 		ColYield,
 		ColLinearWeight,
 		ColConversionFactorTo1kg,
+		ColBiogenicCarbonContentInkg,
+		ColBiogenicCarbonContentPackagingInKg,
 		ColModule,
+		ColScenario,
+		ColScenarioDescription,
 		ColGWP,
 		ColODP,
 		ColPOCP,
@@ -116,7 +119,7 @@ public:
 private slots:
 
 	void onModified(int modificationType, ModificationInfo */*data*/);
-
+ 	
 	void on_pushButtonImportOkoebaudat_clicked();
 
 
@@ -125,9 +128,11 @@ private slots:
 	*/
 	void setModuleState(int state);
 
+
 	void on_comboBoxCalculationMode_currentIndexChanged(int index);
 
 	void on_comboBoxCertificationSystem_currentIndexChanged(int index);
+
 
 	void on_pushButtonAreaDetection_clicked();
 
@@ -199,6 +204,9 @@ private:
 	template<typename T>
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
+	/*! Returns the pointer to the Results Dialog. */
+	SVLcaLccResultsWidget								*lcaResultsDialog();
+
 	/*! Pointer to Ui */
 	Ui::SVLcaLccSettingsWidget							*m_ui;
 
@@ -230,4 +238,4 @@ private:
 
 };
 
-#endif // SVLCALCCSETTINGSDIALOG_H
+#endif // SVLcaLccSettingsWidget_H

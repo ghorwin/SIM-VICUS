@@ -1,4 +1,5 @@
 #include "SVLcaLccSettingsWidget.h"
+#include "SVUndoModifyLcaLcc.h"
 #include "ui_SVLcaLccSettingsWidget.h"
 
 #include "IBKMK_3DCalculations.h"
@@ -10,7 +11,6 @@
 #include "SVDBEpdTableModel.h"
 #include "SVProjectHandler.h"
 #include "SVMainWindow.h"
-#include "SVUndoModifyLcaLcc.h"
 
 // IBK
 #include <IBK_Parameter.h>
@@ -41,6 +41,8 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	layout()->setContentsMargins(0,0,0,0);
 
 	m_db = &SVSettings::instance().m_db;
+
+	m_ui->tabWidget->blockSignals(true);
 
 	m_ui->checkBoxA1->setProperty("category", (int)VICUS::EpdModuleDataset::M_A1);
 	m_ui->checkBoxA2->setProperty("category", (int)VICUS::EpdModuleDataset::M_A2);
@@ -101,18 +103,19 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	connect(m_ui->checkBoxD,  &QCheckBox::stateChanged, this, &SVLcaLccSettingsWidget::setModuleState);
 
 	m_ui->comboBoxCalculationMode->blockSignals(true);
-	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
-		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::CalculationMode", i), i);
-	m_ui->comboBoxCalculationMode->blockSignals(false);
-
 	m_ui->comboBoxCertificationSystem->blockSignals(true);
-	for(unsigned int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
+	for(int i=0; i<VICUS::LcaSettings::NUM_CM; ++i)
+		m_ui->comboBoxCalculationMode->addItem(VICUS::KeywordList::Description("LcaSettings::CalculationMode", i), i);
+
+	for(int i=0; i<VICUS::LcaSettings::NUM_CS; ++i)
 		m_ui->comboBoxCertificationSystem->addItem(VICUS::KeywordList::Description("LcaSettings::CertificationSytem", i), i);
+
+	m_ui->comboBoxCalculationMode->blockSignals(false);
 	m_ui->comboBoxCertificationSystem->blockSignals(false);
 
 	m_ui->lineEditArea->setup(0, 1e10, "Net usage area of Building(s)", false, true);
 	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "Energy Price increase", true, true);
-	m_ui->lineEditPriceIncreaseEnergy->setup(0, 100, "General Price increase", true, true);
+	m_ui->lineEditPriceIncreaseGeneral->setup(0, 100, "General Price increase", true, true);
 
 	m_ui->lineEditGasPrice->setup(0, 1e10, "Gas price for evaluation in €/kWh", false, true);
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
@@ -126,12 +129,26 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 			this, &SVLcaLccSettingsWidget::onModified);
 }
 
+
 SVLcaLccSettingsWidget::~SVLcaLccSettingsWidget() {
 	delete m_ui;
 }
 
+
 void SVLcaLccSettingsWidget::calculateLCA() {
 	FUNCID(SVLcaLccSettingsWidget::calculateLCA);
+
+//	IBK::Path path(m_ui->filepathResults->filename().toStdString());
+//	QString filename = m_ui->lineEditResultName->text();
+//	IBK::Path file(filename.toStdString());
+//	file.addExtension(".txt");
+//	path /= file;
+
+//	if(!path.isValid()) {
+//		QMessageBox::warning(this, tr("Invalid Result path or file"), tr("Define a valid result path and filename first before calculating LCA."));
+//		return;
+//	}
+
 
 	/// 1) Aggregate all used components from project and sum up all their areas
 	/// 2) go through all layers and their referenced epds and use the epds reference unit for global calculation
@@ -162,11 +179,13 @@ void SVLcaLccSettingsWidget::calculateLCA() {
 }
 
 
-bool convertString2Val(double &val, const std::string &text, unsigned int row, unsigned int column) {
+bool convertString2Val(double &val, std::string &text, unsigned int row, unsigned int column) {
 	if(text == "") {
 		val = 0.0;
 		return true;
 	}
+
+	std::replace( text.begin(), text.end(), ',', '.'); // replace all ',' to '.'
 
 	try {
 		val = IBK::string2val<double>(text);
@@ -175,6 +194,7 @@ bool convertString2Val(double &val, const std::string &text, unsigned int row, u
 						 .arg(text).arg(row+1).arg(column+1).arg(ex.what()));
 		return false;
 	}
+
 	return true;
 }
 
@@ -230,6 +250,7 @@ void SVLcaLccSettingsWidget::importOkoebauDat(const IBK::Path & csvPath) {
 	oekobauDatUnit2IBKUnit["m"] = "m";
 	oekobauDatUnit2IBKUnit["kg"] = "kg";
 	oekobauDatUnit2IBKUnit["a"] = "a";
+	oekobauDatUnit2IBKUnit[""] = "-";
 
 	unsigned int id = 1090000;
 
@@ -359,7 +380,7 @@ void SVLcaLccSettingsWidget::importOkoebauDat(const IBK::Path & csvPath) {
 			case ColExpireYear:			epd->m_expireYear = QString::fromStdString(t);			break;
 			case ColDeclarationOwner:	epd->m_manufacturer = QString::fromStdString(t);			break;
 			case ColReferenceSize: {
-				if(t == "")
+				if(t == "" || t == "not available")
 					continue;
 
 				double val;
@@ -371,6 +392,9 @@ void SVLcaLccSettingsWidget::importOkoebauDat(const IBK::Path & csvPath) {
 			} break;
 			case ColReferenceUnit: {
 				if(t == "")
+					continue;
+
+				if (oekobauDatUnit2IBKUnit.find(t) == oekobauDatUnit2IBKUnit.end())
 					continue;
 
 				if(!foundExistingEpd) {
@@ -554,7 +578,7 @@ void SVLcaLccSettingsWidget::addComponentInstance(const VICUS::ComponentInstance
 void SVLcaLccSettingsWidget::aggregateProjectComponents() {
 	QStringList lifetime, cost, epd;
 
-	for(const VICUS::ComponentInstance &ci : project().m_componentInstances) {
+	for (const VICUS::ComponentInstance &ci : project().m_componentInstances) {
 		// Add CI to aggregated data map
 		addComponentInstance(ci);
 
@@ -601,7 +625,6 @@ void SVLcaLccSettingsWidget::aggregateProjectComponents() {
 //	if(QMessageBox::warning(this, "LCA/LCC Information is missing", messageText) == QMessageBox::Cancel)
 //		return;
 }
-
 
 void SVLcaLccSettingsWidget::aggregateAggregatedComponentsByType() {
 	for(std::map<unsigned int, AggregatedComponentData>::iterator itAggregatedComp = m_compIdToAggregatedData.begin();
@@ -699,14 +722,15 @@ void SVLcaLccSettingsWidget::setCheckBoxState(QCheckBox *cb, int bitmask) {
 }
 
 
+
 void SVLcaLccSettingsWidget::updateUi() {
+	if (!SVProjectHandler::instance().isValid())
+		return;
 
 	const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
 	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
 
-	m_ui->groupBoxLcaCalc->blockSignals(true);
-	m_ui->groupBoxLccSettings->blockSignals(true);
-	m_ui->groupBoxGeneral->blockSignals(true);
+	m_ui->tabWidget->blockSignals(true);
 
 	m_ui->lineEditArea->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
@@ -744,6 +768,8 @@ void SVLcaLccSettingsWidget::updateUi() {
 	ol.push_back(m_ui->checkBoxC3);
 	ol.push_back(m_ui->checkBoxC4);
 	ol.push_back(m_ui->checkBoxD);
+
+	//qDebug() << m_lcaSettings->m_lcaCertificationSystem;
 
 	setCheckBoxState(m_ui->checkBoxA1, VICUS::LcaSettings::M_A1);
 	setCheckBoxState(m_ui->checkBoxA2, VICUS::LcaSettings::M_A2);
@@ -830,12 +856,14 @@ void SVLcaLccSettingsWidget::writeLcaDataToTxtFile(const IBK::Path &resultPath) 
 
 	lcaStream << "Goal:\t\t\t\t24\t0.0000001010\t0.0063\t0.0662\t0.0086" << std::endl;
 
+
 	writeDataToStream(lcaStream, "Category A - Production", VICUS::EpdDataset::C_CategoryA);
 	// writeDataToStream(lcaStream, "Category A - Production", AggregatedComponentData::C_CategoryA);
 	writeDataToStream(lcaStream, "Category C - Disposal", VICUS::EpdDataset::C_CategoryC);
 	writeDataToStream(lcaStream, "Category D - Deposit", VICUS::EpdDataset::C_CategoryD);
 
 	lcaStream.close();
+
 }
 
 
@@ -964,6 +992,7 @@ void SVLcaLccSettingsWidget::on_comboBoxCertificationSystem_currentIndexChanged(
 }
 
 
+
 void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 	double area = 0;
 
@@ -971,7 +1000,6 @@ void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 		for(const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for(const VICUS::Room &r : bl.m_rooms) {
 				for(const VICUS::Surface &s : r.m_surfaces) {
-					const_cast<VICUS::Surface &>(s).m_visible = false;
 
 					VICUS::Component *comp = m_db->m_components[s.m_componentInstance->m_idComponent];
 					if(comp == nullptr)
@@ -987,7 +1015,6 @@ void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 						if(angle < 5) {
 							qDebug() << "Surface added.";
 							area += s.geometry().area();
-							const_cast<VICUS::Surface &>(s).m_visible = true;
 						}
 					}
 				}
