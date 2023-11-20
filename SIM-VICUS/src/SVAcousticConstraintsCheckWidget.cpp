@@ -82,8 +82,14 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 //	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
 //	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
-	m_ui->checkBoxHideCeilings->setChecked(false);
-	m_ui->checkBoxHideWalls->setChecked(false);
+	m_ui->checkBoxHideImpactSound->blockSignals(false);
+	m_ui->checkBoxHideAirBourneSound->blockSignals(false);
+
+	m_ui->checkBoxHideAirBourneSound->setChecked(false);
+	m_ui->checkBoxHideImpactSound->setChecked(false);
+
+	m_ui->checkBoxHideImpactSound->blockSignals(true);
+	m_ui->checkBoxHideAirBourneSound->blockSignals(true);
 
 	resize(1500, 800);
 
@@ -733,6 +739,7 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 	m_ui->labelImpactSound->setStyleSheet(QString("QLabel { color : %1; }").arg(check[TT_ImpactSound] ? positive.name() : negative.name()));
 	m_ui->labelAirBourneSound->setStyleSheet(QString("QLabel { color : %1; }").arg(check[TT_AirBourneSound] ? positive.name() : negative.name()));
 
+	m_ui->gridLayoutMaster->setMargin(0);
 }
 
 

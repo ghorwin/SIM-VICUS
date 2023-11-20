@@ -164,6 +164,8 @@ private slots:
 
 	void on_spinBoxTimePeriod_valueChanged(int arg1);
 
+	void on_tabWidget_currentChanged(int index);
+
 private:
 	/*! Import ÖKOBAUDAT as csv from
 		https://www.oekobaudat.de/service/downloads.html. */

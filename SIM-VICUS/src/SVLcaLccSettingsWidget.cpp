@@ -11,6 +11,7 @@
 #include "SVDBEpdTableModel.h"
 #include "SVProjectHandler.h"
 #include "SVMainWindow.h"
+#include "SVLcaLccResultsWidget.h"
 
 // IBK
 #include <IBK_Parameter.h>
@@ -41,8 +42,6 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	layout()->setContentsMargins(0,0,0,0);
 
 	m_db = &SVSettings::instance().m_db;
-
-	m_ui->tabWidget->blockSignals(true);
 
 	m_ui->checkBoxA1->setProperty("category", (int)VICUS::EpdModuleDataset::M_A1);
 	m_ui->checkBoxA2->setProperty("category", (int)VICUS::EpdModuleDataset::M_A2);
@@ -121,10 +120,10 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	m_ui->lineEditCoalPrice->setup(0, 1e10, "Coal price for evaluation in €/kWh", false, true);
 	m_ui->lineEditElectricityPrice->setup(0, 1e10, "Electricity price for evaluation in €/kWh", false, true);
 
-	m_resultsWidget = dynamic_cast<SVLcaLccResultsWidget *>(m_ui->widgetResults);
+	m_resultsWidget = new SVLcaLccResultsWidget();
+	m_ui->tabWidget->addTab(m_resultsWidget, "LCC/LCA results");
 
-	m_ui->tabResults->setEnabled(false);
-	m_ui->tabWidget->widget(3)->setEnabled(false);
+	m_ui->tabWidget->setTabEnabled(3, false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVLcaLccSettingsWidget::onModified);
@@ -175,8 +174,8 @@ void SVLcaLccSettingsWidget::calculateLCA() {
 	// Write calculation to file
 	//writeLcaDataToTxtFile(path);
 
-	m_ui->tabResults->setEnabled(true);
-	m_ui->tabWidget->setCurrentIndex(1);
+	//m_ui->tabWidget->setCurrentIndex(0);
+	m_ui->tabWidget->setTabEnabled(3, true);
 }
 
 
@@ -704,7 +703,6 @@ void SVLcaLccSettingsWidget::writeDataToStream(std::ofstream &lcaStream, const s
 
 
 void SVLcaLccSettingsWidget::setModuleState(int state) {
-
 	QCheckBox *cb = dynamic_cast<QCheckBox*>(sender());
 	Q_ASSERT(cb != nullptr);
 	VICUS::EpdModuleDataset::Module mod = static_cast<VICUS::EpdModuleDataset::Module>(cb->property("category").toInt());
@@ -725,13 +723,18 @@ void SVLcaLccSettingsWidget::setCheckBoxState(QCheckBox *cb, int bitmask) {
 
 
 void SVLcaLccSettingsWidget::updateUi() {
+	FUNCID(SVLcaLccSettingsWidget::updateUi);
+
+	m_ui->groupBoxCatA->blockSignals(true);
+	m_ui->groupBoxCatB->blockSignals(true);
+	m_ui->groupBoxCatC->blockSignals(true);
+	m_ui->groupBoxCatD->blockSignals(true);
+
 	if (!SVProjectHandler::instance().isValid())
 		return;
 
 	const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
 	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
-
-	m_ui->tabWidget->blockSignals(true);
 
 	m_ui->lineEditArea->setText(QString("%1").arg(lcaSettings.m_para[VICUS::LcaSettings::P_NetUsageArea].get_value("m2")));
 
@@ -794,10 +797,16 @@ void SVLcaLccSettingsWidget::updateUi() {
 	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
 
 	if(lcaSettings.m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
-		for(unsigned int i=0; i<ol.count(); ++i) {
+		for(int i=0; i < ol.count(); ++i) {
 			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
-			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
-			cb->setChecked(lcaSettings.m_flags[mod].isEnabled());
+			bool ok;
+			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt(&ok));
+			if (!ok)
+				throw IBK::Exception(IBK::FormatString("Could not set state of check-box"), FUNC_ID);
+			bool isChecked = lcaSettings.m_flags[mod].isEnabled();
+			cb->blockSignals(true);
+			cb->setChecked(isChecked);
+			cb->blockSignals(false);
 		}
 	}
 
@@ -835,6 +844,12 @@ void SVLcaLccSettingsWidget::updateUi() {
 	m_ui->lineEditCoalPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100, 7, 'f', 2 ) );
 	m_ui->lineEditElectricityPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100, 7, 'f', 2 ) );
 	m_ui->lineEditGasPrice->setText( QString( "%1" ).arg( (double)lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100, 7, 'f', 2 ) );
+
+	m_ui->groupBoxCatA->blockSignals(false);
+	m_ui->groupBoxCatB->blockSignals(false);
+	m_ui->groupBoxCatC->blockSignals(false);
+	m_ui->groupBoxCatD->blockSignals(false);
+
 }
 
 
@@ -1070,7 +1085,7 @@ void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 
 
 			m_ui->tabWidget->widget(3)->setEnabled(true);
-
+			m_ui->tabWidget->setCurrentIndex(3);
 		}
 		catch (IBK::Exception &ex) {
 			QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
@@ -1265,5 +1280,9 @@ void SVLcaLccSettingsWidget::on_spinBoxTimePeriod_valueChanged(int years) {
 	VICUS::KeywordList::setParameter(lcaSettings.m_para, "LcaSettings::para_t", VICUS::LcaSettings::P_TimePeriod, years);
 	SVUndoModifyLcaLcc *undo = new SVUndoModifyLcaLcc("Modified LCA", lcaSettings, project().m_lccSettings);
 	undo->push();
+}
+
+
+void SVLcaLccSettingsWidget::on_tabWidget_currentChanged(int index) {
 }
 

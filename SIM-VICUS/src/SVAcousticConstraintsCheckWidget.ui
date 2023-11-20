@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
+  <layout class="QGridLayout" name="gridLayoutMaster">
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="minimumSize">
       <size>
@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabImpatSound">
       <attribute name="title">
@@ -55,7 +55,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBoxHideCeilings">
+        <widget class="QCheckBox" name="checkBoxHideImpactSound">
          <property name="text">
           <string>Hide valid components</string>
          </property>
@@ -99,7 +99,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBoxHideWalls">
+        <widget class="QCheckBox" name="checkBoxHideAirBourneSound">
          <property name="text">
           <string>Hide valid components</string>
          </property>
@@ -152,20 +152,7 @@
      </widget>
     </widget>
    </item>
-   <item row="2" column="1">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>116</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="pushButtonCheckConstraints">
@@ -193,13 +180,6 @@
       </spacer>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

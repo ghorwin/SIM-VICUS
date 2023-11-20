@@ -32,11 +32,11 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="LCA">
+     <widget class="QWidget" name="tabWidgetPageLCA">
       <attribute name="title">
-       <string>Life-Cycle Assessment</string>
+       <string>Life cycle assessment results</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -50,9 +50,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="LCC">
+     <widget class="QWidget" name="tabWidgetPageLCC">
       <attribute name="title">
-       <string>Life-Cycle-Cost</string>
+       <string>Life cycle cost results</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0" colspan="2">

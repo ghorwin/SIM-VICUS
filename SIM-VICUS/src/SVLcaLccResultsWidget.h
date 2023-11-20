@@ -121,6 +121,13 @@ class SVLcaLccResultsWidget;
 class SVLcaLccResultsWidget : public QWidget {
 	Q_OBJECT
 
+public:
+	enum ResultType {
+		RT_LCA,
+		RT_LCC,
+		NUM_RT
+	};
+
 	enum Cols {
 		ColCategory,
 		ColColor,
@@ -159,7 +166,7 @@ class SVLcaLccResultsWidget : public QWidget {
 		NUM_LCCS
 	};
 
-public:
+
 	explicit SVLcaLccResultsWidget(QWidget *parent = nullptr);
 	~SVLcaLccResultsWidget() override;
 
@@ -191,11 +198,11 @@ public:
 	*/
 	static double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
 																double layerThickness, double layerArea);
+
 private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
 
 	void on_treeWidgetLcaResults_itemCollapsed(QTreeWidgetItem *item);
-
 
 private:
 
