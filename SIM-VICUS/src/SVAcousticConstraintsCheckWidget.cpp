@@ -158,18 +158,6 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 				ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
 			continue;
 
-		// struct that holds relevant data for the table
-		//one for walls
-		tableEntry airBourneSoundEntry;
-		//one for ceilings
-		tableEntry impactSoundEntry;
-
-		// initialize with no constraints specified, might be overwritten later
-		airBourneSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
-		airBourneSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
-		impactSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
-		impactSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
-
 		// search the rooms of the corresponding surfaces
 		const VICUS::Room * roomA = dynamic_cast<VICUS::Room *>(ci.m_sideASurface->m_parent);
 		const VICUS::Room * roomB = dynamic_cast<VICUS::Room *>(ci.m_sideBSurface->m_parent);
@@ -190,7 +178,19 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 		if(acousticTemplateAId == VICUS::INVALID_ID || acousticTemplateBId == VICUS::INVALID_ID)
 			continue;
 
-		// Refernece to db
+		// struct that holds relevant data for the table
+		//one for walls
+		tableEntry airBourneSoundEntry;
+		//one for ceilings
+		tableEntry impactSoundEntry;
+
+		// initialize with no constraints specified, might be overwritten later
+		airBourneSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
+		airBourneSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.m_basicConstraintViolated = VI_NoConstraint;
+		impactSoundEntry.m_advancedConstraintViolated = VI_NoConstraint;
+
+		// Reference to db
 		const SVDatabase & db = SVSettings::instance().m_db;
 
 		// fill table Entry with acoustic template info
@@ -218,7 +218,7 @@ void SVAcousticConstraintsCheckWidget::checkConstraints() {
 		bool addTableEntryAirSoundToVector = false;
 		bool addTableEntryImpactSoundToVector = false;
 
-		for(std::pair<unsigned int, VICUS::AcousticReferenceComponent>  refEntry : db.m_acousticReferenceComponents){
+		for(std::pair<unsigned int, VICUS::AcousticReferenceComponent> refEntry : db.m_acousticReferenceComponents){
 			const VICUS::AcousticReferenceComponent &refComp = refEntry.second;
 
 			// alle elemente rausfiltern wo:
