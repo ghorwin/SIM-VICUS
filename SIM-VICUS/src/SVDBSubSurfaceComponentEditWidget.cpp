@@ -32,18 +32,22 @@
 #include <QtExt_LanguageHandler.h>
 #include <SVConversions.h>
 
+#include <qwt_plot_curve.h>
+
 #include "SVSettings.h"
 #include "SVDBSubSurfaceComponentTableModel.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
+#include "SVDBWindowGlazingSystemEditWidget.h"
+
 
 SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBSubSurfaceComponentEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->masterLayout->setMargin(4);
+	layout()->setMargin(4);
 
 	setMinimumWidth(500);
 
@@ -62,6 +66,9 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 	// construction group box
 	m_ui->lineEditWindowName->setReadOnly(true);
 	m_ui->lineEditReductionFactor->setup(0, 1, "Reduction factor for dynamic shading", true, true);
+
+	m_shgcCurve = new QwtPlotCurve();
+	SVDBWindowGlazingSystemEditWidget::initPlot(m_ui->shgcPlot, m_shgcCurve);
 }
 
 
@@ -82,6 +89,10 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	// initialize potentially empty line edits
 	m_ui->lineEditUValue->setText("---");
 	m_ui->lineEditSHGCValue->setText("---");
+
+	m_shgcCurve->setSamples(QVector<QPointF>());
+	m_ui->shgcPlot->replot();
+	m_ui->shgcPlot->setEnabled(false);
 
 	if (id == -1) {
 		// disable all controls
@@ -183,6 +194,9 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 			VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[win->m_idGlazingSystem]);
 			if (glazSys != nullptr) {
 				m_ui->lineEditSHGCValue->setText(QString("%L1").arg(glazSys->SHGC(), 0, 'f', 4));
+				// update plot
+				SVDBWindowGlazingSystemEditWidget::updatePlot(glazSys, m_shgcCurve);
+				m_ui->shgcPlot->setEnabled(true);
 			}
 		}
 
@@ -192,6 +206,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	else {
 		m_ui->lineEditWindowName->setText("");
 	}
+
+	m_ui->shgcPlot->replot();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;

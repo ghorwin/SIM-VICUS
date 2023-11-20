@@ -13,9 +13,49 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="masterLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="masterL">
+     <item row="0" column="1">
+      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="comboBoxSubSurfaceType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QtExt::ColorButton" name="pushButtonColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="lineEditUValue">
+       <property name="toolTip">
+        <string>U-value is being calculated using the heat conduction values from the assigned boundary conditions.</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelComponentType">
+       <property name="text">
+        <string>Type:</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="labelDisplayName">
        <property name="minimumSize">
@@ -29,41 +69,14 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-     </item>
-     <item row="0" column="2">
-      <widget class="QtExt::ColorButton" name="pushButtonColor">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelComponentType">
+     <item row="3" column="2">
+      <widget class="QLabel" name="labelDisplayName_3">
        <property name="text">
-        <string>Type:</string>
+        <string>W/m2K</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="comboBoxSubSurfaceType">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+     <item row="3" column="0">
       <widget class="QLabel" name="labelDisplayName_2">
        <property name="minimumSize">
         <size>
@@ -76,24 +89,39 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditUValue">
-       <property name="toolTip">
-        <string>U-value is being calculated using the heat conduction values from the assigned boundary conditions.</string>
+     <item row="2" column="1">
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <property name="readOnly">
-        <bool>true</bool>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelDisplayName_3">
-       <property name="text">
-        <string>W/m2K</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
        </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidgetShading">
@@ -115,6 +143,13 @@
         <widget class="QToolButton" name="toolButtonSelectWindow">
          <property name="text">
           <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="labelDisplayName_6">
+         <property name="text">
+          <string>-</string>
          </property>
         </widget>
        </item>
@@ -148,10 +183,13 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="labelDisplayName_6">
-         <property name="text">
-          <string>-</string>
+       <item row="2" column="0" colspan="3">
+        <widget class="QwtPlot" name="shgcPlot" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
         </widget>
        </item>
@@ -216,76 +254,101 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Boundary Condition Side A</string>
+    <spacer name="verticalSpacer_5">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideAName">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideA">
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QTextBrowser" name="textBrowserBCSideA"/>
-      </item>
-     </layout>
-    </widget>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Boundary Condition Side B</string>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Boundary Condition Side A</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideAName">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideA">
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QTextBrowser" name="textBrowserBCSideA"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="title">
+        <string>Boundary Condition Side B</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideBName">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideB">
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QTextBrowser" name="textBrowserBCSideB"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideBName">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideB">
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QTextBrowser" name="textBrowserBCSideB"/>
-      </item>
-     </layout>
-    </widget>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-   <slots>
-    <signal>editingFinishedSuccessfully()</signal>
-   </slots>
-  </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
@@ -295,6 +358,20 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

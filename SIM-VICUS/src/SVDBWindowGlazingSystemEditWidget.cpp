@@ -95,65 +95,9 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 		m_ui->comboBoxType->addItem(VICUS::KeywordListQt::Keyword("WindowGlazingSystem::modelType_t", i), i);
 	m_ui->comboBoxType->blockSignals(false);
 
-	// QWT Plot is initialized
-	QwtPlot * plt = m_ui->shgcPlot;
-	plt->setAutoReplot(false);
-	plt->setContentsMargins(5, 5, 5, 5);
-	//plt->setMargin(5);
-	plt->setAxisScale(QwtPlot::xBottom, 0, 90);
-	plt->setAxisScale(QwtPlot::yLeft, 0, 1);
-
-	// axes
-	QwtText theAxisTitle(tr("Incidence Angle [Deg]")); // no axis title for left diagram
-	QFont f(theAxisTitle.font());
-	f.setPointSize(9);
-	theAxisTitle.setFont(f);
-	plt->setAxisTitle(QwtPlot::xBottom, theAxisTitle);
-	theAxisTitle.setText(tr("SHGC [---]"), QwtText::RichText);
-	plt->setAxisTitle(QwtPlot::yLeft, theAxisTitle);
-
-#if defined(Q_OS_MAC)
-	// tick font
-	f.setPointSize(10);
-	QColor backgroundColor(240,240,240);
-#else
-	// tick font
-	f.setPointSize(8);
-	QColor backgroundColor(240,240,240);
-#endif
-	plt->setAxisFont(QwtPlot::xBottom, f);
-	plt->setAxisFont(QwtPlot::yLeft, f);
-
-	// background color
-	plt->setCanvasBackground(backgroundColor);
-
-	// grid
-	QwtPlotGrid *grid = new QwtPlotGrid;
-	grid->enableXMin(true);
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		grid->setMajorPen(QPen(Qt::lightGray, 0, Qt::DashLine));
-		grid->setMinorPen(QPen(Qt::gray, 0 , Qt::DotLine));
-	}
-	else {
-		grid->setMajorPen(QPen(Qt::gray, 0, Qt::DashLine));
-		grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::DotLine));
-	}
-	grid->attach(plt);
-
-	// set up shgc curve
-	m_shgcCurve = new QwtPlotCurve("bla");
-	m_shgcCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
-		m_shgcCurve->setPen( QColor(255,135,0) );
-	else
-		m_shgcCurve->setPen( QColor(110,58,0) );
-	m_shgcCurve->setYAxis(QwtPlot::yLeft);
-//	m_shgcCurve->setZ(1);
-	m_shgcCurve->setVisible(true);
-	m_shgcCurve->attach(plt);
-
-	plt->setAutoReplot(true);
-	m_ui->shgcPlot->replot();
+	// initialize plot
+	m_shgcCurve = new QwtPlotCurve();
+	initPlot(m_ui->shgcPlot, m_shgcCurve);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -240,7 +184,6 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
 		const std::vector<double> & degVec = spline.x();
 		const std::vector<double> & plotSHGCVec = spline.y();
-
 		m_ui->tableWidgetSHGC->setRowCount(degVec.size());
 
 		for (int i = 0; i < m_ui->tableWidgetSHGC->rowCount(); ++i) {
@@ -255,12 +198,11 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 			m_ui->tableWidgetSHGC->item( i, 0)->setTextAlignment(Qt::AlignCenter);
 			m_ui->tableWidgetSHGC->item( i, 1)->setTextAlignment(Qt::AlignCenter);
 		}
-
-		// we update the plot
-		m_shgcCurve->setSamples(degVec.data(), plotSHGCVec.data(), (int)degVec.size() );
-		m_ui->shgcPlot->setVisible(true);
 	}
 	m_ui->tableWidgetSHGC->blockSignals(false);
+
+	updatePlot(m_current, m_shgcCurve);
+	m_ui->shgcPlot->setVisible(true);
 
 	m_ui->pushButtonColor->blockSignals(true);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
@@ -273,6 +215,82 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	m_ui->comboBoxType->setEnabled(isEditable);
 	m_ui->toolButtonCreateSpline->setEnabled(isEditable);
 	m_ui->toolButtonImportSplineFromClipboard->setEnabled(isEditable);
+}
+
+
+void SVDBWindowGlazingSystemEditWidget::initPlot(QwtPlot * shgcPlot, QwtPlotCurve * shgcCurve) {
+
+	shgcPlot->setAutoReplot(false);
+	shgcPlot->setContentsMargins(5, 5, 5, 5);
+	//shgcPlot->setMargin(5);
+	shgcPlot->setAxisScale(QwtPlot::xBottom, 0, 90);
+	shgcPlot->setAxisScale(QwtPlot::yLeft, 0, 1);
+
+	// axes
+	QwtText theAxisTitle(tr("Incidence Angle [Deg]")); // no axis title for left diagram
+	QFont f(theAxisTitle.font());
+	f.setPointSize(9);
+	theAxisTitle.setFont(f);
+	shgcPlot->setAxisTitle(QwtPlot::xBottom, theAxisTitle);
+	theAxisTitle.setText(tr("SHGC [---]"), QwtText::RichText);
+	shgcPlot->setAxisTitle(QwtPlot::yLeft, theAxisTitle);
+
+#if defined(Q_OS_MAC)
+	// tick font
+	f.setPointSize(10);
+	QColor backgroundColor(240,240,240);
+#else
+	// tick font
+	f.setPointSize(8);
+	QColor backgroundColor(240,240,240);
+#endif
+	shgcPlot->setAxisFont(QwtPlot::xBottom, f);
+	shgcPlot->setAxisFont(QwtPlot::yLeft, f);
+
+	// background color
+	shgcPlot->setCanvasBackground(backgroundColor);
+
+	// grid
+	QwtPlotGrid *grid = new QwtPlotGrid;
+	grid->enableXMin(true);
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		grid->setMajorPen(QPen(Qt::lightGray, 0, Qt::DashLine));
+		grid->setMinorPen(QPen(Qt::gray, 0 , Qt::DotLine));
+	}
+	else {
+		grid->setMajorPen(QPen(Qt::gray, 0, Qt::DashLine));
+		grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::DotLine));
+	}
+	grid->attach(shgcPlot);
+
+	// set up shgc curve
+	shgcCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		shgcCurve->setPen( QColor(255,135,0) );
+	else
+		shgcCurve->setPen( QColor(110,58,0) );
+	shgcCurve->setYAxis(QwtPlot::yLeft);
+	shgcCurve->setVisible(true);
+	shgcCurve->attach(shgcPlot);
+
+	shgcPlot->setAutoReplot(true);
+	shgcPlot->replot();
+}
+
+
+void SVDBWindowGlazingSystemEditWidget::updatePlot(const VICUS::WindowGlazingSystem * glazingSys, QwtPlotCurve * shgcCurve) {
+	if (glazingSys==nullptr) {
+		shgcCurve->setSamples(QVector<QPointF>());
+		shgcCurve->setVisible(false);
+	}
+	else {
+		const IBK::LinearSpline &spline = glazingSys->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
+		const std::vector<double> & degVec = spline.x();
+		const std::vector<double> & plotSHGCVec = spline.y();
+		// we update the plot
+		shgcCurve->setSamples(degVec.data(), plotSHGCVec.data(), (int)degVec.size() );
+		shgcCurve->setVisible(true);
+	}
 }
 
 

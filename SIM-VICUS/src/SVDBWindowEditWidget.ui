@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Window Database</string>
   </property>
-  <layout class="QGridLayout" name="masterLayout">
+  <layout class="QGridLayout" name="gridLayout_5">
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="masterLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="labelDisplayName">
        <property name="minimumSize">
@@ -112,13 +112,20 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QTextBrowser" name="textBrowserGlazingSystem"/>
-      </item>
       <item row="0" column="1">
        <widget class="QToolButton" name="toolButtonSelectGlazingSystemName">
         <property name="text">
          <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QwtPlot" name="shgcPlot" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
@@ -131,20 +138,10 @@
       <string>Frame</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelFrameInput_2">
         <property name="text">
-         <string>Method:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBoxFrameMethod"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelFrameInput">
-        <property name="text">
-         <string>Width:</string>
+         <string>Material Thickness:</string>
         </property>
        </widget>
       </item>
@@ -155,6 +152,16 @@
        <widget class="QLabel" name="labelFrameInputUnit">
         <property name="text">
          <string>m</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxFrameMethod"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="toolButtonSelectFrameMaterial">
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -172,22 +179,15 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QToolButton" name="toolButtonSelectFrameMaterial">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelFrameInput_2">
-        <property name="text">
-         <string>Material Thickness:</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditFrameMaterialThickness"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Method:</string>
+        </property>
+       </widget>
       </item>
       <item row="3" column="2">
        <widget class="QLabel" name="labelFrameInputUnit_2">
@@ -196,8 +196,12 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="QTextBrowser" name="textBrowserFrame"/>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelFrameInput">
+        <property name="text">
+         <string>Width:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -208,25 +212,15 @@
       <string>Divider</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDividerMaterialThickness"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelDividerInput2">
         <property name="text">
-         <string>Method:</string>
+         <string>Material Thickness:</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="comboBoxDividerMethod"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelDividerInput">
-        <property name="text">
-         <string>Width:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditDividerInput"/>
       </item>
       <item row="1" column="2">
        <widget class="QLabel" name="labelDividerInputUnit">
@@ -235,10 +229,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelDividerMaterial">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Material:</string>
+         <string>Method:</string>
         </property>
        </widget>
       </item>
@@ -249,23 +243,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QToolButton" name="toolButtonSelectDividerMaterial">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelDividerInput2">
-        <property name="text">
-         <string>Material Thickness:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditDividerMaterialThickness"/>
-      </item>
       <item row="3" column="2">
        <widget class="QLabel" name="labelDividerInputUnit_3">
         <property name="text">
@@ -273,8 +250,32 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="QTextBrowser" name="textBrowserDivider"/>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboBoxDividerMethod"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDividerInput"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="toolButtonSelectDividerMaterial">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelDividerMaterial">
+        <property name="text">
+         <string>Material:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelDividerInput">
+        <property name="text">
+         <string>Width:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -313,6 +314,12 @@
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qwt_plot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
