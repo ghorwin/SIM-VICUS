@@ -431,7 +431,7 @@ void SVLcaLccResultsWidget::setCostResults(const VICUS::LccSettings &lccSettings
 		for (unsigned int j=0; j<NUM_LCCColumns; ++j) {
 			QTableWidgetItem &item = *tab.item(i, j);
 			item.setFlags(item.flags() & ~Qt::ItemIsEditable);
-			item.setTextAlignment(Qt::AlignRight);
+			item.setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		}
 	}
 
