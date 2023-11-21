@@ -750,15 +750,15 @@ void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 }
 
 
-void SVAcousticConstraintsCheckWidget::on_checkBoxHideWalls_stateChanged(int arg1) {
-	m_hideAirBourneSound = arg1;
+void SVAcousticConstraintsCheckWidget::on_checkBoxHideWalls_stateChanged(int hideAirBourneSound) {
+	m_hideAirBourneSound = (bool)hideAirBourneSound;
 	// render constraints again
 	updateTable();
 }
 
 
-void SVAcousticConstraintsCheckWidget::on_checkBoxHideCeilings_stateChanged(int arg1) {
-	m_hideImpactSound = arg1;
+void SVAcousticConstraintsCheckWidget::on_checkBoxHideImpactSound_stateChanged(int hideImpactSound) {
+	m_hideImpactSound = (bool)hideImpactSound;
 	// render constraints again
 	updateTable();
 }
