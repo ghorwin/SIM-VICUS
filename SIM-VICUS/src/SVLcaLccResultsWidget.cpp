@@ -42,12 +42,6 @@ SVLcaLccResultsWidget::SVLcaLccResultsWidget(QWidget *parent) :
 	m_ui(new Ui::SVLcaLccResultsWidget)
 {
 	m_ui->setupUi(this);
-
-	QStringList headersLca;
-	headersLca << tr("Category") << "" << tr("Type") << tr("Name") << tr("Name") << tr("EPD") << tr("Amount") << tr("Invest-Cost [€]") << tr("GWP (CO2-Äqu.) [kg/(m2a)]");
-	headersLca << tr("ODP (R11-Äqu.) [kg/(m2a)]") << tr("POCP (C2H4-Äqu.) [kg/(m2a)]") << tr("AP (SO2-Äqu.) [kg/(m2a)]") << tr("EP (PO4-Äqu.) [kg/(m2a)]");
-
-	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);
 }
 
 
@@ -100,12 +94,15 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 		rootItem->addChild(item);
 		item->setText(ColComponentType, VICUS::KeywordList::Description("Component::ComponentType", aggregatedTypeData.m_component->m_type));
+		QFont italFont;
+		italFont.setItalic(true);
+		item->setFont(ColComponentType, italFont);
 		item->setText(ColArea, QString( "%1 m2" ).arg( aggregatedTypeData.m_area, 7, 'f', 2 ) );
 		item->setTextAlignment(ColArea, Qt::AlignRight);
 		item->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
 		item->setText(ColInvestCost, QString( "%1 €" ).arg( aggregatedTypeData.m_area * aggregatedTypeData.m_totalCost.value / 100, 7, 'f', 2 ));
-		item->setBackgroundColor(ColColor, aggregatedTypeData.m_component->m_color);
+		// item->setBackgroundColor(ColColor, aggregatedTypeData.m_component->m_color);
 
 		VICUS::EpdModuleDataset epd;
 
@@ -222,6 +219,12 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 			itemChild->setText(ColODP,  QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 			itemChild->setText(ColPOCP, QString::number(scaleFactor * epdChild.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
+			itemChild->setTextAlignment(ColGWP,	Qt::AlignRight);
+			itemChild->setTextAlignment(ColAP,	Qt::AlignRight);
+			itemChild->setTextAlignment(ColEP,	Qt::AlignRight);
+			itemChild->setTextAlignment(ColODP,	Qt::AlignRight);
+			itemChild->setTextAlignment(ColPOCP,Qt::AlignRight);
+
 			epd += epdChild;
 		}
 
@@ -230,6 +233,12 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 		item->setText(ColEP,   QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
 		item->setText(ColODP,  QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 		item->setText(ColPOCP, QString::number(scaleFactor * epd.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
+
+		item->setTextAlignment(ColGWP,	Qt::AlignRight);
+		item->setTextAlignment(ColAP,	Qt::AlignRight);
+		item->setTextAlignment(ColEP,	Qt::AlignRight);
+		item->setTextAlignment(ColODP,	Qt::AlignRight);
+		item->setTextAlignment(ColPOCP,	Qt::AlignRight);
 
 		epdDataset += epd;
 	}
@@ -244,6 +253,8 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
 	m_ui->treeWidgetLcaResults->setColumnWidth(ColColor, 20);
+	m_ui->treeWidgetLcaResults->expandAll();
+	m_ui->tabWidget->setCurrentIndex(0);
 }
 
 void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
@@ -497,7 +508,7 @@ void SVLcaLccResultsWidget::setup() {
 	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
 	QStringList headersLca;
-	headersLca << tr("Category") << "" << tr("Type") << tr("Name") << tr("Name") << tr("EPD") << tr("Amount") << tr("Invest-Cost [€]") << tr("GWP (CO2-Äqu.) [kg/(m2a)");
+	headersLca << tr("Category") << "Type" << tr("") << tr("Component") << tr("Construction") << tr("EPD") << tr("Quantity") << tr("Invest-Cost") << tr("GWP (CO2-Äqu.) [kg/(m2a)]");
 	headersLca << tr("ODP (R11-Äqu.) [kg/(m2a)]") << tr("POCP (C2H4-Äqu.) [kg/(m2a)]") << tr("AP (SO2-Äqu.) [kg/(m2a)]") << tr("EP (PO4-Äqu.) [kg/(m2a)]");
 
 	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);

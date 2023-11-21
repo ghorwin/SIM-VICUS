@@ -124,6 +124,7 @@ SVLcaLccSettingsWidget::SVLcaLccSettingsWidget(QWidget *parent) :
 	m_ui->tabWidget->addTab(m_resultsWidget, "LCC/LCA results");
 
 	m_ui->tabWidget->setTabEnabled(3, false);
+	m_ui->tabWidget->setCurrentIndex(0);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVLcaLccSettingsWidget::onModified);
@@ -1083,14 +1084,12 @@ void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 					gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0,
 					investCost);
 
-
 			m_ui->tabWidget->widget(3)->setEnabled(true);
 			m_ui->tabWidget->setCurrentIndex(3);
 		}
 		catch (IBK::Exception &ex) {
 			QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
 		}
-
 }
 
 

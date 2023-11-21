@@ -130,8 +130,8 @@ public:
 
 	enum Cols {
 		ColCategory,
-		ColColor,
 		ColComponentType,
+		ColColor,
 		ColComponentName,
 		ColConstructionName,
 		ColEpdName,
