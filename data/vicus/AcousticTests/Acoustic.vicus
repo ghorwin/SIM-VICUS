@@ -3,7 +3,7 @@
 	<ProjectInfo>
 		<Comment>A single family house that may be used as an demo example to get started with SIM-VICUS. It demonstrates the main features for building energy simulation available. Many typical properties are assigned here, including underfloor heating system. </Comment>
 		<Created>Mi. Sept. 7 08:14:15 2022</Created>
-		<LastEdited>Do. Nov. 9 15:20:54 2023</LastEdited>
+		<LastEdited>Fr. Nov. 17 15:31:20 2023</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -75,12 +75,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>24.7497 -22.6262 18.4274</CameraTranslation>
+			<CameraTranslation>17.7219 1.80019 20.146</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.766721</Wp>
-				<X>0.504659</X>
-				<Y>0.218151</Y>
-				<Z>0.331308</Z>
+				<Wp>0.622996</Wp>
+				<X>0.253209</X>
+				<Y>0.284443</Y>
+				<Z>0.683185</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -91,6 +91,44 @@
 				</GridPlane>
 			</GridPlanes>
 		</ViewSettings>
+		<LcaSettings>
+			<IBK:Parameter name="TimePeriod" unit="a">50</IBK:Parameter>
+			<IBK:Parameter name="FactorBnbSimpleMode" unit="-">1.2</IBK:Parameter>
+			<IBK:Parameter name="NetUsageArea" unit="m2">164.1</IBK:Parameter>
+			<IBK:Flag name="A1">false</IBK:Flag>
+			<IBK:Flag name="A2">false</IBK:Flag>
+			<IBK:Flag name="A3">false</IBK:Flag>
+			<IBK:Flag name="A4">false</IBK:Flag>
+			<IBK:Flag name="A5">false</IBK:Flag>
+			<IBK:Flag name="B1">false</IBK:Flag>
+			<IBK:Flag name="B2">false</IBK:Flag>
+			<IBK:Flag name="B3">false</IBK:Flag>
+			<IBK:Flag name="B4">false</IBK:Flag>
+			<IBK:Flag name="B5">false</IBK:Flag>
+			<IBK:Flag name="B6">false</IBK:Flag>
+			<IBK:Flag name="B7">false</IBK:Flag>
+			<IBK:Flag name="C1">false</IBK:Flag>
+			<IBK:Flag name="C2">false</IBK:Flag>
+			<IBK:Flag name="C3">false</IBK:Flag>
+			<IBK:Flag name="C4">false</IBK:Flag>
+			<IBK:Flag name="D">false</IBK:Flag>
+			<CalculationMode>Simple</CalculationMode>
+			<CertificationSystem>BNB</CertificationSystem>
+			<Gas>1090012</Gas>
+			<Electricity>1090417</Electricity>
+			<Coal>1090351</Coal>
+		</LcaSettings>
+		<LccSettings>
+			<IBK:Parameter name="PriceIncreaseGeneral" unit="%">2</IBK:Parameter>
+			<IBK:Parameter name="PriceIncreaseEnergy" unit="%">5</IBK:Parameter>
+			<IBK:Parameter name="CalculationInterestRate" unit="%">1.5</IBK:Parameter>
+			<IBK:Parameter name="CoalConsumption" unit="kWh/a">100</IBK:Parameter>
+			<IBK:Parameter name="GasConsumption" unit="kWh/a">1000</IBK:Parameter>
+			<IBK:Parameter name="ElectricityConsumption" unit="kWh/a">200</IBK:Parameter>
+			<IBK:IntPara name="CoalPrice">16</IBK:IntPara>
+			<IBK:IntPara name="GasPrice">15</IBK:IntPara>
+			<IBK:IntPara name="ElectricityPrice">42</IBK:IntPara>
+		</LccSettings>
 		<Buildings>
 			<Building id="10001" displayName="Building">
 				<BuildingLevels>
@@ -477,6 +515,7 @@
 								<IdAcousticBuildingType>407000</IdAcousticBuildingType>
 								<IBK:Parameter name="Area" unit="m2">13.96</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">36.75</IBK:Parameter>
+								<IBK:Parameter name="HeatCapacity" unit="J/K">500</IBK:Parameter>
 								<Surfaces>
 									<Surface id="10116" displayName="Wall_115" displayColor="#c8c88c">
 										<Polygon3D offset="-1.58902 4.635 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 3.04598 0, 3.04598 1.31073, 0 1.31073</Polygon3D>
@@ -1280,11 +1319,11 @@
 			</WindowGlazingSystems>
 			<AcousticBoundaryConditions>
 				<AcousticBoundaryCondition id="1030001" displayName="DE: Tapete auf Kalkzementputz" color="#30ff26">
-					<SoundAbsorptionPartition>
+					<AcousticSoundAbsorptionPartitions>
 						<AcousticSoundAbsorptionPartition idSoundAbsorption="1085002">
 							<IBK:Parameter name="AreaFraction" unit="---">1</IBK:Parameter>
 						</AcousticSoundAbsorptionPartition>
-					</SoundAbsorptionPartition>
+					</AcousticSoundAbsorptionPartitions>
 				</AcousticBoundaryCondition>
 			</AcousticBoundaryConditions>
 			<AcousticSoundAbsorptions>

@@ -205,8 +205,7 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 				itemMatChild->setTextAlignment(ColEP,	Qt::AlignRight);
 				itemMatChild->setTextAlignment(ColODP,	Qt::AlignRight);
 				itemMatChild->setTextAlignment(ColPOCP,	Qt::AlignRight);
-
-				itemMatChild->setFlags(itemMatChild->flags() | Qt::ItemIsEditable);
+				itemMatChild->setFlags(itemMatChild->flags() & ~Qt::ItemIsEditable);
 
 				itemChild->addChild(itemMatChild);
 
@@ -248,6 +247,20 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
 	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
+
+	rootItem->setTextAlignment(ColGWP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColAP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColEP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColODP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColPOCP,	Qt::AlignRight);
+
+	QFont boldFont;
+	boldFont.setBold(true);
+	rootItem->setFont(ColGWP,	boldFont);
+	rootItem->setFont(ColAP,	boldFont);
+	rootItem->setFont(ColEP,	boldFont);
+	rootItem->setFont(ColODP,	boldFont);
+	rootItem->setFont(ColPOCP,	boldFont);
 
 	for(unsigned int i=0; i<NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
