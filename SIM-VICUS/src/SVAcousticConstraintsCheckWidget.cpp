@@ -750,7 +750,7 @@ void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 }
 
 
-void SVAcousticConstraintsCheckWidget::on_checkBoxHideWalls_stateChanged(int hideAirBourneSound) {
+void SVAcousticConstraintsCheckWidget::on_checkBoxHideAirBourneSound_stateChanged(int hideAirBourneSound) {
 	m_hideAirBourneSound = (bool)hideAirBourneSound;
 	// render constraints again
 	updateTable();
