@@ -571,7 +571,7 @@ void SVLcaLccResultsWidget::setup() {
 			   << tr("Coal costs [€]")
 			   << tr("Total energy costs [€]")
 			   << tr("Discounting rate")
-			   << tr("Energy - net present value  [€]")
+			   << tr("Energy - net present value [€]")
 			   << tr("Material costs [€]")
 			   << tr("Material - net present value  [€]")
 			   << tr("Price increase general [%]")
