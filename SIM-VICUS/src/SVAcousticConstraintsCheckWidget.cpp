@@ -82,14 +82,14 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 //	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateA)->setTextAlignment(Qt::AlignLeft);
 //	m_ui->tableWidgetImpactSound->horizontalHeaderItem(CSP_AcousticTemplateB)->setTextAlignment(Qt::AlignLeft);
 
-	m_ui->checkBoxHideImpactSound->blockSignals(false);
-	m_ui->checkBoxHideAirBourneSound->blockSignals(false);
+	m_ui->checkBoxHideAirBourneSound->blockSignals(true);
+	m_ui->checkBoxHideImpactSound->blockSignals(true);
 
 	m_ui->checkBoxHideAirBourneSound->setChecked(false);
 	m_ui->checkBoxHideImpactSound->setChecked(false);
 
-	m_ui->checkBoxHideImpactSound->blockSignals(true);
-	m_ui->checkBoxHideAirBourneSound->blockSignals(true);
+	m_ui->checkBoxHideImpactSound->blockSignals(false);
+	m_ui->checkBoxHideAirBourneSound->blockSignals(false);
 
 	resize(1500, 800);
 
