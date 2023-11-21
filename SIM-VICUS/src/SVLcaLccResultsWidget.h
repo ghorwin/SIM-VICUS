@@ -133,7 +133,7 @@ public:
 		ColComponentType,
 		ColColor,
 		ColComponentName,
-		ColConstructionName,
+		ColMaterialName,
 		ColEpdName,
 		ColArea,
 		ColInvestCost,

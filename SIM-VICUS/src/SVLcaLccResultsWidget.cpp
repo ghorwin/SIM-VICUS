@@ -132,7 +132,6 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 
 			item->addChild(itemChild);
 
-
 			// Hopefully will work
 			const VICUS::Construction &con = *db.m_constructions[comp->m_idConstruction];
 			for(unsigned int i=0; i<con.m_materialLayers.size(); ++i) {
@@ -185,9 +184,9 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 				epdChild += scaledEpdCatData;
 
 				QTreeWidgetItem *itemMatChild = new QTreeWidgetItem();
-				itemMatChild->setText(ColConstructionName, QtExt::MultiLangString2QString(mat.m_displayName));
+				itemMatChild->setText(ColMaterialName, QtExt::MultiLangString2QString(mat.m_displayName));
 				itemMatChild->setText(ColEpdName, QtExt::MultiLangString2QString(epdMat->m_displayName));
-				itemMatChild->setText(ColArea, QString( "%1 m2" ).arg( aggregatedCompData.m_area, 7, 'f', 2 ) );
+				itemMatChild->setText(ColArea, QString( "%1 m<sup>2</sup>" ).arg( aggregatedCompData.m_area, 7, 'f', 2 ) );
 				itemMatChild->setTextAlignment(ColArea, Qt::AlignRight);
 				itemMatChild->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
@@ -262,11 +261,12 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 	rootItem->setFont(ColODP,	boldFont);
 	rootItem->setFont(ColPOCP,	boldFont);
 
-	for(unsigned int i=0; i<NumCol; ++i)
+	for(unsigned int i=0; i < NumCol; ++i)
 		m_ui->treeWidgetLcaResults->resizeColumnToContents(i);
 
 	m_ui->treeWidgetLcaResults->setColumnWidth(ColColor, 20);
-	m_ui->treeWidgetLcaResults->expandAll();
+	m_ui->treeWidgetLcaResults->expandToDepth(1);
+
 	m_ui->tabWidget->setCurrentIndex(0);
 }
 
@@ -319,6 +319,12 @@ void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
 		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
+		item->setTextAlignment(ColGWP,	Qt::AlignRight);
+		item->setTextAlignment(ColAP,	Qt::AlignRight);
+		item->setTextAlignment(ColEP,	Qt::AlignRight);
+		item->setTextAlignment(ColODP,	Qt::AlignRight);
+		item->setTextAlignment(ColPOCP,	Qt::AlignRight);
+
 		rootItem->addChild(item);
 	}
 
@@ -340,6 +346,12 @@ void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
 		item->setText(ColEP,   QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
 		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
+
+		item->setTextAlignment(ColGWP,	Qt::AlignRight);
+		item->setTextAlignment(ColAP,	Qt::AlignRight);
+		item->setTextAlignment(ColEP,	Qt::AlignRight);
+		item->setTextAlignment(ColODP,	Qt::AlignRight);
+		item->setTextAlignment(ColPOCP,	Qt::AlignRight);
 
 		rootItem->addChild(item);
 	}
@@ -363,6 +375,12 @@ void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
 		item->setText(ColODP,  QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 		item->setText(ColPOCP, QString::number(scaleFactor * epdCatDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
 
+		item->setTextAlignment(ColGWP,	Qt::AlignRight);
+		item->setTextAlignment(ColAP,	Qt::AlignRight);
+		item->setTextAlignment(ColEP,	Qt::AlignRight);
+		item->setTextAlignment(ColODP,	Qt::AlignRight);
+		item->setTextAlignment(ColPOCP,	Qt::AlignRight);
+
 		rootItem->addChild(item);
 	}
 
@@ -371,6 +389,20 @@ void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings,
 	rootItem->setText(ColEP,   QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_EP  ].get_value()));
 	rootItem->setText(ColODP,  QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_ODP ].get_value()));
 	rootItem->setText(ColPOCP, QString::number(scaleFactor * epdDataset.m_para[VICUS::EpdModuleDataset::P_POCP].get_value()));
+
+	rootItem->setTextAlignment(ColGWP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColAP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColEP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColODP,	Qt::AlignRight);
+	rootItem->setTextAlignment(ColPOCP,	Qt::AlignRight);
+
+	QFont boldFont;
+	boldFont.setBold(true);
+	rootItem->setFont(ColGWP,	boldFont);
+	rootItem->setFont(ColAP,	boldFont);
+	rootItem->setFont(ColEP,	boldFont);
+	rootItem->setFont(ColODP,	boldFont);
+	rootItem->setFont(ColPOCP,	boldFont);
 
 	// Not useful
 	//m_ui->treeWidgetLcaResults->hideColumn(ColInvestCost);
@@ -521,8 +553,8 @@ void SVLcaLccResultsWidget::setup() {
 	m_ui->treeWidgetLcaResults->clear();
 	m_ui->treeWidgetLcaResults->setColumnCount(NumCol);
 	QStringList headersLca;
-	headersLca << tr("Category") << "Type" << tr("") << tr("Component") << tr("Construction") << tr("EPD") << tr("Quantity") << tr("Invest-Cost") << tr("GWP (CO2-Äqu.) [kg/(m2a)]");
-	headersLca << tr("ODP (R11-Äqu.) [kg/(m2a)]") << tr("POCP (C2H4-Äqu.) [kg/(m2a)]") << tr("AP (SO2-Äqu.) [kg/(m2a)]") << tr("EP (PO4-Äqu.) [kg/(m2a)]");
+	headersLca << tr("Category") << tr("Type") << tr("") << tr("Component") << tr("Material") << tr("EPD") << tr("Quantity") << tr("Invest-Cost") << tr("GWP (CO2-Äqu.)\n[kg/(m2a)]");
+	headersLca << tr("ODP (R11-Äqu.)\n[kg/(m2a)]") << tr("POCP (C2H4-Äqu.)\n[kg/(m2a)]") << tr("AP (SO2-Äqu.)\n[kg/(m2a)]") << tr("EP (PO4-Äqu.)\n[kg/(m2a)]");
 
 	m_ui->treeWidgetLcaResults->setHeaderLabels(headersLca);
 	m_ui->treeWidgetLcaResults->setAlternatingRowColors(true);
