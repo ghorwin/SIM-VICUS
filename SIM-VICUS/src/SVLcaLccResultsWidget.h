@@ -197,7 +197,7 @@ public:
 		\param layerArea Area of layer in m
 	*/
 	static double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
-																double layerThickness, double layerArea);
+												   double layerThickness, double layerArea);
 
 private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);

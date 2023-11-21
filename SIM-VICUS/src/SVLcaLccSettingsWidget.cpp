@@ -180,7 +180,7 @@ void SVLcaLccSettingsWidget::calculateLCA() {
 }
 
 
-bool convertString2Val(double &val, std::string &text, unsigned int row, unsigned int column) {
+bool SVLcaLccSettingsWidget::convertString2Val(double &val, std::string &text, unsigned int row, unsigned int column) {
 	if(text == "") {
 		val = 0.0;
 		return true;

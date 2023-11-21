@@ -206,6 +206,11 @@ private:
 	template<typename T>
 	void setValue(T & member, const T & value, bool foundExistingEpd);
 
+	/*! Converts a string to double value.
+		\returns false if an error has been encountered
+	*/
+	bool convertString2Val(double &val, std::string &text, unsigned int row, unsigned int column);
+
 	/*! Returns the pointer to the Results Dialog. */
 	SVLcaLccResultsWidget								*lcaResultsDialog();
 

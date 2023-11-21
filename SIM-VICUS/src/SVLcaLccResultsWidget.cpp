@@ -7,10 +7,7 @@
 #include <QTreeWidgetItem>
 #include <VICUS_KeywordList.h>
 
-/*! Converts the material to the referenced reference quantity from the epd.
-	\param layerThickness Thickness of layer in m
-	\param layerArea Area of layer in m
-*/
+
 double SVLcaLccResultsWidget::conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
 																double layerThickness, double layerArea){
 	if(refUnit.name() == "kg")
