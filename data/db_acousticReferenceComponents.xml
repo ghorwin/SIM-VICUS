@@ -7718,14 +7718,6 @@
 	<Type>Door</Type>
 	<AirborneSoundDifferentStructureUnit>37</AirborneSoundDifferentStructureUnit>
 </AcousticReferenceComponent>
-<AcousticReferenceComponent id="406199" buildingType="" requirementType="">
-	<IdAcousticTemplateA>
-</IdAcousticTemplateA>
-	<IdAcousticTemplateB>
-</IdAcousticTemplateB>
-	<Type>
-</Type>
-</AcousticReferenceComponent>
 <AcousticReferenceComponent id="406200" buildingType="407005" requirementType="advanced">
 	<IdAcousticTemplateA>400103</IdAcousticTemplateA>
 	<IdAcousticTemplateB>400103</IdAcousticTemplateB>

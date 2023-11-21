@@ -112,6 +112,7 @@ SVAcousticConstraintsCheckWidget::SVAcousticConstraintsCheckWidget(QWidget *pare
 	setWindowTitle(tr("Acoustic component check"));
 
 	m_ui->tabWidget->setEnabled(false);
+	m_ui->tabWidget->setCurrentIndex(0);
 }
 
 

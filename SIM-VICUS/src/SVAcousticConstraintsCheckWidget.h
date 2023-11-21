@@ -81,7 +81,7 @@ public:
 private slots:
 	void on_pushButtonCheckConstraints_clicked();
 
-	void on_checkBoxHideWalls_stateChanged(int hideAirBourneSound);
+	void on_checkBoxHideAirBourneSound_stateChanged(int hideAirBourneSound);
 
 	void on_checkBoxHideImpactSound_stateChanged(int hideImpactSound);
 
