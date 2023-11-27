@@ -40,8 +40,8 @@ xcopy /Y .\bb_VC_x64_noOpenMP\NandradFMUGenerator\NandradFMUGenerator.exe ..\..\
 xcopy /Y .\bb_VC_x64_noOpenMP\SIM-VICUS\SIM-VICUS.exe ..\..\bin\release_x64
 xcopy /Y .\bb_VC_x64_noOpenMP\NandradSolverFMI\NandradSolverFMI.dll ..\..\bin\release_x64
 
-REM echo ** Run Tests **
-REM run_tests.bat				  			 
+echo ** Run Tests **
+run_tests.bat				  			 
 exit /b 0
 
 

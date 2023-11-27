@@ -946,7 +946,7 @@ int HydraulicNetworkModelImpl::solve() {
 
 	// Reset initial guess to previous converged solution whenever we start a new step.
 	// See explanation in HydraulicNetworkModel::setTime()
-	if (true/*m_newStepStarted*/) { // TODO : Hauke, change this when you test the new code
+	if (m_newStepStarted) {
 		std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
 		m_newStepStarted = false;
 	}
@@ -958,7 +958,7 @@ int HydraulicNetworkModelImpl::solve() {
 
 	// NOTE: 20 iterations is enough, if we take more iterations than that, we just bail out and let
 	//       the outer Newton deal with the sub-optimal solution.
-	const int MAX_ITERATIONS = 100;
+	const int MAX_ITERATIONS = 30;
 	int iterations = MAX_ITERATIONS;
 	// now start the Newton iteration
 	while (--iterations > 0) {
@@ -969,12 +969,17 @@ int HydraulicNetworkModelImpl::solve() {
 		for (unsigned int i=0; i<m_G.size(); ++i)
 			rhs[i] = -m_G[i];
 
+//		std::cout << "\n*** Iter " << MAX_ITERATIONS-iterations  << std::endl;
+//		printVars();
+
 		// compose right hand side (mind the minus sign)
 		// and evaluate residuals
 		double resNorm = WRMSNorm(m_G);
 //		std::cout << "res = " << resNorm << std::endl;
-		if (resNorm < m_residualTolerance /*&& iterations < MAX_ITERATIONS-1*/) // require at least one solve always!
+		if (resNorm < m_residualTolerance && iterations < MAX_ITERATIONS-1) { // require at least one solve always!
+//			std::cout << "--- Newton finished " << std::endl;
 			break;
+		}
 
 		// now compose Jacobian with FD quotients
 
@@ -988,9 +993,7 @@ int HydraulicNetworkModelImpl::solve() {
 			return 1;
 		}
 
-//		std::cout << "\n\n*** Iter " << 100-iterations  << std::endl;
 
-//		printVars();
 //		jacobianWrite(rhs);
 
 #ifdef RESIDUAL_TEST

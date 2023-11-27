@@ -168,7 +168,15 @@
 					<TimeType>None</TimeType>
 					<ObjectListName>Heat pump</ObjectListName>
 					<GridName>hourly</GridName>
-				</OutputDefinition>				
+				</OutputDefinition>		
+
+				<!-- <OutputDefinition> -->
+					<!-- <Quantity>COP</Quantity> -->
+					<!-- <TimeType>None</TimeType> -->
+					<!-- <ObjectListName>Heat pump</ObjectListName> -->
+					<!-- <GridName>hourly</GridName> -->
+				<!-- </OutputDefinition>						 -->
+				
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">

@@ -142,6 +142,11 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>	
+				<OutputDefinition>
 						<Quantity>FluidMassFlux</Quantity>
 						<ObjectListName>All flow elements</ObjectListName>
 						<GridName>hourly</GridName>
@@ -170,6 +175,14 @@
 					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>	
+				
+				<OutputDefinition>
+					<Quantity>COP</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Heat pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>					
+				
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
