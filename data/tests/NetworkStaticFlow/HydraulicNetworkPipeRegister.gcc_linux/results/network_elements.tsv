@@ -1,3 +1,3 @@
 Time [h]	NetworkElement(id=101).FluidMassFlux [kg/s]	Pump.FluidMassFlux [kg/s]	NetworkElement(id=101).OutletNodePressure [Pa]	Pump.OutletNodePressure [Pa]
-0	0.586588	0.586588	-1.00001e-14	1000
-1	0.586588	0.586588	-1.00001e-14	1000
+0	0.586584	0.586584	-9.99997e-15	1000
+1	0.586584	0.586584	-9.99997e-15	1000
