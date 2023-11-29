@@ -53,9 +53,10 @@ Generates diagrams for differences.
                             help='Path to FMU test suite root directory. If missing, the current working directory is being used.')
     parser.add_argument('-s', '--suffix', dest='suffix', required=False, type=str, 
                             help='Reference result suffix. If missing, automatically determined based on OS.')
-    parser.add_argument('-t', '--threshold', dest='threshold', required=False, type=float, default=0.1,
+    parser.add_argument('-t', '--threshold', dest='threshold', required=False, type=float, default=1e-4,
                             help="Threshold to accept as 'correct'. If above, a plot will be generated.")
-
+    parser.add_argument('--png', dest='png', required=False, default=False, action='store_true',
+                            help='If given, for each plot a png file is being created.')
     return parser.parse_args()
 
 
@@ -148,6 +149,10 @@ def plot_results(file_ref, file_res):
                 handles, labels = ax[0].get_legend_handles_labels()
                 f.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.0001))
                 f.tight_layout()
+                if args.png:
+                    pngFile = file_res + "-{}.png".format(num+1)
+                    print("-> {}".format(pngFile))
+                    f.savefig(pngFile)
         else:
             f, ax = pl.subplots(1, 1, figsize=(10, 10))
             ax.set_title(base_name)
@@ -157,6 +162,10 @@ def plot_results(file_ref, file_res):
             ticks = ax.get_yticks()
             formatted_ticks = ['{:.1e}'.format(tick) for tick in ticks]
             ax.set_yticklabels(formatted_ticks)
+            if args.png:
+                pngFile = file_res + ".png"
+                print("-> {}".format(pngFile))
+                f.savefig(pngFile)
 
 
 def cpu_time(prj):
@@ -199,7 +208,7 @@ for cat in categories:
             continue
 
         rmse_res = rmse(res_file_ref, res_file_new)
-        if rmse_res > 0.0001:
+        if rmse_res > rmse_threshold:
 
             plot_results(res_file_ref, res_file_new)
 
