@@ -4,31 +4,90 @@
 # Script to visualize differences of results between stored reference results and
 # new simulation results.
 # 
+# Requires matplotlib:
+# 
+#   Installation on Windows:
+#
+#      python -m pip install -U pip
+#      python -m pip install -U matplotlib
+#
+#   Installation on Ubuntu:
+#
+#      sudo apt install python3-matplotlib
+#
 # License: 
 #   GPL License
 #
 # Authors: 
 #   Hauke Hirsch <hauke.hirsch@tu-dresden.de>  (primary author)
-#   Andreas Nicolai <andreas.nicolai@gmx.net> (patches)
+#   Andreas Nicolai <andreas.nicolai@gmx.net>  (patches)
 #
 # Syntax:
-# > python compare_results_against_reference_results.py --path <path/to/testsuite> --suffix <suffix>
+# > python compare_results_against_reference_results.py [--path <path/to/testsuite>] [--suffix <suffix>] [--threshold <difference limit>]
 #
 # Example:
 # > python compare_results_against_reference_results.py --path ../../data/tests --suffix VC2019_win64
 #
 
 import os
+import argparse
+import platform
 import matplotlib.pyplot as pl
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
-path = r'C:\git\SIM-VICUS\data\tests'
+def configCommandLineArguments():
+    """
+    This method sets the available input parameters and parses them.
 
-reference_label = 'VC2019_win64'                        # compare with reference results with this label
+    Returns a configured argparse.ArgumentParser object.
+    """
+
+    parser = argparse.ArgumentParser("compare_results_against_reference_results.py")
+    parser.description = '''
+Processes results from the regression test suite and compares new results against stored reference results.
+Generates diagrams for differences.
+'''
+
+    parser.add_argument('-p', '--path', dest='path', required=False, type=str, 
+                            help='Path to FMU test suite root directory. If missing, the current working directory is being used.')
+    parser.add_argument('-s', '--suffix', dest='suffix', required=False, type=str, 
+                            help='Reference result suffix. If missing, automatically determined based on OS.')
+    parser.add_argument('-t', '--threshold', dest='threshold', required=False, type=float, default=0.1,
+                            help="Threshold to accept as 'correct'. If above, a plot will be generated.")
+
+    return parser.parse_args()
+
+
+
+# *** MAIN PROGRAM START ***
+
+args = configCommandLineArguments()
+
+if not args.path:
+    args.path = os.getcwd()
+
+if not args.suffix:
+
+    # process all directories under test suite directory
+    currentOS = platform.system()
+    compilerID = None
+    if currentOS   == "Linux" :
+        compilerID = "gcc_linux"
+    
+    elif currentOS == "Windows" :
+        compilerID = "VC2019_win64"
+    
+    elif currentOS == "Darwin" :
+        compilerID = "gcc_mac"
+    
+    args.suffix = compilerID
+    
+path = args.path
+reference_label = args.suffix                          # compare with reference results with this label
 # case_filter = ['ControlledPumpTemperatureDifferenceFollowingElement'] # if empty all cases are considered
 case_filter = []                                        # if empty all cases are considered
-rmse_threshold = 0.1                                    # cases with rmse above that will be plotted
+rmse_threshold = args.threshold                         # only cases with rmse above that will be plotted
 
 plots_per_fig = 5                                       # number of plots in one figure
 
