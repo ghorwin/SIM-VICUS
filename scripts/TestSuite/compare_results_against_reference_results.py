@@ -150,7 +150,13 @@ def plot_results(file_ref, file_res):
                 f.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.0001))
                 f.tight_layout()
                 if args.png:
-                    pngFile = file_res + "-{}.png".format(num+1)
+                    pathParts = file_res.split("\\")
+                    if len(pathParts)==1:
+                        pathParts = file_res.split("/")
+                    if len(pathParts) > 2:
+                        pngFile = os.path.split(file_res)[0] + "/" + pathParts[-3] + "_" + pathParts[-1] + "-{}.png".format(num+1)
+                    else:
+                        pngFile = file_res + "-{}.png".format(num+1)
                     print("-> {}".format(pngFile))
                     f.savefig(pngFile)
         else:
@@ -163,7 +169,13 @@ def plot_results(file_ref, file_res):
             formatted_ticks = ['{:.1e}'.format(tick) for tick in ticks]
             ax.set_yticklabels(formatted_ticks)
             if args.png:
-                pngFile = file_res + ".png"
+                pathParts = file_res.split("\\")
+                if len(pathParts)==1:
+                    pathParts = file_res.split("/")
+                    if len(pathParts) > 2:
+                        pngFile = os.path.split(file_res)[0] + "/" + pathParts[-3] + "_" + pathParts[-1]
+                    else:
+                        pngFile = file_res
                 print("-> {}".format(pngFile))
                 f.savefig(pngFile)
 
