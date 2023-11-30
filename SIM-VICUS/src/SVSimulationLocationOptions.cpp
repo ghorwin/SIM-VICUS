@@ -30,6 +30,8 @@
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <QProcess>
+#include <QScreen>
+#include <QResizeEvent>
 
 #include <NANDRAD_Location.h>
 #include <NANDRAD_KeywordList.h>
@@ -42,6 +44,7 @@
 #include "SVClimateDataSortFilterProxyModel.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyClimate.h"
+#include "SVMainWindow.h"
 
 #include <qwt_plot_curve.h>
 #include <qwt_series_data.h>
@@ -51,8 +54,8 @@
 #include <qwt_plot_grid.h>
 #include <qwt_date_scale_engine.h>
 #include <qwt_scale_div.h>
-#include "qwt_scale_widget.h"
-#include "qwt_plot_zoomer.h"
+#include <qwt_scale_widget.h>
+#include <qwt_plot_zoomer.h>
 
 
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
@@ -111,6 +114,8 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	connect(m_ui->comboBoxAlbedo, &QtExt::ValueInputComboBox::editingFinishedSuccessfully,
 			this, &SVSimulationLocationOptions::on_comboboxAlbedoEditingFinishedSuccessfully);
 
+	connect(&SVMainWindow::instance(), &SVMainWindow::screenHasChanged, this, &SVSimulationLocationOptions::onScreenChanged);
+
 	m_ui->filepathClimateDataFile->setup("", true, true, tr("Climate data container files (*.c6b *.epw *.wac *dat);;All files (*.*)"),
 										 SVSettings::instance().m_dontUseNativeDialogs);
 
@@ -137,6 +142,9 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	m_zoomerWind = new QwtPlotZoomer( m_ui->plotWind->canvas() );
 	m_zoomerRadLongWave = new QwtPlotZoomer( m_ui->plotRadLongWave->canvas() );
 	m_zoomerRadShortWave = new QwtPlotZoomer( m_ui->plotRadShortWave->canvas() );
+
+	const QScreen *screen = QGuiApplication::primaryScreen();
+	onScreenChanged(screen);
 }
 
 
@@ -344,6 +352,8 @@ void SVSimulationLocationOptions::updatePlots(const SVClimateFileInfo * climateI
 		m_ui->plotWind->show();
 	}
 
+
+
 	// axis settings
 
 	// not cyclic climate data ?
@@ -371,7 +381,6 @@ void SVSimulationLocationOptions::updatePlots(const SVClimateFileInfo * climateI
 	m_ui->plotRadShortWave->setContentsMargins(maxAxisWidth-m_ui->plotRadShortWave->axisWidget(QwtPlot::yLeft)->width(),0,0,0);
 	m_ui->plotRadLongWave->setContentsMargins(maxAxisWidth-m_ui->plotRadLongWave->axisWidget(QwtPlot::yLeft)->width(),0,0,0);
 
-
 	m_zoomerRelHum->setZoomBase();
 	m_zoomerTemp->setZoomBase();
 	m_zoomerWind->setZoomBase();
@@ -385,7 +394,7 @@ void SVSimulationLocationOptions::updatePlots(const SVClimateFileInfo * climateI
 
 void SVSimulationLocationOptions::formatPlots(const QDateTime & start, const QDateTime & end, bool init){
 	formatQwtPlot(init, *m_ui->plotTemp, start, end, "Ambient Temperature", "T [C]", -20, 40);
-	formatQwtPlot(init, *m_ui->plotRadLongWave, start, end, "Long Wave Radiation", "I [W/m²]", 0, 1000);
+	formatQwtPlot(init, *m_ui->plotRadLongWave, start, end, "Long Wave Radiation", "I [W/m²]", 0, 600);
 	formatQwtPlot(init, *m_ui->plotRadShortWave, start, end, "Shortwave Radiation", "I [W/m²]", 0, 1400);
 	formatQwtPlot(init, *m_ui->plotWind, start, end, "Wind speed", "v [m/s]", 0, 40);
 	formatQwtPlot(init, *m_ui->plotRelHum, start, end, "Relative Humidity", "r.H. [%]", 0, 100);
@@ -407,7 +416,6 @@ void SVSimulationLocationOptions::minMaxValuesInPlot(const QwtPlot & plot, doubl
 	if (curve != nullptr) {
 		// Now myCurve points to your curve and you can do something with it
 		const QwtSeriesData<QPointF> * seriesData = curve->data();
-
 		minY = std::numeric_limits<double>::max();
 		maxY = std::numeric_limits<double>::min();
 		for (size_t i = 0; i < seriesData->size(); ++i) {
@@ -417,6 +425,22 @@ void SVSimulationLocationOptions::minMaxValuesInPlot(const QwtPlot & plot, doubl
 			maxY = std::max(maxY, sample.y());
 		}
 	}
+}
+
+
+void SVSimulationLocationOptions::resizeEvent(QResizeEvent * event) {
+	QWidget::resizeEvent(event);
+	setPlotHeights(event->size().height());
+}
+
+
+void SVSimulationLocationOptions::setPlotHeights(int totalHeight) {
+	int h = (totalHeight - 120) / 5;
+	m_ui->plotRadLongWave->setFixedHeight(h);
+	m_ui->plotRadShortWave->setFixedHeight(h);
+	m_ui->plotTemp->setFixedHeight(h);
+	m_ui->plotRelHum->setFixedHeight(h);
+	m_ui->plotWind->setFixedHeight(h);
 }
 
 
@@ -437,9 +461,6 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 	for(unsigned int i=0; i<months/2; ++i)
 		majorTicks.push_back(QwtDate::toDouble(start.addMonths(2*(int)i) ) );
 
-	// Init Scale Divider
-	QwtScaleDiv scaleDiv(QwtDate::toDouble(start), QwtDate::toDouble(end), QList<double>(), QList<double>(), majorTicks);
-
 	// inti plot title
 	QFont font;
 	font.setPointSize(10);
@@ -450,21 +471,10 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 	// Set plot title
 	plot.setTitle(qwtTitle);
 
-	// try to find accurate min, max values
-	minMaxValuesInPlot(plot, yLeftMin, yLeftMax);
-
-	if (yLeftMin>0)
-		yLeftMin *= 0.9;
-	else
-		yLeftMin *= 1.1;
-	if (yLeftMax>0)
-		yLeftMax *= 1.1;
-	else
-		yLeftMax *= 0.9;
-
 	// Scale all y axises
-	double yLeftStepSize = (yLeftMax - yLeftMin) / double(yNumSteps);
+	double yLeftStepSize = (yLeftMin - yLeftMax) / double(yNumSteps);
 	plot.setAxisScale(QwtPlot::yLeft, yLeftMin, yLeftMax, yLeftStepSize);
+
 	plot.setAxisFont(QwtPlot::yLeft, font);
 
 	// Init QWT Text
@@ -479,7 +489,7 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 	if(hasRightAxis) {
 		plot.setAxisFont(QwtPlot::yRight, font);
 		plot.enableAxis(QwtPlot::yRight, true);
-		plot.setAxisScale(QwtPlot::yRight, yRightMin, yRightMax, yRightStepSize);
+//		plot.setAxisScale(QwtPlot::yRight, yRightMin, yRightMax, yRightStepSize);
 
 		// right Axis title
 		axisTitle.setText(rightYAxisTitle);
@@ -505,7 +515,6 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 	plot.setAxisScaleDraw(QwtPlot::xBottom, scaleDrawTemp);
 	plot.setAxisScaleEngine(QwtPlot::xBottom, scaleEngine);
 	plot.setMinimumWidth(350);
-
 
 	// Init Grid
 	QwtPlotGrid *grid = new QwtPlotGrid;
@@ -622,6 +631,11 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 
 		default:;
 	}
+}
+
+
+void SVSimulationLocationOptions::onScreenChanged(const QScreen * screen) {
+	setPlotHeights(screen->geometry().height());
 }
 
 
