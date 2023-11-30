@@ -62,6 +62,8 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified(int modificationType, ModificationInfo *);
 
+	void onScreenChanged(const QScreen *screen);
+
 private slots:
 	void on_lineEditTextFilter_editingFinished();
 	void on_lineEditTextFilter_textChanged(const QString &arg1);
@@ -102,7 +104,9 @@ private:
 
 	void minMaxValuesInPlot(const QwtPlot & plot, double & minY, double & maxY);
 
+	void resizeEvent(QResizeEvent * event) override;
 
+	void setPlotHeights(int totalHeight);
 
 	Ui::SVSimulationLocationOptions		*m_ui;
 	SVClimateDataTableModel				*m_climateDataModel = nullptr;
