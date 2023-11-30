@@ -85,14 +85,17 @@ void SVSimulationStartOptions::onModified(int modificationType, ModificationInfo
 	switch (modType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::SolverParametersModified:
-			m_ui->radioButtonSelectedGeometry->setEnabled(!project().m_buildings.empty());
-			updateTimeFrameEdits();
-			updateCmdLine();
+			updateUi();
 		break;
 		default:;
 	}
 }
 
+void SVSimulationStartOptions::updateUi() {
+	m_ui->radioButtonSelectedGeometry->setEnabled(!project().m_buildings.empty());
+	updateTimeFrameEdits();
+	updateCmdLine();
+}
 
 void SVSimulationStartOptions::updateCmdLine() {
 	m_commandLineArgs.clear();

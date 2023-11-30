@@ -47,8 +47,8 @@
      <property name="currentIndex">
       <number>2</number>
      </property>
-     <widget class="QWidget" name="page_4"/>
-     <widget class="QWidget" name="page_3"/>
+     <widget class="QWidget" name="page_0"/>
+     <widget class="QWidget" name="page1"/>
      <widget class="QWidget" name="pageSimulation">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -104,7 +104,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2"/>
+     <widget class="QWidget" name="page3"/>
+     <widget class="QWidget" name="page_4"/>
     </widget>
    </item>
   </layout>

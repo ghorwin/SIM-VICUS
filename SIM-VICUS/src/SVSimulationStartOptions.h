@@ -26,6 +26,8 @@ public:
 
 	void showScreenLog();
 
+	void updateUi();
+
 	/*! Pointer to simulation output options */
 	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
 
