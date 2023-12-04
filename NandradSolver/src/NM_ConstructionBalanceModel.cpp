@@ -840,8 +840,8 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		// side A
 		IBK_ASSERT(m_totalAdsorptionAreaA != 0.0);
 		double radLoadFraction = internalRadiation*m_area/m_totalAdsorptionAreaA; // in [W]
-		m_results[R_FluxShortWaveRadiationA] += radLoadFraction; // this is into the construction
-		m_fluxDensityShortWaveRadiationA += radLoadFraction/m_area;
+		m_results[R_FluxLongWaveRadiationA] += radLoadFraction; // this is into the construction
+		m_fluxDensityLongWaveRadiationA += radLoadFraction/m_area;
 	}
 
 	if (!sideA && m_valueRefs[InputRef_SideBRadiationFromEquipmentLoads] != nullptr) {
@@ -860,8 +860,8 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		// side A
 		IBK_ASSERT(m_totalAdsorptionAreaB != 0.0);
 		double radLoadFraction = internalRadiation*m_area/m_totalAdsorptionAreaB; // in [W]
-		m_results[R_FluxShortWaveRadiationB] += radLoadFraction; // this is into the construction
-		m_fluxDensityShortWaveRadiationB -= radLoadFraction/m_area;
+		m_results[R_FluxLongWaveRadiationB] += radLoadFraction; // this is into the construction
+		m_fluxDensityLongWaveRadiationB -= radLoadFraction/m_area;
 	}
 }
 
