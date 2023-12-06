@@ -270,6 +270,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 		QtExt::Style::ToolBoxPageBackground		= "#212124";
 		QtExt::Style::ToolBoxPageEdge			= "#3a3b3f";
+
+		QIcon::setThemeName("dark");
 	}
 	else if ( theme == SVSettings::TT_White && styleWhite.exists()) {
 
@@ -307,6 +309,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 		QtExt::Style::ToolBoxPageBackground						= "#ffffff";
 		QtExt::Style::ToolBoxPageEdge							= "#f0f0f0";
+
+		QIcon::setThemeName("light");
 	}
 	else {
 		// clear style sheet for default style.

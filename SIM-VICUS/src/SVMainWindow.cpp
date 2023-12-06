@@ -180,6 +180,9 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
+	QIcon::setThemeName("dark");
+	m_ui->actionFileNew->setIcon(QIcon::fromTheme("new_file"));
+
 }
 
 
