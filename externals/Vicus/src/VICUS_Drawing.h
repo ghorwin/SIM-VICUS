@@ -8,10 +8,10 @@
 #include <IBK_Line.h>
 
 #include "VICUS_PlaneGeometry.h"
-#include <VICUS_RotationMatrix.h>
-#include <VICUS_CodeGenMacros.h>
-#include <VICUS_Object.h>
-#include <VICUS_DrawingLayer.h>
+#include "VICUS_RotationMatrix.h"
+#include "VICUS_CodeGenMacros.h"
+#include "VICUS_Object.h"
+#include "VICUS_DrawingLayer.h"
 
 #include <QQuaternion>
 #include <QMatrix4x4>
@@ -214,7 +214,6 @@ public:
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
-
 
 		/*! Point coordinate */
 		IBKMK::Vector2D					m_point;
