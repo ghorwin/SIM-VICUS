@@ -34,6 +34,7 @@
 
 #include <VICUS_GridPlane.h>
 
+#include "VICUS_Drawing.h"
 #include "VICUS_RotationMatrix.h"
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
@@ -176,11 +177,13 @@ private:
 	*/
 	void pick(PickObject & pickObject);
 
-	/*! Pick drawings. */
-	void pickDrawings(PickObject & pickObject, const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction);
+	/*! Pick drawing points. */
+	void pickDrawings(PickObject & pickObject, const IBKMK::Vector3D &nearPoint,
+					  const IBKMK::Vector3D &farPoint, const IBKMK::Vector3D &direction);
 
-	/*! Pick all child surfaces. */
-	void pickChildSurfaces();
+	/*! Pick all block depening drawing points. */
+	void pickBlockDrawings(PickObject &pickObject, const VICUS::Drawing &d, const std::vector<VICUS::Drawing::Insert> &inserts,
+						   const IBKMK::Vector3D &nearPoint, const IBKMK::Vector3D &direction);
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
@@ -205,6 +208,7 @@ private:
 	/*! Selects/deselects objects. */
 	void handleSelection(const KeyboardMouseHandler & keyboardHandler, PickObject & o);
 
+	/*! . */
 	IBKMK::Vector3D calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted);
 
 	/*! Initializes the pan operation. */
