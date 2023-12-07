@@ -915,33 +915,18 @@ void SVMainWindow::onImportPluginTriggered() {
 			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
-			// ask user about preference
-			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
-																					  "the current project with the imported project, or would you like to combine both projects into one?"),
-											tr("Replace"), tr("Combine"));
-//			if (res == 0) {
-//				setFocus();
-//				// close project if we have one
-//				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
-//					return;
 
-//				// create new project
-//				m_projectHandler.newProject(&p); // emits updateActions()
-//			}
-//			else {
-				// The merging of project and referenced data is a bit complicated.
-				// First we must import the embedded database from the imported project
-				// Then, we can copy the buildings to our project.
+			// The merging of project and referenced data is a bit complicated.
+			// First we must import the embedded database from the imported project
+			// Then, we can copy the buildings to our project.
 
-				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
+			m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
 
-				m_projectHandler.importProject(p);
-				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
-//			}
+			m_projectHandler.importProject(p);
+			QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
+
 		}
 	}
-
-//	m_geometryView->refreshSceneView();
 }
 
 

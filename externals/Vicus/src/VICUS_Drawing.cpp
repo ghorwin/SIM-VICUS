@@ -429,59 +429,10 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		// Create Vector from start and end point of the line, add point of origin to each coordinate and calculate z value
 		double zCoordinate = m_zPosition * Z_MULTIPLYER;
 
-		if (m_leftPoint == IBKMK::Vector2D() ||
-				m_rightPoint == IBKMK::Vector2D() ) {
-
-			IBKMK::Vector2D xAxis(1, 0);
-			IBKMK::Vector2D lineVec (std::cos(m_angle * IBK::DEG2RAD),
-									 std::sin(m_angle * IBK::DEG2RAD));
-
-			IBKMK::Vector2D lineVec2 (lineVec.m_y, -lineVec.m_x);
-
-			const unsigned int SCALING_FACTOR = 1E6;
-
-			IBKMK::Vector2D measurePoint1 = m_point1 + SCALING_FACTOR * lineVec2;
-			IBKMK::Vector2D measurePoint2 = m_point2 + SCALING_FACTOR * lineVec2;
-
-			IBK::Line lineMeasure (m_dimensionPoint -   SCALING_FACTOR * lineVec,
-								   m_dimensionPoint + 2*SCALING_FACTOR * lineVec);
-
-			IBK::Line lineLeft  (m_point1 - SCALING_FACTOR * lineVec2, measurePoint1);
-			IBK::Line lineRight (m_point2 - SCALING_FACTOR * lineVec2, measurePoint2);
-
-			IBKMK::Vector2D intersection1Left, intersection2Left;
-			IBKMK::Vector2D intersection1Right, intersection2Right;
-			bool intersect1 = lineMeasure.intersects(lineLeft, intersection1Left, intersection2Left) == 1;
-			bool intersect2 = lineMeasure.intersects(lineRight, intersection1Right, intersection2Right) == 1;
-
-			if (!intersect1 && !intersect2)
-				throw IBK::Exception();
-
-			IBKMK::Vector2D leftPoint, rightPoint;
-			IBKMK::Vector2D point1, point2;
-			bool left = false, right = false;
-			if (intersect1 && (m_dimensionPoint - intersection1Left).magnitudeSquared() > 1E-3 ) {
-				m_leftPoint = intersection1Left;
-				m_rightPoint = m_dimensionPoint;
-				left = true;
-			}
-			if (intersect2 && (m_dimensionPoint - intersection1Right).magnitudeSquared() > 1E-3 ) {
-				m_leftPoint = m_dimensionPoint;
-				m_rightPoint = intersection1Right;
-				right = true;
-			}
-
-			if (!left && !right)
-				return m_planeGeometries;
-		}
-
-		//		qDebug() << "Left point: X " << m_leftPoint.m_x << " Y " << m_leftPoint.m_y;
-		//		qDebug() << "Right point: X " << m_rightPoint.m_x << " Y " << m_rightPoint.m_y;
-
 		m_pickPoints.push_back(m_leftPoint);
 		m_pickPoints.push_back(m_rightPoint);
 
-		// MEASURE LINE ================================================================
+		// Dimension LINE ================================================================
 
 		IBKMK::Vector3D p1 = IBKMK::Vector3D(drawing->m_scalingFactor * m_leftPoint.m_x,
 											 drawing->m_scalingFactor * m_leftPoint.m_y,
@@ -1478,43 +1429,43 @@ void Drawing::updatePointer(){
 	m_objectPtr.clear();
 
 	for (unsigned int i=0; i < m_points.size(); ++i){
-		m_points[i].m_parentLayer = findLayerPointer(m_points[i].m_layerName);
-		m_points[i].m_block = findBlockPointer(m_points[i].m_blockName);
+		m_points[i].m_parentLayer = layerPointer(m_points[i].m_layerName);
+		m_points[i].m_block = blockPointer(m_points[i].m_blockName);
 		m_objectPtr[m_points[i].m_id] = &m_points[i];
 	}
 	for (unsigned int i=0; i < m_lines.size(); ++i){
-		m_lines[i].m_parentLayer = findLayerPointer(m_lines[i].m_layerName);
-		m_lines[i].m_block = findBlockPointer(m_lines[i].m_blockName);
+		m_lines[i].m_parentLayer = layerPointer(m_lines[i].m_layerName);
+		m_lines[i].m_block = blockPointer(m_lines[i].m_blockName);
 		m_objectPtr[m_lines[i].m_id] = &m_lines[i];
 	}
 	for (unsigned int i=0; i < m_polylines.size(); ++i){
-		m_polylines[i].m_parentLayer = findLayerPointer(m_polylines[i].m_layerName);
-		m_polylines[i].m_block = findBlockPointer(m_polylines[i].m_blockName);
+		m_polylines[i].m_parentLayer = layerPointer(m_polylines[i].m_layerName);
+		m_polylines[i].m_block = blockPointer(m_polylines[i].m_blockName);
 		m_objectPtr[m_polylines[i].m_id] = &m_polylines[i];
 	}
 	for (unsigned int i=0; i < m_circles.size(); ++i){
-		m_circles[i].m_parentLayer = findLayerPointer(m_circles[i].m_layerName);
-		m_circles[i].m_block = findBlockPointer(m_circles[i].m_blockName);
+		m_circles[i].m_parentLayer = layerPointer(m_circles[i].m_layerName);
+		m_circles[i].m_block = blockPointer(m_circles[i].m_blockName);
 		m_objectPtr[m_circles[i].m_id] = &m_circles[i];
 	}
 	for (unsigned int i=0; i < m_arcs.size(); ++i){
-		m_arcs[i].m_parentLayer = findLayerPointer(m_arcs[i].m_layerName);
-		m_arcs[i].m_block = findBlockPointer(m_arcs[i].m_blockName);
+		m_arcs[i].m_parentLayer = layerPointer(m_arcs[i].m_layerName);
+		m_arcs[i].m_block = blockPointer(m_arcs[i].m_blockName);
 		m_objectPtr[m_arcs[i].m_id] = &m_arcs[i];
 	}
 	for (unsigned int i=0; i < m_ellipses.size(); ++i){
-		m_ellipses[i].m_parentLayer = findLayerPointer(m_ellipses[i].m_layerName);
-		m_ellipses[i].m_block = findBlockPointer(m_ellipses[i].m_blockName);
+		m_ellipses[i].m_parentLayer = layerPointer(m_ellipses[i].m_layerName);
+		m_ellipses[i].m_block = blockPointer(m_ellipses[i].m_blockName);
 		m_objectPtr[m_ellipses[i].m_id] = &m_ellipses[i];
 	}
 	for (unsigned int i=0; i < m_solids.size(); ++i){
-		m_solids[i].m_parentLayer = findLayerPointer(m_solids[i].m_layerName);
-		m_solids[i].m_block = findBlockPointer(m_solids[i].m_blockName);
+		m_solids[i].m_parentLayer = layerPointer(m_solids[i].m_layerName);
+		m_solids[i].m_block = blockPointer(m_solids[i].m_blockName);
 		m_objectPtr[m_solids[i].m_id] = &m_solids[i];
 	}
 	for (unsigned int i=0; i < m_texts.size(); ++i){
-		m_texts[i].m_parentLayer = findLayerPointer(m_texts[i].m_layerName);
-		m_texts[i].m_block = findBlockPointer(m_texts[i].m_blockName);
+		m_texts[i].m_parentLayer = layerPointer(m_texts[i].m_layerName);
+		m_texts[i].m_block = blockPointer(m_texts[i].m_blockName);
 		m_objectPtr[m_texts[i].m_id] = &m_texts[i];
 	}
 	for (unsigned int i=0; i < m_inserts.size(); ++i){
@@ -1532,8 +1483,8 @@ void Drawing::updatePointer(){
 		}
 	}
 	for (unsigned int i=0; i < m_linearDimensions.size(); ++i){
-		m_linearDimensions[i].m_parentLayer = findLayerPointer(m_linearDimensions[i].m_layerName);
-		m_texts[i].m_block = findBlockPointer(m_linearDimensions[i].m_blockName);
+		m_linearDimensions[i].m_parentLayer = layerPointer(m_linearDimensions[i].m_layerName);
+		m_texts[i].m_block = blockPointer(m_linearDimensions[i].m_blockName);
 		m_objectPtr[m_linearDimensions[i].m_id] = &m_linearDimensions[i];
 
 		for(unsigned int j = 0; j < m_dimensionStyles.size(); ++j) {
@@ -1734,8 +1685,7 @@ const IBKMK::Vector3D Drawing::localY() const {
 	return QVector2IBKVector(m_rotationMatrix.toQuaternion() * QVector3D(0,1,0));
 }
 
-
-DrawingLayer* Drawing::findLayerPointer(const QString &layername){
+const DrawingLayer * Drawing::layerPointer(const QString &layername){
 	for(unsigned int i = 0; i < m_drawingLayers.size(); ++i) {
 		if (m_drawingLayers[i].m_displayName == layername)
 			return &m_drawingLayers[i];
@@ -1743,7 +1693,7 @@ DrawingLayer* Drawing::findLayerPointer(const QString &layername){
 	return nullptr;
 }
 
-Drawing::Block *Drawing::findBlockPointer(const QString &name){
+const Drawing::Block *Drawing::blockPointer(const QString &name){
 	for(unsigned int i = 0; i < m_blocks.size(); ++i) {
 		if (m_blocks[i].m_name == name)
 			return &m_blocks[i];
@@ -2008,7 +1958,9 @@ const QColor & Drawing::AbstractDrawingObject::color() const{
 
 
 double Drawing::AbstractDrawingObject::lineWeight() const{
-	/* if -1: use weight of layer */
+	// ToDo Stephan: Improve function
+
+	/*! if -1: use weight of layer */
 	const DrawingLayer *dl = m_parentLayer;
 
 	if (dl == nullptr)
@@ -2023,10 +1975,11 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 			return dl->m_lineWeight;
 		}
 	}
-	/* if -3: default lineWeight is used
+	/*! if -3: default lineWeight is used
 		if -2: lineWeight of block is used. Needs to be modified when blocks
-		are implemented */
-	else if(m_lineWeight == -3 || m_lineWeight == -2)
+		are implemented
+	*/
+	else if (m_lineWeight == -3 || m_lineWeight == -2)
 		return 0;
 	else
 		return m_lineWeight;

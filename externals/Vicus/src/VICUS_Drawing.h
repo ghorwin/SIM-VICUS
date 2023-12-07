@@ -141,8 +141,8 @@ public:
 		unsigned int								m_zPosition;
 		/*! Name of block. */
 		QString										m_blockName;
-		/* Block Entity belongs to, if nullptr, no block is used */
-		Block										*m_block = nullptr;
+		/*! Block Entity belongs to, if nullptr, no block is used */
+		const Block									*m_block = nullptr;
 		/*! ID of object. */
 		unsigned int								m_id;
 		/*! Transformation matrix. */
@@ -382,10 +382,10 @@ public:
 		IBKMK::Vector2D				m_dimensionPoint;
 
 		/*! Base point. */
-		mutable IBKMK::Vector2D		m_leftPoint;
+		IBKMK::Vector2D				m_leftPoint;
 
 		/*! Base point. */
-		mutable IBKMK::Vector2D		m_rightPoint;
+		IBKMK::Vector2D				m_rightPoint;
 
 		/*! Point 1 of Line. */
 		IBKMK::Vector2D				m_point1;
@@ -496,10 +496,10 @@ public:
 
 private:
 	/*! Helper function to assign the correct layer to an entity */
-	DrawingLayer *findLayerPointer(const QString &layername);
+	const DrawingLayer *layerPointer(const QString &layername);
 
 	/*! Helper function to assign the correct block to an entity */
-	Block* findBlockPointer(const QString &name);
+	const Block *blockPointer(const QString &name);
 
 	/*! Transforms all inserts. */
 	void transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId);

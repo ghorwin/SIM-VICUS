@@ -225,6 +225,29 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 		else
 			++idxNet;
 	}
+
+
+	// *** Drawings
+
+	m_drawings = project().m_drawings;
+	for (unsigned int idxDraw=0; idxDraw<m_drawings.size();  ) {
+
+		VICUS::Drawing &draw = m_drawings[idxDraw];
+
+		for (unsigned int idxLayer=0; idxLayer<draw.m_drawingLayers.size();  ) {
+			VICUS::DrawingLayer drawLayer = draw.m_drawingLayers[idxLayer];
+			if (selectedUniqueIDs.find(drawLayer.m_id) != selectedUniqueIDs.end())
+				draw.m_drawingLayers.erase( draw.m_drawingLayers.begin() + idxLayer );
+			else
+				++idxLayer;
+		}
+
+		if (selectedUniqueIDs.find(draw.m_id) != selectedUniqueIDs.end())
+			m_drawings.erase( m_drawings.begin() + idxDraw );
+		else
+			++idxDraw;
+	}
+
 }
 
 
@@ -241,6 +264,7 @@ void SVUndoDeleteSelected::redo() {
 	prj.m_componentInstances.swap(m_compInstances);
 	prj.m_subSurfaceComponentInstances.swap(m_subCompInstances);
 	prj.m_geometricNetworks.swap(m_networks);
+	prj.m_drawings.swap(m_drawings);
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();
@@ -248,5 +272,6 @@ void SVUndoDeleteSelected::redo() {
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::DrawingModified);
 }
 
