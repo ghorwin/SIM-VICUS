@@ -112,6 +112,7 @@ SOURCES += \
 	../../src/SVDBSupplySystemTableModel.cpp \
 	#../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVDatabaseSortFilterProxyModel.cpp \
+    ../../src/SVDrawingPropertiesDialog.cpp \
     ../../src/SVLcaLccResultsWidget.cpp \
     ../../src/SVLcaLccSettingsWidget.cpp \
     ../../src/SVNetworkExportDialog.cpp \
@@ -326,6 +327,7 @@ HEADERS  += \
 	../../src/SVDBSupplySystemTableModel.h \
 	#../../src/SVDatabaseSortFilterProxyModel.h \
     ../../src/SVDatabaseSortFilterProxyModel.h \
+    ../../src/SVDrawingPropertiesDialog.h \
     ../../src/SVLcaLccResultsWidget.h \
     ../../src/SVLcaLccSettingsWidget.h \
     ../../src/SVNetworkExportDialog.h \
@@ -567,6 +569,7 @@ FORMS    += \
 	../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
+    ../../src/SVDrawingPropertiesDialog.ui \
 	../../src/SVGeometryView.ui \
 	../../src/SVImportIDFDialog.ui \
     ../../src/SVLcaLccResultsWidget.ui \

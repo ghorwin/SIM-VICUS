@@ -24,7 +24,6 @@
 */
 
 #include "SVMainWindow.h"
-#include "SVLcaLccSettingsWidget.h"
 #include "ui_SVMainWindow.h"
 
 #include <QCloseEvent>
@@ -70,6 +69,7 @@
 
 #include <NANDRAD_Project.h>
 
+#include "SVLcaLccSettingsWidget.h"
 #include "SVMessageHandler.h"
 #include "SVConstants.h"
 #include "SVSettings.h"
@@ -893,8 +893,8 @@ void SVMainWindow::onImportPluginTriggered() {
 	bool success = importPlugin->import(this, projectText);
 	try {
 		p.readXML(projectText);
-//		std::ofstream out("g:\\temp\\VicusImport.txt");
-//		out << projectText.toStdString();
+		std::ofstream out("C:/test/VicusImport.xml");
+		out << projectText.toStdString();
 	}
 	catch(IBK::Exception &ex) {
 		success = false;
@@ -919,16 +919,16 @@ void SVMainWindow::onImportPluginTriggered() {
 			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
 																					  "the current project with the imported project, or would you like to combine both projects into one?"),
 											tr("Replace"), tr("Combine"));
-			if (res == 0) {
-				setFocus();
-				// close project if we have one
-				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
-					return;
+//			if (res == 0) {
+//				setFocus();
+//				// close project if we have one
+//				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
+//					return;
 
-				// create new project
-				m_projectHandler.newProject(&p); // emits updateActions()
-			}
-			else {
+//				// create new project
+//				m_projectHandler.newProject(&p); // emits updateActions()
+//			}
+//			else {
 				// The merging of project and referenced data is a bit complicated.
 				// First we must import the embedded database from the imported project
 				// Then, we can copy the buildings to our project.
@@ -937,7 +937,7 @@ void SVMainWindow::onImportPluginTriggered() {
 
 				m_projectHandler.importProject(p);
 				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
-			}
+//			}
 		}
 	}
 

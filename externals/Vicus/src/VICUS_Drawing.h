@@ -410,7 +410,11 @@ public:
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
-	VICUS_READWRITE
+//	VICUS_READWRITE
+
+	void readXML(const TiXmlElement * element);
+
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Returns the drawing object based on the ID. */
 	const AbstractDrawingObject* objectByID(unsigned int id) const;

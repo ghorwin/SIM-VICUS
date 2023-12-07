@@ -76,9 +76,9 @@ void Drawing::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "DrawingLayer::Block")
+					if (c2Name != "Block")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Drawing::Block obj;
+					Block obj;
 					obj.readXML(c2);
 					m_blocks.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -256,7 +256,7 @@ TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Blocks");
 		e->LinkEndChild(child);
 
-		for (std::vector<Drawing::Block>::const_iterator it = m_blocks.begin();
+		for (std::vector<Block>::const_iterator it = m_blocks.begin();
 			it != m_blocks.end(); ++it)
 		{
 			it->writeXML(child);

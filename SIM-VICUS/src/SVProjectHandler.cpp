@@ -364,7 +364,8 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 			IDMap[b.m_id] = newID;
 			b.m_id = newID;
 		}
-		else	IDMap[b.m_id] = b.m_id;
+		else
+			IDMap[b.m_id] = b.m_id;
 
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			if (m_project->objectById(bl.m_id) != nullptr) {
@@ -372,7 +373,8 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 				IDMap[bl.m_id] = newID;
 				bl.m_id = newID;
 			}
-			else	IDMap[bl.m_id] = bl.m_id;
+			else
+				IDMap[bl.m_id] = bl.m_id;
 
 			for (VICUS::Room & r : bl.m_rooms) {
 				if (m_project->objectById(r.m_id) != nullptr) {
@@ -380,7 +382,8 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 					IDMap[r.m_id] = newID;
 					r.m_id = newID;
 				}
-				else	IDMap[r.m_id] = r.m_id;
+				else
+					IDMap[r.m_id] = r.m_id;
 
 				for (VICUS::Surface & s : r.m_surfaces) {
 					if (m_project->objectById(s.m_id) != nullptr) {
@@ -388,7 +391,8 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 						IDMap[s.m_id] = newID;
 						s.m_id = newID;
 					}
-					else	IDMap[s.m_id] = s.m_id;
+					else
+						IDMap[s.m_id] = s.m_id;
 
 					// process the subsurfaces as well - since we only modify IDs, we can const-cast the sub-surfaces vector
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface>&>(s.subSurfaces()) ) {
@@ -397,7 +401,8 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 							IDMap[sub.m_id] = newID;
 							sub.m_id = newID;
 						}
-						else	IDMap[sub.m_id] = sub.m_id;
+						else
+							IDMap[sub.m_id] = sub.m_id;
 					}
 				}
 			}
@@ -420,6 +425,13 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 		c.m_id = nextID++;
 	}
 
+	// import drawings: ids are not used for referencing, so we can simply change them
+	for (VICUS::Drawing &d: other.m_drawings) {
+		d.m_id = nextID++;
+		for (VICUS::DrawingLayer &dl: d.m_drawingLayers) {
+			dl.m_id = nextID++;
+		}
+	}
 
 
 	// fix problems in the project; will set have_modified_project to true if fixes were applied
@@ -435,6 +447,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 	mergedProject.m_componentInstances.insert(mergedProject.m_componentInstances.end(), other.m_componentInstances.begin(), other.m_componentInstances.end());
 	mergedProject.m_subSurfaceComponentInstances.insert(mergedProject.m_subSurfaceComponentInstances.end(), other.m_subSurfaceComponentInstances.begin(), other.m_subSurfaceComponentInstances.end());
 	mergedProject.m_plainGeometry.m_surfaces.insert(mergedProject.m_plainGeometry.m_surfaces.end(), other.m_plainGeometry.m_surfaces.begin(), other.m_plainGeometry.m_surfaces.end());
+	mergedProject.m_drawings.insert(mergedProject.m_drawings.end(), other.m_drawings.begin(), other.m_drawings.end());
 
 	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Merged imported project"), mergedProject);
 	undo->push();
