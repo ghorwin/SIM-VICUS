@@ -837,7 +837,7 @@ const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries() const {
 													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane, m_trans);
 
 		if (!success)
-			throw IBK::Exception(IBK::FormatString("Could not generate plane from line #%1").arg(m_id), FUNC_ID);
+			IBK::IBK_Message(IBK::FormatString("Could not generate plane from line #%1").arg(m_id), IBK::MSG_WARNING);
 
 		m_planeGeometries.push_back(plane);
 		m_dirtyTriangulation = false;
