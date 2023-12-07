@@ -53,7 +53,7 @@ const double DEFAULT_LINE_WEIGHT			= 0.05;
 // multiplier to apply to width of entities
 const double DEFAULT_LINE_WEIGHT_SCALING	= 0.01;
 // Default scaling of fonts in DXF
-const double DEFAULT_FONT_SCALING			= 0.05;
-
+const double DEFAULT_FONT_SCALING			= 0.01;
+const double DEFAULT_FONT_SIZE				= 0.2;
 } // namespace VICUS
 

@@ -58,6 +58,8 @@ extern const double DEFAULT_LINE_WEIGHT;
 // multiplier to apply to width of entities
 extern const double DEFAULT_LINE_WEIGHT_SCALING;
 // Default font scaling
+extern const double DEFAULT_FONT_SIZE;
+// Default font scaling
 extern const double DEFAULT_FONT_SCALING;
 
 #define VICUS_PLANE_PROJECTION_TOLERANCE 1e-3
