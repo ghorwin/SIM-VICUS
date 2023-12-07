@@ -128,7 +128,7 @@ const double Z_MULTIPLYER					= 0.000005;
 const float SNAP_DISTANCES_THRESHHOLD			= 0.5;
 const float SNAP_DRAWING_DISTANCES_THRESHHOLD	= 0.2;
 
-const bool PICK_LINE = true;
+const bool PICK_LINE = false;
 
 #define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
 
