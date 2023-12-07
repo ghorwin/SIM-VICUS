@@ -1891,7 +1891,7 @@ const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
 	QColor color = obj.color().isValid() ? obj.color() : SVStyle::instance().m_defaultDrawingColor;
 
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		qDebug() << "Lightness: " << color.lightness();
+		// qDebug() << "Lightness: " << color.lightness();
 		if (color.lightness() < 50)
 			color = color.lighter(400);
 	}
