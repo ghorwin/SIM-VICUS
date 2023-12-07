@@ -593,7 +593,8 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		double length = (m_leftPoint - m_rightPoint).magnitude();
 		m_pickPoints.push_back(m_textPoint);
 
-		drawing->generatePlanesFromText(QString("%1").arg(length).toStdString(), m_style->m_textHeight, Qt::AlignHCenter, m_angle,
+		drawing->generatePlanesFromText(QString("%1").arg(length).toStdString(), m_style->m_textHeight,
+										Qt::AlignHCenter, m_angle,
 										m_textPoint, m_zPosition * Z_MULTIPLYER,
 										m_planeGeometries, m_trans);
 
@@ -1921,15 +1922,18 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// We choose Arial for now
 	QFont font("Arial");
+	font.setPointSize(1);
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
 
 	double width = path.boundingRect().width();
 	double moveX = 0.0;
-	if (alignment == Qt::AlignHCenter) {
+
+	// Adjust
+	if (alignment == Qt::AlignHCenter)
 		moveX = -0.5*width;
-	}
+
 
 	QTransform transformation;
 	transformation.rotate(rotationAngle);  // Rotate by 45 degrees
@@ -1941,6 +1945,9 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
+	double scalingFactorFonts = (DEFAULT_FONT_SIZE + textSize * DEFAULT_FONT_SCALING) / m_scalingFactor;
+	qDebug() << "Text size: " << scalingFactorFonts;
+
 	for (int i=0; i < polygons.size(); ++i) {
 
 		const QPolygonF &polygon = polygons[i];
@@ -1949,8 +1956,8 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 		for (unsigned int i=0; i<poly.size(); ++i) {
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
-			poly[i] = IBKMK::Vector2D(  point.x() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_x,
-										-point.y() * textSize * DEFAULT_FONT_SCALING * 2 + basePoint.m_y);
+			poly[i] = IBKMK::Vector2D(  point.x() * scalingFactorFonts + basePoint.m_x,
+									   -point.y() * scalingFactorFonts + basePoint.m_y);
 		}
 
 
