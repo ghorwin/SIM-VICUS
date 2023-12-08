@@ -128,8 +128,14 @@
 					<ObjectListName>Internal load models</ObjectListName>
 					<GridName>10 mins</GridName>
 				</OutputDefinition>
+				<!-- construction instance outputs - surface temperatures must increase as result of long-wave radiation exchange -->
 				<OutputDefinition>
-					<Quantity>FluxShortWaveRadiationA</Quantity>
+					<Quantity>SurfaceTemperatureA</Quantity>
+					<ObjectListName>Wall</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureB</Quantity>
 					<ObjectListName>Wall</ObjectListName>
 					<GridName>10 mins</GridName>
 				</OutputDefinition>
