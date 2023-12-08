@@ -151,8 +151,7 @@ SOURCES += \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVSmartIntersectionDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
-    ../../src/SVTimeSliderWidget.cpp \
-    ../../src/SVUndoDeleteDrawing.cpp \
+	../../src/SVTimeSliderWidget.cpp \
     ../../src/SVUndoModifyLcaLcc.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
@@ -368,8 +367,7 @@ HEADERS  += \
     ../../src/SVSmartIntersectionDialog.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
-    ../../src/SVTimeSliderWidget.h \
-    ../../src/SVUndoDeleteDrawing.h \
+	../../src/SVTimeSliderWidget.h \
     ../../src/SVUndoModifyLcaLcc.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
