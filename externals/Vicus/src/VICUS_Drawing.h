@@ -405,6 +405,9 @@ public:
 		/*! Angle of rotation. */
 		double						m_angle = 0.0;
 
+		/*! Measurement text. */
+		QString						m_measurement = "";
+
 		/*! Name of Dim style. */
 		QString						m_styleName;
 

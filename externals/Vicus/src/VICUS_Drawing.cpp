@@ -297,6 +297,8 @@ TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("zPosition", IBK::val2string<unsigned int>(m_zPosition));
 	if (m_angle != 0.0)
 		e->SetAttribute("angle", IBK::val2string<double>(m_angle));
+	if (m_measurement != "")
+		e->SetAttribute("measurement", m_measurement.toStdString());
 	if (!m_layerName.isEmpty())
 		e->SetAttribute("layer", m_layerName.toStdString());
 	if (!m_styleName.isEmpty())
@@ -335,6 +337,8 @@ void Drawing::LinearDimension::readXML(const TiXmlElement *element){
 				m_zPosition = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "angle")
 				m_angle = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "measurement")
+				m_measurement = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "layer")
 				m_layerName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "styleName")
@@ -547,8 +551,14 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		double length = (m_leftPoint - m_rightPoint).magnitude();
 		m_pickPoints.push_back(m_textPoint);
 
-		drawing->generatePlanesFromText(QString("%1").arg(length).toStdString(),
-										m_style->m_textHeight * m_style->m_textScalingFactor * m_style->m_globalScalingFactor,
+		QString measurementText;
+		if (m_measurement == "")
+			measurementText = QString("%1").arg(length);
+		else
+			measurementText = m_measurement;
+
+		drawing->generatePlanesFromText(measurementText.toStdString(),
+										m_style->m_textHeight * m_style->m_globalScalingFactor,
 										Qt::AlignHCenter, m_angle, m_textPoint,
 										m_zPosition * Z_MULTIPLYER, m_planeGeometries, m_trans);
 
