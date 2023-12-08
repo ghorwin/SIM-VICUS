@@ -88,6 +88,8 @@ void Drawing::Text::readXML(const TiXmlElement *element){
 				m_layerName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "height")
 				m_height = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "rotationAngle")
+				m_rotationAngle = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -300,6 +302,7 @@ TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
 	if (!m_styleName.isEmpty())
 		e->SetAttribute("styleName", m_styleName.toStdString());
 
+
 	TiXmlElement::appendSingleAttributeElement(e, "Point1", nullptr, std::string(), m_point1.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "Point2", nullptr, std::string(), m_point2.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "DimensionPoint", nullptr, std::string(), m_dimensionPoint.toString());
@@ -331,7 +334,7 @@ void Drawing::LinearDimension::readXML(const TiXmlElement *element){
 			else if (attribName == "zPosition")
 				m_zPosition = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "angle")
-				m_zPosition = NANDRAD::readPODAttributeValue<double>(element, attrib);
+				m_angle = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "layer")
 				m_layerName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "styleName")
@@ -544,10 +547,10 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		double length = (m_leftPoint - m_rightPoint).magnitude();
 		m_pickPoints.push_back(m_textPoint);
 
-		drawing->generatePlanesFromText(QString("%1").arg(length).toStdString(), m_style->m_textHeight,
-										Qt::AlignHCenter, m_angle,
-										m_textPoint, m_zPosition * Z_MULTIPLYER,
-										m_planeGeometries, m_trans);
+		drawing->generatePlanesFromText(QString("%1").arg(length).toStdString(),
+										m_style->m_textHeight * m_style->m_textScalingFactor * m_style->m_globalScalingFactor,
+										Qt::AlignHCenter, m_angle, m_textPoint,
+										m_zPosition * Z_MULTIPLYER, m_planeGeometries, m_trans);
 
 		m_dirtyTriangulation = false;
 		m_dirtyPoints = false;
@@ -1862,7 +1865,7 @@ bool isClockwise(const QPolygonF& polygon) {
 }
 
 
-void Drawing::generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
+void Drawing::generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment, const double &rotationAngle,
 									 const IBKMK::Vector2D &basePoint, double zPositon,
 									 std::vector<VICUS::PlaneGeometry> &planeGeometries,
 									 const QMatrix4x4 &trans) const {
@@ -1872,7 +1875,7 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 
 	// We choose Arial for now
 	QFont font("Arial");
-	font.setPointSize(1);
+	font.setPointSize(2);
 	// Create a QPainterPath object
 	QPainterPath path;
 	path.addText(0, 0, font, QString::fromStdString(text)); // 50 is roughly the baseline for the text
@@ -1895,8 +1898,13 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
-	double scalingFactorFonts = (DEFAULT_FONT_SIZE + textSize * DEFAULT_FONT_SCALING) / m_scalingFactor;
+	double scalingFactorFonts = textHeight * m_scalingFactor;
 	qDebug() << "Text size: " << scalingFactorFonts;
+
+	if (polygons.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Could not render text '%1'. Skipping").arg(text), IBK::MSG_WARNING);
+		return;
+	}
 
 	for (int i=0; i < polygons.size(); ++i) {
 
@@ -1910,8 +1918,13 @@ void Drawing::generatePlanesFromText(const std::string &text, double textSize, Q
 									   -point.y() * scalingFactorFonts + basePoint.m_y);
 		}
 
-
-		IBKMK::Polygon3D poly3D(points3D(poly, zPositon, trans));
+		IBKMK::Polygon3D poly3D;
+		try {
+			poly3D = IBKMK::Polygon3D (points3D(poly, zPositon, trans));
+		} catch (IBK::Exception &) {
+			IBK::IBK_Message(IBK::FormatString("Could not render text '%1'. Skipping").arg(text), IBK::MSG_WARNING);
+			return;
+		}
 
 		if (!poly3D.isValid())
 			continue;
@@ -2011,6 +2024,10 @@ TiXmlElement *Drawing::DimStyle::writeXML(TiXmlElement *parent) const {
 		e->SetAttribute("fixedExtensionLength", IBK::val2string<bool>(m_fixedExtensionLength));
 	if (m_textHeight > 0.0)
 		e->SetAttribute("textHeight", IBK::val2string<double>(m_textHeight));
+	if (m_globalScalingFactor != 1.0)
+		e->SetAttribute("globalScalingFactor", IBK::val2string<double>(m_globalScalingFactor));
+	if (m_globalScalingFactor != 1.0)
+		e->SetAttribute("textScalingFactor", IBK::val2string<double>(m_textScalingFactor));
 
 	return e;
 }
@@ -2044,6 +2061,8 @@ void Drawing::DimStyle::readXML(const TiXmlElement *element) {
 				m_fixedExtensionLength = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "textHeight")
 				m_textHeight = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "globalScalingFactor")
+				m_globalScalingFactor = NANDRAD::readPODAttributeValue<double>(element, attrib);
 
 			attrib = attrib->Next();
 		}

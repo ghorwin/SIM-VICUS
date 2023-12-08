@@ -115,21 +115,26 @@ void WireFrameObject::destroy() {
 }
 
 template <typename t>
-void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
+void generateDrawingPlanes(const std::vector<t> &objects, unsigned int idDrawinLayer, unsigned int &currentVertexIndex,
 						   unsigned int &currentElementIndex, std::vector<VertexC> &vertexBufferData, std::vector<GLuint> &indexBufferData) {
 
 	for (const t & obj : objects) {
 		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+		Q_ASSERT(dl != nullptr);
 
+		// Skip all block objects. They are added as part of inserts.
 		if (obj.m_block != nullptr)
 			continue;
 
-		if (dl == nullptr)
+		// If object is not part of layer, we skip it
+		if (idDrawinLayer != dl->m_id)
 			continue;
 
+		// If layer is not selected and visible, it is also not drawn
 		if (!dl->m_selected || !dl->m_visible)
 			continue;
 
+		// Get all planes
 		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries();
 		for (const VICUS::PlaneGeometry &plane : planes) {
 			addPlane(plane.triangulationData(), currentVertexIndex, currentElementIndex,
@@ -214,14 +219,16 @@ void WireFrameObject::updateBuffers() {
 			if (handledDrawingIds.find(drawing->m_id) != handledDrawingIds.end())
 				continue; // Skip if already handled
 
-			generateDrawingPlanes<VICUS::Drawing::Line>(drawing->m_lines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing->m_polylines, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing->m_linearDimensions, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::Arc>(drawing->m_arcs, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing->m_ellipses, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::Circle>(drawing->m_circles, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::Solid>(drawing->m_solids, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
-			generateDrawingPlanes<VICUS::Drawing::Text>(drawing->m_texts, *drawing, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Line>(drawing->m_lines, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing->m_polylines, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing->m_linearDimensions, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Arc>(drawing->m_arcs, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing->m_ellipses, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Circle>(drawing->m_circles, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Solid>(drawing->m_solids, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			generateDrawingPlanes<VICUS::Drawing::Text>(drawing->m_texts, drawingLayer->m_id, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+
+			//handledDrawingIds.insert(drawing->m_id);
 		}
 
 	}

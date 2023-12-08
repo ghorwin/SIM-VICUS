@@ -181,6 +181,12 @@ public:
 		/*! Fixed length of extension line. */
 		bool				m_fixedExtensionLength = false;
 
+		/*! Global scaling factor. */
+		double				m_globalScalingFactor = 1.0;
+
+		/*! Text scaling factor. */
+		double				m_textScalingFactor = 1.0;
+
 		/*! Extension line length. */
 		double				m_extensionLineLength = 0.0;
 
@@ -518,7 +524,7 @@ private:
 		in order to get a rough letter and less polygons. Some dxfs contain a lot of text and so we would end in having too many
 		polygons.
 	*/
-	void generatePlanesFromText(const std::string &text, double textSize, Qt::Alignment alignment, const double &rotationAngle,
+	void generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment, const double &rotationAngle,
 								const IBKMK::Vector2D &basePoint, double zPositon,
 								std::vector<VICUS::PlaneGeometry> &planeGeometries,
 								const QMatrix4x4 &trans) const;
