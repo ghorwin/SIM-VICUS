@@ -1084,7 +1084,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries() const {
 			polylinePoints.push_back(QVector2IBKVector(vec));
 		}
 
-		bool success = drawing->generatePlanesFromPolyline(polylinePoints, true,
+		bool success = drawing->generatePlanesFromPolyline(polylinePoints, m_endConnected,
 														   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
 														   m_planeGeometries, m_trans);
 
@@ -1836,7 +1836,7 @@ bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &pol
 	};
 
 	// loops through all points in polyline, draws a line between every two points, adds a triangle between two lines to fill out the gaps
-	for(unsigned int i = 0; i < polyline.size() - 1; i++){
+	for (unsigned int i = 0; i < polyline.size() - 1; i++) {
 		processSegment(polyline[i], polyline[i+1]);
 	}
 
