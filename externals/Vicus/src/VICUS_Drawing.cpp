@@ -1293,7 +1293,6 @@ void Drawing::Ellipse::readXML(const TiXmlElement *element){
 			return;
 		}
 
-
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
