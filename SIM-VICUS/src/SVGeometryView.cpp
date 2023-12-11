@@ -112,6 +112,20 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	onViewStateChanged();
 
 	m_focusRootWidgets.insert(this);
+
+	m_ui->actionAcousticParametrization->setIcon(QIcon::fromTheme("properties_acoustic"));
+	m_ui->actionBuildingParametrization->setIcon(QIcon::fromTheme("properties_thermal"));
+	m_ui->actionNetworkParametrization->setIcon(QIcon::fromTheme("properties_network"));
+	m_ui->actionSiteParametrization->setIcon(QIcon::fromTheme("grid_edit"));
+	m_ui->actionAddGeometry->setIcon(QIcon::fromTheme("geometry_add"));
+	m_ui->actionAlignGeometry->setIcon(QIcon::fromTheme("geometry_other"));
+	m_ui->actionCopyGeometry->setIcon(QIcon::fromTheme("geometry_copy"));
+	m_ui->actionRotateGeometry->setIcon(QIcon::fromTheme("geometry_rotate"));
+	m_ui->actionScaleGeometry->setIcon(QIcon::fromTheme("geometry_scale"));
+	m_ui->actionTranslateGeometry->setIcon(QIcon::fromTheme("geometry_move"));
+	m_ui->actionMeasure->setIcon(QIcon::fromTheme("measure"));
+	m_ui->actionShowResults->setIcon(QIcon::fromTheme("show_results"));
+	m_ui->actionSnap->setIcon(QIcon::fromTheme("snap"));
 }
 
 

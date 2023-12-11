@@ -1,10 +1,40 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/dark/index.theme</file>
-        <file>icons/dark/svg/load_file.svg</file>
-        <file>icons/dark/svg/new_file.svg</file>
-        <file>icons/dark/svg/redo.svg</file>
-        <file>icons/dark/svg/save_file.svg</file>
+        <file>icons/light/index.theme</file>
+        <file>icons/dark/svg/file_new.svg</file>
+        <file>icons/dark/svg/file_open.svg</file>
+        <file>icons/dark/svg/file_save.svg</file>
+        <file>icons/dark/svg/geometry_add.svg</file>
+        <file>icons/dark/svg/geometry_copy.svg</file>
+        <file>icons/dark/svg/geometry_move.svg</file>
+        <file>icons/dark/svg/geometry_rotate.svg</file>
+        <file>icons/dark/svg/geometry_scale.svg</file>
+        <file>icons/dark/svg/grid_edit.svg</file>
+        <file>icons/dark/svg/local_coordinate_align.svg</file>
+        <file>icons/dark/svg/measure.svg</file>
+        <file>icons/dark/svg/properties_acoustic.svg</file>
+        <file>icons/dark/svg/properties_network.svg</file>
+        <file>icons/dark/svg/properties_thermal.svg</file>
+        <file>icons/dark/svg/show_results.svg</file>
+        <file>icons/dark/svg/smart_select.svg</file>
+        <file>icons/dark/svg/snap.svg</file>
         <file>icons/dark/svg/undo.svg</file>
+        <file>icons/dark/svg/redo.svg</file>
+        <file>icons/dark/svg/geometry_other.svg</file>
+        <file>icons/light/svg/file_new.svg</file>
+        <file>icons/light/svg/file_open.svg</file>
+        <file>icons/light/svg/file_save.svg</file>
+        <file>icons/light/svg/geometry_copy.svg</file>
+        <file>icons/light/svg/geometry_other.svg</file>
+        <file>icons/light/svg/geometry_rotate.svg</file>
+        <file>icons/light/svg/geometry_scale.svg</file>
+        <file>icons/light/svg/grid_edit.svg</file>
+        <file>icons/light/svg/local_coordinate_align.svg</file>
+        <file>icons/light/svg/measure.svg</file>
+        <file>icons/light/svg/redo.svg</file>
+        <file>icons/light/svg/show_results.svg</file>
+        <file>icons/light/svg/snap.svg</file>
+        <file>icons/light/svg/undo.svg</file>
     </qresource>
 </RCC>

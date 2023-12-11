@@ -43,6 +43,9 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 
 	// make us known to the world
 	SVViewStateHandler::instance().m_localCoordinateViewWidget = this;
+
+	m_ui->toolButtonAlignCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_align"));
+	m_ui->toolButtonMoveCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_align"));
 }
 
 

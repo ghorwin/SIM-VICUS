@@ -180,9 +180,15 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	QWindow *w = window()->windowHandle();
 	connect(w, &QWindow::screenChanged, this, &SVMainWindow::onScreenChanged);
 
-	QIcon::setThemeName("dark");
-	m_ui->actionFileNew->setIcon(QIcon::fromTheme("new_file"));
+	// we need to set the theme name once here
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		QIcon::setThemeName("dark");
+	else
+		QIcon::setThemeName("light");
 
+	m_ui->actionFileNew->setIcon(QIcon::fromTheme("file_new"));
+	m_ui->actionFileOpen->setIcon(QIcon::fromTheme("file_open"));
+	m_ui->actionFileSave->setIcon(QIcon::fromTheme("file_save"));
 }
 
 
@@ -766,11 +772,11 @@ void SVMainWindow::setup() {
 	// *** setup tool bar (add actions for undo and redo) ***
 
 	m_undoAction = m_undoStack->createUndoAction(this, tr("Undo"));
-	m_undoAction->setIcon(QIcon(":/gfx/icons8/icons8-back-80.png"));
+	m_undoAction->setIcon(QIcon::fromTheme("undo"));
 	m_undoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Z));
 	m_redoAction = m_undoStack->createRedoAction(this, tr("Redo"));
 	m_redoAction->setShortcut(QKeySequence((int)Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-	m_redoAction->setIcon(QIcon(":/gfx/icons8/icons8-forward-80.png"));
+	m_redoAction->setIcon(QIcon::fromTheme("redo"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
 	QList<QAction*> acts = m_ui->menuEdit->actions();
