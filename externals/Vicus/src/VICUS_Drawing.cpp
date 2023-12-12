@@ -552,13 +552,15 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		m_pickPoints.push_back(m_textPoint);
 
 		QString measurementText;
-		if (m_measurement == "")
-			measurementText = QString("%1").arg(length);
+		if (m_measurement == "") {
+			measurementText = QString("%1").arg(length / m_style->m_textLinearFactor,
+												m_style->m_textDecimalPlaces, 'g');
+		}
 		else
 			measurementText = m_measurement;
 
 		drawing->generatePlanesFromText(measurementText.toStdString(),
-										m_style->m_textHeight * m_style->m_globalScalingFactor,
+										m_style->m_textHeight * m_style->m_globalScalingFactor * 2,
 										Qt::AlignHCenter, m_angle, m_textPoint,
 										m_zPosition * Z_MULTIPLYER, m_planeGeometries, m_trans);
 
@@ -1875,8 +1877,8 @@ bool isClockwise(const QPolygonF& polygon) {
 }
 
 
-void Drawing::generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment, const double &rotationAngle,
-									 const IBKMK::Vector2D &basePoint, double zPositon,
+void Drawing::generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment,
+									 const double &rotationAngle, const IBKMK::Vector2D &basePoint, double zPositon,
 									 std::vector<VICUS::PlaneGeometry> &planeGeometries,
 									 const QMatrix4x4 &trans) const {
 
@@ -1908,8 +1910,11 @@ void Drawing::generatePlanesFromText(const std::string &text, double textHeight,
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
-	double scalingFactorFonts = textHeight * m_scalingFactor;
+	double scalingFactorFonts = std::max(textHeight * DEFAULT_FONT_SCALING * m_scalingFactor,
+										 DEFAULT_FONT_SIZE);
+
 	qDebug() << "Text size: " << scalingFactorFonts;
+	qDebug() << "Rotation angle: " << rotationAngle;
 
 	if (polygons.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Could not render text '%1'. Skipping").arg(text), IBK::MSG_WARNING);
@@ -2038,6 +2043,10 @@ TiXmlElement *Drawing::DimStyle::writeXML(TiXmlElement *parent) const {
 		e->SetAttribute("globalScalingFactor", IBK::val2string<double>(m_globalScalingFactor));
 	if (m_globalScalingFactor != 1.0)
 		e->SetAttribute("textScalingFactor", IBK::val2string<double>(m_textScalingFactor));
+	if (m_textLinearFactor != 1.0)
+		e->SetAttribute("textLinearFactor", IBK::val2string<double>(m_textLinearFactor));
+	if (m_textDecimalPlaces != 1.0)
+		e->SetAttribute("textDecimalPlaces", IBK::val2string<int>(m_textDecimalPlaces));
 
 	return e;
 }
@@ -2073,6 +2082,10 @@ void Drawing::DimStyle::readXML(const TiXmlElement *element) {
 				m_textHeight = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "globalScalingFactor")
 				m_globalScalingFactor = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "textLinearFactor")
+				m_textLinearFactor = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "textDecimalPlaces")
+				m_textDecimalPlaces = NANDRAD::readPODAttributeValue<int>(element, attrib);
 
 			attrib = attrib->Next();
 		}

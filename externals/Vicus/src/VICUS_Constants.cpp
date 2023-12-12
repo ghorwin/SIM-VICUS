@@ -42,7 +42,7 @@ const char * XML_READ_UNKNOWN_NAME		= "Name '%1' for tag '%2' in line %3 is inva
 const char * DATABASE_PLACEHOLDER_NAME			= "Database";
 const char * USER_DATABASE_PLACEHOLDER_NAME		= "User Database";
 
-const unsigned int SEGMENT_COUNT_ARC		= 15;
+const unsigned int SEGMENT_COUNT_ARC		= 30;
 const unsigned int SEGMENT_COUNT_CIRCLE		= 15;
 const unsigned int SEGMENT_COUNT_ELLIPSE	= 15;
 
@@ -53,7 +53,7 @@ const double DEFAULT_LINE_WEIGHT			= 0.05;
 // multiplier to apply to width of entities
 const double DEFAULT_LINE_WEIGHT_SCALING	= 0.01;
 // Default scaling of fonts in DXF
-const double DEFAULT_FONT_SCALING			= 0.001;
-const double DEFAULT_FONT_SIZE				= 0.2;
+const double DEFAULT_FONT_SCALING			= 0.6;
+const double DEFAULT_FONT_SIZE				= 50;
 } // namespace VICUS
 
