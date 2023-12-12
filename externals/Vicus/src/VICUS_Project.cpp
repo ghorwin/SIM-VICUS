@@ -268,13 +268,97 @@ void Project::readXML(const IBK::Path & filename) {
 }
 
 
+void Project::readDrawingXML(const IBK::Path & filename) {
+	FUNCID(Project::readDrawingXML);
+	TiXmlDocument doc;
+	IBK::Path fname(filename);
+
+	if ( !fname.isFile() )
+		throw IBK::Exception(IBK::FormatString("File '%1' does not exist or cannot be opened for reading.")
+								 .arg(fname), FUNC_ID);
+
+	if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
+		throw IBK::Exception(IBK::FormatString("Error in line %1 of drawing file '%2':\n%3")
+								 .arg(doc.ErrorRow())
+								 .arg(filename)
+								 .arg(doc.ErrorDesc()), FUNC_ID);
+	}
+
+	// we use a handle so that NULL pointer checks are done during the query functions
+	TiXmlHandle xmlHandleDoc(&doc);
+	// read root element
+	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+	if (!xmlElem)
+		return; // empty file?
+	std::string rootnode = xmlElem->Value();
+	if (rootnode != "VicusDrawings")
+		throw IBK::Exception( IBK::FormatString("Expected 'VicusDrawings' as root node in XML file."), FUNC_ID);
+
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+	try {
+		TiXmlElement * child = xmlRoot.FirstChild("Drawings").Element();
+		Q_ASSERT(child);
+		const TiXmlElement * c2 = child->FirstChildElement();
+		while (c2) {
+			const std::string & c2Name = c2->ValueStr();
+			if (c2Name != "Drawing")
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			Drawing obj;
+			obj.readXML(c2);
+			m_drawings.push_back(obj);
+			c2 = c2->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading drawing file."), FUNC_ID);
+	}
+}
+
+
 void Project::readXML(const QString & projectText) {
+	FUNCID(Project::readXML);
 	TiXmlDocument doc;
 	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
 	if (!xmlElem)
 		return; // empty project, this means we are using only defaults
 
 	readXMLDocument(xmlElem);
+
+	/* Read the drawings from vicus project xml
+	   NOTE: This is only necessary here, during project import when the import contains a drawing.
+	   For normal project reading, drawings are stored in separate xml file.
+	 */
+	try {
+		TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+		const TiXmlElement * c = xmlElem->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Drawings") {
+				try {
+					const TiXmlElement * c2 = c->FirstChildElement();
+					while (c2) {
+						const std::string & c2Name = c2->ValueStr();
+						if (c2Name != "Drawing")
+							IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+						Drawing obj;
+						obj.readXML(c2);
+						m_drawings.push_back(obj);
+						c2 = c2->NextSiblingElement();
+					}
+				}
+				catch (IBK::Exception &ex){
+					throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
+				}
+			}
+			c = c->NextSiblingElement();
+		}
+		// don't forget to update pointers
+		updatePointers();
+	}
+	catch (...){
+		// thats fine, there is just no drawing in the imported project file
+	}
 }
 
 
@@ -367,9 +451,27 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	writeXML(root);
 
-	// other files
-
 	doc.SaveFile( filename.c_str() );
+}
+
+
+void Project::writeDrawingXML(const IBK::Path & filename) const {
+
+	TiXmlDocument docDraw;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	docDraw.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusDrawings" );
+	docDraw.LinkEndChild(root);
+
+	TiXmlElement * e = new TiXmlElement( "Drawings" );
+	root->LinkEndChild(e);
+
+	for (std::vector<Drawing>::const_iterator it = m_drawings.begin(); it != m_drawings.end(); ++it) {
+		it->writeXML(e);
+	}
+
+	docDraw.SaveFile( filename.c_str() );
 }
 
 

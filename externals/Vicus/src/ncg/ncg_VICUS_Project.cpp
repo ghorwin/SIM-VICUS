@@ -88,20 +88,10 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "Drawings") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "Drawing")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Drawing obj;
-					obj.readXML(c2);
-					m_drawings.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "IfcFilePath")
 				m_ifcFilePath = IBK::Path(c->GetText());
+			else if (cName == "DrawingFilePath")
+				m_drawingFilePath = IBK::Path(c->GetText());
 			else if (cName == "SolverParameter")
 				m_solverParameter.readXML(c);
 			else if (cName == "SimulationParameter")
@@ -205,23 +195,13 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 	m_plainGeometry.writeXML(e);
 
-	if (!m_drawings.empty()) {
-		TiXmlElement * child = new TiXmlElement("Drawings");
-		e->LinkEndChild(child);
-
-		for (std::vector<Drawing>::const_iterator it = m_drawings.begin();
-			it != m_drawings.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
 	m_embeddedDB.writeXML(e);
 
 	m_fmiDescription.writeXML(e);
 	if (m_ifcFilePath.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "IfcFilePath", nullptr, std::string(), m_ifcFilePath.str());
+	if (m_drawingFilePath.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "DrawingFilePath", nullptr, std::string(), m_drawingFilePath.str());
 	return e;
 }
 

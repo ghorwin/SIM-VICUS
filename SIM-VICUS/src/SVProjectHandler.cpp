@@ -240,7 +240,7 @@ void SVProjectHandler::loadProject(QWidget * parent, QString fileName,	bool sile
 		}
 
 		try {
-			if (!read(fileName))
+			if (!read(parent, fileName))
 				throw IBK::Exception(IBK::FormatString("Error reading project '%1'").arg(fileName.toStdString()), FUNC_ID);
 			// project read successfully
 
@@ -491,11 +491,15 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 
 SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, const QString & fileName, bool addToRecentFilesList, bool autosave) {
 
+	bool writeDrawingFile = !m_project->m_drawings.empty();
+
 	// check project file ending, if there is none append it
 	QString fname = fileName;
 	if (autosave) {
 		// Note: for autosave we expect a valid filename and do not modify the passed name
 		fname += "~";
+		// dont write drawing file when autosaving
+		writeDrawingFile = false;
 	}
 	else {
 		if (!fname.endsWith(SVSettings::instance().m_projectFileSuffix))
@@ -515,7 +519,7 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
 
 	// save project file
-	if (!write(fname)) {
+	if (!write(parent, fname, writeDrawingFile)) {
 		m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
 
 		if (autosave)
@@ -1062,7 +1066,7 @@ void SVProjectHandler::destroyProject() {
 }
 
 
-bool SVProjectHandler::read(const QString & fname) {
+bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 	FUNCID(SVProjectHandler::read);
 
 	// check that we have a project, should be newly created
@@ -1079,6 +1083,41 @@ bool SVProjectHandler::read(const QString & fname) {
 		// filename is converted to utf8 before calling readXML
 		m_project->readXML(IBK::Path(fname.toStdString()) );
 		m_projectFile = fname;
+
+		if (m_project->m_drawingFilePath.isValid()) {
+			if (!m_project->m_drawingFilePath.exists()) {
+				// we have a broken link, we may want to delete the link or find the file again
+				QMessageBox msgbox(QMessageBox::Question, tr("Broken link to drawing file"), tr("The referenced drawing file '%1' was not found.").arg(m_project->m_drawingFilePath.c_str()),
+								   QMessageBox::NoButton, parent);
+				// add buttons
+				QPushButton * btnFindFile = new QPushButton(tr("Find file ..."));
+				QPushButton * btnDelete = new QPushButton(tr("Delete reference"));
+				QPushButton * btnIgnore = new QPushButton(tr("Ignore"));
+				msgbox.addButton(btnIgnore, QMessageBox::YesRole); // dialog takes ownership
+				msgbox.addButton(btnDelete, QMessageBox::YesRole); // dialog takes ownership
+				msgbox.addButton(btnFindFile, QMessageBox::YesRole); // dialog takes ownership
+				msgbox.exec(); // ignore return code, as we have custom buttons
+				// delete link
+				if (msgbox.clickedButton() == btnDelete)
+					m_project->m_drawingFilePath.clear();
+				// ask user to find the file
+				else if (msgbox.clickedButton() == btnFindFile) {
+					QString filename = QFileDialog::getOpenFileName(
+						parent,
+						tr("Select drawing file"),
+						SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
+						tr("SIM-VICUS drawing files (*%1 );;All files (*.*)").arg(SVSettings::instance().m_drawingFileSuffix), nullptr,
+						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options() );
+					if (!filename.isEmpty())
+						m_project->m_drawingFilePath = filename.toStdString();
+				}
+			}
+			// if there is a drawing file: read it
+			if (m_project->m_drawingFilePath.exists()) {
+				m_project->readDrawingXML(m_project->m_drawingFilePath);
+				m_project->updatePointers();
+			}
+		}
 
 		// clear placeholders - this avoids confusion with outdates placeholders (ie when a different user has saved the
 		// project file)
@@ -1104,7 +1143,7 @@ bool SVProjectHandler::read(const QString & fname) {
 }
 
 
-bool SVProjectHandler::write(const QString & fname) const {
+bool SVProjectHandler::write(QWidget *parent, const QString & fname, bool writeDrawingFile) const {
 	FUNCID(SVProjectHandler::write);
 	Q_ASSERT(isValid());
 
@@ -1131,6 +1170,23 @@ bool SVProjectHandler::write(const QString & fname) const {
 	}
 	file.close();
 
+	// write drawings file
+	if (writeDrawingFile) {
+		if (m_project->m_drawingFilePath.str().empty()) {
+			// create default drawings file name
+			QString drawingfileName = fname;
+			drawingfileName.replace(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_drawingFileSuffix);
+			m_project->m_drawingFilePath = IBK::Path(drawingfileName.toStdString());
+		}
+
+		if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+			IBK::IBK_Message(IBK::FormatString("Cannot create/write file '%1' (path does not exists or missing permissions).")
+								 .arg(m_project->m_drawingFilePath), IBK::MSG_ERROR, FUNC_ID);
+			return false;
+		}
+		file.close();
+	}
+
 	try {
 		IBK::Path filename(fname.toStdString());
 		IBK::Path oldProjectDir(m_projectFile.toStdString());
@@ -1143,9 +1199,8 @@ bool SVProjectHandler::write(const QString & fname) const {
 			// invalid old path -> we shouldn't have "Project Directory" placeholder in this case...
 		}
 
-
 		// filename is converted to utf8 before calling writeXML
-		m_project->writeXML(IBK::Path(fname.toStdString()) );
+		m_project->writeXML(IBK::Path(fname.toStdString()));
 
 		// also set the project file name
 		m_projectFile = fname;
@@ -1153,6 +1208,9 @@ bool SVProjectHandler::write(const QString & fname) const {
 
 		// remove backup file again
 		QFile(fname + ".bak").remove();
+
+		if (writeDrawingFile)
+			m_project->writeDrawingXML(m_project->m_drawingFilePath);
 
 		return true;
 	}

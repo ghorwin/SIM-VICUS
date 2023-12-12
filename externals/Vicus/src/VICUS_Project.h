@@ -104,6 +104,11 @@ public:
 	*/
 	void readXML(const IBK::Path & filename);
 
+	/*! Reads the additional drawing data from an XML file.
+		\param filename  The full path to the drawing file.
+	*/
+	void readDrawingXML(const IBK::Path & filename);
+
 	/*! Reads the project data from an text which contains XML.
 		\param projectText  Text with VICUS project.
 	*/
@@ -116,6 +121,8 @@ public:
 		\param filename  The full path to the project file.
 	*/
 	void writeXML(const IBK::Path & filename) const;
+
+	void writeDrawingXML(const IBK::Path & filename) const;
 
 	/*! Reads the placeholder section into m_placeholders map. */
 	void readDirectoryPlaceholdersXML(const TiXmlElement * element);
@@ -320,7 +327,7 @@ public:
 	/*! Vector with plain (dumb) geometry. */
 	PlainGeometry										m_plainGeometry;			// XML:E
 
-	std::vector<Drawing>								m_drawings;					// XML:E
+	std::vector<Drawing>								m_drawings;
 
 
 	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
@@ -346,6 +353,9 @@ public:
 
 	/*! Contains a file name for a IFC model in case of import from IFC. */
 	IBK::Path											m_ifcFilePath;				// XML:E
+
+	/*! Contains a file name for a drawing file. */
+	IBK::Path											m_drawingFilePath;			// XML:E
 
 
 	/*! Mapping element holds the room data for later export. */
