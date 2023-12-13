@@ -1384,18 +1384,20 @@ void Scene::setViewState(const SVViewState & vs) {
 		// different update handling
 		bool updateBuilding = true;
 		bool updateNetwork = true;
-		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_Network)
-			updateBuilding = true;
-		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_Network)
-			updateBuilding = true;
-		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
-			updateBuilding = true;
-		if (m_lastColorMode >= SVViewState::OCM_Network)
-			updateNetwork = true;
-		if (vs.m_objectColorMode >= SVViewState::OCM_Network)
-			updateNetwork = true;
-		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
-			updateNetwork = true;
+		// Detailed handling of update logic (update x only when y) is error prone
+		// TODO: If this becomes a performance issue, we may handle the update logic in detail
+//		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_Network)
+//			updateBuilding = true;
+//		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_Network)
+//			updateBuilding = true;
+//		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
+//			updateBuilding = true;
+//		if (m_lastColorMode >= SVViewState::OCM_Network)
+//			updateNetwork = true;
+//		if (vs.m_objectColorMode >= SVViewState::OCM_Network)
+//			updateNetwork = true;
+//		if (vs.m_objectColorMode >= SVViewState::OCM_ResultColorView)
+//			updateNetwork = true;
 
 		// update the color properties in the data objects (does not update GPU memory!)
 		recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
