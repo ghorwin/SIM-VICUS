@@ -136,7 +136,7 @@ public:
 		/*! Color of Entity if defined, use getter color() instead */
 		QColor										m_color = QColor();
 		/*! Line weight of Entity, use getter lineWeight() instead */
-		double										m_lineWeight = -1;
+		double										m_lineWeight = 0;
 		/*! Integer to create a drawing hierarchy in a dxf file to avoid overlapping of entities */
 		unsigned int								m_zPosition;
 		/*! Name of block. */
