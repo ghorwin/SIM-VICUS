@@ -1382,8 +1382,8 @@ void Scene::setViewState(const SVViewState & vs) {
 	if (colorUpdateNeeded) {
 
 		// different update handling
-		bool updateBuilding = false;
-		bool updateNetwork = false;
+		bool updateBuilding = true;
+		bool updateNetwork = true;
 		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_Network)
 			updateBuilding = true;
 		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_Network)
@@ -2623,7 +2623,7 @@ void Scene::enterMeasurementMode() {
 
 	m_measurementWidget->show();
 	// move measurement widget to correct position
-	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+	SVViewStateHandler::instance().m_geometryView->moveTransparentSceneWidgets();
 
 	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(SVViewStateHandler::instance().m_measurementWidget->m_color);
 }

@@ -49,6 +49,7 @@
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
+#include "SVColorLegend.h"
 
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
@@ -102,6 +103,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	// *** create Measurement Widget
 	m_measurementWidget = new SVMeasurementWidget(this); // sets the pointer to the widget in SVViewStateHandler::instance()
+
+	m_colorLegend = new SVColorLegend(this);
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
@@ -259,15 +262,21 @@ bool SVGeometryView::handleGlobalKeyRelease(QKeyEvent * ke) {
 }
 
 
-void SVGeometryView::moveMeasurementWidget() {
+void SVGeometryView::moveTransparentSceneWidgets() {
 	// Note: this function is called from resizeEvent() and indirectly from showEvent(), but here the
 	//       widget wasn't created, yet. Hence, we need to protect against accessing the pointer.
-	if (SVViewStateHandler::instance().m_measurementWidget == nullptr)
-		return;
-	QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
-	point.setX(point.x() - 10);
-	point.setY(point.y() - 10);
-	SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
+	if (SVViewStateHandler::instance().m_measurementWidget != nullptr) {
+		QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
+		point.setX(point.x() - 10);
+		point.setY(point.y() - 10);
+		SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
+	}
+
+	if (SVViewStateHandler::instance().m_colorLegend != nullptr) {
+		QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
+		point.setX(point.x() - 15);
+		SVViewStateHandler::instance().m_colorLegend->setPosition(m_sceneViewContainerWidget->rect().height(), point);
+	}
 }
 
 
@@ -305,7 +314,7 @@ void SVGeometryView::uncheckAllActionsInButtonBar() {
 
 
 SVColorLegend * SVGeometryView::colorLegend() {
-	return m_ui->colorLegend;
+	return m_colorLegend;
 }
 
 
@@ -449,7 +458,9 @@ void SVGeometryView::onViewStateChanged() {
 	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
 		hideMeasurementWidget();
 
-	m_ui->colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
+	// show/hide color legend
+	m_colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
+
 }
 
 
@@ -577,11 +588,9 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// switch to geometry mode, show addGeometry property widget
-	if (vs.m_propertyWidgetMode != SVViewState::PM_AddGeometry ||
-		vs.inPropertyEditingMode())
-	{
-		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-		vs.m_objectColorMode = SVViewState::OCM_None;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	vs.m_objectColorMode = SVViewState::OCM_None;
+	if (SVProjectHandler::instance().isValid()) {
 		// we choose the operation based on the selection state
 		std::set<const VICUS::Object *> sel;
 		project().selectObjects(sel, VICUS::Project::SG_All, true, true);
@@ -589,9 +598,8 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 			vs.m_sceneOperationMode = SVViewState::NUM_OM;
 		else
 			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		SVViewStateHandler::instance().setViewState(vs);
 	}
-
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
@@ -731,9 +739,6 @@ void SVGeometryView::on_actionAcousticParametrization_triggered() {
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
-//	// we need to manually update the color mode, since above we reset it to OCM_None.
-//	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
-//	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 
 
@@ -760,6 +765,7 @@ void SVGeometryView::on_actionSiteParametrization_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// show building properties widget
 	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	vs.m_objectColorMode = SVViewState::OCM_None;
 	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	SVViewStateHandler::instance().setViewState(vs);
@@ -786,7 +792,7 @@ void SVGeometryView::on_actionShowResults_triggered() {
 
 void SVGeometryView::resizeEvent(QResizeEvent *event) {
 	QWidget::resizeEvent(event); // call parent's class implementation
-	moveMeasurementWidget(); // adjust position of measurement widget
+	moveTransparentSceneWidgets(); // adjust position of measurement widget
 }
 
 

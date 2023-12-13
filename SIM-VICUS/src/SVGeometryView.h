@@ -105,7 +105,8 @@ public:
 	bool handleGlobalKeyRelease(QKeyEvent * ke);
 
 	/*! Moves the measurement Widget to the bottom right of the scene view. */
-	void moveMeasurementWidget();
+	void moveTransparentSceneWidgets();
+
 	/*! Hides measurement widget and untoggles the button. */
 	void hideMeasurementWidget();
 
@@ -167,7 +168,7 @@ private slots:
 	void on_actionSiteParametrization_triggered();
 
 	void on_actionAcousticParametrization_triggered();
-	
+
 	void on_actionShowResults_triggered();
 
 protected:
@@ -188,6 +189,7 @@ private:
 	/*! Pointer to measurement widget */
 	SVMeasurementWidget			*m_measurementWidget = nullptr;
 
+	SVColorLegend				*m_colorLegend = nullptr;
 
 	QLineEdit					*m_lineEditCoordinateInput					= nullptr;
 	QAction						*m_actionCoordinateInput					= nullptr;

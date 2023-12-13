@@ -2,13 +2,20 @@
 
 #include <QPainter>
 
-#include "SVStyle.h"
 #include "SVSettings.h"
+#include "SVViewStateHandler.h"
+
 
 SVColorLegend::SVColorLegend(QWidget *parent)
 	: QWidget{parent}
 {
+	setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint);
 
+	setWindowOpacity(0.75);
+
+	resize(100, 600);
+
+	SVViewStateHandler::instance().m_colorLegend = this;
 }
 
 
@@ -29,6 +36,12 @@ void SVColorLegend::setTitle(const QString &title) {
 	update();
 }
 
+void SVColorLegend::setPosition(const double & height, const QPoint & position) {
+	resize(100, height*0.9);
+	double y = position.y() - 0.95*height;
+	move(position.x()-width(), int(y) );
+}
+
 
 void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 
@@ -38,8 +51,8 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 		return;
 
 
-	int offsetV = 0;
-	int offsetH = 0;
+	int offsetV = 10;
+	int offsetH = 10;
 	int barWidth = 10;
 	int labelWidth = 55;
 	int titleWidth = 15;

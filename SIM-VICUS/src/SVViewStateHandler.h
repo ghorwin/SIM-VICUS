@@ -29,6 +29,7 @@
 #include <QObject>
 
 #include "SVViewState.h"
+#include "SVMainWindow.h"
 
 namespace Vic3D {
 	class NewGeometryObject;
@@ -47,6 +48,7 @@ class SVLocalCoordinateView;
 class SVPropAddWindowWidget;
 class SVPreferencesDialog;
 class SVPropNetworkGeometryWidget;
+class SVColorLegend;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -74,6 +76,9 @@ public:
 	void setLock(SVViewState::Locks newLock) { m_viewState.m_locks = newLock; }
 	/*! This toggles/changes snap options, but does not trigger any other side effects. */
 	void setSnap(int snapOptionMask) { m_viewState.m_snapOptionMask = snapOptionMask; }
+
+
+	void toggleTransparentWidgetsVisibility(SVMainWindow::MainViewMode mainView);
 
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
@@ -108,11 +113,14 @@ public:
 	/*! Pointer to Widget that shows all information needed to perform measurements in scene. */
 	SVMeasurementWidget					*m_measurementWidget = nullptr;
 
+	/*! Pointer to Widget that shows color legend in the scene . */
+	SVColorLegend						*m_colorLegend = nullptr;
+
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
 
 	/*! Pointer to network edit widget. */
-	SVPropNetworkGeometryWidget					*m_propEditNetworkWidget = nullptr;
+	SVPropNetworkGeometryWidget			*m_propEditNetworkWidget = nullptr;
 
 	/*! Pointer to local coordinate system view widget (shown in tool bar), only visible when local coordinate system is shown. */
 	SVLocalCoordinateView				*m_localCoordinateViewWidget = nullptr;

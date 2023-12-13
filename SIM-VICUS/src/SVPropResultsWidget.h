@@ -50,6 +50,9 @@ public:
 	*/
 	void refreshDirectory();
 
+	/*! Sets colors to all VICUS objects, based on previously found ids */
+	void updateColors(const double & currentTime);
+
 private slots:
 
 	void onModified(int modificationType, ModificationInfo *data);
@@ -96,6 +99,8 @@ private slots:
 	void on_resultsDir_editingFinished();
 
 private:
+
+	void clearUi();
 
 	/*! Caches the content of a single output file. */
 	struct ResultDataSet {
@@ -144,9 +149,6 @@ private:
 
 	/*! Determine min/max values of current output. If localMinMax==true, the min/max of current time point are determined, otherwise the min/max of entire spline are determined */
 	void setCurrentMinMaxValues(bool localMinMax=false);
-
-	/*! Sets colors to all VICUS objects, based on previously found ids */
-	void updateColors(const double & currentTime);
 
 	/*! Reads colormap from xml file */
 	bool readColorMap(const QString &filename);

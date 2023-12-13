@@ -682,7 +682,7 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 
 void SVMainWindow::moveEvent(QMoveEvent *event) {
 	QMainWindow::moveEvent(event);
-	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+	SVViewStateHandler::instance().m_geometryView->moveTransparentSceneWidgets();
 }
 
 
@@ -973,6 +973,7 @@ void SVMainWindow::onScreenChanged(QScreen *screen) {
 
 
 void SVMainWindow::on_actionFileNew_triggered() {
+	SVViewStateHandler::instance().m_geometryView->switch2AddGeometry();
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
 	// close project if we have one
@@ -981,11 +982,11 @@ void SVMainWindow::on_actionFileNew_triggered() {
 
 	// create new project
 	m_projectHandler.newProject(); // emits updateActions()
-	SVViewStateHandler::instance().m_geometryView->switch2AddGeometry();
 }
 
 
 void SVMainWindow::on_actionFileOpen_triggered() {
+	m_geometryView->switch2AddGeometry();
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
 	// close project if we have one
@@ -1142,6 +1143,10 @@ void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
 
 
 void SVMainWindow::on_actionFileClose_triggered() {
+	/* We dont know which project (network/building) will be opened afterwards.
+	 * Also we need to hide transparent widgets (color legend, measurement widget).
+	 */
+	m_geometryView->switch2AddGeometry();
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
 	m_projectHandler.closeProject(this);
@@ -1593,6 +1598,9 @@ void SVMainWindow::updateMainView() {
 	// uncheck all button bar actions
 	m_ui->actionGeometryView->setChecked(false);
 	m_ui->actionSimulationSettings->setChecked(false);
+
+	// toggle visibility of floating transparent widgets (color legend, measurement)
+	SVViewStateHandler::instance().toggleTransparentWidgetsVisibility(m_mainViewMode);
 
 	switch (m_mainViewMode) {
 		case MV_None: {
