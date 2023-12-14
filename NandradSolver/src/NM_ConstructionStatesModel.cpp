@@ -163,7 +163,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// *** now resize the memory cache for results
 
 	// for thermal balance only, we have 6 outputs = R_EmittedLongWaveRadiationFluxB+1
-	unsigned int skalarResultCount = R_EmittedLongWaveRadiationFluxB+1;
+	unsigned int skalarResultCount = R_FluxEmittedLongWaveRadiationB+1;
 	// add scalar outputs for rh calculation only if balance equation is enabled
 	if (m_moistureBalanceConstruction) {
 		/// \todo hygrothermal code
@@ -186,7 +186,7 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 
 
 void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	int skalarResultCount = R_LongWaveRadiationFluxB+1;
+	int skalarResultCount = R_FluxLongWaveRadiationBalanceB+1;
 	if (m_moistureBalanceConstruction) {
 		/// \todo hygrothermal implementation
 //		varCount = 2; // more variables for hygrothermal calculation
@@ -244,9 +244,9 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 			resDesc.push_back(res);
 
 			// publish sum of emitted radiation flux density
-			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
-			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
-			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxA);
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationA);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationA);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationA);
 			res.m_indexKeys.clear();
 			resDesc.push_back(res);
 		}
@@ -270,9 +270,9 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 			resDesc.push_back(res);
 
 			// publish sum of emitted radiation flux density
-			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
-			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
-			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_EmittedLongWaveRadiationFluxB);
+			res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationB);
+			res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationB);
+			res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", R_FluxEmittedLongWaveRadiationB);
 			res.m_indexKeys.clear();
 			resDesc.push_back(res);
 		}
@@ -369,8 +369,8 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 		}
 
 		// emitted long-wave radiation fluxes depend exclusively on surface temperature
-		resultInputValueReferences.push_back(std::make_pair(&m_results[R_EmittedLongWaveRadiationFluxA], &m_results[R_SurfaceTemperatureA]) );
-		resultInputValueReferences.push_back(std::make_pair(&m_results[R_EmittedLongWaveRadiationFluxB], &m_results[R_SurfaceTemperatureB]) );
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxEmittedLongWaveRadiationA], &m_results[R_SurfaceTemperatureA]) );
+		resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxEmittedLongWaveRadiationB], &m_results[R_SurfaceTemperatureB]) );
 
 		// the individal emitted fluxes also depend on surface temperature
 		for (unsigned int i=0; i<m_vectorValuedResults[VVR_EmittedLongWaveRadiationA].size(); ++i)
@@ -545,7 +545,7 @@ int ConstructionStatesModel::update(const double * y) {
 					double TsA2 = m_TsA * m_TsA;
 					double radiationBalance = eps * (incomingLWRadiation - IBK::BOLTZMANN * TsA2 * TsA2);
 					// store absorbed flux
-					m_results[R_LongWaveRadiationFluxA] = radiationBalance;
+					m_results[R_FluxLongWaveRadiationBalanceA] = radiationBalance;
 				}
 			}
 			// emitted long wave radiation to other construction instance
@@ -570,7 +570,7 @@ int ConstructionStatesModel::update(const double * y) {
 //				for (auto it=m_con->m_interfaceA.m_connectedWindows.begin(); it!=m_con->m_interfaceA.m_connectedWindows.end(); ++it, ++i) {
 
 //				}
-				m_results[R_EmittedLongWaveRadiationFluxA] = emittedFluxSum;
+				m_results[R_FluxEmittedLongWaveRadiationA] = emittedFluxSum;
 			}
 		}
 	}
@@ -597,7 +597,7 @@ int ConstructionStatesModel::update(const double * y) {
 				double TsB2 = m_TsB * m_TsB;
 				double radiationBalance = eps * (incomingLWRadiation - IBK::BOLTZMANN * TsB2 * TsB2);
 				// store absorbed flux
-				m_results[R_LongWaveRadiationFluxB] = radiationBalance;
+				m_results[R_FluxLongWaveRadiationBalanceB] = radiationBalance;
 			}
 			// emitted long wave radiation to other construction instance
 			else {
@@ -621,7 +621,7 @@ int ConstructionStatesModel::update(const double * y) {
 				// TODO calculate emitted radiation to window
 //				for (auto it=m_con->m_interfaceB.m_connectedWindows.begin(); it!=m_con->m_interfaceB.m_connectedWindows.end(); ++it, ++i) {
 //				}
-				m_results[R_EmittedLongWaveRadiationFluxB] = emittedFluxSum;
+				m_results[R_FluxEmittedLongWaveRadiationB] = emittedFluxSum;
 			}
 		}
 	}

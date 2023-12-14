@@ -104,10 +104,10 @@ namespace NANDRAD_MODEL {
 				case 1 : return "SurfaceTemperatureB";
 				case 2 : return "SolarRadiationFluxA";
 				case 3 : return "SolarRadiationFluxB";
-				case 4 : return "LongWaveRadiationFluxA";
-				case 5 : return "LongWaveRadiationFluxB";
-				case 6 : return "EmittedLongWaveRadiationFluxA";
-				case 7 : return "EmittedLongWaveRadiationFluxB";
+				case 4 : return "FluxLongWaveRadiationBalanceA";
+				case 5 : return "FluxLongWaveRadiationBalanceB";
+				case 6 : return "FluxEmittedLongWaveRadiationA";
+				case 7 : return "FluxEmittedLongWaveRadiationB";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -164,7 +164,7 @@ namespace NANDRAD_MODEL {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "SWRadDirectNormal";
 				case 3 : return "SWRadDiffuseHorizontal";
-				case 4 : return "LWSkyRadiation";
+				case 4 : return "LongWaveSkyRadiation";
 				case 5 : return "WindDirection";
 				case 6 : return "WindVelocity";
 				case 7 : return "AirPressure";
@@ -333,10 +333,10 @@ namespace NANDRAD_MODEL {
 				case 1 : return "SurfaceTemperatureB";
 				case 2 : return "SolarRadiationFluxA";
 				case 3 : return "SolarRadiationFluxB";
-				case 4 : return "LongWaveRadiationFluxA";
-				case 5 : return "LongWaveRadiationFluxB";
-				case 6 : return "EmittedLongWaveRadiationFluxA";
-				case 7 : return "EmittedLongWaveRadiationFluxB";
+				case 4 : return "FluxLongWaveRadiationBalanceA";
+				case 5 : return "FluxLongWaveRadiationBalanceB";
+				case 6 : return "FluxEmittedLongWaveRadiationA";
+				case 7 : return "FluxEmittedLongWaveRadiationB";
 			} break;
 			// HeatLoadSummationModel::Results
 			case 4 :
@@ -393,7 +393,7 @@ namespace NANDRAD_MODEL {
 				case 1 : return "RelativeHumidity";
 				case 2 : return "SWRadDirectNormal";
 				case 3 : return "SWRadDiffuseHorizontal";
-				case 4 : return "LWSkyRadiation";
+				case 4 : return "LongWaveSkyRadiation";
 				case 5 : return "WindDirection";
 				case 6 : return "WindVelocity";
 				case 7 : return "AirPressure";
