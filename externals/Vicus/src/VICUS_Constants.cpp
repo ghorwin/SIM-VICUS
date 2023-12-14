@@ -49,7 +49,7 @@ const unsigned int SEGMENT_COUNT_ELLIPSE	= 15;
 // Multiplyer for different layers and their heights
 const double Z_MULTIPLYER					= 0.000001;
 // default line width
-const double DEFAULT_LINE_WEIGHT			= 0.05;
+const double DEFAULT_LINE_WEIGHT			= 0.03;
 // multiplier to apply to width of entities
 const double DEFAULT_LINE_WEIGHT_SCALING	= 0.01;
 // Default scaling of fonts in DXF
