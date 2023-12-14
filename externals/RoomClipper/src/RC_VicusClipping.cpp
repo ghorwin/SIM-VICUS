@@ -36,16 +36,16 @@ void VicusClipper::addClipperPolygons(const std::vector<ClippingPolygon> &polysT
 	for (const ClippingPolygon &polyTemp : polysTemp) {
 		bool foundPolygon = false;
 		for (const ClippingPolygon &poly : polys) {
-			if(polyTemp == poly) {
+			if (polyTemp == poly) {
 				foundPolygon = true;
 				break;
 			}
 		}
-		if(!foundPolygon) {
-			if(!polyTemp.m_polygon.isValid()) {
+		if (!foundPolygon) {
+			if (!polyTemp.m_polygon.isValid()) {
 				continue;
 			}
-			if(polyTemp.m_polygon.area() > MIN_AREA)
+			if (polyTemp.m_polygon.area() > MIN_AREA)
 				polys.push_back(polyTemp);
 		}
 	}
@@ -55,14 +55,14 @@ void VicusClipper::addClipperPolygons(const std::vector<ClippingPolygon> &polysT
 void insertChildSurfaces(std::set<const VICUS::Surface*> &surfaces, const VICUS::Surface &s, bool onlySelected, std::set<unsigned int> *surfaceIds = nullptr) {
 	for (const VICUS::Surface &cs : s.childSurfaces()) {
 
-		if(surfaceIds != nullptr)
+		if (surfaceIds != nullptr)
 			surfaceIds->insert(cs.m_id);
 
 		bool selected = true;
-		if(onlySelected && !cs.m_selected)
+		if (onlySelected && !cs.m_selected)
 			selected = false;
 
-		if(selected)
+		if (selected)
 			surfaces.insert(&cs);
 
 		insertChildSurfaces(surfaces, cs, onlySelected, surfaceIds);
@@ -83,7 +83,7 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 		for (const VICUS::BuildingLevel &bl : b.m_buildingLevels) {
 			for (const VICUS::Room &r : bl.m_rooms) {
 				for (const VICUS::Surface &s : r.m_surfaces) {
-					if(m_onlySelected && !s.m_selected)
+					if (m_onlySelected && !s.m_selected)
 						continue;
 
 					surfaces.insert(const_cast<VICUS::Surface*>(&s));
@@ -96,7 +96,7 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 
 	std::set<unsigned int> alreadyCoupledSurfaces;
 	for (const VICUS::ComponentInstance &ci : m_vicusCompInstances) {
-		if(ci.m_idSideASurface != VICUS::INVALID_ID && ci.m_idSideBSurface != VICUS::INVALID_ID) {
+		if (ci.m_idSideASurface != VICUS::INVALID_ID && ci.m_idSideBSurface != VICUS::INVALID_ID) {
 			alreadyCoupledSurfaces.insert(ci.m_idSideASurface);
 			alreadyCoupledSurfaces.insert(ci.m_idSideBSurface);
 		}
@@ -116,7 +116,7 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 
 
 		// Skip already coupled surfaces
-		if(alreadyCoupledSurfaces.find(s1->m_id) != alreadyCoupledSurfaces.end())
+		if (alreadyCoupledSurfaces.find(s1->m_id) != alreadyCoupledSurfaces.end())
 			continue;
 
 		for (const VICUS::Surface *s2 : surfaces){
@@ -132,29 +132,29 @@ void VicusClipper::findParallelSurfaces(Notification *notify) {
 				throw IBK::Exception("Clipping canceled.", FUNC_ID);
 
 			// Skip already coupled surfaces
-			if(alreadyCoupledSurfaces.find(s2->m_id) != alreadyCoupledSurfaces.end())
+			if (alreadyCoupledSurfaces.find(s2->m_id) != alreadyCoupledSurfaces.end())
 				continue;
 
 			// skip same surfaces
-			if(s1 == s2)
+			if (s1 == s2)
 				continue;
 
 			const VICUS::Surface &surf1 = *s1;
 			const VICUS::Surface &surf2 = *s2;
 
-			if(surf1.m_parent->m_id == surf2.m_parent->m_id)
+			if (surf1.m_parent->m_id == surf2.m_parent->m_id)
 				continue; // only surfaces of different rooms are clipped
 
 			// skip already handled surfaces
-			if(m_surfaceConnections.find(surf1.m_id) != m_surfaceConnections.end())
-				if(m_surfaceConnections[surf1.m_id].find(surf2.m_id) != m_surfaceConnections[surf1.m_id].end())
+			if (m_surfaceConnections.find(surf1.m_id) != m_surfaceConnections.end())
+				if (m_surfaceConnections[surf1.m_id].find(surf2.m_id) != m_surfaceConnections[surf1.m_id].end())
 					continue;
 
 			// calculation of normal deviation
 			double angle = IBKMK::angleBetweenVectorsDeg(-1 * surf1.geometry().normal(), surf2.geometry().normal());
 
 			// check if deviation is inside limits
-			if(angle > m_normalDeviationInDeg)
+			if (angle > m_normalDeviationInDeg)
 				continue;
 
 			// save parallel surfaces
@@ -216,7 +216,7 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 			// get our co object
 			unsigned int idx2 = 0 ;
 			for (;idx2<cs.m_clippingObjects.size(); ++idx2) {
-				if(surf2.m_id == cs.m_clippingObjects[idx2].m_vicusId)
+				if (surf2.m_id == cs.m_clippingObjects[idx2].m_vicusId)
 					break;
 			}
 			ClippingObject &co = cs.m_clippingObjects[idx2];
@@ -226,7 +226,7 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 			IBKMK::Vector3D rayEndPoint;
 			IBKMK::lineToPointDistance( s1.geometry().offset(), s1.geometry().normal().normalized(),
 										s2.geometry().offset(), co.m_distance, rayEndPoint);
-			if(co.m_distance > m_maxDistanceOfSurfaces + EPSILON || co.m_distance < 0)
+			if (co.m_distance > m_maxDistanceOfSurfaces + EPSILON || co.m_distance < 0)
 				continue;
 
 			newClippingObjects.push_back(co);
@@ -246,12 +246,12 @@ void VicusClipper::findSurfacesInRange(Notification *notify) {
 
 
 void VicusClipper::addSurfaceToClippingPolygons(const VICUS::Surface &surf, std::vector<ClippingPolygon> &clippingPolygons) {
-	if(surf.childSurfaces().empty())
+	if (surf.childSurfaces().empty())
 		clippingPolygons.push_back(surf.geometry().polygon2D());
 	else {
 		std::vector<IBKMK::Polygon2D> holes;
 		for (const VICUS::PlaneGeometry::Hole &h : surf.geometry().holes()) {
-			if(h.m_isChildSurface)
+			if (h.m_isChildSurface)
 				holes.push_back(h.m_holeGeometry);
 		}
 		clippingPolygons.push_back(ClippingPolygon(surf.geometry().polygon2D(), holes));
@@ -281,7 +281,7 @@ const std::vector<VICUS::Building> VicusClipper::vicusBuildings() const {
 
 void saveChildOrigin(std::map<unsigned int, unsigned int> &compInstOriginSurfId, const VICUS::Surface &s) {
 	for (const VICUS::Surface &cs : s.childSurfaces()) {
-		if(cs.m_componentInstance == nullptr)
+		if (cs.m_componentInstance == nullptr)
 			continue; // skip invalid comp instances
 		compInstOriginSurfId[cs.m_id] = cs.m_componentInstance->m_idComponent;
 		saveChildOrigin(compInstOriginSurfId, cs);
@@ -333,7 +333,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		// Pointer to current room
 		VICUS::Room *r = dynamic_cast<VICUS::Room*>(originSurf.m_parent);
 
-		if(r == nullptr) {
+		if (r == nullptr) {
 			continue;
 		}
 
@@ -342,8 +342,8 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		addSurfaceToClippingPolygons(originSurf, clippingPolygons);
 
 		// we need the connection to the construction instance, save it!
-		if(cs.m_clippingObjects.empty()){
-			if(originSurf.m_componentInstance == nullptr)
+		if (cs.m_clippingObjects.empty()){
+			if (originSurf.m_componentInstance == nullptr)
 				continue;
 			m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_idComponent;
 			continue;
@@ -352,7 +352,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		// delete original surfaces
 		unsigned int eraseIdx = 0;
 		for (;eraseIdx<r->m_surfaces.size(); ++eraseIdx){
-			if(r->m_surfaces[eraseIdx].m_id == originSurf.m_id)
+			if (r->m_surfaces[eraseIdx].m_id == originSurf.m_id)
 				break;
 		}
 
@@ -377,7 +377,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			for (unsigned int i=0; i<vertexes.size(); ++i){
 
 				// If we have no surface vertexes, we skip it
-				if(s2.geometry().polygon3D().vertexes().empty())
+				if (s2.geometry().polygon3D().vertexes().empty())
 					continue;
 
 				const IBKMK::Vector3D &p = s2.geometry().polygon3D().vertexes()[i];
@@ -406,7 +406,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			// main intersection saving
 			for (ClippingPolygon &poly : mainIntersections) {
 
-				if(!poly.m_polygon.isValid())
+				if (!poly.m_polygon.isValid())
 					continue;
 
 				IBK::IBK_Message(IBK::FormatString("Surface '%1 | %2' is beeing clipped by surface '%3 | %4'")
@@ -462,7 +462,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 							}
 						}
 
-						if(inPoly)
+						if (inPoly)
 							newChilds.push_back(cs);
 					}
 
@@ -480,7 +480,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				r->m_surfaces.push_back(originSurf);
 
 				// save id origin
-				if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
+				if (surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
 					m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
 
 				r->updateParents();
@@ -492,7 +492,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 			for (unsigned int idx = 0; idx<mainDiffs.size(); ++idx){
 				ClippingPolygon &diffPoly = mainDiffs[idx];
-				if(diffPoly.m_polygon.vertexes().empty()){
+				if (diffPoly.m_polygon.vertexes().empty()){
 					erasePos.insert(erasePos.begin(), idx);
 					continue;
 				}
@@ -503,7 +503,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 				mainDiffs.erase(mainDiffs.begin() + idx);
 
 
-			if(mainDiffs.empty())
+			if (mainDiffs.empty())
 				break;
 
 			mainIntersections.clear();
@@ -515,14 +515,14 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 		/// And we also have to check if the windows remain inside the surfaces.
 		for (ClippingPolygon &poly : clippingPolygons) {
 
-			if(!poly.m_polygon.isValid())
+			if (!poly.m_polygon.isValid())
 				continue;
 
 			// now we have an polygon, which is identical to the new clipping polygon -> so we take the old one
-			if(clippingPolygons.size() == 1 && poly.m_holePolygons.empty() && r->m_surfaces.size() == roomSurfaceCount){
+			if (clippingPolygons.size() == 1 && poly.m_holePolygons.empty() && r->m_surfaces.size() == roomSurfaceCount){
 				r->m_surfaces.push_back(originSurfCopy);
 				r->updateParents();
-				if(originSurf.m_componentInstance != nullptr)
+				if (originSurf.m_componentInstance != nullptr)
 					m_compInstOriginSurfId[originSurfCopy.m_id] = originSurf.m_componentInstance->m_idComponent;
 				continue;
 			}
@@ -559,7 +559,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			originSurf.setChildAndSubSurfaces(originSurfCopy.subSurfaces(), std::vector<VICUS::Surface>());
 
 			// Convert all holes
-			if(poly.m_haveRealHole && poly.m_holePolygons.size() > 0) {
+			if (poly.m_haveRealHole && poly.m_holePolygons.size() > 0) {
 
 				std::vector<VICUS::Polygon2D> holes(poly.m_holePolygons.size());
 
@@ -584,7 +584,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 					childSurf.m_displayName = QString("%1 - Child Surface [%2]").arg(originSurf.m_displayName ).arg(i);
 
 					IBKMK::Vector3D normalDiff = childSurf.geometry().normal() + originSurf.geometry().normal();
-					if(normalDiff.magnitudeSquared() < 1)
+					if (normalDiff.magnitudeSquared() < 1)
 						childSurf.flip();
 
 					childSurfaces.push_back(childSurf);
@@ -601,7 +601,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 
 			// We copy our sub-surfaces
 			std::vector<VICUS::SubSurface> subs;
-			if(!originSurfCopy.subSurfaces().empty()) {
+			if (!originSurfCopy.subSurfaces().empty()) {
 
 				// Cache original surface data
 				const IBKMK::Vector3D &originLocalX = originSurfCopy.geometry().localX();
@@ -639,7 +639,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 						}
 					}
 
-					if(pointsInPolygon) {
+					if (pointsInPolygon) {
 						sub.m_polygon2D = points;
 						subs.push_back(sub);
 					}
@@ -654,7 +654,7 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 			r->m_surfaces.push_back(originSurf);
 
 			// save id origin
-			if(surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
+			if (surfOriginId != VICUS::INVALID_ID && originSurf.m_componentInstance != nullptr)
 				m_compInstOriginSurfId[originSurf.m_id] = originSurf.m_componentInstance->m_idComponent;
 
 			// Save Child origin
@@ -666,11 +666,13 @@ void VicusClipper::clipSurfaces(Notification * notify) {
 }
 
 
-unsigned int VicusClipper::findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface){
-	for (unsigned int i=0; i<m_vicusCompInstances.size(); ++i){
-		VICUS::ComponentInstance& ci = m_vicusCompInstances[i];
-		if(ci.m_idSideASurface == s.m_id){
-			return ci.m_idComponent;
+unsigned int VicusClipper::findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface, bool replaceComponentInstance){
+	if (!replaceComponentInstance) {
+		for (unsigned int i=0; i<m_vicusCompInstances.size(); ++i){
+			VICUS::ComponentInstance& ci = m_vicusCompInstances[i];
+			if (ci.m_idSideASurface == s.m_id){
+				return ci.m_idComponent;
+			}
 		}
 	}
 
@@ -702,17 +704,17 @@ QString VicusClipper::generateUniqueName(QString name) {
 	int idx1 = name.lastIndexOf("[");
 	int idx2 = name.lastIndexOf("]");
 
-	if(idx1 != -1 && idx2 != -1) {
+	if (idx1 != -1 && idx2 != -1) {
 		QString strIdx = name.mid(idx1+1, idx2-idx1-1);
 		bool ok;
 		strIdx.toUInt(&ok);
-		if(!ok)
+		if (!ok)
 			idx1 = -1;
 	}
 
 	QString baseName = name.left(idx1-1);
 
-	if(m_nameMap.find(baseName) != m_nameMap.end())
+	if (m_nameMap.find(baseName) != m_nameMap.end())
 		m_nameMap[baseName]++;
 	else {
 		m_nameMap[baseName] = 1;
@@ -724,7 +726,7 @@ QString VicusClipper::generateUniqueName(QString name) {
 }
 
 
-void VicusClipper::createComponentInstances(Notification *notify, bool createConnections) {
+void VicusClipper::createComponentInstances(Notification *notify, bool createConnections, bool replaceAllComponentInstances) {
 	FUNCID(VicusClipper::createComponentInstances);
 
 	std::set<const VICUS::Surface *>	surfaces;
@@ -743,10 +745,10 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					surfaceIds.insert(s.m_id);
 
 					bool selected = true;
-					if(m_onlySelected && !s.m_selected)
+					if (m_onlySelected && !s.m_selected)
 						selected = false;
 
-					if(selected)
+					if (selected)
 						surfaces.insert(&s);
 					insertChildSurfaces(surfaces, s, m_onlySelected, &surfaceIds);
 
@@ -757,27 +759,27 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		}
 	}
 
-	if(m_onlySelected) {
+	if (m_onlySelected) {
 		for (unsigned int i=0; i<m_vicusCompInstances.size(); ++i) {
 			VICUS::ComponentInstance &ci = m_vicusCompInstances[i];
 
-			if(ci.m_idSideASurface != VICUS::INVALID_ID &&
+			if (ci.m_idSideASurface != VICUS::INVALID_ID &&
 					surfaceIds.find(ci.m_idSideASurface) == surfaceIds.end())
 				continue;
 
-			if(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+			if (ci.m_idSideBSurface != VICUS::INVALID_ID &&
 					surfaceIds.find(ci.m_idSideBSurface) == surfaceIds.end())
 				continue;
 
 			bool foundSurf = false;
 			for (const VICUS::Surface *s : surfaces) {
 				// We need to store untouched cis
-				if(ci.m_idSideASurface == s->m_id || ci.m_idSideBSurface == s->m_id) {
+				if (ci.m_idSideASurface == s->m_id || ci.m_idSideBSurface == s->m_id) {
 					foundSurf = true;
 					break;
 				}
 			}
-			if(!foundSurf) {
+			if (!foundSurf) {
 				ci.m_id = ++nextId;
 
 #ifdef DETAILED_INFO
@@ -811,7 +813,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		if (notify->m_aborted)
 			throw IBK::Exception("Clipping canceled.", FUNC_ID);
 
-		if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end())
+		if (handledSurfaces.find(surfA->m_id) != handledSurfaces.end())
 			continue;
 
 #ifdef DETAILED_INFO
@@ -821,7 +823,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		bool foundOriginCompInstance = false;
 		unsigned int compId;
 		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end())
-			compId = findComponentInstanceForSurface(*surfA);
+			compId = findComponentInstanceForSurface(*surfA, false, replaceAllComponentInstances);
 		else {
 			compId = m_compInstOriginSurfId[surfA->m_id];
 			foundOriginCompInstance = true;
@@ -830,20 +832,20 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		VICUS::ComponentInstance ci(++nextId, compId, surfA->m_id, VICUS::INVALID_ID);
 
 		// get old construction instance properties and replace old id
-		if(m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end()){
+		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end()){
 			for (const VICUS::ComponentInstance &ciObj : m_vicusCompInstances){
 				unsigned int idA = ciObj.m_idSideASurface;
 				unsigned int idB = ciObj.m_idSideBSurface;
 
-				if(idA != surfA->m_id && idB != surfA->m_id)
+				if (idA != surfA->m_id && idB != surfA->m_id)
 					continue;
 
-				if(idA != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idA) != m_compInstOriginSurfId.end()) {
+				if (idA != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idA) != m_compInstOriginSurfId.end()) {
 					handledSurfaces.insert(idA);
 					ci.m_idSideASurface = idA;
 				}
 
-				if(idB != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idB) != m_compInstOriginSurfId.end()) {
+				if (idB != VICUS::INVALID_ID && m_compInstOriginSurfId.find(idB) != m_compInstOriginSurfId.end()) {
 					handledSurfaces.insert(idB);
 					ci.m_idSideASurface = idB;
 				}
@@ -853,23 +855,23 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 		}
 
 		// We only couple surfaces when we want to create new connections
-		if(createConnections)
+		if (createConnections)
 			for (const VICUS::Surface * surfB : surfaces){
 
 				// do some checks so that we have no nullptr, already handled, adiabatic surfaces, etc...
-				if(surfA == surfB || surfA == nullptr || surfB == nullptr)
+				if (surfA == surfB || surfA == nullptr || surfB == nullptr)
 					continue;
 
 				// Skip plain or broken surfaces
-				if(surfA->m_parent == nullptr || surfB->m_parent == nullptr)
+				if (surfA->m_parent == nullptr || surfB->m_parent == nullptr)
 					continue;
 
 				// Skip surfaces in the same room
-				if(surfA->m_parent == surfB->m_parent)
+				if (surfA->m_parent == surfB->m_parent)
 					continue;
 
 				// Skip all already handled surfaces
-				if(handledSurfaces.find(surfA->m_id) != handledSurfaces.end() ||
+				if (handledSurfaces.find(surfA->m_id) != handledSurfaces.end() ||
 						handledSurfaces.find(surfB->m_id) != handledSurfaces.end())
 					continue;
 
@@ -887,7 +889,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					const_cast<VICUS::Polygon3D&>(surfA->geometry().polygon3D()).setVertexes(surfA->geometry().polygon3D().rawVertexes());
 					const_cast<VICUS::Polygon3D&>(surfB->geometry().polygon3D()).setVertexes(surfB->geometry().polygon3D().rawVertexes());
 
-					if(!surfA->geometry().isValid() && !surfB->geometry().isValid())
+					if (!surfA->geometry().isValid() && !surfB->geometry().isValid())
 						continue;
 
 					double areaA = surfA->geometry().area(2);
@@ -898,7 +900,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 				// check area of both surfaces
 				// Areas should not deviate more than 5%
-				if(surfaceRatio > 0.05)
+				if (surfaceRatio > 0.05)
 					continue;
 
 				// convert 3D points of surface B into 2D plane of surface A
@@ -917,13 +919,13 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 											s2->geometry().offset(), distance, rayEndPoint);
 
 				// Skip surfaces outside of the range
-				if(distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0 - EPSILON)
+				if (distance > m_maxDistanceOfSurfaces + EPSILON || distance < 0 - EPSILON)
 					continue;
 
 				std::vector<IBKMK::Vector2D> vertexes(s2->geometry().polygon2D().vertexes().size());
 				for (unsigned int i=0; i<vertexes.size(); ++i){
 
-					if(s2->geometry().polygon3D().vertexes().empty())
+					if (s2->geometry().polygon3D().vertexes().empty())
 						continue;
 
 					const IBKMK::Vector3D &p = s2->geometry().polygon3D().vertexes()[i];
@@ -946,13 +948,13 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 								  ClippingPolygon(vertexes), diffs, intersections);
 
 
-				if(intersections.size() == 1 &&
+				if (intersections.size() == 1 &&
 						intersections[0].m_polygon.isValid() &&
 						IBK::nearly_equal<1>(intersections[0].m_polygon.area(), surfA->geometry().area())){
 
 					// find old components
-					if(!foundOriginCompInstance) {
-						compId = findComponentInstanceForSurface(*surfA, true);
+					if (!foundOriginCompInstance) {
+						compId = findComponentInstanceForSurface(*surfA, true, replaceAllComponentInstances);
 					}
 
 					// if both ids are invalid take invalid
@@ -986,7 +988,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 					break;
 				}
 			}
-		if(handledSurfaces.find(surfA->m_id) == handledSurfaces.end()) {
+		if (handledSurfaces.find(surfA->m_id) == handledSurfaces.end()) {
 			cis.push_back(ci);
 			handledSurfaces.insert(surfA->m_id);
 
@@ -1001,7 +1003,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 	std::vector<unsigned int> idxs;
 	for (unsigned int i=0; i<cis.size(); ++i) {
 		VICUS::ComponentInstance &ci = cis[i];
-		if(ci.m_idSideASurface == VICUS::INVALID_ID && ci.m_idSideBSurface == VICUS::INVALID_ID)
+		if (ci.m_idSideASurface == VICUS::INVALID_ID && ci.m_idSideBSurface == VICUS::INVALID_ID)
 			idxs.push_back(i);
 	}
 	for (unsigned int idx=idxs.size(); idx>0; --idx){
@@ -1028,7 +1030,7 @@ ClippingSurface & VicusClipper::findClippingSurface(unsigned int id, const std::
 	unsigned int idx = 0 ;
 	bool found = false;
 	for (;idx<m_clippingSurfaces.size(); ++idx) {
-		if(id == m_clippingSurfaces[idx].m_vicusId) {
+		if (id == m_clippingSurfaces[idx].m_vicusId) {
 			found = true;
 			break;
 		}
@@ -1060,7 +1062,7 @@ const VICUS::Surface &VicusClipper::findVicusSurface(unsigned int id, const std:
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
-					if(s.m_id == id) {
+					if (s.m_id == id) {
 						surf = &s;
 						break;
 					}
@@ -1098,7 +1100,7 @@ std::vector<IBKMK::Vector2D> VicusClipper::convertClipperPathToVec2D(const Clipp
 
 bool VicusClipper::isSamePolygon(const ClipperLib::Path &diff, const ClipperLib::Path &intersection){
 
-	if(diff.size() != intersection.size() || diff.size()<3)
+	if (diff.size() != intersection.size() || diff.size()<3)
 		return false;
 
 
@@ -1109,33 +1111,33 @@ bool VicusClipper::isSamePolygon(const ClipperLib::Path &diff, const ClipperLib:
 	for (; idxStartDiff < intersection.size(); ++idxStartDiff){
 		const ClipperLib::IntPoint &pInter = intersection[idxStartDiff];
 		// check for same point
-		if(pDiff == pInter){
+		if (pDiff == pInter){
 			foundSamePoint = true;
 			break;
 		}
 	}
 
-	if(!foundSamePoint)
+	if (!foundSamePoint)
 		return false;
 
 	// check spinning direction of the two polylines
-	if(diff[1] == intersection[(idxStartDiff + 1)%intersection.size()]){
+	if (diff[1] == intersection[(idxStartDiff + 1)%intersection.size()]){
 		// same turning
 		for (unsigned int i=2; i<diff.size(); ++i){
 			const ClipperLib::IntPoint &pDiff = diff[i];
 			const ClipperLib::IntPoint &pInter = intersection[(idxStartDiff + i)%intersection.size()];
 			// check for same point
-			if(pDiff != pInter)
+			if (pDiff != pInter)
 				return false;
 		}
 	}
-	else if(diff[1] == intersection[(idxStartDiff + intersection.size() -1)%intersection.size()]){
+	else if (diff[1] == intersection[(idxStartDiff + intersection.size() -1)%intersection.size()]){
 		// opposite direction
 		for (unsigned int i=2; i<diff.size(); ++i){
 			const ClipperLib::IntPoint &pDiff = diff[i];
 			const ClipperLib::IntPoint &pInter = intersection[(idxStartDiff + intersection.size() - i)%intersection.size()];
 			// check for same point
-			if(pDiff != pInter)
+			if (pDiff != pInter)
 				return false;
 		}
 	}
@@ -1152,9 +1154,9 @@ bool VicusClipper::isIntersectionAnHole(const ClipperLib::Path &pathIntersection
 	for (unsigned int i1=0; i1<diffs.size(); ++i1){
 		ClipperLib::PolyNode *pn1 = diffs[i1];
 		bool isPn1Hole = pn1->IsHole();
-		if(isPn1Hole && isSamePolygon(pathIntersection, pn1->Contour))
+		if (isPn1Hole && isSamePolygon(pathIntersection, pn1->Contour))
 			return true;
-		if(isIntersectionAnHole(pathIntersection, pn1->Childs))
+		if (isIntersectionAnHole(pathIntersection, pn1->Childs))
 			return true;
 	}
 	return false;
@@ -1182,7 +1184,7 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 
 	polyClp = convertVec2DToClipperPath(surf.m_polygon.vertexes());
 
-	if(surf.m_haveRealHole) {
+	if (surf.m_haveRealHole) {
 		// set up hole polygon
 		for (unsigned int idxHole = 0; idxHole < surf.m_holePolygons.size(); ++idxHole) {
 			const IBKMK::Polygon2D &holePoly = surf.m_holePolygons[idxHole];
@@ -1208,7 +1210,7 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 	ClipperLib::PolyNode pnOtherMain;
 	pnOtherMain.Contour = otherPolyClp;
 
-	if(otherSurf.m_haveRealHole) {
+	if (otherSurf.m_haveRealHole) {
 		// set up hole polygon
 		for (unsigned int idxHole = 0; idxHole < otherSurf.m_holePolygons.size(); ++idxHole) {
 			const IBKMK::Polygon2D &holePoly = otherSurf.m_holePolygons[idxHole];
@@ -1223,7 +1225,7 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 		}
 	}
 
-	if(otherSurf.m_holePolygons.empty())
+	if (otherSurf.m_holePolygons.empty())
 		otherPoly.pop_back();
 
 	// init clipper object
@@ -1239,8 +1241,7 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 	clp.Execute(ClipperLib::ctIntersection, polyTreeResultsIntersection, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
 	clp.Execute(ClipperLib::ctDifference, polyTreeResultsDiffs, ClipperLib::pftEvenOdd, ClipperLib::pftEvenOdd);
 
-	/*
-		In den Intersections sind dann nur Elemente die keine Löcher sind.
+	/*!	In den Intersections sind dann nur Elemente die keine Löcher sind.
 		Zu Prüfen ist der Fall Loch auf Loch.
 	*/
 
@@ -1251,14 +1252,14 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 		ClipperLib::PolyNode *childNode = polyTreeResultsIntersection.Childs[i];
 		const ClipperLib::Path &path = childNode->Contour;
 
-		if(isIntersectionAnHole(path, polyTreeResultsDiffs.Childs))
+		if (isIntersectionAnHole(path, polyTreeResultsDiffs.Childs))
 			continue;
 
 		// Add back main intersection
 		mainIntersections.push_back(ClippingPolygon());
 		IBKMK::Polygon2D &poly = mainIntersections.back().m_polygon;
 
-		if(poly.isValid())
+		if (poly.isValid())
 			mainIntersections.back().m_area = poly.area();
 
 		// Convert back polygon points
@@ -1288,26 +1289,29 @@ void VicusClipper::doClipperClipping(const ClippingPolygon &surf,
 			// Convert back points
 			poly.setVertexes(convertClipperPathToVec2D(path));
 
-			// ToDo Stephan ist das richtig wenn das aktuelle diff-poly keine punkte hat dann einfach dieses zu überspringen
+			// ToDo Stephan: ist das richtig wenn das aktuelle diff-poly keine punkte hat dann einfach dieses zu überspringen
 			// kann dann das nächste polygon ein loch von diesem sein?
-			if(poly.vertexes().empty()){
+			if (poly.vertexes().empty()){
 				mainDiffs.pop_back();
 				continue;
 			}
 
-			if(poly.isValid())
+			// If we have a valid polygon, we store its area
+			if (poly.isValid())
 				mainDiffs.back().m_area = poly.area();
 
+			// Convert back all holes
 			for (ClipperLib::PolyNode *secondChild : childNode->Childs){
-				if(!secondChild->IsHole())
+				if (!secondChild->IsHole())
 					continue;
-				IBKMK::Polygon2D polyHole;
 
+				// Set polygon and add it
+				IBKMK::Polygon2D polyHole;
 				polyHole.setVertexes(convertClipperPathToVec2D(secondChild->Contour));
 				mainDiffs.back().m_holePolygons.push_back(polyHole);
 			}
 		}
-		// Should not be an hole
+		// Should NEVER be an hole
 		Q_ASSERT(!childNode->IsHole());
 	}
 }

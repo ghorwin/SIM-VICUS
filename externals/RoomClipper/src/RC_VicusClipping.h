@@ -37,27 +37,28 @@ namespace RC {
 
 class Notification : public IBK::NotificationHandler {
 public:
-    bool	m_aborted = false;
+	bool	m_aborted = false;
 };
 
 /*! Class for VICUS Clipping. Contains all necessairy data and functionality needed to perform smart clipping. */
 class VicusClipper {
 public:
 
-    VicusClipper(const std::vector<VICUS::Building> &buildings, const std::vector<VICUS::ComponentInstance> &cis,
+	/*! C'tor. */
+	VicusClipper(const std::vector<VICUS::Building> &buildings, const std::vector<VICUS::ComponentInstance> &cis,
 				 double normalDeviationInDeg, double maxDistanceOfSurfaces, unsigned int lastUnusedID, bool onlySelected = false):
-        m_vicusBuildings(buildings),
-        m_vicusCompInstances(cis),
+		m_vicusBuildings(buildings),
+		m_vicusCompInstances(cis),
 		m_normalDeviationInDeg(normalDeviationInDeg),
 		m_maxDistanceOfSurfaces(maxDistanceOfSurfaces),
 		m_onlySelected(onlySelected),
 		m_nextVicusId(lastUnusedID)
 	{
-        for(VICUS::Building &b : m_vicusBuildings)
-            b.updateParents();
+		for(VICUS::Building &b : m_vicusBuildings)
+			b.updateParents();
 
-        m_vicusBuildingsClipped = m_vicusBuildings;
-    }
+		m_vicusBuildingsClipped = m_vicusBuildings;
+	}
 
 	/*! Enum to hold all predefined components. */
 	enum PredefinedComponentType {
@@ -69,23 +70,23 @@ public:
 		NUM_PDC
 	};
 
-    /*! Add Polygons to Main Diffs or Intersections. */
-    void addClipperPolygons(const std::vector<ClippingPolygon> &polysTemp, std::vector<ClippingPolygon> &mainDiffsTemp);
+	/*! Add Polygons to Main Diffs or Intersections. */
+	void addClipperPolygons(const std::vector<ClippingPolygon> &polysTemp, std::vector<ClippingPolygon> &mainDiffsTemp);
 
 	/*! Finds all corresponding parallel surfaces for clipping operations. */
 	void findParallelSurfaces(Notification * notify);
 
 	/*! Finds all corresponding surfaces in range for clipping. */
-    void findSurfacesInRange(Notification * notify);
+	void findSurfacesInRange(Notification * notify);
 
 	/*! Surfaces are clipped by their corresponding surfaces sorted by distance. */
-    void clipSurfaces(Notification *notify);
+	void clipSurfaces(Notification *notify);
 
-    /*! Component Instances are beeing created by cutting all produced surfaces by clipper lib. */
-	void createComponentInstances(Notification * notify, bool createConnections = true);
+	/*! Component Instances are beeing created by cutting all produced surfaces by clipper lib. */
+	void createComponentInstances(Notification * notify, bool createConnections = true, bool replaceAllComponentInstances = false);
 
-    /*! Finds the corresponding component instance of specified surface by id. */
-	unsigned int findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface = false);
+	/*! Finds the corresponding component instance of specified surface by id. */
+	unsigned int findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface = false, bool replaceComponentInstance = false);
 
 	/*! Generates a unique name for every Surface
 		Surf01 is cut into 3 pieces --> name will be Surf01 [1] Surf01 [2] Surf01 [3] */
@@ -94,24 +95,26 @@ public:
 	/*! Sets the Standard constructions. */
 	void setStandardConstruction(PredefinedComponentType pdcType, unsigned int id);
 
-    const std::vector<VICUS::Building> vicusBuildings() const;
+	/*! Returns all clipped vicus buildings. */
+	const std::vector<VICUS::Building> vicusBuildings() const;
 
-    const std::vector<VICUS::ComponentInstance> *vicusCompInstances() const;
+	/*! Returns all clipped vicus component instances. */
+	const std::vector<VICUS::ComponentInstance> *vicusCompInstances() const;
 
-    const std::vector<VICUS::Building> vicusBuildingsClipped() const;
-
+	/*! Returns all clipped vicus buildings. */
 	void setPrj(const VICUS::Project &newPrj);
 
+	/*! Returns all clipped vicus buildings. */
 	const std::vector<VICUS::SubSurfaceComponentInstance> *vicusSubSurfCompInstances() const;
 
 private:
 
-    /*! Returns the containing Clipping Surface with VICUS Surface from m_clippingSurfaces. */
-    ClippingSurface & findClippingSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
+	/*! Returns the containing Clipping Surface with VICUS Surface from m_clippingSurfaces. */
+	ClippingSurface & findClippingSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
 
-    const VICUS::Surface &findVicusSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
+	const VICUS::Surface &findVicusSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
 
-    /*! Performs the Clipping of the surfaces 'surf' and 'otherSurf' and returns intersection and difference polygons. */
+	/*! Performs the Clipping of the surfaces 'surf' and 'otherSurf' and returns intersection and difference polygons. */
 	void doClipperClipping(const ClippingPolygon &surf,
 						   const ClippingPolygon &otherSurf,
 						   std::vector<ClippingPolygon> &mainDiffs,
@@ -125,27 +128,27 @@ private:
 	/*! Create a clipper lib path from a IBKMK polygon. */
 	ClipperLib::Path convertVec2DToClipperPath(const std::vector<IBKMK::Vector2D> &vertexes);
 
-    /*! Check whether the clipper polygon is the same. */
+	/*! Check whether the clipper polygon is the same. */
 	bool isSamePolygon(const ClipperLib::Path &diff, const ClipperLib::Path &intersection);
 
-    /*! Check whether an intersection is an hole. */
+	/*! Check whether an intersection is an hole. */
 	bool isIntersectionAnHole(const ClipperLib::Path &pathIntersection, const ClipperLib::PolyNodes &diffs);
 
-    /*! Convert Clipper path ti Verctor 2D. */
+	/*! Convert Clipper path ti Verctor 2D. */
 	std::vector<IBKMK::Vector2D> convertClipperPathToVec2D(const ClipperLib::Path &path);
 
-    /*! Add Surfaces to Clipping Polygons. */
-    void addSurfaceToClippingPolygons(const VICUS::Surface &surf, std::vector<ClippingPolygon> &clippingPolygons);
+	/*! Add Surfaces to Clipping Polygons. */
+	void addSurfaceToClippingPolygons(const VICUS::Surface &surf, std::vector<ClippingPolygon> &clippingPolygons);
 
 	// ***** PRIVATE MEMBER VARIABLES *****
 
 	VICUS::Project									m_prj;						///< Copy of VICUS Project
 
-    std::vector<VICUS::Building>                    m_vicusBuildings;           ///< Original VICUS buildings
-    std::vector<VICUS::Building>                    m_vicusBuildingsClipped;    ///< VICUS buildings with newly added data
+	std::vector<VICUS::Building>					m_vicusBuildings;           ///< Original VICUS buildings
+	std::vector<VICUS::Building>					m_vicusBuildingsClipped;    ///< VICUS buildings with newly added data
 
 
-    std::vector<VICUS::ComponentInstance>           m_vicusCompInstances;       ///< VICUS component instances
+	std::vector<VICUS::ComponentInstance>			m_vicusCompInstances;       ///< VICUS component instances
 
 	std::vector<VICUS::SubSurfaceComponentInstance> m_vicusSubSurfCompInstances;///< VICUS Sub surface component instances
 
@@ -166,11 +169,11 @@ private:
 		key is vicus surface id
 		values ids of all other possible vicus surfaces for clipping
 	*/
-    std::map<unsigned int, std::set<unsigned int>>	m_surfaceConnections;
+	std::map<unsigned int, std::set<unsigned int>>	m_surfaceConnections;
 
-    unsigned int									m_nextVicusId;              ///< last unused id in vicus project
+	unsigned int									m_nextVicusId;              ///< last unused id in vicus project
 
-    std::map<unsigned int, unsigned int>			m_compInstOriginSurfId;		///< key is new created surface id, value is old surface ci id
+	std::map<unsigned int, unsigned int>			m_compInstOriginSurfId;		///< key is new created surface id, value is old surface ci id
 
 	IBK::StopWatch									m_stopWatch;				///< Stopwatch for updating progress-bar
 
