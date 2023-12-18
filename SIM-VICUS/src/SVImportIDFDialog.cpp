@@ -694,7 +694,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 
 	// *** Adiabatic boundary conditions ("adiabatic") ***
 
-	// unsigned int bcIDAdiabatic = VICUS::INVALID_ID;
+	unsigned int bcIDAdiabatic = VICUS::INVALID_ID;
 	{
 		VICUS::BoundaryCondition bc;
 		bc.m_id = ++nextID;
