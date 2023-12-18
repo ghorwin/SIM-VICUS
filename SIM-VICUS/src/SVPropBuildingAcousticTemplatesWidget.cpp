@@ -59,6 +59,10 @@ void SVPropBuildingAcousticTemplatesWidget::onModified(int modificationType, Mod
 		case SVProjectHandler::GridModified:
 		case SVProjectHandler::NetworkGeometryChanged:
 		case SVProjectHandler::NetworkDataChanged:
+		case SVProjectHandler::ClimateLocationAndFileModified:
+		case SVProjectHandler::OutputsModified:
+		case SVProjectHandler::DrawingModified:
+		case SVProjectHandler::LcaLccModified:
 		break;
 	}
 }

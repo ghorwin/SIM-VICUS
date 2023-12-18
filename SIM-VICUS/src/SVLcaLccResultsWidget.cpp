@@ -26,16 +26,19 @@ double SVLcaLccResultsDialog::conversionFactorEpdReferenceUnit(const IBK::Unit &
 		return layerArea * layerThickness;
 
 	if(refUnit.name() == "-")
-		return 1; // Pieces are always set to 1 for now
+		return 1.0; // Pieces are always set to 1 for now
 
 	if(refUnit.name() == "MJ")
-		return 1; // Also not implemented yet
+		return 1.0; // Also not implemented yet
 
 	if(refUnit.name() == "kg/m3")
 		return layerMat.m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
 	if(refUnit.name() == "a")
-		return 50; // Also not implemented yet
+		return 50.0; // Also not implemented yet
+
+	// if no conversion takes place
+	return -99;
 }
 
 
@@ -102,7 +105,7 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 		item->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
 		item->setText(ColInvestCost, QString( "%1 €" ).arg( aggregatedTypeData.m_area * aggregatedTypeData.m_totalCost.value / 100, 7, 'f', 2 ));
-		item->setBackgroundColor(ColColor, aggregatedTypeData.m_component->m_color);
+		item->setBackground(ColColor, aggregatedTypeData.m_component->m_color);
 
 		VICUS::EpdModuleDataset epd;
 
@@ -128,7 +131,7 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 			itemChild->setTextAlignment(ColInvestCost, Qt::AlignRight);
 
 			itemChild->setText(ColInvestCost, QString( "%1 €" ).arg( aggregatedCompData.m_area * aggregatedCompData.m_totalCost.value / 100, 7, 'f', 2 ) );
-			itemChild->setBackgroundColor(ColColor, aggregatedCompData.m_component->m_color);
+			itemChild->setBackground(ColColor, aggregatedCompData.m_component->m_color);
 
 			item->addChild(itemChild);
 
@@ -175,7 +178,7 @@ void SVLcaLccResultsDialog::setLcaResults(const std::map<VICUS::Component::Compo
 				double totalCost = aggregatedCompData.m_area * matLayer.m_cost.value / 100;
 
 				itemMatChild->setText(ColInvestCost, QString( "%1 €" ).arg( totalCost, 7, 'f', 2 ) );
-				itemMatChild->setBackgroundColor(ColColor, mat.m_color);
+				itemMatChild->setBackground(ColColor, mat.m_color);
 
 				itemMatChild->setText(ColGWP,  QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_GWP ].get_value()));
 				itemMatChild->setText(ColAP,   QString::number(scaleFactor * scaledEpdCatData.m_para[VICUS::EpdModuleDataset::P_AP  ].get_value()));

@@ -54,11 +54,11 @@ struct SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject {
 	double						m_simulationEndTime = -999;
 
 	/*! Check if room is covered by ventilation control. */
-	static bool hasVentilationControl(const VICUS::Room &room, const VICUS::Project &project);
+	static bool hasVentilationControl(const VICUS::Room &room, const VICUS::Project &);
 	/*! Check if room is covered by ventilation model and checks parameters. Throws an exception if something is missing*/
-	static void checkVentilationControl(const VICUS::Room &room, const VICUS::Project &project, QString &errmsg);
+	static void checkVentilationControl(const VICUS::Room &room, const VICUS::Project &, QString &errmsg);
 	/*! Check if room is covered by ventilation model and checks parameters. Fills an error string if something is missing*/
-	static void checkVentilation(const VICUS::Room &room, const VICUS::Project &project, QString &errmsg);
+	static void checkVentilation(const VICUS::Room &room, const VICUS::Project &, QString &errmsg);
 
 	// initialize from VICUS project file
 	void init(const VICUS::Project &project);
@@ -506,7 +506,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 }
 
 
-bool SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::hasVentilationControl(const VICUS::Room & room, const VICUS::Project &project)
+bool SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::hasVentilationControl(const VICUS::Room & room, const VICUS::Project &/*project*/)
 {
 	// no zone template
 	if(room.m_idZoneTemplate == VICUS::INVALID_ID) {
@@ -532,7 +532,7 @@ bool SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::hasVentilationCo
 }
 
 
-void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilationControl(const VICUS::Room & room, const VICUS::Project & project, QString &errmsg)
+void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilationControl(const VICUS::Room & room, const VICUS::Project & /*project*/, QString &errmsg)
 {
 	// no zone template
 	if(room.m_idZoneTemplate == VICUS::INVALID_ID) {
@@ -562,7 +562,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 }
 
 
-void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation(const VICUS::Room & room, const VICUS::Project & project, QString &errmsg)
+void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation(const VICUS::Room & room, const VICUS::Project & /*project*/, QString &errmsg)
 {
 	// no zone template
 	if(room.m_idZoneTemplate == VICUS::INVALID_ID) {

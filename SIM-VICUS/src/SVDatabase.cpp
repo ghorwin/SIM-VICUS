@@ -1059,10 +1059,23 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			m_zoneTemplates.remove(elementID);
 			m_zoneTemplates.m_modified = true;
 		break;
-
+		case DT_AcousticTemplates:
+			// components are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const VICUS::Building & b : project().m_buildings)
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+						for (const VICUS::Room & r : bl.m_rooms) {
+							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
+							if (c.m_idZoneTemplate == elementID)
+								c.m_idZoneTemplate = replacementElementID;
+						}
+			}
+			m_zoneTemplates.remove(elementID);
+			m_zoneTemplates.m_modified = true;
+		break;
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
+		break;
 	}
-
 }
 
 

@@ -335,7 +335,7 @@ void SVPropNetworkHeatExchangeWidget::modifyHeatExchangeParameters() {
 }
 
 
-void SVPropNetworkHeatExchangeWidget::on_comboBoxHeatExchangeType_activated(int index) {
+void SVPropNetworkHeatExchangeWidget::on_comboBoxHeatExchangeType_activated(int /*index*/) {
 	modifyHeatExchangeParameters();
 }
 
