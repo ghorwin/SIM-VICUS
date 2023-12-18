@@ -131,13 +131,13 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>LWSkyRadiation</Quantity>
+					<Quantity>LongWaveSkyRadiation</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				
 				<OutputDefinition>
-					<Quantity>LongWaveRadiationFluxB</Quantity>
+					<Quantity>FluxLongWaveRadiationBalanceB</Quantity>
 					<ObjectListName>ConstructionInstance</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>						

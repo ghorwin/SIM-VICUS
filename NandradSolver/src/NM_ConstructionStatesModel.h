@@ -58,14 +58,14 @@ public:
 	/// \todo maybe add integral quantities like total moisture mass stored in construction or total energy stored in construction
 	enum Results {
 		/// \todo add ActiveLayerTemperature as keyword quantity and remove m_activeLayerMeanTemperature
-		R_SurfaceTemperatureA,				// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A'
-		R_SurfaceTemperatureB,				// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B'
-		R_SolarRadiationFluxA,				// Keyword: SolarRadiationFluxA		[W/m2]	'Solar radiation flux density into surface A'
-		R_SolarRadiationFluxB,				// Keyword: SolarRadiationFluxB		[W/m2]	'Solar radiation flux density into surface B'
-		R_LongWaveRadiationFluxA,			// Keyword: LongWaveRadiationFluxA	[W/m2]	'Absorbed minus emitted ambient long wave radiation flux density for surface A'
-		R_LongWaveRadiationFluxB,			// Keyword: LongWaveRadiationFluxB	[W/m2]	'Absorbed minus emitted ambient long wave radiation flux density for surface B'
-		R_EmittedLongWaveRadiationFluxA,	// Keyword: EmittedLongWaveRadiationFluxA	[W/m2]	'Emitted long wave radiation flux density for surface A (sum of all emissions to all other inside surface)'
-		R_EmittedLongWaveRadiationFluxB,	// Keyword: EmittedLongWaveRadiationFluxB	[W/m2]	'Emitted long wave radiation flux density for surface B (sum of all emissions to all other inside surface)'
+		R_SurfaceTemperatureA,				// Keyword: SurfaceTemperatureA				[C]		'Surface temperature at interface A'
+		R_SurfaceTemperatureB,				// Keyword: SurfaceTemperatureB				[C]		'Surface temperature at interface B'
+		R_SolarRadiationFluxA,				// Keyword: SolarRadiationFluxA				[W/m2]	'Solar radiation flux density into surface A'
+		R_SolarRadiationFluxB,				// Keyword: SolarRadiationFluxB				[W/m2]	'Solar radiation flux density into surface B'
+		R_FluxLongWaveRadiationBalanceA,	// Keyword: FluxLongWaveRadiationBalanceA	[W/m2]	'Absorbed minus emitted ambient long wave radiation flux density for surface A'
+		R_FluxLongWaveRadiationBalanceB,	// Keyword: FluxLongWaveRadiationBalanceB	[W/m2]	'Absorbed minus emitted ambient long wave radiation flux density for surface B'
+		R_FluxEmittedLongWaveRadiationA,	// Keyword: FluxEmittedLongWaveRadiationA	[W/m2]	'Emitted long wave radiation flux density for surface A (sum of all emissions to all other inside surface)'
+		R_FluxEmittedLongWaveRadiationB,	// Keyword: FluxEmittedLongWaveRadiationB	[W/m2]	'Emitted long wave radiation flux density for surface B (sum of all emissions to all other inside surface)'
 		NUM_R
 	};
 
