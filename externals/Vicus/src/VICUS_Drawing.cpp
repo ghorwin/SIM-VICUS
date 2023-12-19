@@ -12,6 +12,8 @@
 #include "qpainterpath.h"
 #include "tinyxml.h"
 
+int PRECISION = 15;  // precision of floating point values for output writing
+
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 inline QVector3D IBKVector2QVector(const IBKMK::Vector3D & v) {
 	return QVector3D((float)v.m_x, (float)v.m_y, (float)v.m_z);
@@ -57,7 +59,7 @@ TiXmlElement * Drawing::Text::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_height != 10.0)
 		e->SetAttribute("height", IBK::val2string<double>(m_height));
 
-	TiXmlElement::appendSingleAttributeElement(e, "BasePoint", nullptr, std::string(), m_basePoint.toString());
+	TiXmlElement::appendSingleAttributeElement(e, "BasePoint", nullptr, std::string(), m_basePoint.toString(PRECISION));
 
 	return e;
 }
