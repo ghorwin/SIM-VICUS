@@ -78,9 +78,9 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 * **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of Atom which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 * **Specify the name and version of the OS you're using.**
 
-### Your First Code Contribution
+### Your First Contribution - License Regulations
 
-SIM-VICUS and all code in the SIM-VICUS repo is placed under an open-source license. Hence, by providing your contributions there are automatically placed under the same license, such that SIM-VICUS and all code in the repository remains fully open-source.
+SIM-VICUS and all code in the SIM-VICUS repo is placed under an open-source license. Hence, by providing your contributions they are automatically placed under the same license, such that SIM-VICUS and all code in the repository remains fully open-source. You as contributor must ensure that your contributions are free of license restrictions of third-party code included in your contribution.
 
 ### Commit guidelines
 

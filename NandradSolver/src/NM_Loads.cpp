@@ -377,7 +377,7 @@ int Loads::setTime(double t) {
 	m_results[R_RelativeHumidity]				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::RelativeHumidity] / 100.0;
 	m_results[R_SWRadDirectNormal]				= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DirectRadiationNormal];
 	m_results[R_SWRadDiffuseHorizontal]			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::DiffuseRadiationHorizontal];
-	m_results[R_LWSkyRadiation]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::LongWaveCounterRadiation];
+	m_results[R_LongWaveSkyRadiation]			= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::LongWaveCounterRadiation];
 	m_results[R_WindDirection]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindDirection] * DEG2RAD;
 	m_results[R_WindVelocity]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::WindVelocity];
 	m_results[R_AirPressure]					= m_solarRadiationModel.m_climateDataLoader.m_currentData[CCM::ClimateDataLoader::AirPressure];
@@ -670,7 +670,7 @@ double Loads::qLWRad(unsigned int objectID) const {
 	const double Tamb = m_results[R_Temperature];
 	const double Tamb2 = Tamb * Tamb;
 	// incoming radiation from sky and from ground
-	return skyVis * m_results[R_LWSkyRadiation] + (1 - skyVis) * IBK::BOLTZMANN * Tamb2 * Tamb2;
+	return skyVis * m_results[R_LongWaveSkyRadiation] + (1 - skyVis) * IBK::BOLTZMANN * Tamb2 * Tamb2;
 }
 
 

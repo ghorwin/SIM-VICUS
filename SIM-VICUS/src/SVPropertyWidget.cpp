@@ -150,6 +150,7 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 		case SVViewState::PM_ResultsProperties : {
 			showPropertyWidget<SVPropResultsWidget>(M_ResultsWidget);
 			qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->refreshDirectory();
+			qobject_cast<SVPropResultsWidget*>(m_propWidgets[M_ResultsWidget])->updateColors(0); // ensure color update, also when results dir is empty
 		} break;
 	}
 }

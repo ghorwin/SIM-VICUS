@@ -49,6 +49,12 @@ std::string Vector2D::toString() const {
 	return strm.str();
 }
 
+std::string Vector2D::toString(int precision) const {
+	std::stringstream strm;
+	strm << std::setprecision(precision) << m_x << " " << m_y;
+	return strm.str();
+}
+
 /*! Converts a vector from a string in format "x y z". Throws an exception if parsing of numbers fails. */
 Vector2D Vector2D::fromString(const std::string & vecString) {
 	FUNCID(Vector2D::fromString);

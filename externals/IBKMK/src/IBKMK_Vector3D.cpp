@@ -49,6 +49,12 @@ std::string Vector3D::toString() const {
 	return strm.str();
 }
 
+std::string IBKMK::Vector3D::toString(int precision) const {
+	std::stringstream strm;
+	strm << std::setprecision(precision) << m_x << " " << m_y << " " << m_z;
+	return strm.str();
+}
+
 
 Vector3D Vector3D::fromString(const std::string & vecString) {
 	FUNCID(Vector3D::fromString);

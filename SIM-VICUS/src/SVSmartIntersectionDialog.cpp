@@ -174,7 +174,9 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 		for (unsigned int i=0; i<RC::VicusClipper::PredefinedComponentType::NUM_PDC; ++i)
 			vicusClipper.setStandardConstruction((RC::VicusClipper::PredefinedComponentType)i, m_predefinedComponentIds[i]);
 
-		vicusClipper.createComponentInstances(&progressNotifyer, m_ui->checkBoxCreateComp->isChecked());
+		vicusClipper.createComponentInstances(&progressNotifyer, m_ui->checkBoxCreateComp->isChecked(),
+											  m_ui->checkBoxReplaceComponentInstances->isChecked());
+
 		m_componentInstances = *vicusClipper.vicusCompInstances();
 		m_subSurfaceComponentInstances = *vicusClipper.vicusSubSurfCompInstances();
 		m_buildings = vicusClipper.vicusBuildings();

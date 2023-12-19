@@ -213,7 +213,7 @@ void SVDBEpdTableModel::setItemLocal(const QModelIndex &index, bool local)
 
 template <typename T>
 void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsigned int> & idSubstitutionMap,
-					 const char * const importMsg, const char * const existingMsg)
+					 const char * const /*importMsg*/, const char * const existingMsg)
 {
 	FUNCID(SVProjectHandler-importDBElement);
 	// check, if element exists in built-in DB

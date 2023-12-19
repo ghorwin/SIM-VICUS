@@ -820,7 +820,7 @@ void SVLcaLccSettingsWidget::aggregateAggregatedComponentsByType() {
 
 
 void SVLcaLccSettingsWidget::writeDataToStream(std::ofstream &lcaStream, const std::string &categoryText,
-											   const VICUS::EpdDataset::Category &category) {
+											   const VICUS::EpdDataset::Category &/*category*/) {
 
 	lcaStream << categoryText + "\t\t\t\t\t\t\t"  << std::endl;
 
@@ -966,7 +966,7 @@ void SVLcaLccSettingsWidget::updateUi() {
 	setCheckBoxState(m_ui->checkBoxD, VICUS::LcaSettings::M_D);
 
 	if(lcaSettings.m_calculationMode == VICUS::LcaSettings::CM_Detailed) {
-		for(unsigned int i=0; i<ol.count(); ++i) {
+		for(unsigned int i=0; i < (unsigned int)ol.count(); ++i) {
 			QCheckBox *cb = dynamic_cast<QCheckBox*>(ol[i]);
 			VICUS::LcaSettings::Module mod = static_cast<VICUS::LcaSettings::Module>(cb->property("category").toInt());
 			cb->setChecked(lcaSettings.m_flags[mod].isEnabled());

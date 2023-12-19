@@ -192,7 +192,7 @@ double lineToLineDistance(const Vector3D & a1, const Vector3D & d1,
 	double d = d1Scalar*d2Scalar - d1d2Scalar*d1d2Scalar;// always >= 0
 
 	// compute the line parameters of the two closest points
-	if (d<1E-4) { // the lines are almost parallel
+	if (d < 1E-4) { // the lines are almost parallel
 		l1 = 0.0; // we have to set one factor to determine a point since there are infinite
 		l2 = (d1d2Scalar>d2Scalar ? d1vScalar/d1d2Scalar : d2vScalar/d2Scalar);    // use the largest denominator
 	}
@@ -202,10 +202,10 @@ double lineToLineDistance(const Vector3D & a1, const Vector3D & d1,
 	}
 
 	p1 = a1 + ( l1 * d1 );					// point 1
-	Vector3D p2 = a2 + (l2 * d2 );	// point 2
+	Vector3D p2 = a2 + (l2 * d2 );			// point 2
 
 	// get the difference of the two closest points
-	return ( p1 - p2 ).magnitude();   // return the closest distance
+	return ( p1 - p2 ).magnitude();			// return the closest distance
 }
 
 

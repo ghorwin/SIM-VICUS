@@ -103,10 +103,9 @@ void SVPropResultsWidget::onModified(int modificationType, ModificationInfo * /*
 
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
-		case SVProjectHandler::AllModified: {
-			on_toolButtonSetDefaultDirectory_clicked();
-		}
-		[[clang::fallthrough]];
+		case SVProjectHandler::AllModified:
+			clearUi();
+			break;
 		case SVProjectHandler::NodeStateModified: {
 			// update current value line edit
 			onSelectionChanged();
@@ -244,7 +243,6 @@ void SVPropResultsWidget::on_pushButtonRefreshDirectory_clicked() {
 		m_allResults.clear();
 		m_currentOutputQuantity.clear(); // = nothing selected, yet
 		m_resultsDir = resultsDir;
-
 	}
 	readResultsDir();
 }
@@ -461,7 +459,6 @@ void SVPropResultsWidget::readResultsDir() {
 			}
 		}
 	}
-
 
 
 	// finally update the state of files that have been lost, i.e. are no longer in the directory
@@ -1073,5 +1070,26 @@ void SVPropResultsWidget::on_pushButtonFindMinObject_clicked() {
 
 void SVPropResultsWidget::on_resultsDir_editingFinished() {
 	on_pushButtonRefreshDirectory_clicked();
+}
+
+
+void SVPropResultsWidget::clearUi() {
+
+	m_outputFiles.clear();
+	m_outputVariable2FileIndexMap.clear();
+	m_objectName2Id.clear();
+	m_allResults.clear();
+	m_currentOutputQuantity.clear(); // = nothing selected, yet
+
+	m_ui->resultsDir->setFilename("");
+	m_ui->lineEditMaxValue->setValue(1);
+	m_ui->lineEditMinValue->setValue(0);
+	m_ui->widgetTimeSlider->clear();
+	m_ui->lineEditCurrentValue->clear();
+
+	m_ui->tableWidgetAvailableResults->blockSignals(true);
+	m_ui->tableWidgetAvailableResults->clearContents();
+	m_ui->tableWidgetAvailableResults->setRowCount(0);
+	m_ui->tableWidgetAvailableResults->blockSignals(false);
 }
 

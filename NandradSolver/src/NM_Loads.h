@@ -64,7 +64,7 @@ public:
 		R_RelativeHumidity,			// Keyword: RelativeHumidity			[%]		'Relative humidity.'
 		R_SWRadDirectNormal,		// Keyword: SWRadDirectNormal			[W/m2]	'Direct short-wave radiation flux density in normal direction.'
 		R_SWRadDiffuseHorizontal,	// Keyword: SWRadDiffuseHorizontal		[W/m2]	'Diffuse short-wave radiation flux density on horizontal surface.'
-		R_LWSkyRadiation,			// Keyword: LWSkyRadiation				[W/m2]	'Long wave sky radiation.'
+		R_LongWaveSkyRadiation,		// Keyword: LongWaveSkyRadiation		[W/m2]	'Long wave sky radiation.'
 		R_WindDirection,			// Keyword: WindDirection				[Deg]	'Wind direction (0 - north).'
 		R_WindVelocity,				// Keyword: WindVelocity				[m/s]	'Wind velocity.'
 		R_AirPressure,				// Keyword: AirPressure					[Pa]	'Air pressure.'

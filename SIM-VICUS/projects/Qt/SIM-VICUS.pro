@@ -264,7 +264,6 @@ SOURCES += \
 	../../src/SVDebugApplication.cpp \
 	../../src/SVGeometryView.cpp \
 	../../src/SVImportIDFDialog.cpp \
-	../../src/SVLCA.cpp \
 	../../src/SVLocalCoordinateView.cpp \
 	../../src/SVLogFileDialog.cpp \
 	../../src/SVLogWidget.cpp \
@@ -485,7 +484,6 @@ HEADERS  += \
 	../../src/SVDebugApplication.h \
 	../../src/SVGeometryView.h \
 	../../src/SVImportIDFDialog.h \
-	../../src/SVLCA.h \
 	../../src/SVLocalCoordinateView.h \
 	../../src/SVLogFileDialog.h \
 	../../src/SVLogWidget.h \

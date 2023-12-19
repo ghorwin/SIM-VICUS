@@ -486,7 +486,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 				// find material by name
 				unsigned int opaqueIdx = VICUS::elementIndex(prj.m_materials, matLay, false);
 				unsigned int windowIdx = VICUS::elementIndex(prj.m_windowMaterial, matLay, false);
-				unsigned int blindIdx, shadeIdx, screenIdx;
+				// unsigned int blindIdx, shadeIdx, screenIdx;
 
 				if (opaqueIdx < prj.m_materials.size()) {
 					IBK_ASSERT(matType == NUM_MT || matType == Opaque);
@@ -694,7 +694,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 
 	// *** Adiabatic boundary conditions ("adiabatic") ***
 
-	unsigned int bcIDAdiabatic= VICUS::INVALID_ID;
+	unsigned int bcIDAdiabatic = VICUS::INVALID_ID;
 	{
 		VICUS::BoundaryCondition bc;
 		bc.m_id = ++nextID;

@@ -211,7 +211,7 @@ void SVDBEpdEditWidget::on_lineEditUUID_editingFinished() {
 }
 
 
-void SVDBEpdEditWidget::on_lineEditUUID_textEdited(const QString &arg1) {
+void SVDBEpdEditWidget::on_lineEditUUID_textEdited(const QString &/*arg1*/) {
 
 }
 

@@ -29,7 +29,7 @@ public:
 	void modifyHeatExchangeParameters();
 
 private slots:
-	void on_comboBoxHeatExchangeType_activated(int index);
+	void on_comboBoxHeatExchangeType_activated(int);
 
 	void on_lineEditHeatFlux_editingFinishedSuccessfully();
 

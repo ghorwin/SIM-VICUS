@@ -26,7 +26,6 @@ QuaZIP \
 		IDFReader \
 		NandradCodeGenerator \
 		NandradFMUGenerator \
-		clipper \
 		RoomClipper \
 		NandradSolverFMI
 

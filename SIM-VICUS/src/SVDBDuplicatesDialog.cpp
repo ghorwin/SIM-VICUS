@@ -134,6 +134,8 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		case SVDatabase::DT_VentilationNatural:		dbItem(db.m_ventilationNatural, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_Infiltration:			dbItem(db.m_infiltration, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_ZoneTemplates:			dbItem(db.m_zoneTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_EpdDatasets:			dbItem(db.m_epdDatasets, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_AcousticTemplates:		dbItem(db.m_acousticTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::NUM_DT:
 		break;
 	}
@@ -485,7 +487,14 @@ void SVDBDuplicatesDialog::updateUi() {
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneTemplates[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneTemplates[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
+				case SVDatabase::DT_EpdDatasets:
+					item->setText(tr("EpdDatasets"));
+					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_epdDatasets[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
+					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_epdDatasets[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+					break;
+				case SVDatabase::DT_AcousticTemplates:
 				case SVDatabase::NUM_DT:;// just to make compiler happy
+				break;
 			}
 
 			if (dbElemLeft != nullptr) {

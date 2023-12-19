@@ -203,7 +203,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				InputReference ref;
 				ref.m_id = m_con->m_id;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxA);
+				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_FluxEmittedLongWaveRadiationA);
 				ref.m_required = true;
 				m_inputRefs[InputRef_SideAEmittedLongWaveRadiation] = ref;
 			}
@@ -255,7 +255,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				InputReference ref;
 				ref.m_id = m_con->m_id;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_EmittedLongWaveRadiationFluxB);
+				ref.m_name.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", ConstructionStatesModel::R_FluxEmittedLongWaveRadiationB);
 				ref.m_required = true;
 				m_inputRefs[InputRef_SideBEmittedLongWaveRadiation] = ref;
 			}
@@ -748,11 +748,11 @@ void ConstructionBalanceModel::calculateBoundaryConditions(bool sideA, const NAN
 		if (iface.m_zoneId == 0) { // ambient
 			// different calculation from left or right side
 			if (sideA) {
-				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxA];
+				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_FluxLongWaveRadiationBalanceA];
 				m_fluxDensityLongWaveRadiationA += fluxDensity; // positive from left to right (into construction)
 			}
 			else {
-				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_LongWaveRadiationFluxB];
+				double fluxDensity = m_statesModel->m_results[NANDRAD_MODEL::ConstructionStatesModel::R_FluxLongWaveRadiationBalanceB];
 				m_fluxDensityLongWaveRadiationB -= fluxDensity; // positive from left to right (into construction)
 			}
 		}
