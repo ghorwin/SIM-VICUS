@@ -315,7 +315,7 @@ void Project::readDrawingXML(const IBK::Path & filename) {
 }
 
 
-void Project::readXML(const QString & projectText) {
+void Project::readImportedXML(const QString & projectText) {
 	FUNCID(Project::readXML);
 	TiXmlDocument doc;
 	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
@@ -324,40 +324,45 @@ void Project::readXML(const QString & projectText) {
 
 	readXMLDocument(xmlElem);
 
-	/* Read the drawings from vicus project xml
+	/*! Read the drawings from vicus project xml
 	   NOTE: This is only necessary here, during project import when the import contains a drawing.
-	   For normal project reading, drawings are stored in separate xml file.
+	   For normal project reading, drawings are stored in a separate xml drawing file.
 	 */
+	const TiXmlElement * cdraw = nullptr;
 	try {
+		// check if there is a drawings child
 		TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
 		xmlElem = xmlRoot.FirstChild("Project").Element();
-		const TiXmlElement * c = xmlElem->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Drawings") {
-				try {
-					const TiXmlElement * c2 = c->FirstChildElement();
-					while (c2) {
-						const std::string & c2Name = c2->ValueStr();
-						if (c2Name != "Drawing")
-							IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-						Drawing obj;
-						obj.readXML(c2);
-						m_drawings.push_back(obj);
-						c2 = c2->NextSiblingElement();
-					}
+//		xmlElem->FirstChildElement()->ValueStr() == "Drawings"
+			const TiXmlElement * c = xmlElem->FirstChildElement();
+			while (c) {
+				const std::string & cName = c->ValueStr();
+				if (cName == "Drawings") {
+					cdraw = c->FirstChildElement();
+					break;
 				}
-				catch (IBK::Exception &ex){
-					throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
-				}
+				c = c->NextSiblingElement();
 			}
-			c = c->NextSiblingElement();
 		}
-		// don't forget to update pointers
-		updatePointers();
-	}
-	catch (...){
-		// thats fine, there is just no drawing in the imported project file
+		catch (IBK::Exception &ex){
+			throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
+		}
+
+	// read the drawing
+	if (cdraw != nullptr) {
+		try {
+			Drawing draw;
+			draw.readXML(cdraw);
+			m_drawings.push_back(draw);
+			// don't forget to update pointers
+			updatePointers();
+			// generate inserts, this should happen only once!
+			for (VICUS::Drawing &dr: m_drawings)
+				dr.generateInsertGeometries(nextUnusedID());
+		}
+		catch (IBK::Exception &ex){
+			throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
+		}
 	}
 }
 

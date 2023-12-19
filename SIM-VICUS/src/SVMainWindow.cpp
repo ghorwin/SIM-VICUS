@@ -892,7 +892,7 @@ void SVMainWindow::onImportPluginTriggered() {
 	QString projectText;
 	bool success = importPlugin->import(this, projectText);
 	try {
-		p.readXML(projectText);
+		p.readImportedXML(projectText);
 		std::ofstream out("C:/test/VicusImport.xml");
 		out << projectText.toStdString();
 	}
@@ -912,7 +912,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		if (!m_projectHandler.isValid()) {
 			// create new project
 			m_projectHandler.newProject(&p); // emits updateActions()
-			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
+//			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
 

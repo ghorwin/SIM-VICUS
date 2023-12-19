@@ -1116,6 +1116,9 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 			if (m_project->m_drawingFilePath.exists()) {
 				m_project->readDrawingXML(m_project->m_drawingFilePath);
 				m_project->updatePointers();
+				// generate inserts, this should happen only once!
+				for (VICUS::Drawing &dr: m_project->m_drawings)
+					dr.generateInsertGeometries(m_project->nextUnusedID());
 			}
 		}
 

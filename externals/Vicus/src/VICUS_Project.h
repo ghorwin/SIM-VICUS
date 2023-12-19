@@ -112,7 +112,7 @@ public:
 	/*! Reads the project data from an text which contains XML.
 		\param projectText  Text with VICUS project.
 	*/
-	void readXML(const QString & projectText);
+	void readImportedXML(const QString & projectText);
 
 	/*! Actual read function, called from both variants of readXML(). */
 	void readXMLDocument(TiXmlElement * rootElement);

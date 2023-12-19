@@ -38,7 +38,7 @@ Drawing::Drawing() :
 {}
 
 
-TiXmlElement * Drawing::Text::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Text::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Text");
@@ -62,7 +62,7 @@ TiXmlElement * Drawing::Text::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::Text::readXML(const TiXmlElement *element){
+void Drawing::Text::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Text::readXMLPrivate);
 
 	try {
@@ -150,7 +150,7 @@ const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries() const {
 }
 
 
-TiXmlElement * Drawing::Solid::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Solid::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Solid");
@@ -173,7 +173,7 @@ TiXmlElement * Drawing::Solid::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::Solid::readXML(const TiXmlElement *element){
+void Drawing::Solid::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Solid::readXMLPrivate);
 
 	try {
@@ -283,7 +283,7 @@ const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries() const {
 	}
 }
 
-TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::LinearDimension::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("LinearDimension");
@@ -315,7 +315,7 @@ TiXmlElement * Drawing::LinearDimension::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::LinearDimension::readXML(const TiXmlElement *element){
+void Drawing::LinearDimension::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::LinearDimension::readXMLPrivate);
 
 	try {
@@ -572,7 +572,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 }
 
 
-TiXmlElement * Drawing::Point::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Point::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Point");
@@ -592,7 +592,7 @@ TiXmlElement * Drawing::Point::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::Point::readXML(const TiXmlElement *element){
+void Drawing::Point::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Circle::readXMLPrivate);
 
 	try {
@@ -699,7 +699,7 @@ const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries() const {
 	}
 }
 
-void Drawing::Line::readXML(const TiXmlElement *element){
+void Drawing::Line::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Circle::readXMLPrivate);
 
 	try {
@@ -813,7 +813,7 @@ const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries() const {
 	return m_planeGeometries;
 }
 
-TiXmlElement * Drawing::Line::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Line::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Line");
@@ -835,7 +835,7 @@ TiXmlElement * Drawing::Line::writeXML(TiXmlElement * parent) const {
 }
 
 
-TiXmlElement * Drawing::Circle::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Circle::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Circle");
@@ -856,7 +856,7 @@ TiXmlElement * Drawing::Circle::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::Circle::readXML(const TiXmlElement *element){
+void Drawing::Circle::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Circle::readXMLPrivate);
 
 	try {
@@ -968,7 +968,7 @@ const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries() const {
 }
 
 
-TiXmlElement * Drawing::PolyLine::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::PolyLine::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("PolyLine");
@@ -1000,7 +1000,7 @@ TiXmlElement * Drawing::PolyLine::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::PolyLine::readXML(const TiXmlElement *element){
+void Drawing::PolyLine::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Arc::readXMLPrivate);
 
 	try {
@@ -1113,7 +1113,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries() const {
 }
 
 
-TiXmlElement * Drawing::Arc::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Arc::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Arc");
@@ -1136,7 +1136,7 @@ TiXmlElement * Drawing::Arc::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-void Drawing::Arc::readXML(const TiXmlElement *element){
+void Drawing::Arc::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Arc::readXMLPrivate);
 
 	try {
@@ -1257,7 +1257,7 @@ const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries() const {
 }
 
 
-TiXmlElement * Drawing::Ellipse::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Drawing::Ellipse::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
 
 	TiXmlElement * e = new TiXmlElement("Ellipse");
@@ -1282,7 +1282,7 @@ TiXmlElement * Drawing::Ellipse::writeXML(TiXmlElement * parent) const {
 }
 
 
-void Drawing::Ellipse::readXML(const TiXmlElement *element){
+void Drawing::Ellipse::readXMLPrivate(const TiXmlElement *element){
 	FUNCID(Drawing::Arc::readXMLPrivate);
 
 	try {
@@ -1567,6 +1567,7 @@ void generateObjectFromInsert(unsigned int &nextId, const Drawing::Block &block,
 		newObj.m_trans = trans;
 		newObj.m_blockName = "";
 		newObj.m_block = nullptr;
+		newObj.m_isInsertObject = true;
 
 		newObjects.push_back(newObj);
 	}
@@ -1603,7 +1604,7 @@ void Drawing::transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &i
 
 }
 
-void Drawing::generateInsertGeometries(unsigned int &nextId) {
+void Drawing::generateInsertGeometries(unsigned int nextId) {
 	FUNCID(Drawing::generateInsertGeometries);
 	updateParents();
 
@@ -1909,8 +1910,9 @@ void Drawing::generatePlanesFromText(const std::string &text, double textHeight,
 	// Extract polygons from the path
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
-	double scalingFactorFonts = std::max(textHeight * DEFAULT_FONT_SCALING * m_scalingFactor,
-										 DEFAULT_FONT_SIZE);
+	double scalingFactorFonts = DEFAULT_FONT_SCALING * m_scalingFactor ;
+//	std::max(textHeight * DEFAULT_FONT_SCALING * m_scalingFactor,
+//										 DEFAULT_FONT_SIZE);
 
 	qDebug() << "Text size: " << scalingFactorFonts;
 	qDebug() << "Rotation angle: " << rotationAngle;
@@ -2026,7 +2028,7 @@ TiXmlElement *Drawing::DimStyle::writeXML(TiXmlElement *parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_name != QString())
+	if (!m_name.isEmpty())
 		e->SetAttribute("name", m_name.toStdString());
 	if (m_upperLineDistance > 0.0)
 		e->SetAttribute("upperLineDistance", IBK::val2string<double>(m_upperLineDistance));
@@ -2182,9 +2184,9 @@ TiXmlElement *Drawing::Insert::writeXML(TiXmlElement *parent) const {
 	TiXmlElement * e = new TiXmlElement("Insert");
 	parent->LinkEndChild(e);
 
-	if (m_currentBlockName != QString())
+	if (!m_currentBlockName.isEmpty())
 		e->SetAttribute("blockName", m_currentBlockName.toStdString());
-	if (m_currentBlockName != QString())
+	if (!m_parentBlockName.isEmpty())
 		e->SetAttribute("parentBlockName", m_parentBlockName.toStdString());
 	if (m_angle != 0.0)
 		e->SetAttribute("angle", IBK::val2string<double>(m_angle));
@@ -2205,13 +2207,6 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 	FUNCID(Drawing::DimStyle::readXMLPrivate);
 
 	try {
-		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "id")) {
-			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			return;
-		}
-
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
@@ -2226,7 +2221,7 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 			else if (attribName == "yScale")
 				m_yScale = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "zScale")
-				m_zScale = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+				m_zScale = NANDRAD::readPODAttributeValue<double>(element, attrib);
 
 			attrib = attrib->Next();
 		}
@@ -2235,7 +2230,7 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Point") {
+			if (cName == "insertionPoint") {
 				try {
 					m_insertionPoint = IBKMK::Vector2D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
@@ -2444,6 +2439,18 @@ void Drawing::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "Inserts") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "Insert")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					Insert obj;
+					obj.readXML(c2);
+					m_inserts.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ZCounter")
 				m_zCounter = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "DefaultColor")
@@ -2458,6 +2465,9 @@ void Drawing::readXML(const TiXmlElement * element) {
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Drawing' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Drawing::Text' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
@@ -2605,6 +2615,18 @@ TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<DimStyle>::const_iterator it = m_dimensionStyles.begin();
 			 it != m_dimensionStyles.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_inserts.empty()) {
+		TiXmlElement * child = new TiXmlElement("Inserts");
+		e->LinkEndChild(child);
+
+		for (std::vector<Insert>::const_iterator it = m_inserts.begin();
+			 it != m_inserts.end(); ++it)
 		{
 			it->writeXML(child);
 		}

@@ -9,7 +9,6 @@
 
 #include "VICUS_PlaneGeometry.h"
 #include "VICUS_RotationMatrix.h"
-#include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
 #include "VICUS_DrawingLayer.h"
 
@@ -38,8 +37,6 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Drawing();
-
-	// VICUS_COMPARE_WITH_ID
 
 	void updateParents() {
 		m_children.clear();
@@ -74,7 +71,6 @@ public:
 		TiXmlElement * writeXML(TiXmlElement * element) const;
 		void readXML(const TiXmlElement * element);
 
-		unsigned int			m_id;					// unsigned int
 		QString					m_currentBlockName;		// name of block
 		QString					m_parentBlockName;		// name of block
 
@@ -99,8 +95,34 @@ public:
 		/*! D'tor. */
 		virtual ~AbstractDrawingObject() {}
 
-		virtual void readXML(const TiXmlElement * element) = 0;
-		virtual TiXmlElement * writeXML(TiXmlElement * parent) const = 0;
+		inline void readXML(const TiXmlElement * element){
+			const TiXmlAttribute *attrib = TiXmlAttribute::attributeByName(element, "blockName");
+			if (attrib != nullptr) {
+				m_blockName = QString::fromStdString(attrib->ValueStr());
+			}
+			readXMLPrivate(element);
+		}
+
+		/*! To be implemented by inheriting classes */
+		virtual void readXMLPrivate(const TiXmlElement * element) = 0;
+
+		/*! Abstract writeXML function: The actual object shall only be written
+		 *  if this is not an inserted object. The blockName is written here, all other properties
+		 *  are written by the inheriting classes.
+		 */
+		inline TiXmlElement * writeXML(TiXmlElement * parent) const {
+			if (m_isInsertObject)
+				return nullptr; // we don't write inserted objects, these are handled by inserts
+			TiXmlElement *e = writeXMLPrivate(parent);
+			if (e == nullptr)
+				return nullptr;
+			if (!m_blockName.isEmpty())
+				e->SetAttribute("blockName", m_blockName.toStdString());
+			return e;
+		}
+
+		/*! To be implemented by inheriting classes */
+		virtual TiXmlElement * writeXMLPrivate(TiXmlElement * parent) const = 0;
 
 		/*! Function to update points, needed for easier
 			handling of objects in scene3D to construct 3D
@@ -147,6 +169,10 @@ public:
 		unsigned int								m_id;
 		/*! Transformation matrix. */
 		QMatrix4x4									m_trans = QMatrix4x4();
+		/*! Defines wether this is a run-time only generated object defined
+			by a block and according insert. If true the object shall not be written.
+		*/
+		bool										m_isInsertObject = false;
 
 	protected:
 		/*! Flag to indictate recalculation of points. */
@@ -211,8 +237,8 @@ public:
 	/*! Stores attributes of line */
 	struct Point : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
 		const std::vector<IBKMK::Vector2D>& points2D() const override;
@@ -229,8 +255,8 @@ public:
 	/*! Stores attributes of line */
 	struct Line : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
 		const std::vector<IBKMK::Vector2D>& points2D() const override;
@@ -248,8 +274,8 @@ public:
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		/*! Calculate points. */
 		const std::vector<IBKMK::Vector2D>& points2D() const override;
@@ -267,8 +293,8 @@ public:
 	/* Stores attributes of circle */
 	struct Circle : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 		/*! Calculate points. */
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -285,8 +311,8 @@ public:
 	/* Stores attributes of ellipse */
 	struct Ellipse : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -310,8 +336,8 @@ public:
 	/* Stores attributes of arc */
 	struct Arc : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -333,8 +359,8 @@ public:
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -355,8 +381,8 @@ public:
 	/* Stores attributes of text, dummy struct */
 	struct Text : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -380,8 +406,8 @@ public:
 	/* Stores attributes of text, dummy struct */
 	struct LinearDimension : public AbstractDrawingObject {
 
-		TiXmlElement * writeXML(TiXmlElement * element) const override;
-		void readXML(const TiXmlElement * element) override;
+		TiXmlElement * writeXMLPrivate(TiXmlElement * element) const override;
+		void readXMLPrivate(const TiXmlElement * element) override;
 
 		const std::vector<IBKMK::Vector2D> &points2D() const override;
 		/*! Calculate Plane geometries if m_dirtyTriangulation is true and/or returns them.
@@ -425,7 +451,6 @@ public:
 
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
-//	VICUS_READWRITE
 
 	void readXML(const TiXmlElement * element);
 
@@ -445,7 +470,7 @@ public:
 	void updatePlaneGeometries();
 
 	/*! Generates all inserting geometries. */
-	void generateInsertGeometries(unsigned int &nextId);
+	void generateInsertGeometries(unsigned int nextId);
 
 	/*! Returns 3D Pick points of drawing. */
 	const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &pickPoints() const;
@@ -463,10 +488,6 @@ public:
 	const IBKMK::Vector3D localY() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
-
-	//:inherited	unsigned int		m_id = INVALID_ID;					// XML:A:required
-	//:inherited	QString				m_displayName;						// XML:A
-	//:inherited	bool				m_visible = true;					// XML:A
 
 	/*! point of origin */
 	IBKMK::Vector3D															m_origin			= IBKMK::Vector3D(0,0,0);						// XML:E
