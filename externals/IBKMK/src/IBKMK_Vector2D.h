@@ -148,6 +148,8 @@ public:
 
 	/*! Converts a vector to a string in format "x y z". */
 	std::string toString() const;
+	/*! Converts a vector to a string in format "x y z" with given numerical precision */
+	std::string toString(int precision) const;
 	/*! Converts a vector from a string in format "x y z". Throws an exception if parsing of numbers fails. */
 	static Vector2D fromString(const std::string & vecString);
 
