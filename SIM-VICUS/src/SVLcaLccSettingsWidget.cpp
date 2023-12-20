@@ -1023,14 +1023,14 @@ void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 						continue;
 
 					VICUS::Component::ComponentType ct = comp->m_type;
-					qDebug() << "Surface name:" << s.m_displayName;
+					// qDebug() << "Surface name:" << s.m_displayName;
 					if( ct == VICUS::Component::CT_Ceiling || ct == VICUS::Component::CT_FloorToAir || ct == VICUS::Component::CT_FloorToCellar
 							|| ct == VICUS::Component::CT_FloorToGround || ct == VICUS::Component::CT_Ceiling ) {
 						const IBKMK::Vector3D &n = s.geometry().normal();
 						double angle = IBKMK::angleBetweenVectorsDeg(n, IBKMK::Vector3D(0,0,-1) );
-						qDebug() << "Angle between vertical and surface: " << angle;
+						// qDebug() << "Angle between vertical and surface: " << angle;
 						if(angle < 5) {
-							qDebug() << "Surface added.";
+							// qDebug() << "Surface added.";
 							area += s.geometry().area();
 						}
 					}

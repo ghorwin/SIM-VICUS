@@ -65,6 +65,7 @@ public:
 		DT_Infiltration,
 		DT_ZoneTemplates,
 		DT_AcousticTemplates,
+		DT_AcousticBuildingTemplates,
 		DT_AcousticSoundProtectionTemplates,
 		DT_AcousticSoundAbsorptions,
 		NUM_DT // used for "all"

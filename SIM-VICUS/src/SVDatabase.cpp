@@ -526,6 +526,7 @@ void SVDatabase::updateElementChildren() {
 	m_epdDatasets.clearChildren();
 	m_acousticSoundProtectionTemplates.clearChildren();
 	m_acousticTemplates.clearChildren();
+	m_acousticBuildingTemplates.clearChildren();
 
 
 	// Now set all children relations
@@ -1147,11 +1148,25 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
 						for (const VICUS::Room & r : bl.m_rooms) {
 							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
+							if (c.m_idAcousticBuildingType == elementID)
+								c.m_idAcousticBuildingType = replacementElementID;
+						}
+			}
+		break;
+
+		case DT_AcousticBuildingTemplates:
+			// AcousticTemplates are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const VICUS::Building & b : project().m_buildings)
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+						for (const VICUS::Room & r : bl.m_rooms) {
+							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
 							if (c.m_idAcousticTemplate == elementID)
 								c.m_idAcousticTemplate = replacementElementID;
 						}
 			}
 		break;
+
 		case DT_AcousticSoundProtectionTemplates:
 			// SoundProtectionTemplates are referenced from project
 			if (SVProjectHandler::instance().isValid()) {

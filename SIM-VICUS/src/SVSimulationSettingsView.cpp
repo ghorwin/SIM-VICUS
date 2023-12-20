@@ -31,9 +31,9 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	Q_ASSERT(m_ui->stackedWidget->count() == m_ui->listWidget->count());
 
 	// disable LCA & Acoustic
-	QListWidgetItem *item = m_ui->listWidget->item(P_LCA);
+	QListWidgetItem *item = m_ui->listWidget->item(SP_LifeCycle);
 	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-	item = m_ui->listWidget->item(P_Acoustic);
+	item = m_ui->listWidget->item(SP_Acoustic);
 	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
 	QFont fnt;
@@ -44,7 +44,7 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 
 	m_ui->tabWidgetSimulation->setStyleSheet("QTabWidget QTabBar::tab {width: 200px;}");
 
-	m_ui->listWidget->setCurrentRow(P_Location);
+	m_ui->listWidget->setCurrentRow(SP_Location);
 }
 
 
@@ -62,29 +62,29 @@ void SVSimulationSettingsView::setCurrentPage(unsigned int index) {
 
 void SVSimulationSettingsView::on_listWidget_currentRowChanged(int currentRow) {
 
-	switch (Page(currentRow)) {
+	switch ((SimulationPage)currentRow) {
 
-		case P_Location: {
+		case SP_Location: {
 			if (m_locationOptions==nullptr) {
 				m_locationOptions = new SVSimulationLocationOptions(this);
 				QHBoxLayout *lay1 = new QHBoxLayout;
 				lay1->addWidget(m_locationOptions);
 				lay1->setContentsMargins(10,0,10,0);
-				m_ui->stackedWidget->widget(P_Location)->setLayout(lay1);
+				m_ui->stackedWidget->widget(SP_Location)->setLayout(lay1);
 			}
 		} break;
 
-		case P_Shading: {
+		case SP_Shading: {
 			if (m_shadingOptions==nullptr) {
 				m_shadingOptions = new SVSimulationShadingOptions(this);
 				QHBoxLayout *lay2 = new QHBoxLayout;
 				lay2->addWidget(m_shadingOptions);
 				lay2->setContentsMargins(10,0,10,0);
-				m_ui->stackedWidget->widget(P_Shading)->setLayout(lay2);
+				m_ui->stackedWidget->widget(SP_Shading)->setLayout(lay2);
 			}
 		} break;
 
-		case P_ThermalSimulation: {
+		case SP_ThermalSimulation: {
 			if (m_simulationStartOptions == nullptr) {
 				m_simulationStartOptions = new SVSimulationStartOptions(this);
 				m_simulationStartOptions->updateUi();
@@ -129,17 +129,17 @@ void SVSimulationSettingsView::on_listWidget_currentRowChanged(int currentRow) {
 			}
 		} break;
 
-		case P_LCA: {
+		case SP_LifeCycle: {
 			if (m_lcaSettings == nullptr) {
 				m_lcaSettings = new SVLcaLccSettingsWidget(this);
 				QHBoxLayout *lay3 = new QHBoxLayout;
 				lay3->addWidget(m_lcaSettings);
 				lay3->setContentsMargins(10,0,10,0);
-				m_ui->stackedWidget->widget(P_LCA)->setLayout(lay3);
+				m_ui->stackedWidget->widget(SP_LifeCycle)->setLayout(lay3);
 			}
 		} break;
 
-		case P_Acoustic:
+		case SP_Acoustic:
 			break;
 
 		default:

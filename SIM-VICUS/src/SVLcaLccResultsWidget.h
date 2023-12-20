@@ -182,8 +182,10 @@ public:
 					   std::vector<double> &investCost) const;
 
 	/*! Sets all Usage specific (Category B) results inside the tree widget. */
-	void setUsageResults(const VICUS::LcaSettings &settings, const double &gasConsumption, const double &electricityConsumption,
-						 const double &coalConsumption);
+	void setUsageResults(const VICUS::LcaSettings &settings,
+						 double gasConsumption,
+						 double electricityConsumption,
+						 double coalConsumption);
 
 	/*! Utility costs are given for first year. Material costs are given based on todays costs for each year. */
 	void setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings,

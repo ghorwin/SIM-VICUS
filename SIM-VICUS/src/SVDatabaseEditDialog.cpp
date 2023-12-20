@@ -643,7 +643,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticBoundaryConditionEdit
 		new SVDBAcousticBoundaryConditionEditWidget(parent),
 		tr("Acoustic boundary conditions Database"), tr("Acoustic boundary conditions properties"), true
 	);
-	resizeDBDialog(dlg);
+	//resizeDBDialog(dlg);
 	return dlg;
 }
 
@@ -653,7 +653,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticSoundAbsorptionEditDi
 														  new SVDBAcousticSoundAbsorptionEditWidget(parent),
 														  tr("Acoustic sound absorption Database"), tr("Acoustic sound absorption properties"), true
 														  );
-	resizeDBDialog(dlg);
+	//resizeDBDialog(dlg);
 	return dlg;
 }
 

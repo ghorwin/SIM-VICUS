@@ -53,7 +53,7 @@ void setTableWidgetItem(QTableWidget *table, std::map<VICUS::EpdModuleDataset::M
 	table->setItem(row, 0, item);
 
 	if(isNotUsed)
-		item->setTextColor(Qt::darkGray);
+		item->setForeground(Qt::darkGray);
 
 	moduleToTableItem[module] = item;
 }
@@ -217,7 +217,7 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 		if(tableWidgetItem.second != nullptr) {
 			if(tableWidgetItem.second->data(Qt::UserRole) == true) {
 				tableWidgetItem.second->setData(Qt::UserRole+1, false);
-				tableWidgetItem.second->setBackgroundColor(Qt::darkRed);
+				tableWidgetItem.second->setForeground(Qt::darkRed);
 			}
 			else
 				tableWidgetItem.second->setBackground(QBrush(""));
@@ -388,7 +388,7 @@ void SVDBMaterialEditWidget::updateCategory(unsigned int idCategory, VICUS::Mate
 
 						if(m_moduleToTableItem[modules[j]]->data(Qt::UserRole) == true) {
 							m_moduleToTableItem[modules[j]]->setData(Qt::UserRole+1, true);
-							m_moduleToTableItem[modules[j]]->setBackgroundColor(Qt::darkGreen);
+							m_moduleToTableItem[modules[j]]->setBackground(Qt::darkGreen);
 						}
 					}
 				}
@@ -398,7 +398,7 @@ void SVDBMaterialEditWidget::updateCategory(unsigned int idCategory, VICUS::Mate
 }
 
 
-void SVDBMaterialEditWidget::updateCategoryValidity(unsigned int idCategory, const VICUS::LcaSettings::LcaCategory category) {
+void SVDBMaterialEditWidget::updateCategoryValidity(unsigned int /*idCategory*/, const VICUS::LcaSettings::LcaCategory category) {
 	bool isValid = true;
 
 	for(std::pair<VICUS::EpdModuleDataset::Module, QTableWidgetItem*> tableWidgetItem : m_moduleToTableItem) {

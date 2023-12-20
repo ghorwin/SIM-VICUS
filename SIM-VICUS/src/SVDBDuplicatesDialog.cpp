@@ -137,8 +137,6 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		case SVDatabase::DT_EpdDatasets:			dbItem(db.m_epdDatasets, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticTemplates:		dbItem(db.m_acousticTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticBoundaryConditions: dbItem(db.m_acousticBoundaryConditions, leftID, rightID, dbElemLeft, dbElemRight); break;
-		case SVDatabase::DT_EpdDatasets:			dbItem(db.m_epdDatasets, leftID, rightID, dbElemLeft, dbElemRight); break;
-		case SVDatabase::DT_AcousticTemplates:		dbItem(db.m_acousticTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticSoundAbsorptions:	dbItem(db.m_acousticSoundAbsorptions, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_AcousticSoundProtectionTemplates:	dbItem(db.m_acousticSoundProtectionTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::NUM_DT:

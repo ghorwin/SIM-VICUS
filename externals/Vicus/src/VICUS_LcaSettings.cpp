@@ -42,6 +42,8 @@ bool VICUS::LcaSettings::isLcaCategoryDefined(EpdModuleDataset::Module mod) cons
 		case EpdModuleDataset::M_D:	    return m_certificationModules & M_D;
 		case EpdModuleDataset::NUM_M:   return m_certificationModules & NUM_M;
 	}
+
+	return false;
 }
 
 bool VICUS::LcaSettings::isLcaCategoryDefined(EpdModuleDataset::Module mod, CertificationModules modules) {
@@ -65,4 +67,6 @@ bool VICUS::LcaSettings::isLcaCategoryDefined(EpdModuleDataset::Module mod, Cert
 		case EpdModuleDataset::M_D:	    return modules & M_D;
 		case EpdModuleDataset::NUM_M:   return modules & NUM_M;
 	}
+
+	return false;
 }
