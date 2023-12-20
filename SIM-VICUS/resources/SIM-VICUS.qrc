@@ -197,6 +197,5 @@
         <file>gfx/style/dark.png</file>
         <file>gfx/style/white.png</file>
         <file>gfx/actions/DWDWeatherDataConverter.png</file>
-        <file>gfx/saint-gobain/logo-sg.png</file>
     </qresource>
 </RCC>
