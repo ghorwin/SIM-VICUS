@@ -28,7 +28,7 @@
 namespace VICUS {
 
 const char * const VERSION = "1.0";
-const char * const LONG_VERSION = "1.0.7";
+const char * const LONG_VERSION = "1.1.0";
 
 unsigned int INVALID_ID = 0xFFFFFFFF;
 
@@ -41,6 +41,18 @@ const char * XML_READ_UNKNOWN_NAME = "Name '%1' for tag '%2' in line %3 is inval
 
 const char * DATABASE_PLACEHOLDER_NAME			= "Database";
 const char * USER_DATABASE_PLACEHOLDER_NAME		= "User Database";
+
+const double MAX_SEGMENT_ARC_LENGHT			= 30;
+const unsigned int SEGMENT_COUNT_CIRCLE		= 30;
+const unsigned int SEGMENT_COUNT_ELLIPSE	= 30;
+
+// Multiplyer for different layers and their heights
+const double Z_MULTIPLYER					= 0.00005;
+// default line width
+const double DEFAULT_LINE_WEIGHT			= 0.05;
+// multiplier to apply to width of entities
+const double DEFAULT_LINE_WEIGHT_SCALING	= 0.005;
+
 
 } // namespace VICUS
 
