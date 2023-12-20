@@ -36,5 +36,25 @@
         <file>icons/light/svg/show_results.svg</file>
         <file>icons/light/svg/snap.svg</file>
         <file>icons/light/svg/undo.svg</file>
+        <file>icons/dark/svg/delete_items.svg</file>
+        <file>icons/dark/svg/deselect_items.svg</file>
+        <file>icons/dark/svg/hide_items.svg</file>
+        <file>icons/dark/svg/invert_selection.svg</file>
+        <file>icons/dark/svg/local_coordinate_move.svg</file>
+        <file>icons/dark/svg/select_items.svg</file>
+        <file>icons/dark/svg/show_items.svg</file>
+        <file>icons/light/svg/delete_items.svg</file>
+        <file>icons/light/svg/deselect_items.svg</file>
+        <file>icons/light/svg/hide_items.svg</file>
+        <file>icons/light/svg/invert_selection.svg</file>
+        <file>icons/light/svg/select_items.svg</file>
+        <file>icons/light/svg/show_items.svg</file>
+        <file>icons/dark/svg/3d_geometry_view.svg</file>
+        <file>icons/dark/svg/post_processing.svg</file>
+        <file>icons/dark/svg/simulation_view.svg</file>
+        <file>icons/light/svg/3d_geometry_view.svg</file>
+        <file>icons/light/svg/post_processing.svg</file>
+        <file>icons/light/svg/simulation_view.svg</file>
+        <file>icons/light/svg/smart_select.svg</file>
     </qresource>
 </RCC>

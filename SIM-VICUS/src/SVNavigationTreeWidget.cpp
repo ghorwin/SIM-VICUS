@@ -66,7 +66,16 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
 
-	addAction(m_ui->actionDeselect_all);
+	addAction(m_ui->actionDeselectAll);
+
+	m_ui->actionDeselectAll->setIcon(QIcon::fromTheme("deselect_items"));
+	m_ui->actionSelectAll->setIcon(QIcon::fromTheme("select_items"));
+	m_ui->actionShowSelected->setIcon(QIcon::fromTheme("show_items"));
+	m_ui->actionHideSelected->setIcon(QIcon::fromTheme("hide_items"));
+	m_ui->actionRemoveSelected->setIcon(QIcon::fromTheme("delete_items"));
+	m_ui->actionSmartSelect->setIcon(QIcon::fromTheme("smart_select"));
+	m_ui->actionInvertSelection->setIcon(QIcon::fromTheme("invert_selection"));
+
 }
 
 

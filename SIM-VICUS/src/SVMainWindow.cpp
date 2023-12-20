@@ -189,6 +189,10 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_ui->actionFileNew->setIcon(QIcon::fromTheme("file_new"));
 	m_ui->actionFileOpen->setIcon(QIcon::fromTheme("file_open"));
 	m_ui->actionFileSave->setIcon(QIcon::fromTheme("file_save"));
+
+	m_ui->actionGeometryView->setIcon(QIcon::fromTheme("3d_geometry_view"));
+	m_ui->actionSimulationSettings->setIcon(QIcon::fromTheme("simulation_view"));
+	m_ui->actionOpenPostProcessing->setIcon(QIcon::fromTheme("post_processing"));
 }
 
 

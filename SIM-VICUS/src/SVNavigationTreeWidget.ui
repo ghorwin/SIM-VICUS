@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
+    <width>1026</width>
     <height>637</height>
    </rect>
   </property>
@@ -43,8 +43,8 @@
      <addaction name="actionRemoveSelected"/>
      <addaction name="actionHideSelected"/>
      <addaction name="actionShowSelected"/>
-     <addaction name="actionSelect_all"/>
-     <addaction name="actionDeselect_all"/>
+     <addaction name="actionSelectAll"/>
+     <addaction name="actionDeselectAll"/>
      <addaction name="actionInvertSelection"/>
      <addaction name="actionSmartSelect"/>
     </widget>
@@ -70,7 +70,7 @@
   </layout>
   <action name="actionRemoveSelected">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-loeschen.svg</normaloff>:/gfx/icons8/icons8-loeschen.svg</iconset>
    </property>
    <property name="text">
@@ -85,7 +85,7 @@
   </action>
   <action name="actionShowSelected">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-idee-80.png</normaloff>:/gfx/icons8/icons8-idee-80.png</iconset>
    </property>
    <property name="text">
@@ -100,7 +100,7 @@
   </action>
   <action name="actionHideSelected">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-keine-idee-80.png</normaloff>:/gfx/icons8/icons8-keine-idee-80.png</iconset>
    </property>
    <property name="text">
@@ -113,9 +113,9 @@
     <string>F6</string>
    </property>
   </action>
-  <action name="actionSelect_all">
+  <action name="actionSelectAll">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</iconset>
    </property>
    <property name="text">
@@ -128,9 +128,9 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionDeselect_all">
+  <action name="actionDeselectAll">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</iconset>
    </property>
    <property name="text">
@@ -145,7 +145,7 @@
   </action>
   <action name="actionSmartSelect">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-suche-80.png</normaloff>:/gfx/icons8/icons8-suche-80.png</iconset>
    </property>
    <property name="text">
@@ -160,7 +160,7 @@
   </action>
   <action name="actionInvertSelection">
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-umkehren-80.png</normaloff>:/gfx/icons8/icons8-umkehren-80.png</iconset>
    </property>
    <property name="text">
@@ -174,8 +174,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
