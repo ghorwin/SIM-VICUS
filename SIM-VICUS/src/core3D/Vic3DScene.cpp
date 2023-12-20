@@ -3011,9 +3011,6 @@ struct SnapCandidate {
 void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	const float SNAP_DISTANCES_THRESHHOLD = 1.5; // in m, should be enough, right?
-
-
 	SVViewState::Locks actualLockOption = vs.m_locks;
 	SVViewState::Locks axisLoc = SVViewState::NUM_L; // initialization just to silence compiler warning
 
@@ -3123,7 +3120,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// coordinate system
 				float dist = (IBKVector2QVector(closestPoint) - pickPoint).lengthSquared();
 				// close enough?
-				if (dist < SNAP_DISTANCES_THRESHHOLD) {
+				if (dist < vs.m_snapDistance) {
 					// got a snap point, store it
 					snapPoint = closestPoint;
 					snapInfo = "snap to grid point";
@@ -3144,7 +3141,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			if (s != nullptr) {
 				// a surface object might have several snap points which we collect first in a vector
 				std::vector<SnapCandidate> snapCandidates;
-				float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+				float closestDepthSoFar = vs.m_snapDistance;
 
 				// for now we snap to the vertexes of the outer polygon and all holes
 				const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().triangulationData().m_vertexes;
@@ -3152,7 +3149,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// we always add the intersection point with the surface as fall-back snappoint,
 				// but with a large distance so that it is only used as last resort
 				SnapCandidate sc;
-				sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
+				sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
 				sc.m_pickPoint = r.m_pickPoint;
 				snapCandidates.push_back(sc);
 
@@ -3161,9 +3158,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					for (const IBKMK::Vector3D & v : sVertexes) {
 						QVector3D p = IBKVector2QVector(v);
 						float dist = (p - pickPoint).lengthSquared();
-						// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+						// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
 						// another snap point that's closer.
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+						if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 							sc.m_distToLineOfSight = (double)dist;
 							sc.m_pickPoint = v;
 							snapCandidates.push_back(sc);
@@ -3179,7 +3176,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					center /= sVertexes.size();
 					QVector3D p = IBKVector2QVector(center);
 					float dist = (p - pickPoint).lengthSquared();
-					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+					if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 						sc.m_distToLineOfSight = (double)dist;
 						sc.m_pickPoint = center;
 						snapCandidates.push_back(sc);
@@ -3196,7 +3193,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						center /= 2;
 						QVector3D p = IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+						if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 							sc.m_distToLineOfSight = (double)dist;
 							sc.m_pickPoint = center;
 							snapCandidates.push_back(sc);
@@ -3220,7 +3217,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				IBK_ASSERT(r.m_holeIdx != -1);
 				// a sub-surface object might have several snap points which we collect first in a vector
 				std::vector<SnapCandidate> snapCandidates;
-				float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+				float closestDepthSoFar = vs.m_snapDistance;
 
 				// for now we snap to the vertexes of the outer polygon and all holes
 				const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().holeTriangulationData()[(unsigned int)r.m_holeIdx].m_vertexes;
@@ -3228,7 +3225,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// we always add the intersection point with the surface as fall-back snappoint,
 				// but with a large distance so that it is only used as last resort
 				SnapCandidate sc;
-				sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
+				sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
 				sc.m_pickPoint = r.m_pickPoint;
 				snapCandidates.push_back(sc);
 
@@ -3237,9 +3234,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					for (const IBKMK::Vector3D & v : sVertexes) {
 						QVector3D p = IBKVector2QVector(v);
 						float dist = (p - pickPoint).lengthSquared();
-						// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+						// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
 						// another snap point that's closer.
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+						if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 							sc.m_distToLineOfSight = (double)dist;
 							sc.m_pickPoint = v;
 							snapCandidates.push_back(sc);
@@ -3255,7 +3252,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					center /= sVertexes.size();
 					QVector3D p = IBKVector2QVector(center);
 					float dist = (p - pickPoint).lengthSquared();
-					if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+					if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 						sc.m_distToLineOfSight = (double)dist;
 						sc.m_pickPoint = center;
 						snapCandidates.push_back(sc);
@@ -3272,7 +3269,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						center /= 2;
 						QVector3D p = IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+						if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 							sc.m_distToLineOfSight = (double)dist;
 							sc.m_pickPoint = center;
 							snapCandidates.push_back(sc);
@@ -3288,73 +3285,73 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapInfo = "snap to object";
 			} // if (s != nullptr)
 
-			// *** drawings ***
-			const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);
-			if (dl != nullptr) {
+			if (snapOptions & SVViewState::Snap_Drawings) {
+				// *** drawings ***
+				const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);
+				if (dl != nullptr) {
 
-				const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
-				// a surface object might have several snap points which we collect first in a vector
-				std::vector<SnapCandidate> snapCandidates;
-				float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+					const VICUS::Drawing * d = dynamic_cast<const VICUS::Drawing *>(dl->m_parent);
+					// a surface object might have several snap points which we collect first in a vector
+					std::vector<SnapCandidate> snapCandidates;
+					float closestDepthSoFar = vs.m_snapDistance;
 
-				// we always add the intersection point with the surface as fall-back snappoint,
-				// but with a large distance so that it is only used as last resort
-				SnapCandidate sc;
-				sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
-				sc.m_pickPoint = r.m_pickPoint;
-				snapCandidates.push_back(sc);
+					// we always add the intersection point with the surface as fall-back snappoint,
+					// but with a large distance so that it is only used as last resort
+					SnapCandidate sc;
+					sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
+					sc.m_pickPoint = r.m_pickPoint;
+					snapCandidates.push_back(sc);
 
-				const VICUS::Drawing::AbstractDrawingObject *obj = d->objectByID(r.m_drawingID);
+					const VICUS::Drawing::AbstractDrawingObject *obj = d->objectByID(r.m_drawingID);
 
-				if (snapOptions & SVViewState::Snap_ObjectVertex) {
+						std::vector<IBKMK::Vector3D> points3d = d->pickPoints().at(obj->m_id);
+						for (unsigned int i=0; i<points3d.size(); ++i) {
 
-					std::vector<IBKMK::Vector3D> points3d = d->pickPoints().at(obj->m_id);
-					for (unsigned int i=0; i<points3d.size(); ++i) {
+							const IBKMK::Vector3D & v3D  = points3d[i];
 
-						const IBKMK::Vector3D & v3D  = points3d[i];
-
-						float dist = (IBKVector2QVector(v3D) - pickPoint).lengthSquared();
-						// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
-						// another snap point that's closer.
-						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
-							// for now we snap to the vertexes of the outer polygon and all holes
-							sc.m_distToLineOfSight = (double)dist;
-							sc.m_pickPoint = v3D;
-							snapCandidates.push_back(sc);
-							closestDepthSoFar = dist;
-						}
-
-						if (PICK_LINE) {
-							const IBKMK::Vector3D & v3DB = points3d[((int)i - 1) % points3d.size()];
-
-							IBKMK::Vector3D pickPoint;
-							double lineFactor;
-							double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
-
-							// qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
-
-							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+							float dist = (IBKVector2QVector(v3D) - pickPoint).lengthSquared();
+							// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
 							// another snap point that's closer.
-							if (dist2 < closestDepthSoFar && dist2 < SNAP_DISTANCES_THRESHHOLD && lineFactor > 0. && lineFactor < 1.) {
+							if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 								// for now we snap to the vertexes of the outer polygon and all holes
-								sc.m_distToLineOfSight = (double)dist2;
-								sc.m_pickPoint = pickPoint;
+								sc.m_distToLineOfSight = (double)dist;
+								sc.m_pickPoint = v3D;
 								snapCandidates.push_back(sc);
-								closestDepthSoFar = dist2;
-
-								//								qDebug() << "PICKED";
+								closestDepthSoFar = dist;
 							}
-						}
+
+							if (snapOptions & SVViewState::Snap_DrawingLines) {
+								const IBKMK::Vector3D & v3DB = points3d[((int)i - 1) % points3d.size()];
+
+								IBKMK::Vector3D pickPoint;
+								double lineFactor;
+								double dist2 = IBKMK::lineToPointDistance(v3D, v3DB - v3D, r.m_pickPoint, lineFactor, pickPoint);
+
+								// qDebug() << "Line-pick | Distance: " << dist2 << " X: " << pickPoint.m_x << " Y: " << pickPoint.m_y << " Z: " << pickPoint.m_z << " Line-factor: " << lineFactor;
+
+								// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
+								// another snap point that's closer.
+								if (dist2 < closestDepthSoFar && dist2 < vs.m_snapDistance && lineFactor > 0. && lineFactor < 1.) {
+									// for now we snap to the vertexes of the outer polygon and all holes
+									sc.m_distToLineOfSight = (double)dist2;
+									sc.m_pickPoint = pickPoint;
+									snapCandidates.push_back(sc);
+									closestDepthSoFar = dist2;
+
+									//								qDebug() << "PICKED";
+								}
+							}
 					}
+
+					// now we take the snap point that's closest - even if all the snap options of an object are
+					// turned off, we still get the intersection point as last straw to pick.
+					std::sort(snapCandidates.begin(), snapCandidates.end());
+					snapPoint = snapCandidates.front().m_pickPoint;
+					snapInfo = "snap to drawing object";
+
 				}
 
-				// now we take the snap point that's closest - even if all the snap options of an object are
-				// turned off, we still get the intersection point as last straw to pick.
-				std::sort(snapCandidates.begin(), snapCandidates.end());
-				snapPoint = snapCandidates.front().m_pickPoint;
-				snapInfo = "snap to drawing object";
-
-			}
+			} //  drawings
 
 			// currently there is such snapping to nodes, yet
 

@@ -150,6 +150,7 @@ SOURCES += \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVSmartIntersectionDialog.cpp \
+    ../../src/SVSnapOptionsDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
     ../../src/SVUndoModifyLcaLcc.cpp \
@@ -364,6 +365,7 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVSmartIntersectionDialog.h \
+    ../../src/SVSnapOptionsDialog.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVTimeSliderWidget.h \
@@ -624,6 +626,7 @@ FORMS    += \
 	../../src/SVSimulationStartOptions.ui \
 	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
+	../../src/SVSnapOptionsDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \
 	../../src/SVWelcomeScreen.ui \

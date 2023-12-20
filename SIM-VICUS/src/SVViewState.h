@@ -214,7 +214,9 @@ public:
 		Snap_GridPlane			= 0x0001,
 		Snap_ObjectCenter		= 0x0002,
 		Snap_ObjectVertex		= 0x0004,
-		Snap_ObjectEdgeCenter	= 0x0008
+		Snap_ObjectEdgeCenter	= 0x0008,
+		Snap_Drawings			= 0x0010,	// snaps drawing objects vertex points
+		Snap_DrawingLines		= 0x0020	// additionally snaps drawing lines
 	};
 
 	bool operator!=(const SVViewState &other) const;
@@ -226,9 +228,11 @@ public:
 	/*! Some color modes require an additional ID property. */
 	unsigned int			m_colorModePropertyID	= VICUS::INVALID_ID;
 	/*! Bitmask with selected snap options. */
-	int						m_snapOptionMask		= Snap_GridPlane | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter;
+	int						m_snapOptionMask		= Snap_GridPlane | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter | Snap_Drawings;
 	/*! Whether snapping is enabled or not. */
 	bool					m_snapEnabled			= true;
+	/*! Distance within which snapping is applied in [m]. */
+	float					m_snapDistance			= 1.0;
 	/*! Coordinate system movement locks. */
 	Locks					m_locks					= NUM_L;
 };
