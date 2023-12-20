@@ -822,7 +822,7 @@ void VicusClipper::createComponentInstances(Notification *notify, bool createCon
 
 		bool foundOriginCompInstance = false;
 		unsigned int compId;
-		if (m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end())
+		if (replaceAllComponentInstances || m_compInstOriginSurfId.find(surfA->m_id) == m_compInstOriginSurfId.end())
 			compId = findComponentInstanceForSurface(*surfA, false, replaceAllComponentInstances);
 		else {
 			compId = m_compInstOriginSurfId[surfA->m_id];

@@ -108,7 +108,6 @@ public:
 	const std::vector<VICUS::SubSurfaceComponentInstance> *vicusSubSurfCompInstances() const;
 
 private:
-
 	/*! Returns the containing Clipping Surface with VICUS Surface from m_clippingSurfaces. */
 	ClippingSurface & findClippingSurface(unsigned int id, const std::vector<VICUS::Building> &buildings);
 
@@ -144,11 +143,11 @@ private:
 
 	VICUS::Project									m_prj;						///< Copy of VICUS Project
 
-	std::vector<VICUS::Building>					m_vicusBuildings;           ///< Original VICUS buildings
-	std::vector<VICUS::Building>					m_vicusBuildingsClipped;    ///< VICUS buildings with newly added data
+	std::vector<VICUS::Building>					m_vicusBuildings;			///< Original VICUS buildings
+	std::vector<VICUS::Building>					m_vicusBuildingsClipped;	///< VICUS buildings with newly added data
 
 
-	std::vector<VICUS::ComponentInstance>			m_vicusCompInstances;       ///< VICUS component instances
+	std::vector<VICUS::ComponentInstance>			m_vicusCompInstances;		///< VICUS component instances
 
 	std::vector<VICUS::SubSurfaceComponentInstance> m_vicusSubSurfCompInstances;///< VICUS Sub surface component instances
 
@@ -166,12 +165,12 @@ private:
 	std::map<QString, unsigned int>					m_nameMap;
 
 	/*! Clipping connections
-		key is vicus surface id
-		values ids of all other possible vicus surfaces for clipping
+		\param key is vicus surface id
+		\param values ids of all other possible vicus surfaces for clipping
 	*/
 	std::map<unsigned int, std::set<unsigned int>>	m_surfaceConnections;
 
-	unsigned int									m_nextVicusId;              ///< last unused id in vicus project
+	unsigned int									m_nextVicusId;				///< last unused id in vicus project
 
 	std::map<unsigned int, unsigned int>			m_compInstOriginSurfId;		///< key is new created surface id, value is old surface ci id
 
