@@ -162,7 +162,11 @@
         </font>
        </property>
        <property name="text">
-        <string>Update acoustic evaluation</string>
+        <string>Run acoustic evaluation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
        </property>
       </widget>
      </item>
@@ -183,7 +187,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <slot>accept()</slot>

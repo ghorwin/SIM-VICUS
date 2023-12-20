@@ -55,7 +55,6 @@ void SVLcaLccResultsWidget::setLcaResults(const std::map<VICUS::Component::Compo
 												 const VICUS::LcaSettings &settings,
 												 std::vector<double> &investCost) const {
 	// ToDo Stephan: Proper result handling and viewing of lca results
-	QMessageBox::information((QWidget *)this, tr("LCA/LCC calculation"), tr("This is an upcoming professional feature coming in Q1/2024."));
 }
 
 void SVLcaLccResultsWidget::setUsageResults(const VICUS::LcaSettings &settings, double gasConsumption,
@@ -68,7 +67,6 @@ void SVLcaLccResultsWidget::setCostResults(const VICUS::LccSettings &lccSettings
 										   double electricityCost, double coalCost, double gasCost,
 										   const std::vector<double> &totalMaterialCost) {
 	// ToDo Stephan: Proper result handling and viewing of lcc results
-	// QMessageBox::information(this, tr("LCC Calculation"), tr("This is an upcoming professional feature coming in Q2/2024.");
 }
 
 

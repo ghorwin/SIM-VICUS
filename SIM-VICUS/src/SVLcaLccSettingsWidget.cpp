@@ -1049,47 +1049,8 @@ void SVLcaLccSettingsWidget::on_pushButtonAreaDetection_clicked() {
 
 void SVLcaLccSettingsWidget::on_pushButtonCalculate_clicked() {
 
-	const VICUS::LcaSettings &lcaSettings = project().m_lcaSettings;
-	const VICUS::LccSettings &lccSettings = project().m_lccSettings;
-
-	try {
-			// TODO : kWh/a  -> Energy/Time -> Power     --> J/s is SI base unit
-
-			// get annual consumptions in kWh/a
-
-			double coalConsumption			= lccSettings.m_para[VICUS::LccSettings::P_CoalConsumption].get_value("kWh/a");
-			double gasConsumption			= lccSettings.m_para[VICUS::LccSettings::P_GasConsumption].get_value("kWh/a");
-			double electricityConsumption	= lccSettings.m_para[VICUS::LccSettings::P_ElectricityConsumption].get_value("kWh/a");
-
-	//		double totalEnergyCost =  gasConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_GasPrice].value
-	//								+ electricityConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value
-	//								+ coalConsumption * m_lccSettings->m_intPara[VICUS::LccSettings::IP_CoalPrice].value ;
-	//		totalEnergyCost /= 100.0; // Mind we store our Prices in cent --> convert to € by /100
-
-			calculateLCA();
-
-			unsigned int numberOfYears = lcaSettings.m_para[VICUS::LcaSettings::P_TimePeriod].get_value("a");
-			std::vector<double> investCost(numberOfYears, 0.0);
-
-			m_resultsWidget->setup();
-			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryA, lcaSettings, investCost);
-			m_resultsWidget->setUsageResults(lcaSettings, gasConsumption, electricityConsumption, coalConsumption);
-			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryC, lcaSettings, investCost);
-			m_resultsWidget->setLcaResults(m_typeToAggregatedCompData, m_compIdToAggregatedData, VICUS::EpdDataset::C_CategoryD, lcaSettings, investCost);
-
-			// Mind: cost values are in ct/kWh and we convert to EUR/kWh
-			m_resultsWidget->setCostResults(lccSettings, lcaSettings,
-					electricityConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_ElectricityPrice].value / 100.0,
-					coalConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_CoalPrice].value / 100.0,
-					gasConsumption * lccSettings.m_intPara[VICUS::LccSettings::IP_GasPrice].value / 100.0,
-					investCost);
-
-			m_ui->tabWidget->widget(3)->setEnabled(true);
-			m_ui->tabWidget->setCurrentIndex(3);
-		}
-		catch (IBK::Exception &ex) {
-			QMessageBox::critical(this, tr("Error in LCA Calculcation"), tr("Could not calculcate LCA. See Error below.\n%1").arg(ex.what()));
-		}
+	QMessageBox::information((QWidget *)this, tr("LCA/LCC calculation"), tr("This is an upcoming professional feature coming in Q1/2024."));
+	return;
 }
 
 
