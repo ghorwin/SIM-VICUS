@@ -31,10 +31,10 @@ SVSimulationSettingsView::SVSimulationSettingsView(QWidget *parent) :
 	Q_ASSERT(m_ui->stackedWidget->count() == m_ui->listWidget->count());
 
 	// disable LCA & Acoustic
-	QListWidgetItem *item = m_ui->listWidget->item(SP_LifeCycle);
-	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-	item = m_ui->listWidget->item(SP_Acoustic);
-	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+//	QListWidgetItem *item = m_ui->listWidget->item(SP_LifeCycle);
+//	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+//	item = m_ui->listWidget->item(SP_Acoustic);
+//	item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
 	QFont fnt;
 	fnt.setPixelSize(14);
@@ -140,6 +140,13 @@ void SVSimulationSettingsView::on_listWidget_currentRowChanged(int currentRow) {
 		} break;
 
 		case SP_Acoustic:
+			if (m_acousticWidget == nullptr) {
+				m_acousticWidget = new SVAcousticConstraintsCheckWidget(this);
+				QHBoxLayout *lay4 = new QHBoxLayout;
+				lay4->addWidget(m_acousticWidget);
+				lay4->setContentsMargins(10,0,10,0);
+				m_ui->stackedWidget->widget(SP_LifeCycle)->setLayout(lay4);
+			}
 			break;
 
 		default:

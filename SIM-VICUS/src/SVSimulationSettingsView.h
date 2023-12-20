@@ -1,6 +1,7 @@
 #ifndef SVSIMULATIONSETTINGSVIEWH
 #define SVSIMULATIONSETTINGSVIEWH
 
+#include "SVAcousticConstraintsCheckWidget.h"
 #include <QWidget>
 
 namespace Ui {
@@ -44,6 +45,8 @@ private:
 	Ui::SVSimulationSettingsView		*m_ui;
 
 	SVSimulationStartOptions			*m_simulationStartOptions = nullptr;
+
+	SVAcousticConstraintsCheckWidget	*m_acousticWidget = nullptr;
 
 	SVSimulationOutputOptions			*m_simulationOutputOptions = nullptr;
 

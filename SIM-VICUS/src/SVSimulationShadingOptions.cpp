@@ -153,6 +153,9 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent) :
 	// connect to project handler
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVSimulationShadingOptions::onModified);
+
+	// Update ui on init
+	updateUi();
 }
 
 

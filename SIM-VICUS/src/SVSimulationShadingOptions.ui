@@ -637,12 +637,16 @@
       <widget class="QPushButton" name="pushButtonCalculate">
        <property name="font">
         <font>
-         <pointsize>9</pointsize>
+         <pointsize>14</pointsize>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>Calculate Shading Factors</string>
+        <string>Run shading-factors calculation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
        </property>
       </widget>
      </item>

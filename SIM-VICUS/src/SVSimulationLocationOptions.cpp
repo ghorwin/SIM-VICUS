@@ -430,7 +430,7 @@ void SVSimulationLocationOptions::minMaxValuesInPlot(const QwtPlot & plot, doubl
 
 void SVSimulationLocationOptions::resizeEvent(QResizeEvent * event) {
 	QWidget::resizeEvent(event);
-	setPlotHeights(event->size().height());
+	// setPlotHeights(event->size().height());
 }
 
 
@@ -635,7 +635,7 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 
 
 void SVSimulationLocationOptions::onScreenChanged(const QScreen * screen) {
-	setPlotHeights(screen->geometry().height());
+	// setPlotHeights(screen->geometry().height());
 }
 
 
