@@ -128,6 +128,15 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	if (gridWidth <= 0)
 		throw IBK::Exception("Invalid grid width, must be > 0 m.", FUNC_ID);
 
+	if (m_samplingPeriod < 0)
+		throw IBK::Exception("Invalid sampling period, must be > 0.", FUNC_ID);
+
+	if (m_duration < 0)
+		throw IBK::Exception("Invalid duration, must be > 0.", FUNC_ID);
+
+	if (m_timeZone < -11 || m_timeZone > 12)
+		throw IBK::Exception("Invalid time zone, must be >= -11 and <= 12.", FUNC_ID);
+
 	// if we didn't do a sun normal calculation, yet, do it now!
 	if (m_sunConeNormals.empty())
 		createSunNormals();
