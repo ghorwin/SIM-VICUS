@@ -66,7 +66,7 @@ const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
 
 // Size of the local coordinate system window
-const int SUBWINDOWSIZE = 400;
+const int SUBWINDOWSIZE = 300;
 
 /// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 5;
