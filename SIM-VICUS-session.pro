@@ -6,8 +6,6 @@ TEMPLATE = subdirs
 
 SUBDIRS = \
 		CO2ComfortVentilation \
-		DummyDatabasePlugin \
-		DummyImportPlugin \
 		SIM-VICUS \
 		QuaZIP \
 		qwt \

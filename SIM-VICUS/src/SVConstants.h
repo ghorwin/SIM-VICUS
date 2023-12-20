@@ -108,6 +108,24 @@ enum BuildingPropertyType {
 	BT_FloorManager,
 };
 
+/*! Structural unit property modes. */
+enum StructuralUnitPropertyType {
+	/*! Structural Unit property */
+	ST_StructuralUnit,
+	/*! Zone property */
+	ST_ZoneProperty,
+	/*! Floor manager. */
+	ST_FloorManager,
+};
+
+/*! Acoustic property modes. */
+enum AcousticPropertyType {
+	/*! Acoustic Sound Protection Template */
+	AT_AcousticSoundProtectionTemplate,
+	/*! Acoustic Template */
+	AT_AcousticTemplate,
+};
+
 /*! Different edit/coloring modes. */
 enum NetworkPropertyTypes {
 	/*! Assigned node properties. */

@@ -88,6 +88,30 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "AcousticBoundaryConditions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "AcousticBoundaryCondition")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::AcousticBoundaryCondition obj;
+					obj.readXML(c2);
+					m_acousticBoundaryConditions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "AcousticSoundAbsorptions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "AcousticSoundAbsorption")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::AcousticSoundAbsorption obj;
+					obj.readXML(c2);
+					m_acousticSoundAbsorptions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "BoundaryConditions") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -389,6 +413,30 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::WindowGlazingSystem>::const_iterator it = m_windowGlazingSystems.begin();
 			it != m_windowGlazingSystems.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_acousticBoundaryConditions.empty()) {
+		TiXmlElement * child = new TiXmlElement("AcousticBoundaryConditions");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::AcousticBoundaryCondition>::const_iterator it = m_acousticBoundaryConditions.begin();
+			it != m_acousticBoundaryConditions.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_acousticSoundAbsorptions.empty()) {
+		TiXmlElement * child = new TiXmlElement("AcousticSoundAbsorptions");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::AcousticSoundAbsorption>::const_iterator it = m_acousticSoundAbsorptions.begin();
+			it != m_acousticSoundAbsorptions.end(); ++it)
 		{
 			it->writeXML(child);
 		}

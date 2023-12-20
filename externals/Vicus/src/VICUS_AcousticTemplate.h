@@ -29,25 +29,29 @@
 #include <IBK_IntPara.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_Database.h"
-#include "VICUS_InternalLoad.h"
-#include "VICUS_Schedule.h"
-#include "VICUS_ZoneControlThermostat.h"
-#include "VICUS_Infiltration.h"
-#include "VICUS_VentilationNatural.h"
-#include "VICUS_ZoneIdealHeatingCooling.h"
+
+#include "NANDRAD_LinearSplineParameter.h"
 
 namespace VICUS {
 
 
 class AcousticTemplate : public AbstractDBElement {
 public:
-	AcousticTemplate();
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
+
+	/*! Enum type with all possible parameters for evaluation.*/
+	enum splinePara_t {
+		SP_MaxValue,						// Keyword: MaxValue						[-]		'Max values for evaluation'
+		SP_MinValue,						// Keyword: MinValue						[-]		'Max values for evaluation'
+		NUM_SP
+	};
+
+	/*! C'tor */
+	AcousticTemplate() {}
 
 
 	/*! Comparison operator */
@@ -60,12 +64,18 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
+	IBK::MultiLanguageString			m_note;									// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;							// XML:E
+	IBK::MultiLanguageString			m_dataSource;							// XML:E
 
-	};
+	double								m_evaluationOffset;						// XML:E
+	double								m_evaluationFactor;						// XML:E
+
+
+	/*! Normalized angle-dependent SHGC values. */
+	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];					// XML:E
+};
 
 }
 

@@ -49,14 +49,14 @@
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
-					<!-- No solar adsorption, no long wave emission
+					<!-- No solar adsorption, no long wave emission -->
 					<InterfaceSolarAbsorption modelType="Constant">
 						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0</IBK:Parameter>
 					</InterfaceSolarAbsorption>
 					<InterfaceLongWaveEmission modelType="Constant">
 						<IBK:Parameter name="Emissivity" unit="---">0</IBK:Parameter>
 					</InterfaceLongWaveEmission>
-					-->
+					
 				</InterfaceB>
 				<EmbeddedObjects>
 					<EmbeddedObject id="1000" displayName="Simple window, no frame and divider">

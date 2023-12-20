@@ -104,8 +104,14 @@ public:
 	/*! Boundary condition ID for Side B (usually inside). */
 	unsigned int					m_idSideBBoundaryCondition = INVALID_ID;	// XML:E
 
+	/*! Acoustic boundary condition ID for Side A (usually outside). */
+	unsigned int					m_idSideAAcousticBoundaryCondition = INVALID_ID;	// XML:E
+
+	/*! Acoustic boundary condition ID for Side B (usually inside). */
+	unsigned int					m_idSideBAcousticBoundaryCondition = INVALID_ID;	// XML:E
+
 	/*! Surface property ID.
-		TODO Dirk, kann das weg?
+		TODO Dirk, kann das weg? nein
 	*/
 	unsigned int					m_idSurfaceProperty = INVALID_ID;			// XML:E
 

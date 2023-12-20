@@ -365,11 +365,11 @@ equals(TEMPLATE,app) {
 
 	CONFIG(debug, debug|release) {
 		OBJECTS_DIR = debug$${DIR_PREFIX}
-		DESTDIR = ../../../bin/debug$${DIR_PREFIX}
+		DESTDIR = $$PWD/../../../../bin/debug$${DIR_PREFIX}
 	}
 	else {
 		OBJECTS_DIR = release$${DIR_PREFIX}
-		DESTDIR = ../../../bin/release$${DIR_PREFIX}
+		DESTDIR = $$PWD/../../../../bin/release$${DIR_PREFIX}
 	}
 
 	MOC_DIR = moc

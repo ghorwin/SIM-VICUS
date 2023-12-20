@@ -24,6 +24,31 @@
 namespace VICUS {
 KeywordListQt::KeywordListQt() {
 
+	tr("Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen");
+	tr("Hotels und Beherbergungsstätten");
+	tr("Krankenhäuser und Sanatorien");
+	tr("Schulen und vergleichbaren Einrichtungen");
+	tr("Einfamilien-Reihenhäusern und zwischen Doppelhäusern");
+	tr("Büro");
+	tr("Area");
+	tr("Fraction");
+	tr("Total Area");
+	tr("Fraction of Area");
+	tr("Normal sound requirements");
+	tr("Enhanced sound requirements");
+	tr("Ceiling");
+	tr("Wall");
+	tr("Door");
+	tr("Stairs");
+	tr("Fraction of surface area.");
+	tr("Wohngebäude und Gebäude mit Wohn- und Arbeitsbereichen");
+	tr("Hotels und Beherbergungsstätten");
+	tr("Krankenhäuser und Sanatorien");
+	tr("Schulen und vergleichbaren Einrichtungen");
+	tr("Einfamilien-Reihenhäusern und zwischen Doppelhäusern");
+	tr("Büro");
+	tr("Max values for evaluation");
+	tr("Max values for evaluation");
 	tr("Outside wall construction");
 	tr("Outside wall construction in contact with ground");
 	tr("Interior construction");
@@ -57,6 +82,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Frame construction");
 	tr("Loam");
 	tr("Not selected");
+	tr("Impact sound value");
+	tr("Air sound resistance value");
 	tr("ID of Catefory A");
 	tr("ID of Catefory B");
 	tr("ID of Catefory C");
@@ -292,6 +319,7 @@ KeywordListQt::KeywordListQt() {
 	tr("If true, default summation models and according output definitions for networks are created.");
 	tr("Floor usable area of the zone");
 	tr("Volume of the zone");
+	tr("Extra heat capacity");
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");

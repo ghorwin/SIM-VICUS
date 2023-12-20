@@ -89,7 +89,8 @@ public:
 	unsigned int findComponentInstanceForSurface(const VICUS::Surface &s, bool coupledSurface = false, bool replaceComponentInstance = false);
 
 	/*! Generates a unique name for every Surface
-		Surf01 is cut into 3 pieces --> name will be Surf01 [1] Surf01 [2] Surf01 [3] */
+		Surf01 is cut into 3 pieces --> name will be Surf01 [1] Surf01 [2] Surf01 [3]
+	*/
 	QString generateUniqueName(QString name);
 
 	/*! Sets the Standard constructions. */

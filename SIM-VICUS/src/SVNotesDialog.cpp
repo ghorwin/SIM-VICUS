@@ -25,7 +25,7 @@ void SVNotesDialog::updateNotesFromPrj() {
 	m_ui->plainTextEditNotes->setPlainText(QString::fromStdString(prj.m_projectInfo.m_comment) );
 }
 
-void SVNotesDialog::onModified( int modificationType, ModificationInfo * data ) {
+void SVNotesDialog::onModified( int modificationType, ModificationInfo * /*data*/ ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
 		case SVProjectHandler::AllModified:

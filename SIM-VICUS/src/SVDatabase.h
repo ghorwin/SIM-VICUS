@@ -28,8 +28,6 @@
 
 #include <VICUS_Project.h>
 
-#include "VICUS_AcousticTemplate.h"
-
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
 	Initialize the database once in your program using the init() function and use it
@@ -45,6 +43,7 @@ public:
 		DT_Constructions,
 		DT_Windows,
 		DT_WindowGlazingSystems,
+		DT_AcousticBoundaryConditions,
 		DT_BoundaryConditions,
 		DT_Components,
 		DT_SubSurfaceComponents,
@@ -66,6 +65,8 @@ public:
 		DT_Infiltration,
 		DT_ZoneTemplates,
 		DT_AcousticTemplates,
+		DT_AcousticSoundProtectionTemplates,
+		DT_AcousticSoundAbsorptions,
 		NUM_DT // used for "all"
 	};
 
@@ -154,6 +155,9 @@ public:
 	/*! Map of all database glazing systems. */
 	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
 
+	/*! Map of all database acoustic boundary conditions */
+	VICUS::Database<VICUS::AcousticBoundaryCondition>   m_acousticBoundaryConditions;
+
 	/*! Map of all database boundary conditions. */
 	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryConditions;
 
@@ -216,6 +220,18 @@ public:
 
 	/*! Map of all database Acoustic templates. */
 	VICUS::Database<VICUS::AcousticTemplate>			m_acousticTemplates;
+
+	/*! Map of all database sound protection templates. */
+	VICUS::Database<VICUS::AcousticSoundProtectionTemplate>	m_acousticSoundProtectionTemplates;
+
+	/*! Map of all database acoustic sound absorption templates. */
+	VICUS::Database<VICUS::AcousticSoundAbsorption>		m_acousticSoundAbsorptions;
+
+    /*! Map of all database Acoustic reference components. */
+    VICUS::Database<VICUS::AcousticReferenceComponent>	m_acousticReferenceComponents;
+
+    /*! Map of all database Acoustic Building Templates. */
+    VICUS::Database<VICUS::AcousticBuildingTemplate>	m_acousticBuildingTemplates;
 
 };
 

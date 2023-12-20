@@ -26,7 +26,7 @@ public slots:
 	/*! Connected to SVProjectHandler::modified().
 		Updates Project Notes.
 	*/
-	void onModified(int modificationType, ModificationInfo * data);
+	void onModified(int modificationType, ModificationInfo *);
 
 private slots:
 	void on_pushButtonSave_clicked();

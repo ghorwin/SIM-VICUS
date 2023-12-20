@@ -76,6 +76,12 @@ public:
 		NUM_MK						// Keyword: ---						'Not selected'
 	};
 
+	enum para_t{
+        P_ImpactSoundValue,         // Keyword: ImpactSoundValue	[-]	'Impact sound value'
+		P_AirSoundResistanceValue,	// Keyword: AirSoundResistanceValue	[-]	'Air sound resistance value'
+		NUM_P
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE_OVERRIDE
@@ -107,6 +113,9 @@ public:
 
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
+
+	/*! Acoustic attributes. */
+	IBK::Parameter					m_acousticPara[NUM_P];					// XML:E
 
 	/*! The individual material layers. */
 	std::vector<MaterialLayer>		m_materialLayers;						// XML:E

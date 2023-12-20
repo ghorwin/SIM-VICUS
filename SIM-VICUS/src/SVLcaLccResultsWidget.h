@@ -1,5 +1,5 @@
-#ifndef SVLcaLccResultsDialogH
-#define SVLcaLccResultsDialogH
+#ifndef SVLcaLccResultsWidgetH
+#define SVLcaLccResultsWidgetH
 
 #include <QDialog>
 #include <QTreeWidgetItem>
@@ -115,18 +115,25 @@ class Component;
 }
 
 namespace Ui {
-class SVLcaLccResultsDialog;
+class SVLcaLccResultsWidget;
 }
 
-class SVLcaLccResultsDialog : public QWidget {
+class SVLcaLccResultsWidget : public QWidget {
 	Q_OBJECT
+
+public:
+	enum ResultType {
+		RT_LCA,
+		RT_LCC,
+		NUM_RT
+	};
 
 	enum Cols {
 		ColCategory,
-		ColColor,
 		ColComponentType,
+		ColColor,
 		ColComponentName,
-		ColConstructionName,
+		ColMaterialName,
 		ColEpdName,
 		ColArea,
 		ColInvestCost,
@@ -138,28 +145,30 @@ class SVLcaLccResultsDialog : public QWidget {
 		NumCol
 	};
 
-	enum ColsLcc {
-		ColYear,
-		ColDiscountingRate,
-		ColPriceIncreaseGeneral,
-		ColPriceIncreaseEnergy,
-		ColPriceInvestEnergy,
-		ColPriceInvestMaterial,
-		NumColLcc
+	enum LCCColumns {
+		LCC_Year,
+		LCC_PriceElectricity,
+		LCC_PriceGas,
+		LCC_PriceCoal,
+		LCC_PriceEnergyTotal,
+		LCC_DiscountingRate,
+		LCC_PriceInvestEnergy,		// Present Value - Energy
+		LCC_PriceMaterialCosts,
+		LCC_PriceInvestMaterial,	// Present Value - Material
+		NUM_LCCColumns
 	};
 
-	enum ColsLccOverview {
-		ColTitle,
-		ColUnit,
-		ColsProduction,
-		ColsEnergy,
-		ColsTotal,
-		NumColLccOverview
+	enum LCCSummaryColumns {
+		LCCS_Title,
+		LCCS_Production,
+		LCCS_Energy,
+		LCCS_Total,
+		NUM_LCCS
 	};
 
-public:
-	explicit SVLcaLccResultsDialog(QWidget *parent = nullptr);
-	~SVLcaLccResultsDialog();
+
+	explicit SVLcaLccResultsWidget(QWidget *parent = nullptr);
+	~SVLcaLccResultsWidget() override;
 
 	/*! Sets up Dialog with LCA Data. Needs to be called once before Dialog is beeing used. */
 	void setup();
@@ -176,15 +185,20 @@ public:
 	void setUsageResults(const VICUS::LcaSettings &settings, const double &gasConsumption, const double &electricityConsumption,
 						 const double &coalConsumption);
 
+	/*! Utility costs are given for first year. Material costs are given based on todays costs for each year. */
 	void setCostResults(const VICUS::LccSettings &lccSettings, const VICUS::LcaSettings &lcaSettings,
-						const double &totalEnergyCost, const std::vector<double> &totalMaterialCost);
+						double electricityCost,
+						double coalCost,
+						double gasCost,
+						const std::vector<double> &totalMaterialCost);
 
 	/*! Converts the material to the referenced reference quantity from the epd.
 		\param layerThickness Thickness of layer in m
 		\param layerArea Area of layer in m
 	*/
 	static double conversionFactorEpdReferenceUnit(const IBK::Unit & refUnit, const VICUS::Material &layerMat,
-																double layerThickness, double layerArea);
+												   double layerThickness, double layerArea);
+
 private slots:
 	void on_treeWidgetLcaResults_itemExpanded(QTreeWidgetItem *item);
 
@@ -198,7 +212,7 @@ private:
 	std::set<unsigned int>					m_idComponentEpdUndefined;
 
 	/*! Pointer to UI. */
-	Ui::SVLcaLccResultsDialog *m_ui;
+	Ui::SVLcaLccResultsWidget *m_ui;
 };
 
-#endif // SVLcaLccResultsDialogH
+#endif // SVLcaLccResultsWidgetH

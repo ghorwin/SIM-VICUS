@@ -102,6 +102,8 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
+        /*! Structural units were modified (Add, edit, delete). */
+        StructuralUnitsModified,
 		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
 		ObjectRenamed,
 		/*! Drawings have been added / removed from project */

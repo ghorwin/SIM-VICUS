@@ -766,8 +766,8 @@ void Project::addViewFactorsToNandradZones(NANDRAD::Project & p, const std::vect
 		// select the correct mapping
 
 		// TODO Dirk: Replace these Mappings with maps
-		for(const RoomMapping & m : roomMappings){
-			if(m.m_idRoomNandrad == z.m_id){
+		for (const RoomMapping & m : roomMappings) {
+			if (m.m_idRoomNandrad == z.m_id) {
 				rM = m;
 				break;
 			}
@@ -1200,6 +1200,8 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 					mapEle.m_floorArea = r.m_para[VICUS::Room::P_Area].value; // in m2
 				if(!r.m_para[VICUS::Room::P_Volume].empty())
 					mapEle.m_volume = r.m_para[VICUS::Room::P_Volume].value; // in m3
+				if(!r.m_para[VICUS::Room::P_HeatCapacity].empty())
+					mapEle.m_heatCapacity = r.m_para[VICUS::Room::P_HeatCapacity].value; // in J/K
 
 				roomIdsToRoomNames[r.m_id] = name.toStdString();
 
@@ -1240,6 +1242,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 		//       populated parameters
 
 		bool isZoneOk = true;
+		bool hasAdditionalHeatCapacity = true;
 		try {
 			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0.1, true, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
@@ -1252,7 +1255,11 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid volume defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
 		}
-
+		try {
+			r->m_para[VICUS::Room::P_HeatCapacity].checkedValue("HeatCapacity", "J/K", "J/K", 1E-4, true, std::numeric_limits<double>::max(), true, nullptr);
+		} catch (...) {
+			hasAdditionalHeatCapacity = false;
+		}
 
 
 		if (!isZoneOk)
@@ -1260,6 +1267,8 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, r->m_para[VICUS::Room::P_Area].value);
 		NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, r->m_para[VICUS::Room::P_Volume].value);
+		if (hasAdditionalHeatCapacity)
+			NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_HeatCapacity, r->m_para[VICUS::Room::P_HeatCapacity].value);
 
 		// for now, zones are always active
 		z.m_type = NANDRAD::Zone::ZT_Active;

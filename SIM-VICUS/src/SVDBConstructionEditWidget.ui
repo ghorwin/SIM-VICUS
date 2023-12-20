@@ -34,47 +34,44 @@
         <string>Construction description</string>
        </property>
        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
-        <item row="4" column="1">
-         <widget class="QComboBox" name="comboBoxMaterialKind"/>
-        </item>
-        <item row="0" column="0" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item row="2" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_7">
             <property name="minimumSize">
              <size>
-              <width>100</width>
+              <width>170</width>
               <height>0</height>
              </size>
             </property>
             <property name="text">
-             <string>Name:</string>
+             <string>Impact Sound value:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditImpactSound"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>dB</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="comboBoxInsulationKind"/>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="comboBoxConstructionUsage"/>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Construction usage:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="6" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>Main/load bearing material:</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
            <string>Insulation type:</string>
@@ -101,8 +98,65 @@
           </item>
          </layout>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBoxConstructionUsage"/>
+        <item row="6" column="1">
+         <widget class="QComboBox" name="comboBoxMaterialKind"/>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Construction usage:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QComboBox" name="comboBoxInsulationKind"/>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_8">
+            <property name="minimumSize">
+             <size>
+              <width>170</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Air Sound Resistance:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditAirSoundRes"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>dB</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -246,6 +300,14 @@
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ConstructionViewWidget</class>

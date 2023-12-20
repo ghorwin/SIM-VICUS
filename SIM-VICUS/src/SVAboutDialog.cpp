@@ -41,7 +41,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
+	setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
 
 	int imageCount = 6;
 
@@ -55,7 +55,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	int pixmapIdx = std::rand()*imageCount/RAND_MAX;
 #endif
 
-	pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
+	pixmap.load(QString(":/gfx/saint-gobain/logo-sg.png"));
 
 	// is needed for high dpi screens to prevent bluring
 	pixmap.setDevicePixelRatio(SVSettings::instance().m_ratio);
@@ -63,15 +63,19 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 	// Load custom font
 	m_ui->label->setPixmap(pixmap);
 	QString labelStyle(
-				"font-size:12pt; color: #3caed0; text-decoration:none"
+				"font-size:12pt; color: #000000; text-decoration:none"
 				);
 
 	SVStyle::setHtmlColors(labelStyle);
 
-	QString infoText = QString("<a href=\"https://sim-vicus.de\"><span style=\"%1\">https://sim-vicus.de</span></a><br><br>"
-							   "<a href=\"https://icons8.de\"><span style=\"%1\">https://icons8.de</span></a>").arg(labelStyle);
-	m_ui->labelInfoText->setText(infoText);
-	m_ui->labelInfoText->setOpenExternalLinks(true);
+	QLabel * linkLabel = new QLabel( QString("HOME & BUILDING OPTIMIZATION"));
+	linkLabel->setParent(this);
+	linkLabel->resize(400,25);
+	linkLabel->setAutoFillBackground(false);
+	linkLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	linkLabel->setOpenExternalLinks(true);
+	linkLabel->move(250,270);
+	linkLabel->setAttribute(Qt::WA_TranslucentBackground);
 
 	layout()->setMargin(0);
 	layout()->setSizeConstraint( QLayout::SetFixedSize );

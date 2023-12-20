@@ -36,7 +36,7 @@
 #include "SVProjectHandler.h"
 
 namespace Ui {
-	class SVMainWindow;
+class SVMainWindow;
 }
 
 class QProgressDialog;
@@ -68,13 +68,14 @@ class SVDBZoneTemplateEditDialog;
 class SVDBDuplicatesDialog;
 class SVPluginLoader;
 class SVSimulationSettingsView;
+class SVStructuralUnitCreationDialog;
+class SVAcousticConstraintsCheckWidget;
 
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
 	Q_OBJECT
 public:
-
 
 	enum MainViewMode {
 		/*! None of the main views is shown, the welcome screen should then be present */
@@ -95,7 +96,6 @@ public:
 		Ownership of the command object will be transferred to the stack.
 	*/
 	static void addUndoCommand(QUndoCommand * command);
-
 
 
 	/*! Default SVMainWindow constructor. */
@@ -146,6 +146,10 @@ public:
 	SVDatabaseEditDialog * dbComponentEditDialog();
 	/*! Returns the subsurface component edit dialog. */
 	SVDatabaseEditDialog * dbSubSurfaceComponentEditDialog();
+	/*! Returns the acoustic boundary condition edit dialog. */
+	SVDatabaseEditDialog * dbAcousticBoundaryConditionEditDialog();
+	/*! Returns the sound absorption edit dialog. */
+	SVDatabaseEditDialog * dbAcousticSoundAbsorptionEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDatabaseEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
@@ -196,6 +200,9 @@ public:
 
 	/*! Returns pointer to the applications preferences dialog. */
 	SVPreferencesDialog * preferencesDialog();
+
+	/*! Returns pointer to the structural unit creation dialog. */
+	SVStructuralUnitCreationDialog * structuralUnitDialog();
 
 public slots:
 
@@ -280,7 +287,6 @@ private slots:
 
 	/*! Updates the device pixel ratio. */
 	void onScreenChanged(QScreen *screen);
-
 
 	// all menu action slots below
 
@@ -383,6 +389,11 @@ private slots:
 	void on_actionExternal_Post_Processor_triggered();
 
 	void on_actionDWD_Weather_Data_Converter_triggered();
+
+	void on_actionDBAcousticBoundaryConditions_triggered();
+
+	void on_actionDBAcousticSoundAbsorptions_triggered();
+
 
 private:
 
@@ -534,6 +545,8 @@ private:
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbSubSurfaceComponentEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbAcousticBoundaryConditionEditDialog		= nullptr;
+	SVDatabaseEditDialog				*m_dbAcousticSoundAbsorptionEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
@@ -565,6 +578,9 @@ private:
 	QTimer								*m_autoSaveTimer 								= nullptr;
 
 	SVLcaLccSettingsWidget				*m_lcaLccSettingsDialog							= nullptr;
+
+	SVStructuralUnitCreationDialog		*m_structuralUnitCreationDialog					= nullptr;
+
 
 	friend class SVThreadBase;
 };

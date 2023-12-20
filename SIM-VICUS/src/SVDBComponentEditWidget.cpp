@@ -76,6 +76,9 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	connect(m_ui->graphicsViewConstruction, &QtExt::ConstructionViewHoverToSelect::sceneClicked,
 			this, &SVDBComponentEditWidget::onConstrcutionsSceneClicked);
 
+	m_ui->lineEditAirSoundRes->setReadOnly(true);
+	m_ui->lineEditImpactSound->setReadOnly(true);
+
 	updateInput(-1);
 }
 
@@ -137,6 +140,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
 
+	m_ui->lineEditAcousticBoundaryConditionSideAName->setEnabled(true);
+	m_ui->lineEditAcousticBoundaryConditionSideBName->setEnabled(true);
+
 	double surfaceResistanceSideA = 0;
 	double surfaceResistanceSideB = 0;
 
@@ -174,6 +180,26 @@ void SVDBComponentEditWidget::updateInput(int id) {
 											 "<p><b>Adiabatic</b></p>"
 											 "</div>"
 											 ));
+	}
+
+	const VICUS::AcousticBoundaryCondition *aBcA = m_db->m_acousticBoundaryConditions[comp->m_idSideAAcousticBoundaryCondition];
+	if (aBcA != nullptr){
+		m_ui->lineEditAcousticBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(aBcA->m_displayName));
+		m_ui->textBrowserAcousticBCSideA->setHtml(aBcA->htmlDescription(m_db->m_acousticSoundAbsorptions));
+	}
+	else {
+		m_ui->lineEditAcousticBoundaryConditionSideAName->clear();
+		m_ui->textBrowserAcousticBCSideA->clear();
+	}
+
+	const VICUS::AcousticBoundaryCondition *aBcB = m_db->m_acousticBoundaryConditions[comp->m_idSideBAcousticBoundaryCondition];
+	if (aBcB != nullptr){
+		m_ui->lineEditAcousticBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(aBcB->m_displayName));
+		m_ui->textBrowserAcousticBCSideB->setHtml(aBcB->htmlDescription(m_db->m_acousticSoundAbsorptions));
+	}
+	else {
+		m_ui->lineEditAcousticBoundaryConditionSideBName->clear();
+		m_ui->textBrowserAcousticBCSideB->clear();
 	}
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
@@ -230,13 +256,17 @@ void SVDBComponentEditWidget::updateInput(int id) {
 			m_ui->graphicsViewConstruction->setBackground(Qt::black);
 
 		if(m_current->m_activeLayerIndex != VICUS::INVALID_ID)
-			m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
+			m_ui->graphicsViewConstruction->markLayer((int)m_current->m_activeLayerIndex);
 		else
 			m_ui->graphicsViewConstruction->markLayer(-1);
 
 		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
 												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
 												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
+
+
+		m_ui->lineEditAirSoundRes->setValue(con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value);
+		m_ui->lineEditImpactSound->setValue(con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value);
 
 		updateLcaTable();
 	}
@@ -270,6 +300,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
+	m_ui->lineEditAcousticBoundaryConditionSideAName->setReadOnly(!isEditable);
+	m_ui->lineEditAcousticBoundaryConditionSideBName->setReadOnly(!isEditable);
 
 	if (!isEditable) {
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
@@ -454,7 +487,7 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 	m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
 	if (checked) {
 		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value()-1;
-		m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
+		m_ui->graphicsViewConstruction->markLayer((int)m_current->m_activeLayerIndex);
 		modelModify();
 	}
 	else {
@@ -506,7 +539,7 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 
 void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) {
 	m_current->m_activeLayerIndex = (unsigned int)arg1-1;
-	m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
+	m_ui->graphicsViewConstruction->markLayer((int)m_current->m_activeLayerIndex);
 	modelModify();
 	m_ui->graphicsViewConstruction->updateView();
 }
@@ -514,3 +547,43 @@ void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) 
 void SVDBComponentEditWidget::onConstrcutionsSceneClicked() {
 	on_toolButtonSelectConstruction_clicked();
 }
+
+void SVDBComponentEditWidget::on_toolButtonSelectAcousticBoundaryConditionSideAName_clicked() {
+	// get boundary condition edit dialog from mainwindow
+	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbAcousticBoundaryConditionEditDialog();
+	unsigned int bcId = bcEditDialog->select(m_current->m_idSideAAcousticBoundaryCondition);
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideAAcousticBoundaryCondition) {
+		m_current->m_idSideAAcousticBoundaryCondition = bcId;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveAcousticBoundaryConditionSideA_clicked() {
+	m_current->m_idSideAAcousticBoundaryCondition = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBComponentEditWidget::on_toolButtonSelectAcousticBoundaryConditionSideBName_clicked() {
+	// get boundary condition edit dialog from mainwindow
+	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbAcousticBoundaryConditionEditDialog();
+	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBAcousticBoundaryCondition);
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideBAcousticBoundaryCondition) {
+		m_current->m_idSideBAcousticBoundaryCondition = bcId;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveAcousticBoundaryConditionSideB_clicked() {
+	m_current->m_idSideBAcousticBoundaryCondition = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+

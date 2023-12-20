@@ -159,7 +159,7 @@ void RoomStatesModel::yInitial(double * y) const {
 		double rhoVapor = pVapor/(RVapor * TInitial);
 
 		// Energy balance: state is room energy in [J]
-		y[0] = ((cAir * rhoAir + cVapor * rhoVapor)*TInitial + hEvap * rhoVapor) * m_volume
+		y[0] = ((cAir * rhoAir + cVapor * rhoVapor) * TInitial + hEvap * rhoVapor) * m_volume
 					 + m_additionalHeatCapacity * TInitial;
 		// Moisture balance: state is moisture mass in [kg]
 		y[1] = rhoVapor * m_volume;

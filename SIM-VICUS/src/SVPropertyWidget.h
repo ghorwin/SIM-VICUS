@@ -63,6 +63,7 @@ public:
 		M_NetworkProperties,
 		M_BuildingProperties,
 		M_BuildingAcousticProperties,
+        M_BuildingStructuralUnitProperties,
 		M_AddWindowWidget,
 		M_ResultsWidget,
 		NUM_M
@@ -73,8 +74,14 @@ public:
 	/*! Shows the building property widget and sets the corresponding property type */
 	void setBuildingPropertyType(int buildingPropertyType);
 
+    /*! Shows the structural unit property widget and sets the corresponding property type */
+    void setStructuralUnitPropertyType(int buildingPropertyType);
+
 	/*! Shows the network property widget and sets the corresponding property type */
 	void setNetworkPropertyType(int networkPropertyType);
+
+	/*! Shows the network property widget and sets the corresponding property type */
+	void setAcousticPropertyType(int acousticPropertyType);
 
 	/*! Manually re-sets the index of the according tool boxes of building and network parametrization widgets,
 	 *  in order to update the color mode. */

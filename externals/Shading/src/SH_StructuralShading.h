@@ -112,7 +112,13 @@ public:
 	StructuralShading() : m_startTime(2007,0) {}
 
 	/*! Specifies location and pre-calculates sun positions and map for "similar sun positions".
-		\todo param
+		\param timeZone TimeZone
+		\param longitudeInDeg Longitude in Degree
+		\param latitudeInDeg Latitude in Degree
+		\param startTime Start time of shading calculation
+		\param duration Duration in [s]
+		\param samplingPeriod Sampling Period / time step in [s]
+		\param sunConeDeg Sun cone in Degree
 	*/
 	void initializeShadingCalculation(int timeZone, double longitudeInDeg, double latitudeInDeg,
 					 const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,

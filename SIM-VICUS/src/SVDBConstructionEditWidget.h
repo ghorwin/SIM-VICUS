@@ -130,6 +130,12 @@ private slots:
 	void constructionViewMove_layer(int index, bool left);
 
 	void on_lineEditDataSource_editingFinished();
+
+	/*! Connected with lineEdit Impact Sound */
+	void on_lineEditImpactSound_editingFinished();
+
+	/*! Connected with lineEdit Air Sound Resistance */
+	void on_lineEditAirSoundRes_editingFinished();
 };
 
 #endif // SVDBConstructionEditWidgetH

@@ -177,6 +177,9 @@ void SVPropBuildingZoneProperty::on_comboBoxBuildingLevelFilter_currentIndexChan
 void SVPropBuildingZoneProperty::on_tableViewZones_doubleClicked(const QModelIndex &index) {
 	if (index.isValid())
 		m_ui->tableViewZones->closePersistentEditor(index);
+
+	if (index.column() == 1)
+		m_zonePropertiesTableModel->showZoneInformation(index);
 }
 
 

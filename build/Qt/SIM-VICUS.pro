@@ -54,7 +54,6 @@ Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 IDFReader.file = ../../externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = ../../NandradSolver/projects/Qt/NandradModel.pro
-clipper.file = ../../externals/clipper/projects/Qt/clipper.pro
 DummyDatabasePlugin.file = ../../plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
 DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
 RoomClipper.file  = ../../externals/RoomClipper/projects/Qt/RoomClipper.pro

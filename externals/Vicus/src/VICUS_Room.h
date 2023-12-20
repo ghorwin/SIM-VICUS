@@ -30,6 +30,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_Surface.h"
 #include "VICUS_Object.h"
+#include "VICUS_StructuralUnit.h"
 
 #include <QString>
 
@@ -52,6 +53,8 @@ public:
 		P_Area,					// Keyword: Area					[m2]	'Floor usable area of the zone'
 		/*! Geometrical violume of the zone, used for air exchange calulation + energy balance. */
 		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone'
+		/*! */
+		P_HeatCapacity,			// Keyword: HeatCapacity			[J/K]	'Extra heat capacity'
 		NUM_P
 	};
 
@@ -84,11 +87,13 @@ public:
 	//:inherited	std::string			m_ifcGUID;					// XML:A
 
 	/*! Reference to assigned zone template (optional). */
-	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
-
+	IDType								m_idZoneTemplate = INVALID_ID;				// XML:E
 	/*! Reference to assigned acoustic template (optional). */
-	IDType								m_idAcousticTemplate = INVALID_ID;	// XML:E
-
+	IDType								m_idAcousticTemplate = INVALID_ID;			// XML:E
+	/*! Reference to assigned sound protection (optional). */
+	IDType								m_idSoundProtectionTemplate = INVALID_ID;	// XML:E
+	/*! Stores the building type ID. */
+	IDType								m_idAcousticBuildingType = INVALID_ID;		// XML:E
 
 	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
@@ -109,6 +114,12 @@ public:
 		zone geometry. If the latter is not possible, user must enter a valid volume.
 	*/
 	double								m_volume = -1;
+
+    // These pointers are updated in VICUS::Project::updatePointers() and can be used
+    // to quicky travers the data model.
+
+    VICUS::StructuralUnit *				m_structuralUnit = nullptr;
+
 };
 
 

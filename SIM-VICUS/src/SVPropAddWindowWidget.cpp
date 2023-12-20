@@ -90,6 +90,7 @@ void SVPropAddWindowWidget::onModified(int modificationType, ModificationInfo * 
 		case SVProjectHandler::OutputsModified:
 		case SVProjectHandler::DrawingModified:
 		case SVProjectHandler::LcaLccModified:
+		case SVProjectHandler::StructuralUnitsModified:
 		break;
 	}
 }

@@ -29,10 +29,8 @@
 #include <VICUS_Project.h>
 
 SVUndoModifyRoom::SVUndoModifyRoom(const QString & label,
-					const VICUS::Room & r, unsigned int buildingIndex, unsigned int buildingLevelIndex,
-								   unsigned int roomIndex) :
-	m_room(r), m_buildingIndex(buildingIndex),
-	m_buildingLevelIndex(buildingLevelIndex), m_roomIndex(roomIndex)
+					const VICUS::Room & r) :
+	m_room(r)
 {
 	setText( label );
 }
@@ -40,7 +38,13 @@ SVUndoModifyRoom::SVUndoModifyRoom(const QString & label,
 
 void SVUndoModifyRoom::undo() {
 	// exchange room meta data
-	std::swap( theProject().m_buildings[m_buildingIndex].m_buildingLevels[m_buildingLevelIndex].m_rooms[m_roomIndex], m_room);
+	const VICUS::Object *obj = project().objectById(m_room.m_id);
+	const VICUS::Room *room = dynamic_cast<const VICUS::Room *>(obj);
+
+	// Get current room
+	VICUS::Room *r = const_cast<VICUS::Room *>(room);
+
+	std::swap(*r, m_room);
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 	theProject().updatePointers();
 }

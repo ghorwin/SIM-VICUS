@@ -36,6 +36,7 @@
 #include "VICUS_Window.h"
 #include "VICUS_WindowFrame.h"
 #include "VICUS_WindowDivider.h"
+#include "VICUS_AcousticBoundaryCondition.h"
 #include "VICUS_BoundaryCondition.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkFluid.h"
@@ -50,6 +51,7 @@
 #include "VICUS_ZoneControlNaturalVentilation.h"
 #include "VICUS_ZoneTemplate.h"
 #include "VICUS_SurfaceHeating.h"
+#include "VICUS_AcousticSoundAbsorption.h"
 
 namespace VICUS {
 
@@ -73,6 +75,12 @@ public:
 
 	/*! Map of all database glazing systems. */
 	std::vector<VICUS::WindowGlazingSystem>				m_windowGlazingSystems;				// XML:E
+
+	/*! Map pf all database acoustic boundary conditions */
+	std::vector<VICUS::AcousticBoundaryCondition>		m_acousticBoundaryConditions;		// XML:E
+
+	/*! Map pf all database acoustic boundary conditions */
+	std::vector<VICUS::AcousticSoundAbsorption>					m_acousticSoundAbsorptions;		// XML:E
 
 	/*! Map of all database boundary conditions. */
 	std::vector<VICUS::BoundaryCondition>				m_boundaryConditions;				// XML:E

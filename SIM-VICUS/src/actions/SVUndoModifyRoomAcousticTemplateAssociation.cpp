@@ -5,12 +5,13 @@
 #include <VICUS_Project.h>
 
 SVUndoModifyRoomAcousticTemplateAssociation::SVUndoModifyRoomAcousticTemplateAssociation(const QString & label,
-	const std::vector<unsigned int> & roomIDs, unsigned int zoneTemplateID) : m_roomIDs(roomIDs)
+																						 const std::vector<unsigned int> & roomIDs,
+																						 unsigned int acousticTemplateID)
+	: m_roomIDs(roomIDs)
 {
 	setText( label );
-	 // populate vector with new zone template ID
-	m_acoutsicTemplateIDs = std::vector<unsigned int>(m_roomIDs.size(), zoneTemplateID);
-
+	// populate vector with new zone template ID
+	m_acousticTemplateIDs	= std::vector<unsigned int>(m_roomIDs.size(), acousticTemplateID);
 }
 
 void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
@@ -18,7 +19,6 @@ void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
 	VICUS::Project & p = theProject();
 
 	Data d;
-
 	for (VICUS::Building & b : p.m_buildings) {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room & r : bl.m_rooms) {
@@ -34,7 +34,7 @@ void SVUndoModifyRoomAcousticTemplateAssociation::undo() {
 					continue;
 
 				// swap current template ID and template ID in vector
-				std::swap(m_acoutsicTemplateIDs[idx], r.m_idAcousticTemplate);
+				std::swap(m_acousticTemplateIDs[idx], r.m_idAcousticTemplate);
 
 				// now store also the information, that the room has been updated
 				const VICUS::Object *obj = dynamic_cast<VICUS::Object*>(&r);

@@ -1,5 +1,6 @@
-#ifndef SVPROPBUILDINGACOUSTICTEMPLATESWIDGET_H
-#define SVPROPBUILDINGACOUSTICTEMPLATESWIDGET_H
+
+#ifndef SVPropBuildingAcousticTemplatesWidgetH
+#define SVPropBuildingAcousticTemplatesWidgetH
 
 #include <QWidget>
 
@@ -26,13 +27,14 @@ public:
 	void updateUi();
 
 private slots:
-	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
-
 	void on_pushButtonAssignAcousticTemplate_clicked();
+	void on_tableWidgetAcousticTemplates_itemSelectionChanged();
+	void on_pushButtonDeleteTemplate_clicked();
+	void on_comboBoxBuildingType_currentIndexChanged(int);
 
 	void onModified(int modificationType, ModificationInfo * /*data*/);
 
-	void on_pushButtonDeleteTemplate_clicked();
+	void on_pushButtonSelect_clicked();
 
 private:
 
@@ -48,4 +50,4 @@ private:
 	std::map<const VICUS::AcousticTemplate*, std::vector<const VICUS::Room *> >			m_acousticTemplateAssignments;
 };
 
-#endif // SVPROPBUILDINGACOUSTICTEMPLATESWIDGET_H
+#endif // SVPropBuildingAcousticTemplatesWidgetH

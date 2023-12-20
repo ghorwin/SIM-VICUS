@@ -34,6 +34,8 @@
 #include <SVConversions.h>
 
 #include <VICUS_KeywordListQt.h>
+#include <VICUS_KeywordList.h>
+#include <VICUS_Construction.h>
 
 #include "SVStyle.h"
 #include "SVConstants.h"
@@ -53,6 +55,9 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));
+
+	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditDataSource->setDialog3Caption(tr("Construction data-source name"));
 
 	m_ui->tableWidget->setColumnCount(5+2); // 2 added for cost and lifetime
 	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
@@ -150,6 +155,10 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 		// disable the line edits (they change background color)
 		m_ui->lineEditName->setEnabled(false);
 		m_ui->lineEditDataSource->setEnabled(false);
+		m_ui->lineEditImpactSound->setEnabled(false);
+		m_ui->lineEditAirSoundRes->setEnabled(false);
+		m_ui->label_9->setEnabled(false);
+		m_ui->label_10->setEnabled(false);
 
 		m_ui->comboBoxMaterialKind->setCurrentIndex(-1);
 		m_ui->comboBoxInsulationKind->setCurrentIndex(-1);
@@ -170,6 +179,13 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// construction name and layer count
 	m_ui->lineEditName->setString(con->m_displayName);
 	m_ui->lineEditDataSource->setString(con->m_dataSource);
+
+	double impactSoundValue = con->m_acousticPara[VICUS::Construction::P_ImpactSoundValue].value;
+	m_ui->lineEditImpactSound->setValue(impactSoundValue);
+
+	double airSoundResValue = con->m_acousticPara[VICUS::Construction::P_AirSoundResistanceValue].value;
+	m_ui->lineEditAirSoundRes->setValue(airSoundResValue);
+
 	int n = std::max<int>(1, con->m_materialLayers.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 
@@ -190,6 +206,10 @@ void SVDBConstructionEditWidget::updateInput(int id) {
 	// update read-only/enabled states
 	m_ui->lineEditName->setEnabled(!con->m_builtIn);
 	m_ui->lineEditDataSource->setEnabled(!con->m_builtIn);
+	m_ui->lineEditImpactSound->setEnabled(!con->m_builtIn);
+	m_ui->lineEditAirSoundRes->setEnabled(!con->m_builtIn);
+	m_ui->label_9->setEnabled(!con->m_builtIn);
+	m_ui->label_10->setEnabled(!con->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxInsulationKind->setEnabled(!con->m_builtIn);
 	m_ui->comboBoxMaterialKind->setEnabled(!con->m_builtIn);
@@ -326,7 +346,7 @@ void SVDBConstructionEditWidget::updateTable() {
 			m_ui->tableWidget->setItem(i+1,4,item);
 			item->setBackground(QBrush(SVStyle::instance().m_readOnlyEditFieldBackground));
 
-			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 1));
+			item = new QTableWidgetItem(QString("%L1").arg((double)layer.m_cost.value/100, 0, 'f', 2));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidget->setItem(i+1,5,item);
 			item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -550,6 +570,9 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		modelModify();
 	}
+
+	// Rounds the numbers inside the table for lifetime and cost
+	updateTable();
 }
 
 
@@ -703,7 +726,7 @@ void SVDBConstructionEditWidget::on_pushButtonFlipConstruction_clicked() {
     // reverse construction layers
     std::reverse(m_current->m_materialLayers.begin(), m_current->m_materialLayers.end());
     // update preview
-	// ToDO Maik: Flip also coloring!
+    // ToDO Maik: Flip also coloring!
     updateConstructionView();
 }
 
@@ -712,6 +735,32 @@ void SVDBConstructionEditWidget::on_lineEditDataSource_editingFinished() {
 
 	if (m_current->m_dataSource != m_ui->lineEditDataSource->string()) {
 		m_current->m_dataSource = m_ui->lineEditDataSource->string();
+		modelModify();
+	}
+}
+
+
+void SVDBConstructionEditWidget::on_lineEditImpactSound_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	bool ok;
+	double value = m_ui->lineEditImpactSound->text().toDouble(&ok);
+	if(ok){
+		VICUS::KeywordList::setParameter(m_current->m_acousticPara, "Construction::para_t", VICUS::Construction::P_ImpactSoundValue, value);
+		modelModify();
+	}
+}
+
+
+void SVDBConstructionEditWidget::on_lineEditAirSoundRes_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	bool ok;
+	double value = m_ui->lineEditAirSoundRes->text().toDouble(&ok);
+	if(ok){
+		VICUS::KeywordList::setParameter(m_current->m_acousticPara, "Construction::para_t", VICUS::Construction::P_AirSoundResistanceValue, value);
 		modelModify();
 	}
 }

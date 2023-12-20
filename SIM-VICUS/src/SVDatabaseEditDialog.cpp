@@ -61,6 +61,10 @@
 #include "SVDBWindowEditWidget.h"
 #include "SVDBWindowGlazingSystemTableModel.h"
 #include "SVDBWindowGlazingSystemEditWidget.h"
+#include "SVDBAcousticBoundaryConditionEditWidget.h"
+#include "SVDBAcousticBoundaryConditionTableModel.h"
+#include "SVDBAcousticSoundAbsorptionEditWidget.h"
+#include "SVDBAcousticSoundAbsorptionTableModel.h"
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "SVDBScheduleTableModel.h"
@@ -408,6 +412,8 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
 			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
 			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
+			case SVDatabase::DT_AcousticBoundaryConditions:		SVSettings::instance().m_db.m_acousticBoundaryConditions.removeUserElements(); break;
+			case SVDatabase::DT_AcousticSoundAbsorptions:		SVSettings::instance().m_db.m_acousticSoundAbsorptions.removeUserElements(); break;
 			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
 			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
 			case SVDatabase::DT_EpdDatasets:			SVSettings::instance().m_db.m_epdDatasets.removeUserElements(); break;
@@ -428,7 +434,8 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
 			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
 			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
-			case SVDatabase::DT_AcousticTemplates:		break;
+			case SVDatabase::DT_AcousticTemplates:		SVSettings::instance().m_db.m_acousticTemplates.removeUserElements(); break;
+			case SVDatabase::DT_AcousticSoundProtectionTemplates:	SVSettings::instance().m_db.m_acousticSoundProtectionTemplates.removeUserElements(); break;
 			case SVDatabase::NUM_DT:; // just to make compiler happy
 		}
 
@@ -535,6 +542,8 @@ void SVDatabaseEditDialog::writeUserDB() {
 		(m_dbModel->databaseType() == SVDatabase::DT_Windows && db.m_windows.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_WindowGlazingSystems && db.m_windowGlazingSystems.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_BoundaryConditions && db.m_boundaryConditions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_AcousticSoundAbsorptions && db.m_acousticSoundAbsorptions.m_modified) ||
+		(m_dbModel->databaseType() == SVDatabase::DT_AcousticBoundaryConditions && db.m_acousticBoundaryConditions.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_Components && db.m_components.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_SubSurfaceComponents && db.m_subSurfaceComponents.m_modified) ||
 		(m_dbModel->databaseType() == SVDatabase::DT_SurfaceHeating && db.m_surfaceHeatings.m_modified) ||
@@ -625,6 +634,26 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowGlazingSystemEditDialog
 		new SVDBWindowGlazingSystemEditWidget(parent),
 		tr("Window glazing system Database"), tr("Window glazing system properties"), true
 	);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticBoundaryConditionEditDialog(QWidget * parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBAcousticBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
+		new SVDBAcousticBoundaryConditionEditWidget(parent),
+		tr("Acoustic boundary conditions Database"), tr("Acoustic boundary conditions properties"), true
+	);
+	resizeDBDialog(dlg);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createAcousticSoundAbsorptionEditDialog(QWidget * parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+														  new SVDBAcousticSoundAbsorptionTableModel(parent, SVSettings::instance().m_db),
+														  new SVDBAcousticSoundAbsorptionEditWidget(parent),
+														  tr("Acoustic sound absorption Database"), tr("Acoustic sound absorption properties"), true
+														  );
+	resizeDBDialog(dlg);
 	return dlg;
 }
 

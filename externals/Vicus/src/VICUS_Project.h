@@ -52,7 +52,12 @@
 #include "VICUS_EmbeddedDatabase.h"
 #include "VICUS_PlainGeometry.h"
 #include "VICUS_Drawing.h"
+#include "VICUS_StructuralUnit.h"
 
+#include "VICUS_AcousticTemplate.h"
+#include "VICUS_AcousticReferenceComponent.h"
+#include "VICUS_AcousticBuildingTemplate.h"
+#include "VICUS_AcousticSoundProtectionTemplate.h"
 
 namespace VICUS {
 
@@ -309,6 +314,9 @@ public:
 
 	std::vector<Building>								m_buildings;	 			// XML:E
 
+    /*! Store structural units */
+    std::vector<StructuralUnit>							m_structuralUnits;			// XML:E
+
 	/*! All components actually placed in the geometry.
 		This vector is outside buildings, so that two building parts can be connected with
 		a component.
@@ -359,8 +367,9 @@ public:
 		std::string								m_nameRoomVicus;
 		std::string								m_nameRoomNandrad;
 		std::string								m_zonetemplateName;
-		double									m_floorArea = 0;		// in m2
-		double									m_volume = 0;			// in m3
+		double									m_floorArea = 0;			// in m2
+		double									m_volume = 0;				// in m3
+		double									m_heatCapacity = 0;			// in J/K
 	};
 
 
