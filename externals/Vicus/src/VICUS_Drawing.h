@@ -65,6 +65,7 @@ public:
 		IBKMK::Vector2D	m_basePoint;
 	};
 
+
 	/*! Insert structure for blocks. */
 	struct Insert {
 
@@ -100,7 +101,9 @@ public:
 			if (attrib != nullptr) {
 				m_blockName = QString::fromStdString(attrib->ValueStr());
 			}
-			readXMLPrivate(element);
+			TiXmlElement e(*element);
+			e.RemoveAttribute("blockName");
+			readXMLPrivate(&e);
 		}
 
 		/*! To be implemented by inheriting classes */
@@ -459,6 +462,9 @@ public:
 	/*! Returns the drawing object based on the ID. */
 	const AbstractDrawingObject* objectByID(unsigned int id) const;
 
+	/*! Helper function to assign the correct block to an entity */
+	Block* findBlockPointer(const QString &name, const std::map<QString, Block*> &blockRefs);
+
 	/*! used to assign the correct layer to an entity */
 	void updatePointer();
 
@@ -490,45 +496,45 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! point of origin */
-	IBKMK::Vector3D															m_origin			= IBKMK::Vector3D(0,0,0);						// XML:E
+	IBKMK::Vector3D															m_origin			= IBKMK::Vector3D(0,0,0);
 	/*! rotation matrix */
-	RotationMatrix															m_rotationMatrix	= RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0)); // XML:E
+	RotationMatrix															m_rotationMatrix	= RotationMatrix(QQuaternion(1.0,0.0,0.0,0.0));
 	/*! scale factor */
-	double																	m_scalingFactor		= 1.0;											// XML:E
+	double																	m_scalingFactor		= 1.0;
 
 	/*! list of blocks, dummy implementation */
-	std::vector<Block>														m_blocks;			// XML:E
+	std::vector<Block>														m_blocks;
 	/*! list of layers */
-	std::vector<DrawingLayer>												m_drawingLayers;	// XML:E
+	std::vector<DrawingLayer>												m_drawingLayers;
 	/*! list of points */
-	std::vector<Point>														m_points;			// XML:E
+	std::vector<Point>														m_points;
 	/*! list of lines */
-	std::vector<Line>														m_lines;			// XML:E
+	std::vector<Line>														m_lines;
 	/*! list of polylines */
-	std::vector<PolyLine>													m_polylines;		// XML:E
+	std::vector<PolyLine>													m_polylines;
 	/*! list of circles */
-	std::vector<Circle>														m_circles;			// XML:E
+	std::vector<Circle>														m_circles;
 	/*! list of ellipses */
-	std::vector<Ellipse>													m_ellipses;			// XML:E
+	std::vector<Ellipse>													m_ellipses;
 	/*! list of arcs */
-	std::vector<Arc>														m_arcs;				// XML:E
+	std::vector<Arc>														m_arcs;
 	/*! list of solids, dummy implementation */
-	std::vector<Solid>														m_solids;			// XML:E
+	std::vector<Solid>														m_solids;
 	/*! list of texts */
-	std::vector<Text>														m_texts;			// XML:E
+	std::vector<Text>														m_texts;
 	/*! list of texts */
-	std::vector<LinearDimension>											m_linearDimensions;	// XML:E
+	std::vector<LinearDimension>											m_linearDimensions;
 	/*! list of Dim Styles */
-	std::vector<DimStyle>													m_dimensionStyles;	// XML:E
+	std::vector<DimStyle>													m_dimensionStyles;
 	/*! list of inserts. */
 	std::vector<Insert>														m_inserts;
 
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
-	unsigned int															m_zCounter = 0;	// XML:E
+	unsigned int															m_zCounter = 0;
 
 	/*! Is the default color when no other color was specified */
-	QColor																	m_defaultColor = QColor(); // XML:E
+	QColor																	m_defaultColor = QColor();
 
 private:
 	/*! Helper function to assign the correct layer to an entity */

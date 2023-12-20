@@ -54,6 +54,10 @@
 #include "VICUS_Drawing.h"
 
 
+namespace IBK {
+	class NotificationHandler;
+}
+
 namespace VICUS {
 
 /*! The project data structure for the SIM-VICUS user interface.
@@ -112,7 +116,7 @@ public:
 	/*! Reads the project data from an text which contains XML.
 		\param projectText  Text with VICUS project.
 	*/
-	void readImportedXML(const QString & projectText);
+	void readImportedXML(const QString & projectText, IBK::NotificationHandler *notifyer);
 
 	/*! Actual read function, called from both variants of readXML(). */
 	void readXMLDocument(TiXmlElement * rootElement);
