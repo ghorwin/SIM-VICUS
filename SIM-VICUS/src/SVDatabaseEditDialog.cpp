@@ -436,7 +436,9 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
 			case SVDatabase::DT_AcousticTemplates:		SVSettings::instance().m_db.m_acousticTemplates.removeUserElements(); break;
 			case SVDatabase::DT_AcousticSoundProtectionTemplates:	SVSettings::instance().m_db.m_acousticSoundProtectionTemplates.removeUserElements(); break;
+			case SVDatabase::DT_AcousticBuildingTemplates: SVSettings::instance().m_db.m_acousticBuildingTemplates.removeUserElements(); break;
 			case SVDatabase::NUM_DT:; // just to make compiler happy
+			break;
 		}
 
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType()); // by default the "m_isReferenced" property is off after reading the user DB

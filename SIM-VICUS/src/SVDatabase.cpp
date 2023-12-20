@@ -1278,6 +1278,9 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 		break;
 		case DT_AcousticSoundProtectionTemplates:
 			m_acousticSoundProtectionTemplates.removeNotReferencedLocalElements(); break;
+		case DT_AcousticBuildingTemplates:
+			m_acousticBuildingTemplates.removeNotReferencedLocalElements(); break;
+		break;
 		case NUM_DT:
 		break;
 	}
@@ -1400,7 +1403,12 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 		case DT_AcousticSoundProtectionTemplates:
 			Q_ASSERT(m_acousticSoundProtectionTemplates[id] != nullptr);
 			m_acousticSoundProtectionTemplates[id]->collectLocalChildren(localChildren); break;
+		case DT_AcousticBuildingTemplates:
+			Q_ASSERT(m_acousticBuildingTemplates[id] != nullptr);
+			m_acousticBuildingTemplates[id]->collectLocalChildren(localChildren); break;
+		break;
 		case NUM_DT:
+
 		break;
 	}
 }
