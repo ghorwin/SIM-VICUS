@@ -145,7 +145,7 @@ void SVSimulationSettingsView::on_listWidget_currentRowChanged(int currentRow) {
 				QHBoxLayout *lay4 = new QHBoxLayout;
 				lay4->addWidget(m_acousticWidget);
 				lay4->setContentsMargins(10,0,10,0);
-				m_ui->stackedWidget->widget(SP_LifeCycle)->setLayout(lay4);
+				m_ui->stackedWidget->widget(SP_Acoustic)->setLayout(lay4);
 			}
 			break;
 

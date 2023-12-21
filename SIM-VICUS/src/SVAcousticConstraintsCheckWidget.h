@@ -91,11 +91,12 @@ private:
 
 	/*! gets triggered by an entry in the tableWidget and selects and focuses the corresponding surfaces */
 	void showSurfaces(unsigned int surfaceAId, unsigned int surfaceBId);
-	/*! tells if a constraint was violated or not or not even existing*/
-	/*! checks the acoustic constraints and outputs the results in the widgets table*/
+
+	/*! tells if a constraint was violated or not or not even existing
+		checks the acoustic constraints and outputs the results in the widgets table. */
 	void checkConstraints();
 
-
+	/*! .*/
 	void checkReverberation();
 
 	/*! Pointer to Ui. */

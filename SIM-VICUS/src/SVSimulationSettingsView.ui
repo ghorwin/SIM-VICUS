@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>970</width>
-    <height>710</height>
+    <width>1318</width>
+    <height>839</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="page_0"/>
      <widget class="QWidget" name="page1"/>

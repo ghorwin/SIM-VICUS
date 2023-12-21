@@ -158,6 +158,7 @@
       <widget class="QPushButton" name="pushButtonCheckConstraints">
        <property name="font">
         <font>
+         <pointsize>14</pointsize>
          <bold>true</bold>
         </font>
        </property>

@@ -935,11 +935,16 @@
     <widget class="QPushButton" name="pushButtonCalculate">
      <property name="font">
       <font>
+       <pointsize>14</pointsize>
        <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>Update life-cycle evaluation</string>
+      <string>Run life-cycle evaluation</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources/SIM-VICUS.qrc">
+       <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
      </property>
     </widget>
    </item>
@@ -974,6 +979,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>
