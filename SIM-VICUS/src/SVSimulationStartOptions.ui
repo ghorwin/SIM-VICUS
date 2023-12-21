@@ -378,8 +378,8 @@
         <string>Test initialization </string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/icons.qrc">
-         <normaloff>:/gfx/icons8/icons8-info-80.png</normaloff>:/gfx/icons8/icons8-info-80.png</iconset>
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/info.png</normaloff>:/gfx/actions/24x24/info.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -398,8 +398,8 @@
         <string>Show log file...</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/icons.qrc">
-         <normaloff>:/gfx/icons8/icons8-create-80.png</normaloff>:/gfx/icons8/icons8-create-80.png</iconset>
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -486,8 +486,8 @@
         <string> Start simulation</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/icons.qrc">
-         <normaloff>:/gfx/icons8/icons8-start-80.png</normaloff>:/gfx/icons8/icons8-start-80.png</iconset>
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/play-button.png</normaloff>:/gfx/actions/play-button.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -552,7 +552,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/icons.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
  </resources>
  <connections/>

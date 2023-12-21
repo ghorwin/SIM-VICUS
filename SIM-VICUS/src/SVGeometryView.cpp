@@ -114,7 +114,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_focusRootWidgets.insert(this);
 
 	m_ui->actionAcousticParametrization->setIcon(QIcon::fromTheme("properties_acoustic"));
-	m_ui->actionBuildingParametrization->setIcon(QIcon::fromTheme("properties_thermal"));
+	m_ui->actionBuildingParametrization->setIcon(QIcon::fromTheme("properties_buildings"));
 	m_ui->actionNetworkParametrization->setIcon(QIcon::fromTheme("properties_network"));
 	m_ui->actionSiteParametrization->setIcon(QIcon::fromTheme("grid_edit"));
 	m_ui->actionAddGeometry->setIcon(QIcon::fromTheme("geometry_add"));

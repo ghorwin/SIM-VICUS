@@ -72,6 +72,9 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 	m_ui->textBrowserMain->setStyleSheet("QTextBrowser { border: none; }");
 	m_ui->textBrowserNews->setStyleSheet("QTextBrowser { border: none; }");
 
+	m_ui->toolButtonNewProject->setIcon(QIcon::fromTheme("file_new"));
+	m_ui->toolButtonOpenProject->setIcon(QIcon::fromTheme("file_open"));
+
 	connect(m_ui->labelRecent, SIGNAL(clicked()), this, SLOT(on_labelRecentClicked()));
 	connect(m_ui->labelExample, SIGNAL(clicked()), this, SLOT(on_labelExampleClicked()));
 

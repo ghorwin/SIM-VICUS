@@ -56,5 +56,33 @@
         <file>icons/light/svg/post_processing.svg</file>
         <file>icons/light/svg/simulation_view.svg</file>
         <file>icons/light/svg/smart_select.svg</file>
+        <file>icons/dark/svg/add_pipe.svg</file>
+        <file>icons/dark/svg/add_polygon.svg</file>
+        <file>icons/dark/svg/add_rectangle.svg</file>
+        <file>icons/dark/svg/add_roof.svg</file>
+        <file>icons/dark/svg/add_substation.svg</file>
+        <file>icons/dark/svg/add_window.svg</file>
+        <file>icons/dark/svg/add_zone.svg</file>
+        <file>icons/dark/svg/dimensions.svg</file>
+        <file>icons/dark/svg/local_coordinate.svg</file>
+        <file>icons/dark/svg/surface_info.svg</file>
+        <file>icons/light/svg/add_pipe.svg</file>
+        <file>icons/light/svg/add_polygon.svg</file>
+        <file>icons/light/svg/add_rectangle.svg</file>
+        <file>icons/light/svg/add_roof.svg</file>
+        <file>icons/light/svg/add_substation.svg</file>
+        <file>icons/light/svg/add_window.svg</file>
+        <file>icons/light/svg/add_zone.svg</file>
+        <file>icons/light/svg/dimensions.svg</file>
+        <file>icons/light/svg/geometry_add.svg</file>
+        <file>icons/light/svg/geometry_move.svg</file>
+        <file>icons/light/svg/local_coordinate.svg</file>
+        <file>icons/light/svg/local_coordinate_move.svg</file>
+        <file>icons/light/svg/properties_buildings.svg</file>
+        <file>icons/light/svg/properties_acoustic.svg</file>
+        <file>icons/light/svg/surface_info.svg</file>
+        <file>icons/light/svg/properties_network.svg</file>
+        <file>icons/dark/svg/surface_info - Kopie.svg</file>
+        <file>icons/dark/svg/properties_buildings.svg</file>
     </qresource>
 </RCC>
