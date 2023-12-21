@@ -334,15 +334,16 @@ private:
 		\return Returns true on success, false on error (error messages are written to IBK::IBK_Message).
 		\note Does not emit any signals and does not call setModified()
 	*/
-	bool read(const QString & fname);
+	bool read(QWidget * parent, const QString & fname);
 
 	/*! Writes the project with the given filename.
 		If the writing was successful, the member variable m_projectFile is updated to 'fname'.
 		\param fname The filename of the project file to be read.
+		\param writeDrawingFile If true a separate file with all drawings will be written.
 		\return Returns true on success, false on error (error messages are written to IBK::IBK_Message).
 		\note Does not emit any signals and does not call setModified()
 	*/
-	bool write(const QString & fname) const;
+	bool write(QWidget * parent, const QString & fname, bool writeDrawingFile) const;
 
 	/*! Adds the file fname to the list of most recently used files.
 		The default implementation also emits the signal updateRecentProjects() which

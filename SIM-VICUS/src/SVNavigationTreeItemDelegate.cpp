@@ -31,8 +31,12 @@
 #include <QMouseEvent>
 #include <QTreeView>
 
+#include "SVUndoModifySurfaceGeometry.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVSettings.h"
+#include "SVProjectHandler.h"
+#include "SVDrawingPropertiesDialog.h"
+#include "SVMainWindow.h"
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
@@ -181,7 +185,29 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 		}
 
 	}
+	if (event->type() == QEvent::MouseButtonDblClick) {
+		unsigned int nodeID = index.data(NodeID).toUInt();
+		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(nodeID);
+		const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(obj);
 
+		if (drawing != nullptr) {
+
+			VICUS::Drawing newDrawing(*drawing);
+			bool result = SVDrawingPropertiesDialog::showDrawingProperties(SVMainWindow::instance().window(), &newDrawing);
+			if (result) {
+
+				std::vector<VICUS::Surface> newSurfs;
+				std::vector<VICUS::Drawing> newDrawings;
+
+				newDrawings.push_back(newDrawing);
+				SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Drawing geometry modified"), newSurfs, newDrawings );
+				undo->push();
+
+				SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged );
+				return false;
+			}
+		}
+	}
 	return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 

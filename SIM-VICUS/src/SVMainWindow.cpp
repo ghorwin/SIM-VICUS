@@ -24,7 +24,6 @@
 */
 
 #include "SVMainWindow.h"
-#include "SVLcaLccSettingsWidget.h"
 #include "ui_SVMainWindow.h"
 
 #include <QCloseEvent>
@@ -53,11 +52,13 @@
 #include <QGuiApplication>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QProgressDialog>
 
 #include <numeric>
 
 #include <IBK_FileUtils.h>
 #include <IBK_messages.h>
+#include <IBK_NotificationHandler.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_Constants.h>
@@ -70,6 +71,7 @@
 
 #include <NANDRAD_Project.h>
 
+#include "SVLcaLccSettingsWidget.h"
 #include "SVMessageHandler.h"
 #include "SVConstants.h"
 #include "SVSettings.h"
@@ -110,12 +112,7 @@
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
 
-#include "SVUndoModifyProject.h"
-#include "SVUndoAddNetwork.h"
-#include "SVUndoAddBuilding.h"
-#include "SVUndoAddProject.h"
 #include "SVUndoModifySiteData.h"
-
 #include "SVSimulationSettingsView.h"
 #include "SVStructuralUnitCreationDialog.h"
 
@@ -124,6 +121,20 @@
 
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
+
+
+class ProgressNotifyer : public IBK::NotificationHandler {
+public:
+	void notify() override {}
+	void notify(double percentage) override;
+	QProgressDialog		*m_prgDlg = nullptr;
+};
+
+void ProgressNotifyer::notify(double percentage) {
+	m_prgDlg->setValue((int)(m_prgDlg->maximum() * percentage));
+	qApp->processEvents();
+}
+
 
 SVMainWindow * SVMainWindow::m_self = nullptr;
 
@@ -918,9 +929,15 @@ void SVMainWindow::onImportPluginTriggered() {
 	VICUS::Project p;
 	QString projectText;
 	bool success = importPlugin->import(this, projectText);
+
+	ProgressNotifyer *notifyer = new ProgressNotifyer;
+	notifyer->m_prgDlg = new QProgressDialog(tr("Read project"), QString(), 0, 100, this);
+	notifyer->m_prgDlg->setWindowTitle(tr("Import project"));
+	notifyer->m_prgDlg->setMinimumDuration(0);
+	notifyer->notify(0);
 	try {
-		p.readXML(projectText);
-//		std::ofstream out("g:\\temp\\VicusImport.txt");
+		p.readImportedXML(projectText, dynamic_cast<IBK::NotificationHandler*>(notifyer));
+//		std::ofstream out("C:/test/VicusImport.xml");
 //		out << projectText.toStdString();
 	}
 	catch(IBK::Exception &ex) {
@@ -939,36 +956,21 @@ void SVMainWindow::onImportPluginTriggered() {
 		if (!m_projectHandler.isValid()) {
 			// create new project
 			m_projectHandler.newProject(&p); // emits updateActions()
-			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
+//			m_projectHandler.project().writeXML(IBK::Path("g:\\temp\\VicusImport_clean.txt"));
 		}
 		else {
-			// ask user about preference
-			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
-																					  "the current project with the imported project, or would you like to combine both projects into one?"),
-											tr("Replace"), tr("Combine"));
-			if (res == 0) {
-				setFocus();
-				// close project if we have one
-				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
-					return;
 
-				// create new project
-				m_projectHandler.newProject(&p); // emits updateActions()
-			}
-			else {
-				// The merging of project and referenced data is a bit complicated.
-				// First we must import the embedded database from the imported project
-				// Then, we can copy the buildings to our project.
+			// The merging of project and referenced data is a bit complicated.
+			// First we must import the embedded database from the imported project
+			// Then, we can copy the buildings to our project.
+			m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
 
-				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
+			m_projectHandler.importProject(p);
+			QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 
-				m_projectHandler.importProject(p);
-				QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
-			}
 		}
 	}
-
-//	m_geometryView->refreshSceneView();
+	notifyer->notify(1);
 }
 
 
@@ -1006,7 +1008,7 @@ SVStructuralUnitCreationDialog *SVMainWindow::structuralUnitDialog() {
 
 
 void SVMainWindow::on_actionFileNew_triggered() {
-	SVViewStateHandler::instance().m_geometryView->switch2AddGeometry();
+	m_geometryView->switch2AddGeometry();
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
 	// close project if we have one
@@ -1281,7 +1283,7 @@ void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 	SVViewStateHandler::instance().m_propertyWidget->setBuildingPropertyType(BT_SurfaceHeating);
 	SVViewStateHandler::instance().setViewState(vs);
 
-	SVViewStateHandler::instance().m_geometryView->switch2BuildingParametrization();
+	m_geometryView->switch2BuildingParametrization();
 }
 
 
@@ -1294,7 +1296,7 @@ void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
 
 void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
+	const_cast<Vic3D::SceneView*>(m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
 
 
@@ -1632,9 +1634,6 @@ void SVMainWindow::updateMainView() {
 	m_ui->actionGeometryView->setChecked(false);
 	m_ui->actionSimulationSettings->setChecked(false);
 
-	// toggle visibility of floating transparent widgets (color legend, measurement)
-	SVViewStateHandler::instance().toggleTransparentWidgetsVisibility(m_mainViewMode);
-
 	switch (m_mainViewMode) {
 		case MV_None: {
 			m_geometryViewSplitter->setVisible(false);
@@ -1655,6 +1654,9 @@ void SVMainWindow::updateMainView() {
 			m_ui->actionSimulationSettings->setChecked(true);
 		} break;
 	}
+
+	// toggle visibility of floating transparent widgets (color legend, measurement)
+	SVViewStateHandler::instance().toggleTransparentWidgetsVisibility(m_mainViewMode);
 }
 
 

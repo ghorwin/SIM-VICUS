@@ -14,17 +14,17 @@ QT += xml opengl network printsupport widgets svg
 CONFIG += c++11
 
 CONFIG(debug, debug|release) {
-	# during development, show console window with debug messages in addition to on-screen console
+# during development, show console window with debug messages in addition to on-screen console
 	# (useful for dual-screen setups)
 	CONFIG += console
 }
 
 linux {
-	QMAKE_CXXFLAGS += -Wno-deprecated-copy
+QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
 LIBS += \
-	-lNandrad \
+-lNandrad \
 	-lQtExt \
 	-lQuaZIP \
 	-lTiCPP \
@@ -42,18 +42,18 @@ LIBS += \
 	-lqwt6
 
 win32 {
-	LIBS += -luser32
+LIBS += -luser32
 	LIBS += -lopengl32
 }
 linux {
-	LIBS += -lGLU -lGL
+LIBS += -lGLU -lGL
 }
 mac {
-	LIBS += -framework OpenGL
+LIBS += -framework OpenGL
 }
 
 INCLUDEPATH = \
-	../../src \
+../../src \
 	../../src/actions \
 	../../src/core3D \
 	../../../externals/CCM/src \
@@ -77,7 +77,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 win32 {
 PRE_TARGETDEPS += \
-	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
+$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Shading.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
@@ -94,7 +94,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
-	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
     ../../src/SVAcousticConstraintsCheckWidget.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
@@ -116,7 +116,6 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
-	#../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVLcaLccResultsWidget.cpp \
     ../../src/SVLcaLccSettingsWidget.cpp \
@@ -124,18 +123,10 @@ SOURCES += \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
     ../../src/SVPluginManager.cpp \
-    ../../src/SVPropAcosuticWidget.cpp \
+	../../src/SVPropAcosuticWidget.cpp \
     ../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.cpp \
     ../../src/SVPropBuildingStructuralUnitWidget.cpp \
-    ../../src/SVPropNetworkEdgesWidget.cpp \
-    ../../src/SVPropNetworkEditWidget.cpp \
-    ../../src/SVPropNetworkGeometryWidget.cpp \
-    ../../src/SVPropNetworkHeatExchangeWidget.cpp \
-    ../../src/SVPropNetworkNodesWidget.cpp \
-    ../../src/SVPropNetworkSubStationWidget.cpp \
-    ../../src/SVPropResultsWidget.cpp \
-    ../../src/SVPropStructuralUnitEditWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -151,10 +142,11 @@ SOURCES += \
 	../../src/SVPropBuildingZoneProperty.cpp \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
-		../../src/SVPropBuildingZoneTemplatesWidget.cpp \
+	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
-		../../src/SVSimulationNetworkOptions.cpp \
+	../../src/SVSimulationNetworkOptions.cpp \
+	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
@@ -165,12 +157,16 @@ SOURCES += \
     ../../src/SVUndoAddDrawing.cpp \
     ../../src/SVUndoAddStructuralUnit.cpp \
     ../../src/SVUndoDeleteStructuralUnit.cpp \
+    ../../src/SVSnapOptionsDialog.cpp \
+	../../src/SVTimeSeriesPreviewWidget.cpp \
+	../../src/SVTimeSliderWidget.cpp \
     ../../src/SVUndoModifyLcaLcc.cpp \
     ../../src/SVUndoModifyStructuralUnit.cpp \
     ../../src/SVUndoModifyStructuralUnitRoomAssociation.cpp \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DCalculation.cpp \
+
     ../../src/SVZoneInformationDialog.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
@@ -326,8 +322,10 @@ SOURCES += \
 	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
+
     ../../src/SVAcousticConstraintsCheckWidget.h \
 	../../src/SVCoSimCO2VentilationDialog.h \
+
 	../../src/SVCoSimSupplySystemDialog.h \
 	../../src/SVColorLegend.h \
 	../../src/SVColorMap.h \
@@ -347,7 +345,7 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
-	#../../src/SVDatabaseSortFilterProxyModel.h \
+	
     ../../src/SVDatabaseSortFilterProxyModel.h \
     ../../src/SVLcaLccResultsWidget.h \
     ../../src/SVLcaLccSettingsWidget.h \
@@ -367,6 +365,7 @@ HEADERS  += \
     ../../src/SVPropNetworkSubStationWidget.h \
     ../../src/SVPropResultsWidget.h \
     ../../src/SVPropStructuralUnitEditWidget.h \
+
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -389,6 +388,7 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
+
     ../../src/SVSmartIntersectionDialog.h \
     ../../src/SVStructuralUnitCreationDialog.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
@@ -397,13 +397,17 @@ HEADERS  += \
     ../../src/SVUndoAddDrawing.h \
     ../../src/SVUndoAddStructuralUnit.h \
     ../../src/SVUndoDeleteStructuralUnit.h \
+    ../../src/SVSnapOptionsDialog.h \
+
     ../../src/SVUndoModifyLcaLcc.h \
     ../../src/SVUndoModifyStructuralUnit.h \
     ../../src/SVUndoModifyStructuralUnitRoomAssociation.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DCalculation.h \
+
     ../../src/SVZoneInformationDialog.h \
+
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
@@ -604,6 +608,7 @@ FORMS    += \
 	../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
+	../../src/SVDrawingPropertiesDialog.ui \
 	../../src/SVGeometryView.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLcaLccResultsWidget.ui \
@@ -664,7 +669,10 @@ FORMS    += \
 	../../src/SVSimulationStartOptions.ui \
 	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
+
     ../../src/SVStructuralUnitCreationDialog.ui \
+
+	../../src/SVSnapOptionsDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \
 	../../src/SVWelcomeScreen.ui \
@@ -675,11 +683,13 @@ TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
 
 RESOURCES += \
-	../../resources/SIM-VICUS.qrc \
+../../resources/SIM-VICUS.qrc \
 	../../resources/qdarkstyle/style.qrc \
 	../../src/shaders/shaders.qrc \
 	../../resources/icons.qrc
 
 DISTFILES += \
 	../../resources/style/light/lightstyle.qss
+
+
 

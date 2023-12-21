@@ -316,8 +316,7 @@ void addCone(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColo
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData,
 				 std::vector<ColorRGBA> & colorBufferData,
-				 std::vector<GLuint> & indexBufferData, bool closed)
-{
+				 std::vector<GLuint> & indexBufferData, bool closed) {
 	#define PI_CONST 3.14159265
 
 	IBKMK::Vector3D coneAxis = p2-p1;

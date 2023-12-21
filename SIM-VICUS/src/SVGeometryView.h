@@ -38,6 +38,7 @@ class SVPropertyWidget;
 class SVLocalCoordinateView;
 class SVMeasurementWidget;
 class SVColorLegend;
+class SVSnapOptionsDialog;
 class QSplitter;
 class QToolBar;
 class QAction;
@@ -186,7 +187,11 @@ private:
 	/*! Pointer to measurement widget */
 	SVMeasurementWidget			*m_measurementWidget = nullptr;
 
+	/*! Pointer to color legend widget */
 	SVColorLegend				*m_colorLegend = nullptr;
+
+	/*! Pointer to snap option widget */
+	SVSnapOptionsDialog			*m_snapOptionsDialog = nullptr;
 
 	QLineEdit					*m_lineEditCoordinateInput					= nullptr;
 	QAction						*m_actionCoordinateInput					= nullptr;

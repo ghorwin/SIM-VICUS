@@ -27,7 +27,9 @@
 
 namespace RC {
 
-/*! Object that encapsulates all necessairy data for clipping operations. */
+/*! Object that encapsulates all necessairy data for clipping operations.
+
+*/
 struct ClippingObject {
 
     ClippingObject() {}

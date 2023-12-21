@@ -50,6 +50,7 @@
 #include "Vic3DNewGeometryObject.h"
 #include "SVProjectHandler.h"
 #include "SVColorLegend.h"
+#include "SVSnapOptionsDialog.h"
 
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
@@ -103,8 +104,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	// *** create Measurement Widget
 	m_measurementWidget = new SVMeasurementWidget(this); // sets the pointer to the widget in SVViewStateHandler::instance()
-
 	m_colorLegend = new SVColorLegend(this);
+	m_snapOptionsDialog = new SVSnapOptionsDialog(this);
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
@@ -129,6 +130,9 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->actionMeasure->setIcon(QIcon::fromTheme("measure"));
 	m_ui->actionShowResults->setIcon(QIcon::fromTheme("show_results"));
 	m_ui->actionSnap->setIcon(QIcon::fromTheme("snap"));
+
+	m_snapOptionsDialog->updateUi();
+	m_snapOptionsDialog->setExpanded(false);
 }
 
 
@@ -290,6 +294,13 @@ void SVGeometryView::moveTransparentSceneWidgets() {
 		QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
 		point.setX(point.x() - 15);
 		SVViewStateHandler::instance().m_colorLegend->setPosition(m_sceneViewContainerWidget->rect().height(), point);
+	}
+
+	if (SVViewStateHandler::instance().m_snapOptionsDialog != nullptr) {
+		QPoint point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomLeft() );
+		point.setX(point.x() + 10);
+		point.setY(point.y() - 10);
+		SVViewStateHandler::instance().m_snapOptionsDialog->setPosition(point);
 	}
 }
 
@@ -473,9 +484,11 @@ void SVGeometryView::onViewStateChanged() {
 	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
 		hideMeasurementWidget();
 
-	// show/hide color legend
+	// show color legend
 	m_colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
 
+	// show snap options dialog
+	m_snapOptionsDialog->setVisible(vs.m_snapEnabled);
 }
 
 
@@ -860,6 +873,9 @@ void SVGeometryView::on_actionMeasure_triggered(bool on) {
 
 
 void SVGeometryView::on_actionSnap_triggered(bool on) {
+	if (on)
+		m_snapOptionsDialog->setExpanded(true);
+	m_snapOptionsDialog->setVisible(on);
 	// switch toggle view state
 	m_ui->actionSnap->setChecked(on);
 	SVViewState vs = SVViewStateHandler::instance().viewState();

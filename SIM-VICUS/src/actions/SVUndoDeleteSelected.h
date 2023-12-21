@@ -34,7 +34,7 @@
 class SVUndoDeleteSelected : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoDeleteSelected)
 public:
-	SVUndoDeleteSelected(const QString & label, const std::set<const VICUS::Object*> & objectIDsToBeRemoved);
+	SVUndoDeleteSelected(const QString & label, const std::set<const VICUS::Object*> & objectsToBeRemoved);
 
 	virtual void undo();
 	virtual void redo();
@@ -51,6 +51,8 @@ private:
 	std::vector<VICUS::Surface>							m_plainGeometry;
 	/*! Stores vector of networks. */
 	std::vector<VICUS::Network>							m_networks;
+	/*! Stores vector of networks. */
+	std::vector<VICUS::Drawing>							m_drawings;
 
 };
 

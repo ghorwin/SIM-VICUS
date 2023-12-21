@@ -49,6 +49,7 @@ class SVPropAddWindowWidget;
 class SVPreferencesDialog;
 class SVPropNetworkGeometryWidget;
 class SVColorLegend;
+class SVSnapOptionsDialog;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -74,10 +75,15 @@ public:
 
 	/*! This toggles just the axis lock, but does not trigger any other side effects. */
 	void setLock(SVViewState::Locks newLock) { m_viewState.m_locks = newLock; }
-	/*! This toggles/changes snap options, but does not trigger any other side effects. */
-	void setSnap(int snapOptionMask) { m_viewState.m_snapOptionMask = snapOptionMask; }
 
+	/*! Adds snap option, but does not trigger any other side effects. */
+	void addSnapOption(int snapOption) { m_viewState.m_snapOptionMask |= snapOption; }
+	/*! Removes snap option, but does not trigger any other side effects. */
+	void removeSnapOption(int snapOption) { m_viewState.m_snapOptionMask &= ~snapOption; }
+	/*! Set snapping distance in m. */
+	void setSnapDistance(float snapDistance) { m_viewState.m_snapDistance = snapDistance; }
 
+	/*! Shows / hides transparent scene widgets, depending on main view */
 	void toggleTransparentWidgetsVisibility(SVMainWindow::MainViewMode mainView);
 
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
@@ -115,6 +121,9 @@ public:
 
 	/*! Pointer to Widget that shows color legend in the scene . */
 	SVColorLegend						*m_colorLegend = nullptr;
+
+	/*! Pointer to widget that shows snap options dialog in the scene . */
+	SVSnapOptionsDialog					*m_snapOptionsDialog = nullptr;
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;

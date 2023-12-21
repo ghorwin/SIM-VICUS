@@ -35,8 +35,10 @@
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
 #include <IBK_FileUtils.h>
+#include <IBK_NotificationHandler.h>
 
 #include <IBKMK_3DCalculations.h>
+
 
 #include <NANDRAD_Utilities.h>
 #include <NANDRAD_Project.h>
@@ -268,13 +270,109 @@ void Project::readXML(const IBK::Path & filename) {
 }
 
 
-void Project::readXML(const QString & projectText) {
+void Project::readDrawingXML(const IBK::Path & filename) {
+	FUNCID(Project::readDrawingXML);
+	TiXmlDocument doc;
+	IBK::Path fname(filename);
+
+	if ( !fname.isFile() )
+		throw IBK::Exception(IBK::FormatString("File '%1' does not exist or cannot be opened for reading.")
+								 .arg(fname), FUNC_ID);
+
+	if (!doc.LoadFile(fname.str().c_str(), TIXML_ENCODING_UTF8)) {
+		throw IBK::Exception(IBK::FormatString("Error in line %1 of drawing file '%2':\n%3")
+								 .arg(doc.ErrorRow())
+								 .arg(filename)
+								 .arg(doc.ErrorDesc()), FUNC_ID);
+	}
+
+	// we use a handle so that NULL pointer checks are done during the query functions
+	TiXmlHandle xmlHandleDoc(&doc);
+	// read root element
+	TiXmlElement * xmlElem = xmlHandleDoc.FirstChildElement().Element();
+	if (!xmlElem)
+		return; // empty file?
+	std::string rootnode = xmlElem->Value();
+	if (rootnode != "VicusDrawings")
+		throw IBK::Exception( IBK::FormatString("Expected 'VicusDrawings' as root node in XML file."), FUNC_ID);
+
+	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+	try {
+		TiXmlElement * child = xmlRoot.FirstChild("Drawings").Element();
+		Q_ASSERT(child);
+		const TiXmlElement * c2 = child->FirstChildElement();
+		while (c2) {
+			const std::string & c2Name = c2->ValueStr();
+			if (c2Name != "Drawing")
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			Drawing obj;
+			obj.readXML(c2);
+			m_drawings.push_back(obj);
+			c2 = c2->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error reading drawing file."), FUNC_ID);
+	}
+}
+
+
+void Project::readImportedXML(const QString & projectText, IBK::NotificationHandler *notifyer) {
+	FUNCID(Project::readXML);
+
+	notifyer->notify(0.1);
 	TiXmlDocument doc;
 	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
 	if (!xmlElem)
 		return; // empty project, this means we are using only defaults
 
 	readXMLDocument(xmlElem);
+
+	notifyer->notify(0.3);
+
+	/*! Read the drawings from vicus project xml
+	   NOTE: This is only necessary here, during project import when the import contains a drawing.
+	   For normal project reading, drawings are stored in a separate xml drawing file.
+	 */
+	const TiXmlElement * cdraw = nullptr;
+	try {
+		// check if there is a drawings child
+		TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
+		xmlElem = xmlRoot.FirstChild("Project").Element();
+			const TiXmlElement * c = xmlElem->FirstChildElement();
+			while (c) {
+				const std::string & cName = c->ValueStr();
+				if (cName == "Drawings") {
+					cdraw = c->FirstChildElement();
+					break;
+				}
+				c = c->NextSiblingElement();
+			}
+		}
+		catch (IBK::Exception &ex){
+			throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
+		}
+
+	// read the drawing
+	if (cdraw != nullptr) {
+		try {
+			Drawing draw;
+			draw.readXML(cdraw);
+			m_drawings.push_back(draw);
+			notifyer->notify(0.5);
+
+			// don't forget to update pointers
+			updatePointers();
+			notifyer->notify(0.7);
+			// generate inserts, this should happen only once!
+			for (VICUS::Drawing &dr: m_drawings)
+				dr.generateInsertGeometries(nextUnusedID());
+			notifyer->notify(0.8);
+		}
+		catch (IBK::Exception &ex){
+			throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
+		}
+	}
 }
 
 
@@ -367,9 +465,27 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	writeXML(root);
 
-	// other files
-
 	doc.SaveFile( filename.c_str() );
+}
+
+
+void Project::writeDrawingXML(const IBK::Path & filename) const {
+
+	TiXmlDocument docDraw;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	docDraw.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusDrawings" );
+	docDraw.LinkEndChild(root);
+
+	TiXmlElement * e = new TiXmlElement( "Drawings" );
+	root->LinkEndChild(e);
+
+	for (std::vector<Drawing>::const_iterator it = m_drawings.begin(); it != m_drawings.end(); ++it) {
+		it->writeXML(e);
+	}
+
+	docDraw.SaveFile( filename.c_str() );
 }
 
 
@@ -907,10 +1023,13 @@ QString Project::newUniqueSubSurfaceName(const QString & baseName) const {
 
 template <typename t>
 void drawingBoundingBox(const VICUS::Drawing &d,
-						const std::vector<t> &drawingObjects,
-						IBKMK::Vector3D &upperValues,
-						IBKMK::Vector3D &lowerValues,
-						bool transformPoints = true) {
+								 const std::vector<t> &drawingObjects,
+								 IBKMK::Vector3D &upperValues,
+								 IBKMK::Vector3D &lowerValues,
+								 const IBKMK::Vector3D &offset = IBKMK::Vector3D(0,0,0),
+								 const IBKMK::Vector3D &xAxis = IBKMK::Vector3D(1,0,0),
+								 const IBKMK::Vector3D &yAxis = IBKMK::Vector3D(0,1,0),
+								 const IBKMK::Vector3D &zAxis = IBKMK::Vector3D(0,0,1)) {
 	// FUNCID(Project::boundingBox);
 
 	// store selected surfaces
@@ -926,33 +1045,23 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 		if (!dl->m_visible)
 			continue;
 
-		std::vector<IBKMK::Vector2D> verts = drawObj.points();
-		for (const IBKMK::Vector2D &p : verts) {
+		const std::vector<IBKMK::Vector3D> &points = d.points3D(drawObj.points2D(), drawObj.m_zPosition, drawObj.m_trans);
 
-			// Create Vector from start and end point of the line,
-			// add point of origin to each coordinate and calculate z value
-			double zCoordinate = drawObj.m_zPosition * Z_MULTIPLYER + d.m_origin.m_z;
-			IBKMK::Vector3D p1 = IBKMK::Vector3D(p.m_x + d.m_origin.m_x,
-												 p.m_y + d.m_origin.m_y,
-												 zCoordinate);
+		for (const IBKMK::Vector3D &v : points) {
 
-			QVector3D vec1(p1.m_x, p1.m_y, p1.m_z);
+			IBKMK::Vector3D vLocal, point;
 
-			if (transformPoints) {
-				// scale Vector with selected unit
-				p1 *= d.m_scalingFactor;
+			IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
+			IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
+			IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
 
-				// rotate Vectors
-				vec1 = d.m_rotationMatrix.toQuaternion() * vec1;
-			}
+			upperValues.m_x = std::max(upperValues.m_x, (double)vLocal.m_x);
+			upperValues.m_y = std::max(upperValues.m_y, (double)vLocal.m_y);
+			upperValues.m_z = std::max(upperValues.m_z, (double)vLocal.m_z);
 
-			upperValues.m_x = std::max(upperValues.m_x, (double)vec1.x());
-			upperValues.m_y = std::max(upperValues.m_y, (double)vec1.y());
-			upperValues.m_z = std::max(upperValues.m_z, (double)vec1.z());
-
-			lowerValues.m_x = std::min(lowerValues.m_x, (double)vec1.x());
-			lowerValues.m_y = std::min(lowerValues.m_y, (double)vec1.y());
-			lowerValues.m_z = std::min(lowerValues.m_z, (double)vec1.z());
+			lowerValues.m_x = std::min(lowerValues.m_x, (double)vLocal.m_x);
+			lowerValues.m_y = std::min(lowerValues.m_y, (double)vLocal.m_y);
+			lowerValues.m_z = std::min(lowerValues.m_z, (double)vLocal.m_z);
 		}
 	}
 }
@@ -1007,15 +1116,15 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 	}
 
 	for (const VICUS::Drawing *drawing : drawings) {
-		drawingBoundingBox<VICUS::Drawing::Arc>(*drawing, drawing->m_arcs, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Circle>(*drawing, drawing->m_circles, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Ellipse>(*drawing, drawing->m_ellipses, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Line>(*drawing, drawing->m_lines, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::PolyLine>(*drawing, drawing->m_polylines, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Point>(*drawing, drawing->m_points, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Solid>(*drawing, drawing->m_solids, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::Text>(*drawing, drawing->m_texts, upperValues, lowerValues, transformPoints);
-		drawingBoundingBox<VICUS::Drawing::LinearDimension>(*drawing, drawing->m_linearDimensions, upperValues, lowerValues, transformPoints);
+		drawingBoundingBox<VICUS::Drawing::Arc>(*drawing, drawing->m_arcs, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Circle>(*drawing, drawing->m_circles, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Ellipse>(*drawing, drawing->m_ellipses, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Line>(*drawing, drawing->m_lines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::PolyLine>(*drawing, drawing->m_polylines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Point>(*drawing, drawing->m_points, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Solid>(*drawing, drawing->m_solids, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Text>(*drawing, drawing->m_texts, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::LinearDimension>(*drawing, drawing->m_linearDimensions, upperValues, lowerValues);
 	}
 
 	// center point of bounding box
@@ -1025,7 +1134,8 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 }
 
 
-IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings, const std::vector<const NetworkEdge *> & edges, const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
+IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawings, const std::vector<const NetworkEdge *> & edges,
+									 const std::vector<const NetworkNode *> & nodes, IBKMK::Vector3D & center) {
 
 	if (nodes.empty() && edges.empty() && drawings.empty())
 		return IBKMK::Vector3D ( 0,0,0 );
@@ -1067,7 +1177,8 @@ IBKMK::Vector3D Project::boundingBox(const std::vector<const Drawing *> & drawin
 }
 
 
-IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
+IBKMK::Vector3D Project::boundingBox(std::vector<const Drawing *> & drawings,
+									 std::vector<const Surface *> & surfaces,
 									 std::vector<const SubSurface *> & subsurfaces,
 									 IBKMK::Vector3D & center,
 									 const IBKMK::Vector3D & offset, const IBKMK::Vector3D & xAxis,
@@ -1077,16 +1188,18 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 
 	// store selected surfaces
 	if ( surfaces.empty() && subsurfaces.empty())
-		return IBKMK::Vector3D ( 0,0,0 );
+		return IBKMK::Vector3D (0.,0.,0.);
+
+	IBKMK::Vector3D upperValues, lowerValues;
 
 	// TODO : Review this
+	upperValues.m_x = std::numeric_limits<double>::lowest();
+	upperValues.m_y = std::numeric_limits<double>::lowest();
+	upperValues.m_z = std::numeric_limits<double>::lowest();
 
-	double maxX = std::numeric_limits<double>::lowest();
-	double maxY = std::numeric_limits<double>::lowest();
-	double maxZ = std::numeric_limits<double>::lowest();
-	double minX = std::numeric_limits<double>::max();
-	double minY = std::numeric_limits<double>::max();
-	double minZ = std::numeric_limits<double>::max();
+	lowerValues.m_x = std::numeric_limits<double>::max();
+	lowerValues.m_y = std::numeric_limits<double>::max();
+	lowerValues.m_z = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
 		try {
 			s->polygon3D().vertexes();
@@ -1106,13 +1219,13 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 
 			v = vLocal;
 
-			( v.m_x > maxX ) ? maxX = v.m_x : 0;
-			( v.m_y > maxY ) ? maxY = v.m_y : 0;
-			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+			( v.m_x > upperValues.m_x ) ? upperValues.m_x = v.m_x : 0;
+			( v.m_y > upperValues.m_y ) ? upperValues.m_y = v.m_y : 0;
+			( v.m_z > upperValues.m_z ) ? upperValues.m_z = v.m_z : 0;
 
-			( v.m_x < minX ) ? minX = v.m_x : 0;
-			( v.m_y < minY ) ? minY = v.m_y : 0;
-			( v.m_z < minZ ) ? minZ = v.m_z : 0;
+			( v.m_x < lowerValues.m_x ) ? lowerValues.m_x = v.m_x : 0;
+			( v.m_y < lowerValues.m_y ) ? lowerValues.m_y = v.m_y : 0;
+			( v.m_z < lowerValues.m_z ) ? lowerValues.m_z = v.m_z : 0;
 		}
 	}
 	for (const VICUS::SubSurface *sub : subsurfaces ) {
@@ -1130,25 +1243,38 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface *> & surfaces,
 
 					v = vLocal;
 
-					( v.m_x > maxX ) ? maxX = v.m_x : 0;
-					( v.m_y > maxY ) ? maxY = v.m_y : 0;
-					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+					( v.m_x > upperValues.m_x ) ? upperValues.m_x = v.m_x : 0;
+					( v.m_y > upperValues.m_y ) ? upperValues.m_y = v.m_y : 0;
+					( v.m_z > upperValues.m_z ) ? upperValues.m_z = v.m_z : 0;
 
-					( v.m_x < minX ) ? minX = v.m_x : 0;
-					( v.m_y < minY ) ? minY = v.m_y : 0;
-					( v.m_z < minZ ) ? minZ = v.m_z : 0;
+					( v.m_x < lowerValues.m_x ) ? lowerValues.m_x = v.m_x : 0;
+					( v.m_y < lowerValues.m_y ) ? lowerValues.m_y = v.m_y : 0;
+					( v.m_z < lowerValues.m_z ) ? lowerValues.m_z = v.m_z : 0;
 				}
 			}
 		}
 	}
+	for (const VICUS::Drawing *d : drawings ) {
 
-	double dX = maxX - minX;
-	double dY = maxY - minY;
-	double dZ = maxZ - minZ;
+		drawingBoundingBox<VICUS::Drawing::Arc>(*d, d->m_arcs, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Circle>(*d, d->m_circles, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Ellipse>(*d, d->m_ellipses, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Line>(*d, d->m_lines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::PolyLine>(*d, d->m_polylines, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Point>(*d, d->m_points, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Solid>(*d, d->m_solids, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::Text>(*d, d->m_texts, upperValues, lowerValues);
+		drawingBoundingBox<VICUS::Drawing::LinearDimension>(*d, d->m_linearDimensions, upperValues, lowerValues);
+	}
 
-	center.set( offset.m_x + (minX + 0.5*dX) * xAxis.m_x + (minY + 0.5*dY) * yAxis.m_x + (minZ + 0.5*dZ) * zAxis.m_x ,
-				offset.m_y + (minX + 0.5*dX) * xAxis.m_y + (minY + 0.5*dY) * yAxis.m_y + (minZ + 0.5*dZ) * zAxis.m_y ,
-				offset.m_z + (minX + 0.5*dX) * xAxis.m_z + (minY + 0.5*dY) * yAxis.m_z + (minZ + 0.5*dZ) * zAxis.m_z );
+
+	double dX = upperValues.m_x - lowerValues.m_x;
+	double dY = upperValues.m_y - lowerValues.m_y;
+	double dZ = upperValues.m_z - lowerValues.m_z;
+
+	center.set( offset.m_x + (lowerValues.m_x + 0.5*dX) * xAxis.m_x + (lowerValues.m_y + 0.5*dY) * yAxis.m_x + (lowerValues.m_z + 0.5*dZ) * zAxis.m_x ,
+				offset.m_y + (lowerValues.m_x + 0.5*dX) * xAxis.m_y + (lowerValues.m_y + 0.5*dY) * yAxis.m_y + (lowerValues.m_z + 0.5*dZ) * zAxis.m_y ,
+				offset.m_z + (lowerValues.m_x + 0.5*dX) * xAxis.m_z + (lowerValues.m_y + 0.5*dY) * yAxis.m_z + (lowerValues.m_z + 0.5*dZ) * zAxis.m_z );
 
 	// set bounding box;
 	return IBKMK::Vector3D ( dX, dY, dZ );
