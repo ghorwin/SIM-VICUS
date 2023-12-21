@@ -43,6 +43,14 @@ SVPropAddGeometry::SVPropAddGeometry(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified, this, &SVPropAddGeometry::onModified);
+
+	m_ui->pushButtonAddRect->setIcon(QIcon::fromTheme("add_rectangle"));
+	m_ui->pushButtonAddPolygon->setIcon(QIcon::fromTheme("add_polygon"));
+	m_ui->pushButtonAddPipeline->setIcon(QIcon::fromTheme("add_pipe"));
+	m_ui->pushButtonAddRoof->setIcon(QIcon::fromTheme("add_roof"));
+	m_ui->pushButtonAddSubStation->setIcon(QIcon::fromTheme("add_substation"));
+	m_ui->pushButtonAddWindow->setIcon(QIcon::fromTheme("add_window"));
+	m_ui->pushButtonAddZone->setIcon(QIcon::fromTheme("add_zone"));
 }
 
 
