@@ -146,14 +146,11 @@ SOURCES += \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
-	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVSmartIntersectionDialog.cpp \
-    ../../src/SVStructuralUnitCreationDialog.cpp \
-	../../src/SVTimeSeriesPreviewWidget.cpp \
-    ../../src/SVTimeSliderWidget.cpp \
+	../../src/SVStructuralUnitCreationDialog.cpp \
     ../../src/SVUndoAddDrawing.cpp \
     ../../src/SVUndoAddStructuralUnit.cpp \
     ../../src/SVUndoDeleteStructuralUnit.cpp \
