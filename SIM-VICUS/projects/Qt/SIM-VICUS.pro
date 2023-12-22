@@ -14,17 +14,17 @@ QT += xml opengl network printsupport widgets svg
 CONFIG += c++11
 
 CONFIG(debug, debug|release) {
-# during development, show console window with debug messages in addition to on-screen console
+	# during development, show console window with debug messages in addition to on-screen console
 	# (useful for dual-screen setups)
 	CONFIG += console
 }
 
 linux {
-QMAKE_CXXFLAGS += -Wno-deprecated-copy
+	QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
 LIBS += \
--lNandrad \
+	-lNandrad \
 	-lQtExt \
 	-lQuaZIP \
 	-lTiCPP \
@@ -42,18 +42,18 @@ LIBS += \
 	-lqwt6
 
 win32 {
-LIBS += -luser32
+	LIBS += -luser32
 	LIBS += -lopengl32
 }
 linux {
-LIBS += -lGLU -lGL
+	LIBS += -lGLU -lGL
 }
 mac {
-LIBS += -framework OpenGL
+	LIBS += -framework OpenGL
 }
 
 INCLUDEPATH = \
-../../src \
+	../../src \
 	../../src/actions \
 	../../src/core3D \
 	../../../externals/CCM/src \
@@ -77,7 +77,7 @@ DEPENDPATH = $${INCLUDEPATH}
 
 win32 {
 PRE_TARGETDEPS += \
-$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
+	$$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/CCM.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/Shading.lib \
 	$$PWD/../../../externals/lib$${DIR_PREFIX}/QtExt.lib \
@@ -94,7 +94,7 @@ $$PWD/../../../externals/lib$${DIR_PREFIX}/IBK.lib \
 
 
 SOURCES += \
-../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
+	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
     ../../src/SVAcousticConstraintsCheckWidget.cpp \
 	../../src/SVCoSimCO2VentilationDialog.cpp \
@@ -116,6 +116,7 @@ SOURCES += \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVDBSupplySystemEditWidget.cpp \
 	../../src/SVDBSupplySystemTableModel.cpp \
+	#../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVDatabaseSortFilterProxyModel.cpp \
     ../../src/SVLcaLccResultsWidget.cpp \
     ../../src/SVLcaLccSettingsWidget.cpp \
@@ -123,10 +124,18 @@ SOURCES += \
     ../../src/SVNonEquidistantSlider.cpp \
     ../../src/SVPluginLoader.cpp \
     ../../src/SVPluginManager.cpp \
-	../../src/SVPropAcosuticWidget.cpp \
+    ../../src/SVPropAcosuticWidget.cpp \
     ../../src/SVPropBuildingAcousticTemplatesWidget.cpp \
 	../../src/SVPropBuildingSoundProtectionTemplatesWidget.cpp \
     ../../src/SVPropBuildingStructuralUnitWidget.cpp \
+    ../../src/SVPropNetworkEdgesWidget.cpp \
+    ../../src/SVPropNetworkEditWidget.cpp \
+    ../../src/SVPropNetworkGeometryWidget.cpp \
+    ../../src/SVPropNetworkHeatExchangeWidget.cpp \
+    ../../src/SVPropNetworkNodesWidget.cpp \
+    ../../src/SVPropNetworkSubStationWidget.cpp \
+    ../../src/SVPropResultsWidget.cpp \
+    ../../src/SVPropStructuralUnitEditWidget.cpp \
 	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
@@ -142,7 +151,7 @@ SOURCES += \
 	../../src/SVPropBuildingZoneProperty.cpp \
 	../../src/SVPropBuildingZonePropertyTableModel.cpp \
 	../../src/SVPropBuildingZonePropertyTableProxyModel.cpp \
-	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
+		../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
@@ -154,9 +163,6 @@ SOURCES += \
     ../../src/SVUndoAddDrawing.cpp \
     ../../src/SVUndoAddStructuralUnit.cpp \
     ../../src/SVUndoDeleteStructuralUnit.cpp \
-    ../../src/SVSnapOptionsDialog.cpp \
-	../../src/SVTimeSeriesPreviewWidget.cpp \
-	../../src/SVTimeSliderWidget.cpp \
     ../../src/SVUndoModifyLcaLcc.cpp \
     ../../src/SVUndoModifyStructuralUnit.cpp \
     ../../src/SVUndoModifyStructuralUnitRoomAssociation.cpp \
@@ -596,7 +602,6 @@ FORMS    += \
 	../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
-	../../src/SVDrawingPropertiesDialog.ui \
 	../../src/SVGeometryView.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLcaLccResultsWidget.ui \
@@ -669,13 +674,11 @@ TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
 
 RESOURCES += \
-../../resources/SIM-VICUS.qrc \
+	../../resources/SIM-VICUS.qrc \
 	../../resources/qdarkstyle/style.qrc \
 	../../src/shaders/shaders.qrc \
 	../../resources/icons.qrc
 
 DISTFILES += \
 	../../resources/style/light/lightstyle.qss
-
-
 
