@@ -166,7 +166,6 @@ SOURCES += \
 	../../src/SVUndoNetworkAddNodes.cpp \
 	../../src/SVUndoNetworkAddPipeline.cpp \
 	../../src/SVView3DCalculation.cpp \
-
     ../../src/SVZoneInformationDialog.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
@@ -322,10 +321,8 @@ SOURCES += \
 	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
-
     ../../src/SVAcousticConstraintsCheckWidget.h \
 	../../src/SVCoSimCO2VentilationDialog.h \
-
 	../../src/SVCoSimSupplySystemDialog.h \
 	../../src/SVColorLegend.h \
 	../../src/SVColorMap.h \
@@ -345,7 +342,6 @@ HEADERS  += \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVDBSupplySystemEditWidget.h \
 	../../src/SVDBSupplySystemTableModel.h \
-	
     ../../src/SVDatabaseSortFilterProxyModel.h \
     ../../src/SVLcaLccResultsWidget.h \
     ../../src/SVLcaLccSettingsWidget.h \
@@ -365,7 +361,6 @@ HEADERS  += \
     ../../src/SVPropNetworkSubStationWidget.h \
     ../../src/SVPropResultsWidget.h \
     ../../src/SVPropStructuralUnitEditWidget.h \
-
 	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
@@ -388,7 +383,6 @@ HEADERS  += \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
-
     ../../src/SVSmartIntersectionDialog.h \
     ../../src/SVStructuralUnitCreationDialog.h \
 	../../src/SVTimeSeriesPreviewDialog.h \
@@ -398,16 +392,13 @@ HEADERS  += \
     ../../src/SVUndoAddStructuralUnit.h \
     ../../src/SVUndoDeleteStructuralUnit.h \
     ../../src/SVSnapOptionsDialog.h \
-
     ../../src/SVUndoModifyLcaLcc.h \
     ../../src/SVUndoModifyStructuralUnit.h \
     ../../src/SVUndoModifyStructuralUnitRoomAssociation.h \
 	../../src/SVUndoNetworkAddNodes.h \
 	../../src/SVUndoNetworkAddPipeline.h \
 	../../src/SVView3DCalculation.h \
-
     ../../src/SVZoneInformationDialog.h \
-
 	../../src/SVZoneListModel.h \
 	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
@@ -669,9 +660,7 @@ FORMS    += \
 	../../src/SVSimulationStartOptions.ui \
 	../../src/SVSmartIntersectionDialog.ui \
 	../../src/SVSmartSelectDialog.ui \
-
     ../../src/SVStructuralUnitCreationDialog.ui \
-
 	../../src/SVSnapOptionsDialog.ui \
 	../../src/SVTimeSeriesPreviewDialog.ui \
 	../../src/SVTimeSliderWidget.ui \
