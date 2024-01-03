@@ -584,7 +584,7 @@ void SVProjectHandler::updateLastReadTime() {
 }
 
 
-IBK::Path SVProjectHandler::replacePathPlaceholders(const IBK::Path & stringWithPlaceholders) {
+IBK::Path SVProjectHandler::replacePathPlaceholders(const IBK::Path & stringWithPlaceholders) const {
 	std::map<std::string, IBK::Path> mergedPlaceholders;
 
 	mergedPlaceholders[VICUS::DATABASE_PLACEHOLDER_NAME] = QtExt::Directories::databasesDir().toStdString();
@@ -1117,7 +1117,8 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 		m_projectFile = fname;
 
 		if (m_project->m_drawingFilePath.isValid()) {
-			if (!m_project->m_drawingFilePath.exists()) {
+			IBK::Path drawingAbsFilePath = replacePathPlaceholders(m_project->m_drawingFilePath);
+			if (!drawingAbsFilePath.exists()) {
 				// we have a broken link, we may want to delete the link or find the file again
 				QMessageBox msgbox(QMessageBox::Question, tr("Broken link to drawing file"), tr("The referenced drawing file '%1' was not found.").arg(m_project->m_drawingFilePath.c_str()),
 								   QMessageBox::NoButton, parent);
@@ -1134,19 +1135,23 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 					m_project->m_drawingFilePath.clear();
 				// ask user to find the file
 				else if (msgbox.clickedButton() == btnFindFile) {
-					QString filename = QFileDialog::getOpenFileName(
+					QString drawFilename = QFileDialog::getOpenFileName(
 						parent,
 						tr("Select drawing file"),
 						SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
 						tr("SIM-VICUS drawing files (*%1 );;All files (*.*)").arg(SVSettings::instance().m_drawingFileSuffix), nullptr,
 						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options() );
-					if (!filename.isEmpty())
-						m_project->m_drawingFilePath = filename.toStdString();
+					if (!drawFilename.isEmpty()) {
+						// we just use the absolute file path here
+						m_project->m_drawingFilePath = drawFilename.toStdString();
+						drawingAbsFilePath = m_project->m_drawingFilePath;
+					}
 				}
 			}
+
 			// if there is a drawing file: read it
-			if (m_project->m_drawingFilePath.exists()) {
-				m_project->readDrawingXML(m_project->m_drawingFilePath);
+			if (drawingAbsFilePath.exists()) {
+				m_project->readDrawingXML(drawingAbsFilePath);
 				m_project->updatePointers();
 				// generate inserts, this should happen only once!
 				for (VICUS::Drawing &dr: m_project->m_drawings)
@@ -1208,10 +1213,19 @@ bool SVProjectHandler::write(QWidget *parent, const QString & fname, bool writeD
 	// write drawings file
 	if (writeDrawingFile) {
 		if (m_project->m_drawingFilePath.str().empty()) {
-			// create default drawings file name
-			QString drawingfileName = fname;
-			drawingfileName.replace(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_drawingFileSuffix);
-			m_project->m_drawingFilePath = IBK::Path(drawingfileName.toStdString());
+			// by default: drawing file name is identical to project file name, just with drawing suffix
+			QString drawingFileName = fname;
+			drawingFileName.replace(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_drawingFileSuffix);
+			// now compose relative path
+			IBK::Path projectPath(fname.toStdString());
+			projectPath = projectPath.parentPath();
+			IBK::Path drawingFilePath( drawingFileName.toStdString());
+			try {
+				m_project->m_drawingFilePath = "${Project Directory}" / drawingFilePath.relativePath(projectPath);
+			} catch (...) {
+				// can't relate paths... keep absolute
+				m_project->m_drawingFilePath = drawingFilePath;
+			}
 		}
 
 		if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -1244,8 +1258,10 @@ bool SVProjectHandler::write(QWidget *parent, const QString & fname, bool writeD
 		// remove backup file again
 		QFile(fname + ".bak").remove();
 
-		if (writeDrawingFile)
-			m_project->writeDrawingXML(m_project->m_drawingFilePath);
+		if (writeDrawingFile) {
+			IBK::Path drawingAbsFilePath = replacePathPlaceholders(m_project->m_drawingFilePath);
+			m_project->writeDrawingXML(drawingAbsFilePath);
+		}
 
 		return true;
 	}

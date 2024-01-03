@@ -102,8 +102,8 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
-        /*! Structural units were modified (Add, edit, delete). */
-        StructuralUnitsModified,
+		/*! Structural units were modified (Add, edit, delete). */
+		StructuralUnitsModified,
 		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
 		ObjectRenamed,
 		/*! Drawings have been added / removed from project */
@@ -246,7 +246,7 @@ public:
 		the "Project Directory" placeholder (if a project is active and has a valid file path)
 		and then calls the IBK::replace_path_placeholders() function.
 	*/
-	IBK::Path replacePathPlaceholders(const IBK::Path & stringWithPlaceholders);
+	IBK::Path replacePathPlaceholders(const IBK::Path & stringWithPlaceholders) const;
 
 	/*! Set the reload state to true.*/
 	void setReload() { m_reload = true; }
