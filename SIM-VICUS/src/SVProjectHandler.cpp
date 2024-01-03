@@ -1116,11 +1116,13 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 		m_project->readXML(IBK::Path(fname.toStdString()) );
 		m_projectFile = fname;
 
+		m_lastReadTime = QFileInfo(fname).lastModified();
+
 		if (m_project->m_drawingFilePath.isValid()) {
 			IBK::Path drawingAbsFilePath = replacePathPlaceholders(m_project->m_drawingFilePath);
 			if (!drawingAbsFilePath.exists()) {
 				// we have a broken link, we may want to delete the link or find the file again
-				QMessageBox msgbox(QMessageBox::Question, tr("Broken link to drawing file"), tr("The referenced drawing file '%1' was not found.").arg(m_project->m_drawingFilePath.c_str()),
+				QMessageBox msgbox(QMessageBox::Question, tr("Broken link to drawing file"), tr("The referenced drawing file '%1' was not found.").arg(drawingAbsFilePath.c_str()),
 								   QMessageBox::NoButton, parent);
 				// add buttons
 				QPushButton * btnFindFile = new QPushButton(tr("Find file ..."));
@@ -1135,10 +1137,11 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 					m_project->m_drawingFilePath.clear();
 				// ask user to find the file
 				else if (msgbox.clickedButton() == btnFindFile) {
+					QFileInfo finfo(QString::fromStdString(drawingAbsFilePath.str()));
 					QString drawFilename = QFileDialog::getOpenFileName(
 						parent,
 						tr("Select drawing file"),
-						SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
+						finfo.path(),
 						tr("SIM-VICUS drawing files (*%1 );;All files (*.*)").arg(SVSettings::instance().m_drawingFileSuffix), nullptr,
 						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options() );
 					if (!drawFilename.isEmpty()) {
@@ -1164,8 +1167,6 @@ bool SVProjectHandler::read(QWidget * parent, const QString & fname) {
 		// when resolving file paths with placeholders, one should always call
 		// SVProjectHandler::instance().replacePathPlaceholders(...)
 		m_project->m_placeholders.clear();
-
-		m_lastReadTime = QFileInfo(fname).lastModified();
 
 		// after reading the project file, we should update the views
 		// this is done in a subsequent call to setModified() from the calling function

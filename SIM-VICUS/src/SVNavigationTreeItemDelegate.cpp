@@ -30,6 +30,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QTreeView>
+#include <QFileDialog>
 
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVUndoTreeNodeState.h"
@@ -37,6 +38,8 @@
 #include "SVProjectHandler.h"
 #include "SVDrawingPropertiesDialog.h"
 #include "SVMainWindow.h"
+#include "SVUndoModifyDrawingFile.h"
+
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
@@ -104,6 +107,9 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	QFont f = painter->font();
 	f.setBold(isSelected);
 
+	bool isMissingFile =  index.data(MissingDrawingFile).toBool();
+	f.setItalic(isMissingFile);
+
 	bool isInvalid = index.data(InvalidGeometryFlag).toBool();
 	if (isInvalid)
 		painter->setPen(QColor(196,0,0));
@@ -141,10 +147,6 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 
 bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) {
 
-	// top-level index does not have any attributes
-	if (index.parent() == QModelIndex()) {
-		return QStyledItemDelegate::editorEvent(event, model, option, index);
-	}
 	if (event->type() == QEvent::MouseButtonRelease) {
 		QMouseEvent * mouseEvent = dynamic_cast<QMouseEvent*>(event);
 		if (mouseEvent != nullptr && (mouseEvent->button() & Qt::LeftButton)) {
@@ -186,10 +188,11 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 
 	}
 	if (event->type() == QEvent::MouseButtonDblClick) {
+
+		// if it's a drawing, we allow editing some properties
 		unsigned int nodeID = index.data(NodeID).toUInt();
 		const VICUS::Object *obj = SVProjectHandler::instance().project().objectById(nodeID);
 		const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(obj);
-
 		if (drawing != nullptr) {
 
 			VICUS::Drawing newDrawing(*drawing);
@@ -204,6 +207,23 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 				undo->push();
 
 				SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged );
+				return false;
+			}
+		}
+
+		// if it's a missing drawing file, we allow editing the filepath
+		else if (!index.data(MissingDrawingFile).toString().isEmpty()) {
+			QFileInfo finfo(index.data(MissingDrawingFile).toString());
+			QString drawFilename = QFileDialog::getOpenFileName(
+				SVMainWindow::instance().window(),
+				tr("Find missing drawing file"),
+				finfo.path(),
+				tr("SIM-VICUS drawing files (*%1 );;All files (*.*)").arg(SVSettings::instance().m_drawingFileSuffix), nullptr,
+				SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options() );
+			if (!drawFilename.isEmpty()) {
+				IBK::Path drawingFile(drawFilename.toStdString());
+				SVUndoModifyDrawingFile *undo = new SVUndoModifyDrawingFile("Drawing file changed", drawingFile);
+				undo->push();
 				return false;
 			}
 		}

@@ -161,6 +161,7 @@ SOURCES += \
 	../../src/SVSnapOptionsDialog.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVTimeSliderWidget.cpp \
+	../../src/SVUndoModifyDrawingFile.cpp \
 	../../src/SVUndoModifyLcaLcc.cpp \
 	../../src/SVUndoModifyStructuralUnit.cpp \
 	../../src/SVUndoModifyStructuralUnitRoomAssociation.cpp \
@@ -402,6 +403,7 @@ HEADERS  += \
 	../../src/SVUndoAddStructuralUnit.h \
 	../../src/SVUndoDeleteStructuralUnit.h \
 	../../src/SVSnapOptionsDialog.h \
+	../../src/SVUndoModifyDrawingFile.h \
 	../../src/SVUndoModifyLcaLcc.h \
 	../../src/SVUndoModifyStructuralUnit.h \
 	../../src/SVUndoModifyStructuralUnitRoomAssociation.h \

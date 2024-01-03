@@ -345,9 +345,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	// DXF Drawings
-	QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
-	m_ui->treeWidget->addTopLevelItem(drawing);
 	for (const VICUS::Drawing & d : prj.m_drawings) {
+		QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
+		drawing->setToolTip(0, tr("Double click to edit offset and scaling."));
+		m_ui->treeWidget->addTopLevelItem(drawing);
 		// TODO should drawing have name & id
 		QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
 		m_treeItemMap[d.m_id] = drawingItem;
@@ -368,6 +369,15 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, l.m_selected);
 			drawingItem->addChild(ln);
 		}
+	}
+
+	if (prj.m_drawings.empty() && prj.m_drawingFilePath.isValid()) {
+		IBK::Path fileAbs = SVProjectHandler::instance().replacePathPlaceholders(prj.m_drawingFilePath);
+		QString file = QString::fromStdString(fileAbs.str());
+		QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << tr("Missing drawing file '%1'").arg(QString::fromStdString(fileAbs.str())), QTreeWidgetItem::Type);
+		drawing->setData(0, SVNavigationTreeItemDelegate::MissingDrawingFile, QString::fromStdString(fileAbs.str()));
+		drawing->setToolTip(0, tr("Double click to find missing file."));
+		m_ui->treeWidget->addTopLevelItem(drawing);
 	}
 
 	// Dumb plain geometry

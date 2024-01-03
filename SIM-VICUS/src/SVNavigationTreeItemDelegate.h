@@ -37,7 +37,8 @@ public:
 		VisibleFlag = Qt::UserRole + 1,
 		SelectedFlag = Qt::UserRole + 2,
 		ItemType = Qt::UserRole + 3,
-		InvalidGeometryFlag = Qt::UserRole + 4
+		InvalidGeometryFlag = Qt::UserRole + 4,
+		MissingDrawingFile = Qt::UserRole + 5
 	};
 
 	enum TopologyType {
