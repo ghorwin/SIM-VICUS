@@ -9,34 +9,33 @@ TEMPLATE = lib
 include( ../../../IBK/projects/Qt/IBK.pri )
 
 
-QT += gui core widgets
+QT += gui widgets
 
 
 unix|mac {
-	VER_MAJ = 0
-	VER_MIN = 1
-	VER_PAT = 0
+VER_MAJ = 0
+VER_MIN = 1
+VER_PAT = 0
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
 LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM -lDataIO #-lHL
 
 INCLUDEPATH = \
-	../../src \
-	../../../IBK/src \
-	../../../IBKMK/src \
+../../src \
+../../../IBK/src \
+../../../IBKMK/src \
 	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../DataIO/src \
-	#../../../HeatLoad/src \
 	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
 HEADERS += \
-	../../src/VICUS_AbstractDBElement.h \
-	../../src/VICUS_AcousticBoundaryCondition.h \
-	../../src/VICUS_AcousticSoundAbsorption.h \
+../../src/VICUS_AbstractDBElement.h \
+../../src/VICUS_AcousticBoundaryCondition.h \
+../../src/VICUS_AcousticSoundAbsorption.h \
 	../../src/VICUS_AcousticBuildingTemplate.h \
 	../../src/VICUS_AcousticComponent.h \
 	../../src/VICUS_AcousticReferenceComponent.h \
@@ -116,14 +115,14 @@ HEADERS += \
 	../../src/VICUS_utilities.h
 
 SOURCES += \
-	../../src/VICUS_AcousticBoundaryCondition.cpp \
-	../../src/VICUS_AcousticSoundAbsorption.cpp \
-	../../src/VICUS_AbstractDBElement.cpp \
+../../src/VICUS_AcousticBoundaryCondition.cpp \
+../../src/VICUS_AcousticSoundAbsorption.cpp \
+../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_AcousticBuildingTemplate.cpp \
 	../../src/VICUS_AcousticComponent.cpp \
 	../../src/VICUS_AcousticReferenceComponent.cpp \
-    ../../src/VICUS_AcousticSoundAbsorptionPartition.cpp \
-    ../../src/VICUS_AcousticSoundProtectionTemplate.cpp \
+	../../src/VICUS_AcousticSoundAbsorptionPartition.cpp \
+	../../src/VICUS_AcousticSoundProtectionTemplate.cpp \
 	../../src/VICUS_AcousticTemplate.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BTFReader.cpp \
@@ -187,10 +186,10 @@ SOURCES += \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/VICUS_utilities.cpp \
 	../../src/ncg/ncg_VICUS_AcousticBoundaryCondition.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticBuildingTemplate.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticComponent.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticReferenceComponent.cpp \
-    ../../src/ncg/ncg_VICUS_AcousticSoundAbsorption.cpp \
+	../../src/ncg/ncg_VICUS_AcousticBuildingTemplate.cpp \
+	../../src/ncg/ncg_VICUS_AcousticComponent.cpp \
+	../../src/ncg/ncg_VICUS_AcousticReferenceComponent.cpp \
+	../../src/ncg/ncg_VICUS_AcousticSoundAbsorption.cpp \
 	../../src/ncg/ncg_VICUS_AcousticTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
@@ -250,4 +249,4 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
 
 DISTFILES += \
-	../../src/.gitignore
+../../src/.gitignore
