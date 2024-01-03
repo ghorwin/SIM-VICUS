@@ -440,11 +440,13 @@ void SVNavigationTreeWidget::on_actionHideSelected_triggered() {
 	emit hideSelected();
 }
 
-void SVNavigationTreeWidget::on_actionSelect_all_triggered() {
+void SVNavigationTreeWidget::on_actionSelectAll_triggered() {
 	emit selectAll();
 }
 
-void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
+
+void SVNavigationTreeWidget::on_actionDeselectAll_triggered() {
+
 	// This slot is triggered first - as top level action - when user presses Escape. However, depending on context,
 	// we have different possible actions, for example, when editing geometry, Escape should cancel the current transformation.
 
