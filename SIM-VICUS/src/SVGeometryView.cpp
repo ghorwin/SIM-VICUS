@@ -787,6 +787,21 @@ void SVGeometryView::on_actionNetworkParametrization_triggered() {
 }
 
 
+void SVGeometryView::on_actionStructuralUnits_triggered() {
+	uncheckAllActionsInButtonBar();
+	m_ui->actionStructuralUnits->setChecked(true);
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// show building properties widget
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	SVViewStateHandler::instance().setViewState(vs);
+	// there is no simple way to obtain the color mode from the currently active tool box index in the property widget
+	SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
+}
+
+
 void SVGeometryView::on_actionSiteParametrization_triggered() {
 	uncheckAllActionsInButtonBar();
 	m_ui->actionSiteParametrization->setChecked(true);
@@ -920,20 +935,5 @@ void SVGeometryView::on_actionZLock_triggered(bool on) {
 
 	SVViewStateHandler::instance().setViewState(vs);
 	focusSceneView();
-}
-
-
-void SVGeometryView::on_actionStructuralUnits_triggered() {
-    uncheckAllActionsInButtonBar();
-    m_ui->actionStructuralUnits->setChecked(true);
-
-    SVViewState vs = SVViewStateHandler::instance().viewState();
-    // show building properties widget
-    vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
-    // turn off any special scene modes
-    vs.m_sceneOperationMode = SVViewState::NUM_OM;
-    SVViewStateHandler::instance().setViewState(vs);
-    // there is no simple way to obtain the color mode from the currently active tool box index in the property widget
-    SVViewStateHandler::instance().m_propertyWidget->updateColorMode();
 }
 

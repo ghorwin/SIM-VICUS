@@ -117,7 +117,7 @@ void SVPropertyWidget::updateColorMode() {
 		} break;
 		case SVViewState::PM_BuildingAcousticProperties : {
 			// enforce color update
-            SVPropAcosuticWidget *widget = qobject_cast<SVPropAcosuticWidget*>(m_propWidgets[M_BuildingAcousticProperties]);
+			SVPropAcosuticWidget *widget = qobject_cast<SVPropAcosuticWidget*>(m_propWidgets[M_BuildingAcousticProperties]);
 			widget->setPropertyType((int)widget->currentPropertyType());
 		} break;
 
@@ -162,7 +162,7 @@ void SVPropertyWidget::setPropertyWidgetVisible(SVViewState::PropertyWidgetMode 
 		} break;
 
 		case SVViewState::PM_BuildingAcousticProperties : {
-            showPropertyWidget<SVPropAcosuticWidget>(M_BuildingAcousticProperties);
+			showPropertyWidget<SVPropAcosuticWidget>(M_BuildingAcousticProperties);
 		} break;
 		case SVViewState::PM_BuildingStructuralUnitProperties : {
 			showPropertyWidget<SVPropStructuralUnitEditWidget>(M_BuildingStructuralUnitProperties);
