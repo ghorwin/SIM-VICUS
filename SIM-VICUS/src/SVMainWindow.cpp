@@ -995,15 +995,15 @@ void SVMainWindow::onConfigurePluginTriggered() {
 
 void SVMainWindow::onScreenChanged(QScreen *screen) {
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
-    SVSettings::instance().m_ratio = screen->devicePixelRatio();
-    // let others know (e.g. DB dialogs)
+	SVSettings::instance().m_ratio = screen->devicePixelRatio();
+	// let others know (e.g. DB dialogs)
 	emit screenHasChanged(screen);
 }
 
 SVStructuralUnitCreationDialog *SVMainWindow::structuralUnitDialog() {
-    if (m_structuralUnitCreationDialog == nullptr)
-        m_structuralUnitCreationDialog = new SVStructuralUnitCreationDialog(this);
-    return m_structuralUnitCreationDialog;
+	if (m_structuralUnitCreationDialog == nullptr)
+		m_structuralUnitCreationDialog = new SVStructuralUnitCreationDialog(this);
+	return m_structuralUnitCreationDialog;
 }
 
 
@@ -1262,15 +1262,15 @@ void SVMainWindow::on_actionEditApplicationLog_triggered() {
 
 
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
-    m_geometryView->uncheckAllActionsInButtonBar();
-    SVViewState vs = SVViewStateHandler::instance().viewState();
-    // turn off any special scene modes
-    vs.m_sceneOperationMode = SVViewState::NUM_OM;
-    vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
-    SVViewStateHandler::instance().setViewState(vs);
+	m_geometryView->uncheckAllActionsInButtonBar();
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
+	SVViewStateHandler::instance().setViewState(vs);
 
-    // adjust appearance of selector widget
-    SVViewStateHandler::instance().m_propertyWidget->setStructuralUnitPropertyType(ST_FloorManager);
+	// adjust appearance of selector widget
+	SVViewStateHandler::instance().m_propertyWidget->setStructuralUnitPropertyType(ST_FloorManager);
 }
 
 
@@ -1582,7 +1582,7 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->blockSignals(false);
 
 		// window caption
-		setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
+		setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 
 		// if no recent projects set welcome page to demo files
 		if (SVSettings::instance().m_recentProjects.empty())

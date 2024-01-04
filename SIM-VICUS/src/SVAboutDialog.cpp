@@ -41,7 +41,7 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	setWindowTitle(QString("HBO %1").arg(VICUS::LONG_VERSION));
+	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 
 	int imageCount = 6;
 
