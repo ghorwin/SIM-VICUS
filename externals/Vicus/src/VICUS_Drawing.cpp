@@ -1614,7 +1614,6 @@ void Drawing::transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &in
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_polylines, trans);
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_solids, trans);
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_texts, trans);
-
 }
 
 void Drawing::generateInsertGeometries(unsigned int nextId) {

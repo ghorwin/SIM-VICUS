@@ -361,7 +361,7 @@ void Project::readImportedXML(const QString & projectText, IBK::NotificationHand
 			notifyer->notify(0.5);
 
 			// don't forget to update pointers
-			updatePointers();
+			draw.updateParents();
 			notifyer->notify(0.7);
 			// generate inserts, this should happen only once!
 			for (VICUS::Drawing &dr: m_drawings)
@@ -792,11 +792,9 @@ void Project::updatePointers() {
 	}
 
 	for (VICUS::Drawing &d : m_drawings) {
-		d.m_id = nextUnusedID();
 		d.updateParents();
 		addAndCheckForUniqueness(&d);
 		for (VICUS::DrawingLayer &dl : d.m_drawingLayers) {
-			dl.m_id = nextUnusedID();
 			addAndCheckForUniqueness(&dl);
 		}
 	}
