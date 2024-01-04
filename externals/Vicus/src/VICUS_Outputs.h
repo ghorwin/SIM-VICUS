@@ -69,6 +69,8 @@ public:
 	VICUS_READWRITE_IFNOTEMPTY(Outputs)
 	VICUS_COMP(Outputs)
 
+	void initDefaults();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with user-defined output definitions. */

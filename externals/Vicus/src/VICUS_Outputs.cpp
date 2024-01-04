@@ -42,4 +42,9 @@ bool Outputs::operator!=(const Outputs & other) const {
 }
 
 
+void Outputs::initDefaults() {
+	m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].set("CreateDefaultZoneOutputs", true);
+}
+
+
 } // namespace VICUS
