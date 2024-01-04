@@ -47,6 +47,7 @@ public:
 		updatePointer();
 	}
 
+
 	/*! Insert structure for Blocks */
 	struct Block {
 
@@ -87,6 +88,7 @@ public:
 
 		IBKMK::Vector2D			m_insertionPoint;		// insertion point
 	};
+
 
 	/* Abstract class for all directly drawable dxf entities */
 	struct AbstractDrawingObject {
@@ -147,17 +149,17 @@ public:
 
 		/*! Get parent drawing where object is included. */
 		const Drawing *drawing() const {
-			Q_ASSERT(m_parentLayer != nullptr);
-			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(m_parentLayer->m_parent);
+			Q_ASSERT(m_layerRef != nullptr);
+			const VICUS::Drawing *drawing = dynamic_cast<const VICUS::Drawing *>(m_layerRef->m_parent);
 			Q_ASSERT(drawing != nullptr);
 			// Return pointer to drawing
 			return drawing;
 		}
 
-		/*! name of Entity */
+		/*! Name of layer */
 		QString										m_layerName;
-		/*! Layer of Entity */
-		const DrawingLayer							*m_parentLayer = nullptr;
+		/*! Pointer to layer */
+		const DrawingLayer							*m_layerRef = nullptr;
 		/*! Color of Entity if defined, use getter color() instead */
 		QColor										m_color = QColor();
 		/*! Line weight of Entity, use getter lineWeight() instead */
@@ -255,6 +257,7 @@ public:
 
 	};
 
+
 	/*! Stores attributes of line */
 	struct Line : public AbstractDrawingObject {
 
@@ -273,6 +276,7 @@ public:
 		/*! Point coordinate */
 		IBKMK::Vector2D					m_point2;
 	};
+
 
 	/*! Stores both LW and normal polyline */
 	struct PolyLine : public AbstractDrawingObject {
@@ -293,6 +297,7 @@ public:
 		bool							m_endConnected = false;
 	};
 
+
 	/* Stores attributes of circle */
 	struct Circle : public AbstractDrawingObject {
 
@@ -311,6 +316,7 @@ public:
 		double							m_radius;
 	};
 
+
 	/* Stores attributes of ellipse */
 	struct Ellipse : public AbstractDrawingObject {
 
@@ -322,7 +328,6 @@ public:
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
-
 
 		/*! Ellipse center */
 		IBKMK::Vector2D			m_center;
@@ -336,6 +341,7 @@ public:
 		double					m_endAngle;
 	};
 
+
 	/* Stores attributes of arc */
 	struct Arc : public AbstractDrawingObject {
 
@@ -348,7 +354,6 @@ public:
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
 
-
 		/*! Arc center */
 		IBKMK::Vector2D			m_center;
 		/*! Arc radius */
@@ -358,6 +363,7 @@ public:
 		/*! Arc end angle */
 		double					m_endAngle;
 	};
+
 
 	/* Stores attributes of solid, dummy struct */
 	struct Solid : public AbstractDrawingObject {
@@ -381,6 +387,7 @@ public:
 		IBKMK::Vector2D			m_point4;
 	};
 
+
 	/* Stores attributes of text, dummy struct */
 	struct Text : public AbstractDrawingObject {
 
@@ -392,7 +399,6 @@ public:
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
-
 
 		/*! Base point. */
 		IBKMK::Vector2D		m_basePoint;
@@ -406,6 +412,7 @@ public:
 		QString				m_text;
 	};
 
+
 	/* Stores attributes of text, dummy struct */
 	struct LinearDimension : public AbstractDrawingObject {
 
@@ -417,7 +424,6 @@ public:
 			Drawing is only needed when m_dirtyTriangulation is true
 		*/
 		const std::vector<VICUS::PlaneGeometry>& planeGeometries() const override;
-
 
 		/*! Base point. */
 		IBKMK::Vector2D				m_dimensionPoint;
@@ -492,6 +498,17 @@ public:
 
 	/*! Returns the normal vector of the drawing. */
 	const IBKMK::Vector3D localY() const;
+
+	/*! Template function that removes objects if their layer name is one of the given layerNames. */
+	template <typename t>
+	void eraseObjectsByLayer(const std::set<QString> &layerNames, std::vector<t> &objects){
+		for (unsigned int idx=0; idx<objects.size();  ) {
+			if (layerNames.find(objects[idx].m_layerName) != layerNames.end())
+				objects.erase( objects.begin() + idx );
+			else
+				++idx;
+		}
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

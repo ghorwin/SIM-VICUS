@@ -39,7 +39,6 @@
 
 #include <IBKMK_3DCalculations.h>
 
-
 #include <NANDRAD_Utilities.h>
 #include <NANDRAD_Project.h>
 
@@ -60,7 +59,7 @@ Project::Project() {
 	m_location.initDefaults();
 	m_simulationParameter.initDefaults();
 	m_solverParameter.initDefaults();
-
+	m_outputs.initDefaults();
 
 	// build test building
 
@@ -800,16 +799,16 @@ void Project::updatePointers() {
 		}
 	}
 
-    // structural units
-    // TODO Anton: assign own adress space
-    for(VICUS::StructuralUnit & u : m_structuralUnits){
-        addAndCheckForUniqueness(&u);
-        for (VICUS::Building & b : m_buildings)
-            for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
-                for (VICUS::Room & r : bl.m_rooms)
-                    if (u.m_roomIds.find(r.m_id) != u.m_roomIds.end())
-                        r.m_structuralUnit = &u;
-    }
+	// structural units
+	// TODO Anton: assign own adress space
+	for(VICUS::StructuralUnit & u : m_structuralUnits){
+		addAndCheckForUniqueness(&u);
+		for (VICUS::Building & b : m_buildings)
+			for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+				for (VICUS::Room & r : bl.m_rooms)
+					if (u.m_roomIds.find(r.m_id) != u.m_roomIds.end())
+						r.m_structuralUnit = &u;
+	}
 
 }
 
@@ -1038,7 +1037,7 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 
 	// process all drawings
 	for (const t &drawObj : drawingObjects) {
-		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(drawObj.m_parentLayer);
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(drawObj.m_layerRef);
 
 		Q_ASSERT(dl != nullptr);
 

@@ -119,7 +119,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, unsigned int idDrawinL
 						   unsigned int &currentElementIndex, std::vector<VertexC> &vertexBufferData, std::vector<GLuint> &indexBufferData) {
 
 	for (const t & obj : objects) {
-		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_layerRef);
 		Q_ASSERT(dl != nullptr);
 
 		// Skip all block objects. They are added as part of inserts.

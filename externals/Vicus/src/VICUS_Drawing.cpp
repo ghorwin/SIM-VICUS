@@ -1432,6 +1432,7 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries() const {
 const Drawing::AbstractDrawingObject *Drawing::objectByID(unsigned int id) const {
 	FUNCID(Drawing::objectByID);
 
+	Q_ASSERT(m_objectPtr.find(id) != m_objectPtr.end());
 	AbstractDrawingObject *obj = m_objectPtr.at(id);
 	if (obj == nullptr)
 		throw IBK::Exception(IBK::FormatString("Drawing Object with ID #%1 not found").arg(id), FUNC_ID);
@@ -1471,42 +1472,42 @@ void Drawing::updatePointer(){
 	try {
 
 		for (unsigned int i=0; i < m_points.size(); ++i){
-			m_points[i].m_parentLayer = layerRefs.at(m_points[i].m_layerName);
+			m_points[i].m_layerRef = layerRefs.at(m_points[i].m_layerName);
 			m_points[i].m_block = findBlockPointer(m_points[i].m_blockName, blockRefs);
 			m_objectPtr[m_points[i].m_id] = &m_points[i];
 		}
 		for (unsigned int i=0; i < m_lines.size(); ++i){
-			m_lines[i].m_parentLayer = layerRefs.at(m_lines[i].m_layerName);
+			m_lines[i].m_layerRef = layerRefs.at(m_lines[i].m_layerName);
 			m_lines[i].m_block = findBlockPointer(m_lines[i].m_blockName, blockRefs);
 			m_objectPtr[m_lines[i].m_id] = &m_lines[i];
 		}
 		for (unsigned int i=0; i < m_polylines.size(); ++i){
-			m_polylines[i].m_parentLayer = layerRefs.at(m_polylines[i].m_layerName);
+			m_polylines[i].m_layerRef = layerRefs.at(m_polylines[i].m_layerName);
 			m_polylines[i].m_block = findBlockPointer(m_polylines[i].m_blockName, blockRefs);
 			m_objectPtr[m_polylines[i].m_id] = &m_polylines[i];
 		}
 		for (unsigned int i=0; i < m_circles.size(); ++i){
-			m_circles[i].m_parentLayer = layerRefs.at(m_circles[i].m_layerName);
+			m_circles[i].m_layerRef = layerRefs.at(m_circles[i].m_layerName);
 			m_circles[i].m_block = findBlockPointer(m_circles[i].m_blockName, blockRefs);
 			m_objectPtr[m_circles[i].m_id] = &m_circles[i];
 		}
 		for (unsigned int i=0; i < m_arcs.size(); ++i){
-			m_arcs[i].m_parentLayer = layerRefs.at(m_arcs[i].m_layerName);
+			m_arcs[i].m_layerRef = layerRefs.at(m_arcs[i].m_layerName);
 			m_arcs[i].m_block = findBlockPointer(m_arcs[i].m_blockName, blockRefs);
 			m_objectPtr[m_arcs[i].m_id] = &m_arcs[i];
 		}
 		for (unsigned int i=0; i < m_ellipses.size(); ++i){
-			m_ellipses[i].m_parentLayer = layerRefs.at(m_ellipses[i].m_layerName);
+			m_ellipses[i].m_layerRef = layerRefs.at(m_ellipses[i].m_layerName);
 			m_ellipses[i].m_block = findBlockPointer(m_ellipses[i].m_blockName, blockRefs);
 			m_objectPtr[m_ellipses[i].m_id] = &m_ellipses[i];
 		}
 		for (unsigned int i=0; i < m_solids.size(); ++i){
-			m_solids[i].m_parentLayer = layerRefs.at(m_solids[i].m_layerName);
+			m_solids[i].m_layerRef = layerRefs.at(m_solids[i].m_layerName);
 			m_solids[i].m_block = findBlockPointer(m_solids[i].m_blockName, blockRefs);
 			m_objectPtr[m_solids[i].m_id] = &m_solids[i];
 		}
 		for (unsigned int i=0; i < m_texts.size(); ++i){
-			m_texts[i].m_parentLayer = layerRefs.at(m_texts[i].m_layerName);
+			m_texts[i].m_layerRef = layerRefs.at(m_texts[i].m_layerName);
 			m_texts[i].m_block = findBlockPointer(m_texts[i].m_blockName, blockRefs);
 			m_objectPtr[m_texts[i].m_id] = &m_texts[i];
 		}
@@ -1518,7 +1519,7 @@ void Drawing::updatePointer(){
 			m_inserts[i].m_parentBlock = findBlockPointer(m_inserts[i].m_parentBlockName, blockRefs);
 		}
 		for (unsigned int i=0; i < m_linearDimensions.size(); ++i){
-			m_linearDimensions[i].m_parentLayer = layerRefs.at(m_linearDimensions[i].m_layerName);
+			m_linearDimensions[i].m_layerRef = layerRefs.at(m_linearDimensions[i].m_layerName);
 			m_texts[i].m_block = findBlockPointer(m_linearDimensions[i].m_blockName, blockRefs);
 			m_objectPtr[m_linearDimensions[i].m_id] = &m_linearDimensions[i];
 			for(unsigned int j = 0; j < m_dimensionStyles.size(); ++j) {
@@ -1659,6 +1660,7 @@ const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &Drawing::pickPoints(
 	FUNCID(Drawing::pickPoints);
 	try {
 		if (m_dirtyPickPoints) {
+			m_pickPoints.clear();
 			addPickPoints(m_points, *this, m_pickPoints);
 			addPickPoints(m_arcs, *this, m_pickPoints);
 			addPickPoints(m_circles, *this, m_pickPoints);
@@ -1711,6 +1713,7 @@ const IBKMK::Vector3D Drawing::localX() const {
 const IBKMK::Vector3D Drawing::localY() const {
 	return QVector2IBKVector(m_rotationMatrix.toQuaternion() * QVector3D(0,1,0));
 }
+
 
 const DrawingLayer * Drawing::layerPointer(const QString &layername){
 	for(unsigned int i = 0; i < m_drawingLayers.size(); ++i) {
@@ -1986,8 +1989,8 @@ const QColor & Drawing::AbstractDrawingObject::color() const{
 	/* If the object has a color, return it, else use color of parent */
 	if (m_color.isValid())
 		return m_color;
-	else if (m_parentLayer != nullptr) {
-		const DrawingLayer *layer = m_parentLayer;
+	else if (m_layerRef != nullptr) {
+		const DrawingLayer *layer = m_layerRef;
 		Q_ASSERT(layer != nullptr);
 		return layer->m_color;
 	}
@@ -2000,7 +2003,7 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 	// ToDo Stephan: Improve function
 
 	/*! if -1: use weight of layer */
-	const DrawingLayer *dl = m_parentLayer;
+	const DrawingLayer *dl = m_layerRef;
 
 	if (dl == nullptr)
 		return 0;

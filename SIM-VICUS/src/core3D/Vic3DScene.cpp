@@ -1890,7 +1890,7 @@ void Scene::generateNetworkGeometry() {
 }
 
 const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
-	const VICUS::DrawingLayer *layer = obj.m_parentLayer;
+	const VICUS::DrawingLayer *layer = obj.m_layerRef;
 
 	Q_ASSERT(layer != nullptr);
 	QColor color = obj.color().isValid() ? obj.color() : SVStyle::instance().m_defaultDrawingColor;
@@ -1918,7 +1918,7 @@ void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &
 		if (isBlockObject)
 			continue;
 
-		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_parentLayer);
+		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_layerRef);
 
 		if (dl == nullptr)
 			continue;
@@ -3001,7 +3001,7 @@ void Scene::pickDrawings(PickObject &pickObject,
 			const VICUS::Drawing::AbstractDrawingObject &object = *d.objectByID(it->first);
 
 			for (unsigned int j=0; j<points.size(); ++j) {
-				const IBKMK::Vector3D &v  = points[      j                       ];
+				const IBKMK::Vector3D &v  = points[j];
 				const IBKMK::Vector3D &vB = points[((int)j - 1) % points.size()];
 
 				double depth = 0., depth2 = 0., dist = 0., dist2 = 0., lineFactor;
@@ -3020,7 +3020,7 @@ void Scene::pickDrawings(PickObject &pickObject,
 						r.m_resultType = PickObject::RT_Object;
 						r.m_depth = depth2; // the depth to the point on the line-of-sight that is closest to the point
 						r.m_pickPoint = closestPoint2; // this
-						r.m_objectID = object.m_parentLayer->m_id;
+						r.m_objectID = object.m_layerRef->m_id;
 						r.m_drawingID = id;
 						pickObject.m_candidates.push_back(r);
 					}
@@ -3033,7 +3033,7 @@ void Scene::pickDrawings(PickObject &pickObject,
 					r.m_resultType = PickObject::RT_Object;
 					r.m_depth = depth; // the depth to the point on the line-of-sight that is closest to the point
 					r.m_pickPoint = closestPoint; // this
-					r.m_objectID = object.m_parentLayer->m_id;
+					r.m_objectID = object.m_layerRef->m_id;
 					r.m_drawingID = id;
 					pickObject.m_candidates.push_back(r);
 				}
