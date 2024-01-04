@@ -345,39 +345,43 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	// DXF Drawings
-	for (const VICUS::Drawing & d : prj.m_drawings) {
-		QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
-		drawing->setToolTip(0, tr("Double click to edit offset and scaling."));
-		m_ui->treeWidget->addTopLevelItem(drawing);
-		// TODO should drawing have name & id
-		QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
-		m_treeItemMap[d.m_id] = drawingItem;
-		//m_treeItemMap[d.m_id] = drawingItem;
-		drawing->addChild(drawingItem);
-		drawingItem->setData(0, SVNavigationTreeItemDelegate::NodeID, d.m_id);
-		drawingItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, d.m_visible);
-		drawingItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, d.m_selected);
-
-		// add child nodes for each edge in the network
-		for (const VICUS::DrawingLayer & l : d.m_drawingLayers) {
-			const QString &name = l.m_displayName;
-			QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
-			m_treeItemMap[l.m_id] = ln;
-			// first fill with dummy data
-			ln->setData(0, SVNavigationTreeItemDelegate::NodeID, l.m_id);
-			ln->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, l.m_visible);
-			ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, l.m_selected);
-			drawingItem->addChild(ln);
+	// missing file?
+	if (prj.m_drawings.empty()) {
+		IBK::Path absDrawFilePath = SVProjectHandler::instance().replacePathPlaceholders(prj.m_drawingFilePath);
+		if (absDrawFilePath.isValid() && !absDrawFilePath.exists()) {
+			QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << tr("Missing drawing file '%1'").arg(QString::fromStdString(absDrawFilePath.str())), QTreeWidgetItem::Type);
+			drawing->setData(0, SVNavigationTreeItemDelegate::MissingDrawingFile, QString::fromStdString(absDrawFilePath.str()));
+			drawing->setToolTip(0, tr("Double click to find missing file."));
+			m_ui->treeWidget->addTopLevelItem(drawing);
 		}
 	}
+	// actual drawings
+	else {
+		for (const VICUS::Drawing & d : prj.m_drawings) {
+			QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << "Drawing", QTreeWidgetItem::Type);
+			drawing->setToolTip(0, tr("Double click to edit offset and scaling."));
+			m_ui->treeWidget->addTopLevelItem(drawing);
+			// TODO should drawing have name & id
+			QTreeWidgetItem * drawingItem = new QTreeWidgetItem(QStringList() << d.m_displayName, QTreeWidgetItem::Type);
+			m_treeItemMap[d.m_id] = drawingItem;
+			//m_treeItemMap[d.m_id] = drawingItem;
+			drawing->addChild(drawingItem);
+			drawingItem->setData(0, SVNavigationTreeItemDelegate::NodeID, d.m_id);
+			drawingItem->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, d.m_visible);
+			drawingItem->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, d.m_selected);
 
-	if (prj.m_drawings.empty() && prj.m_drawingFilePath.isValid()) {
-		IBK::Path fileAbs = SVProjectHandler::instance().replacePathPlaceholders(prj.m_drawingFilePath);
-		QString file = QString::fromStdString(fileAbs.str());
-		QTreeWidgetItem * drawing = new QTreeWidgetItem(QStringList() << tr("Missing drawing file '%1'").arg(QString::fromStdString(fileAbs.str())), QTreeWidgetItem::Type);
-		drawing->setData(0, SVNavigationTreeItemDelegate::MissingDrawingFile, QString::fromStdString(fileAbs.str()));
-		drawing->setToolTip(0, tr("Double click to find missing file."));
-		m_ui->treeWidget->addTopLevelItem(drawing);
+			// add child nodes for each edge in the network
+			for (const VICUS::DrawingLayer & l : d.m_drawingLayers) {
+				const QString &name = l.m_displayName;
+				QTreeWidgetItem * ln = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);
+				m_treeItemMap[l.m_id] = ln;
+				// first fill with dummy data
+				ln->setData(0, SVNavigationTreeItemDelegate::NodeID, l.m_id);
+				ln->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, l.m_visible);
+				ln->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, l.m_selected);
+				drawingItem->addChild(ln);
+			}
+		}
 	}
 
 	// Dumb plain geometry

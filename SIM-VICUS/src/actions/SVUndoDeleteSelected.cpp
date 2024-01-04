@@ -234,14 +234,39 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 
 		VICUS::Drawing &draw = m_drawings[idxDraw];
 
+		// delete layers and collect their names
+		std::set<QString> deletedLayers;
 		for (unsigned int idxLayer=0; idxLayer<draw.m_drawingLayers.size();  ) {
 			VICUS::DrawingLayer drawLayer = draw.m_drawingLayers[idxLayer];
-			if (selectedUniqueIDs.find(drawLayer.m_id) != selectedUniqueIDs.end())
+			if (selectedUniqueIDs.find(drawLayer.m_id) != selectedUniqueIDs.end()) {
+				deletedLayers.insert(drawLayer.m_displayName);
 				draw.m_drawingLayers.erase( draw.m_drawingLayers.begin() + idxLayer );
+			}
 			else
 				++idxLayer;
 		}
 
+		// now also delete objects with according layer names
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_arcs);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_points);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_lines);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_polylines);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_circles);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_ellipses);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_solids);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_texts);
+		draw.eraseObjectsByLayer(deletedLayers, draw.m_linearDimensions);
+		for (unsigned int idx=0; idx<draw.m_blocks.size();  ) {
+			if (deletedLayers.find(draw.m_blocks[idx].m_name) != deletedLayers.end())
+				draw.m_blocks.erase( draw.m_blocks.begin() + idx );
+			else
+				++idx;
+		}
+
+		draw.updateParents();
+		draw.updatePlaneGeometries();
+
+		// an entire drawing?
 		if (selectedUniqueIDs.find(draw.m_id) != selectedUniqueIDs.end())
 			m_drawings.erase( m_drawings.begin() + idxDraw );
 		else
@@ -267,7 +292,7 @@ void SVUndoDeleteSelected::redo() {
 	prj.m_drawings.swap(m_drawings);
 
 	// rebuild pointer hierarchy
-	theProject().updatePointers();
+	prj.updatePointers();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);

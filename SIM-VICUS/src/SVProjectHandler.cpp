@@ -1261,7 +1261,11 @@ bool SVProjectHandler::write(QWidget *parent, const QString & fname, bool writeD
 
 		if (writeDrawingFile) {
 			IBK::Path drawingAbsFilePath = replacePathPlaceholders(m_project->m_drawingFilePath);
-			m_project->writeDrawingXML(drawingAbsFilePath);
+			// if we don't have a drawing (maybe it was deleted), then we delete the drawing file
+			if (m_project->m_drawings.empty())
+				IBK::Path::remove(drawingAbsFilePath);
+			else
+				m_project->writeDrawingXML(drawingAbsFilePath);
 		}
 
 		return true;
