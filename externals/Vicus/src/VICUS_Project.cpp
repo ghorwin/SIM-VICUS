@@ -792,9 +792,11 @@ void Project::updatePointers() {
 	}
 
 	for (VICUS::Drawing &d : m_drawings) {
+		d.m_id = nextUnusedID();
 		d.updateParents();
 		addAndCheckForUniqueness(&d);
 		for (VICUS::DrawingLayer &dl : d.m_drawingLayers) {
+			dl.m_id = nextUnusedID();
 			addAndCheckForUniqueness(&dl);
 		}
 	}
