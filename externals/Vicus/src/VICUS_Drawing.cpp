@@ -1588,7 +1588,7 @@ void generateObjectFromInsert(unsigned int &nextId, const Drawing::Block &block,
 	objects.insert(objects.end(), newObjects.begin(), newObjects.end());
 }
 
-void Drawing::transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId) {
+void Drawing::transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId) {
 
 	Q_ASSERT(insert.m_currentBlock != nullptr);
 	IBKMK::Vector2D insertPoint = insert.m_insertionPoint - insert.m_currentBlock->m_basePoint;
@@ -1602,7 +1602,7 @@ void Drawing::transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &i
 			continue;
 
 		if (insert.m_currentBlockName == i.m_parentBlock->m_name) {
-			transformInsert(trans, i, nextId);
+			transformInsert(trans, i, nextId); // we pass "trans" by value, to keep our own transformation untouched
 		}
 	}
 

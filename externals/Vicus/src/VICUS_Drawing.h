@@ -561,7 +561,7 @@ private:
 	const Block *blockPointer(const QString &name);
 
 	/*! Transforms all inserts. */
-	void transformInsert(QMatrix4x4 &trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId);
+	void transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId);
 
 	/*! Function to generate plane geometries from a line. */
 	bool generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
