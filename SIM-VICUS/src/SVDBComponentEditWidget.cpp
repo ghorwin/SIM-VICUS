@@ -441,16 +441,22 @@ void SVDBComponentEditWidget::updateLcaTable() {
 	m_ui->tableWidgetLca->setRowCount((int)con.m_materialLayers.size());
 	for(unsigned int i=0; i<con.m_materialLayers.size(); ++i) {
 		const VICUS::MaterialLayer &ml = con.m_materialLayers[i];
-		const VICUS::Material &mat = *m_db->m_materials[ml.m_idMaterial];
+		const VICUS::Material *mat = m_db->m_materials[ml.m_idMaterial];
 
-		QTableWidgetItem *item = new QTableWidgetItem(QtExt::MultiLangString2QString(mat.m_displayName));
-		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-		m_ui->tableWidgetLca->setItem((int)i, 0, item);
+		if(mat != nullptr) {
+			QTableWidgetItem *item = new QTableWidgetItem(QtExt::MultiLangString2QString(mat->m_displayName));
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+			m_ui->tableWidgetLca->setItem((int)i, 0, item);
 
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], VICUS::EpdDataset::C_CategoryA, 1, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB], VICUS::EpdDataset::C_CategoryB, 2, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryC], VICUS::EpdDataset::C_CategoryC, 3, i);
-		setEpdInTable(*m_db, m_ui->tableWidgetLca, mat.m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD], VICUS::EpdDataset::C_CategoryD, 4, i);
+			setEpdInTable(*m_db, m_ui->tableWidgetLca, mat->m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryA], VICUS::EpdDataset::C_CategoryA, 1, i);
+			setEpdInTable(*m_db, m_ui->tableWidgetLca, mat->m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryB], VICUS::EpdDataset::C_CategoryB, 2, i);
+			setEpdInTable(*m_db, m_ui->tableWidgetLca, mat->m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryC], VICUS::EpdDataset::C_CategoryC, 3, i);
+			setEpdInTable(*m_db, m_ui->tableWidgetLca, mat->m_epdCategorySet.m_idCategory[VICUS::EpdCategorySet::C_IDCategoryD], VICUS::EpdDataset::C_CategoryD, 4, i);
+		} else {
+			QTableWidgetItem *item = new QTableWidgetItem("<select material>");
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+			m_ui->tableWidgetLca->setItem((int)i, 0, item);
+		}
 	}
 }
 
