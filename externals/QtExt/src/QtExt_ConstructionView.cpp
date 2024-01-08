@@ -222,6 +222,8 @@ void ConstructionView::createSvg(QIODevice * outputDevice) {
 }
 
 void ConstructionView::mousePressEvent(QMouseEvent *event) {
+	if (m_isReadOnly)
+		return;
 	if(event->button() == Qt::LeftButton) {
 		QPointF pos = event->localPos();
 		QGraphicsItem* item = itemAt(pos.toPoint());
@@ -241,6 +243,8 @@ void ConstructionView::mousePressEvent(QMouseEvent *event) {
 }
 
 void ConstructionView::mouseDoubleClickEvent(QMouseEvent *event) {
+	if (m_isReadOnly)
+		return;
 	QPointF pos = event->localPos();
 	QGraphicsItem* item = itemAt(pos.toPoint());
 	QGraphicsRectItem* rectItem = dynamic_cast<QGraphicsRectItem*>(item);
@@ -297,6 +301,8 @@ void ConstructionView::sceneSelectionChanged() {
 }
 
 void ConstructionView::sceneDoubleClicked() {
+	if (m_isReadOnly)
+		return;
 	QList<QGraphicsItem *> items = m_diagramScene->selectedItems();
 	int index = -1;
 	if(items.size() == 1)

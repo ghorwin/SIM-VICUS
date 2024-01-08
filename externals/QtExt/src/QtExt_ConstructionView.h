@@ -118,6 +118,10 @@ public:
 		return m_inputData;
 	}
 
+	void setReadOnly(bool readOnly) {
+		m_isReadOnly = readOnly;
+	}
+
 	QString	m_leftSideLabel;
 	QString	m_rightSideLabel;
 
@@ -175,6 +179,8 @@ private:
 		See QtExt::ConstructionGraphicsScene for more information.
 	*/
 	int				m_visibleItems;
+
+	bool			m_isReadOnly = false;
 };
 
 } // namespace QtExt
