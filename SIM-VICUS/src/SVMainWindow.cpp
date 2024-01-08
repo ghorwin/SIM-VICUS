@@ -1261,32 +1261,6 @@ void SVMainWindow::on_actionEditApplicationLog_triggered() {
 }
 
 
-void SVMainWindow::on_actionBuildingFloorManager_triggered() {
-	m_geometryView->uncheckAllActionsInButtonBar();
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// turn off any special scene modes
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_propertyWidgetMode = SVViewState::PM_BuildingStructuralUnitProperties;
-	SVViewStateHandler::instance().setViewState(vs);
-
-	// adjust appearance of selector widget
-	SVViewStateHandler::instance().m_propertyWidget->setStructuralUnitPropertyType(ST_FloorManager);
-}
-
-
-void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// turn off any special scene modes
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
-	// adjust appearance of selector widget
-	SVViewStateHandler::instance().m_propertyWidget->setBuildingPropertyType(BT_SurfaceHeating);
-	SVViewStateHandler::instance().setViewState(vs);
-
-	m_geometryView->switch2BuildingParametrization();
-}
-
-
 void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
 	if (m_coSimCO2VentilationDialog == nullptr)
 		m_coSimCO2VentilationDialog = new SVCoSimCO2VentilationDialog(this);

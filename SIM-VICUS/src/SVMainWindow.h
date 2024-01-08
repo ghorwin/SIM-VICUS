@@ -339,9 +339,6 @@ private slots:
 	void on_actionDBRemoveDuplicates_triggered();
 
 
-	void on_actionBuildingFloorManager_triggered();
-	void on_actionBuildingSurfaceHeatings_triggered();
-
 	void on_actionToolsCCMeditor_triggered();
 
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
