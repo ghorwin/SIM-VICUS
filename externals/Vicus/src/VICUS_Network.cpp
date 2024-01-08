@@ -75,6 +75,8 @@ Network::Network() {
 	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_InitialFluidTemperature, 20);
 	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_ReferencePressure, 0);
 
+	// sets the default simultaneity function
+	setDefaultSimultaneity(m_simultaneity);
 }
 
 
@@ -251,6 +253,31 @@ void Network::setVisible(bool visible) {
 		edge.m_visible = visible;
 	for (NetworkNode &node: m_nodes)
 		node.m_visible = visible;
+}
+
+
+void Network::setDefaultSimultaneity(IBK::LinearSpline & simultaneity) {
+	simultaneity.clear();
+	// function according to Winter et al., Euroheat & Power 2001
+	double a = 0.449677646267461;
+	double b = 0.551234688;
+	double c = 53.84382392;
+	double d = 1.762743268;
+	unsigned int nmax = 300;
+	std::vector<double> num;
+	std::vector<double> sim;
+	unsigned int i = 1;
+	while (i<nmax) {
+		num.push_back(i);
+		sim.push_back( std::min(1.0, a + (b / (1 + std::pow(i/c, d))) ));
+		if (i<5)
+			i++;
+		else //if (i<50)
+			i+=5;
+//		else
+//			i+=10;
+	}
+	simultaneity.setValues(num, sim);
 }
 
 
@@ -649,24 +676,50 @@ FUNCID(Network::sizePipeDimensions);
 																   std::numeric_limits<double>::lowest(), true,
 																   std::numeric_limits<double>::max(), true, nullptr);
 		} catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, "Error in sizing pipes algorithm!", FUNC_ID);
+			throw IBK::Exception(ex, "Invalid parameters in pipes sizing algorithm!", FUNC_ID);
 		}
 	}
 
-	// set all edges heating demand = 0
-	for (NetworkEdge &edge: m_edges)
+	// check simultaneity
+	std::string errMsg;
+	m_simultaneity.makeSpline(errMsg);
+	if (!errMsg.empty())
+		throw IBK::Exception(IBK::FormatString("Invalid simultaneity function.\n%1").arg(errMsg), FUNC_ID);
+	for (unsigned int i=0; i<m_simultaneity.size(); ++i) {
+		if (m_simultaneity.x()[i] < 1)
+			errMsg += IBK::FormatString("\nx must be >=1 but is '%1', found in row %2").arg(m_simultaneity.x()[i]).arg(i).str();
+		if (m_simultaneity.y()[i] > 1 || m_simultaneity.y()[i] <= 0 )
+			errMsg += IBK::FormatString("\ny must  be 0 < y <= 1 but is '%1', found in row %2").arg(m_simultaneity.y()[i]).arg(i).str();
+		if (!errMsg.empty())
+			throw IBK::Exception(IBK::FormatString("Invalid simultaneity function.\n%1").arg(errMsg), FUNC_ID);
+	}
+
+	// init all edges
+	for (NetworkEdge &edge: m_edges) {
 		edge.m_nominalHeatingDemand = 0;
+		edge.m_numberDownStreamBuildings = 0;
+	}
 
 	// find shortest path for each building node to closest source node
 	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
 	findShortestPathForBuildings(shortestPaths);
 
+	// set number of connected buildings to each edge
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (NetworkEdge * edge: shortestPath) {
+			++edge->m_numberDownStreamBuildings;
+		}
+	}
+
 	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
 	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
 		NetworkNode *building = nodeById(it->first);			// get pointer to building node
 		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-		for (NetworkEdge * edge: shortestPath)
-			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value;
+		for (NetworkEdge * edge: shortestPath) {
+			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value
+											* m_simultaneity.value(edge->m_numberDownStreamBuildings); // interpolated simultaneity
+		}
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand

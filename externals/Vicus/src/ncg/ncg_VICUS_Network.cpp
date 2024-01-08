@@ -126,6 +126,17 @@ void Network::readXML(const TiXmlElement * element) {
 				m_scaleEdges = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "HasHeatExchangeWithGround")
 				m_hasHeatExchangeWithGround = NANDRAD::readPODElement<bool>(c, cName);
+			else if (cName == "IBK:LinearSpline") {
+				IBK::LinearSpline p;
+				std::string name;
+				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
+				bool success = false;
+				if (name == "Simultaneity") {
+					m_simultaneity = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else if (cName == "Type") {
 				try {
 					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
@@ -218,6 +229,8 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 	if (m_pipeModel != NUM_PM)
 		TiXmlElement::appendSingleAttributeElement(e, "PipeModel", nullptr, std::string(), KeywordList::Keyword("Network::PipeModel",  m_pipeModel));
+	if (!m_simultaneity.empty())
+		NANDRAD::writeLinearSplineElement(e, "Simultaneity", m_simultaneity, "-", "-");
 	return e;
 }
 
