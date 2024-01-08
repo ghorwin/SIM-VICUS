@@ -35,6 +35,9 @@ private:
 	const double					*m_maxValue = nullptr;
 	const SVColorMap				*m_colorMap = nullptr;
 
+	double							m_containerHeight = 600;
+	QPoint							m_containerBottomRight;
+
 	/*! Title string */
 	QString							m_title;
 

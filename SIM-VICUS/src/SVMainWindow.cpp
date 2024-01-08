@@ -931,7 +931,7 @@ void SVMainWindow::onImportPluginTriggered() {
 	bool success = importPlugin->import(this, projectText);
 
 	ProgressNotifyer *notifyer = new ProgressNotifyer;
-	notifyer->m_prgDlg = new QProgressDialog(tr("Read project"), QString(), 0, 100, this);
+	notifyer->m_prgDlg = new QProgressDialog(QString(), QString(), 0, 100, this);
 	notifyer->m_prgDlg->setWindowTitle(tr("Import project"));
 	notifyer->m_prgDlg->setMinimumDuration(0);
 	notifyer->notify(0);

@@ -11,9 +11,7 @@ SVColorLegend::SVColorLegend(QWidget *parent)
 {
 	setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint);
 
-	setWindowOpacity(0.75);
-
-	resize(100, 600);
+	setWindowOpacity(0.8);
 
 	SVViewStateHandler::instance().m_colorLegend = this;
 }
@@ -37,9 +35,10 @@ void SVColorLegend::setTitle(const QString &title) {
 }
 
 void SVColorLegend::setPosition(const double & height, const QPoint & position) {
-	resize(100, height*0.9);
-	double y = position.y() - 0.95*height;
-	move(position.x()-width(), int(y) );
+	m_containerHeight = height;
+	m_containerBottomRight = position;
+	resize(65, int(m_containerHeight * 0.9));
+	move(m_containerBottomRight.x() - width(), int(m_containerBottomRight.y() - 0.95*m_containerHeight) );
 }
 
 
@@ -116,5 +115,7 @@ void SVColorLegend::paintEvent(QPaintEvent * /*event*/) {
 	painter.drawText(-height(), offsetH+barWidth+maxLabelWidth+5, height(), titleWidth, flags, m_title);
 	painter.rotate(90);
 
-	setFixedWidth(offsetH+barWidth+maxLabelWidth+titleWidth+10);
+	setFixedWidth(offsetH + barWidth + maxLabelWidth + titleWidth + 10);
+
+	move(m_containerBottomRight.x() - width(), int(m_containerBottomRight.y() - 0.95*m_containerHeight) );
 }
