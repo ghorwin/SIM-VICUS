@@ -1511,9 +1511,6 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
 
-	m_ui->actionBuildingFloorManager->setEnabled(have_project);
-	m_ui->actionBuildingSurfaceHeatings->setEnabled(have_project);
-
 	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
