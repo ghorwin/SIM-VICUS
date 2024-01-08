@@ -233,6 +233,8 @@ public:
 	*/
 	unsigned int indexOfNode(unsigned int id) const;
 
+	/*! Sets a default function for simultaneity. */
+	static void setDefaultSimultaneity(IBK::LinearSpline &simultaneity);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -276,7 +278,8 @@ public:
 	/*! Defines which pipe model will be used for all edges, when transforming them to Nandrad */
 	PipeModel								m_pipeModel = PM_DynamicPipe;				// XML:E
 
-
+	/*! Simultaneity as function of number of buildings (consumers). This is used for pipe sizing algorithm. */
+	IBK::LinearSpline						m_simultaneity;								// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

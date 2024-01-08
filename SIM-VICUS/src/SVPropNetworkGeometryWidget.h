@@ -62,6 +62,8 @@ private slots:
 
 	void on_pushButtonSizePipeDimensions_clicked();
 
+	void on_pushButtonEditSimultaneity_clicked();
+
 private:
 	Ui::SVPropEditNetwork		* m_ui;
 

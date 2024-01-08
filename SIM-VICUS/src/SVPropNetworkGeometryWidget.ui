@@ -235,6 +235,13 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QPushButton" name="pushButtonEditSimultaneity">
+        <property name="text">
+         <string>edit simultaneity...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButtonSelectPipes">
         <property name="text">
          <string>select available pipes...</string>

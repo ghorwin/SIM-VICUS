@@ -121,6 +121,7 @@ SOURCES += \
 	../../src/SVLcaLccResultsWidget.cpp \
 	../../src/SVLcaLccSettingsWidget.cpp \
 	../../src/SVNetworkExportDialog.cpp \
+	../../src/SVNetworkSimultaneityDialog.cpp \
 	../../src/SVNonEquidistantSlider.cpp \
 	../../src/SVPluginLoader.cpp \
 	../../src/SVPluginManager.cpp \
@@ -357,6 +358,7 @@ HEADERS  += \
 	../../src/SVLcaLccResultsWidget.h \
 	../../src/SVLcaLccSettingsWidget.h \
 	../../src/SVNetworkExportDialog.h \
+	../../src/SVNetworkSimultaneityDialog.h \
 	../../src/SVNonEquidistantSlider.h \
 	../../src/SVPluginLoader.h \
 	../../src/SVPluginManager.h \
@@ -624,6 +626,7 @@ FORMS    += \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkExportDialog.ui \
 	../../src/SVNetworkImportDialog.ui \
+	../../src/SVNetworkSimultaneityDialog.ui \
 	../../src/SVNonEquidistantSlider.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \

@@ -168,6 +168,8 @@ public:
 	/*! Used to map the edge to a soil model.*/
 	unsigned int										m_idSoil = INVALID_ID;
 
+	/*! Number of buildings connected to this edge downstream. Used for pipe sizing algorithm. */
+	unsigned int										m_numberDownStreamBuildings = 0;
 
 private:
 
