@@ -39,7 +39,6 @@
 #include "SVPropBuildingZoneTemplatesWidget.h"
 #include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "SVPropBuildingZoneProperty.h"
-#include "SVPropFloorManagerWidget.h"
 #include "SVPropSupplySystemsWidget.h"
 #include "SVMainWindow.h"
 #include "SVPreferencesDialog.h"
@@ -63,8 +62,6 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->toolBox->addPage(tr("Zone templates"), new SVPropBuildingZoneTemplatesWidget(this));
 	m_ui->toolBox->addPage(tr("Surface heating"), new SVPropBuildingSurfaceHeatingWidget(this));
 	m_ui->toolBox->addPage(tr("Supply Systems"), new SVPropSupplySystemsWidget(this));
-	m_ui->toolBox->addPage(tr("Room properties"), new SVPropBuildingZoneProperty(this));
-	m_ui->toolBox->addPage(tr("Building levels"), new SVPropFloorManagerWidget(this));
 
 	m_ui->toolBox->blockSignals(false);
 	m_ui->toolBox->setCurrentIndex(BT_Components);
@@ -117,7 +114,6 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 
 		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
 			dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(false);
-			dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -158,8 +154,6 @@ void SVPropBuildingEditWidget::onCurrentBuildingPropertyTypeChanged(int property
 		case BT_ZoneTemplates			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 		case BT_SurfaceHeating			: vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
 		case BT_SupplySystems			: vs.m_objectColorMode = SVViewState::OCM_SupplySystems; break;
-		case BT_ZoneProperty			: vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
-		case BT_FloorManager			: vs.m_objectColorMode = SVViewState::OCM_None; break;
 	}
 	SVViewStateHandler::instance().setViewState(vs);
 }
@@ -191,8 +185,5 @@ void SVPropBuildingEditWidget::updateUi(bool onlyNodeStateModified) {
 	dynamic_cast<SVPropBuildingZoneTemplatesWidget*>(m_ui->toolBox->widget(BT_ZoneTemplates))->updateUi();
 	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(m_ui->toolBox->widget(BT_SurfaceHeating))->updateUi(onlyNodeStateModified);
 	dynamic_cast<SVPropSupplySystemsWidget*>(m_ui->toolBox->widget(BT_SupplySystems))->updateUi();
-	dynamic_cast<SVPropBuildingZoneProperty*>(m_ui->toolBox->widget(BT_ZoneProperty))->updateUi();
-
-	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 

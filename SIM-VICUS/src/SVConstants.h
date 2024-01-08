@@ -101,11 +101,7 @@ enum BuildingPropertyType {
 	/*! Surface heating */
 	BT_SurfaceHeating,
 	/*! Supply Systems */
-	BT_SupplySystems,
-	/*! Zone property */
-	BT_ZoneProperty,
-	/*! Floor manager. */
-	BT_FloorManager,
+	BT_SupplySystems
 };
 
 /*! Structural unit property modes. */

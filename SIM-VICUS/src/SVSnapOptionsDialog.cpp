@@ -17,7 +17,7 @@ SVSnapOptionsDialog::SVSnapOptionsDialog(QWidget *parent) :
 	m_ui->widgetSnapDistance->setContentsMargins(0,0,0,0);
 	m_ui->widgetSnapDistance->layout()->setSpacing(1);
 	adjustSize();
-	setWindowOpacity(0.75);
+	setWindowOpacity(0.8);
 
 	m_ui->lineEditSnapDistance->setup(1e-3, 10, tr("Snapping distance threshold in m"));
 

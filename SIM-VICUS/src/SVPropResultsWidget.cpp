@@ -1091,5 +1091,10 @@ void SVPropResultsWidget::clearUi() {
 	m_ui->tableWidgetAvailableResults->clearContents();
 	m_ui->tableWidgetAvailableResults->setRowCount(0);
 	m_ui->tableWidgetAvailableResults->blockSignals(false);
+
+	m_currentMin = 0;
+	m_currentMax = 1;
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle("");
+	SVViewStateHandler::instance().m_geometryView->colorLegend()->updateUi();
 }
 

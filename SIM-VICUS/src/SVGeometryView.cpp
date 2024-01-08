@@ -119,6 +119,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	m_ui->actionAcousticParametrization->setIcon(QIcon::fromTheme("properties_acoustic"));
 	m_ui->actionBuildingParametrization->setIcon(QIcon::fromTheme("properties_buildings"));
+	m_ui->actionStructuralUnits->setIcon(QIcon::fromTheme("structure_units"));
 	m_ui->actionNetworkParametrization->setIcon(QIcon::fromTheme("properties_network"));
 	m_ui->actionSiteParametrization->setIcon(QIcon::fromTheme("grid_edit"));
 	m_ui->actionAddGeometry->setIcon(QIcon::fromTheme("geometry_add"));
@@ -347,18 +348,12 @@ SVColorLegend * SVGeometryView::colorLegend() {
 void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 
-	// toggle network buttons based on wether we have networks in the project
-	if (modType == SVProjectHandler::AllModified ||
-		modType == SVProjectHandler::NetworkDataChanged ||
-		modType == SVProjectHandler::NetworkGeometryChanged) {
-		const VICUS::Project &p = project();
-		m_ui->actionNetworkParametrization->setEnabled(!p.m_geometricNetworks.empty());
-	}
-
 	switch (modType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
-		case SVProjectHandler::NodeStateModified: {
+		case SVProjectHandler::NodeStateModified:
+		case SVProjectHandler::NetworkDataChanged:
+		case SVProjectHandler::NetworkGeometryChanged: {
 			// update our selection lists
 			std::set<const VICUS::Object*> sel;
 
@@ -401,6 +396,13 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 			m_ui->actionScaleGeometry->setEnabled(haveSurfaceOrDrawing);
 			m_ui->actionAlignGeometry->setEnabled(haveSurfaceOrDrawing);
 			m_ui->actionCopyGeometry->setEnabled(haveSurfaceOrDrawing || haveSubSurface || haveRoom || haveBuildingLevel || haveBuilding);
+
+			// enable state of actions
+			const VICUS::Project &p = project();
+			m_ui->actionNetworkParametrization->setEnabled(!p.m_geometricNetworks.empty());
+			m_ui->actionBuildingParametrization->setEnabled(!p.m_buildings.empty());
+			m_ui->actionAcousticParametrization->setEnabled(!p.m_buildings.empty());
+			m_ui->actionStructuralUnits->setEnabled(!p.m_buildings.empty());
 		} break;
 
 		default:;
@@ -410,9 +412,6 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	m_ui->actionSnap->blockSignals(true);
-	m_ui->actionSnap->setChecked(vs.m_snapEnabled);
-	m_ui->actionSnap->blockSignals(false);
 
 	m_ui->actionMeasure->blockSignals(true);
 	bool state = vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance;
@@ -449,13 +448,27 @@ void SVGeometryView::onViewStateChanged() {
 							  vs.m_propertyWidgetMode == SVViewState::PM_AddGeometry ||
 							  vs.m_propertyWidgetMode == SVViewState::PM_VertexList ||
 							  vs.m_propertyWidgetMode == SVViewState::PM_BuildingProperties ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_BuildingAcousticProperties ||
+							  vs.m_propertyWidgetMode == SVViewState::PM_BuildingStructuralUnitProperties ||
 							  vs.m_propertyWidgetMode == SVViewState::PM_NetworkProperties ;
 	m_ui->geometryToolBar->setEnabled(geometryModeActive);
 	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
+	// if not in geometry mode: also uncheck snap and hide snap options
+	m_ui->actionSnap->blockSignals(true);
+	if (!geometryModeActive) {
+		m_ui->actionSnap->setChecked(false);
+		m_snapOptionsDialog->setVisible(false);
+	}
+	else {
+		m_ui->actionSnap->setChecked(vs.m_snapEnabled);
+		m_snapOptionsDialog->setVisible(vs.m_snapEnabled);
+	}
+	m_ui->actionSnap->blockSignals(false);
+
+
 	// the local coordinate system is always enabled, except in mode AddSubSurfaceGeometry
 	bool localCoordinateSystemEnabled = vs.m_propertyWidgetMode != SVViewState::PM_AddSubSurfaceGeometry;
-
 
 	if (localCoordinateSystemEnabled) {
 		m_actionlocalCoordinateSystemCoordinates->setEnabled(true);
@@ -486,9 +499,6 @@ void SVGeometryView::onViewStateChanged() {
 
 	// show color legend
 	m_colorLegend->setVisible(vs.m_propertyWidgetMode == SVViewState::PM_ResultsProperties);
-
-	// show snap options dialog
-	m_snapOptionsDialog->setVisible(vs.m_snapEnabled);
 }
 
 
