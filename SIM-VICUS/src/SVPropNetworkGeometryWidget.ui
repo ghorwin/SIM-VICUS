@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>349</width>
-    <height>825</height>
+    <height>830</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -135,7 +135,7 @@
       <item>
        <widget class="QPushButton" name="pushButtonSelectFluid">
         <property name="text">
-         <string>select fluid...</string>
+         <string>Select fluid...</string>
         </property>
        </widget>
       </item>
@@ -157,28 +157,28 @@
       <item>
        <widget class="QPushButton" name="pushButtonConnectBuildings">
         <property name="text">
-         <string>connect sub stations</string>
+         <string>Connect sub stations</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonGenerateIntersections">
         <property name="text">
-         <string>generate intersections</string>
+         <string>Generate intersections</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonReduceDeadEnds">
         <property name="text">
-         <string>reduce dead ends</string>
+         <string>Reduce dead ends</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonReduceRedundantNodes">
         <property name="text">
-         <string>reduce redundant nodes</string>
+         <string>Reduce redundant nodes</string>
         </property>
        </widget>
       </item>
@@ -194,13 +194,13 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>remove short edges</string>
+      <string>Remove short edges</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLabel" name="label_24">
         <property name="text">
-         <string>threshold:</string>
+         <string>Threshold:</string>
         </property>
        </widget>
       </item>
@@ -221,7 +221,7 @@
       <item>
        <widget class="QPushButton" name="pushButtonRemoveSmallEdge">
         <property name="text">
-         <string>remove short edges</string>
+         <string>Remove short edges</string>
         </property>
        </widget>
       </item>
@@ -237,14 +237,14 @@
       <item>
        <widget class="QPushButton" name="pushButtonEditSimultaneity">
         <property name="text">
-         <string>edit simultaneity...</string>
+         <string>Edit simultaneity...</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonSelectPipes">
         <property name="text">
-         <string>select available pipes...</string>
+         <string>Select available pipes...</string>
         </property>
        </widget>
       </item>
@@ -297,7 +297,7 @@
       <item>
        <widget class="QPushButton" name="pushButtonSizePipeDimensions">
         <property name="text">
-         <string>run sizing algorithm</string>
+         <string>Run sizing algorithm</string>
         </property>
        </widget>
       </item>
