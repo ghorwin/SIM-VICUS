@@ -81,7 +81,9 @@
         <file>icons/light/svg/properties_acoustic.svg</file>
         <file>icons/light/svg/surface_info.svg</file>
         <file>icons/light/svg/properties_network.svg</file>
-        <file>icons/dark/svg/surface_info - Kopie.svg</file>
         <file>icons/dark/svg/properties_buildings.svg</file>
+        <file>icons/dark/svg/structure_units.svg</file>
+        <file>icons/light/svg/structure_units.svg</file>
+        <file>icons/dark/svg/properties_thermal.svg</file>
     </qresource>
 </RCC>
