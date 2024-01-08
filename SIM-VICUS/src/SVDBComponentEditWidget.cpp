@@ -118,6 +118,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditSpecularity->setText("");
 		m_ui->pushButtonColor->setColor(Qt::black);
 
+		m_ui->graphicsViewConstruction->clear();
+
 		return;
 	}
 	// re-enable all controls
