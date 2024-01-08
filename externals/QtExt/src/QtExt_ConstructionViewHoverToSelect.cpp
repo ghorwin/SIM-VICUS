@@ -8,11 +8,12 @@ namespace QtExt {
 ConstructionViewHoverToSelect::ConstructionViewHoverToSelect(QWidget *parent):
 	ConstructionView(parent)
 {
+	ConstructionView::setReadOnly(true);
 }
 
 void ConstructionViewHoverToSelect::updateEditIcon() {
 
-	if (m_inputData.isEmpty() && m_diagramScene!=nullptr) {
+	if (m_inputData.isEmpty() && m_diagramScene!=nullptr && isEnabled()) {
 		// set scene rect and get size
 		int w = width();
 		int h = height();
@@ -34,14 +35,14 @@ void ConstructionViewHoverToSelect::mouseReleaseEvent(QMouseEvent * event) {
 
 
 void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
-	if (m_diagramScene==nullptr)
+	if (m_diagramScene == nullptr || !isEnabled())
 		return;
 
 	QColor col1;
 	if (m_isReadOnly)
-		col1 = QColor("#727571");
+		col1 = QColor("#727571"); // grey
 	else
-		col1 = QColor("#4a8522");
+		col1 = QColor("#4a8522"); // green
 
 	// Create a gradient
 	QRectF sceneRect = m_diagramScene->sceneRect();
@@ -71,7 +72,7 @@ void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
 
 
 void ConstructionViewHoverToSelect::leaveEvent(QEvent * event) {
-	if (m_diagramScene==nullptr)
+	if (m_diagramScene == nullptr || !isEnabled())
 		return;
 	if (!m_isReadOnly && m_iconItem->scene()!=nullptr)
 		m_diagramScene->removeItem(m_iconItem);
