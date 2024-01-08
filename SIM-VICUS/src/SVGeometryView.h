@@ -169,8 +169,6 @@ private slots:
 
 	void on_actionStructuralUnits_triggered();
 
-	void on_actionSnap_enabledChanged(bool enabled);
-
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
 		without changing scene size (by moving left splitter).
