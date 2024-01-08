@@ -34,8 +34,6 @@
 #include <SVConstants.h>
 #include "SVSettings.h"
 #include "SVDBNetworkFluidTableModel.h"
-#include "SVDatabaseEditDialog.h"
-#include "SVMainWindow.h"
 #include "SVStyle.h"
 
 #include <VICUS_KeywordList.h>
