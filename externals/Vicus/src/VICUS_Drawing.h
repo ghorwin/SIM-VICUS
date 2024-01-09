@@ -488,7 +488,7 @@ public:
 	const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &pickPoints() const;
 
 	/*! Generates 3D Points from 2D points by applying transformation from drawing. */
-	const std::vector<IBKMK::Vector3D> points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition, const QMatrix4x4 &trans = QMatrix4x4()) const;
+	const std::vector<IBKMK::Vector3D> points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition) const;
 
 	/*! Returns the normal vector of the drawing. */
 	const IBKMK::Vector3D normal() const;
@@ -565,22 +565,18 @@ private:
 
 	/*! Function to generate plane geometries from a line. */
 	bool generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint,
-							   double width, VICUS::PlaneGeometry &plane,
-							   const QMatrix4x4 &trans) const;
+							   double width, VICUS::PlaneGeometry &plane) const;
 
 	/*! Function to generate plane geometries from a polyline. */
 	bool generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> & polyline,
-									bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
-									const QMatrix4x4 &trans) const;
+									bool connectEndStart, double width, std::vector<PlaneGeometry> &planes) const;
 
 	/*! Function to generate plane geometries from text. Heavy operation. Text is polygonised by QPainterPath with font-size 1
 		in order to get a rough letter and less polygons. Some dxfs contain a lot of text and so we would end in having too many
 		polygons.
 	*/
 	void generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment, const double &rotationAngle,
-								const IBKMK::Vector2D &basePoint, double zPositon,
-								std::vector<VICUS::PlaneGeometry> &planeGeometries,
-								const QMatrix4x4 &trans) const;
+								const IBKMK::Vector2D &basePoint, double zPositon, std::vector<PlaneGeometry> & planeGeometries) const;
 
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.

@@ -1044,7 +1044,7 @@ void drawingBoundingBox(const VICUS::Drawing &d,
 		if (!dl->m_visible)
 			continue;
 
-		const std::vector<IBKMK::Vector3D> &points = d.points3D(drawObj.points2D(), drawObj.m_zPosition, drawObj.m_trans);
+		const std::vector<IBKMK::Vector3D> &points = d.points3D(drawObj.points2D(), drawObj.m_zPosition);
 
 		for (const IBKMK::Vector3D &v : points) {
 
@@ -1186,7 +1186,7 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Drawing *> & drawings,
 	FUNCID(Project::boundingBox);
 
 	// store selected surfaces
-	if ( surfaces.empty() && subsurfaces.empty())
+	if ( surfaces.empty() && subsurfaces.empty() && drawings.empty())
 		return IBKMK::Vector3D (0.,0.,0.);
 
 	IBKMK::Vector3D upperValues, lowerValues;
@@ -1254,7 +1254,6 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Drawing *> & drawings,
 		}
 	}
 	for (const VICUS::Drawing *d : drawings ) {
-
 		drawingBoundingBox<VICUS::Drawing::Arc>(*d, d->m_arcs, upperValues, lowerValues);
 		drawingBoundingBox<VICUS::Drawing::Circle>(*d, d->m_circles, upperValues, lowerValues);
 		drawingBoundingBox<VICUS::Drawing::Ellipse>(*d, d->m_ellipses, upperValues, lowerValues);

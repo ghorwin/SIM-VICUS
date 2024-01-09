@@ -139,7 +139,7 @@ const std::vector<PlaneGeometry> &Drawing::Text::planeGeometries() const {
 			m_planeGeometries.clear();
 
 			drawing()->generatePlanesFromText(m_text.toStdString(), m_height, m_alignment, m_rotationAngle, m_basePoint,
-											  m_zPosition * Z_MULTIPLYER, m_planeGeometries, m_trans);
+											  m_zPosition * Z_MULTIPLYER, m_planeGeometries);
 
 			m_dirtyTriangulation = false;
 		}
@@ -273,7 +273,7 @@ const std::vector<PlaneGeometry> &Drawing::Solid::planeGeometries() const {
 			points2D[0] = IBKMK::Vector2D(drawing->m_scalingFactor * m_point4.m_x,
 										  drawing->m_scalingFactor * m_point4.m_y);
 
-			const std::vector<IBKMK::Vector3D> &verts = drawing->points3D(points2D, m_zPosition, m_trans);
+			const std::vector<IBKMK::Vector3D> &verts = drawing->points3D(points2D, m_zPosition);
 			m_planeGeometries.push_back(VICUS::PlaneGeometry(verts));
 
 			m_dirtyTriangulation = false;
@@ -462,7 +462,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		m_planeGeometries.push_back(PlaneGeometry());
 		bool success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
 													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-													  m_planeGeometries.back(), m_trans);
+													  m_planeGeometries.back());
 
 		if (!success)
 			return m_planeGeometries;
@@ -504,7 +504,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1Left), QVector2IBKVector(vec2Left),
 												 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												 m_planeGeometries.back(), m_trans);
+												 m_planeGeometries.back());
 
 		if (!success)
 			return m_planeGeometries;
@@ -542,7 +542,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1Right), QVector2IBKVector(vec2Right),
 												 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												 m_planeGeometries.back(), m_trans);
+												 m_planeGeometries.back());
 
 		if (!success)
 			return m_planeGeometries;
@@ -563,7 +563,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 		drawing->generatePlanesFromText(measurementText.toStdString(),
 										m_style->m_textHeight * m_style->m_globalScalingFactor * 2,
 										Qt::AlignHCenter, m_angle, m_textPoint,
-										m_zPosition * Z_MULTIPLYER, m_planeGeometries, m_trans);
+										m_zPosition * Z_MULTIPLYER, m_planeGeometries);
 
 		m_dirtyTriangulation = false;
 		m_dirtyPoints = false;
@@ -687,7 +687,7 @@ const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries() const {
 			IBKMK::Polygon3D po(VICUS::Polygon2D::T_Rectangle, pExt0, pExt2, pExt1);
 
 			for (const IBKMK::Vector3D &v3D : po.vertexes())
-				const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(m_trans * IBKVector2QVector(v3D));
+				const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(QMatrix4x4() * IBKVector2QVector(v3D));
 
 
 			m_planeGeometries.push_back(VICUS::PlaneGeometry(po));
@@ -802,7 +802,7 @@ const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries() const {
 		vec2 += IBKVector2QVector(drawing->m_origin);
 
 		bool success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
-													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane, m_trans);
+													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane);
 
 		if (!success)
 			IBK::IBK_Message(IBK::FormatString("Could not generate plane from line #%1").arg(m_id), IBK::MSG_WARNING);
@@ -953,7 +953,7 @@ const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries() const {
 
 			bool success = drawing->generatePlanesFromPolyline(circlePoints, true,
 															   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-															   m_planeGeometries, m_trans);
+															   m_planeGeometries);
 
 			if (!success)
 				return m_planeGeometries;
@@ -1102,7 +1102,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries() const {
 
 		bool success = drawing->generatePlanesFromPolyline(polylinePoints, m_endConnected,
 														   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-														   m_planeGeometries, m_trans);
+														   m_planeGeometries);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1246,7 +1246,7 @@ const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries() const {
 
 		bool success = drawing->generatePlanesFromPolyline(arcPoints, false,
 														   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-														   m_planeGeometries, m_trans);
+														   m_planeGeometries);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1417,7 +1417,7 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries() const {
 		bool connect = pickPoints[0] == pickPoints.back();
 		bool success = drawing->generatePlanesFromPolyline(ellipsePoints, connect,
 												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
-												  m_planeGeometries, m_trans);
+												  m_planeGeometries);
 
 		if (!success)
 			return m_planeGeometries;
@@ -1614,7 +1614,15 @@ void Drawing::transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &in
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_polylines, trans);
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_solids, trans);
 	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_texts, trans);
+	generateObjectFromInsert(nextId, *insert.m_currentBlock, m_linearDimensions, trans);
 }
+
+
+void transformPoint(IBKMK::Vector2D &vec, QMatrix4x4 &trans) {
+	IBKMK::Vector3D v3 = QVector2IBKVector(trans * QVector3D((float)vec.m_x, (float)vec.m_y, 0));
+	vec = v3.point2D();
+}
+
 
 void Drawing::generateInsertGeometries(unsigned int nextId) {
 	FUNCID(Drawing::generateInsertGeometries);
@@ -1630,6 +1638,73 @@ void Drawing::generateInsertGeometries(unsigned int nextId) {
 
 		QMatrix4x4 trans;
 		transformInsert(trans, insert, nextId);
+	}
+
+	// apply the transformation to each object and then reset it
+	for (Point &p: m_points) {
+		if (p.m_isInsertObject) {
+			transformPoint(p.m_point, p.m_trans);
+			p.m_trans = QMatrix4x4();
+		}
+	}
+	for (Arc &a: m_arcs) {
+		if (a.m_isInsertObject) {
+			transformPoint(a.m_center, a.m_trans);
+			a.m_trans = QMatrix4x4();
+		}
+	}
+	for (Circle &c: m_circles) {
+		if (c.m_isInsertObject) {
+			transformPoint(c.m_center, c.m_trans);
+			c.m_trans = QMatrix4x4();
+		}
+	}
+	for (Ellipse &e: m_ellipses) {
+		if (e.m_isInsertObject) {
+			transformPoint(e.m_center, e.m_trans);
+			e.m_trans = QMatrix4x4();
+		}
+	}
+	for (Line &l: m_lines) {
+		if (l.m_isInsertObject) {
+			transformPoint(l.m_point1, l.m_trans);
+			transformPoint(l.m_point2, l.m_trans);
+			l.m_trans = QMatrix4x4();
+		}
+	}
+	for (PolyLine &pl: m_polylines) {
+		if (pl.m_isInsertObject) {
+			for (IBKMK::Vector2D &v: pl.m_polyline) {
+				transformPoint(v, pl.m_trans);
+			}
+			pl.m_trans = QMatrix4x4();
+		}
+	}
+	for (Solid &s: m_solids) {
+		if (s.m_isInsertObject) {
+			transformPoint(s.m_point1, s.m_trans);
+			transformPoint(s.m_point2, s.m_trans);
+			transformPoint(s.m_point3, s.m_trans);
+			transformPoint(s.m_point4, s.m_trans);
+			s.m_trans = QMatrix4x4();
+		}
+	}
+	for (Text &t: m_texts) {
+		if (t.m_isInsertObject) {
+			transformPoint(t.m_basePoint, t.m_trans);
+			t.m_trans = QMatrix4x4();
+		}
+	}
+	for (LinearDimension &ld: m_linearDimensions) {
+		if (ld.m_isInsertObject) {
+			transformPoint(ld.m_point1, ld.m_trans);
+			transformPoint(ld.m_point2, ld.m_trans);
+			transformPoint(ld.m_dimensionPoint, ld.m_trans);
+			transformPoint(ld.m_leftPoint, ld.m_trans);
+			transformPoint(ld.m_rightPoint, ld.m_trans);
+			transformPoint(ld.m_textPoint, ld.m_trans);
+			ld.m_trans = QMatrix4x4();
+		}
 	}
 
 	updateParents();
@@ -1649,7 +1724,7 @@ void addPickPoints(const std::vector<t> &objects, const VICUS::Drawing &d, std::
 		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
 			continue;
 
-		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj.points2D(), obj.m_zPosition, obj.m_trans);
+		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj.points2D(), obj.m_zPosition);
 		verts[obj.m_id] = objVerts;
 	}
 }
@@ -1679,7 +1754,7 @@ const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &Drawing::pickPoints(
 }
 
 
-const std::vector<IBKMK::Vector3D> Drawing::points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition, const QMatrix4x4 &trans) const {
+const std::vector<IBKMK::Vector3D> Drawing::points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition) const {
 
 	std::vector<IBKMK::Vector3D> points3D(verts.size());
 
@@ -1692,9 +1767,6 @@ const std::vector<IBKMK::Vector3D> Drawing::points3D(const std::vector<IBKMK::Ve
 
 		QVector3D qV3D = m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
 		qV3D += IBKVector2QVector(m_origin);
-
-		// Apply block transformation from insert
-		qV3D = trans * qV3D;
 		points3D[i] = QVector2IBKVector(qV3D);
 	}
 
@@ -1731,8 +1803,7 @@ const Drawing::Block *Drawing::blockPointer(const QString &name){
 }
 
 
-bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint, double width, VICUS::PlaneGeometry &plane,
-									const QMatrix4x4 &trans) const {
+bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBKMK::Vector3D &endPoint, double width, VICUS::PlaneGeometry &plane) const {
 
 	// Calculate the line vector and its length
 	IBKMK::Vector3D lineVector = endPoint - startPoint;
@@ -1753,15 +1824,12 @@ bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBK
 	perpendicularVector.normalize();
 	perpendicularVector *= halfWidth;
 
-	IBKMK::Vector3D startPointTrans = QVector2IBKVector(trans * IBKVector2QVector(startPoint));
-	IBKMK::Vector3D endPointTrans = QVector2IBKVector(trans * IBKVector2QVector(endPoint));
-
 	// Create an array of 4 vertices to define the box
 	std::vector<IBKMK::Vector3D> lineVertices = {
-		startPointTrans - perpendicularVector,
-		endPointTrans - perpendicularVector,
-		endPointTrans + perpendicularVector,
-		startPointTrans + perpendicularVector,
+		startPoint - perpendicularVector,
+		endPoint - perpendicularVector,
+		endPoint + perpendicularVector,
+		startPoint + perpendicularVector,
 	};
 
 	// Call addPlane to create the box geometry twice so visible from both sides
@@ -1773,8 +1841,7 @@ bool Drawing::generatePlaneFromLine(const IBKMK::Vector3D &startPoint, const IBK
 
 
 bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &polyline,
-										 bool connectEndStart, double width, std::vector<PlaneGeometry> &planes,
-										 const QMatrix4x4 &trans) const {
+										 bool connectEndStart, double width, std::vector<PlaneGeometry> &planes) const {
 
 	// initialise values
 	IBKMK::Vector3D lineVector, previousVector, crossProduct, perpendicularVector;
@@ -1786,9 +1853,6 @@ bool Drawing::generatePlanesFromPolyline(const std::vector<IBKMK::Vector3D> &pol
 	if(polyline.size() < 2){
 		return false;
 	}
-
-	for (const IBKMK::Vector3D &v3D : polyline)
-		const_cast<IBKMK::Vector3D &>(v3D) = QVector2IBKVector(trans * IBKVector2QVector(v3D));
 
 	// initialise previousVector
 	previousVector = polyline[1] - polyline[0];
@@ -1891,8 +1955,7 @@ bool isClockwise(const QPolygonF& polygon) {
 
 void Drawing::generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment,
 									 const double &rotationAngle, const IBKMK::Vector2D &basePoint, double zPositon,
-									 std::vector<VICUS::PlaneGeometry> &planeGeometries,
-									 const QMatrix4x4 &trans) const {
+									 std::vector<VICUS::PlaneGeometry> &planeGeometries) const {
 
 	if (text.empty())
 		return;
@@ -1948,7 +2011,7 @@ void Drawing::generatePlanesFromText(const std::string &text, double textHeight,
 
 		IBKMK::Polygon3D poly3D;
 		try {
-			poly3D = IBKMK::Polygon3D (points3D(poly, zPositon, trans));
+			poly3D = IBKMK::Polygon3D (points3D(poly, zPositon));
 		} catch (IBK::Exception &) {
 			IBK::IBK_Message(IBK::FormatString("Could not render text '%1'. Skipping").arg(text), IBK::MSG_WARNING);
 			return;
