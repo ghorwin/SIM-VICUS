@@ -46,6 +46,8 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 
 	QIcon coord = QIcon::fromTheme("local_coordinate");
 	m_ui->labelCoordinateSystem->setPixmap(coord.pixmap(24));
+	QIcon dim = QIcon::fromTheme("dimensions");
+	m_ui->labelBoundingBox->setPixmap(coord.pixmap(24));
 	m_ui->toolButtonAlignCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_align"));
 	m_ui->toolButtonMoveCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_move"));
 	m_ui->toolButtonInformation->setIcon(QIcon::fromTheme("surface_info"));
