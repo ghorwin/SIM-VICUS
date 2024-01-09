@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ZoneControlThermostats>
+	<ZoneControlThermostat id="67500" displayName="DE: [DIN V 18599] Thermostat Sollwerte Büro |EN: [DIN V 18599] Thermostat Office" color="#ff2222">
+		<ControlValue>AirTemperature</ControlValue>
+		<ControllerType>Analog</ControllerType>
+		<IdHeatingSetpointSchedule>60003</IdHeatingSetpointSchedule>
+		<IdCoolingSetpointSchedule>60004</IdCoolingSetpointSchedule>
+		<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+	</ZoneControlThermostat>
+	<ZoneControlThermostat id="67519" displayName="DE: [DIN V 18599] Thermostat Sollwerte Lager, Technik, Archiv |EN: [DIN V 18599] Thermostat storage" color="#ff2222">
+		<ControlValue>AirTemperature</ControlValue>
+		<ControllerType>Analog</ControllerType>
+		<IdHeatingSetpointSchedule>60098</IdHeatingSetpointSchedule>
+		<IdCoolingSetpointSchedule>60099</IdCoolingSetpointSchedule>
+		<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+	</ZoneControlThermostat>
+	<ZoneControlThermostat id="67541" displayName="DE: [DIN V 18599] Thermostat Sollwerte Arztpraxen und therapeutische Praxen |EN: [DIN V 18599] Thermostat medical and therapeutic practices" color="#ff2222">
+		<ControlValue>AirTemperature</ControlValue>
+		<ControllerType>Analog</ControllerType>
+		<IdHeatingSetpointSchedule>60208</IdHeatingSetpointSchedule>
+		<IdCoolingSetpointSchedule>60209</IdCoolingSetpointSchedule>
+		<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+	</ZoneControlThermostat>
+</ZoneControlThermostats>

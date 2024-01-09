@@ -104,74 +104,74 @@
 				
 				
 				
-	<Component id="100" displayName="DE: [Teaser] Außenwandkonstruktion schwer bis 1948" color="#8F4314">
+	<Component id="100" displayName="DE: [Teaser] Außenwandkonstruktion schwer bis 1948" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20100</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="101" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1949 bis 1968" color="#8F4314">
+	<Component id="101" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1949 bis 1968" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20101</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="102" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1969 bis 1978" color="#8F4314">
+	<Component id="102" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1969 bis 1978" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20102</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="103" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1979 bis 1983" color="#8F4314">
+	<Component id="103" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1979 bis 1983" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20103</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="104" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1984 bis 1994" color="#8F4314">
+	<Component id="104" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1984 bis 1994" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20104</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="105" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1995 bis 2015" color="#8F4314">
+	<Component id="105" displayName="DE: [Teaser] Außenwandkonstruktion schwer 1995 bis 2015" color="#f5ff00">
 <Type>OutsideWall</Type>
 <IdConstruction>20105</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
 
-	<Component id="106" displayName="DE: [Teaser] Außenwandkonstruktion leicht bis 1948" color="#03A313">
+	<Component id="106" displayName="DE: [Teaser] Außenwandkonstruktion leicht bis 1948" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20106</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="107" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1949 bis 1968" color="#03A313">
+	<Component id="107" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1949 bis 1968" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20107</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="108" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1969 bis 1978" color="#03A313">
+	<Component id="108" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1969 bis 1978" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20108</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="109" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1979 bis 1983" color="#03A313">
+	<Component id="109" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1979 bis 1983" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20109</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="110" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1984 bis 1994" color="#03A313">
+	<Component id="110" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1984 bis 1994" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20110</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>
 <IdSideBBoundaryCondition>30007</IdSideBBoundaryCondition>
 </Component>
-	<Component id="111" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1995 bis 2005" color="#03A313">
+	<Component id="111" displayName="DE: [Teaser] Außenwandkonstruktion leicht 1995 bis 2005" color="#f5D40d">
 <Type>OutsideWall</Type>
 <IdConstruction>20111</IdConstruction>
 <IdSideABoundaryCondition>30005</IdSideABoundaryCondition>

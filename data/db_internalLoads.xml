@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<InternalLoads>
+	<InternalLoad id="65010" displayName="DE: [DIN V 18599] Personen Büro |EN: [DIN V 18599] Person office" color="#ff3333">
+		<Category>Person</Category>
+		<PersonCountMethod>AreaPerPerson</PersonCountMethod>
+		<IdOccupancySchedule>60000</IdOccupancySchedule>
+		<IdActivitySchedule>60300</IdActivitySchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="AreaPerPerson" unit="m2/Person">14</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65011" displayName="DE: [DIN V 18599] Elektrische Geräte Büro |EN: [DIN V 18599] Electric equipment office" color="#00cc33">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>PowerPerArea</PowerMethod>
+		<IdPowerManagementSchedule>60001</IdPowerManagementSchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="PowerPerArea" unit="W/m2">1.875</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65012" displayName="DE: [DIN V 18599] Licht Büro |EN: [DIN V 18599] Light office" color="#ffcc00">
+		<Category>Lighting</Category>
+		<PowerMethod>PowerPerArea</PowerMethod>
+		<IdPowerManagementSchedule>60002</IdPowerManagementSchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="PowerPerArea" unit="W/m2">9.303</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.2</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65069" displayName="DE: [DIN V 18599] Licht Lager, Technik, Archiv |EN: [DIN V 18599] Light storage" color="#ffcc00">
+		<Category>Lighting</Category>
+		<PowerMethod>PowerPerArea</PowerMethod>
+		<IdPowerManagementSchedule>60097</IdPowerManagementSchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="PowerPerArea" unit="W/m2">3.417</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.2</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65133" displayName="DE: [DIN V 18599] Personen Arztpraxen und therapeutische Praxen |EN: [DIN V 18599] Person medical and therapeutic practices" color="#ff3333">
+		<Category>Person</Category>
+		<PersonCountMethod>AreaPerPerson</PersonCountMethod>
+		<IdOccupancySchedule>60205</IdOccupancySchedule>
+		<IdActivitySchedule>60300</IdActivitySchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="AreaPerPerson" unit="m2/Person">12</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65134" displayName="DE: [DIN V 18599] Elektrische Geräte Arztpraxen und therapeutische Praxen |EN: [DIN V 18599] Electric equipment medical and therapeutic practices" color="#00cc33">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>PowerPerArea</PowerMethod>
+		<IdPowerManagementSchedule>60206</IdPowerManagementSchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="PowerPerArea" unit="W/m2">5</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="65135" displayName="DE: [DIN V 18599] Licht Arztpraxen und therapeutische Praxen |EN: [DIN V 18599] Light medical and therapeutic practices" color="#ffcc00">
+		<Category>Lighting</Category>
+		<PowerMethod>PowerPerArea</PowerMethod>
+		<IdPowerManagementSchedule>60207</IdPowerManagementSchedule>
+		<ActivateCO2Production>false</ActivateCO2Production>
+		<IBK:Parameter name="PowerPerArea" unit="W/m2">9.429</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.2</IBK:Parameter>
+	</InternalLoad>
+</InternalLoads>
