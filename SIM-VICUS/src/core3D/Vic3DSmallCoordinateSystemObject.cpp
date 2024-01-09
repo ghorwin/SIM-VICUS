@@ -130,8 +130,8 @@ void SmallCoordinateSystemObject::create(ShaderProgram * opaquePhongShaderProgra
 
 	// Note: the following geometrical objects are added a triangle strips with restart-indexes in between
 
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.05*sizeFactor, currentVertexIndex, currentElementIndex,
+//			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
