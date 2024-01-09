@@ -69,10 +69,6 @@
    </item>
   </layout>
   <action name="actionRemoveSelected">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-loeschen.svg</normaloff>:/gfx/icons8/icons8-loeschen.svg</iconset>
-   </property>
    <property name="text">
     <string>Remove (Del)</string>
    </property>
@@ -84,10 +80,6 @@
    </property>
   </action>
   <action name="actionShowSelected">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-idee-80.png</normaloff>:/gfx/icons8/icons8-idee-80.png</iconset>
-   </property>
    <property name="text">
     <string>Show selected objects</string>
    </property>
@@ -99,10 +91,6 @@
    </property>
   </action>
   <action name="actionHideSelected">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-keine-idee-80.png</normaloff>:/gfx/icons8/icons8-keine-idee-80.png</iconset>
-   </property>
    <property name="text">
     <string>Hides selected objects</string>
    </property>
@@ -114,10 +102,6 @@
    </property>
   </action>
   <action name="actionSelectAll">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</normaloff>:/gfx/icons8/icons8-checkbox-markiert-2-80.png</iconset>
-   </property>
    <property name="text">
     <string>Select all</string>
    </property>
@@ -129,10 +113,6 @@
    </property>
   </action>
   <action name="actionDeselectAll">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</normaloff>:/gfx/icons8/icons8-unausgefuellte-checkbox-80.png</iconset>
-   </property>
    <property name="text">
     <string>Deselect all</string>
    </property>
@@ -144,10 +124,6 @@
    </property>
   </action>
   <action name="actionSmartSelect">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-suche-80.png</normaloff>:/gfx/icons8/icons8-suche-80.png</iconset>
-   </property>
    <property name="text">
     <string>Smart select</string>
    </property>
@@ -159,10 +135,6 @@
    </property>
   </action>
   <action name="actionInvertSelection">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/gfx/icons8/icons8-umkehren-80.png</normaloff>:/gfx/icons8/icons8-umkehren-80.png</iconset>
-   </property>
    <property name="text">
     <string>Invert selection</string>
    </property>
