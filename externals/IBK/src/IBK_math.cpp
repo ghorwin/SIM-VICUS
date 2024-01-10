@@ -164,7 +164,7 @@ double error_function(double x) {
 
 void min_max_values(const std::vector<double> & vec, double & minVal, double & maxVal) {
 	minVal = std::numeric_limits<double>::max();
-	maxVal = 0;
+	maxVal = std::numeric_limits<double>::min();
 	for (unsigned int i=0; i<vec.size(); ++i) {
 		if (minVal > vec[i])
 			minVal = vec[i];
