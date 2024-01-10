@@ -143,7 +143,7 @@ public:
 		/* used to get correct lineWeight of entity */
 		double lineWeight() const;
 		/*! Indicates when triangulation has to be redone. */
-		void updateGeometry() {
+		void updatePlaneGeometry() {
 			m_dirtyTriangulation = true;
 		}
 
@@ -484,6 +484,8 @@ public:
 	/*! Generates all inserting geometries. */
 	void generateInsertGeometries(unsigned int nextId);
 
+	void updateAllGeometries();
+
 	/*! Returns 3D Pick points of drawing. */
 	const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &pickPoints() const;
 
@@ -546,6 +548,11 @@ public:
 	/*! list of inserts. */
 	std::vector<Insert>														m_inserts;
 
+	/*! Factor to be multiplied with line weight of objects. */
+	double																	m_lineWeightScaling = 0.001;
+	/*! Offset added to line weight of objects. */
+	double																	m_lineWeightOffset = 0.001;
+
 	/*! Counter of entities, used to create a drawing hierarchy
 		in a dxf file to avoid overlapping of entities */
 	unsigned int															m_zCounter = 0;
@@ -560,7 +567,9 @@ private:
 	/*! Helper function to assign the correct block to an entity */
 	const Block *blockPointer(const QString &name);
 
-	/*! Transforms all inserts. */
+	/*! Transforms all inserts.
+		Mind: Parameter 'trans' is passed by value here on purpose. This allows using the function recursively.
+	 */
 	void transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &insert, unsigned int &nextId);
 
 	/*! Function to generate plane geometries from a line. */
@@ -577,7 +586,6 @@ private:
 	*/
 	void generatePlanesFromText(const std::string &text, double textHeight, Qt::Alignment alignment, const double &rotationAngle,
 								const IBKMK::Vector2D &basePoint, double zPositon, std::vector<PlaneGeometry> & planeGeometries) const;
-
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().

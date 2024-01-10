@@ -23,11 +23,15 @@ bool SVDrawingPropertiesDialog::showDrawingProperties(QWidget *parent, VICUS::Dr
 	double yValueOld = drawing->m_origin.m_y;
 	double zValueOld = drawing->m_origin.m_z;
 
+	double lwScalingOld = 1000 * drawing->m_lineWeightScaling;
+
 	dlg.m_ui->lineEditScalingFactor->setText(QString("%1").arg(oldScalingFactor, 0, 'f', 3));
 
 	dlg.m_ui->lineEditX->setText(QString("%1").arg(xValueOld, 0, 'f', 3));
 	dlg.m_ui->lineEditY->setText(QString("%1").arg(yValueOld, 0, 'f', 3));
 	dlg.m_ui->lineEditZ->setText(QString("%1").arg(zValueOld, 0, 'f', 3));
+
+	dlg.m_ui->lineEditLineWeightScaling->setText(QString("%1").arg(lwScalingOld));
 
 	int res = dlg.exec();
 
@@ -48,5 +52,13 @@ bool SVDrawingPropertiesDialog::showDrawingProperties(QWidget *parent, VICUS::Dr
 	if (ok && zValueOld != newZValue)
 		drawing->m_origin.m_z = newZValue;
 
+	double newLineWeightScaling = dlg.m_ui->lineEditLineWeightScaling->text().toDouble(&ok) / 1000;
+	if (ok && lwScalingOld != newLineWeightScaling) {
+		drawing->m_lineWeightScaling = newLineWeightScaling;
+		drawing->updateAllGeometries();
+	}
+
 	return res == QDialog::Accepted;
 }
+
+

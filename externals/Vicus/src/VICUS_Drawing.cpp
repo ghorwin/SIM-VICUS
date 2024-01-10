@@ -461,7 +461,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 
 		m_planeGeometries.push_back(PlaneGeometry());
 		bool success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
-													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+													  drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 													  m_planeGeometries.back());
 
 		if (!success)
@@ -503,7 +503,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1Left), QVector2IBKVector(vec2Left),
-												 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+												 drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 												 m_planeGeometries.back());
 
 		if (!success)
@@ -541,7 +541,7 @@ const std::vector<PlaneGeometry> &Drawing::LinearDimension::planeGeometries() co
 
 		m_planeGeometries.push_back(PlaneGeometry());
 		success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1Right), QVector2IBKVector(vec2Right),
-												 DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+												 drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 												 m_planeGeometries.back());
 
 		if (!success)
@@ -671,8 +671,7 @@ const std::vector<PlaneGeometry> &Drawing::Point::planeGeometries() const {
 							  m_zPosition * Z_MULTIPLYER);
 
 			// scale Vector with selected unit
-
-			double pointWeight = (DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING) / 2;
+			double pointWeight = (drawing()->m_lineWeightOffset + lineWeight() * drawing()->m_lineWeightScaling) / 2;
 
 			// rotation
 			QVector3D vec = drawing()->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
@@ -802,7 +801,8 @@ const std::vector<PlaneGeometry> &Drawing::Line::planeGeometries() const {
 		vec2 += IBKVector2QVector(drawing->m_origin);
 
 		bool success = drawing->generatePlaneFromLine(QVector2IBKVector(vec1), QVector2IBKVector(vec2),
-													  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING, plane);
+													  drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
+													  plane);
 
 		if (!success)
 			IBK::IBK_Message(IBK::FormatString("Could not generate plane from line #%1").arg(m_id), IBK::MSG_WARNING);
@@ -952,7 +952,7 @@ const std::vector<PlaneGeometry> &Drawing::Circle::planeGeometries() const {
 			}
 
 			bool success = drawing->generatePlanesFromPolyline(circlePoints, true,
-															   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+															   drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 															   m_planeGeometries);
 
 			if (!success)
@@ -1101,7 +1101,7 @@ const std::vector<PlaneGeometry> &Drawing::PolyLine::planeGeometries() const {
 		}
 
 		bool success = drawing->generatePlanesFromPolyline(polylinePoints, m_endConnected,
-														   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+														   drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 														   m_planeGeometries);
 
 		if (!success)
@@ -1245,7 +1245,7 @@ const std::vector<PlaneGeometry> &Drawing::Arc::planeGeometries() const {
 		}
 
 		bool success = drawing->generatePlanesFromPolyline(arcPoints, false,
-														   DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+														   drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 														   m_planeGeometries);
 
 		if (!success)
@@ -1416,7 +1416,7 @@ const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries() const {
 
 		bool connect = pickPoints[0] == pickPoints.back();
 		bool success = drawing->generatePlanesFromPolyline(ellipsePoints, connect,
-												  DEFAULT_LINE_WEIGHT + lineWeight() * DEFAULT_LINE_WEIGHT_SCALING,
+												  drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
 												  m_planeGeometries);
 
 		if (!success)
@@ -1544,7 +1544,7 @@ void Drawing::updatePointer(){
 template <typename t>
 void updateGeometry(std::vector<t> &objects) {
 	for (t &obj : objects )
-		obj.updateGeometry();
+		obj.updatePlaneGeometry();
 }
 
 
@@ -1708,6 +1708,26 @@ void Drawing::generateInsertGeometries(unsigned int nextId) {
 	}
 
 	updateParents();
+}
+
+
+template <typename T>
+void updateGeometryForAll(std::vector<T>& objects) {
+	for (T& obj : objects) {
+		obj.updatePlaneGeometry();
+	}
+}
+
+void Drawing::updateAllGeometries() {
+	updateGeometryForAll(m_points);
+	updateGeometryForAll(m_lines);
+	updateGeometryForAll(m_polylines);
+	updateGeometryForAll(m_circles);
+	updateGeometryForAll(m_ellipses);
+	updateGeometryForAll(m_arcs);
+	updateGeometryForAll(m_solids);
+	updateGeometryForAll(m_texts);
+	updateGeometryForAll(m_linearDimensions);
 }
 
 
@@ -2070,23 +2090,18 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 	if (dl == nullptr)
 		return 0;
 
-	// TODO: how to handle case where there is no parent layer
-	if (m_lineWeight < 0) {
-		if(dl == nullptr || dl->m_lineWeight < 0){
-			return 0;
-		}
-		else{
-			return dl->m_lineWeight;
-		}
-	}
-	/*! if -3: default lineWeight is used
-		if -2: lineWeight of block is used. Needs to be modified when blocks
-		are implemented
-	*/
-	else if (m_lineWeight == -3 || m_lineWeight == -2)
-		return 0;
+	if (m_lineWeight <= 0)
+		return dl->m_lineWeight;
 	else
 		return m_lineWeight;
+//	/*! if -3: default lineWeight is used
+//		if -2: lineWeight of block is used. Needs to be modified when blocks
+//		are implemented
+//	*/
+//	else if (m_lineWeight == -3 || m_lineWeight == -2)
+//		return 0;
+//	else
+//		return m_lineWeight;
 }
 
 
@@ -2370,6 +2385,8 @@ void Drawing::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "ScalingFactor")
 				m_scalingFactor = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "LineWeightScaling")
+				m_lineWeightScaling = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "Blocks") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -2559,9 +2576,9 @@ TiXmlElement * Drawing::writeXML(TiXmlElement * parent) const {
 	if (m_visible != Drawing().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), m_origin.toString(PRECISION));
-
 	m_rotationMatrix.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "ScalingFactor", nullptr, std::string(), IBK::val2string<double>(m_scalingFactor));
+	TiXmlElement::appendSingleAttributeElement(e, "LineWeightScaling", nullptr, std::string(), IBK::val2string<double>(m_lineWeightScaling));
 
 	if (!m_blocks.empty()) {
 		TiXmlElement * child = new TiXmlElement("Blocks");
