@@ -76,7 +76,7 @@ SVDBAcousticBoundaryConditionEditWidget::SVDBAcousticBoundaryConditionEditWidget
 	m_ui->tableWidgetResult->setRowCount(rowCount);
 
 	QStringList headerResult;
-	headerResult << tr("Frequency [Hz]") << tr("Result");
+	headerResult << tr("Frequency [Hz]") << tr("Absorption value [---]");
 	m_ui->tableWidgetResult->setHorizontalHeaderLabels(headerResult);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetResult);
 	m_ui->tableWidgetResult->horizontalHeader()->setStretchLastSection(true);
@@ -144,7 +144,7 @@ void SVDBAcousticBoundaryConditionEditWidget::updateInput(int id) {
 	m_current = bc;
 	m_ui->lineEditName->setString(bc->m_displayName);
 
-    int n = std::max<int>(0, bc->m_acousticSoundAbsorptionPartitions.size());
+	int n = std::max<int>(0, bc->m_acousticSoundAbsorptionPartitions.size());
 	m_ui->spinBoxLayerCount->setValue(n);
 	m_ui->lineEditName->setEnabled(!bc->m_builtIn);
 	m_ui->spinBoxLayerCount->setEnabled(!bc->m_builtIn);
@@ -194,9 +194,9 @@ void SVDBAcousticBoundaryConditionEditWidget::updateTable() {
 	m_ui->tableWidgetSoundAbsorptionLayers->blockSignals(true);
 	m_ui->tableWidgetSoundAbsorptionLayers->setRowCount(rowCount);
 
-    for (unsigned int i=0; i < rowCount; ++i) {
-        const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_acousticSoundAbsorptionPartitions[i];
-        const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
+	for (unsigned int i=0; i < rowCount; ++i) {
+		const VICUS::AcousticSoundAbsorptionPartition &layer = m_current->m_acousticSoundAbsorptionPartitions[i];
+		const VICUS::AcousticSoundAbsorption *soundAbs = m_db->m_acousticSoundAbsorptions[layer.m_idSoundAbsorption];
 
 		QTableWidgetItem *idItem;
 		QTableWidgetItem *nameItem;
@@ -289,17 +289,17 @@ void SVDBAcousticBoundaryConditionEditWidget::on_spinBoxLayerCount_valueChanged(
 
 	m_ui->tableWidgetSoundAbsorptionLayers->setRowCount(layerCount);
 	// only update, if number of layers has changed
-        if ((int)m_current->m_acousticSoundAbsorptionPartitions.size() != layerCount) {
+		if ((int)m_current->m_acousticSoundAbsorptionPartitions.size() != layerCount) {
 		// update content of table widget based on data in m_current
-            while (m_current->m_acousticSoundAbsorptionPartitions.size() < static_cast<unsigned int>(layerCount)) {
+			while (m_current->m_acousticSoundAbsorptionPartitions.size() < static_cast<unsigned int>(layerCount)) {
 			unsigned int defaultSoundAbsorptionId = 0;
 			if (!m_db->m_acousticSoundAbsorptions.empty())
 				defaultSoundAbsorptionId = m_db->m_acousticSoundAbsorptions.begin()->first;
 			VICUS::AcousticSoundAbsorptionPartition layer(0.1, defaultSoundAbsorptionId);
-                        m_current->m_acousticSoundAbsorptionPartitions.push_back(layer);
+						m_current->m_acousticSoundAbsorptionPartitions.push_back(layer);
 		}
 		// shrink vectors
-            m_current->m_acousticSoundAbsorptionPartitions.resize(layerCount);
+			m_current->m_acousticSoundAbsorptionPartitions.resize(layerCount);
 		modelModify();
 
 		updateTable();
@@ -318,7 +318,7 @@ void SVDBAcousticBoundaryConditionEditWidget::tableItemChanged(QTableWidgetItem 
 	int col = item->column();
 
 	unsigned int soundAbsLayerIdx = (unsigned int)row;
-        Q_ASSERT(soundAbsLayerIdx < m_current->m_acousticSoundAbsorptionPartitions.size());
+		Q_ASSERT(soundAbsLayerIdx < m_current->m_acousticSoundAbsorptionPartitions.size());
 	if (!ok || val < 0) {
 		if (!ok) {
 			QTableWidgetItem * item2 = m_ui->tableWidgetSoundAbsorptionLayers->item(row, col);
@@ -338,12 +338,12 @@ void SVDBAcousticBoundaryConditionEditWidget::tableItemChanged(QTableWidgetItem 
 		item2->setBackground(QBrush());
 	}
 	// we only accept changes up to 0.01  as different
-        if (!IBK::nearly_equal<4>(m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value, val)) {
-            m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value = val;
-        modelModify();
-    }
+		if (!IBK::nearly_equal<4>(m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value, val)) {
+			m_current->m_acousticSoundAbsorptionPartitions[soundAbsLayerIdx].m_para[VICUS::AcousticSoundAbsorptionPartition::P_AreaFraction].value = val;
+		modelModify();
+	}
 
-    updateTable();
+	updateTable();
 
 }
 
