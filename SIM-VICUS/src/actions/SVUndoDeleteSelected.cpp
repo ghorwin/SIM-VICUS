@@ -231,9 +231,16 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 
 	m_drawings = project().m_drawings;
 	for (unsigned int idxDraw=0; idxDraw<m_drawings.size();  ) {
-
 		VICUS::Drawing &draw = m_drawings[idxDraw];
+		// an entire drawing?
+		if (selectedUniqueIDs.find(draw.m_id) != selectedUniqueIDs.end())
+			m_drawings.erase( m_drawings.begin() + idxDraw );
+		else
+			++idxDraw;
+	}
 
+	for (unsigned int idxDraw=0; idxDraw<m_drawings.size(); ++idxDraw ) {
+		VICUS::Drawing &draw = m_drawings[idxDraw];
 		// delete layers and collect their names
 		std::set<QString> deletedLayers;
 		for (unsigned int idxLayer=0; idxLayer<draw.m_drawingLayers.size();  ) {
@@ -256,21 +263,6 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 		draw.eraseObjectsByLayer(deletedLayers, draw.m_solids);
 		draw.eraseObjectsByLayer(deletedLayers, draw.m_texts);
 		draw.eraseObjectsByLayer(deletedLayers, draw.m_linearDimensions);
-		for (unsigned int idx=0; idx<draw.m_blocks.size();  ) {
-			if (deletedLayers.find(draw.m_blocks[idx].m_name) != deletedLayers.end())
-				draw.m_blocks.erase( draw.m_blocks.begin() + idx );
-			else
-				++idx;
-		}
-
-		draw.updateParents();
-		draw.updatePlaneGeometries();
-
-		// an entire drawing?
-		if (selectedUniqueIDs.find(draw.m_id) != selectedUniqueIDs.end())
-			m_drawings.erase( m_drawings.begin() + idxDraw );
-		else
-			++idxDraw;
 	}
 
 }

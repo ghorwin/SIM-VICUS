@@ -1618,7 +1618,7 @@ void Drawing::transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &in
 }
 
 
-void transformPoint(IBKMK::Vector2D &vec, QMatrix4x4 &trans) {
+void transformPoint(IBKMK::Vector2D &vec, const QMatrix4x4 &trans) {
 	IBKMK::Vector3D v3 = QVector2IBKVector(trans * QVector3D((float)vec.m_x, (float)vec.m_y, 0));
 	vec = v3.point2D();
 }
