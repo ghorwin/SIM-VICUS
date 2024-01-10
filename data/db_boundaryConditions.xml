@@ -64,9 +64,17 @@
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
 	
-	<BoundaryCondition id="30008" displayName="DE: Innenbedingung (Erdbodenkontakt, konst. 10 °C) |EN: Inside condition (ground contact, const. 10 °C)" color="#603808">
+	<BoundaryCondition id="30008" displayName="DE: Innenbedingung (Kontakt zu unbeheiztem Keller, konst. 10 °C) |EN: Inside condition (contact to unheated cellar, const. 10 °C)" color="#603808">
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+			<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
+			<OtherZoneType>Constant</OtherZoneType>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	
+	<BoundaryCondition id="30009" displayName="DE: Außenbedingung (Erdbodenkontakt, konst. 10 °C) |EN: Outside condition (ground contact, const. 10 °C)" color="#603808">
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
 			<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
 			<OtherZoneType>Constant</OtherZoneType>
 		</InterfaceHeatConduction>
