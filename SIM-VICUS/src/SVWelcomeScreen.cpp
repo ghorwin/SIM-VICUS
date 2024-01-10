@@ -77,6 +77,15 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 
 	m_ui->labelLogo->setPixmap(QPixmap(":/logo/logo/logo.png"));
 
+	// labels need a fixed width to prevent shifting the layout during hovering (bold text is wider)
+	// we set the width dynamically here, as it depends on translation
+	m_ui->labelRecent->setActive(true);
+	QSize s1 = m_ui->labelRecent->sizeHint();
+	m_ui->labelRecent->setFixedWidth(s1.width());
+	m_ui->labelExample->setActive(true);
+	QSize s2 = m_ui->labelExample->sizeHint();
+	m_ui->labelExample->setFixedWidth(s2.width());
+
 	connect(m_ui->labelRecent, SIGNAL(clicked()), this, SLOT(on_labelRecentClicked()));
 	connect(m_ui->labelExample, SIGNAL(clicked()), this, SLOT(on_labelExampleClicked()));
 
@@ -455,9 +464,9 @@ void SVWelcomeScreen::on_labelExampleClicked() {
 void SVWelcomeScreen::onStyleChanged() {
 	// set colors of clickable labels
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
-		setLabelColors("#ff7e16");
+		setLabelColors("#eb9a2f");
 	else
-		setLabelColors("#003264");
+		setLabelColors("#eb9a2f");
 	updateWelcomePage(); // this also updates html colors
 	update();
 }
