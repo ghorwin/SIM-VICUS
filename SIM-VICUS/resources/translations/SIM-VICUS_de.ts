@@ -1426,25 +1426,25 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="298"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="371"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="369"/>
         <source>Air temperature</source>
         <translation>Lufttemperatur</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="299"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="372"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="370"/>
         <source>Operative temperature</source>
         <translation>Betriebstemperatur</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="300"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="373"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="371"/>
         <source>Analog</source>
         <translation>Analog</translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="301"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="374"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="372"/>
         <source>Digital</source>
         <translation>Digital</translation>
     </message>
@@ -1536,7 +1536,7 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="319"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="355"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="353"/>
         <source>Thermal transmittance</source>
         <translation>Wärmedurchgang</translation>
     </message>
@@ -1945,7 +1945,7 @@
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="126"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="344"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="342"/>
         <source>Air change rate</source>
         <translation>Luftwechselrate</translation>
     </message>
@@ -2666,7 +2666,7 @@
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="335"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="375"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="373"/>
         <source>Heating limit</source>
         <translation>Heizgrenze</translation>
     </message>
@@ -2687,61 +2687,51 @@
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="339"/>
-        <source>Heating level for heating curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="340"/>
-        <source>Heating slope for heating curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="341"/>
         <source>Temperature difference between supply and return fluid temperature</source>
         <translation>Temperaturdifferenz zwischen Vorlauf- und Rücklauftemperatur</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="342"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="340"/>
         <source>Ideal surface conditioning</source>
         <translation>Ideale Oberflächenkonditionierung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="343"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="341"/>
         <source>Water-based surface conditioning: either ideal or part of a hydraulic network</source>
         <translation>Oberflächenkonditionierung auf Wasserbasis: entweder ideal oder Teil eines hydraulischen Netzes</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="345"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="343"/>
         <source>None</source>
         <translation>Keiner</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="346"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="344"/>
         <source>Fraction of area</source>
         <translation>Anteil der Fläche</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="347"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="345"/>
         <source>Constant width</source>
         <translation>Konstante Breite</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="348"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="346"/>
         <source>Frame width of the window</source>
         <translation>Rahmenbreite des Fensters</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="349"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="347"/>
         <source>Frame area fraction of the window</source>
         <translation>Rahmenflächenanteil des Fensters</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="350"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="348"/>
         <source>Divider width of the window</source>
         <translation>Teilerbreite des Fensters</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="351"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="349"/>
         <source>Divider area fraction of the window</source>
         <translation>Teilerflächenanteil des Fensters</translation>
     </message>
@@ -2751,147 +2741,147 @@
         <translation>Reduktionsfaktor für dynamische Verschattung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="352"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="350"/>
         <source>Divider material thickness.</source>
         <translation>Materialdicke der Trennwand.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="353"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="351"/>
         <source>Frame material thickness.</source>
         <translation>Rahmenmaterialdicke.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="354"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="352"/>
         <source>Standard globbed-layers model</source>
         <translation>Standard-Globbed-Layer-Modell</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="356"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="354"/>
         <source>Incidence-angle dependent short wave transmittance across glazing system</source>
         <translation>Einfallswinkelabhängige Kurzwellentransmission über das Verglasungssystem</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="357"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="355"/>
         <source>Maximum air change rate for natural ventilation to reach comfort conditions (if possible).</source>
         <translation>Maximale Luftwechselrate für natürliche Belüftung, um Komfortbedingungen zu erreichen (wenn möglich).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="358"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="356"/>
         <source>Upper limit for room air temperature.</source>
         <translation>Obergrenze für die Raumlufttemperatur.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="359"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="357"/>
         <source>Lower limit for room air temperature.</source>
         <translation>Untergrenze für die Raumlufttemperatur.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="360"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="358"/>
         <source>Limit for wind speed .</source>
         <translation>Limit für Windgeschwindigkeit .</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="361"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="359"/>
         <source>Global horizontal (upper) sensor setpoint value.</source>
         <translation>Globaler horizontaler (oberer) Sensorsollwert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="362"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="360"/>
         <source>Global north (upper) sensor setpoint value.</source>
         <translation>Sollwert des globalen Nordsensors (oberer Sensor).</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="363"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="361"/>
         <source>Global east (upper) sensor setpoint value.</source>
         <translation>Globaler östlicher (oberer) Sensorsollwert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="364"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="362"/>
         <source>Global south (upper) sensor setpoint value.</source>
         <translation>Globaler südlicher (oberer) Sensor-Sollwert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="365"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="363"/>
         <source>Global west (upper) sensor setpoint value.</source>
         <translation>Globaler westlicher (oberer) Sensorsollwert.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="366"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="364"/>
         <source>Dead band value for all sensors.</source>
         <translation>Totzonenwert für alle Sensoren.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="367"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="365"/>
         <source>One global horizontal sensor.</source>
         <translation>Ein globaler horizontaler Sensor.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="368"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="366"/>
         <source>One global horizontal and for each direction (N, E, S, W) a vertical sensor.</source>
         <translation>Ein globaler horizontaler und für jede Richtung (N, E, S, W) ein vertikaler Sensor.</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="369"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="367"/>
         <source>Thermostat tolerance heating and cooling mode</source>
         <translation>Thermostattoleranz Heiz- und Kühlbetrieb</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="370"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="368"/>
         <source>Thermostat dead band (for digital controllers)</source>
         <translation>Thermostat-Totband (für digitale Regler)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="376"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="374"/>
         <source>Cooling limit (positive)</source>
         <translation>Kühlgrenze (positiv)</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="377"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="375"/>
         <source>Person loads</source>
         <translation>Personlasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="378"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="376"/>
         <source>Equipment loads</source>
         <translation>Gerätelasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="379"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="377"/>
         <source>Lighting loads</source>
         <translation>Lichtlasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="380"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="378"/>
         <source>Other internal loads</source>
         <translation>Andere interne Lasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="381"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="379"/>
         <source>Thermostat control</source>
         <translation>Thermostatsteuerung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="382"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="380"/>
         <source>Shading control</source>
         <translation>Verschattungsregelung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="383"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="381"/>
         <source>Natural ventilation control</source>
         <translation>Steuerung der natürlichen Belüftung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="384"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="382"/>
         <source>Infiltration loads</source>
         <translation>Infiltrationslasten</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="385"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="383"/>
         <source>NaturalVentilation</source>
         <translation>Natürliche Belüftung</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="386"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="384"/>
         <source>Heating/cooling loads</source>
         <translation>Heiz-/Kühllasten</translation>
     </message>
@@ -3932,7 +3922,7 @@
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.cpp" line="505"/>
         <source>Layer widths must be larger than 1 mm. Ignore smaller layers, they will not affect the thermal storage mass!</source>
-        <translation type="unfinished">Die Schichtbreiten müssen größer als 1 mm sein. Kleinere Schichten sind zu vernachlässigen, sie haben keinen Einfluss auf die thermische Speichermasse!</translation>
+        <translation>Die Schichtbreiten müssen größer als 1 mm sein. Kleinere Schichten sind zu vernachlässigen, sie haben keinen Einfluss auf die thermische Speichermasse!</translation>
     </message>
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.cpp" line="536"/>
@@ -6452,73 +6442,29 @@ p, li { white-space: pre-wrap; }
         <translation>Systemparameter</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="165"/>
         <source>Pipe spacing:</source>
-        <translation>Rohrleitungsabstand:</translation>
+        <translation type="vanished">Rohrleitungsabstand:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="188"/>
-        <source>[m]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="195"/>
-        <source>Maximum fluid velocity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="218"/>
-        <source>[m/s]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="225"/>
-        <source>Temperature difference between supply and return:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="248"/>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="326"/>
-        <source>[K]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="258"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="237"/>
         <source>Curves</source>
         <translation>Kurven</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="264"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="279"/>
         <source>Heating</source>
         <translation>Heizung</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="296"/>
         <source>C</source>
-        <translation>C</translation>
+        <translation type="vanished">C</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="303"/>
-        <source>Slope:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="341"/>
         <source>Heating setpoint schedule:</source>
-        <translation>Zeitplan des Heizungssollwertes:</translation>
+        <translation type="vanished">Zeitplan des Heizungssollwertes:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="355"/>
-        <source>Level:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="378"/>
-        <source>[---]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="400"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="286"/>
         <source>Cooling</source>
         <translation>Kühlung</translation>
     </message>
@@ -6543,7 +6489,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="150"/>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="289"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -6552,16 +6497,19 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Systemdimensionierung</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="165"/>
         <source>Temperature difference between supply and return [K]:</source>
-        <translation type="vanished">Temperaturdifferenz zwischen Vor- und Rücklauf [K]:</translation>
+        <translation>Temperaturdifferenz zwischen Vor- und Rücklauf [K]:</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="204"/>
         <source>Maximum fluid velocity [m/s]:</source>
-        <translation type="vanished">Maximale Strömungsgeschwindigkeit [m/s]:</translation>
+        <translation>Maximale Strömungsgeschwindigkeit [m/s]:</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.ui" line="227"/>
         <source>Pipe spacing [m]:</source>
-        <translation type="vanished">Rohrabstand [m]:</translation>
+        <translation>Rohrabstand [m]:</translation>
     </message>
     <message>
         <source>Heating Curve</source>
@@ -6594,33 +6542,37 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="78"/>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="359"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="85"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="339"/>
         <source>Ambient Temperature [C]</source>
         <translation>Umgebungstemperatur [C]</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="78"/>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="363"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="85"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="342"/>
         <source>Supply Temperature [C]</source>
         <translation>Vorlauftemperatur [C]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="213"/>
         <source>&lt;select schedule&gt;</source>
-        <translation>&lt;ausgewählter Zeitplan&gt;</translation>
+        <translation type="vanished">&lt;ausgewählter Zeitplan&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="479"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="455"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="502"/>
         <source>Supply temperature values should differ.</source>
         <translation>Vorlauftemperaturwerte sollten unterschiedlich sein.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="491"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="467"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="514"/>
         <source>Ambient temperature should be monotonic increasing.</source>
         <translation>Die Umgebungstemperatur sollte monoton ansteigend sein.</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="499"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="475"/>
+        <location filename="../../src/SVDBSurfaceHeatingEditWidget.cpp" line="522"/>
         <source>Input &apos;%1&apos; is not valid. Only numerical data is valid.</source>
         <translation>Eingabe &apos;%1&apos; ist ungültig. Nur numerische Daten sind gültig.</translation>
     </message>
@@ -7195,19 +7147,16 @@ p, li { white-space: pre-wrap; }
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="38"/>
         <source>Cooling setpoint schedule:</source>
-        <translation>Zeitplan des Kühlsollwertes:</translation>
+        <translation type="vanished">Zeitplan des Kühlsollwertes:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="65"/>
         <source>Heating setpoint schedule:</source>
-        <translation>Zeitplan des Heizungssollwertes:</translation>
+        <translation type="vanished">Zeitplan des Heizungssollwertes:</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="86"/>
         <source>Controller type:</source>
-        <translation>Reglertyp:</translation>
+        <translation type="vanished">Reglertyp:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="106"/>
@@ -7220,12 +7169,14 @@ p, li { white-space: pre-wrap; }
         <translation>Methode:</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="86"/>
         <source>Controller Type:</source>
-        <translation type="vanished">Controller-Typ:</translation>
+        <translation>Controller-Typ:</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="65"/>
         <source>Heating Setpoint Schedule:</source>
-        <translation type="vanished">Heizsollwertplan:</translation>
+        <translation>Heizsollwertplan:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="72"/>
@@ -7234,8 +7185,9 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
+        <location filename="../../src/SVDBZoneControlThermostatEditWidget.ui" line="38"/>
         <source>Cooling Setpoint Schedule:</source>
-        <translation type="vanished">Kühlsollwertplan:</translation>
+        <translation>Kühlsollwertplan:</translation>
     </message>
     <message>
         <source>Tolerance [K]:</source>
@@ -8149,12 +8101,32 @@ p, li { white-space: pre-wrap; }
         <translation>Zeichnungseigenschaften</translation>
     </message>
     <message>
-        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="33"/>
-        <source>Scaling factor: </source>
-        <translation>Skalierungsfaktor:</translation>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="29"/>
+        <source>x</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="40"/>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="39"/>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="49"/>
+        <source>z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="61"/>
+        <source>Scaling factor: </source>
+        <translation type="unfinished">Skalierungsfaktor:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="87"/>
+        <source>Line weight scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDrawingPropertiesDialog.ui" line="20"/>
         <source>Offset:</source>
         <translation>Versatz:</translation>
     </message>
@@ -8311,7 +8283,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVGeometryView.ui" line="376"/>
         <source>Structural units parametrization</source>
-        <translation>Parametrierung der Struktureinheiten</translation>
+        <translation>Gebäudestruktur</translation>
     </message>
     <message>
         <location filename="../../src/SVGeometryView.ui" line="379"/>
@@ -9018,22 +8990,22 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="63"/>
+        <location filename="../../src/SVMainWindow.ui" line="55"/>
         <source>&amp;Application language</source>
         <translation>&amp;Sprache</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="29"/>
+        <location filename="../../src/SVMainWindow.ui" line="177"/>
         <source>Import</source>
         <translation>Importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="59"/>
+        <location filename="../../src/SVMainWindow.ui" line="51"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="115"/>
+        <location filename="../../src/SVMainWindow.ui" line="107"/>
         <source>&amp;Tools</source>
         <translation>&amp;Werkzeuge</translation>
     </message>
@@ -9042,22 +9014,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">&amp;Netzwerke</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="123"/>
+        <location filename="../../src/SVMainWindow.ui" line="115"/>
         <source>&amp;Databases</source>
         <translation>&amp;Datenbanken</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="127"/>
+        <location filename="../../src/SVMainWindow.ui" line="119"/>
         <source>Internal loads</source>
         <translation>Interne Lasten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="136"/>
+        <location filename="../../src/SVMainWindow.ui" line="128"/>
         <source>Ventilation/Infiltration</source>
         <translation>Lüftung/Infiltration</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="143"/>
+        <location filename="../../src/SVMainWindow.ui" line="135"/>
         <source>Zone controls</source>
         <translation>Zonenspezifische Regelungen</translation>
     </message>
@@ -9074,7 +9046,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">&amp;Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="179"/>
+        <location filename="../../src/SVMainWindow.ui" line="171"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
@@ -9142,7 +9114,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="36"/>
+        <location filename="../../src/SVMainWindow.ui" line="29"/>
         <source>Export</source>
         <translation>Exportieren</translation>
     </message>
@@ -9173,6 +9145,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="311"/>
+        <location filename="../../src/SVMainWindow.ui" line="883"/>
         <source>EneryPlus IDF...</source>
         <translation>EneryPlus IDF...</translation>
     </message>
@@ -9552,6 +9525,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVMainWindow.ui" line="739"/>
+        <location filename="../../src/SVMainWindow.ui" line="878"/>
         <source>Network GIS data ...</source>
         <translation>Netzwerk GIS Daten ...</translation>
     </message>
@@ -9767,12 +9741,12 @@ p, li { white-space: pre-wrap; }
         <translation>Suche nach Aktualisierungen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="77"/>
+        <location filename="../../src/SVMainWindow.ui" line="69"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.ui" line="93"/>
+        <location filename="../../src/SVMainWindow.ui" line="85"/>
         <source>&amp;View</source>
         <translation>&amp;Ansicht</translation>
     </message>
@@ -15486,17 +15460,17 @@ Projekt zuletzt gespeichert am %2.
         <translation>Bilden</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="75"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="73"/>
         <source>Climate data</source>
         <translation>Klimadaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="36"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="92"/>
         <source>From climate database</source>
         <translation>Aus der Klimadatenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="82"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="45"/>
         <source>Text filter:</source>
         <translation>Textfilter:</translation>
     </message>
@@ -15505,17 +15479,17 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Benutzerdefinierter Dateipfad:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="56"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="54"/>
         <source>Store absolute path</source>
         <translation>Absoluten Pfad speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="66"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="64"/>
         <source>Store path relative to project file</source>
         <translation>Pfad relativ zur Projektdatei speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="191"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="207"/>
         <source>Climate data description</source>
         <translation>Beschreibung der Klimadaten</translation>
     </message>
@@ -15524,37 +15498,37 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Ort</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="252"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="268"/>
         <source>Albedo [0..1]:</source>
         <translation>Albedo [0..1]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="221"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="237"/>
         <source>Longitude [-180..180 Deg]:</source>
         <translation>Längengrad [-180..180 Grad]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="92"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="102"/>
         <source>Custom file path</source>
         <translation>Benutzerdefinierter Dateipfad</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="118"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="136"/>
         <source>Download DWD Weather </source>
         <translation>DWD Wetterdaten herunterladen </translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="198"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="214"/>
         <source>Edit location</source>
         <translation>Standort bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="207"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="223"/>
         <source>Latitude [+90..-90 Deg]:</source>
         <translation>Breitengrad [+90..-90 Grad]:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.ui" line="235"/>
+        <location filename="../../src/SVSimulationLocationOptions.ui" line="251"/>
         <source>Time zone:</source>
         <translation>Zeitzone:</translation>
     </message>
@@ -15563,107 +15537,107 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Definieren Sie einen benutzerdefinierten Speicherort</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="91"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="112"/>
         <source>UTC %1%2</source>
         <translation>UTC %1%2</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="95"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="116"/>
         <source>Latitude in degrees, -90 (south pole) to +90 (north pole).</source>
         <translation>Breitengrad in Grad, -90 (Südpol) bis +90 (Nordpol).</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="96"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="117"/>
         <source>Longitude in degrees -180 (west) to +180 (east).</source>
         <translation>Längengrad in Grad -180 (Westen) bis +180 (Osten).</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="100"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="121"/>
         <source>Dry leveled soil - 0.2</source>
         <translation>Trockener planierter Boden - 0,2</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="101"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="122"/>
         <source>Clay soil - 0.23</source>
         <translation>Lehmboden - 0,23</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="102"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="123"/>
         <source>Light sand - 0.37</source>
         <translation>Leichter Sand - 0,37</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="103"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="124"/>
         <source>Coniferous forest - 0.12</source>
         <translation>Nadelwald - 0,12</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="104"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="125"/>
         <source>Deciduous forest - 0.2</source>
         <translation>Laubwald - 0,2</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="105"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="126"/>
         <source>Pavement - 0.15</source>
         <translation>Pflaster - 0,15</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="106"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="127"/>
         <source>Red tiles - 0.33</source>
         <translation>Rote Kacheln - 0,33</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="107"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="128"/>
         <source>Wet medium grained snow - 0.64</source>
         <translation>Nasser mittelkörniger Schnee - 0,64</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="108"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="129"/>
         <source>Dry new fallen snow - 0.82</source>
         <translation>Trockener Neuschnee - 0,82</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="113"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="134"/>
         <source>Albedo of ambient ground surface</source>
         <translation>Albedo der umgebenden Bodenfläche</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="119"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="140"/>
         <source>Climate data container files (*.c6b *.epw *.wac *dat);;All files (*.*)</source>
         <translation>Dateiformate Klimadaten(*.c6b *.epw *.wac *dat);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="252"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="273"/>
         <source>Reading ...</source>
         <translation>Einlesen ...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="252"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="273"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="253"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="274"/>
         <source>Reading climate file</source>
         <translation>Klimadatei einlesen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="845"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="865"/>
         <source>Setup external tool</source>
         <translation>Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="845"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="865"/>
         <source>Please select first the path to the external climate editor in the preferences dialog!</source>
         <translation>Bitte setzen Sie zuerst den Pfad zum externen Klimaeditor im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="851"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="871"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="851"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="871"/>
         <source>Climate editor &apos;%1&apos; could not be started.</source>
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
@@ -15672,47 +15646,47 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Containerdateien für Klimadaten (*.c6b *.epw *.wac);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="664"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="684"/>
         <source>Invalid climate data file path.</source>
         <translation>Ungültiger Dateipfad für Klimadaten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="668"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="688"/>
         <source>User climate data file.</source>
         <translation>Benutzerklimadatendatei.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="672"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="692"/>
         <source>Climate data from user database.</source>
         <translation>Klimadaten aus Benutzerdatenbank.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="674"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="694"/>
         <source>Climate data from standard database.</source>
         <translation>Klimadaten aus Standarddatenbank.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="677"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="697"/>
         <source>City/Country</source>
         <translation>Stadt/Land</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="679"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="699"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="680"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="700"/>
         <source>Longitude</source>
         <translation>Längengrad</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="681"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="701"/>
         <source>Latitude</source>
         <translation>Breitengrad</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationLocationOptions.cpp" line="682"/>
+        <location filename="../../src/SVSimulationLocationOptions.cpp" line="702"/>
         <source>Elevation</source>
         <translation>Höhenlage</translation>
     </message>
@@ -17059,105 +17033,108 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>FMU exportieren...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="35"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="36"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="36"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="37"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="37"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="38"/>
         <source>Detailed</source>
         <translation>Detailliert</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="38"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="39"/>
         <source>Very Detailed</source>
         <translation>Sehr detailiert</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="43"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="44"/>
         <source>Duration of the simulation.</source>
         <translation>Dauer der Simulation.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="45"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="46"/>
         <source>Number of parallel threads, should be less or equal to the number of physical CPU cores.</source>
         <translation>Anzahl der parallelen Threads, sollte kleiner oder gleich der Anzahl der physischen CPU-Kerne sein.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="47"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="48"/>
         <source>auto (using OMP_NUM_THREADS if set)</source>
         <comment>as in automatic</comment>
         <translation>automatisch (mit OMP_NUM_THREADS, falls gesetzt)</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="316"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="317"/>
         <source>Error in view-factor calculation</source>
         <translation>Fehler bei der Berechnung der Sichtfaktoren</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="317"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="318"/>
         <source>View-factors could not be calculated. Please see error below
 %1</source>
         <translation>Die View-Faktoren konnten nicht berechnet werden. Bitte beachten Sie die untere Fehlermeldung %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="341"/>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="371"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="342"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="372"/>
         <source>Solver error</source>
         <translation>Solver-Fehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="342"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="343"/>
         <source>There is already a file with the name of the output directory to be created &apos;%1&apos;. Please remove this file or save the project with a new name!</source>
         <translation>Es existiert bereits eine Datei mit dem Namen des zu erstellenden Ausgabeverzeichnisses &apos;%1&apos;. Bitte entfernen Sie diese Datei oder speichern Sie das Projekt unter einem neuen Namen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="372"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="373"/>
         <source>Cannot remove result directory &apos;%1&apos;, maybe files are still being used?</source>
         <translation>Ergebnisverzeichnis &apos;%1&apos; kann nicht entfernt werden, möglicherweise werden noch Dateien verwendet?</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="393"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="394"/>
         <source>Running test-init on NANDRAD project</source>
         <translation>Ausführen von Test-Init auf dem NANDRAD-Projekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="393"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="394"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="415"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="416"/>
         <source>Error running NANDRAD solver executable or the selected terminal emulator.</source>
         <translation>Fehler bei Ausführung des NANDRAD-Solvers oder des ausgewählten Terminalemulators.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="420"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="421"/>
         <source>The simulation has been started as background process in a terminal window. You can close the window once the simulation has finished. Longer simulations will continue to run even if the SIM-VICUS application is closed.</source>
         <translation>Die Simulation wurde als Hintergrundprozess in einem Terminalfenster gestartet. Sie können das Fenster schließen, sobald die Simulation beendet ist. Längere Simulationen laufen weiter, auch wenn die SIM-VICUS-Anwendung geschlossen wird.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="426"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="427"/>
         <source>An error ocurred during simulation or initialization.</source>
         <translation>Bei der Simulation oder Initialisierung ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="473"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="483"/>
+        <source>An error occurred during NANDRAD project generation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>An error occurred during NANDRAD project generation (see details below).</source>
-        <translation>Bei der Generierung des NANDRAD-Projekts ist ein Fehler aufgetreten (Details siehe unten).</translation>
+        <translation type="vanished">Bei der Generierung des NANDRAD-Projekts ist ein Fehler aufgetreten (Details siehe unten).</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="474"/>
         <source>NANDRAD Project Generation Error</source>
-        <translation>Fehler bei der NANDRAD-Projekterzeugung</translation>
+        <translation type="vanished">Fehler bei der NANDRAD-Projekterzeugung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="534"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="565"/>
         <source>Could not run FMU Generator &apos;%1&apos;</source>
         <translation>Der FMU-Generator „%1“ konnte nicht ausgeführt werden</translation>
     </message>
@@ -17201,7 +17178,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Smart-Clipping Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="200"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="207"/>
         <source>Create surface connections</source>
         <translation>Erzeuge Flächenverknüpfungen</translation>
     </message>
@@ -17236,66 +17213,65 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Standardbauteile</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="130"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="200"/>
         <source>Interior wall:</source>
         <translation>Innenwand:</translation>
     </message>
     <message>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="109"/>
         <location filename="../../src/SVSmartIntersectionDialog.ui" line="116"/>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="137"/>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="151"/>
         <location filename="../../src/SVSmartIntersectionDialog.ui" line="165"/>
         <location filename="../../src/SVSmartIntersectionDialog.ui" line="217"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="224"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="158"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="102"/>
         <source>Ceiling:</source>
         <translation>Decke:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="210"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="158"/>
         <source>Roof:</source>
         <translation>Dach:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="144"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="172"/>
         <source>Exterior wall:</source>
         <translation>Außenwand:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="102"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="144"/>
         <source>Floor:</source>
         <translation>Fußboden:</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="224"/>
         <source>TextLabel</source>
-        <translation>Textlabel</translation>
+        <translation type="vanished">Textlabel</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="231"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="186"/>
         <source>Replace all component instances</source>
         <translation>Alle Bauteilinstanzen ersetzen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="253"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="246"/>
         <source>Start smart-clipping</source>
         <translation>Starte smart-clipping</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="264"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="257"/>
         <source>Smart-clipping log</source>
         <translation>Smart-clipping log</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="298"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="291"/>
         <source>Apply to project</source>
         <translation>Auf Projekt anwenden</translation>
     </message>
     <message>
-        <location filename="../../src/SVSmartIntersectionDialog.ui" line="305"/>
+        <location filename="../../src/SVSmartIntersectionDialog.ui" line="298"/>
         <location filename="../../src/SVSmartIntersectionDialog.cpp" line="161"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
@@ -17900,27 +17876,32 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.ui" line="70"/>
+        <location filename="../../src/SVWelcomeScreen.ui" line="30"/>
+        <source>logo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVWelcomeScreen.ui" line="80"/>
         <source>Create project...</source>
         <translation>Projekt erstellen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.ui" line="96"/>
+        <location filename="../../src/SVWelcomeScreen.ui" line="106"/>
         <source>Open project...</source>
         <translation>Projekt öffnen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.ui" line="187"/>
+        <location filename="../../src/SVWelcomeScreen.ui" line="197"/>
         <source>Recent projects</source>
         <translation>Zuletzt verwendete Projekte</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.ui" line="217"/>
+        <location filename="../../src/SVWelcomeScreen.ui" line="246"/>
         <source>Examples</source>
         <translation>Beispiele</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="105"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="110"/>
         <source>Retrieving news content...</source>
         <translation>Abrufen von Nachrichteninhalten...</translation>
     </message>
@@ -17937,32 +17918,32 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation type="vanished">Projektvorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="149"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="154"/>
         <source>&lt;i&gt;Created: %1&lt;/i&gt;&lt;br&gt;&lt;i&gt;Last modified: %2&lt;/i&gt;&lt;br&gt;%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="153"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="158"/>
         <source>&lt;i&gt;&lt;font color=&quot;${STYLE_H3_COLOR}&quot;&gt;Project not accessible&lt;/font&gt;&lt;/i&gt; &lt;a href=&quot;premove:%1&quot;&gt;Remove %2 from list&lt;/a&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="380"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="385"/>
         <source>unable to download news content.</source>
         <translation>keine Nachrichteninhalte herunterladen können.</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="423"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="428"/>
         <source>&lt;h1&gt;&lt;font style=&quot;color:${STYLE_H1_COLOR}&quot;&gt;An update is available!&lt;/font&gt;&lt;/h1&gt;&lt;p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="424"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="429"/>
         <source>Current version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</source>
         <translation>aktuelle version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="425"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="430"/>
         <source>New Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</source>
         <translation>Neue Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</translation>
     </message>
