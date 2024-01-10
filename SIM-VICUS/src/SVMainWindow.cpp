@@ -1112,7 +1112,7 @@ void SVMainWindow::on_actionFileReload_triggered() {
 }
 
 
-void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
+void SVMainWindow::on_actionEneryPlus_IDF_triggered() {
 	// request IDF file and afterwards open import dialog
 	QString filename = QFileDialog::getOpenFileName(
 				this,
@@ -1456,7 +1456,7 @@ void SVMainWindow::onActionSwitchLanguage() {
 }
 
 
-void SVMainWindow::on_actionFileImportNetworkGISData_triggered() {
+void SVMainWindow::on_actionNetwork_GIS_data_triggered() {
 	// opens import network dialog
 	if (m_networkImportDialog == nullptr)
 		m_networkImportDialog = new SVNetworkImportDialog(this);
@@ -2300,4 +2300,8 @@ void SVMainWindow::on_actionDBAcousticBoundaryConditions_triggered() {
 void SVMainWindow::on_actionDBAcousticSoundAbsorptions_triggered() {
 	dbAcousticSoundAbsorptionEditDialog()->edit();
 }
+
+
+
+
 
