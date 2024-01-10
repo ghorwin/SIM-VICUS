@@ -19,33 +19,31 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0" colspan="3">
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="3">
-          <widget class="QRadioButton" name="radioButtonFromDB">
-           <property name="text">
-            <string>From climate database</string>
-           </property>
-           <attribute name="buttonGroup">
-            <string notr="true">buttonGroup</string>
-           </attribute>
-          </widget>
+         <item row="3" column="1" colspan="2">
+          <widget class="QLineEdit" name="lineEditTextFilter"/>
          </item>
          <item row="4" column="0" colspan="3">
           <widget class="QTableView" name="tableViewClimateFiles"/>
          </item>
-         <item row="6" column="0">
-          <widget class="QWidget" name="widgetUserPathOptions" native="true">
-           <layout class="QVBoxLayout" name="verticalLayout_2"/>
+         <item row="5" column="1">
+          <widget class="QtExt::BrowseFilenameWidget" name="filepathClimateDataFile" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="labelTextFilter">
+           <property name="text">
+            <string>Text filter:</string>
+           </property>
           </widget>
          </item>
          <item row="6" column="1">
@@ -76,15 +74,27 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="labelTextFilter">
-           <property name="text">
-            <string>Text filter:</string>
+         <item row="6" column="0">
+          <widget class="QWidget" name="widgetUserPathOptions" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_2"/>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="3">
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QLineEdit" name="lineEditTextFilter"/>
+         <item row="2" column="0" colspan="3">
+          <widget class="QRadioButton" name="radioButtonFromDB">
+           <property name="text">
+            <string>From climate database</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroup</string>
+           </attribute>
+          </widget>
          </item>
          <item row="5" column="0">
           <widget class="QRadioButton" name="radioButtonCustomFilePath">
@@ -96,40 +106,46 @@
            </attribute>
           </widget>
          </item>
-         <item row="5" column="1">
-          <widget class="QtExt::BrowseFilenameWidget" name="filepathClimateDataFile" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>20</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="2">
-          <widget class="QPushButton" name="pushButtonOpenDWDConverter">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Download DWD Weather </string>
-           </property>
-           <property name="icon">
-            <iconset resource="../resources/SIM-VICUS.qrc">
-             <normaloff>:/gfx/actions/DWDWeatherDataConverter.png</normaloff>:/gfx/actions/DWDWeatherDataConverter.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
-         </item>
         </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonOpenDWDConverter">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Download DWD Weather </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/SIM-VICUS.qrc">
+           <normaloff>:/gfx/actions/DWDWeatherDataConverter.png</normaloff>:/gfx/actions/DWDWeatherDataConverter.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer">
@@ -288,7 +304,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="plotLayout" stretch="1,1,1,1,1">
        <item>
         <widget class="QwtPlot" name="plotTemp" native="true">
