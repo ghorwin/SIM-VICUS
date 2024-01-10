@@ -79,7 +79,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Supply type</string>
+           <string>Supply type:</string>
           </property>
          </widget>
         </item>
@@ -104,29 +104,56 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="pageStandAlone">
-         <layout class="QFormLayout" name="formLayout_3">
+         <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>MaximumMassFlux [kg/s]</string>
+             <string>Maximum mass flux:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="1" rowspan="2">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxMassFlux"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>SupplyTemperature [C]</string>
+             <string>kg/s</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="2" rowspan="2">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>C</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Supply temperature:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditSupplyTemp"/>
+          </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>252</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -163,36 +190,63 @@
         </widget>
         <widget class="QWidget" name="pageDatabaseFMU"/>
         <widget class="QWidget" name="pageUserDefinedFMU">
-         <layout class="QFormLayout" name="formLayout_2">
+         <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Supply FMU</string>
+             <string>Supply FMU:</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="1" colspan="2">
            <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameSupplyFMU" native="true"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>MaximumMassFluxFMU [kg/s]</string>
+             <string>Maximum mass flux FMU:</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxMassFluxFMU"/>
           </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>kg/s</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>HeatingPowerFMU [kW]</string>
+             <string>Heating power FMU:</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatingPowerFMU"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>kW</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>229</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -205,23 +259,26 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
    </slots>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::LanguageStringEditWidget1</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::BrowseFilenameWidget</class>

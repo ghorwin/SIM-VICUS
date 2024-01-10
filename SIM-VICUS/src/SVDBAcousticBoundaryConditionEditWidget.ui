@@ -61,7 +61,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Number of layers:</string>
+        <string>Number of elements:</string>
        </property>
       </widget>
      </item>
