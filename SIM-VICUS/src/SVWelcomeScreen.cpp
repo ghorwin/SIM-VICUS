@@ -75,10 +75,15 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 	m_ui->toolButtonNewProject->setIcon(QIcon::fromTheme("file_new"));
 	m_ui->toolButtonOpenProject->setIcon(QIcon::fromTheme("file_open"));
 
+	m_ui->labelLogo->setPixmap(QPixmap(":/logo/logo/logo.png"));
+
 	connect(m_ui->labelRecent, SIGNAL(clicked()), this, SLOT(on_labelRecentClicked()));
 	connect(m_ui->labelExample, SIGNAL(clicked()), this, SLOT(on_labelExampleClicked()));
 
 	on_labelRecentClicked();
+
+	// hide news for now
+	m_ui->textBrowserNews->setVisible(false);
 }
 
 
@@ -310,8 +315,8 @@ void SVWelcomeScreen::updateWelcomePage() {
 
 
 void SVWelcomeScreen::setLabelColors(QString color) {
-	m_ui->labelRecent->setStyleSheet(QString("QLabel { font-weight: normal; color: %1}").arg(color), QString("QLabel { font-weight: bold; color: %1}").arg(color));
-	m_ui->labelExample->setStyleSheet(QString("QLabel { font-weight: normal; color: %1}").arg(color), QString("QLabel { font-weight: bold; color: %1}").arg(color));
+	m_ui->labelRecent->setStyleSheet("QLabel { font-weight: normal}", "QLabel { font-weight: bold}", QString("QLabel { font-weight: bold; color: %1}").arg(color));
+	m_ui->labelExample->setStyleSheet("QLabel { font-weight: normal", "QLabel { font-weight: bold}", QString("QLabel { font-weight: bold; color: %1}").arg(color));
 }
 
 

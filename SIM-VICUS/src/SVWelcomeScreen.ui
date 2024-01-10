@@ -25,7 +25,17 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <spacer name="verticalSpacer_2">
+    <widget class="QLabel" name="labelLogo">
+     <property name="text">
+      <string>logo</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_4">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -35,7 +45,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>10</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>
@@ -48,7 +58,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
+        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -70,7 +80,7 @@
         <string>Create project...</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/icons.qrc">
+        <iconset>
          <normaloff>:/gfx/icons8/icons8-new-file-80.png</normaloff>:/gfx/icons8/icons8-new-file-80.png</iconset>
        </property>
        <property name="iconSize">
@@ -96,7 +106,7 @@
         <string>Open project...</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/icons.qrc">
+        <iconset>
          <normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</normaloff>:/gfx/icons8/icons8-ordner-oeffnen-80.png</iconset>
        </property>
        <property name="iconSize">
@@ -136,7 +146,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>20</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>
@@ -161,60 +171,82 @@
        <item>
         <widget class="QtExt::ClickableLabel" name="labelRecent">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
+           <width>140</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>120</width>
+           <width>140</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
           <string>Recent projects</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Maximum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item>
         <widget class="QtExt::ClickableLabel" name="labelExample">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>120</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
           <string>Examples</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -299,8 +331,6 @@
    <header location="global">QtExt_ClickableLabel.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

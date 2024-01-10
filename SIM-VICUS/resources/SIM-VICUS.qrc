@@ -197,5 +197,6 @@
         <file>gfx/style/dark.png</file>
         <file>gfx/style/white.png</file>
         <file>gfx/actions/DWDWeatherDataConverter.png</file>
+        <file>logo/logo/logo.png</file>
     </qresource>
 </RCC>
