@@ -8103,32 +8103,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="29"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="39"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="49"/>
         <source>z</source>
-        <translation type="unfinished"></translation>
+        <translation>z</translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="61"/>
         <source>Scaling factor: </source>
-        <translation type="unfinished">Skalierungsfaktor:</translation>
+        <translation>Skalierungsfaktor:</translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="87"/>
+        <source>Line weight scaling:</source>
+        <translation>Skalierung Linienstärke:</translation>
+    </message>
+    <message>
         <source>Line weight scaling</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Skalierung Linienstärke</translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="20"/>
         <source>Offset:</source>
-        <translation>Versatz:</translation>
+        <translation>Offset:</translation>
     </message>
 </context>
 <context>
@@ -13242,7 +13246,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="509"/>
         <source>To change scaling factors of DXF-drawing, double-click on layer in Navigation Tree on the left-side pane</source>
-        <translation>Um die Skalierungsfaktoren einer DXF-Zeichnung zu ändern, doppelklicken Sie auf den Layer im Navigationsbaum auf der linken Seite.</translation>
+        <translation>Um die Skalierungsfaktoren einer DXF-Zeichnung zu ändern, doppelklicken Sie auf den Layer im Navigationsbaum auf der linken Seite</translation>
     </message>
     <message>
         <location filename="../../src/SVPropEditGeometry.ui" line="535"/>
@@ -17123,7 +17127,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
     <message>
         <location filename="../../src/SVSimulationStartOptions.cpp" line="483"/>
         <source>An error occurred during NANDRAD project generation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bei der Generierung des NANDRAD-Projekts ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
         <source>An error occurred during NANDRAD project generation (see details below).</source>
@@ -17878,7 +17882,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
     <message>
         <location filename="../../src/SVWelcomeScreen.ui" line="30"/>
         <source>logo</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/SVWelcomeScreen.ui" line="80"/>
@@ -17901,7 +17905,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Beispiele</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="110"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="119"/>
         <source>Retrieving news content...</source>
         <translation>Abrufen von Nachrichteninhalten...</translation>
     </message>
@@ -17918,32 +17922,32 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation type="vanished">Projektvorlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="154"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="163"/>
         <source>&lt;i&gt;Created: %1&lt;/i&gt;&lt;br&gt;&lt;i&gt;Last modified: %2&lt;/i&gt;&lt;br&gt;%3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="158"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="167"/>
         <source>&lt;i&gt;&lt;font color=&quot;${STYLE_H3_COLOR}&quot;&gt;Project not accessible&lt;/font&gt;&lt;/i&gt; &lt;a href=&quot;premove:%1&quot;&gt;Remove %2 from list&lt;/a&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="385"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="394"/>
         <source>unable to download news content.</source>
         <translation>keine Nachrichteninhalte herunterladen können.</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="428"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="437"/>
         <source>&lt;h1&gt;&lt;font style=&quot;color:${STYLE_H1_COLOR}&quot;&gt;An update is available!&lt;/font&gt;&lt;/h1&gt;&lt;p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="429"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="438"/>
         <source>Current version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</source>
         <translation>aktuelle version: &lt;b&gt;%1&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/SVWelcomeScreen.cpp" line="430"/>
+        <location filename="../../src/SVWelcomeScreen.cpp" line="439"/>
         <source>New Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</source>
         <translation>Neue Version: &lt;b&gt;&lt;font style=&quot;color:${STYLE_LINKTEXT_COLOR}&quot;&gt;%1&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;update:&quot;&gt;Download update&lt;/a&gt;</translation>
     </message>
