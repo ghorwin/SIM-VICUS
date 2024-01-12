@@ -2182,6 +2182,8 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		bool foundSubSurfComp = false;
 		//search for sub surface component
 		for(const VICUS::SubSurfaceComponent &ssc : m_project->m_embeddedDB.m_subSurfaceComponents){
+			if (!ssc.m_isReferenced)
+				continue;
 			if(ssc.m_id == subSurfaceComponentId){
 				foundSubSurfComp = true;
 				//only simple windows are supported now
@@ -2196,6 +2198,10 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 
 					//search for the window
 					for(const Window &winV : m_project->m_embeddedDB.m_windows){
+
+						if (!winV.m_isReferenced)
+							continue;
+
 						if(winV.m_id == ssc.m_idWindow){
 							if(!winV.isValid()){
 								errorStack << qApp->tr("Window #%1 '%2' is not valid.").arg(winV.m_id)
@@ -2765,8 +2771,11 @@ void ConstructionInstanceModelGenerator::addInputData(const std::vector<NANDRAD:
 void ConstructionInstanceModelGenerator::generateMaterials() {
 	// we have constructions and materials already in the embedded database, so we can just copy them over
 	for (const VICUS::Material & m : m_project->m_embeddedDB.m_materials) {
-		NANDRAD::Material matdata;
 
+		if (!m.m_isReferenced)
+			continue;
+
+		NANDRAD::Material matdata;
 		matdata.m_id = m.m_id;
 		matdata.m_displayName = m.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
 
@@ -2817,6 +2826,10 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 	}
 
 	for(const VICUS::WindowGlazingSystem &w : m_project->m_embeddedDB.m_windowGlazingSystems){
+
+		if (!w.m_isReferenced)
+			continue;
+
 		if(w.m_modelType != VICUS::WindowGlazingSystem::MT_Simple){
 			errorStack << qApp->tr("The window glazing system with #%1 and name '%2' is not supported by the export.")
 						  .arg(w.m_id).arg(QString::fromStdString(w.m_displayName.string()));
