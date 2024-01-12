@@ -10859,51 +10859,99 @@ p, li { white-space: pre-wrap; }
         <translation>Standardfunktion einstellen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="18"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.ui" line="78"/>
+        <source>Copy to clipboard</source>
+        <translation>In Zwischenablage kopieren</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.ui" line="85"/>
+        <source>Paste from clipboard</source>
+        <translation>Aus Zwischenablage einfügen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="22"/>
         <source>Edit simultaneity</source>
         <translation>Gleichzeitigkeit bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="26"/>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="72"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="30"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="76"/>
         <source>Number of buildings [-]</source>
         <translation>Anzahl Gebäude [-]</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="27"/>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="75"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="31"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="79"/>
         <source>Simultaneity [-]</source>
         <translation>Gleichzeitigkeit [-]</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="126"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="130"/>
         <source>Input error</source>
         <translation>Eingabefehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="126"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="130"/>
         <source>Number of buildings must be monotonic increasing.</source>
         <translation>Die Anzahl der Gebäude muss monoton ansteigen.</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="207"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="211"/>
         <source>Wrong input in cell at row %1. Only integers &gt; 0 allowed.</source>
         <translation>Falsche Eingabe in Zelle der Zeile %1. Nur ganzzahlige Werte &gt;0 erlaubt.</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="218"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="222"/>
         <source>Wrong input in cell at row %1. Only values &gt;0 and &lt;=1 allowed.</source>
         <translation>Falsche Eingabe in Zelle der Zeile %1. Nur Werte &gt;0 und &lt;=1 erlaubt.</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="237"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="241"/>
         <source>Set default</source>
         <translation>Standardeinstellung</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="237"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="241"/>
         <source>Delete current values and set to default?</source>
         <translation>Aktuelle Werte löschen und auf Standardwerte zurücksetzen?</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="268"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="280"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="286"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="291"/>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="327"/>
+        <source>Cannot paste data</source>
+        <translation>Einfügen von Daten nicht möglich</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="268"/>
+        <source>No data on clipboard</source>
+        <translation>Keine Daten in der Zwischenablage</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="280"/>
+        <source>Expected exactly 2 columns of data.</source>
+        <translation>Genau 2 Datenspalten erwartet.</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="286"/>
+        <source>Invalid format of table. Requires exactly 2 columns</source>
+        <translation>Ungültiges Format, genau 2 Spalten erwartet</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="291"/>
+        <source>Missing data.</source>
+        <translation>Fehlende Daten.</translation>
+    </message>
+    <message>
+        <source>Cannot paste schedule data</source>
+        <translation type="vanished">Zeitplandaten können nicht eingefügt werden</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNetworkSimultaneityDialog.cpp" line="327"/>
+        <source>Invalid spline data in table.</source>
+        <translation>Ungültige Spline-Daten in Tabelle.</translation>
     </message>
 </context>
 <context>
@@ -13421,7 +13469,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="174"/>
         <source>Reduce dead ends</source>
-        <translation>Sackgassen verringern</translation>
+        <translation>Knoten ohne Anbindung löschen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="181"/>
@@ -13480,7 +13528,7 @@ Projekt zuletzt gespeichert am %2.
     </message>
     <message>
         <source>edit simultaneity...</source>
-        <translation type="vanished">Simultanität bearbeiten...</translation>
+        <translation type="vanished">Gleichzeitigkeit bearbeiten...</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="256"/>
@@ -13549,7 +13597,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="240"/>
         <source>Edit simultaneity...</source>
-        <translation>Simultanität bearbeiten...</translation>
+        <translation>Gleichzeitigkeit bearbeiten...</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="247"/>
@@ -13559,7 +13607,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="300"/>
         <source>Run sizing algorithm</source>
-        <translation>Algorithmus zur Größenbestimmung ausführen</translation>
+        <translation>Rohrdimensionierung durchführen</translation>
     </message>
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="316"/>
@@ -14106,7 +14154,7 @@ Projekt zuletzt gespeichert am %2.
     <message>
         <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="360"/>
         <source>Network simultaneity updated</source>
-        <translation>Netzwerk-Simultanität aktualisiert</translation>
+        <translation>Netzwerk-Gleichzeitigkeit aktualisiert</translation>
     </message>
 </context>
 <context>

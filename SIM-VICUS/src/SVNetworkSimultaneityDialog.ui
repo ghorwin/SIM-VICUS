@@ -75,14 +75,14 @@
      <item>
       <widget class="QPushButton" name="pushButtonCopyToClipboard">
        <property name="text">
-        <string>Copy To Clipboard</string>
+        <string>Copy to clipboard</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonPasteFromClipboard">
        <property name="text">
-        <string>Paste From Clipboard</string>
+        <string>Paste from clipboard</string>
        </property>
       </widget>
      </item>

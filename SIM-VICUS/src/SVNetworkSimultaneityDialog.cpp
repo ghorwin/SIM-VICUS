@@ -324,7 +324,7 @@ void SVNetworkSimultaneityDialog::on_pushButtonPasteFromClipboard_clicked() {
 		if (!spl.valid())
 			throw std::runtime_error("...");
 	} catch (...) {
-		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Invalid spline data in table."));
+		QMessageBox::critical(this, tr("Cannot paste data"), tr("Invalid spline data in table."));
 		return;
 	}
 
