@@ -24,13 +24,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuImport">
-     <property name="title">
-      <string>Import</string>
-     </property>
-     <addaction name="actionFileImportEneryPlusIDF"/>
-     <addaction name="actionFileImportNetworkGISData"/>
-    </widget>
     <widget class="QMenu" name="menuExport">
      <property name="title">
       <string>Export</string>
@@ -48,7 +41,6 @@
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
-    <addaction name="menuImport"/>
     <addaction name="menuExport"/>
     <addaction name="actionFileOpenProjectDir"/>
     <addaction name="separator"/>
@@ -180,8 +172,16 @@
     </property>
     <addaction name="actionPluginsManager"/>
    </widget>
+   <widget class="QMenu" name="menuImport">
+    <property name="title">
+     <string>Import</string>
+    </property>
+    <addaction name="actionEneryPlus_IDF"/>
+    <addaction name="actionNetwork_GIS_data"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuImport"/>
    <addaction name="menuDatabases"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
@@ -871,6 +871,16 @@
    </property>
    <property name="toolTip">
     <string>Acoustic sound absorptions</string>
+   </property>
+  </action>
+  <action name="actionNetwork_GIS_data">
+   <property name="text">
+    <string>Network GIS data ...</string>
+   </property>
+  </action>
+  <action name="actionEneryPlus_IDF">
+   <property name="text">
+    <string>EneryPlus IDF...</string>
    </property>
   </action>
  </widget>

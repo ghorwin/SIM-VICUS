@@ -12,6 +12,7 @@
 
 #include <QProcess>
 #include <QProgressDialog>
+#include <QTextEdit>
 
 #include <NANDRAD_Project.h>
 
@@ -466,13 +467,43 @@ bool SVSimulationStartOptions::generateNANDRAD(QString & resultPath) {
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();
-		QMessageBox box(this);
 		QString fullText = errorStack.join("\n");
-		box.setDetailedText(fullText);
-		box.setIcon(QMessageBox::Critical);
-		box.setText(tr("An error occurred during NANDRAD project generation (see details below)."));
-		box.setWindowTitle(tr("NANDRAD Project Generation Error"));
-		box.exec();
+
+		// create dialog
+		QDialog dialog(this);
+		QVBoxLayout mainLayout(&dialog);
+		// horizontal layout for icon and label
+		QHBoxLayout headerLayout;
+		QLabel *iconLabel = new QLabel(&dialog);
+		QIcon criticalIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
+		QPixmap iconPixmap = criticalIcon.pixmap(24, 24);
+		iconLabel->setPixmap(iconPixmap);
+		headerLayout.addWidget(iconLabel);
+		// message
+		QLabel *messageLabel = new QLabel(tr("An error occurred during NANDRAD project generation."), &dialog);
+		QFont labelFont = messageLabel->font();
+		labelFont.setBold(true);
+		messageLabel->setFont(labelFont);
+		headerLayout.addWidget(messageLabel);
+		mainLayout.addLayout(&headerLayout);
+		// text edit for more details
+		QTextEdit *textEdit = new QTextEdit(&dialog);
+		textEdit->setPlaceholderText(fullText);
+		mainLayout.addWidget(textEdit);
+		// close button
+		QHBoxLayout buttonLayout;
+		QPushButton *button = new QPushButton("Close", &dialog);
+		buttonLayout.addWidget(button);
+		buttonLayout.setContentsMargins(0, 0, 0, 0);
+		buttonLayout.setAlignment(Qt::AlignRight);
+		mainLayout.addLayout(&buttonLayout);
+
+		QObject::connect(button, &QPushButton::clicked, &dialog, &QDialog::accept);
+
+		dialog.setLayout(&mainLayout);
+		dialog.setWindowTitle("NANDRAD Error");
+		dialog.exec();
+
 		return false;
 	}
 

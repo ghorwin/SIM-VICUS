@@ -22,6 +22,7 @@ public:
 	unsigned int id() const { return m_id; }
 
 	void setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet);
+	void setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet, const QString & activeStyleSheet);
 
 	/*! Switches button to active mode and set the "hovered" style sheet, even if mouse leaves label. */
 	void setActive(bool active);
@@ -44,6 +45,9 @@ protected:
 	void leaveEvent(QEvent *ev) override;
 
 private:
+
+	void updateStyleSheet();
+
 	unsigned int		m_id		= -1;
 
 	bool				m_active	= false;
@@ -52,6 +56,8 @@ private:
 	QString				m_normalStyleSheet;
 	/*! Style-sheet to be used when hovering. */
 	QString				m_hoverStyleSheet;
+	/*! Style-sheet to be used when hovering. */
+	QString				m_activeStyleSheet;
 };
 
 } // namespace QtExt

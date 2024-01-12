@@ -295,7 +295,7 @@ private slots:
 	void on_actionFileSave_triggered();
 	void on_actionFileSaveAs_triggered();
 	void on_actionFileReload_triggered();
-	void on_actionFileImportEneryPlusIDF_triggered();
+	void on_actionEneryPlus_IDF_triggered();
 	void on_actionFileOpenProjectDir_triggered();
 	void on_actionFileClose_triggered();
 	void on_actionFileExportProjectPackage_triggered();
@@ -366,7 +366,7 @@ private slots:
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
 
-	void on_actionFileImportNetworkGISData_triggered();
+	void on_actionNetwork_GIS_data_triggered();
 	void on_actionEditProjectNotes_triggered();
 	void on_actionPluginsManager_triggered();
 
@@ -390,7 +390,6 @@ private slots:
 	void on_actionDBAcousticBoundaryConditions_triggered();
 
 	void on_actionDBAcousticSoundAbsorptions_triggered();
-
 
 private:
 

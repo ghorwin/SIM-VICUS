@@ -698,7 +698,9 @@ namespace VICUS {
 				case 1 : return "CoolingLimit";
 				case 2 : return "PipeSpacing";
 				case 3 : return "MaxFluidVelocity";
-				case 4 : return "TemperatureDifferenceSupplyReturn";
+				case 4 : return "HeatingLevel";
+				case 5 : return "HeatingSlope";
+				case 6 : return "TemperatureDifferenceSupplyReturn";
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -1387,7 +1389,9 @@ namespace VICUS {
 				case 1 : return "CoolingLimit";
 				case 2 : return "PipeSpacing";
 				case 3 : return "MaxFluidVelocity";
-				case 4 : return "TemperatureDifferenceSupplyReturn";
+				case 4 : return "HeatingLevel";
+				case 5 : return "HeatingSlope";
+				case 6 : return "TemperatureDifferenceSupplyReturn";
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -2077,7 +2081,9 @@ namespace VICUS {
 				case 1 : return "Cooling limit";
 				case 2 : return "Pipe spacing";
 				case 3 : return "Maximum fluid velocity";
-				case 4 : return "Temperature difference between supply and return fluid temperature";
+				case 4 : return "Heating level for heating curve";
+				case 5 : return "Heating slope for heating curve";
+				case 6 : return "Temperature difference between supply and return fluid temperature";
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -2767,6 +2773,8 @@ namespace VICUS {
 				case 2 : return "m";
 				case 3 : return "m/s";
 				case 4 : return "K";
+				case 5 : return "-";
+				case 6 : return "K";
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -3456,6 +3464,8 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -4145,6 +4155,8 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SurfaceHeating::Type
 			case 64 :
@@ -4394,7 +4406,7 @@ namespace VICUS {
 			// SupplySystem::para_t
 			case 62 : return 4;
 			// SurfaceHeating::para_t
-			case 63 : return 5;
+			case 63 : return 7;
 			// SurfaceHeating::Type
 			case 64 : return 2;
 			// VentilationNatural::para_t
@@ -4564,7 +4576,7 @@ namespace VICUS {
 			// SupplySystem::para_t
 			case 62 : return 3;
 			// SurfaceHeating::para_t
-			case 63 : return 4;
+			case 63 : return 6;
 			// SurfaceHeating::Type
 			case 64 : return 1;
 			// VentilationNatural::para_t

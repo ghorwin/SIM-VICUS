@@ -57,6 +57,24 @@
 #include <qwt_scale_widget.h>
 #include <qwt_plot_zoomer.h>
 
+/*! This event filter allows catching click on table view when it is disabled.*/
+class ClickEventFilter : public QObject {
+	QTableView *m_tableView;
+public:
+	ClickEventFilter(QTableView *view) : m_tableView(view) {}
+protected:
+	bool eventFilter(QObject *watched, QEvent *event) override {
+		if (event->type() == QEvent::MouseButtonPress) {
+			if (m_tableView && !m_tableView->isEnabled()) {
+				m_tableView->setEnabled(true);
+				emit m_tableView->clicked(QModelIndex());
+			}
+			return false;
+		}
+		return QObject::eventFilter(watched, event);
+	}
+};
+
 
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	QWidget(parent),
@@ -78,6 +96,9 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->tableViewClimateFiles->setItemDelegate(delegate);
 	SVStyle::formatDatabaseTableView(m_ui->tableViewClimateFiles);
+
+	ClickEventFilter *clickFilter = new ClickEventFilter(m_ui->tableViewClimateFiles);
+	m_ui->tableViewClimateFiles->installEventFilter(clickFilter);
 
 	// stretch column with city name
 	m_ui->tableViewClimateFiles->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
@@ -640,12 +661,11 @@ void SVSimulationLocationOptions::onScreenChanged(const QScreen * screen) {
 
 
 void SVSimulationLocationOptions::on_tableViewClimateFiles_clicked(const QModelIndex &index) {
-	if (!m_ui->radioButtonCustomFilePath->isChecked()) {
+		m_ui->radioButtonFromDB->setChecked(true);
 		// get filename from current model and then update the climate station info text box
 		QModelIndex srcIndex = m_filterModel->mapToSource(index);
 		const SVClimateFileInfo * climateInfoPtr = (const SVClimateFileInfo *)srcIndex.data(Role_RawPointer).value<void*>();
 		modifyClimateFileAndLocation(climateInfoPtr);
-	}
 }
 
 

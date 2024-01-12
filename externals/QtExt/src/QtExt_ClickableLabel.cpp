@@ -8,6 +8,7 @@ ClickableLabel::ClickableLabel(QWidget * parent)
 {
 	m_normalStyleSheet = "QLabel { font-weight: normal; }";
 	m_hoverStyleSheet = "QLabel { font-weight: bold; }";
+	m_activeStyleSheet = "QLabel { font-weight: bold; }";
 	QLabel::setStyleSheet(m_normalStyleSheet);
 }
 
@@ -16,6 +17,7 @@ ClickableLabel::ClickableLabel(const QString & text, QWidget* parent):
 {
 	m_normalStyleSheet = "QLabel { font-weight: normal; }";
 	m_hoverStyleSheet = "QLabel { font-weight: bold; }";
+	m_activeStyleSheet = "QLabel { font-weight: bold; }";
 	QLabel::setStyleSheet(m_normalStyleSheet);
 }
 
@@ -26,6 +28,7 @@ ClickableLabel::ClickableLabel(int id, const QString & text, QWidget* parent):
 {
 	m_normalStyleSheet = "QLabel { font-weight: normal; }";
 	m_hoverStyleSheet = "QLabel { font-weight: bold; }";
+	m_activeStyleSheet = "QLabel { font-weight: bold; }";
 	QLabel::setStyleSheet(m_normalStyleSheet);
 }
 
@@ -33,19 +36,21 @@ ClickableLabel::ClickableLabel(int id, const QString & text, QWidget* parent):
 void ClickableLabel::setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet) {
 	m_normalStyleSheet = normalStyleSheet;
 	m_hoverStyleSheet = hoverStyleSheet;
-	if (m_active)
-		QLabel::setStyleSheet(m_hoverStyleSheet);
-	else
-		QLabel::setStyleSheet(m_normalStyleSheet);
+	m_activeStyleSheet = hoverStyleSheet;
+	updateStyleSheet();
+}
+
+void ClickableLabel::setStyleSheet(const QString & normalStyleSheet, const QString & hoverStyleSheet, const QString & activeStyleSheet) {
+	m_normalStyleSheet = normalStyleSheet;
+	m_hoverStyleSheet = hoverStyleSheet;
+	m_activeStyleSheet = activeStyleSheet;
+	updateStyleSheet();
 }
 
 
 void ClickableLabel::setActive(bool active) {
 	m_active = active;
-	if (m_active)
-		QLabel::setStyleSheet(m_hoverStyleSheet);
-	else
-		QLabel::setStyleSheet(m_normalStyleSheet);
+	updateStyleSheet();
 }
 
 
@@ -59,13 +64,20 @@ void ClickableLabel::mousePressEvent(QMouseEvent * event) {
 
 void ClickableLabel::enterEvent(QEvent * ev) {
 	QLabel::enterEvent(ev);
-	QLabel::setStyleSheet(m_hoverStyleSheet);
+	if (!m_active)
+		QLabel::setStyleSheet(m_hoverStyleSheet);
 }
 
 
 void ClickableLabel::leaveEvent(QEvent *ev) {
 	QLabel::leaveEvent(ev);
-	if (!m_active)
+	updateStyleSheet();
+}
+
+void ClickableLabel::updateStyleSheet(){
+	if (m_active)
+		QLabel::setStyleSheet(m_activeStyleSheet);
+	else
 		QLabel::setStyleSheet(m_normalStyleSheet);
 }
 
