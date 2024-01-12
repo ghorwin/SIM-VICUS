@@ -16922,7 +16922,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
     <message>
         <location filename="../../src/SVSimulationStartOptions.ui" line="378"/>
         <source>Test initialization </source>
-        <translation>Testinizialisierung </translation>
+        <translation>Testinitialisierung </translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationStartOptions.ui" line="398"/>
