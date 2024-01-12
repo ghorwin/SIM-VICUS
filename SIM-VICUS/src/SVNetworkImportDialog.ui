@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>571</width>
-    <height>491</height>
+    <width>943</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -192,19 +192,10 @@
           <string>Sub station import</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="3" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
-            <property name="toolTip">
-             <string>This is the maximum power of this sub station, used for pipe dimensioning</string>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_13">
             <property name="text">
-             <string>5</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <string>Sub Station Name:</string>
             </property>
            </widget>
           </item>
@@ -215,29 +206,26 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Installed power (maximum load):</string>
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="label_5">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
             </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="label_14">
+            <property name="styleSheet">
+             <string notr="true">color:rgb(119, 118, 123)</string>
+            </property>
             <property name="text">
-             <string>kW</string>
+             <string>For geojson files: Sub Station Name can be imported with attribute &quot;Name&quot;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
            <widget class="QtExt::BrowseFilenameWidget" name="lineEditSubStationFileName" native="true"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Sub Station Name:</string>
-            </property>
-           </widget>
           </item>
           <item row="4" column="0" colspan="2">
            <widget class="QLabel" name="label_4">
@@ -257,26 +245,51 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>kW</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Installed power (maximum load):</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="lineEditSubStationName"/>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="label_5">
-            <property name="font">
-             <font>
-              <italic>true</italic>
-             </font>
+          <item row="3" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemand">
+            <property name="toolTip">
+             <string>This is the maximum power of this sub station, used for pipe dimensioning</string>
             </property>
-            <property name="styleSheet">
-             <string notr="true">color:rgb(119, 118, 123)</string>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>For geojson files: Sub Station Name can be imported with attribute &quot;Name&quot;</string>
+             <string>5</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
            </widget>
+          </item>
+          <item row="5" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

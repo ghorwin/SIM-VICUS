@@ -85,6 +85,8 @@
         <file>icons/dark/svg/structure_units.svg</file>
         <file>icons/light/svg/structure_units.svg</file>
         <file>icons/dark/svg/properties_thermal.svg</file>
+        <file>icons/dark/png/simvicus_logo.png</file>
+        <file>icons/light/png/simvicus_logo.png</file>
         <file>icons/dark/svg/find_global_min_max.svg</file>
         <file>icons/dark/svg/find_local_min_max.svg</file>
         <file>icons/dark/svg/find_max_object.svg</file>

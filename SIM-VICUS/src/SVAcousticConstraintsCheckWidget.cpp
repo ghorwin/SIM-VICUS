@@ -162,7 +162,7 @@ void SVAcousticConstraintsCheckWidget::updateTable() {
 void SVAcousticConstraintsCheckWidget::on_pushButtonCheckConstraints_clicked() {
 	checkConstraints();
 
-	m_ui->tabWidget->setEnabled(true);
+	// m_ui->tabWidget->setEnabled(true);
 }
 
 

@@ -42,14 +42,15 @@ SVPropBuildingSurfaceConnectionWidget::SVPropBuildingSurfaceConnectionWidget(QWi
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	m_ui->comboBoxHighlightingMode->addItem(tr("Colored surfaces"), Vic3D::Scene::HM_ColoredSurfaces);
 	m_ui->comboBoxHighlightingMode->addItem(tr("Transparent surfaces"), Vic3D::Scene::HM_TransparentWithBoxes);
+	m_ui->comboBoxHighlightingMode->addItem(tr("Colored surfaces"), Vic3D::Scene::HM_ColoredSurfaces);
 
 	const Vic3D::SceneView *sc = SVViewStateHandler::instance().m_geometryView->sceneView();
 	connect(this, &SVPropBuildingSurfaceConnectionWidget::updatedHighlightingMode, sc, &Vic3D::SceneView::onTransparentBuildingModeChanged);
 
 	// set default mode
-	m_ui->comboBoxHighlightingMode->setCurrentIndex(m_ui->comboBoxHighlightingMode->findData(Vic3D::Scene::HM_TransparentWithBoxes));
+	m_ui->comboBoxHighlightingMode->setCurrentIndex(Vic3D::Scene::HM_TransparentWithBoxes);
+	emit updatedHighlightingMode(Vic3D::Scene::HM_TransparentWithBoxes);
 }
 
 

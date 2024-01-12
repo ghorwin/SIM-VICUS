@@ -114,7 +114,7 @@ public:
 	*/
 	void setViewState(const SVViewState & vs);
 
-	/*! This function can be called to specifically update the coloring and/or the network geometry.
+	/*! This function can be called to specifically update the coloring and/or the  geometry.
 		This function is meant to be called whenever the database element's colors have been changed,
 		or in the case of network components, also their geometry-size related properties.
 	*/

@@ -41,6 +41,8 @@ signals:
 private:
 	Ui::SVPropBuildingSurfaceConnectionWidget			*m_ui;
 
+
+
 	/*! Caches currently selected surfaces. Updated in updateUi().
 		We use a set since we frequently need to search for surfaces in this container.
 	*/

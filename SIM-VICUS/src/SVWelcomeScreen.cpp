@@ -75,8 +75,6 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 	m_ui->toolButtonNewProject->setIcon(QIcon::fromTheme("file_new"));
 	m_ui->toolButtonOpenProject->setIcon(QIcon::fromTheme("file_open"));
 
-	m_ui->labelLogo->setPixmap(QPixmap(":/logo/logo/logo.png"));
-
 	// labels need a fixed width to prevent shifting the layout during hovering (bold text is wider)
 	// we set the width dynamically here, as it depends on translation
 	m_ui->labelRecent->setActive(true);
@@ -469,6 +467,10 @@ void SVWelcomeScreen::onStyleChanged() {
 		setLabelColors("#eb9a2f");
 	updateWelcomePage(); // this also updates html colors
 	update();
+
+
+	QPixmap pixmap = QIcon::fromTheme("simvicus_logo").pixmap(300);
+	m_ui->labelLogo->setPixmap(pixmap);
 }
 
 
