@@ -4,7 +4,11 @@
 #include "SVChartUtils.h"
 #include "SVStyle.h"
 
+#include <IBK_CSVReader.h>
+
 #include <QtExt_Locale.h>
+#include <QClipboard>
+#include <QMimeData>
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -241,3 +245,93 @@ void SVNetworkSimultaneityDialog::on_pushButtonSetDefault_clicked() {
 	}
 }
 
+
+void SVNetworkSimultaneityDialog::on_pushButtonCopyToClipboard_clicked()
+{
+	QClipboard *clipboard = QApplication::clipboard();
+	QString table = "";
+	for(unsigned int i = 0; i < m_tmpSimultaneity.size(); i++){
+		QString newData = QString::number(m_tmpSimultaneity.x()[i]) + "	" + QString::number(m_tmpSimultaneity.y()[i]) + "\n";
+		table.append(newData);
+	}
+
+	QMimeData *mimeData = new QMimeData();
+	mimeData->setText(table);
+	clipboard->setMimeData(mimeData);
+
+}
+
+void SVNetworkSimultaneityDialog::on_pushButtonPasteFromClipboard_clicked() {
+	// get content of clip board
+	QString data = qApp->clipboard()->text();
+	if (data.isEmpty()) {
+		QMessageBox::critical(this, tr("Cannot paste data"), tr("No data on clipboard"));
+		return;
+	}
+	// first replace all , with .; this may also result in header name changes, but using , as part of a column
+	// name is bad practice anyway
+	std::replace(data.begin(), data.end(), ',', '.');
+
+	// now use the CSV-Reader to read the data into memory
+	IBK::CSVReader reader;
+	try {
+		reader.parse(data.toStdString(), false, true);
+		if (reader.m_nColumns != 2) {
+			QMessageBox::critical(this, tr("Cannot paste data"), tr("Expected exactly 2 columns of data."));
+			return;
+		}
+	}
+	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("Cannot paste data"), tr("Invalid format of table. Requires exactly 2 columns"));
+		return;
+	}
+
+	if (reader.m_nRows == 0) {
+		QMessageBox::critical(this, tr("Cannot paste data"), tr("Missing data."));
+		return;
+	}
+
+
+	IBK::LinearSpline spl;
+	try {
+		std::vector<double> x,y;
+
+		//Check if the header contains values
+		QString headerColumn0 = QString::fromStdString(reader.m_captions[0]);
+		QString headerColumn1 = QString::fromStdString(reader.m_captions[1]);
+		bool headerColumn0IsNumber;
+		bool headerColumn1IsNumber;
+		double x0 = headerColumn0.toDouble(&headerColumn0IsNumber);
+		double y0 = headerColumn1.toDouble(&headerColumn1IsNumber);
+
+		// if header contains values, add them at the beginning
+		if(headerColumn0IsNumber && headerColumn1IsNumber){
+			x.reserve(reader.m_nRows + 1);
+			y.reserve(reader.m_nRows + 1);
+			x.push_back(x0);
+			y.push_back(y0);
+		} else {
+			x.reserve(reader.m_nRows);
+			y.reserve(reader.m_nRows);
+		}
+		for (unsigned int i=0; i<reader.m_nRows; ++i) {
+			x.push_back(reader.m_values[i][0]);
+			y.push_back(reader.m_values[i][1]);
+		}
+
+		spl.setValues(x,y);
+		if (!spl.valid())
+			throw std::runtime_error("...");
+	} catch (...) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Invalid spline data in table."));
+		return;
+	}
+
+
+	// store spline data
+	m_tmpSimultaneity = spl;
+	updatePlot();
+	updateTableWidget();
+
+}
