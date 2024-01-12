@@ -73,6 +73,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButtonCopyToClipboard">
+       <property name="text">
+        <string>Copy To Clipboard</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonPasteFromClipboard">
+       <property name="text">
+        <string>Paste From Clipboard</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

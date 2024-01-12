@@ -36,6 +36,10 @@ private slots:
 
 	void on_pushButtonSetDefault_clicked();
 
+	void on_pushButtonCopyToClipboard_clicked();
+
+	void on_pushButtonPasteFromClipboard_clicked();
+
 private:
 
 	void modifyValues();
