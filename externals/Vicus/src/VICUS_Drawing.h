@@ -84,6 +84,7 @@ public:
 		double					m_yScale = 1.0;			// scale-factor in y direction
 		double					m_zScale = 1.0;			// scale-factor in z direction
 
+		/*! Rotation angle in rad. */
 		double					m_angle = 0.0;			// angle of rotation
 
 		IBKMK::Vector2D			m_insertionPoint;		// insertion point

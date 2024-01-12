@@ -1593,9 +1593,11 @@ void Drawing::transformInsert(QMatrix4x4 trans, const VICUS::Drawing::Insert &in
 	Q_ASSERT(insert.m_currentBlock != nullptr);
 	IBKMK::Vector2D insertPoint = insert.m_insertionPoint - insert.m_currentBlock->m_basePoint;
 
-	trans.translate(QVector3D(insertPoint.m_x,
-							  insertPoint.m_y,
+	trans.rotate(float(insert.m_angle/IBK::DEG2RAD), QVector3D(float(insertPoint.m_x),float(insertPoint.m_y),1));
+	trans.translate(QVector3D(float(insertPoint.m_x),
+							  float(insertPoint.m_y),
 							  0.0));
+	trans.scale(float(insert.m_xScale), float(insert.m_yScale), 1);
 
 	for (const Insert &i : m_inserts) {
 		if (i.m_parentBlock == nullptr)
