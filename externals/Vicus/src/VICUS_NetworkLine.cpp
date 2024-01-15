@@ -32,11 +32,11 @@
 
 namespace VICUS {
 
-extern const double	GeometricResolution = 0.01; // in m
+extern const double	NetworkGeometricResolution = 0.01; // in m
 
 void NetworkLine::intersection(const NetworkLine &line, IBKMK::Vector3D &pInter) const {
 	double l1, l2;
-	lineToLineDistance(m_a, m_b, line.m_a, line.m_b, l1, pInter, l2);
+	lineToLineDistance(m_a, m_a, line.m_a, line.m_b, l1, pInter, l2);
 }
 
 
@@ -59,7 +59,7 @@ bool NetworkLine::containsPoint(const IBKMK::Vector3D &point) const {
 	double lineFactor = 0;
 	IBKMK::Vector3D projectionPoint;
 	double dist = IBKMK::lineToPointDistance(m_a, m_b, point, lineFactor, projectionPoint);
-	return dist < GeometricResolution && IBK::near_gr(lineFactor, 0) && IBK::near_le(lineFactor, 1);
+	return dist < NetworkGeometricResolution && lineFactor > 1e-5 && lineFactor < 1-1e-5;
 }
 
 

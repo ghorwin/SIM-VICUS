@@ -37,7 +37,7 @@ namespace VICUS {
 	It stores the line internally in vector form a*lambda + b.
 */
 
-extern const double	GeometricResolution;		/// geometric resolution in m, points closer than that are assumed equal
+extern const double	NetworkGeometricResolution;		/// geometric resolution in m, points closer than that are assumed equal
 
 class NetworkLine {
 public:

@@ -27,9 +27,7 @@
 #include "VICUS_NetworkLine.h"
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
-#include "VICUS_Project.h"
 #include "VICUS_KeywordList.h"
-#include "VICUS_utilities.h"
 
 #include <QFile>
 #include <QJsonParseError>
@@ -47,9 +45,6 @@
 
 #include <IBKMK_3DCalculations.h>
 #include <IBKMK_UTM.h>
-
-
-
 
 #include <fstream>
 #include <algorithm>
@@ -101,7 +96,7 @@ unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v,
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
 		for (NetworkNode &n: m_nodes){
-			if (n.m_position.distanceTo(v) < GeometricResolution){
+			if (n.m_position.distanceTo(v) < NetworkGeometricResolution){
 				if(n.m_type != type){
 					n.m_type = type;
 				}
