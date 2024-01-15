@@ -16,8 +16,8 @@ plus three whitish (foreground) colors. Each set of widgets of the same
 type have a header like this:
 
         ------------------
-        GroupName --------
-        ------------------
+		GroupName --------
+		------------------
 
 And each widget is separated with a header like this:
 
@@ -29,20 +29,20 @@ configuration is described bellow.
         BACKGROUND -----------
 
                 Light   (unpressed)
-                Normal  (border, disabled, pressed, checked, toolbars, menus)
-                Dark    (background)
+				Normal  (border, disabled, pressed, checked, toolbars, menus)
+				Dark    (background)
 
         FOREGROUND -----------
 
                 Light   (texts/labels)
-                Normal  (not used yet)
-                Dark    (disabled texts)
+				Normal  (not used yet)
+				Dark    (disabled texts)
 
         SELECTION ------------
 
                 Light  (selection/hover/active)
-                Normal (selected)
-                Dark   (selected disabled)
+				Normal (selected)
+				Dark   (selected disabled)
 
 If a stranger configuration is required because of a bugfix or anything
 else, keep the comment on the line above so nobody changes it, including the
@@ -749,8 +749,8 @@ QToolBar QToolButton {
 }
 
 QToolBar QLineEdit {
-  background-color: #19232D;
-  border: 1px solid #b19834;
+    background: #212124;
+	border: 1px solid #b19834;
 }
 
 QToolBar QToolButton:hover {

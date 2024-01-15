@@ -609,11 +609,16 @@ void SVGeometryView::coordinateInputFinished() {
 
 
 void SVGeometryView::onStyleChanged() {
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
 		m_ui->geometryToolBar->setStyleSheet("QWidget {background-color: #3a3b3f};"
-											 "QToolbar QToolbutton {border: 1px lightgray};");
-	else
+											 "QAction {border: 1px lightgray};");
+		m_lineEditCoordinateInput->setStyleSheet("QLineEdit {background-color: #212124};");
+	}
+	else {
 		m_ui->geometryToolBar->setStyleSheet("");
+		m_lineEditCoordinateInput->setStyleSheet("");
+
+	}
 }
 
 
