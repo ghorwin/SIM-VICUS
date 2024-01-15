@@ -211,13 +211,13 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 			case NetworkNode::NT_SubStation: {
 				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
 				if (no.m_maxHeatingDemand.value > 0)
-					radius *= no.m_maxHeatingDemand.value / 1000;
+					radius = m_scaleNodes / 50 * (1 + std::sqrt(no.m_maxHeatingDemand.value / 1000) );
 			} break;
 			case NetworkNode::NT_Source:
 			case NetworkNode::NT_Mixer: {
 				// if we have connected pipes, compute max radius of adjacent pipes (our node should be larger than the pipes)
 				for (const VICUS::NetworkEdge * edge: no.m_edges)
-					radius = std::max(radius, edge->m_visualizationRadius*1.2); // enlarge by 20 %  over edge diameter
+					radius = std::max(radius, edge->m_visualizationRadius*1.2);// enlarge by 20 %  over edge diameter
 			} break;
 			default:;
 		}

@@ -3332,6 +3332,23 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapInfo = "snap to object";
 			} // if (s != nullptr)
 
+			// *** NetworkNode ***
+
+			const VICUS::NetworkNode * no = dynamic_cast<const VICUS::NetworkNode *>(obj);
+			if (no != nullptr) {
+				std::vector<SnapCandidate> snapCandidates;
+				SnapCandidate sc;
+				sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
+				sc.m_pickPoint = r.m_pickPoint;
+				snapCandidates.push_back(sc);
+
+				// now we take the snap point that's closest - even if all the snap options of an object are
+				// turned off, we still get the intersection point as last straw to pick.
+				std::sort(snapCandidates.begin(), snapCandidates.end());
+				snapPoint = snapCandidates.front().m_pickPoint;
+				snapInfo = "snap to drawing object";
+			}
+
 			if (snapOptions & SVViewState::Snap_Drawings) {
 				// *** drawings ***
 				const VICUS::DrawingLayer * dl = dynamic_cast<const VICUS::DrawingLayer *>(obj);

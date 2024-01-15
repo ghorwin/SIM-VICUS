@@ -1215,7 +1215,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		} break;
 
 		case NGM_SubStations : {
-			double radius = 0.5;
+			double radius = 1.0;
 			for (const IBKMK::Vector3D & v : m_vertexList)
 				addSphere(v, radius, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 		} break;

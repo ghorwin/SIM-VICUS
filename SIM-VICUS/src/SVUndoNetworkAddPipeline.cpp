@@ -44,8 +44,8 @@ void SVUndoNetworkAddPipeline::redo() {
 	// add all nodes as Mixer
 	unsigned int nextId = theProject().nextUnusedID();
 	for (const IBKMK::Vector3D &vec: m_polyLine) {
-	unsigned int nodeId = net->addNode(++nextId, vec, VICUS::NetworkNode::NT_Mixer);
-	m_addedNodeIds.push_back(nodeId);
+		unsigned int nodeId = net->addNode(++nextId, vec, VICUS::NetworkNode::NT_Mixer);
+		m_addedNodeIds.push_back(nodeId);
 	}
 
 	// add edges
