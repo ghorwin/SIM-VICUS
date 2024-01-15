@@ -192,9 +192,8 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 			m_currentOutputQuantity.clear(); // not cached yet, cannot display
 			m_currentOutputUnit.clear();
 		}
-		else {
+		else if (!m_allResults[m_currentOutputQuantity].empty()) {
 			// set slider
-			Q_ASSERT(!m_allResults[m_currentOutputQuantity].empty());
 			// get time points from first data set for this quantity
 			IBK::UnitVector timePointVec;
 			timePointVec.m_data = m_allResults[m_currentOutputQuantity].begin()->second.m_values.x();
