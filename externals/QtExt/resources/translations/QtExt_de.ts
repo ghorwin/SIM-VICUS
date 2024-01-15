@@ -391,7 +391,7 @@ Das Festplatten-Image wird nun eingebunden (eventuell müssen App-Downloads von 
     <message>
         <location filename="../../src/QtExt_ConstructionViewWidget.ui" line="93"/>
         <source>Move selected layer to left</source>
-        <translation>Verschiebe die ausgewählte Schichte nach links</translation>
+        <translation>Verschiebe die ausgewählte Schicht nach links</translation>
     </message>
     <message>
         <location filename="../../src/QtExt_ConstructionViewWidget.ui" line="102"/>
@@ -401,7 +401,7 @@ Das Festplatten-Image wird nun eingebunden (eventuell müssen App-Downloads von 
     <message>
         <location filename="../../src/QtExt_ConstructionViewWidget.ui" line="105"/>
         <source>Move selected layer to right</source>
-        <translation>Verschiebe die ausgewählte Schichte nach rechts</translation>
+        <translation>Verschiebe die ausgewählte Schicht nach rechts</translation>
     </message>
 </context>
 <context>

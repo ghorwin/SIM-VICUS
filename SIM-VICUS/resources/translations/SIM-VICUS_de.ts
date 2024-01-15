@@ -9823,8 +9823,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVMainWindow.cpp" line="1047"/>
         <location filename="../../src/SVMainWindow.cpp" line="1131"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1685"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1704"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1686"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1705"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
@@ -9911,25 +9911,25 @@ p, li { white-space: pre-wrap; }
         <translation>Sichtbarkeit des Hauptgitters geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2228"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2229"/>
         <source>Postproc session files</source>
         <translation>PostProc Sitzungsdateien</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2240"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2247"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2257"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2241"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2248"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2258"/>
         <source>Error running PostProc</source>
         <translation>Fehler bei Starten von PostProc</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2241"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2258"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2242"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2259"/>
         <source>Could not start executable &apos;%1&apos;.</source>
         <translation>Kann ausführbare Datei &apos;%1&apos; nicht starten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2248"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2249"/>
         <source>Process already running.</source>
         <translation>Prozess läuft bereits.</translation>
     </message>
@@ -9949,79 +9949,79 @@ p, li { white-space: pre-wrap; }
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1719"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1720"/>
         <source>Overwrite example</source>
         <translation>Beispiel überschreiben</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1719"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1720"/>
         <source>Example project exists already user directory, overwrite it?</source>
         <translation>Beispielprojekt existiert bereits im Benutzerverzeichnis, möchten Sie dieses überschreiben?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1836"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1837"/>
         <source>Remove/merge duplicates in database</source>
         <translation>Entferne/Verknüpfe Duplikate in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1837"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1838"/>
         <source>The database contains now some duplicate definitions. Do you want to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?</source>
         <translation>Die Datenbank enthält nun doppelte Definitionen. Möchten Sie diese nun durchsehen und unnötige Duplikate entfernen (dies kann man später auch in Datenbanken|Duplikate entfernen... machen)?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1902"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1933"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1903"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1934"/>
         <source>Configure %1</source>
         <translation>Konfiguriere %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1949"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1950"/>
         <source>unnamed%1</source>
         <translation>unbenannt %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2074"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2075"/>
         <source>Specify SIM-VICUS project</source>
         <translation>SIM-VICUS Projekt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2076"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2077"/>
         <source>SIM-VICUS project files (%1);;All files (*.*)</source>
         <translation>SIM-VICUS Projekte (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2088"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2089"/>
         <source>Select target directory to extract project package into</source>
         <translation>Wähle das Zielverzeichnis, in das das Projektpaket entpackt werden soll</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2100"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2101"/>
         <source>Project package does not contain a SIM-VICUS project file (%1-file).</source>
         <translation>Projektpaket enthält kein valides SIM-VICUS Projekt (%1-Datei).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2108"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2109"/>
         <source>Cannot remove existing project file (maybe missing permissions?).</source>
         <translation>Kann die existierende Projektdatei nicht löschen (fehlen möglicherweise Zugriffsrechte, oder wird die Datei wird noch benutzt?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2115"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2116"/>
         <source>Cannot rename project file to target file (invalid file name?).</source>
         <translation>Kann die Projektdatei nicht in den Zieldateinamen umbenennen (ungültiger Dateiname?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2278"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2279"/>
         <source>Please select first the path to the DWD weather downloader in the preferences dialog!</source>
         <translation>Bitte wählen Sie zunächst im Einstellungsdialog den Pfad zum DWD-Wetter-Downloader aus!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2289"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2290"/>
         <source>DWD weather downloader &apos;%1&apos; could not be started.</source>
         <translation>Der DWD-Wetter-Downloader &apos;%1&apos; konnte nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1967"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2099"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1968"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2100"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
@@ -10085,13 +10085,13 @@ p, li { white-space: pre-wrap; }
         <translation>Bitte starten Sie die Software neu, um die neue Sprache zu aktivieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1860"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1861"/>
         <source>Application Log</source>
         <translation>Anwendungsmeldungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1685"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1704"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1686"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1705"/>
         <source>The file &apos;%1&apos; cannot be found or does not exist.</source>
         <translation>Die Datei &apos;%1&apos; kann nicht gefunden werden oder existiert nicht.</translation>
     </message>
@@ -10124,19 +10124,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVMainWindow.cpp" line="1349"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2207"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2278"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2208"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2279"/>
         <source>Setup external tool</source>
         <translation>Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2207"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2208"/>
         <source>Please select first the path to the external post processing in the preferences dialog!</source>
         <translation>Bitte wählen Sie zunächst den Pfad zum externen Postprozessing im Einstellungsdialog!</translation>
     </message>
     <message>
         <location filename="../../src/SVMainWindow.cpp" line="1360"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2289"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2290"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
@@ -10145,19 +10145,19 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Wähle Zielverzeichnis für das Beispielprojekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1731"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2108"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2115"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1732"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2109"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2116"/>
         <source>Write error</source>
         <translation>Schreibfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1731"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1732"/>
         <source>Cannot copy example, maybe missing permissions?</source>
         <translation>Kann das Beispiel nicht kopieren, eventuell fehlen Zugriffsrechte?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1968"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1969"/>
         <source>Cannot extract project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket &apos;%1&apos; nicht extrahieren.</translation>
     </message>
@@ -13457,33 +13457,33 @@ Projekt zuletzt gespeichert am %2.
         <translation>Fluid wählen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="160"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="173"/>
         <source>Connect sub stations</source>
         <translation>Übergabestationen verbinden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="167"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="160"/>
         <source>Generate intersections</source>
         <translation>Schnittpunkte erzeugen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="174"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="199"/>
         <source>Reduce dead ends</source>
         <translation>Knoten ohne Anbindung löschen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="181"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="186"/>
         <source>Reduce redundant nodes</source>
         <translation>Redundante Knoten reduzieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="197"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="224"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="221"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="248"/>
         <source>Remove short edges</source>
         <translation>Kurze Kanten entfernen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="203"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="227"/>
         <source>Threshold:</source>
         <translation>Schwellwert:</translation>
     </message>
@@ -13517,12 +13517,12 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Schwellwert:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="217"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="241"/>
         <source>m</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="234"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="258"/>
         <source>Size pipes</source>
         <translation>Rohre dimensionieren</translation>
     </message>
@@ -13531,22 +13531,21 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">Gleichzeitigkeit bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="256"/>
         <source>Maximum pressure drop [Pa/m]</source>
-        <translation>Maximaler Druckabfall [Pa/m]</translation>
+        <translation type="vanished">Maximaler Druckabfall [Pa/m]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="277"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="294"/>
         <source>100</source>
         <translation>100</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="284"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="280"/>
         <source>10</source>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="291"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="273"/>
         <source>4</source>
         <translation>4</translation>
     </message>
@@ -13563,7 +13562,7 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">starte Rohrdimensionierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="348"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="393"/>
         <source>Scale Pipes</source>
         <translation>Rohrnetz skalieren</translation>
     </message>
@@ -13576,46 +13575,74 @@ Projekt zuletzt gespeichert am %2.
         <translation type="vanished">verfügbare Rohre auswählen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="263"/>
         <source>Temperature setpoint [C]</source>
-        <translation>Temperatursollwert [C]</translation>
+        <translation type="vanished">Temperatursollwert [C]</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="270"/>
         <source>Temperature difference [K]</source>
-        <translation>Temperaturdifferenz [K]</translation>
+        <translation type="vanished">Temperaturdifferenz [K]</translation>
     </message>
     <message>
         <source>size pipes</source>
         <translation type="vanished">Rohrnetz dimensionieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="210"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="234"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="240"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="264"/>
         <source>Edit simultaneity...</source>
         <translation>Gleichzeitigkeit bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="247"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="287"/>
+        <source>Temperature difference:</source>
+        <translation>Temperaturdifferenz:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="301"/>
+        <source>Temperature setpoint:</source>
+        <translation>Temperatursollwert:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="308"/>
+        <source>Maximum pressure drop:</source>
+        <translation>Maximaler Druckabfall:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="315"/>
+        <source>Pa/m</source>
+        <translation>Pa/m</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="322"/>
+        <source>C</source>
+        <translation>C</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="329"/>
+        <source>K</source>
+        <translation>K</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="338"/>
         <source>Select available pipes...</source>
         <translation>Verfügbare Rohre auswählen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="300"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="345"/>
         <source>Run sizing algorithm</source>
         <translation>Rohrdimensionierung durchführen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="316"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="361"/>
         <source>Visualisation</source>
         <translation>Visualisierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="322"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.ui" line="367"/>
         <source>Scale Nodes</source>
         <translation>Knoten skalieren</translation>
     </message>
@@ -14120,39 +14147,39 @@ Projekt zuletzt gespeichert am %2.
         <translation>Rohre, die kürzer als dieser Wert sind, werden entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="133"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="143"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="157"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="171"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="187"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="198"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="229"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="254"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="280"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="292"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="304"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="316"/>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="350"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="137"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="147"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="161"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="175"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="191"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="202"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="233"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="258"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="284"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="296"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="308"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="320"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="354"/>
         <source>Network visualization properties updated</source>
         <translation>Eigenschaften der Netzwerkvisualisierung aktualisiert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="215"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="219"/>
         <source>modified network</source>
         <translation>modifiziertes Netzwerk</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="332"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="336"/>
         <source>Could not find fluid with id #%1 in fluid database</source>
         <translation>Fluid mit der ID #%1 konnte in der Fluiddatenbank nicht gefunden werden</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="347"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="351"/>
         <source>Error sizing pipes</source>
         <translation>Fehler bei der Rohrdimensionierung</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="360"/>
+        <location filename="../../src/SVPropNetworkGeometryWidget.cpp" line="364"/>
         <source>Network simultaneity updated</source>
         <translation>Netzwerk-Gleichzeitigkeit aktualisiert</translation>
     </message>
@@ -14559,98 +14586,120 @@ Projekt zuletzt gespeichert am %2.
     </message>
     <message>
         <location filename="../../src/SVPropResultsWidget.ui" line="109"/>
-        <location filename="../../src/SVPropResultsWidget.ui" line="129"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="127"/>
         <source>Colormap</source>
         <translation>Farbskala</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="115"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="239"/>
+        <source>Read colormap from file ...</source>
+        <translation>Colormap aus Datei lesen ...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="255"/>
+        <source>Save colormap to file ...</source>
+        <translation>Colormap in Datei speichern ...</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="323"/>
+        <source>set colormap range to current minimum / maximum</source>
+        <translation>Colormap auf jetziges Minimum / Maximum anpassen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="348"/>
+        <source>set colormap range to minimum / maximum of entire timeseries</source>
+        <translation>Colormap auf Minimum / Maximum der gesamten Zeitreihe anpassen</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="456"/>
+        <source>Find object</source>
+        <translation>Objekte finden</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropResultsWidget.ui" line="475"/>
+        <source>Set time point</source>
+        <translation>Zu Zeitpunkt springen</translation>
+    </message>
+    <message>
         <source>Read from file...</source>
-        <translation>Aus Datei lesen...</translation>
+        <translation type="vanished">Aus Datei lesen...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="146"/>
         <source>Save to file...</source>
-        <translation>Speichere in Datei...</translation>
+        <translation type="vanished">Speichere in Datei...</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="191"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="302"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="139"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="283"/>
         <source>Maximum:</source>
         <translation>Maximum:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="122"/>
         <source>Set min/max from entire data set</source>
-        <translation>Setze min/max der gesamten Zeitreihe</translation>
+        <translation type="vanished">Setze min/max der gesamten Zeitreihe</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="233"/>
         <source>Set min/max for current time point</source>
-        <translation>Setze min/max für aktuellen Zeitpunkt</translation>
+        <translation type="vanished">Setze min/max für aktuellen Zeitpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="278"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="372"/>
         <source>Analysis</source>
         <translation>Analyse</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="284"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="406"/>
         <source>Show object with minimum value at current time point</source>
         <translation>Zeige Objekt mit minimalem Wert zum aktuellen Zeitpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="287"/>
         <source>Show object with min value</source>
-        <translation>Zeige Objekt mit minimalem Wert</translation>
+        <translation type="vanished">Zeige Objekt mit minimalem Wert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="294"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="428"/>
         <source>Jump to time point of the minimum value of entire data set</source>
         <translation>Springe zu Zeitpunkt des minimalen Wertes der gesamten Zeitreihe</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="297"/>
         <source>Jump to time of min value</source>
-        <translation>Springe zu Zeitpunkt mit min. Wert</translation>
+        <translation type="vanished">Springe zu Zeitpunkt mit min. Wert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="304"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="488"/>
         <source>Show object with maximum value at current time point</source>
         <translation>Zeige Objekt mit maximalem Wert zum aktuellen Zeitpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="307"/>
         <source>Show object with max value</source>
-        <translation>Zeige Objekt mit maximalem Wert</translation>
+        <translation type="vanished">Zeige Objekt mit maximalem Wert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="314"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="384"/>
         <source>Jump to time point of the maximum value of entire data set</source>
         <translation>Springe zu Zeitpunkt des maximalen Wertes der gesamten Zeitreihe</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="317"/>
         <source>Jump to time of max value</source>
-        <translation>Springe zu Zeitpunkt des max. Wertes</translation>
+        <translation type="vanished">Springe zu Zeitpunkt des max. Wertes</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="327"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="516"/>
         <source>Current selection</source>
         <translation>Aktuelle Auswahl</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="333"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="128"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="525"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="139"/>
         <source>None selected</source>
         <translation>Nichts gewählt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.ui" line="353"/>
+        <location filename="../../src/SVPropResultsWidget.ui" line="547"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
@@ -14680,103 +14729,103 @@ Projekt zuletzt gespeichert am %2.
         <translation>Maximalwert für Farbskala</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="134"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="145"/>
         <source>Multiple objects selected</source>
         <translation>Mehrere Objekte gewählt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="300"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="310"/>
         <source>Reading results directory</source>
         <translation>Reading results directory</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="366"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="376"/>
         <source>Reading header of file &apos;%1&apos;</source>
         <translation>Reading header of file &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="549"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="558"/>
         <source>unread</source>
         <translation>ungelesen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="554"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="563"/>
         <source>current</source>
         <translation>aktuell</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="560"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="569"/>
         <source>outdated</source>
         <translation>veraltet</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="565"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="574"/>
         <source>missing</source>
         <translation>fehlend</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="593"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="602"/>
         <source>Reading file &apos;%1&apos;</source>
         <translation>Lese Datei &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="865"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="894"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="903"/>
         <source>File error</source>
         <translation>File error</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="865"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="874"/>
         <source>Error in line %1 of file &apos;%2&apos;:
 %3</source>
         <translation>Fehler in Zeile %1 der Datei &apos;%2&apos;:
 %3</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="894"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="903"/>
         <source>Error reading color map from file. See logfile &apos;%1&apos; for details.</source>
         <translation>Fehler beim Lesen der Colormap aus der Datei. Siehe Logdatei &apos;%1&apos; für Details.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="952"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="959"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="961"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="968"/>
         <source>Select Color Map File</source>
         <translation>Wähle Colormap Datei</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="952"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="959"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="961"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="968"/>
         <source>Color map files (*.p2colormap);;All files (*.*)</source>
         <translation>Color map Dateien (*.p2colormap);;All Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="1010"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="1019"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="1035"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="1044"/>
         <source>output not available for selected object</source>
         <translation>Ausgabe nicht verfügbar für ausgewähltes Objekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="299"/>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="593"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="309"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="602"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="594"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="603"/>
         <source>Reading results file</source>
         <translation>Lese Ergebnisdatei</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="643"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="652"/>
         <source>Invalid/missing content in result file &apos;%1&apos;.</source>
         <translation>Ungültiger/fehlender Inhalt in Ergebnisdatei &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropResultsWidget.cpp" line="655"/>
+        <location filename="../../src/SVPropResultsWidget.cpp" line="664"/>
         <source>Processing results</source>
         <translation>Verarbeite Ausgaben</translation>
     </message>
@@ -18190,7 +18239,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Sichtbarkeit geändert</translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="3587"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="3604"/>
         <source>Selection changed</source>
         <translation>Auswahl geändert</translation>
     </message>
