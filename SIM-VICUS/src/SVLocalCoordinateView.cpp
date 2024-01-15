@@ -51,6 +51,9 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	m_ui->toolButtonAlignCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_align"));
 	m_ui->toolButtonMoveCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_move"));
 	m_ui->toolButtonInformation->setIcon(QIcon::fromTheme("surface_info"));
+
+	m_ui->line->setFrameShape(QFrame::VLine);
+	m_ui->line->setStyleSheet("QFrame[frameShape='5'] /* QFrame::VLine == 0x0005 */ { color: green; }");
 }
 
 

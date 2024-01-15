@@ -758,8 +758,8 @@ QToolBar QToolButton:hover {
 }
 
 QToolBar QToolButton:checked {
-  border: 1px solid #3A3B3F;
-  background-color: #3A3B3F;
+  border: 1px solid #b19834;
+  background-color: #4D3C18;
 }
 
 QToolBar QToolButton:checked:hover {

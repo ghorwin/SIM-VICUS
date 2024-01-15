@@ -610,7 +610,7 @@ void SVGeometryView::coordinateInputFinished() {
 
 void SVGeometryView::onStyleChanged() {
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		m_ui->geometryToolBar->setStyleSheet("QWidget {background-color: #3a3b3f};"
+		m_ui->geometryToolBar->setStyleSheet("QWidget {background: #3a3b3f};"
 											 "QAction {border: 1px lightgray};");
 		m_lineEditCoordinateInput->setStyleSheet("QLineEdit {background-color: #212124};");
 	}

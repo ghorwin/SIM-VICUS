@@ -2922,29 +2922,29 @@ void Scene::pick(PickObject & pickObject) {
 		}
 
 		// process all edges
-//		for (const VICUS::NetworkEdge & e : n.m_edges) {
+		for (const VICUS::NetworkEdge & e : n.m_edges) {
 
-//			// skip invisible nodes
-//			if (!e.m_visible)
-//				continue;
+			// skip invisible nodes
+			if (!e.m_visible)
+				continue;
 
-//			// compute closest distance between nodal center point and line
-//			double dist;
-//			IBKMK::Vector3D closestPoint;
-//			double lineFactor;
-//			double line2LineDistance = IBKMK::lineToLineDistance(nearPoint, direction,
-//																 e.m_node1->m_position, e.m_node2->m_position - e.m_node1->m_position,
-//																 dist, closestPoint, lineFactor);
-//			// check distance against cylinder radius
-//			if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
-//				PickObject::PickResult r;
-//				r.m_resultType = PickObject::RT_Object;
-//				r.m_depth = dist;
-//				r.m_pickPoint = closestPoint;
-//				r.m_objectID = e.m_id;
-//				pickObject.m_candidates.push_back(r);
-//			}
-//		}
+			// compute closest distance between nodal center point and line
+			double dist;
+			IBKMK::Vector3D closestPoint;
+			double lineFactor;
+			double line2LineDistance = IBKMK::lineToLineDistance(nearPoint, direction,
+																 e.m_node1->m_position, e.m_node2->m_position - e.m_node1->m_position,
+																 dist, closestPoint, lineFactor);
+			// check distance against cylinder radius
+			if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
+				PickObject::PickResult r;
+				r.m_resultType = PickObject::RT_Object;
+				r.m_depth = 9999; // ToDo Hauke: Improve hack, currently used to prevent picking of edges
+				r.m_pickPoint = closestPoint;
+				r.m_objectID = e.m_id;
+				pickObject.m_candidates.push_back(r);
+			}
+		}
 	}
 
 	pickDrawings(pickObject, nearPoint, farPoint, direction);
