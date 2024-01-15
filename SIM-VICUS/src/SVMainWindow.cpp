@@ -1585,7 +1585,6 @@ void SVMainWindow::onUpdateActions() {
 			// If it's wider than a certain amount of its preferred width, we reset the width to the preferred one
 			int preferredWidth = m_navigationTreeWidget->sizeHint().width();
 			if (navSplitterWidth > 1.7*preferredWidth)
-//				navSplitterWidth = (int)(0.15*availableWidth);
 				navSplitterWidth  = preferredWidth;
 			sizes << navSplitterWidth << availableWidth - navSplitterWidth;
 			m_geometryViewSplitter->setSizes(sizes);
