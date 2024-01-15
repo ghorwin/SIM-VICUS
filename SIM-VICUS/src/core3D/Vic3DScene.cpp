@@ -721,7 +721,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					// now we handle the snapping rules and also the locking
 					snapLocalCoordinateSystem(pickObject);
 
-					//		qDebug() << localMousePos << IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+					// qDebug() << localMousePos << IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 					// determine vector to snapped mouse position
 					QVector3D newPoint = m_coordinateSystemObject.translation();
@@ -3338,15 +3338,16 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			if (no != nullptr) {
 				std::vector<SnapCandidate> snapCandidates;
 				SnapCandidate sc;
-				sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
-				sc.m_pickPoint = r.m_pickPoint;
+				double dist = (no->m_position - r.m_pickPoint).magnitudeSquared();
+				sc.m_distToLineOfSight = dist;
+				sc.m_pickPoint = no->m_position;
 				snapCandidates.push_back(sc);
 
 				// now we take the snap point that's closest - even if all the snap options of an object are
 				// turned off, we still get the intersection point as last straw to pick.
 				std::sort(snapCandidates.begin(), snapCandidates.end());
 				snapPoint = snapCandidates.front().m_pickPoint;
-				snapInfo = "snap to drawing object";
+				snapInfo = "snap to network node object";
 			}
 
 			if (snapOptions & SVViewState::Snap_Drawings) {
@@ -3359,8 +3360,6 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					std::vector<SnapCandidate> snapCandidates;
 					float closestDepthSoFar = vs.m_snapDistance;
 
-					// we always add the intersection point with the surface as fall-back snappoint,
-					// but with a large distance so that it is only used as last resort
 					SnapCandidate sc;
 					sc.m_distToLineOfSight = (double)vs.m_snapDistance*2;
 					sc.m_pickPoint = r.m_pickPoint;
@@ -3374,8 +3373,6 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							const IBKMK::Vector3D & v3D  = points3d[i];
 
 							float dist = (IBKVector2QVector(v3D) - pickPoint).lengthSquared();
-							// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
-							// another snap point that's closer.
 							if (dist < closestDepthSoFar && dist < vs.m_snapDistance) {
 								// for now we snap to the vertexes of the outer polygon and all holes
 								sc.m_distToLineOfSight = (double)dist;
@@ -3395,14 +3392,16 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 								// Only add if close enough (< vs.m_snapDistance) and if there isn't yet
 								// another snap point that's closer.
-								if (dist2 < closestDepthSoFar && dist2 < vs.m_snapDistance && lineFactor > 0. && lineFactor < 1.) {
+								if (dist2 < closestDepthSoFar &&
+										dist2 < vs.m_snapDistance &&
+										lineFactor > 0. && lineFactor < 1.) {
 									// for now we snap to the vertexes of the outer polygon and all holes
 									sc.m_distToLineOfSight = (double)dist2;
 									sc.m_pickPoint = pickPoint;
 									snapCandidates.push_back(sc);
 									closestDepthSoFar = dist2;
 
-									//								qDebug() << "PICKED";
+									// qDebug() << "PICKED";
 								}
 							}
 					}
@@ -3425,7 +3424,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	} // with snapping
 
-	//	qDebug() << "Snap to: " << snapInfo.c_str();
+	qDebug() << "Snap to: " << snapInfo.c_str();
 
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line
@@ -3439,6 +3438,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	}
 
 	// take closest snap point and snap to it
+	qDebug() << "Snap point: " << snapPoint.m_x << " | " << snapPoint.m_y << " | " <<  snapPoint.m_z;
 	QVector3D newCoordinatePoint = IBKVector2QVector(snapPoint);
 	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }
