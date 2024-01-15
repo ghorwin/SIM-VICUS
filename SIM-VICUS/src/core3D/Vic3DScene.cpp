@@ -1896,9 +1896,12 @@ const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
 	QColor color = obj.color().isValid() ? obj.color() : SVStyle::instance().m_defaultDrawingColor;
 
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		// qDebug() << "Lightness: " << color.lightness();
-		if (color.lightness() < 100)
+		if (color.lightness() < 100) {
 			color = color.lighter(400);
+			if(color.lightness() < 20){
+				color = QColor(100,100,100);
+			}
+		}
 	}
 
 	if (!layer->m_visible || layer->m_selected)
