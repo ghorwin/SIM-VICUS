@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1008</width>
-    <height>692</height>
+    <width>1148</width>
+    <height>754</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -78,7 +78,6 @@
            <addaction name="actionXLock"/>
            <addaction name="actionYLock"/>
            <addaction name="actionZLock"/>
-           <addaction name="separator"/>
           </widget>
          </item>
         </layout>
@@ -147,7 +146,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-magnet-80.png</normaloff>:/gfx/icons8/icons8-magnet-80.png</iconset>
    </property>
    <property name="text">
@@ -162,7 +161,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-width-80.png</normaloff>:/gfx/icons8/icons8-width-80.png</iconset>
    </property>
    <property name="text">
@@ -204,7 +203,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-add-layer-80.png</normaloff>:/gfx/icons8/icons8-add-layer-80.png</iconset>
    </property>
    <property name="text">
@@ -219,7 +218,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</normaloff>:/gfx/icons8/icons8-in-alle-richtungen-skalieren-80.png</iconset>
    </property>
    <property name="text">
@@ -234,7 +233,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</normaloff>:/gfx/icons8/icons8-verfuegbare-updates-80.png</iconset>
    </property>
    <property name="text">
@@ -249,7 +248,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-skalieren-80.png</normaloff>:/gfx/icons8/icons8-skalieren-80.png</iconset>
    </property>
    <property name="text">
@@ -264,7 +263,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-kategorisieren-80.png</normaloff>:/gfx/icons8/icons8-kategorisieren-80.png</iconset>
    </property>
    <property name="text">
@@ -279,7 +278,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-kopieren-80.png</normaloff>:/gfx/icons8/icons8-kopieren-80.png</iconset>
    </property>
    <property name="text">
@@ -294,7 +293,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-heim-automatisierung-80.png</normaloff>:/gfx/icons8/icons8-heim-automatisierung-80.png</iconset>
    </property>
    <property name="text">
@@ -309,7 +308,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-netzdiagramm-80.png</normaloff>:/gfx/icons8/icons8-netzdiagramm-80.png</iconset>
    </property>
    <property name="text">
@@ -324,7 +323,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-gitter-80.png</normaloff>:/gfx/icons8/icons8-gitter-80.png</iconset>
    </property>
    <property name="text">
@@ -339,7 +338,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-audiowelle-80.png</normaloff>:/gfx/icons8/icons8-audiowelle-80.png</iconset>
    </property>
    <property name="text">
@@ -354,7 +353,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-futures-80.png</normaloff>:/gfx/icons8/icons8-futures-80.png</iconset>
    </property>
    <property name="text">
@@ -369,7 +368,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/icons.qrc">
+    <iconset>
      <normaloff>:/gfx/icons8/icons8-box-80.png</normaloff>:/gfx/icons8/icons8-box-80.png</iconset>
    </property>
    <property name="text">
@@ -388,8 +387,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

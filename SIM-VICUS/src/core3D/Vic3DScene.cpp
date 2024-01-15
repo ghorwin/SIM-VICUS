@@ -2917,29 +2917,29 @@ void Scene::pick(PickObject & pickObject) {
 		}
 
 		// process all edges
-		for (const VICUS::NetworkEdge & e : n.m_edges) {
+//		for (const VICUS::NetworkEdge & e : n.m_edges) {
 
-			// skip invisible nodes
-			if (!e.m_visible)
-				continue;
+//			// skip invisible nodes
+//			if (!e.m_visible)
+//				continue;
 
-			// compute closest distance between nodal center point and line
-			double dist;
-			IBKMK::Vector3D closestPoint;
-			double lineFactor;
-			double line2LineDistance = IBKMK::lineToLineDistance(nearPoint, direction,
-																 e.m_node1->m_position, e.m_node2->m_position - e.m_node1->m_position,
-																 dist, closestPoint, lineFactor);
-			// check distance against cylinder radius
-			if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
-				PickObject::PickResult r;
-				r.m_resultType = PickObject::RT_Object;
-				r.m_depth = dist;
-				r.m_pickPoint = closestPoint;
-				r.m_objectID = e.m_id;
-				pickObject.m_candidates.push_back(r);
-			}
-		}
+//			// compute closest distance between nodal center point and line
+//			double dist;
+//			IBKMK::Vector3D closestPoint;
+//			double lineFactor;
+//			double line2LineDistance = IBKMK::lineToLineDistance(nearPoint, direction,
+//																 e.m_node1->m_position, e.m_node2->m_position - e.m_node1->m_position,
+//																 dist, closestPoint, lineFactor);
+//			// check distance against cylinder radius
+//			if (line2LineDistance < e.m_visualizationRadius && lineFactor >= 0 && lineFactor <= 1) {
+//				PickObject::PickResult r;
+//				r.m_resultType = PickObject::RT_Object;
+//				r.m_depth = dist;
+//				r.m_pickPoint = closestPoint;
+//				r.m_objectID = e.m_id;
+//				pickObject.m_candidates.push_back(r);
+//			}
+//		}
 	}
 
 	pickDrawings(pickObject, nearPoint, farPoint, direction);
@@ -3059,6 +3059,8 @@ struct SnapCandidate {
 
 
 void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
+//	qDebug() << "================";
+
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
 	SVViewState::Locks actualLockOption = vs.m_locks;
@@ -3151,6 +3153,10 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		const PickObject::PickResult & r = pickObject.m_candidates.front();
 
 		QVector3D pickPoint = IBKVector2QVector(r.m_pickPoint);
+
+
+//		qDebug() << "Result type: " << r.m_resultType;
+//		qDebug() << "Object-ID: " << r.m_objectID;
 
 		// depending on type of object, process the different snap options
 		if (r.m_resultType == PickObject::RT_GridPlane) {
@@ -3339,6 +3345,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 			const VICUS::NetworkNode * no = dynamic_cast<const VICUS::NetworkNode *>(obj);
 			if (no != nullptr) {
+				qDebug() << "Snap to network";
+
 				std::vector<SnapCandidate> snapCandidates;
 				SnapCandidate sc;
 				double dist = (no->m_position - r.m_pickPoint).magnitudeSquared();
@@ -3352,6 +3360,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				snapPoint = snapCandidates.front().m_pickPoint;
 				snapInfo = "snap to network node object";
 			}
+
+			// *** Drawing ***
 
 			if (snapOptions & SVViewState::Snap_Drawings) {
 				// *** drawings ***
@@ -3422,6 +3432,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			// currently there is such snapping to nodes, yet
 
 			/// \todo Add snapping to nodes (i.e. when drawing edges)
+			qDebug() << "Pick point: " << r.m_pickPoint.m_x << " | " << r.m_pickPoint.m_y << " | " <<  r.m_pickPoint.m_z;
 
 		} // object snap
 
@@ -3442,6 +3453,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	// take closest snap point and snap to it
 	qDebug() << "Snap point: " << snapPoint.m_x << " | " << snapPoint.m_y << " | " <<  snapPoint.m_z;
+
 	QVector3D newCoordinatePoint = IBKVector2QVector(snapPoint);
 	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }

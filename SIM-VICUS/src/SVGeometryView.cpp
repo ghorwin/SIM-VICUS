@@ -51,7 +51,9 @@
 #include "SVProjectHandler.h"
 #include "SVColorLegend.h"
 #include "SVSnapOptionsDialog.h"
-
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
+#include "SVSettings.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
 	QWidget(parent),
@@ -106,13 +108,15 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_measurementWidget = new SVMeasurementWidget(this); // sets the pointer to the widget in SVViewStateHandler::instance()
 	m_colorLegend = new SVColorLegend(this);
 	m_snapOptionsDialog = new SVSnapOptionsDialog(this);
+	SVViewStateHandler::instance().m_geometryView = this;
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVGeometryView::onModified);
+//	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+//			this, &SVGeometryView::onStyleChanged);
 
-	SVViewStateHandler::instance().m_geometryView = this;
 	onViewStateChanged();
 
 	m_focusRootWidgets.insert(this);
@@ -131,6 +135,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->actionMeasure->setIcon(QIcon::fromTheme("measure"));
 	m_ui->actionShowResults->setIcon(QIcon::fromTheme("show_results"));
 	m_ui->actionSnap->setIcon(QIcon::fromTheme("snap"));
+
+	m_ui->geometryToolBar->setStyleSheet("QToolbox {border: none; background-color: #3a3b3f}");
 
 	m_snapOptionsDialog->updateUi();
 	m_snapOptionsDialog->setExpanded(false);
@@ -602,6 +608,9 @@ void SVGeometryView::coordinateInputFinished() {
 	m_sceneViewContainerWidget->setFocus();
 }
 
+
+void SVGeometryView::onStyleChanged() {
+}
 
 
 void SVGeometryView::on_actionBuildingParametrization_triggered() {

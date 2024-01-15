@@ -10,35 +10,35 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>207</height>
+    <height>213</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Distance</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartX">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistY">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="3">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartZ">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditDistZ">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -47,27 +47,27 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndX">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
+   <item row="8" column="0" colspan="4">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistX">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   <item row="13" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
-   <item row="6" column="1" colspan="3">
+   <item row="12" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
       <widget class="QtExt::ColorButton" name="pushButtonColor">
@@ -85,58 +85,69 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndY">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndZ">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="3">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartZ">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="4">
+   <item row="6" column="0" colspan="4">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistance">
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelStartPoint">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Start point (X/Y/Z):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>m</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartY">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndX">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndZ">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -146,28 +157,25 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="labelStartPoint_2">
-     <property name="text">
-      <string>End point (X/Y/Z):</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
     <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>Distance [m]:</string>
+      <string>Distance:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="labelStartPoint">
-     <property name="text">
-      <string>Start point (X/Y/Z):</string>
+   <item row="7" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistX">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartY">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -176,37 +184,128 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistY">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditStartX">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelStartPoint_2">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>End point (X/Y/Z):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
     <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Offsets (ΔX/ΔY/ΔZ) [m]:</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QCheckBox" name="checkBoxLocalMeasurement">
-     <property name="text">
-      <string>Show local Measurement</string>
+   <item row="5" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditEndY">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QCheckBox" name="checkBoxLocalMeasurement">
+     <property name="text">
+      <string>use local coordinate system</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditDistance">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
-   <slots>
-    <signal>colorChanged()</signal>
-   </slots>
-  </customwidget>
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
    <slots>
     <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+   <slots>
+    <signal>colorChanged()</signal>
    </slots>
   </customwidget>
  </customwidgets>

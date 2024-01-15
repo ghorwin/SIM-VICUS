@@ -147,6 +147,9 @@ private slots:
 	*/
 	void coordinateInputFinished();
 
+	/*! Triggered when style is changed in Preferences. */
+	void onStyleChanged();
+
 	void on_actionTranslateGeometry_triggered();
 	void on_actionRotateGeometry_triggered();
 	void on_actionScaleGeometry_triggered();

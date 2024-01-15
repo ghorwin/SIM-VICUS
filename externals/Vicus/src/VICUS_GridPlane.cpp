@@ -183,7 +183,8 @@ void GridPlane::closestSnapPoint(const IBKMK::Vector3D & intersectionPoint, IBKM
 	}
 
 	// recompute snap coordinates
-	snapPoint = m_offset + i*m_localX + j*m_localY;
+	snapPoint = m_offset + i * minorGridSpacing * m_localX
+						 + j * minorGridSpacing * m_localY;
 }
 
 
