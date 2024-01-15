@@ -5,7 +5,7 @@ Comment=light theme icons
 PanelDefault=22
 PanelSizes=22
 
-Directories=svg
+Directories=svg png
 
 [svg]
 Size=48
