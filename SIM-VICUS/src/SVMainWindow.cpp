@@ -1720,6 +1720,9 @@ void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 		QMessageBox::StandardButton reply = QMessageBox::question(this, tr("Overwrite example"), tr("Example project exists already user directory, overwrite it?"), QMessageBox::Yes|QMessageBox::No);
 		if (reply == QMessageBox::No)
 			return;
+		else
+			if (!QFile::remove(targetFile))
+				QMessageBox::critical(this, tr("Write error"), tr("Unable to overwrite example file, maybe missing permissions?"));
 	}
 	QFile::copy(filename, targetFile);
 
