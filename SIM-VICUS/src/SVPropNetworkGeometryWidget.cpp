@@ -31,6 +31,10 @@ SVPropNetworkGeometryWidget::SVPropNetworkGeometryWidget(QWidget *parent) :
 
 	m_iconConnected = QPixmap(":/gfx/actions/16x16/ok.png");
 	m_iconUnconnected = QPixmap(":/gfx/actions/16x16/error.png");
+
+	m_ui->pushButtonConnectBuildings->setIcon(QIcon::fromTheme("network_connect_substations"));
+	m_ui->pushButtonGenerateIntersections->setIcon(QIcon::fromTheme("network_add_intersections"));
+	m_ui->pushButtonReduceDeadEnds->setIcon(QIcon::fromTheme("network_reduce_dead_ends"));
 }
 
 SVPropNetworkGeometryWidget::~SVPropNetworkGeometryWidget() {

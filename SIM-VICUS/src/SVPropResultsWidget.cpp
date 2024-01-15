@@ -49,6 +49,17 @@ SVPropResultsWidget::SVPropResultsWidget(QWidget *parent) :
 	m_ui->lineEditMinValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Minimum value for coloring"), false, false);
 	m_ui->lineEditMaxValue->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Maximum value for coloring"), false, false);
 
+	m_ui->pushButtonReadColormap->setIcon(QIcon::fromTheme("load_colormap"));
+	m_ui->pushButtonSaveColormap->setIcon(QIcon::fromTheme("save_colormap"));
+	m_ui->pushButtonSetGlobalMinMax->setIcon(QIcon::fromTheme("find_global_min_max"));
+	m_ui->pushButtonSetLocalMinMax->setIcon(QIcon::fromTheme("find_local_min_max"));
+
+	m_ui->pushButtonFindMaxObject->setIcon(QIcon::fromTheme("find_max_object"));
+	m_ui->pushButtonFindMinObject->setIcon(QIcon::fromTheme("find_min_object"));
+	m_ui->pushButtonJumpToMax->setIcon(QIcon::fromTheme("jump_to_max_time"));
+	m_ui->pushButtonJumpToMin->setIcon(QIcon::fromTheme("jump_to_min_time"));
+
+
 	connect(m_ui->widgetTimeSlider, &SVTimeSliderWidget::cutValueChanged,
 			this, &SVPropResultsWidget::onTimeSliderCutValueChanged);
 
@@ -197,7 +208,6 @@ void SVPropResultsWidget::on_tableWidgetAvailableResults_itemSelectionChanged() 
 	}
 
 	m_ui->groupBoxAnalysis->setEnabled(!m_currentOutputQuantity.isEmpty());
-	m_ui->groupBoxCurrentSelection->setEnabled(!m_currentOutputQuantity.isEmpty());
 	if (m_currentOutputQuantity.isEmpty())
 		SVViewStateHandler::instance().m_geometryView->colorLegend()->setTitle("");
 	else
@@ -473,7 +483,6 @@ void SVPropResultsWidget::readResultsDir() {
 	m_ui->groupBoxColormap->setEnabled(validOutputFound);
 	m_ui->groupBoxTime->setEnabled(validOutputFound);
 	m_ui->groupBoxAnalysis->setEnabled(validOutputFound);
-	m_ui->groupBoxCurrentSelection->setEnabled(validOutputFound);
 
 	if (!validOutputFound)
 		return;

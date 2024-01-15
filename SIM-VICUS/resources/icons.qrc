@@ -85,5 +85,27 @@
         <file>icons/dark/svg/structure_units.svg</file>
         <file>icons/light/svg/structure_units.svg</file>
         <file>icons/dark/svg/properties_thermal.svg</file>
+        <file>icons/dark/svg/find_global_min_max.svg</file>
+        <file>icons/dark/svg/find_local_min_max.svg</file>
+        <file>icons/dark/svg/find_max_object.svg</file>
+        <file>icons/dark/svg/find_min_object.svg</file>
+        <file>icons/dark/svg/jump_to_max_time.svg</file>
+        <file>icons/dark/svg/jump_to_min_time.svg</file>
+        <file>icons/dark/svg/load_colormap.svg</file>
+        <file>icons/dark/svg/network_add_intersections.svg</file>
+        <file>icons/dark/svg/network_connect_substations.svg</file>
+        <file>icons/dark/svg/network_reduce_dead_ends.svg</file>
+        <file>icons/dark/svg/save_colormap.svg</file>
+        <file>icons/light/svg/find_global_min_max.svg</file>
+        <file>icons/light/svg/find_local_min_max.svg</file>
+        <file>icons/light/svg/find_max_object.svg</file>
+        <file>icons/light/svg/find_min_object.svg</file>
+        <file>icons/light/svg/jump_to_max_time.svg</file>
+        <file>icons/light/svg/jump_to_min_time.svg</file>
+        <file>icons/light/svg/load_colormap.svg</file>
+        <file>icons/light/svg/network_add_intersections.svg</file>
+        <file>icons/light/svg/network_connect_substations.svg</file>
+        <file>icons/light/svg/network_reduce_dead_ends.svg</file>
+        <file>icons/light/svg/save_colormap.svg</file>
     </qresource>
 </RCC>
