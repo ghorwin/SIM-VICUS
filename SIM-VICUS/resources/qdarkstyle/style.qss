@@ -736,8 +736,8 @@ https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qtoolbar
 
 --------------------------------------------------------------------------- */
 QToolBar {
-  background-color: #3a3b3f;
-  /*border-bottom: 1px solid #3A3B3F;*/
+  background: #3a3b3f;
+  border-bottom: 0px;
   padding: 2px;
   font-weight: bold;
   spacing: 2px;
@@ -746,6 +746,11 @@ QToolBar {
 QToolBar QToolButton {
   background-color: #3a3b3f;
   border: 1px solid #3a3b3f;
+}
+
+QToolBar QLineEdit {
+  background-color: #19232D;
+  border: 1px solid #b19834;
 }
 
 QToolBar QToolButton:hover {

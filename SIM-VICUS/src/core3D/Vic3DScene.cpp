@@ -1910,21 +1910,26 @@ const QColor objectColor(const VICUS::Drawing::AbstractDrawingObject &obj) {
 	return color;
 }
 
+
+/*! Function in order to generate Planes necesairry for drawing objects coming from DXFs.
+	\param objects ToDO Stephan Add documentation
+*/
 template <typename t>
-void generateDrawingPlanes(const std::vector<t> &objects, const VICUS::Drawing &drawing, unsigned int &currentVertexIndex,
+void generateDrawingPlanes(const std::vector<t> &objects, unsigned int &currentVertexIndex,
 						   unsigned int &currentElementIndex, OpaqueGeometryObject &opaqueObject) {
 
 	for (const t & obj : objects){
 
 		bool isBlockObject = obj.m_block != nullptr;
 
+		// We skip all objects the are inserted by inserts
 		if (isBlockObject)
 			continue;
 
 		const VICUS::DrawingLayer *dl = dynamic_cast<const VICUS::DrawingLayer *>(obj.m_layerRef);
 
 		if (dl == nullptr)
-			continue;
+			continue; // For safty, may not happen
 
 		const QColor color = objectColor(obj);
 		const std::vector<VICUS::PlaneGeometry> &planes = obj.planeGeometries();
@@ -1964,14 +1969,14 @@ void Scene::generate2DDrawingGeometry() {
 
 	// iterate over all AbstractObjects and draw them
 	for (const VICUS::Drawing & drawing : p.m_drawings) {
-		generateDrawingPlanes<VICUS::Drawing::Line>(drawing.m_lines, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing.m_linearDimensions, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing.m_polylines, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::Arc>(drawing.m_arcs, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::Circle>(drawing.m_circles, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
-		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, drawing, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Line>(drawing.m_lines, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::LinearDimension>(drawing.m_linearDimensions,  currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::PolyLine>(drawing.m_polylines, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Arc>(drawing.m_arcs, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Circle>(drawing.m_circles, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Ellipse>(drawing.m_ellipses, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Solid>(drawing.m_solids, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
+		generateDrawingPlanes<VICUS::Drawing::Text>(drawing.m_texts, currentVertexIndex, currentElementIndex, m_drawingGeometryObject);
 	}
 
 	m_drawingGeometryObject.m_transparentStartIndex = m_drawingGeometryObject.m_indexBufferData.size();

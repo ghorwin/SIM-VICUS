@@ -159,6 +159,7 @@ public:
 	/*! Getter for worldToView Matrix. */
 	const QMatrix4x4 & worldToView() const;
 
+	/*! Updates the highlighting mode in surface-connection widget (Building properties widget). */
 	void updatedHighlightingMode(HighlightingMode mode);
 
 private:

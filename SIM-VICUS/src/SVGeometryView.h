@@ -141,14 +141,14 @@ public slots:
 	/*! Called when user types in numbers while placing vertexes. */
 	void onNumberKeyPressed(Qt::Key k);
 
+	/*! Triggered when style is changed in Preferences handled by SVSettings. */
+	void onStyleChanged();
+
 private slots:
 	/*! Triggered when the user pressed enter while the line edit is active, or when the place vertex button
 		is pressed, or when the user pressed enter while vertex placement in the scene.
 	*/
 	void coordinateInputFinished();
-
-	/*! Triggered when style is changed in Preferences. */
-	void onStyleChanged();
 
 	void on_actionTranslateGeometry_triggered();
 	void on_actionRotateGeometry_triggered();

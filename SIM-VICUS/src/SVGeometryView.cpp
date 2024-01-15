@@ -114,8 +114,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 			this, &SVGeometryView::onViewStateChanged);
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVGeometryView::onModified);
-//	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-//			this, &SVGeometryView::onStyleChanged);
+
 
 	onViewStateChanged();
 
@@ -136,10 +135,10 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->actionShowResults->setIcon(QIcon::fromTheme("show_results"));
 	m_ui->actionSnap->setIcon(QIcon::fromTheme("snap"));
 
-	m_ui->geometryToolBar->setStyleSheet("QToolbox {border: none; background-color: #3a3b3f}");
-
 	m_snapOptionsDialog->updateUi();
 	m_snapOptionsDialog->setExpanded(false);
+
+	onStyleChanged(); // in order to init correct background of toolbar
 }
 
 
@@ -610,6 +609,11 @@ void SVGeometryView::coordinateInputFinished() {
 
 
 void SVGeometryView::onStyleChanged() {
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		m_ui->geometryToolBar->setStyleSheet("QWidget {background-color: #3a3b3f};"
+											 "QToolbar QToolbutton {border: 1px lightgray};");
+	else
+		m_ui->geometryToolBar->setStyleSheet("");
 }
 
 

@@ -783,6 +783,10 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
+
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			m_geometryView, &SVGeometryView::onStyleChanged);
+
 	// *** Simulation Settings View
 
 	m_simulationSettingsView = new SVSimulationSettingsView(this);
