@@ -76,7 +76,7 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui->lineEditFlapTileHeight->setup(0, std::numeric_limits<double>::max(), tr("Zone flap tile height in [m]."),false, true);
 
 	m_ui->lineEditSubStationMaxHeatingDemand->setup(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(),
-									tr("Maximum/Nominal heating demand [W]."), false, true);
+									tr("Maximum/Nominal heating demand [kW]."), false, true);
 
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
 
@@ -1685,7 +1685,7 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 
 void SVPropVertexListWidget::updateSubStationLineEdits() {
 	// set default values
-	m_ui->lineEditSubStationMaxHeatingDemand->setValue(5000);
+	m_ui->lineEditSubStationMaxHeatingDemand->setValue(5);
 	m_ui->lineEditSubStationName->setText("sub station");
 }
 
@@ -1766,7 +1766,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSubStation_clicked() {
 	}
 
 	// collect	all points as VICUS::Nodes
-	double heatDemand = m_ui->lineEditSubStationMaxHeatingDemand->value();
+	double heatDemand = m_ui->lineEditSubStationMaxHeatingDemand->value() * 1000;
 	QString name = m_ui->lineEditSubStationName->text();
 	Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
 	std::vector<VICUS::NetworkNode> nodes;

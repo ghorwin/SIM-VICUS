@@ -92,6 +92,9 @@ void SVDBSubNetworkEditWidget::modelModify() {
 
 
 void SVDBSubNetworkEditWidget::updateTableWidget() {
+
+	int currentRow = m_ui->tableWidgetElements->currentRow();
+
 	m_ui->tableWidgetElements->blockSignals(true);
 	m_ui->tableWidgetElements->setRowCount(0);
 	m_ui->tableWidgetElements->blockSignals(false);
@@ -140,7 +143,10 @@ void SVDBSubNetworkEditWidget::updateTableWidget() {
 		++row;
 	}
 
-	m_ui->tableWidgetElements->selectRow(row - 1);
+	if (currentRow < m_ui->tableWidgetElements->rowCount())
+		m_ui->tableWidgetElements->selectRow(currentRow);
+	else
+		m_ui->tableWidgetElements->selectRow(row);
 
 	updateElementProperties();
 

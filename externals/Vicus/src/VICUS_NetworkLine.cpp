@@ -36,7 +36,7 @@ extern const double	NetworkGeometricResolution = 0.01; // in m
 
 void NetworkLine::intersection(const NetworkLine &line, IBKMK::Vector3D &pInter) const {
 	double l1, l2;
-	lineToLineDistance(m_a, m_a, line.m_a, line.m_b, l1, pInter, l2);
+	lineToLineDistance(m_a, m_b, line.m_a, line.m_b, l1, pInter, l2);
 }
 
 
