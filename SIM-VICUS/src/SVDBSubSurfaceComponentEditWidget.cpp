@@ -65,7 +65,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 
 	// construction group box
 	m_ui->lineEditWindowName->setReadOnly(true);
-	m_ui->lineEditReductionFactor->setup(0, 1, "Reduction factor for dynamic shading", true, true);
+	m_ui->lineEditReductionFactor->setup(0, 1, tr("Fraction of radiation passed through to the window when the shading is activated."), true, true);
 
 	m_shgcCurve = new QwtPlotCurve();
 	SVDBWindowGlazingSystemEditWidget::initPlot(m_ui->shgcPlot, m_shgcCurve);
