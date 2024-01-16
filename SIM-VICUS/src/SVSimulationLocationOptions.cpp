@@ -103,6 +103,8 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent) :
 	// stretch column with city name
 	m_ui->tableViewClimateFiles->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 
+	m_ui->tableViewClimateFiles->setStyleSheet(QString("QTableView {selection-background-color: %1;}").arg(SVStyle::instance().m_DBSelectionColor.name()));
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVSimulationLocationOptions::onModified);
 
