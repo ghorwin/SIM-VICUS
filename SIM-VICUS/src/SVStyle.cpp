@@ -249,7 +249,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_userDBBackgroundDark						= "#012a4a";
 		m_userDBBackgroundBright					= "#013a63";
 		m_regularDBEntryColorDark					= "#e0e0e0";
-		m_DBSelectionColor							= "#4a8522";
+		m_DBSelectionColor							= "#088C54";
 
 		m_logProgressText							= "#c0c0c0";
 		m_logErrorText								= "#ff2222";
@@ -259,17 +259,17 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_defaultDrawingColor						= "#FFFFFF";
 
 		// now adjust the style settings for QtExt components
-		QtExt::Style::EditFieldBackground = "#212124";
+		QtExt::Style::EditFieldBackground			= "#212124";
 		QtExt::Style::AlternativeEditFieldBackground = "#3a3b3f";
-		QtExt::Style::ErrorEditFieldBackground = "#ab4e4e";
-		QtExt::Style::ReadOnlyEditFieldBackground = "#5f7da0";
+		QtExt::Style::ErrorEditFieldBackground		= "#ab4e4e";
+		QtExt::Style::ReadOnlyEditFieldBackground	= "#5f7da0";
 
-		QtExt::Style::AlternativeBackgroundBright = "#73580e";
-		QtExt::Style::AlternativeBackgroundDark = "#57430b";
-		QtExt::Style::AlternativeBackgroundText = "#ffedce";
+		QtExt::Style::AlternativeBackgroundBright	= "#73580e";
+		QtExt::Style::AlternativeBackgroundDark		= "#57430b";
+		QtExt::Style::AlternativeBackgroundText		= "#ffedce";
 
-		QtExt::Style::ToolBoxPageBackground		= "#212124";
-		QtExt::Style::ToolBoxPageEdge			= "#3a3b3f";
+		QtExt::Style::ToolBoxPageBackground			= "#212124";
+		QtExt::Style::ToolBoxPageEdge				= "#3a3b3f";
 
 		QIcon::setThemeName("dark");
 	}
@@ -289,7 +289,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 		m_userDBBackgroundDark						= "#cddafd";
 		m_userDBBackgroundBright					= "#dfe7fd";
-		m_DBSelectionColor							= "#4a8522";
+		m_DBSelectionColor							= "#088C54";
 
 		m_logProgressText							= "#202020";
 		m_logErrorText								= "#ab0000";

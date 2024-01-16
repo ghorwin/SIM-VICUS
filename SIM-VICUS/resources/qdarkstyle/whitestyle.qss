@@ -69,3 +69,10 @@ SVWelcomeScreen QToolButton {
 SVWelcomeScreen QToolButton:hover {
     border: 1px solid #EB992F;
 }
+
+QTreeView::item:selected:active,
+QListView::item:selected:active,
+QTableView::item:selected:active,
+QColumnView::item:selected:active {
+  background-color: #088C54;
+}

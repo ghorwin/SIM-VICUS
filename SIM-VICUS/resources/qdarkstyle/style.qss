@@ -1911,7 +1911,7 @@ QTreeView::item:selected:active,
 QListView::item:selected:active,
 QTableView::item:selected:active,
 QColumnView::item:selected:active {
-  background-color: #a08918;
+  background-color: #088C54;
 }
 
 QTreeView::item:!selected:hover,
