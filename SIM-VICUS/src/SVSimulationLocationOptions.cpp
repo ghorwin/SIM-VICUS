@@ -554,6 +554,8 @@ void SVSimulationLocationOptions::formatQwtPlot(bool init, QwtPlot &plot, QDateT
 
 void SVSimulationLocationOptions::onModified(int modificationType, ModificationInfo * /*data*/) {
 
+	m_ui->tableViewClimateFiles->blockSignals(true);
+
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 
 	switch (modType) {
@@ -652,6 +654,8 @@ void SVSimulationLocationOptions::onModified(int modificationType, ModificationI
 
 		default:;
 	}
+
+	m_ui->tableViewClimateFiles->blockSignals(false);
 }
 
 
