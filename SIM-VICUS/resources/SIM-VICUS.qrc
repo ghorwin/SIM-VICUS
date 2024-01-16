@@ -198,5 +198,6 @@
         <file>gfx/style/white.png</file>
         <file>gfx/actions/DWDWeatherDataConverter.png</file>
         <file>logo/logo/logo.png</file>
+        <file>gfx/background/simvicus-background-mail.png</file>
     </qresource>
 </RCC>

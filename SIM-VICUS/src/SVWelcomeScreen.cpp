@@ -91,6 +91,7 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 
 	// hide news for now
 	m_ui->textBrowserNews->setVisible(false);
+
 }
 
 

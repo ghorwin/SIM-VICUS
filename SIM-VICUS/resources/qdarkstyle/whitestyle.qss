@@ -27,3 +27,10 @@ QSplitter::handle:vertical {
   height: 5px;
   image: url(":/qss_icons/rc/line_horizontal.png");
 }
+
+QToolBar QToolButton:checked {
+  padding: 1px;
+  border: 1px solid #b19834;
+  border-radius: 2px;
+  background-color: #FFDFA0;
+}

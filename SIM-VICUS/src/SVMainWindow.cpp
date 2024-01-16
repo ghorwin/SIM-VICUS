@@ -742,7 +742,7 @@ void SVMainWindow::setup() {
 	m_ui->centralWidget->setLayout(mainLayout);
 	// updates colors and entire content of welcome page
 	m_welcomeScreen->onStyleChanged();
-
+	//m_welcomeScreen->setStyleSheet("QWidget {background-image: url(:/gfx/background/simvicus-background-mail.png);}");
 
 	connect(m_welcomeScreen, SIGNAL(newProjectClicked()), this, SLOT(on_actionFileNew_triggered()));
 	connect(m_welcomeScreen, SIGNAL(openProjectClicked()), this, SLOT(on_actionFileOpen_triggered()));
