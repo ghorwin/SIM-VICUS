@@ -14,16 +14,7 @@ void SVUndoNetworkAddPipeline::undo() {
 	VICUS::Network *net = dynamic_cast<VICUS::Network*>( theProject().objectById(m_networkId) );
 	Q_ASSERT(net != nullptr);
 
-	for (unsigned int edgeId: m_addedEdgeIds){
-		net->m_edges.erase(net->m_edges.begin() + net->indexOfEdge(edgeId));
-	}
-	for (unsigned int nodeId: m_addedNodeIds){
-		net->m_nodes.erase(net->m_nodes.begin() + net->indexOfNode(nodeId));
-	}
-	m_addedNodeIds.clear();
-	m_addedEdgeIds.clear();
-
-	net->updateNodeEdgeConnectionPointers();
+	std::swap(*net, m_previousNetwork);
 
 	// color and pointer update
 	net->setDefaultColors();
@@ -35,23 +26,22 @@ void SVUndoNetworkAddPipeline::undo() {
 
 void SVUndoNetworkAddPipeline::redo() {
 
-	m_addedNodeIds.clear();
-	m_addedEdgeIds.clear();
-
 	VICUS::Network *net = dynamic_cast<VICUS::Network*>( theProject().objectById(m_networkId) );
 	Q_ASSERT(net != nullptr);
 
+	m_previousNetwork = *net;
+
 	// add all nodes as Mixer
+	std::vector<unsigned int> addedNodeIds;
 	unsigned int nextId = theProject().nextUnusedID();
 	for (const IBKMK::Vector3D &vec: m_polyLine) {
 		unsigned int nodeId = net->addNode(++nextId, vec, VICUS::NetworkNode::NT_Mixer);
-		m_addedNodeIds.push_back(nodeId);
+		addedNodeIds.push_back(nodeId);
 	}
 
 	// add edges
-	for (unsigned int i=1; i<m_addedNodeIds.size(); ++i){
-		net->addEdge(++nextId, m_addedNodeIds[i-1], m_addedNodeIds[i], true, m_pipeId);
-		m_addedEdgeIds.push_back(nextId);
+	for (unsigned int i=1; i<addedNodeIds.size(); ++i){
+		net->addEdge(++nextId, addedNodeIds[i-1], addedNodeIds[i], true, m_pipeId);
 	}
 
 //	// add intersections

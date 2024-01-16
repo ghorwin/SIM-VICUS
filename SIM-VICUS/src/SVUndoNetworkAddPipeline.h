@@ -7,6 +7,7 @@
 
 #include <VICUS_Constants.h>
 #include <VICUS_NetworkPipe.h>
+#include <VICUS_Network.h>
 
 class SVUndoNetworkAddPipeline: public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoNetworkAddPipeline)
@@ -24,10 +25,8 @@ private:
 	unsigned int					m_pipeId;
 	/*! The network the edges should be added to */
 	unsigned int					m_networkId = VICUS::INVALID_ID;
-	/*! Stores the ids of added edges */
-	std::vector<unsigned int>		m_addedEdgeIds;
-	/*! Stores the ids of added nodes */
-	std::vector<unsigned int>		m_addedNodeIds;
+	/*! The original network before modification. */
+	VICUS::Network					m_previousNetwork;
 
 };
 
