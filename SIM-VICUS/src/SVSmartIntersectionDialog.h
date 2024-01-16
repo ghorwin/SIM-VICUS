@@ -53,6 +53,8 @@ private slots:
 	void on_toolButtonSelectCeiling_clicked();
 	void on_toolButtonSelectFloor_clicked();
 	void on_toolButtonSelectRoof_clicked();
+	void on_checkBoxReplaceComponentInstances_toggled(bool checked);
+	void on_checkBoxDetailledSettings_toggled(bool showDetailedSettings);
 
 private:
 	/*! Updated the standard construction with the specified component id. */

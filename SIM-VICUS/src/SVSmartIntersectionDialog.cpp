@@ -59,6 +59,9 @@ SVSmartIntersectionDialog::SVSmartIntersectionDialog(QWidget *parent) :
 	m_predefinedComponentIds[RC::VicusClipper::PDC_Roof]			= id;
 	m_predefinedComponentIds[RC::VicusClipper::PDC_InteriorWall]	= id;
 
+	on_checkBoxDetailledSettings_toggled(false);
+	on_checkBoxReplaceComponentInstances_toggled(false);
+
 	updateUi();
 }
 
@@ -160,8 +163,9 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 	SmartClippingProgress progressNotifyer;
 	progressNotifyer.m_prgDlg = new QProgressDialog(tr("Smart-Clipping"), tr("Cancel"), 0, 100, this);
 
-	m_ui->groupBoxConnectSurfaces->setEnabled(false);
+	m_ui->groupBoxDetailled->setEnabled(false);
 	m_ui->groupBoxProjectSelection->setEnabled(false);
+	m_ui->groupBoxComponents->setEnabled(false);
 
 	try {
 		bool onlySelected = m_ui->radioButtonSelectedGeometry->isChecked();
@@ -187,15 +191,16 @@ void SVSmartIntersectionDialog::on_pushButtonStartClipping_clicked() {
 	catch (IBK::Exception &ex) {
 		IBK::IBK_Message(IBK::FormatString("Smart-clipping encountered an error"), IBK::MSG_ERROR);
 		QMessageBox::critical((QWidget*)parent(), tr("Smart-Clipping error"), tr("Error during smart-clipping:\n%1").arg(ex.what()));
-		m_ui->groupBoxConnectSurfaces->setEnabled(true);
+		m_ui->groupBoxDetailled->setEnabled(true);
 		m_ui->groupBoxProjectSelection->setEnabled(true);
+		m_ui->groupBoxComponents->setEnabled(true);
 		m_ui->pushButtonApply->setEnabled(false);
 		progressNotifyer.m_prgDlg->hide();
 		return;
 	}
 
 	m_ui->pushButtonApply->setEnabled(true);
-	m_ui->groupBoxConnectSurfaces->setEnabled(true);
+	m_ui->groupBoxDetailled->setEnabled(true);
 	m_ui->groupBoxProjectSelection->setEnabled(true);
 }
 
@@ -282,5 +287,15 @@ void SVSmartIntersectionDialog::on_toolButtonSelectFloor_clicked() {
 
 void SVSmartIntersectionDialog::on_toolButtonSelectRoof_clicked() {
 	updateStandardConstruction(RC::VicusClipper::PDC_Roof);
+}
+
+
+void SVSmartIntersectionDialog::on_checkBoxReplaceComponentInstances_toggled(bool checked) {
+	m_ui->groupBoxComponents->setEnabled(checked);
+}
+
+void SVSmartIntersectionDialog::on_checkBoxDetailledSettings_toggled(bool showDetailedSettings) {
+	m_ui->groupBoxDetailled->setHidden(!showDetailedSettings);
+	m_ui->groupBoxComponents->setHidden(!showDetailedSettings);
 }
 
