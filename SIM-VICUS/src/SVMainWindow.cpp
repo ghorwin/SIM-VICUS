@@ -911,7 +911,7 @@ void SVMainWindow::setup() {
 	// apply settings
 	onAutosaveSettingsChanged();
 
-	m_ui->toolBar->setStyleSheet("QToolBar QToolButton {margin: 2px; }");
+	m_ui->toolBar->setStyleSheet("QToolBar {spacing: 5px; padding: 5px; }");
 }
 
 

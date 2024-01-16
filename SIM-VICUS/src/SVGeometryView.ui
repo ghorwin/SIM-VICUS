@@ -129,6 +129,7 @@
          <addaction name="actionBuildingParametrization"/>
          <addaction name="actionAcousticParametrization"/>
          <addaction name="actionStructuralUnits"/>
+         <addaction name="separator"/>
          <addaction name="actionNetworkParametrization"/>
          <addaction name="actionSiteParametrization"/>
          <addaction name="separator"/>
