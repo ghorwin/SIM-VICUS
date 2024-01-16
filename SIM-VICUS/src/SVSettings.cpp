@@ -554,7 +554,7 @@ void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
 
 		case TT_Dark :
 			m_majorGridColor = QColor("#9793a0");
-			m_minorGridColor = QColor("#27272c");
+			m_minorGridColor = QColor("#34343b");
 			m_sceneBackgroundColor = QColor("#212124");
 			m_selectedSurfaceColor = QColor("#3465a4");
 		break;
