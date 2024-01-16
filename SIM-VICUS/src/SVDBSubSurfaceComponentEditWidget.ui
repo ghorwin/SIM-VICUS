@@ -257,7 +257,7 @@
           <string notr="true">color:rgb(119, 118, 123)</string>
          </property>
          <property name="text">
-          <string>This parameter represents the proportion of radiation that passes through the window when shading is activated.</string>
+          <string>Represents the proportion of radiation that passes through the shading system when shading is activated.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -305,7 +305,7 @@
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideA">
           <property name="icon">
-           <iconset resource="../resources/SIM-VICUS.qrc">
+           <iconset>
             <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
           </property>
          </widget>
@@ -335,7 +335,7 @@
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideB">
           <property name="icon">
-           <iconset resource="../resources/SIM-VICUS.qrc">
+           <iconset>
             <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
           </property>
          </widget>
@@ -390,8 +390,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
