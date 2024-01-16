@@ -83,7 +83,7 @@ void ToolBox::addPage(const QString & headerName, QWidget * widget, QIcon * icon
 	hLay->addWidget(labelPageName);
 
 	// we put the header layout into a frame for consistent background colors
-	hLay->setContentsMargins(0,0,0,0);
+	hLay->setContentsMargins(2,2,2,2);
 	QFrame *hFrame = new QFrame(this);
 	hFrame->setLayout(hLay);
 
