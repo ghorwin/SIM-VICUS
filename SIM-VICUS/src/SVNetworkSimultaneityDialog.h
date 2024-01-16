@@ -36,9 +36,9 @@ private slots:
 
 	void on_pushButtonSetDefault_clicked();
 
-	void on_pushButtonCopyToClipboard_clicked();
+	void on_toolButtonCopyToClipboard_clicked();
 
-	void on_pushButtonPasteFromClipboard_clicked();
+	void on_toolButtonPasteFromClipboard_clicked();
 
 private:
 

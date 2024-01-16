@@ -35,6 +35,7 @@ SVPropNetworkGeometryWidget::SVPropNetworkGeometryWidget(QWidget *parent) :
 	m_ui->pushButtonConnectBuildings->setIcon(QIcon::fromTheme("network_connect_substations"));
 	m_ui->pushButtonGenerateIntersections->setIcon(QIcon::fromTheme("network_add_intersections"));
 	m_ui->pushButtonReduceDeadEnds->setIcon(QIcon::fromTheme("network_reduce_dead_ends"));
+	m_ui->pushButtonSizePipeDimensions->setIcon(QIcon::fromTheme("network_size_pipes"));
 }
 
 SVPropNetworkGeometryWidget::~SVPropNetworkGeometryWidget() {

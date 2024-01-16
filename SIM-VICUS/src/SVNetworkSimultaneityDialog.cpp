@@ -35,6 +35,9 @@ SVNetworkSimultaneityDialog::SVNetworkSimultaneityDialog(QWidget *parent) :
 	m_ui->tableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidget->setSortingEnabled(false);
 	m_ui->tableWidget->blockSignals(false);
+
+	m_ui->toolButtonCopyToClipboard->setIcon(QIcon::fromTheme("copy_clipboard"));
+	m_ui->toolButtonPasteFromClipboard->setIcon(QIcon::fromTheme("paste_clipboard"));
 }
 
 SVNetworkSimultaneityDialog::~SVNetworkSimultaneityDialog()
@@ -246,8 +249,7 @@ void SVNetworkSimultaneityDialog::on_pushButtonSetDefault_clicked() {
 }
 
 
-void SVNetworkSimultaneityDialog::on_pushButtonCopyToClipboard_clicked()
-{
+void SVNetworkSimultaneityDialog::on_toolButtonCopyToClipboard_clicked() {
 	QClipboard *clipboard = QApplication::clipboard();
 	QString table = "";
 	for(unsigned int i = 0; i < m_tmpSimultaneity.size(); i++){
@@ -261,13 +263,15 @@ void SVNetworkSimultaneityDialog::on_pushButtonCopyToClipboard_clicked()
 
 }
 
-void SVNetworkSimultaneityDialog::on_pushButtonPasteFromClipboard_clicked() {
+
+void SVNetworkSimultaneityDialog::on_toolButtonPasteFromClipboard_clicked() {
 	// get content of clip board
 	QString data = qApp->clipboard()->text();
 	if (data.isEmpty()) {
 		QMessageBox::critical(this, tr("Cannot paste data"), tr("No data on clipboard"));
 		return;
 	}
+
 	// first replace all , with .; this may also result in header name changes, but using , as part of a column
 	// name is bad practice anyway
 	std::replace(data.begin(), data.end(), ',', '.');
@@ -328,6 +332,8 @@ void SVNetworkSimultaneityDialog::on_pushButtonPasteFromClipboard_clicked() {
 		return;
 	}
 
+	if (QMessageBox::question(this, tr("Overwrite data"), tr("Paste data from clipboard and overwrite existing table?"),  QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		return;
 
 	// store spline data
 	m_tmpSimultaneity = spl;
@@ -335,3 +341,5 @@ void SVNetworkSimultaneityDialog::on_pushButtonPasteFromClipboard_clicked() {
 	updateTableWidget();
 
 }
+
+

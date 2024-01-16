@@ -109,5 +109,11 @@
         <file>icons/light/svg/network_connect_substations.svg</file>
         <file>icons/light/svg/network_reduce_dead_ends.svg</file>
         <file>icons/light/svg/save_colormap.svg</file>
+        <file>icons/dark/svg/copy_clipboard.svg</file>
+        <file>icons/dark/svg/paste_clipboard.svg</file>
+        <file>icons/dark/svg/network_size_pipes.svg</file>
+        <file>icons/light/svg/copy_clipboard.svg</file>
+        <file>icons/light/svg/network_size_pipes.svg</file>
+        <file>icons/light/svg/paste_clipboard.svg</file>
     </qresource>
 </RCC>

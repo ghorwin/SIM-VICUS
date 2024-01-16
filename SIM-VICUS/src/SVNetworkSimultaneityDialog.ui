@@ -47,6 +47,20 @@
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonCopyToClipboard">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonPasteFromClipboard">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -69,20 +83,6 @@
       <widget class="QPushButton" name="pushButtonSetDefault">
        <property name="text">
         <string>Set default function</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonCopyToClipboard">
-       <property name="text">
-        <string>Copy to clipboard</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonPasteFromClipboard">
-       <property name="text">
-        <string>Paste from clipboard</string>
        </property>
       </widget>
      </item>
