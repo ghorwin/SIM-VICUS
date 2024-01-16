@@ -821,8 +821,29 @@ void SVMainWindow::setup() {
 //	for (int i=0; i<acts.count(); ++i)
 //		m_ui->menuEdit->addAction(acts[i]);
 
-	m_ui->toolBar->addAction(m_undoAction);
-	m_ui->toolBar->addAction(m_redoAction);
+	QWidget* spacer = new QWidget();
+	spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	spacer->setFixedSize(QSize(10, 150));
+	m_ui->toolBar->addWidget(spacer);
+
+	// toolBar is a pointer to an existing toolbar
+	//m_ui->toolBar->addWidget(new QSpacerItem());
+
+	QList<QAction*> actions = m_ui->toolBar->actions();
+
+
+	m_ui->toolBar->insertAction(actions[3], m_undoAction);
+	m_ui->toolBar->insertAction(actions[3], m_redoAction);
+
+	actions = m_ui->toolBar->actions();
+
+	m_ui->toolBar->insertWidget(actions[3], spacer);
+	m_ui->toolBar->insertWidget(actions[5], spacer);
+
+	m_ui->toolBar->insertSeparator(actions[3]);
+
+//	actions = m_ui->toolBar->actions();
+
 	m_ui->menuView->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
@@ -890,6 +911,7 @@ void SVMainWindow::setup() {
 	// apply settings
 	onAutosaveSettingsChanged();
 
+	m_ui->toolBar->setStyleSheet("QToolBar QToolButton {margin: 2px; }");
 }
 
 

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -216,8 +216,8 @@
    <addaction name="separator"/>
    <addaction name="actionGeometryView"/>
    <addaction name="actionSimulationSettings"/>
-   <addaction name="actionOpenPostProcessing"/>
    <addaction name="separator"/>
+   <addaction name="actionOpenPostProcessing"/>
   </widget>
   <action name="actionFileNew">
    <property name="icon">

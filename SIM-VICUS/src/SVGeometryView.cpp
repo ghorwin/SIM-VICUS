@@ -617,8 +617,8 @@ void SVGeometryView::onStyleChanged() {
 	else {
 		m_ui->geometryToolBar->setStyleSheet("");
 		m_lineEditCoordinateInput->setStyleSheet("");
-
 	}
+	m_ui->modeSelectionToolBar->setStyleSheet("QToolBar QToolButton {margin: 2px; }");
 }
 
 
