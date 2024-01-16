@@ -137,6 +137,9 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	m_snapOptionsDialog->updateUi();
 	m_snapOptionsDialog->setExpanded(false);
+//	m_localCoordinateSystemView->setObjectName("BottomBar");
+//	setObjectName("BottomBar");
+	m_lineEditCoordinateInput->setPlaceholderText("<x> <y> <z>");
 
 	onStyleChanged(); // in order to init correct background of toolbar
 }
@@ -610,12 +613,17 @@ void SVGeometryView::coordinateInputFinished() {
 
 void SVGeometryView::onStyleChanged() {
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		m_ui->geometryToolBar->setStyleSheet("QWidget {background: #3a3b3f};"
-											 "QAction {border: 1px lightgray};");
-		m_lineEditCoordinateInput->setStyleSheet("QLineEdit {background-color: #212124};");
+		m_ui->geometryToolBar->setStyleSheet(m_ui->geometryToolBar->styleSheet() +
+											 "QWidget { background: #3A3B3F;}"
+											 "QToolButton { border: 1px solid #4B4B4B;}"
+											 "QToolButton:hover { border: 1px solid #b19834;}"
+											 "QToolBar QToolButton:checked { border: 1px solid #b19834; background-color: #4D3C18;}");
+		m_lineEditCoordinateInput->setStyleSheet("QLineEdit {background-color: #212124;}");
 	}
 	else {
-		m_ui->geometryToolBar->setStyleSheet("");
+		m_ui->geometryToolBar->setStyleSheet("QToolButton {border: 1px solid lightgray;}"
+											 "QToolButton:hover {border: 1px solid #EB992F;}"
+											 "QToolBar QToolButton:checked { border: 1px solid #EB992F; background-color: #FFDFA0;}");
 		m_lineEditCoordinateInput->setStyleSheet("");
 	}
 	m_ui->modeSelectionToolBar->setStyleSheet("QToolBar {spacing: 5px; padding: 5px; }");

@@ -3350,7 +3350,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 			const VICUS::NetworkNode * no = dynamic_cast<const VICUS::NetworkNode *>(obj);
 			if (no != nullptr) {
-				qDebug() << "Snap to network";
+//				qDebug() << "Snap to network";
 
 				std::vector<SnapCandidate> snapCandidates;
 				SnapCandidate sc;
@@ -3437,13 +3437,13 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			// currently there is such snapping to nodes, yet
 
 			/// \todo Add snapping to nodes (i.e. when drawing edges)
-			qDebug() << "Pick point: " << r.m_pickPoint.m_x << " | " << r.m_pickPoint.m_y << " | " <<  r.m_pickPoint.m_z;
+//			qDebug() << "Pick point: " << r.m_pickPoint.m_x << " | " << r.m_pickPoint.m_y << " | " <<  r.m_pickPoint.m_z;
 
 		} // object snap
 
 	} // with snapping
 
-	qDebug() << "Snap to: " << snapInfo.c_str();
+//	qDebug() << "Snap to: " << snapInfo.c_str();
 
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line

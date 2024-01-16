@@ -745,12 +745,10 @@ QToolBar {
 
 QToolBar QToolButton {
   background-color: #3a3b3f;
-  border: 1px solid #3a3b3f;
 }
 
 QToolBar QLineEdit {
     background: #212124;
-	border: 1px solid #b19834;
 }
 
 QToolBar QToolButton:hover {
@@ -792,6 +790,10 @@ QToolButton#qt_toolbar_ext_button {
   color: #F0F0F0;
   image: url(":/qss_icons/rc/arrow_right.png");
 }
+
+/* BottomBar --------------------------------------------------------------
+*/
+
 
 /* QAbstractSpinBox -------------------------------------------------------
 

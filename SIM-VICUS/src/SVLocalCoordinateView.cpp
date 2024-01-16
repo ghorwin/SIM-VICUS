@@ -51,6 +51,8 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	m_ui->toolButtonAlignCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_align"));
 	m_ui->toolButtonMoveCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_move"));
 	m_ui->toolButtonInformation->setIcon(QIcon::fromTheme("surface_info"));
+
+//	setStyleSheet("QToolButton {border: 1px solid lightgray}");
 }
 
 
@@ -63,23 +65,23 @@ void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
 
 	// is being call from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
-	m_ui->lineEditXValue->setText( QString("%L1").arg( (double)t.translation().x(), 0, 'g', 3 ) );
-	m_ui->lineEditYValue->setText( QString("%L1").arg( (double)t.translation().y(), 0, 'g', 3 ) );
-	m_ui->lineEditZValue->setText( QString("%L1").arg( (double)t.translation().z(), 0, 'g', 3 ) );
+	m_ui->lineEditXValue->setText( QString("%L1").arg( (double)t.translation().x(), 0, 'f', 3 ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( (double)t.translation().y(), 0, 'f', 3 ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( (double)t.translation().z(), 0, 'f', 3 ) );
 }
 
 void SVLocalCoordinateView::clearCoordinates() {
-	m_ui->lineEditXValue->setText( QString("%L1").arg( 0.0, 0, 'g', 3 ) );
-	m_ui->lineEditYValue->setText( QString("%L1").arg( 0.0, 0, 'g', 3 ) );
-	m_ui->lineEditZValue->setText( QString("%L1").arg( 0.0, 0, 'g', 3 ) );
+	m_ui->lineEditXValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( 0.0, 0, 'f', 3 ) );
 }
 
 void SVLocalCoordinateView::setBoundingBoxDimension(const IBKMK::Vector3D& bb) {
 	// is being call from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
-	m_ui->lineEditBoundingBoxDimensionX->setText( QString("%L1").arg( bb.m_x, 0, 'g', 3 ) );
-	m_ui->lineEditBoundingBoxDimensionY->setText( QString("%L1").arg( bb.m_y, 0, 'g', 3 ) );
-	m_ui->lineEditBoundingBoxDimensionZ->setText( QString("%L1").arg( bb.m_z, 0, 'g', 3 ) );
+	m_ui->lineEditBoundingBoxDimensionX->setText( QString("%L1").arg( bb.m_x, 0, 'f', 3 ) );
+	m_ui->lineEditBoundingBoxDimensionY->setText( QString("%L1").arg( bb.m_y, 0, 'f', 3 ) );
+	m_ui->lineEditBoundingBoxDimensionZ->setText( QString("%L1").arg( bb.m_z, 0, 'f', 3 ) );
 }
 
 void SVLocalCoordinateView::setAlignCoordinateSystemButtonChecked(bool checked) {
