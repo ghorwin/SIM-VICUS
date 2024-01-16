@@ -302,11 +302,9 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
 	if (newId == VICUS::INVALID_ID)
 		return;
 
-	if (newId != ctrId){
-		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_controlElementId = newId;
-		modelModify();
-		updateElementProperties();
-	}
+	m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_controlElementId = newId;
+	modelModify();
+	updateElementProperties();
 }
 
 

@@ -4,11 +4,13 @@
 #include "SVDBNetworkControllerTableModel.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-#include <SVConversions.h>
+#include "SVConversions.h"
+#include "SVConstants.h"
 
 #include <VICUS_Schedule.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <QtExt_LanguageHandler.h>
 
 
 SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent) :
@@ -16,6 +18,9 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 	m_ui(new Ui::SVDBNetworkControllerEditWidget)
 {
 	m_ui->setupUi(this);
+
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
+	m_ui->lineEditName->setDialog3Caption(tr("Network Controller name"));
 
 	// setup comboboxes
 	m_ui->comboBoxProperty->clear();
