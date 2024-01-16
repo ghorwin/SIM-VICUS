@@ -126,6 +126,8 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 
 	// color button size fix (overriding style settings)
 
+	m_ui->tabWidgetThermal->setTabEnabled(1, false);
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }

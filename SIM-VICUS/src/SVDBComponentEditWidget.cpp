@@ -79,6 +79,11 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->lineEditAirSoundRes->setReadOnly(true);
 	m_ui->lineEditImpactSound->setReadOnly(true);
 
+	m_ui->tabWidgetProperties->setCurrentIndex(0);
+	m_ui->tabWidgetProperties->setTabEnabled(1, false);
+	m_ui->tabWidgetProperties->setTabEnabled(2, false);
+	m_ui->tabWidgetProperties->setTabEnabled(3, false);
+
 	updateInput(-1);
 }
 

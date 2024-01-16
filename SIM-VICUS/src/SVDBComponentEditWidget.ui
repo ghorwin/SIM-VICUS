@@ -161,7 +161,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidgetLca">
+    <widget class="QTabWidget" name="tabWidgetProperties">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -169,7 +169,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabConstructionType">
       <attribute name="title">
@@ -278,6 +278,9 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabLCA">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
        <string>LCA properties</string>
       </attribute>
@@ -288,6 +291,9 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabSurface">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
        <string>Radiance properties</string>
       </attribute>
@@ -362,7 +368,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabAcoustic">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
        <string>Acoustic properties</string>
       </attribute>
