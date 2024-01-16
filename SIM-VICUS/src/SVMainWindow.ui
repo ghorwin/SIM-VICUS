@@ -167,6 +167,9 @@
     <addaction name="actionDBRemoveDuplicates"/>
    </widget>
    <widget class="QMenu" name="menuPlugins">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Plugins</string>
     </property>
@@ -777,6 +780,9 @@
    </property>
   </action>
   <action name="actionPluginsManager">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Plugin manager...</string>
    </property>

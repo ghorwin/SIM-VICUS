@@ -1601,22 +1601,35 @@ void SVMainWindow::onUpdateActions() {
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
 
 		// restore navigation tree width on first call
-		if (SVSettings::instance().m_navigationSplitterSize != 0) {
-			QList<int> sizes;
-			int availableWidth = width();
-			int navSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
-			// guard against screen resolution changes, for example when SIM-VICUS was opened on an external
-			// 4K screen and splitter size was 1200 of 3800 and now the tool is opened again on laptop fullHD screen
-			// in Window mode where window is only about 1100 wide itself.
-			// If it's wider than a certain amount of its preferred width, we reset the width to the preferred one
-			int preferredWidth = m_navigationTreeWidget->sizeHint().width();
-			if (navSplitterWidth > 1.7*preferredWidth)
-				navSplitterWidth  = preferredWidth;
-			sizes << navSplitterWidth << availableWidth - navSplitterWidth;
-			m_geometryViewSplitter->setSizes(sizes);
+		qDebug() << "Navigation splitter size: "  << SVSettings::instance().m_navigationSplitterSize;
 
-			SVSettings::instance().m_navigationSplitterSize = 0; // will be set again when the app is being closed
+
+		// guard against screen resolution changes, for example when SIM-VICUS was opened on an external
+		// 4K screen and splitter size was 1200 of 3800 and now the tool is opened again on laptop fullHD screen
+		// in Window mode where window is only about 1100 wide itself.
+		// If it's wider than a certain amount of its preferred width, we reset the width to the preferred one
+		int availableWidth = width();
+		int navSplitterWidth;
+		int preferredWidth;
+
+		QList<int> sizes;
+		if (SVSettings::instance().m_navigationSplitterSize != 0) {
+			navSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
+			preferredWidth = m_navigationTreeWidget->sizeHint().width();
+
+			// Prevent 4k / FullHD Size changes of screen pixels
+			if (navSplitterWidth > 1.5*preferredWidth)
+				navSplitterWidth = preferredWidth;
 		}
+		else {
+			navSplitterWidth = 0.25 / SVSettings::instance().m_ratio * availableWidth;
+		}
+
+		sizes << navSplitterWidth << availableWidth - navSplitterWidth;
+		m_geometryViewSplitter->setSizes(sizes);
+
+		SVSettings::instance().m_navigationSplitterSize = 0; // will be set again when the app is being closed
+
 
 		bool isVisible = true;
 		if (project().m_viewSettings.m_gridPlanes.size() > 0)
