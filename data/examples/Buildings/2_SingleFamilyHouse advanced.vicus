@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="1.1">
+	<ProjectInfo>
+		<Comment>A more complex model of a single family house. It features an underfloor heating system as well as internal long wave heat exchange.</Comment>
+		<Created>Mi. Sept. 7 08:14:15 2022</Created>
+		<LastEdited>Di Jan 16 15:35:39 2024</LastEdited>
+	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">C:/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
+	<Project>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
+			<IBK:Parameter name="AbsTol" unit="---">1e-10</IBK:Parameter>
+			<IBK:Parameter name="MaxTimeStep" unit="h">1</IBK:Parameter>
+			<IBK:Parameter name="MinTimeStep" unit="s">1e-08</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">0.1</IBK:Parameter>
+			<IBK:Parameter name="NonlinSolverConvCoeff" unit="---">0.1</IBK:Parameter>
+			<IBK:Parameter name="IterativeSolverConvCoeff" unit="---">0.05</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+			<IBK:Parameter name="ViewfactorTileWidth" unit="cm">50</IBK:Parameter>
+			<IBK:Parameter name="SurfaceDiscretizationDensity" unit="---">1</IBK:Parameter>
+			<IBK:Parameter name="ControlTemperatureTolerance" unit="K">1e-05</IBK:Parameter>
+			<IBK:Parameter name="HydraulicNetworkAbsTol" unit="---">0.001</IBK:Parameter>
+			<IBK:Parameter name="HydraulicNetworkMassFluxScale" unit="---">1000</IBK:Parameter>
+			<IBK:IntPara name="PreILUWidth">3</IBK:IntPara>
+			<IBK:IntPara name="MaxKrylovDim">50</IBK:IntPara>
+			<IBK:IntPara name="MaxNonlinIter">3</IBK:IntPara>
+			<IBK:IntPara name="MaxOrder">5</IBK:IntPara>
+			<IBK:IntPara name="DiscMaxElementsPerLayer">20</IBK:IntPara>
+			<IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
+			<IBK:Flag name="KinsolDisableLineSearch">false</IBK:Flag>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialRelativeHumidity" unit="%">50</IBK:Parameter>
+			<IBK:Parameter name="DomesticWaterSensitiveHeatGainFraction" unit="---">0</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionFloor" unit="%">80</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionCeiling" unit="%">10</IBK:Parameter>
+				<IBK:Parameter name="RadiationLoadFractionWalls" unit="%">10</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Flag name="PerezDiffuseRadiationModel">true</IBK:Flag>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+		</Location>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition quantity="Temperature" sourceObjectType="Location">
+					<TimeType>None</TimeType>
+					<SourceObjectIds>0</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition quantity="OperativeTemperature" sourceObjectType="Zone">
+					<TimeType>None</TimeType>
+					<SourceObjectIds>10025,10026,10027,10028,10029,10030,10031,10032,10033,10034,10035</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition quantity="ActiveLayerThermalLoad" sourceObjectType="ConstructionInstance">
+					<TimeType>Mean</TimeType>
+					<SourceObjectIds>2,10,11,21,22,23,32,33,34,35,45,46,47,48,55,56,65,66</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition quantity="ActiveLayerTemperature" sourceObjectType="ConstructionInstance">
+					<TimeType>None</TimeType>
+					<SourceObjectIds>2,10,11,21,22,23,32,33,34,35,45,46,47,48,55,56,65,66</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition quantity="SupplyTemperatureSchedule" sourceObjectType="ConstructionInstance">
+					<TimeType>None</TimeType>
+					<SourceObjectIds>2,10,11,21,22,23,32,33,34,35,45,46,47,48,55,56,65,66</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">false</IBK:Flag>
+		</Outputs>
+		<ViewSettings>
+			<CameraTranslation>-18.3419 17.598 15.8781</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.347317</Wp>
+				<X>0.188248</X>
+				<Y>-0.437686</Y>
+				<Z>-0.807514</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="1000" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
+		</ViewSettings>
+		<Buildings>
+			<Building id="10001" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="10002" displayName="EG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="10025" displayName="Büro">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">11.85</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">28.9</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10036" displayName="Wall_21" displayColor="#566094">
+										<ViewFactors>10037:0.181438;10038:0.138442;10039:0.200688;10040:0.150236;10041:0.298151;10306:0.019254;10307:0.011799;</ViewFactors>
+										<Polygon3D offset="-1.635 4.635 0" normal="-0 -0 -1" localX="0 -1 0">0 0, 3.95 0, 3.95 3, 0 3</Polygon3D>
+									</Surface>
+									<Surface id="10037" displayName="Wall_24" displayColor="#c8c88c">
+										<ViewFactors>10036:0.245761;10037:0;10038:0.147639;10039:0.20281;10040:0.142586;10041:0.248245;10306:0;10307:0.01302;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10306" displayName="Fenster16">
+												<Polygon2D>3.24 0.22, 3.24 2.06, 2.76 2.06, 2.76 0.22</Polygon2D>
+												<ViewFactors>10036:0.258328;10037:0;10038:0.051249;10039:0.213205;10040:0.236739;10041:0.233673;10306:0;10307:0.006808;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 4.635 0" normal="-1 0 0" localX="0 -1 0">0 0, 3.95 0, 3.95 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10038" displayName="Wall_25" displayColor="#c8c88c">
+										<ViewFactors>10036:0.246326;10037:0.193937;10038:0;10039:0.200725;10040:0.113943;10041:0.2383;10306:0.006796;10307:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10307" displayName="Fenster19">
+												<Polygon2D>1.89 1.07, 1.89 1.91, 1.11 1.91, 1.11 1.07</Polygon2D>
+												<ViewFactors>10036:0.213392;10037:0.173844;10038:0;10039:0.182522;10040:0.126584;10041:0.294974;10306:0.009178;10307:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-1.635 4.635 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10039" displayName="Wall_1" displayColor="#c8c88c">
+										<ViewFactors>10036:0.24691;10037:0.184213;10038:0.138795;10039:0;10040:0.151215;10041:0.24691;10306:0.01955;10307:0.012416;</ViewFactors>
+										<Polygon3D offset="-1.635 0.685 0" normal="1 0 0" localX="0 1 0">0 0, 3.95 0, 3.95 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10040" displayName="Wall_3" displayColor="#c8c88c">
+										<ViewFactors>10036:0.24337;10037:0.170523;10038:0.103737;10039:0.199099;10040:0;10041:0.24337;10306:0.028583;10307:0.011338;</ViewFactors>
+										<Polygon3D offset="-4.635 0.685 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10041" displayName="Wall_7" displayColor="#963214">
+										<ViewFactors>10036:0.298151;10037:0.183272;10038:0.133931;10039:0.200688;10040:0.150236;10041:0;10306:0.017416;10307:0.016309;</ViewFactors>
+										<Polygon3D offset="-4.635 4.635 2.4384" normal="-0 0 1" localX="0 -1 0">0 0, 3.95 0, 3.95 3, 0 3</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10026" displayName="WC">
+								<IdZoneTemplate>1082504</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">5.8</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">14.14</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10042" displayName="Wall_47" displayColor="#566094">
+										<ViewFactors>10043:0.222704;10044:0.164112;10045:0.013848;10046:0.105669;10047:0.119507;10048:0.001953;10049:0.162158;10050:0.010627;10051:0.050794;10052:0.132339;10308:0.016314;</ViewFactors>
+										<Polygon3D offset="4.635 -0.915 0" normal="0 0 -1" localX="-1 0 0">0 0, 2 0, 2 2.9, 0 2.9</Polygon3D>
+									</Surface>
+									<Surface id="10043" displayName="Wall_51" displayColor="#c8c88c">
+										<ViewFactors>10042:0.201318;10043:0;10044:0.160905;10045:0.015996;10046:0.124438;10047:0.135073;10048:0.001147;10049:0.169021;10050:0.01004;10051:0.049068;10052:0.133023;10308:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10308" displayName="Fenster4">
+												<Polygon2D>1.49 1.07, 1.49 1.91, 0.71 1.91, 0.71 1.07</Polygon2D>
+												<ViewFactors>10042:0.144412;10043:0;10044:0.188907;10045:0.020821;10046:0.119934;10047:0.193236;10048:0.001501;10049:0.09683;10050:0.019647;10051:0.068894;10052:0.14582;10308:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 -0.915 0" normal="1 0 0" localX="0 1 0">0 0, 2.9 0, 2.9 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10044" displayName="Wall_11" displayColor="#c8c88c">
+										<ViewFactors>10042:0.19518;10043:0.211694;10044:0;10045:0.008494;10046:0.041772;10047:0.186801;10048:0.001978;10049:0.133546;10050:0.012317;10051:0.108802;10052:0.074052;10308:0.02538;</ViewFactors>
+										<Polygon3D offset="2.635 -0.915 0" normal="0 -1 0" localX="1 0 0">0 0, 2 0, 2 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10045" displayName="Wall_14" displayColor="#c8c88c">
+										<ViewFactors>10042:0.219597;10043:0.280609;10044:0.113259;10045:0;10046:0;10047:0;10048:9.4e-05;10049:0.129545;10050:0.009403;10051:0.028064;10052:0.182139;10308:0.037298;</ViewFactors>
+										<Polygon3D offset="2.635 0.685 0" normal="-1 0 0" localX="0 -1 0">0 0, 0.15 0, 0.15 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10046" displayName="Wall_15" displayColor="#c8c88c">
+										<ViewFactors>10042:0.193342;10043:0.251871;10044:0.064265;10045:0;10046:0;10047:0;10048:0.012124;10049:0.260304;10050:0.004085;10051:0.013;10052:0.176237;10308:0.02479;</ViewFactors>
+										<Polygon3D offset="2.635 0.685 2.4384" normal="-1 0 0" localX="0 1 0">0 0, 1.3 0, 1.3 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10047" displayName="Wall_16" displayColor="#c8c88c">
+										<ViewFactors>10042:0.196042;10043:0.245115;10044:0.257656;10045:0;10046:0;10047:0;10048:3.6e-05;10049:0.069296;10050:0.017226;10051:0.087243;10052:0.091573;10308:0.035809;</ViewFactors>
+										<Polygon3D offset="2.635 0.535 0" normal="-1 0 0" localX="0 -1 0">0 0, 1.45 0, 1.45 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10048" displayName="Wall_27" displayColor="#c8c88c">
+										<ViewFactors>10042:0.142952;10043:0.092883;10044:0.121719;10045:0.000435;10046:0.484958;10047:0.001588;10048:0;10049:0;10050:0.004191;10051:0.016575;10052:0.122239;10308:0.012407;</ViewFactors>
+										<Polygon3D offset="2.6675 1.985 0" normal="0 1 -0" localX="-1 0 0">0 0, 0.0325 0, 0.0325 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10049" displayName="Wall_28" displayColor="#c8c88c">
+										<ViewFactors>10042:0.196041;10043:0.226045;10044:0.135752;10045:0.009876;10046:0.171993;10047:0.051069;10048:0;10049:0;10050:0.004877;10051:0.018698;10052:0.172463;10308:0.013224;</ViewFactors>
+										<Polygon3D offset="2.6675 1.985 2.4384" normal="-0 1 0" localX="1 0 0">0 0, 1.9675 0, 1.9675 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10050" displayName="Wall_30" displayColor="#963214">
+										<ViewFactors>10042:0.205455;10043:0.214729;10044:0.200225;10045:0.011465;10046:0.043167;10047:0.203018;10048:0.001107;10049:0.07799;10050:0;10051:0;10052:0;10308:0.042909;</ViewFactors>
+										<Polygon3D offset="4.635 -0.096946 2.4384" normal="0 -0 1" localX="0 1 0">0 0, 0.15 0, 0.15 2, 0 2</Polygon3D>
+									</Surface>
+									<Surface id="10051" displayName="Wall_31" displayColor="#963214">
+										<ViewFactors>10042:0.180064;10043:0.192425;10044:0.324308;10045:0.006274;10046:0.025187;10047:0.188535;10048:0.000803;10049:0.054828;10050:0;10051:0;10052:0;10308:0.027589;</ViewFactors>
+										<Polygon3D offset="2.635 -0.096946 2.4384" normal="-0 0 1" localX="0 -1 0">0 0, 0.818054 0, 0.818054 2, 0 2</Polygon3D>
+									</Surface>
+									<Surface id="10052" displayName="Wall_32" displayColor="#963214">
+										<ViewFactors>10042:0.198652;10043:0.220891;10044:0.093465;10045:0.017241;10046:0.144584;10047:0.083794;10048:0.002507;10049:0.214136;10050:0;10051:0;10052:0;10308:0.024727;</ViewFactors>
+										<Polygon3D offset="4.635 0.053054 2.4384" normal="0 -0 1" localX="0 1 0">0 0, 1.93195 0, 1.93195 2, 0 2</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10027" displayName="Küche">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">20.19</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">49.22</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10053" displayName="Wall_53" displayColor="#566094">
+										<ViewFactors>10054:0.126752;10055:0.116442;10056:0.005449;10057:0.063882;10058:0.004726;10059:0.039154;10060:0.173446;10061:0.072033;10062:0.008431;10063:0.3375;10064:0.020202;10065:0.004445;10309:0.027728;</ViewFactors>
+										<Polygon3D offset="4.635 -4.635 0" normal="0 0 -1" localX="-1 0 0">0 0, 4.57 0, 4.57 5.17, 2.15 5.17, 2.15 3.57, 0 3.57</Polygon3D>
+									</Surface>
+									<Surface id="10054" displayName="Wall_54" displayColor="#c8c88c">
+										<ViewFactors>10053:0.272685;10054:0;10055:0.151242;10056:0.00616;10057:0.074009;10058:0.00104;10059:0.006597;10060:0.164102;10061:0.047447;10062:0.001776;10063:0.27099;10064:0.003373;10065:0.000659;10309:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10309" displayName="Fenster12">
+												<Polygon2D>2.71 0.26, 2.71 2.02, 1.71 2.02, 1.71 0.26</Polygon2D>
+												<ViewFactors>10053:0.318038;10054:0;10055:0.100742;10056:0.008033;10057:0.083237;10058:0.000529;10059:0.003079;10060:0.130312;10061:0.059641;10062:0.002035;10063:0.289103;10064:0.004165;10065:0.001115;10309:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="0.065 -4.635 0" normal="0 -1 0" localX="1 0 0">0 0, 4.57 0, 4.57 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10055" displayName="Wall_59" displayColor="#c8c88c">
+										<ViewFactors>10053:0.270025;10054:0.163028;10055:0;10056:0.004761;10057:0.138306;10058:0;10059:0;10060:0.128147;10061:0.005884;10062:0.000693;10063:0.267577;10064:0.001531;10065:2e-06;10309:0.020368;</ViewFactors>
+										<Polygon3D offset="4.635 -4.635 0" normal="1 0 0" localX="0 1 0">0 0, 3.57 0, 3.57 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10056" displayName="Wall_12" displayColor="#c8c88c">
+										<ViewFactors>10053:0.300738;10054:0.158022;10055:0.11332;10056:0;10057:0;10058:0;10059:0;10060:0.088533;10061:0;10062:0.00013;10063:0.300607;10064:0;10065:0;10309:0.038653;</ViewFactors>
+										<Polygon3D offset="2.635 -1.065 0" normal="0 1 -0" localX="-1 0 0">0 0, 0.15 0, 0.15 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10057" displayName="Wall_13" displayColor="#c8c88c">
+										<ViewFactors>10053:0.264433;10054:0.142402;10055:0.246876;10056:0;10057:0;10058:0;10059:0;10060:0.051822;10061:0;10062:6.3e-05;10063:0.264366;10064:0;10065:0;10309:0.030039;</ViewFactors>
+										<Polygon3D offset="2.635 -1.065 2.4384" normal="-0 1 0" localX="1 0 0">0 0, 2 0, 2 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10058" displayName="Wall_17" displayColor="#c8c88c">
+										<ViewFactors>10053:0.260819;10054:0.026669;10055:0;10056:0;10057:0;10058:0;10059:0;10060:0.318723;10061:0.13046;10062:0.013387;10063:0.217031;10064:0.026109;10065:0.004277;10309:0.002545;</ViewFactors>
+										<Polygon3D offset="2.485 -0.915 2.4384" normal="1 0 0" localX="0 -1 0">0 0, 0.15 0, 0.15 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10059" displayName="Wall_18" displayColor="#c8c88c">
+										<ViewFactors>10053:0.22355;10054:0.017508;10055:0;10056:0;10057:0;10058:0;10059:0;10060:0.264157;10061:0.269707;10062:0.025575;10063:0.129434;10064:0.036881;10065:0.031671;10309:0.001533;</ViewFactors>
+										<Polygon3D offset="2.485 -0.915 0" normal="1 0 0" localX="0 1 0">0 0, 1.45 0, 1.45 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10060" displayName="Wall_41" displayColor="#c8c88c">
+										<ViewFactors>10053:0.277739;10054:0.122147;10055:0.088488;10056:0.002569;10057:0.020047;10058:0.009247;10059:0.074087;10060:0;10061:0.11022;10062:0.010463;10063:0.231266;10064:0.032794;10065:0.003167;10309:0.018193;</ViewFactors>
+										<Polygon3D offset="0.065 0.535 0" normal="-1 0 0" localX="0 -1 0">0 0, 5.17 0, 5.17 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10061" displayName="Wall_43" displayColor="#c8c88c">
+										<ViewFactors>10053:0.246422;10054:0.07545;10055:0.00868;10056:0;10057:0;10058:0.008086;10059:0.161602;10060:0.23547;10061:0;10062:0.022638;10063:0.118576;10064:0.079999;10065:0.025229;10309:0.017788;</ViewFactors>
+										<Polygon3D offset="2.485 0.535 0" normal="0 1 -0" localX="-1 0 0">0 0, 2.42 0, 2.42 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10062" displayName="Wall_82" displayColor="#963214">
+										<ViewFactors>10053:0.305198;10054:0.029884;10055:0.010821;10056:8.6e-05;10057:0.00055;10058:0.00878;10059:0.162146;10060:0.236529;10061:0.239537;10062:0;10063:0;10064:0;10065:0;10309:0.006422;</ViewFactors>
+										<Polygon3D offset="0.075 -0.646946 2.4384" normal="-0 -0 1" localX="1 0 0">0 0, 1.57956 0, 1.57956 0.55, 2.41 0.55, 2.41 0.7, 1.57956 0.7, 1.57956 1.18195, 1.42956 1.18195, 1.42956 0.15, -0.01 0.15, -0.01 -3.98805, 0 -3.98805</Polygon3D>
+									</Surface>
+									<Surface id="10063" displayName="Wall_83" displayColor="#963214">
+										<ViewFactors>10053:0.383978;10054:0.143311;10055:0.131275;10056:0.006197;10057:0.072661;10058:0.004474;10059:0.025792;10060:0.164312;10061:0.039435;10062:0;10063:0;10064:0;10065:0;10309:0.028677;</ViewFactors>
+										<Polygon3D offset="1.65456 -0.096946 2.4384" normal="-0 0 1" localX="0 -1 0">0 0, 0.55 0, 0.55 -1.57956, 4.53805 -1.57956, 4.53805 2.98044, 0.968054 2.98044, 0.968054 0.830439, 0 0.830439</Polygon3D>
+									</Surface>
+									<Surface id="10064" displayName="Wall_84" displayColor="#963214">
+										<ViewFactors>10053:0.274515;10054:0.021304;10055:0.008974;10056:0;10057:0;10058:0.006428;10059:0.087777;10060:0.278292;10061:0.317771;10062:0;10063:0;10064:0;10065:0;10309:0.004935;</ViewFactors>
+										<Polygon3D offset="1.50456 -0.496946 2.4384" normal="0 -0 1" localX="0 1 0">0 0, 1.03195 0, 1.03195 1.43956, 0 1.43956</Polygon3D>
+									</Surface>
+									<Surface id="10065" displayName="Wall_85" displayColor="#963214">
+										<ViewFactors>10053:0.224205;10054:0.015453;10055:3.5e-05;10056:0;10057:0;10058:0.003909;10059:0.279787;10060:0.099746;10061:0.371981;10062:0;10063:0;10064:0;10065:0;10309:0.004903;</ViewFactors>
+										<Polygon3D offset="1.65456 0.053054 2.4384" normal="0 0 1" localX="1 0 0">0 0, 0.830439 0, 0.830439 0.481946, 0 0.481946</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10028" displayName="Wohnen">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">23.52</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">57.36</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10066" displayName="Wall_61" displayColor="#566094">
+										<ViewFactors>10067:0.128915;10068:0.105449;10069:0.004889;10070:0.039296;10071:0.092531;10072:0.156916;10073:0.013349;10074:0.359976;10075:0.019027;10076:0.020393;10310:0.014008;10311:0.014008;10312:0.015691;10313:0.015575;</ViewFactors>
+										<Polygon3D offset="-4.635 -4.635 0" normal="0 0 -1" localX="0 1 0">0 0, 5.17 0, 5.17 4.55, 0 4.55</Polygon3D>
+									</Surface>
+									<Surface id="10067" displayName="Wall_62" displayColor="#c8c88c">
+										<ViewFactors>10066:0.285568;10067:0;10068:0.123714;10069:0.002272;10070:0.015487;10071:0.129246;10072:0.131107;10073:0.009128;10074:0.254863;10075:0.004277;10076:0.021109;10310:0;10311:0;10312:0.008706;10313:0.014577;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10310" displayName="Fenster8">
+												<Polygon2D>3.275 0.22, 3.275 2.06, 2.735 2.06, 2.735 0.22</Polygon2D>
+												<ViewFactors>10066:0.331644;10067:0;10068:0.09182;10069:0.002914;10070:0.02093;10071:0.057946;10072:0.149867;10073:0.003477;10074:0.298643;10075:0.004078;10076:0.004917;10310:0;10311:0;10312:0.013662;10313:0.020094;</ViewFactors>
+											</SubSurface>
+											<SubSurface id="10311" displayName="Fenster31">
+												<Polygon2D>2.435 0.22, 2.435 2.06, 1.895 2.06, 1.895 0.22</Polygon2D>
+												<ViewFactors>10066:0.331644;10067:0;10068:0.05959;10069:0.003502;10070:0.022535;10071:0.099533;10072:0.149866;10073:0.006514;10074:0.288361;10075:0.005642;10076:0.0106;10310:0;10311:0;10312:0.010348;10313:0.011853;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 0.535 0" normal="-1 0 0" localX="0 -1 0">0 0, 5.17 0, 5.17 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10068" displayName="Wall_65" displayColor="#c8c88c">
+										<ViewFactors>10066:0.28067;10067:0.14865;10068:0;10069:0.00344;10070:0.029543;10071:0.066581;10072:0.168181;10073:0.002164;10074:0.277573;10075:0.003161;10076:0.003051;10310:0.010323;10311:0.006699;10312:0;10313:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10312" displayName="Fenster15">
+												<Polygon2D>2.98 0.23, 2.98 2.05, 2.36 2.05, 2.36 0.23</Polygon2D>
+												<ViewFactors>10066:0.327108;10067:0.081929;10068:0;10069:0.004067;10070:0.034542;10071:0.072046;10072:0.152655;10073:0.002768;10074:0.295918;10075:0.004148;10076:0.003667;10310:0.01203;10311:0.009112;10312:0;10313:0;</ViewFactors>
+											</SubSurface>
+											<SubSurface id="10313" displayName="Fenster34">
+												<Polygon2D>2.04 0.23, 2.04 2.05, 1.42 2.05, 1.42 0.23</Polygon2D>
+												<ViewFactors>10066:0.324695;10067:0.137182;10068:0;10069:0.003626;10070:0.028368;10071:0.077908;10072:0.096078;10073:0.002605;10074:0.294144;10075:0.003298;10076:0.003962;10310:0.017693;10311:0.010437;10312:0;10313:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 -4.635 0" normal="0 -1 0" localX="1 0 0">0 0, 4.55 0, 4.55 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10069" displayName="Wall_4" displayColor="#c8c88c">
+										<ViewFactors>10066:0.314422;10067:0.065958;10068:0.083129;10069:0;10070:0;10071:0;10072:0.180913;10073:0.048785;10074:0.173784;10075:0.052998;10076:0.038857;10310:0.007916;10311:0.009514;10312:0.012547;10313:0.011185;</ViewFactors>
+										<Polygon3D offset="-1.485 0.535 0" normal="0 1 -0" localX="-1 0 0">0 0, 0.15 0, 0.15 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10070" displayName="Wall_5" displayColor="#c8c88c">
+										<ViewFactors>10066:0.27078;10067:0.048176;10068:0.076485;10069:0;10070:0;10071:0;10072:0.30039;10073:0.02004;10074:0.13336;10075:0.110048;10076:0.00731;10310:0.006092;10311:0.006559;10312:0.011418;10313:0.009377;</ViewFactors>
+										<Polygon3D offset="-1.485 0.535 2.4384" normal="-0 1 0" localX="1 0 0">0 0, 1.4 0, 1.4 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10071" displayName="Wall_6" displayColor="#c8c88c">
+										<ViewFactors>10066:0.297552;10067:0.187624;10068:0.080441;10069:0;10070:0;10071:0;10072:0.092431;10073:0.024019;10074:0.185321;10075:0.00877;10076:0.079441;10310:0.007871;10311:0.013519;10312:0.011113;10313:0.012018;</ViewFactors>
+										<Polygon3D offset="-1.635 0.535 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10072" displayName="Wall_42" displayColor="#c8c88c">
+										<ViewFactors>10066:0.292802;10067:0.11044;10068:0.117905;10069:0.005249;10070:0.081343;10071:0.053635;10072:0;10073:0.010255;10074:0.243527;10075:0.031658;10076:0.007364;10310:0.011812;10311:0.011812;10312:0.013664;10313:0.0086;</ViewFactors>
+										<Polygon3D offset="-0.085 -4.635 0" normal="1 0 0" localX="0 1 0">0 0, 5.17 0, 5.17 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10073" displayName="Wall_90" displayColor="#963214">
+										<ViewFactors>10066:0.375034;10067:0.115766;10068:0.02284;10069:0.021311;10070:0.081705;10071:0.209846;10072:0.154396;10073:0;10074:0;10075:0;10076:0;10310:0.004126;10311:0.00773;10312:0.00373;10313:0.00351;</ViewFactors>
+										<Polygon3D offset="-1.58902 -0.096946 2.4384" normal="0 0 1" localX="0 -1 0">0 0, 0.55 0, 0.55 1.50402, 0.4 1.50402, 0.4 0.15, -0.631946 0.15, -0.631946 0, -0.15 0, -0.15 -3.04598, 0 -3.04598</Polygon3D>
+									</Surface>
+									<Surface id="10074" displayName="Wall_91" displayColor="#963214">
+										<ViewFactors>10066:0.42722;10067:0.136546;10068:0.123766;10069:0.003207;10070:0.022969;10071:0.068395;10072:0.154888;10073:0;10074:0;10075:0;10076:0;10310:0.014971;10311:0.014455;10312:0.016847;10313:0.016746;</ViewFactors>
+										<Polygon3D offset="-1.58902 -0.646946 2.4384" normal="-0 -0 1" localX="0 1 0">0 0, 0.55 0, 0.55 3.04598, -3.98805 3.04598, -3.98805 -1.50402, 0 -1.50402</Polygon3D>
+									</Surface>
+									<Surface id="10075" displayName="Wall_92" displayColor="#963214">
+										<ViewFactors>10066:0.320317;10067:0.032505;10068:0.019997;10069:0.013873;10070:0.268863;10071:0.045913;10072:0.285628;10073:0;10074:0;10075:0;10076:0;10310:0.0029;10311:0.004012;10312:0.00335;10313:0.002664;</ViewFactors>
+										<Polygon3D offset="-1.43902 -0.496946 2.4384" normal="0 0 1" localX="1 0 0">0 0, 1.35402 0, 1.35402 1.03195, 0 1.03195</Polygon3D>
+									</Surface>
+									<Surface id="10076" displayName="Wall_93" displayColor="#963214">
+										<ViewFactors>10066:0.326779;10067:0.152698;10068:0.01837;10069:0.009681;10070:0.017;10071:0.395862;10072:0.06324;10073:0;10074:0;10075:0;10076:0;10310:0.003328;10311:0.007175;10312:0.002818;10313:0.003046;</ViewFactors>
+										<Polygon3D offset="-1.58902 0.053054 2.4384" normal="0 -0 1" localX="0 1 0">0 0, 0.481946 0, 0.481946 3.04598, 0 3.04598</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10029" displayName="HWR">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">6.52</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">15.89</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10077" displayName="Wall_67" displayColor="#566094">
+										<ViewFactors>10078:0.192644;10079:0.198779;10080:0.156762;10081:0.008829;10082:0.081126;10083:0.138506;10084:0.21243;10314:0.010947;</ViewFactors>
+										<Polygon3D offset="4.635 4.635 0" normal="-0 -0 -1" localX="0 -1 0">0 0, 2.5 0, 2.5 1.9675, 1.7475 2.72, 0 2.72</Polygon3D>
+									</Surface>
+									<Surface id="10078" displayName="Wall_68" displayColor="#c8c88c">
+										<ViewFactors>10077:0.205944;10078:0;10079:0.19477;10080:0.181573;10081:0.00913;10082:0.068801;10083:0.125018;10084:0.205944;10314:0.008825;</ViewFactors>
+										<Polygon3D offset="4.635 2.135 0" normal="1 0 0" localX="0 1 0">0 0, 2.5 0, 2.5 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10079" displayName="Wall_72" displayColor="#c8c88c">
+										<ViewFactors>10077:0.20979;10078:0.192283;10079:0;10080:0.153071;10081:0.00719;10082:0.076025;10083:0.15836;10084:0.203346;10314:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10314" displayName="Fenster20">
+												<Polygon2D>2.0532 1.93, 1.5332 1.93, 1.5332 1.05, 2.0532 1.05</Polygon2D>
+												<ViewFactors>10077:0.155901;10078:0.117558;10079:0;10080:0.164011;10081:0.008776;10082:0.105321;10083:0.205583;10084:0.242856;10314:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 4.635 0" normal="0 1 -0" localX="-1 0 0">0 0, 2.72 0, 2.72 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10080" displayName="Wall_29" displayColor="#c8c88c">
+										<ViewFactors>10077:0.212941;10078:0.230715;10079:0.197015;10080:0;10081:0.007183;10082:0.033112;10083:0.090451;10084:0.212941;10314:0.015644;</ViewFactors>
+										<Polygon3D offset="2.6675 2.135 0" normal="0 -1 0" localX="1 0 0">0 0, 1.9675 0, 1.9675 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10081" displayName="Wall_96" displayColor="#c8c88c">
+										<ViewFactors>10077:0.218301;10078:0.211166;10079:0.168441;10080:0.130751;10081:0;10082:0;10083:0.037808;10084:0.218299;10314:0.015237;</ViewFactors>
+										<Polygon3D offset="2.59107 2.21143 0" normal="-0.707107 -0.707107 0" localX="0.707107 -0.707107 0">0 0, 0.108094 0, 0.108094 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10082" displayName="Wall_97" displayColor="#c8c88c">
+										<ViewFactors>10077:0.226772;10078:0.179899;10079:0.201359;10080:0.068139;10081:0;10082:0;10083:0.076336;10084:0.226823;10314:0.020672;</ViewFactors>
+										<Polygon3D offset="2.59107 2.21143 2.4384" normal="-0.707107 -0.707107 -0" localX="-0.707107 0.707107 0">0 0, 0.956102 0, 0.956102 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10083" displayName="Wall_100" displayColor="#c8c88c">
+										<ViewFactors>10077:0.211829;10078:0.178853;10079:0.229483;10080:0.101838;10081:0.002339;10082:0.041765;10083:0;10084:0.211829;10314:0.022078;</ViewFactors>
+										<Polygon3D offset="1.915 4.635 0" normal="-1 0 0" localX="0 -1 0">0 0, 1.7475 0, 1.7475 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10084" displayName="Wall_103" displayColor="#963214">
+										<ViewFactors>10077:0.21243;10078:0.192644;10079:0.192673;10080:0.156762;10081:0.008829;10082:0.081145;10083:0.138506;10084:0;10314:0.017053;</ViewFactors>
+										<Polygon3D offset="1.915 4.635 2.4384" normal="-0 0 1" localX="0 -1 0">0 0, 1.7475 0, 2.5 0.7525, 2.5 2.72, 0 2.72</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10030" displayName="Flur">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">14.12</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">34.43</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10085" displayName="Wall_74" displayColor="#566094">
+										<ViewFactors>10086:0.134416;10087:0.176502;10088:0.005334;10089:0.053973;10090:0.007392;10091:0.060094;10092:0.107364;10093:0.002896;10094:0.041301;10095:0.003033;10096:0.075086;10097:0.021605;10098:0.003228;10099:0.105207;10100:0.194257;10315:0.008465;</ViewFactors>
+										<Polygon3D offset="1.765 4.635 0" normal="-0 -0 -1" localX="0 -1 0">0 0, 1.80963 0, 2.52963 -0.72, 3.95 -0.72, 3.95 3.25, 0 3.25</Polygon3D>
+									</Surface>
+									<Surface id="10086" displayName="Wall_80" displayColor="#c8c88c">
+										<ViewFactors>10085:0.253302;10086:0;10087:0.186562;10088:0.001105;10089:0.01595;10090:0.006011;10091:0.051417;10092:0.082379;10093:0.000138;10094:0.001524;10095:0.002474;10096:0.144813;10097:0.013604;10098:0.002442;10099:0.074467;10100:0.163884;10315:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10315" displayName="Fenster11">
+												<Polygon2D>2.315 0.175, 2.315 2.14, 2.095 2.14, 2.095 0.175</Polygon2D>
+												<ViewFactors>10085:0.276479;10086:0;10087:0.231334;10088:0.002763;10089:0.02393;10090:0.006641;10091:0.061338;10092:0.078149;10093:0.000302;10094:0.003118;10095:0.002493;10096:0.055313;10097:0.024036;10098:0.002671;10099:0.10584;10100:0.125679;10315:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="1.765 4.635 0" normal="0 1 -0" localX="-1 0 0">0 0, 3.25 0, 3.25 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10087" displayName="Wall_2" displayColor="#c8c88c">
+										<ViewFactors>10085:0.258739;10086:0.145127;10087:0;10088:0.004498;10089:0.043588;10090:0.006436;10091:0.104336;10092:0.054504;10093:0.002322;10094:0.028608;10095:0.003215;10096:0.07996;10097:0.015884;10098:0.009185;10099:0.145958;10100:0.087503;10315:0.010383;</ViewFactors>
+										<Polygon3D offset="-1.485 4.635 0" normal="-1 0 0" localX="0 -1 0">0 0, 3.95 0, 3.95 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10088" displayName="Wall_19" displayColor="#c8c88c">
+										<ViewFactors>10085:0.256576;10086:0.028216;10087:0.14762;10088:0;10089:0;10090:0.005016;10091:0.028137;10092:0.148764;10093:0.000601;10094:0.124564;10095:0;10096:0;10097:0.011533;10098:0.000711;10099:0.035507;10100:0.208744;10315:0.004069;</ViewFactors>
+										<Polygon3D offset="2.485 1.985 0" normal="1 0 0" localX="0 1 0">0 0, 0.120368 0, 0.120368 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10089" displayName="Wall_20" displayColor="#c8c88c">
+										<ViewFactors>10085:0.240404;10086:0.037699;10087:0.132439;10088:0;10089:0;10090:0.003097;10091:0.016084;10092:0.283861;10093:0.001566;10094:0.041648;10095:0;10096:0;10097:0.014578;10098:0.000641;10099:0.040198;10100:0.184741;10315:0.003263;</ViewFactors>
+										<Polygon3D offset="2.485 1.985 2.4384" normal="1 0 0" localX="0 -1 0">0 0, 1.3 0, 1.3 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10090" displayName="Wall_44" displayColor="#c8c88c">
+										<ViewFactors>10085:0.285362;10086:0.123126;10087:0.169485;10088:0.004025;10089:0.026841;10090:0;10091:0;10092:0;10093:0.003898;10094:0.048856;10095:0.002476;10096:0.042703;10097:0.02685;10098:0.001584;10099:0.1418;10100:0.115146;10315:0.00785;</ViewFactors>
+										<Polygon3D offset="-0.085 0.685 0" normal="0 -1 0" localX="1 0 0">0 0, 0.15 0, 0.15 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10091" displayName="Wall_45" displayColor="#c8c88c">
+										<ViewFactors>10085:0.248551;10086:0.112849;10087:0.294376;10088:0.002419;10089:0.014935;10090:0;10091:0;10092:0;10093:0.002455;10094:0.028856;10095:0.001845;10096:0.037476;10097:0.017183;10098:0.004583;10099:0.155767;10100:0.071205;10315:0.007768;</ViewFactors>
+										<Polygon3D offset="-0.085 0.685 2.4384" normal="-0 -1 -0" localX="-1 0 0">0 0, 1.4 0, 1.4 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10092" displayName="Wall_46" displayColor="#c8c88c">
+										<ViewFactors>10085:0.256894;10086:0.104598;10087:0.088964;10088:0.007399;10089:0.152488;10090:0;10091:0;10092:0;10093:0.005296;10094:0.100269;10095:0.001366;10096:0.020052;10097:0.023155;10098:0.000632;10099:0.07615;10100:0.156989;10315:0.005725;</ViewFactors>
+										<Polygon3D offset="0.065 0.685 0" normal="0 -1 0" localX="1 0 0">0 0, 2.42 0, 2.42 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10093" displayName="Wall_98" displayColor="#c8c88c">
+										<ViewFactors>10085:0.269876;10086:0.006842;10087:0.147628;10088:0.001165;10089:0.03277;10090:0.009412;10091:0.055314;10092:0.206289;10093:0;10094:0;10095:0;10096:0;10097:0.01205;10098:0.000805;10099:0.039916;10100:0.217098;10315:0.000863;</ViewFactors>
+										<Polygon3D offset="1.80893 2.78143 0" normal="0.707107 0.707107 -0" localX="-0.707107 0.707107 0">0 0, 0.0621321 0, 0.0621321 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10094" displayName="Wall_99" displayColor="#c8c88c">
+										<ViewFactors>10085:0.250128;10086:0.004897;10087:0.118191;10088:0.015682;10089:0.056628;10090:0.007665;10091:0.042253;10092:0.253789;10093:0;10094:0;10095:0;10096:0;10097:0.011862;10098:0.000606;10099:0.03499;10100:0.202748;10315:0.000578;</ViewFactors>
+										<Polygon3D offset="1.80893 2.78143 2.4384" normal="0.707107 0.707107 0" localX="0.707107 -0.707107 0">0 0, 0.956102 0, 0.956102 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10095" displayName="Wall_101" displayColor="#c8c88c">
+										<ViewFactors>10085:0.28268;10086:0.122356;10087:0.204416;10088:0;10089:0;10090:0.005978;10091:0.041582;10092:0.053193;10093:0;10094:0;10095:0;10096:0;10097:0.009967;10098:0.001118;10099:0.041222;10100:0.230462;10315:0.007114;</ViewFactors>
+										<Polygon3D offset="1.765 2.8875 2.4384" normal="1 0 0" localX="0 -1 0">0 0, 0.062132 0, 0.062132 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10096" displayName="Wall_102" displayColor="#c8c88c">
+										<ViewFactors>10085:0.248801;10086:0.254632;10087:0.18074;10088:0;10089:0;10090:0.003665;10091:0.030024;10092:0.027769;10093:0;10094:0;10095:0;10096:0;10097:0.007451;10098:0.000995;10099:0.032939;10100:0.207408;10315:0.005612;</ViewFactors>
+										<Polygon3D offset="1.765 2.8875 0" normal="1 0 0" localX="0 1 0">0 0, 1.7475 0, 1.7475 2.4384, 0 2.4384</Polygon3D>
+									</Surface>
+									<Surface id="10097" displayName="Wall_104" displayColor="#963214">
+										<ViewFactors>10085:0.343597;10086:0.114814;10087:0.172326;10088:0.003813;10089:0.05205;10090:0.011062;10091:0.066072;10092:0.153908;10093:0.002056;10094:0.031151;10095:0.001701;10096:0.035761;10097:0;10098:0;10099:0;10100:0;10315:0.011704;</ViewFactors>
+										<Polygon3D offset="-0.464068 1.21737 2.4384" normal="0 0 1" localX="1 0 0">0 0, 1.96863 0, 1.96863 -0.532365, 2.11863 -0.532365, 2.11863 0.15, 0.15 0.15, 0.15 3.41764, 0 3.41764</Polygon3D>
+									</Surface>
+									<Surface id="10098" displayName="Wall_105" displayColor="#963214">
+										<ViewFactors>10085:0.250923;10086:0.100732;10087:0.48711;10088:0.001148;10089:0.011191;10090:0.003189;10091:0.086142;10092:0.020529;10093:0.000671;10094:0.007785;10095:0.000932;10096:0.02335;10097:0;10098:0;10099:0;10100:0;10315:0.006358;</ViewFactors>
+										<Polygon3D offset="-1.43902 4.635 2.4384" normal="0 0 1" localX="-1 0 0">0 0, 0.045979 0, 0.045979 3.95, 0 3.95</Polygon3D>
+									</Surface>
+									<Surface id="10099" displayName="Wall_132" displayColor="#963214">
+										<ViewFactors>10085:0.303209;10086:0.113888;10087:0.286956;10088:0.002127;10089:0.02601;10090:0.010587;10091:0.108541;10092:0.091722;10093:0.001234;10094:0.016651;10095:0.001275;10096:0.02865;10097:0;10098:0;10099:0;10100:0;10315:0.009339;</ViewFactors>
+										<Polygon3D offset="-1.43902 0.685 2.4384" normal="0 0 1" localX="1 0 0">0 0, 2.94358 0, 2.94358 0.532365, 0.974953 0.532365, 0.974953 3.95, 0 3.95</Polygon3D>
+									</Surface>
+									<Surface id="10100" displayName="Wall_133" displayColor="#963214">
+										<ViewFactors>10085:0.336504;10086:0.150647;10087:0.103401;10088:0.007517;10089:0.071847;10090:0.005167;10091:0.029822;10092:0.113654;10093:0.004035;10094:0.057992;10095:0.004284;10096:0.108429;10097:0;10098:0;10099:0;10100:0;10315:0.006666;</ViewFactors>
+										<Polygon3D offset="-0.314068 1.36737 2.4384" normal="0 0 1" localX="1 0 0">0 0, 1.96863 0, 1.96863 -0.682365, 2.79907 -0.682365, 2.79907 0.738003, 2.07907 1.458, 2.07907 3.26763, 0 3.26763</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+					<BuildingLevel id="10325" displayName="DG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="10031" displayName="Schlafen">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">20.09</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">50.46</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10101" displayName="Wall_107" displayColor="#c8c88c">
+										<ViewFactors>10102:0.13963;10103:0.159331;10104:0.014366;10105:0.14865;10106:0.179181;10107:0.00067;10108:0.011063;10109:0.124674;10110:0.008278;10111:0.0859;10112:0.001684;10113:0.00999;10114:0.000395;10115:0.105633;10316:0.005153;10317:0.005318;</ViewFactors>
+										<Polygon3D offset="4.635 4.635 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 4.94907 0, 4.94907 1.31073, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10102" displayName="Wall_112" displayColor="#c8c88c">
+										<ViewFactors>10101:0.079268;10102:0;10103:0.285621;10104:0.014376;10105:0.03644;10106:0.121177;10107:0.002805;10108:0.085891;10109:0.065691;10110:0.001944;10111:0.014381;10112:0.009918;10113:0.074771;10114:0.000552;10115:0.198591;10316:0;10317:0.008685;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10316" displayName="Fenster29">
+												<Polygon2D>2.17195 0.87, 2.17195 1.69, 1.39195 1.69, 1.39195 0.87</Polygon2D>
+												<ViewFactors>10101:0.05226;10102:0;10103:0.273644;10104:0.024104;10105:0.051752;10106:0.097311;10107:0.003692;10108:0.110196;10109:0.080839;10110:0.001953;10111:0.012256;10112:0.013438;10113:0.089186;10114:0.000327;10115:0.173577;10316:0;10317:0.015492;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 0.053054 2.8" normal="1 0 0" localX="0 1 0">0 0, 4.58195 0, 4.58195 1.31073, 0 3.95612</Polygon3D>
+									</Surface>
+									<Surface id="10103" displayName="Wall_113" displayColor="#963214">
+										<ViewFactors>10101:0.046165;10102:0.145774;10103:0;10104:0.020397;10105:0.139792;10106:0.119161;10107:0.004058;10108:0.054486;10109:0.096276;10110:0.009863;10111:0.106205;10112:0.005609;10113:0.04347;10114:0.002504;10115:0.198408;10316:0.007818;10317:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10317" displayName="Fenster30">
+												<Polygon2D>1.805 2.43298, 1.805 1.08598, 2.405 1.08598, 2.405 2.43298</Polygon2D>
+												<ViewFactors>10101:0.042683;10102:0.122786;10103:0;10104:0.036856;10105:0.170438;10106:0.209935;10107:0.005517;10108:0.07358;10109:0.056407;10110:0.01335;10111:0.072674;10112:0.006922;10113:0.030044;10114:5e-06;10115:0.146637;10316:0.012261;10317:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 4.635 4.11073" normal="0 0.5 0.866025" localX="-1 0 0">0 0, 4.94907 0, 4.94907 3.77314, 2.98044 3.77314, 2.98044 5.29078, 0 5.29078</Polygon3D>
+									</Surface>
+									<Surface id="10104" displayName="Wall_33" displayColor="#566094">
+										<ViewFactors>10101:0.080537;10102:0.141959;10103:0.394655;10104:0;10105:0;10106:0;10107:0;10108:0;10109:0.045345;10110:0.004816;10111:0.028879;10112:0.009082;10113:0.082257;10114:0.000349;10115:0.173037;10316:0.013323;10317:0.025742;</ViewFactors>
+										<Polygon3D offset="2.485 0.685 2.8" normal="-0 0 -1" localX="0 1 0">0 0, 1.42037 0, 2.14037 -0.72, 3.95 -0.72, 3.95 -0.57, 2.2025 -0.57, 1.45 0.1825, 1.45 2.15, 1.3 2.15, 1.3 0.15, -0.631946 0.15, -0.631946 0, -0.15 0, -0.15 -0.830439, 0 -0.830439</Polygon3D>
+									</Surface>
+									<Surface id="10105" displayName="Wall_34" displayColor="#566094">
+										<ViewFactors>10101:0.118304;10102:0.051085;10103:0.383974;10104:0;10105:0;10106:0;10107:0;10108:0;10109:0.201375;10110:0.010737;10111:0.130117;10112:0.005286;10113:0.022639;10114:0.000208;10115:0.055275;10316:0.004061;10317:0.0169;</ViewFactors>
+										<Polygon3D offset="1.765 2.82537 2.8" normal="0 -0 -1" localX="0.707107 -0.707107 0">0 0, 1.01823 0, 2.02259 1.00435, 1.43538 1.59156, 0.952872 1.10906, -0.439159 2.50109, -2.74973 0.19052, -1.2796 -1.2796</Polygon3D>
+									</Surface>
+									<Surface id="10106" displayName="Wall_35" displayColor="#566094">
+										<ViewFactors>10101:0.178357;10102:0.212471;10103:0.409374;10104:0;10105:0;10106:0;10107:0;10108:0;10109:0.037304;10110:0.00408;10111:0.026858;10112:0.003209;10113:0.016744;10114:0.000394;10115:0.075625;10316:0.009551;10317:0.026035;</ViewFactors>
+										<Polygon3D offset="2.6675 2.135 2.8" normal="0 0 -1" localX="-0.707107 0.707107 0">0 0, 1.0642 -1.11022e-16, 2.29986 1.23567, 0.376534 3.159, -1.39123 1.39123</Polygon3D>
+									</Surface>
+									<Surface id="10107" displayName="Wall_36" displayColor="#566094">
+										<ViewFactors>10101:0.010861;10102:0.080081;10103:0.227019;10104:0;10105:0;10106:0;10107:0;10108:0;10109:0.000201;10110:0;10111:0;10112:0.007005;10113:0.274932;10114:7.6e-05;10115:0.382779;10316:0.0059;10317:0.011141;</ViewFactors>
+										<Polygon3D offset="2.485 0.535 2.8" normal="-0 -0 -1" localX="0 -1 0">0 0, 0.481946 0, 0.481946 0.830439, 0 0.830439</Polygon3D>
+									</Surface>
+									<Surface id="10108" displayName="Wall_37" displayColor="#566094">
+										<ViewFactors>10101:0.018573;10102:0.254003;10103:0.315708;10104:0;10105:0;10106:0;10107:0;10108:0;10109:0.018767;10110:0.000516;10111:0.002302;10112:0.008685;10113:0.067639;10114:0.000269;10115:0.27997;10316:0.018241;10317:0.01539;</ViewFactors>
+										<Polygon3D offset="2.635 1.985 2.8" normal="0 0 -1" localX="1 0 0">0 0, 2 0, 2 1.93195, 0 1.93195</Polygon3D>
+									</Surface>
+									<Surface id="10109" displayName="Wall_134" displayColor="#c8c88c">
+										<ViewFactors>10101:0.109805;10102:0.101915;10103:0.292655;10104:0.007124;10105:0.222855;10106:0.033007;10107:1.1e-05;10108:0.009845;10109:0;10110:0.006678;10111:0.186137;10112:0;10113:0;10114:7.3e-05;10115:0.016662;10316:0.00702;10317:0.00619;</ViewFactors>
+										<Polygon3D offset="-0.314068 4.635 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 3.26763 0, 3.26763 3.1973, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10110" displayName="Wall_137" displayColor="#c8c88c">
+										<ViewFactors>10101:0.111973;10102:0.04631;10103:0.46045;10104:0.01162;10105:0.182479;10106:0.055434;10107:0;10108:0.004161;10109:0.102559;10110:0;10111:0;10112:0;10113:0;10114:0;10115:0;10316:0.002604;10317:0.022497;</ViewFactors>
+										<Polygon3D offset="1.50456 1.36737 2.8" normal="0 -1 0" localX="1 0 0">0 0, 0.15 0, 0.15 3.1973, 0 3.1973</Polygon3D>
+									</Surface>
+									<Surface id="10111" displayName="Wall_138" displayColor="#c8c88c">
+										<ViewFactors>10101:0.09583;10102:0.02826;10103:0.408923;10104:0.005747;10105:0.182394;10106:0.030102;10107:0;10108:0.00153;10109:0.235773;10110:0;10111:0;10112:0;10113:0;10114:0;10115:0;10316:0.001348;10317:0.010101;</ViewFactors>
+										<Polygon3D offset="1.50456 1.36737 5.9973" normal="-0 -1 -0" localX="-1 0 0">0 0, 1.81863 0, 1.81863 3.1973, 0 3.1973</Polygon3D>
+									</Surface>
+									<Surface id="10112" displayName="Wall_157" displayColor="#c8c88c">
+										<ViewFactors>10101:0.022475;10102:0.233143;10103:0.258364;10104:0.02162;10105:0.088633;10106:0.043028;10107:0.005768;10108:0.06904;10109:0;10110:0;10111:0;10112:0;10113:0;10114:0.000614;10115:0.228156;10316:0.017682;10317:0.011509;</ViewFactors>
+										<Polygon3D offset="1.65456 1.21737 6.08391" normal="-1 0 0" localX="0 0.866024 -0.500002">0 0, 0.173205 0, 1.77186 2.76894, 1.64196 2.84394</Polygon3D>
+									</Surface>
+									<Surface id="10113" displayName="Wall_158" displayColor="#c8c88c">
+										<ViewFactors>10101:0.015375;10102:0.202708;10103:0.230909;10104:0.022583;10105:0.043781;10106:0.025889;10107:0.026107;10108:0.062007;10109:0;10110:0;10111:0;10112:0;10113:0;10114:0.000904;10115:0.350385;10316:0.013534;10317:0.005761;</ViewFactors>
+										<Polygon3D offset="1.65456 1.21737 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 1.16431 0, 1.16431 3.95612, 0 3.28391</Polygon3D>
+									</Surface>
+									<Surface id="10114" displayName="Wall_161" displayColor="#c8c88c">
+										<ViewFactors>10101:0.033952;10102:0.083559;10103:0.74229;10104:0.00535;10105:0.022435;10106:0.034;10107:0.000404;10108:0.013745;10109:0.007159;10110:0;10111:0;10112:0.003949;10113:0.050445;10114:0;10115:0;10316:0.002769;10317:5.1e-05;</ViewFactors>
+										<Polygon3D offset="4.635 0.053054 6.73078" normal="0 -1 0" localX="0 0 1">0 0, 0.025342 0, 0.025342 2.98044, 0 2.98044</Polygon3D>
+									</Surface>
+									<Surface id="10115" displayName="Wall_162" displayColor="#c8c88c">
+										<ViewFactors>10101:0.058489;10102:0.193695;10103:0.379162;10104:0.017091;10105:0.038457;10106:0.042067;10107:0.013077;10108:0.092338;10109:0.010475;10110:0;10111:0;10112:0.009466;10113:0.126056;10114:0;10115:0;10316:0.009476;10317:0.010116;</ViewFactors>
+										<Polygon3D offset="1.65456 0.053054 6.73078" normal="0 -1 0" localX="0 0 -1">0 0, 3.93078 0, 3.93078 2.98044, 0 2.98044</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10032" displayName="BadDG">
+								<IdZoneTemplate>1082504</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">13.96</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">36.75</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10116" displayName="Wall_115" displayColor="#c8c88c">
+										<ViewFactors>10117:0.192857;10118:0.141425;10119:0.004361;10120:0.00302;10121:0.317459;10122:0.000471;10123:0.128868;10124:0.198811;10318:0.005934;10319:0.006673;</ViewFactors>
+										<Polygon3D offset="-1.58902 4.635 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 3.04598 0, 3.04598 1.31073, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10117" displayName="Wall_116" displayColor="#c8c88c">
+										<ViewFactors>10116:0.067384;10117:0;10118:0.261812;10119:0.008822;10120:0.02166;10121:0.209201;10122:0.000558;10123:0.200151;10124:0.221706;10318:0;10319:0.008681;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10318" displayName="Fenster7">
+												<Polygon2D>3.19 0.87, 3.19 1.69, 2.41 1.69, 2.41 0.87</Polygon2D>
+												<ViewFactors>10116:0.037044;10117:0;10118:0.237574;10119:0.008901;10120:0.017291;10121:0.23385;10122:0.000335;10123:0.175892;10124:0.273768;10318:0;10319:0.01549;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 4.635 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 4.58195 0, 4.58195 3.95612, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10118" displayName="Wall_119" displayColor="#963214">
+										<ViewFactors>10116:0.036886;10117:0.195436;10118:0;10119:0.010096;10120:0.021146;10121:0.246895;10122:0.003742;10123:0.278759;10124:0.197112;10318:0.009927;10319:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10319" displayName="Fenster13">
+												<Polygon2D>1.24098 1.08598, 1.24098 2.43298, 0.640979 2.43298, 0.640979 1.08598</Polygon2D>
+												<ViewFactors>10116:0.032962;10117:0.122739;10118:0;10119:0.012468;10120:0.0182;10121:0.360233;10122:5e-06;10123:0.149927;10124:0.29124;10318:0.012259;10319:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-1.58902 4.635 4.11073" normal="0 0.5 0.866025" localX="-1 0 0">0 0, 3.04598 0, 3.04598 5.29078, 0 5.29078</Polygon3D>
+									</Surface>
+									<Surface id="10119" displayName="Wall_8" displayColor="#566094">
+										<ViewFactors>10116:0.02727;10117:0.157874;10118:0.242036;10119:0;10120:0;10121:0;10122:0.00023;10123:0.262173;10124:0.285874;10318:0.008916;10319:0.015781;</ViewFactors>
+										<Polygon3D offset="-4.635 0.535 2.8" normal="0 0 -1" localX="0 1 0">0 0, 0.15 0, 0.15 3, 4.1 3, 4.1 3.04598, 0 3.04598</Polygon3D>
+									</Surface>
+									<Surface id="10120" displayName="Wall_9" displayColor="#566094">
+										<ViewFactors>10116:0.008214;10117:0.168601;10118:0.220494;10119:0;10120:0;10121:0;10122:8.1e-05;10123:0.40885;10124:0.176162;10318:0.007534;10319:0.01002;</ViewFactors>
+										<Polygon3D offset="-1.58902 0.535 2.8" normal="-0 -0 -1" localX="0 -1 0">0 0, 0.481946 0, 0.481946 3.04598, 0 3.04598</Polygon3D>
+									</Surface>
+									<Surface id="10121" displayName="Wall_10" displayColor="#566094">
+										<ViewFactors>10116:0.106957;10117:0.201727;10118:0.318931;10119:0;10120:0;10121:0;10122:0.000386;10123:0.126882;10124:0.207925;10318:0.012622;10319:0.024569;</ViewFactors>
+										<Polygon3D offset="-1.635 0.685 2.8" normal="0 0 -1" localX="-1 0 0">0 0, 3 0, 3 3.95, 0 3.95</Polygon3D>
+									</Surface>
+									<Surface id="10122" displayName="Wall_164" displayColor="#c8c88c">
+										<ViewFactors>10116:0.024381;10117:0.082599;10118:0.742207;10119:0.001902;10120:0.001541;10121:0.059192;10122:0;10123:0;10124:0.08523;10318:0.002772;10319:5.1e-05;</ViewFactors>
+										<Polygon3D offset="-1.58902 0.053054 6.73078" normal="0 -1 0" localX="0 0 1">0 0, 0.025342 0, 0.025342 3.04598, 0 3.04598</Polygon3D>
+									</Surface>
+									<Surface id="10123" displayName="Wall_165" displayColor="#c8c88c">
+										<ViewFactors>10116:0.042971;10117:0.191016;10118:0.356389;10119:0.013982;10120:0.050128;10121:0.125578;10122:0;10123:0;10124:0.200424;10318:0.009396;10319:0.01012;</ViewFactors>
+										<Polygon3D offset="-4.635 0.053054 6.73078" normal="0 -1 0" localX="0 0 -1">0 0, 3.93078 0, 3.93078 3.04598, 0 3.04598</Polygon3D>
+									</Surface>
+									<Surface id="10124" displayName="Wall_167" displayColor="#c8c88c">
+										<ViewFactors>10116:0.065782;10117:0.209954;10118:0.25006;10119:0.015128;10120:0.021432;10121:0.204199;10122:0.000545;10123:0.198877;10124:0;10318:0.014512;10319:0.019507;</ViewFactors>
+										<Polygon3D offset="-1.58902 0.053054 2.8" normal="1 0 0" localX="0 1 0">0 0, 4.58195 0, 4.58195 1.31073, 0 3.95612</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10033" displayName="FlurDG">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">8.38</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">26.3</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10125" displayName="Wall_121" displayColor="#c8c88c">
+										<ViewFactors>10126:0.092645;10127:0.004662;10128:0.000457;10129:0.211539;10130:0.002281;10131:0;10132:0.001458;10133:0.315081;10134:0;10135:0;10136:0;10137:0;10138:0.000358;10139:0.324409;10140:0.000343;10141:0.001579;10142:0.001016;10143:0.044181;10144:2.1e-05;10145:0;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="-0.464068 4.635 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 0.974953 0, 0.974953 1.31073, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10126" displayName="Wall_130" displayColor="#963214">
+										<ViewFactors>10125:0.014826;10126:0;10127:0.035835;10128:0.007739;10129:0.085431;10130:0.021224;10131:0.015263;10132:0.008486;10133:0.154137;10134:0.008458;10135:0.039616;10136:0.004781;10137:0.065498;10138:0.005215;10139:0.255402;10140:0.004734;10141:0.019318;10142:0.011473;10143:0.116461;10144:0.011353;10145:0.093225;10146:0.004297;10147:0.017746;</ViewFactors>
+										<Polygon3D offset="-1.43902 3.55271e-15 6.78675" normal="-0 0.5 0.866025" localX="1 0 0">0 0, 2.94358 0, 2.94358 1.40569, 0.974953 1.40569, 0.974953 5.35204, 0 5.35204</Polygon3D>
+									</Surface>
+									<Surface id="10127" displayName="Wall_131" displayColor="#963214">
+										<ViewFactors>10125:0.003527;10126:0.16941;10127:0;10128:0.009911;10129:0.043366;10130:0.022511;10131:0.024042;10132:0.001399;10133:0.007161;10134:0.021414;10135:0.135365;10136:0.011891;10137:0.088738;10138:0.011889;10139:0.123173;10140:0.012982;10141:0.057976;10142:0.02031;10143:0.069435;10144:0.021063;10145:0.07319;10146:0.012973;10147:0.058063;</ViewFactors>
+										<Polygon3D offset="1.50456 3.55271e-15 6.78675" normal="0 -0.5 0.866025" localX="-1 0 0">0 0, 2.94358 0, 2.94358 0.573824, -0 0.573824</Polygon3D>
+									</Surface>
+									<Surface id="10128" displayName="Wall_86" displayColor="#566094">
+										<ViewFactors>10125:0.000978;10126:0.103636;10127:0.028073;10128:0;10129:0;10130:0;10131:0;10132:0.003117;10133:0.010919;10134:0.01805;10135:0.185184;10136:0.005953;10137:0.132209;10138:0.006076;10139:0.176855;10140:0.005722;10141:0.025388;10142:0.015873;10143:0.11704;10144:0.015353;10145:0.11958;10146:0.005601;10147:0.024807;</ViewFactors>
+										<Polygon3D offset="1.50456 0.685 2.8" normal="-0 -0 -1" localX="0 -1 0">0 0, 0.15 0, 0.15 1.43956, 1.18195 1.43956, 1.18195 1.58956, 0.15 1.58956, 0.15 2.94358, 0 2.94358</Polygon3D>
+									</Surface>
+									<Surface id="10129" displayName="Wall_87" displayColor="#566094">
+										<ViewFactors>10125:0.055178;10126:0.139248;10127:0.014952;10128:0;10129:0;10130:0;10131:0;10132:0.010627;10133:0.228438;10134:0.007085;10135:0.079718;10136:0.0014;10137:0.044918;10138:0.001765;10139:0.307576;10140:0.001633;10141:0.006873;10142:0.0033;10143:0.052805;10144:0.002858;10145:0.03463;10146:0.001308;10147:0.005859;</ViewFactors>
+										<Polygon3D offset="-1.43902 0.685 2.8" normal="0 0 -1" localX="0 1 0">0 0, 3.95 0, 3.95 0.974953, 0.532365 0.974953, 0.532365 2.94358, 0 2.94358</Polygon3D>
+									</Surface>
+									<Surface id="10130" displayName="Wall_88" displayColor="#566094">
+										<ViewFactors>10125:0.002086;10126:0.121295;10127:0.027212;10128:0;10129:0;10130:0;10131:0;10132:0.00385;10133:0.015498;10134:0.016374;10135:0.092507;10136:0.004057;10137:0.053606;10138:0.017036;10139:0.186189;10140:0.016942;10141:0.08033;10142:0.009174;10143:0.273147;10144:0.007583;10145:0.048442;10146:0.004041;10147:0.020628;</ViewFactors>
+										<Polygon3D offset="-0.085 0.535 2.8" normal="-0 -0 -1" localX="0 -1 0">0 0, 1.03195 0, 1.03195 1.35402, 0 1.35402</Polygon3D>
+									</Surface>
+									<Surface id="10131" displayName="Wall_89" displayColor="#566094">
+										<ViewFactors>10125:0;10126:0.082042;10127:0.027336;10128:0;10129:0;10130:0;10131:0;10132:0;10133:0;10134:0.009678;10135:0.170299;10136:0.016454;10137:0.150344;10138:0.004199;10139:0.079225;10140:0.004182;10141:0.021333;10142:0.007576;10143:0.047285;10144:0.00933;10145:0.276605;10146:0.016364;10147:0.077718;</ViewFactors>
+										<Polygon3D offset="0.065 0.535 2.8" normal="0 0 -1" localX="1 0 0">0 0, 1.43956 0, 1.43956 1.03195, 0 1.03195</Polygon3D>
+									</Surface>
+									<Surface id="10132" displayName="Wall_135" displayColor="#c8c88c">
+										<ViewFactors>10125:0.003834;10126:0.139411;10127:0.004862;10128:0.003824;10129:0.107109;10130:0.011068;10131:0;10132:0;10133:0;10134:0;10135:0;10136:0;10137:0;10138:0.006783;10139:0.651231;10140:0.005993;10141:0.022044;10142:0.000559;10143:0.043267;10144:0;10145:0;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="-0.464068 1.36737 5.9973" normal="1 0 0" localX="0 -0.866024 0.500002">0 0, 0.173205 0, -1.46875 2.84394, -1.59866 2.76894</Polygon3D>
+									</Surface>
+									<Surface id="10133" displayName="Wall_136" displayColor="#c8c88c">
+										<ViewFactors>10125:0.054668;10126:0.167111;10127:0.001642;10128:0.000884;10129:0.151948;10130:0.00294;10131:0;10132:0;10133:0;10134:0;10135:0;10136:0;10137:0;10138:0.001597;10139:0.596906;10140:0.001438;10141:0.005577;10142:0.0002;10143:0.015079;10144:0;10145:0;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="-0.464068 1.36737 2.8" normal="1 0 0" localX="0 1 0">0 0, 3.26763 0, 3.26763 1.31073, 0 3.1973</Polygon3D>
+									</Surface>
+									<Surface id="10134" displayName="Wall_139" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.103899;10127:0.055639;10128:0.016558;10129:0.053394;10130:0.035195;10131:0.022115;10132:0;10133:0;10134:0;10135:0;10136:0.005655;10137:0.079949;10138:0.008084;10139:0.11271;10140:0.007675;10141:0.033902;10142:0.017816;10143:0.221987;10144:0.017841;10145:0.175737;10146:0.005516;10147:0.026338;</ViewFactors>
+										<Polygon3D offset="-0.314068 1.21737 5.9973" normal="-0 1 -0" localX="0 0 -1">0 0, 3.1973 0, 3.1973 0.15, -0.086603 0.15, -0.086603 -1.81863, 0 -1.81863</Polygon3D>
+									</Surface>
+									<Surface id="10135" displayName="Wall_156" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.054404;10127:0.039322;10128:0.018992;10129:0.067165;10130:0.02223;10131:0.043508;10132:0;10133:0;10134:0;10135:0;10136:0.007298;10137:0.198963;10138:0.005078;10139:0.053268;10140:0.005021;10141:0.024877;10142:0.014305;10143:0.142893;10144:0.015862;10145:0.250706;10146:0.00682;10147:0.029284;</ViewFactors>
+										<Polygon3D offset="-0.314068 1.21737 5.9973" normal="-0 1 0" localX="1 0 0">0 0, 1.81863 0, 1.81863 3.1973, 0 3.1973</Polygon3D>
+									</Surface>
+									<Surface id="10136" displayName="Wall_159" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.128082;10127:0.067386;10128:0.011911;10129:0.023018;10130:0.019021;10131:0.082011;10132:0;10133:0;10134:0.012334;10135:0.142386;10136:0;10137:0;10138:0.007568;10139:0.131744;10140:0.007528;10141:0.038247;10142:0.005778;10143:0.043364;10144:0.010717;10145:0.268465;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="1.50456 0.053054 6.75612" normal="1 0 0" localX="0 -0.866031 0.499991">0 0, 0.0612611 -3.46945e-18, 0.0739321 0.0219454, -1.91307 3.46362, -1.97802 3.42612</Polygon3D>
+									</Surface>
+									<Surface id="10137" displayName="Wall_160" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.12409;10127:0.035562;10128:0.018706;10129:0.052211;10130:0.017771;10131:0.05299;10132:0;10133:0;10134:0.012331;10135:0.274487;10136:0;10137:0;10138:0.007035;10139:0.12738;10140:0.006887;10141:0.033434;10142:0.007261;10143:0.065083;10144:0.008996;10145:0.155658;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="1.50456 0.053054 2.8" normal="1 0 0" localX="0 1 0">0 0, 1.16431 0, 1.16431 3.28391, 0 3.95612</Polygon3D>
+									</Surface>
+									<Surface id="10138" displayName="Wall_168" displayColor="#c8c88c">
+										<ViewFactors>10125:0.001537;10126:0.139729;10127:0.067374;10128:0.012156;10129:0.029017;10130:0.079866;10131:0.020929;10132:0.011062;10133:0.039465;10134:0.017631;10135:0.099073;10136:0.007568;10137:0.099484;10138:0;10139:0;10140:0;10141:0;10142:0.011118;10143:0.263335;10144:0.006296;10145:0.047577;10146:0.007528;10147:0.038247;</ViewFactors>
+										<Polygon3D offset="-1.43902 0.053054 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 0.075 0, 0.075 3.97408, 0.053054 3.98675, 0 3.95612</Polygon3D>
+									</Surface>
+									<Surface id="10139" displayName="Wall_169" displayColor="#c8c88c">
+										<ViewFactors>10125:0.034357;10126:0.169022;10127:0.017242;10128:0.00874;10129:0.124882;10130:0.021561;10131:0.009754;10132:0.026235;10133:0.364355;10134:0.006072;10135:0.02567;10136:0.003254;10137:0.044495;10138:0;10139:0;10140:0;10141:0;10142:0.005163;10143:0.071411;10144:0.004663;10145:0.044404;10146:0.003209;10147:0.015872;</ViewFactors>
+										<Polygon3D offset="-1.43902 0.053054 6.75612" normal="-1 0 0" localX="0 0.866025 -0.5">0 0, 5.29078 0, 5.94614 1.13513, 1.97806 3.4261</Polygon3D>
+									</Surface>
+									<Surface id="10140" displayName="Wall_170" displayColor="#c8c88c">
+										<ViewFactors>10125:0.001478;10126:0.12752;10127:0.073971;10128:0.011511;10129:0.026982;10130:0.079858;10131:0.020958;10132:0.009828;10133:0.035726;10134:0.01683;10135:0.09849;10136:0.007569;10137:0.097918;10138:0;10139:0;10140:0;10141:0;10142:0.011007;10143:0.287029;10144:0.005634;10145:0.041932;10146:0.007547;10147:0.038619;</ViewFactors>
+										<Polygon3D offset="-1.43902 -0.096946 6.73078" normal="-1 0 0" localX="0 0.866022 0.500006">0 0, 0.0866029 0, -1.90046 3.44164, -1.96541 3.40414</Polygon3D>
+									</Surface>
+									<Surface id="10141" displayName="Wall_171" displayColor="#c8c88c">
+										<ViewFactors>10125:0.001322;10126:0.101077;10127:0.064167;10128:0.00992;10129:0.022064;10130:0.073549;10131:0.020765;10132:0.007021;10133:0.026914;10134:0.014441;10135:0.094784;10136:0.00747;10137:0.092337;10138:0;10139:0;10140:0;10141:0;10142:0.01018;10143:0.383844;10144:0.002823;10145:0.020525;10146:0.007501;10147:0.039295;</ViewFactors>
+										<Polygon3D offset="-1.43902 -0.096946 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 0.4 0, 0.4 3.69984, 0 3.93078</Polygon3D>
+									</Surface>
+									<Surface id="10142" displayName="Wall_174" displayColor="#c8c88c">
+										<ViewFactors>10125:0.003282;10126:0.231586;10127:0.086714;10128:0.023926;10129:0.040868;10130:0.032403;10131:0.028447;10132:0.000687;10133:0.00372;10134:0.029276;10135:0.210262;10136:0.004353;10137:0.077362;10138:0.008376;10139:0.15748;10140:0.008248;10141:0.039272;10142:0;10143:0;10144:0;10145:0;10146:0.003862;10147:0.009906;</ViewFactors>
+										<Polygon3D offset="-0.075 -0.496946 6.41324" normal="-0 -1 -0" localX="0 0 -1">0 0, 3.61324 0, 3.61324 0.075, -0.086602 0.075, -0.086602 -1.36402, 0 -1.36402</Polygon3D>
+									</Surface>
+									<Surface id="10143" displayName="Wall_175" displayColor="#c8c88c">
+										<ViewFactors>10125:0.011456;10126:0.188692;10127:0.023797;10128:0.014161;10129:0.052489;10130:0.07744;10131:0.014253;10132:0.004267;10133:0.022534;10134:0.02928;10135:0.168586;10136:0.002622;10137:0.055658;10138:0.015925;10139:0.174832;10140:0.017263;10141:0.118858;10142:0;10143:0;10144:0;10145:0;10146:0.002295;10147:0.005768;</ViewFactors>
+										<Polygon3D offset="-0.075 -0.496946 6.41324" normal="-0 -1 -0" localX="-1 0 0">0 0, 1.36402 0, 1.36402 3.61324, 0 3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10144" displayName="Wall_178" displayColor="#c8c88c">
+										<ViewFactors>10125:6.7e-05;10126:0.225908;10127:0.088658;10128:0.022815;10129:0.034892;10130:0.026403;10131:0.03454;10132:0;10133:0;10134:0.028903;10135:0.229846;10136:0.00796;10137:0.094487;10138:0.004676;10139:0.140208;10140:0.004162;10141:0.010736;10142:0;10143:0;10144:0;10145:0;10146:0.007848;10147:0.037895;</ViewFactors>
+										<Polygon3D offset="0.075 -0.496946 6.41324" normal="0 -1 -0" localX="1 0 0">0 0, 1.42956 0, 1.42956 0.086602, -0.075 0.086602, -0.075 -3.61324, 0 -3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10145" displayName="Wall_179" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.144119;10127:0.023933;10128:0.013805;10129:0.032845;10130:0.013104;10131:0.079552;10132:0;10133:0;10134:0.022117;10135:0.282224;10136:0.015491;10137:0.127014;10138:0.002745;10139:0.103727;10140:0.002406;10141:0.006064;10142:0;10143:0;10144:0;10145:0;10146:0.016738;10147:0.114107;</ViewFactors>
+										<Polygon3D offset="0.075 -0.496946 6.41324" normal="0 -1 0" localX="0 0 -1">0 0, 3.61324 0, 3.61324 1.42956, 0 1.42956</Polygon3D>
+									</Surface>
+									<Surface id="10146" displayName="Wall_182" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.11576;10127:0.07392;10128:0.011267;10129:0.02161;10130:0.019047;10131:0.082007;10132:0;10133:0;10134:0.012096;10135:0.133774;10136:0;10137:0;10138:0.007569;10139:0.130621;10140:0.007547;10141:0.038618;10142:0.005155;10143:0.038161;10144:0.010624;10145:0.291663;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="1.50456 -0.096946 2.8" normal="1 0 0" localX="0 1 0">0 0, 0.075 0, 0.075 3.97408, 0 3.93078</Polygon3D>
+									</Surface>
+									<Surface id="10147" displayName="Wall_183" displayColor="#c8c88c">
+										<ViewFactors>10125:0;10126:0.092854;10127:0.064263;10128:0.009693;10129:0.01881;10130:0.018886;10131:0.075652;10132:0;10133:0;10134:0.011219;10135:0.111574;10136:0;10137:0;10138:0.00747;10139:0.12549;10140:0.007501;10141:0.039295;10142:0.002568;10143:0.018627;10144:0.009964;10145:0.386208;10146:0;10147:0;</ViewFactors>
+										<Polygon3D offset="1.50456 -0.096946 6.73078" normal="1 0 0" localX="0 -0.866026 -0.5">0 0, 0.46188 -2.77556e-17, 2.3118 3.20415, 1.96539 3.40415</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10034" displayName="Kind2">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">19.82</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">50.96</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10148" displayName="Wall_141" displayColor="#c8c88c">
+										<ViewFactors>10149:0.078443;10150:0.287642;10151:0.00845;10152:0.221704;10153:0.03337;10154:0.199692;10155:0.002778;10156:0.018278;10157:0.009635;10158:0.024557;10159:0.106768;10320:0;10321:0.008751;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10320" displayName="Fenster22">
+												<Polygon2D>3.19 0.87, 3.19 1.69, 2.41 1.69, 2.41 0.87</Polygon2D>
+												<ViewFactors>10148:0;10149:0.050022;10150:0.274525;10151:0.010432;10152:0.250802;10153:0.027621;10154:0.178389;10155:0.004327;10156:0.025388;10157:0.011356;10158:0.027266;10159:0.124408;10320:0;10321:0.01549;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 -4.635 2.8" normal="1 0 0" localX="0 1 0">0 0, 4.53805 0, 4.53805 3.93078, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10149" displayName="Wall_146" displayColor="#c8c88c">
+										<ViewFactors>10148:0.147694;10149:0;10150:0.157994;10151:0.00117;10152:0.348373;10153:0.003353;10154:0.115312;10155:0.006942;10156:0.058516;10157:0.001344;10158:0.003218;10159:0.145282;10320:0.005353;10321:0.005649;</ViewFactors>
+										<Polygon3D offset="0.075 -4.635 2.8" normal="0 -1 0" localX="1 0 0">0 0, 4.56 0, 4.56 1.31073, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10150" displayName="Wall_147" displayColor="#963214">
+										<ViewFactors>10148:0.146579;10149:0.042761;10150:0;10151:0.006559;10152:0.309713;10153:0.021094;10154:0.212649;10155:0.011032;10156:0.091073;10157:0.005725;10158:0.014524;10159:0.130268;10320:0.007951;10321:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10321" displayName="Fenster27">
+												<Polygon2D>1.08598 1.805, 2.43298 1.805, 2.43298 2.405, 1.08598 2.405</Polygon2D>
+												<ViewFactors>10148:0.12185;10149:0.041778;10150:0;10151:0.008001;10152:0.470547;10153:0.02201;10154:0.149592;10155:0.00971;10156:0.058726;10157:0.003455;10158:0.0073;10159:0.094829;10320:0.012259;10321:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="4.635 -4.635 4.11073" normal="0 -0.5 0.866025" localX="0 0.866025 0.5">0 0, 5.24009 0, 5.24009 2.98044, 4.60501 2.98044, 4.60501 4.56, 0 4.56</Polygon3D>
+									</Surface>
+									<Surface id="10151" displayName="Wall_38" displayColor="#566094">
+										<ViewFactors>10148:0.213596;10149:0.015709;10150:0.325322;10151:0;10152:0;10153:0;10154:0.307013;10155:0.001951;10156:0.007453;10157:0.013993;10158:0.034125;10159:0.051294;10320:0.014987;10321:0.014524;</ViewFactors>
+										<Polygon3D offset="2.485 -1.065 2.8" normal="0 0 -1" localX="0 1 0">0 0, 0.968054 0, 0.968054 0.15, 0.15 0.15, 0.15 2.15, 0 2.15</Polygon3D>
+									</Surface>
+									<Surface id="10152" displayName="Wall_39" displayColor="#566094">
+										<ViewFactors>10148:0.140612;10149:0.11735;10150:0.385468;10151:0;10152:0;10153:0;10154:0.098466;10155:0.007316;10156:0.060394;10157:0.004181;10158:0.009415;10159:0.146386;10320:0.009041;10321:0.021433;</ViewFactors>
+										<Polygon3D offset="2.485 -1.065 2.8" normal="-0 -0 -1" localX="1 0 0">0 0, 2.15 0, 2.15 3.57, -2.41 3.57, -2.41 -0.418054, -0.830439 -0.418054, -0.830439 -0.968054, 0 -0.968054</Polygon3D>
+									</Surface>
+									<Surface id="10153" displayName="Wall_40" displayColor="#566094">
+										<ViewFactors>10148:0.229526;10149:0.01225;10150:0.284716;10151:0;10152:0;10153:0;10154:0.375488;10155:0.00026;10156:0.001053;10157:0.010336;10158:0.027408;10159:0.037425;10320:0.010798;10321:0.010872;</ViewFactors>
+										<Polygon3D offset="2.635 -0.915 2.8" normal="0 0 -1" localX="0 1 0">0 0, 0.818054 0, 0.818054 2, 0 2</Polygon3D>
+									</Surface>
+									<Surface id="10154" displayName="Wall_163" displayColor="#c8c88c">
+										<ViewFactors>10148:0.191818;10149:0.058829;10150:0.40084;10151:0.011667;10152:0.14913;10153:0.052438;10154:0;10155:0;10156:0;10157:0.016914;10158:0.056277;10159:0.04191;10320:0.009739;10321:0.01032;</ViewFactors>
+										<Polygon3D offset="4.635 -0.096946 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 2.98044 0, 2.98044 3.93078, 0 3.93078</Polygon3D>
+									</Surface>
+									<Surface id="10155" displayName="Wall_180" displayColor="#c8c88c">
+										<ViewFactors>10148:0.057673;10149:0.076555;10150:0.44949;10151:0.001603;10152:0.239522;10153:0.000786;10154:0;10155:0;10156:0;10157:0;10158:0;10159:0.154702;10320:0.005106;10321:0.014479;</ViewFactors>
+										<Polygon3D offset="1.50456 -0.646946 6.41324" normal="-0 1 0" localX="1 0 0">0 0, 0.15 0, 0.15 3.61324, 0 3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10156" displayName="Wall_181" displayColor="#c8c88c">
+										<ViewFactors>10148:0.039822;10149:0.06771;10150:0.389366;10151:0.000642;10152:0.207459;10153:0.000334;10154:0;10155:0;10156:0;10157:0;10158:0;10159:0.282331;10320:0.003144;10321:0.009189;</ViewFactors>
+										<Polygon3D offset="1.50456 -0.646946 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 1.42956 0, 1.42956 3.61324, 0 3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10157" displayName="Wall_184" displayColor="#c8c88c">
+										<ViewFactors>10148:0.197681;10149:0.014651;10150:0.23052;10151:0.011358;10152:0.135259;10153:0.030831;10154:0.361289;10155:0;10156:0;10157:0;10158:0;10159:0;10320:0.013243;10321:0.005091;</ViewFactors>
+										<Polygon3D offset="1.65456 -0.496946 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 0.15 0, 0.15 3.61324, 0 3.69984</Polygon3D>
+									</Surface>
+									<Surface id="10158" displayName="Wall_185" displayColor="#c8c88c">
+										<ViewFactors>10148:0.18108;10149:0.012603;10150:0.21016;10151:0.009955;10152:0.109466;10153:0.029383;10154:0.432013;10155:0;10156:0;10157:0;10158:0;10159:0;10320:0.011427;10321:0.003866;</ViewFactors>
+										<Polygon3D offset="1.65456 -0.496946 6.49984" normal="-1 0 0" localX="0 0.866026 0.5">0 0, 0.46188 2.77556e-17, -1.50351 3.40415, -1.84992 3.20415</Polygon3D>
+									</Surface>
+									<Surface id="10159" displayName="Wall_186" displayColor="#c8c88c">
+										<ViewFactors>10148:0.122373;10149:0.088439;10150:0.292993;10151:0.002326;10152:0.26454;10153:0.006236;10154:0.050007;10155:0.00854;10156:0.148529;10157:0;10158:0;10159:0;10320:0.008104;10321:0.007806;</ViewFactors>
+										<Polygon3D offset="0.075 -0.646946 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 3.98805 0, 3.98805 1.31073, 0 3.61324</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="10035" displayName="Kind1">
+								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">19.86</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">51.09</IBK:Parameter>
+								<Surfaces>
+									<Surface id="10160" displayName="Wall_149" displayColor="#c8c88c">
+										<ViewFactors>10161:0.147758;10162:0.158032;10163:0.00046;10164:0.352506;10165:0.11812;10166:0.001384;10167:0.003317;10168:0.006896;10169:0.055516;10170:0.145277;10322:0.005353;10323:0.005649;</ViewFactors>
+										<Polygon3D offset="-4.635 -4.635 2.8" normal="0 -1 0" localX="1 0 0">0 0, 4.56 0, 4.56 1.31073, 0 1.31073</Polygon3D>
+									</Surface>
+									<Surface id="10161" displayName="Wall_154" displayColor="#c8c88c">
+										<ViewFactors>10160:0.078477;10161:0;10162:0.287814;10163:0.000105;10164:0.263617;10165:0.201258;10166:0.0094;10167:0.023999;10168:0.002685;10169:0.017131;10170:0.106844;10322:0;10323:0.008754;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10322" displayName="Fenster24">
+												<Polygon2D>2.12805 0.87, 2.12805 1.69, 1.34805 1.69, 1.34805 0.87</Polygon2D>
+												<ViewFactors>10160:0.050022;10161:0;10162:0.274728;10163:0.000126;10164:0.288985;10165:0.180702;10166:0.011081;10167:0.026728;10168:0.004132;10169:0.023637;10170:0.124408;10322:0;10323:0.015492;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 -0.096946 2.8" normal="-1 0 0" localX="0 -1 0">0 0, 4.53805 0, 4.53805 1.31073, 0 3.93078</Polygon3D>
+									</Surface>
+									<Surface id="10162" displayName="Wall_155" displayColor="#963214">
+										<ViewFactors>10160:0.042691;10161:0.146392;10162:0;10163:0.000491;10164:0.337081;10165:0.217916;10166:0.005761;10167:0.014622;10168:0.010963;10169:0.086122;10170:0.130079;10322:0.007942;10323:0;</ViewFactors>
+										<SubSurfaces>
+											<SubSurface id="10323" displayName="Fenster28">
+												<Polygon2D>2.405 1.08598, 2.405 2.43298, 1.805 2.43298, 1.805 1.08598</Polygon2D>
+												<ViewFactors>10160:0.041778;10161:0.121897;10162:0;10163:0.000388;10164:0.500628;10165:0.152947;10166:0.003602;10167:0.007647;10168:0.009392;10169:0.054711;10170:0.094829;10322:0.012261;10323:0;</ViewFactors>
+											</SubSurface>
+										</SubSurfaces>
+										<Polygon3D offset="-4.635 -4.635 4.11073" normal="0 -0.5 0.866025" localX="1 0 0">0 0, 4.56 0, 4.56 4.60501, 3.04598 4.60501, 3.04598 5.24009, 0 5.24009</Polygon3D>
+									</Surface>
+									<Surface id="10163" displayName="Wall_94" displayColor="#566094">
+										<ViewFactors>10160:0.068973;10161:0.029748;10162:0.27236;10163:0;10164:0;10165:0.024042;10166:0;10167:0;10168:0.004339;10169:0.094112;10170:0.496553;10322:0.002014;10323:0.007862;</ViewFactors>
+										<Polygon3D offset="-0.085 -0.646946 2.8" normal="0 0 -1" localX="1 0 0">0 0, 0.01 0, 0.01 3.98805, 0 3.98805</Polygon3D>
+									</Surface>
+									<Surface id="10164" displayName="Wall_95" displayColor="#566094">
+										<ViewFactors>10160:0.106297;10161:0.149671;10162:0.376266;10163:0;10164:0;10165:0.12931;10166:0.004957;10167:0.011586;10168:0.006568;10169:0.051264;10170:0.134492;10322:0.009325;10323:0.020413;</ViewFactors>
+										<Polygon3D offset="-0.085 -4.635 2.8" normal="0 0 -1" localX="-1 0 0">0 0, 4.55 0, 4.55 4.53805, 1.50402 4.53805, 1.50402 3.98805, 0 3.98805</Polygon3D>
+									</Surface>
+									<Surface id="10165" displayName="Wall_166" displayColor="#c8c88c">
+										<ViewFactors>10160:0.058965;10161:0.189163;10162:0.402688;10163:8e-05;10164:0.214066;10165:0;10166:0.016595;10167:0.055119;10168:0;10169:0;10170:0.04346;10322:0.009653;10323:0.010324;</ViewFactors>
+										<Polygon3D offset="-1.58902 -0.096946 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 3.04598 0, 3.04598 3.93078, 0 3.93078</Polygon3D>
+									</Surface>
+									<Surface id="10166" displayName="Wall_172" displayColor="#c8c88c">
+										<ViewFactors>10160:0.015083;10161:0.192858;10162:0.232402;10163:0;10164:0.179154;10165:0.36226;10166:0;10167:0;10168:0;10169:0;10170:0;10322:0.012922;10323:0.005308;</ViewFactors>
+										<Polygon3D offset="-1.58902 -0.496946 6.49984" normal="1 0 0" localX="0 -0.866027 -0.499998">0 0, 0.173205 0, 1.97981 3.12916, 1.84991 3.20416</Polygon3D>
+									</Surface>
+									<Surface id="10167" displayName="Wall_173" displayColor="#c8c88c">
+										<ViewFactors>10160:0.01299;10161:0.176968;10162:0.21199;10163:0;10164:0.150477;10165:0.432428;10166:0;10167:0;10168:0;10169:0;10170:0;10322:0.011202;10323:0.00405;</ViewFactors>
+										<Polygon3D offset="-1.58902 -0.496946 2.8" normal="1 0 0" localX="0 1 0">0 0, 0.4 0, 0.4 3.93078, 0 3.69984</Polygon3D>
+									</Surface>
+									<Surface id="10168" displayName="Wall_176" displayColor="#c8c88c">
+										<ViewFactors>10160:0.076052;10161:0.055753;10162:0.447529;10163:0.000319;10164:0.240202;10165:0;10166:0;10167:0;10168:0;10169:0;10170:0.161353;10322:0.004876;10323:0.014005;</ViewFactors>
+										<Polygon3D offset="-1.43902 -0.646946 2.8" normal="0 1 -0" localX="-1 0 0">0 0, 0.15 0, 0.15 3.61324, 0 3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10169" displayName="Wall_177" displayColor="#c8c88c">
+										<ViewFactors>10160:0.067325;10161:0.039116;10162:0.386616;10163:0.000762;10164:0.206168;10165:0;10166:0;10167:0;10168:0;10169:0;10170:0.28793;10322:0.003067;10323:0.008972;</ViewFactors>
+										<Polygon3D offset="-1.43902 -0.646946 6.41324" normal="-0 1 0" localX="1 0 0">0 0, 1.36402 0, 1.36402 3.61324, 0 3.61324</Polygon3D>
+									</Surface>
+									<Surface id="10170" displayName="Wall_187" displayColor="#c8c88c">
+										<ViewFactors>10160:0.088436;10161:0.12246;10162:0.29312;10163:0.002017;10164:0.271503;10165:0.052997;10166:0;10167:0;10168:0.008907;10169:0.14453;10170:0;10322:0.008104;10323:0.007806;</ViewFactors>
+										<Polygon3D offset="-0.075 -4.635 2.8" normal="1 0 0" localX="0 1 0">0 0, 3.98805 0, 3.98805 3.61324, 0 1.31073</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="1" idComponent="1000032" idSideASurface="10036">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10025</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="2" idComponent="1000021" idSideASurface="10037" />
+			<ComponentInstance id="3" idComponent="1000021" idSideASurface="10038" />
+			<ComponentInstance id="4" idComponent="1000028" idSideASurface="10039" idSideBSurface="10087" />
+			<ComponentInstance id="5" idComponent="1000028" idSideASurface="10040" idSideBSurface="10071" />
+			<ComponentInstance id="6" idComponent="1000031" idSideASurface="10121" idSideBSurface="10041">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10032</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="7" idComponent="1000032" idSideASurface="10042">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10026</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="8" idComponent="1000021" idSideASurface="10043" />
+			<ComponentInstance id="9" idComponent="1000028" idSideASurface="10044" idSideBSurface="10057" />
+			<ComponentInstance id="10" idComponent="1000029" idSideASurface="10045" />
+			<ComponentInstance id="11" idComponent="1000028" idSideASurface="10046" idSideBSurface="10089" />
+			<ComponentInstance id="12" idComponent="1000028" idSideASurface="10047" idSideBSurface="10059" />
+			<ComponentInstance id="13" idComponent="1000029" idSideASurface="10048" />
+			<ComponentInstance id="14" idComponent="1000028" idSideASurface="10049" idSideBSurface="10080" />
+			<ComponentInstance id="15" idComponent="1000030" idSideBSurface="10050" />
+			<ComponentInstance id="16" idComponent="1000031" idSideASurface="10153" idSideBSurface="10051">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10034</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="17" idComponent="1000031" idSideASurface="10108" idSideBSurface="10052">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10031</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="18" idComponent="1000032" idSideASurface="10053">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10027</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="19" idComponent="1000021" idSideASurface="10054" />
+			<ComponentInstance id="20" idComponent="1000021" idSideASurface="10055" />
+			<ComponentInstance id="21" idComponent="1000029" idSideASurface="10056" />
+			<ComponentInstance id="22" idComponent="1000029" idSideASurface="10058" />
+			<ComponentInstance id="23" idComponent="1000028" idSideASurface="10060" idSideBSurface="10072" />
+			<ComponentInstance id="24" idComponent="1000028" idSideASurface="10061" idSideBSurface="10092" />
+			<ComponentInstance id="25" idComponent="1000030" idSideBSurface="10062" />
+			<ComponentInstance id="26" idComponent="1000031" idSideASurface="10152" idSideBSurface="10063">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10034</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="27" idComponent="1000031" idSideASurface="10131" idSideBSurface="10064">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10033</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="28" idComponent="1000031" idSideASurface="10107" idSideBSurface="10065">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10031</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="29" idComponent="1000032" idSideASurface="10066">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10028</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="30" idComponent="1000021" idSideASurface="10067" />
+			<ComponentInstance id="31" idComponent="1000021" idSideASurface="10068" />
+			<ComponentInstance id="32" idComponent="1000029" idSideASurface="10069" />
+			<ComponentInstance id="33" idComponent="1000028" idSideASurface="10070" idSideBSurface="10091" />
+			<ComponentInstance id="34" idComponent="1000030" idSideBSurface="10073" />
+			<ComponentInstance id="35" idComponent="1000031" idSideASurface="10164" idSideBSurface="10074">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10035</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="36" idComponent="1000031" idSideASurface="10130" idSideBSurface="10075">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10033</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="37" idComponent="1000031" idSideASurface="10120" idSideBSurface="10076">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10032</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="38" idComponent="1000032" idSideASurface="10077">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10029</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="39" idComponent="1000021" idSideASurface="10078" />
+			<ComponentInstance id="40" idComponent="1000021" idSideASurface="10079" />
+			<ComponentInstance id="41" idComponent="1000029" idSideASurface="10081" />
+			<ComponentInstance id="42" idComponent="1000028" idSideASurface="10082" idSideBSurface="10094" />
+			<ComponentInstance id="43" idComponent="1000028" idSideASurface="10083" idSideBSurface="10096" />
+			<ComponentInstance id="44" idComponent="1000031" idSideASurface="10106" idSideBSurface="10084">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10031</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="45" idComponent="1000032" idSideASurface="10085">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10030</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="46" idComponent="1000021" idSideASurface="10086" />
+			<ComponentInstance id="47" idComponent="1000029" idSideASurface="10088" />
+			<ComponentInstance id="48" idComponent="1000029" idSideASurface="10090" />
+			<ComponentInstance id="49" idComponent="1000029" idSideASurface="10093" />
+			<ComponentInstance id="50" idComponent="1000029" idSideASurface="10095" />
+			<ComponentInstance id="51" idComponent="1000030" idSideBSurface="10097" />
+			<ComponentInstance id="52" idComponent="1000030" idSideBSurface="10098" />
+			<ComponentInstance id="53" idComponent="1000031" idSideASurface="10129" idSideBSurface="10099">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10033</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="54" idComponent="1000031" idSideASurface="10105" idSideBSurface="10100">
+				<IdSurfaceHeating>1050001</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>10031</IdSurfaceHeatingControlZone>
+			</ComponentInstance>
+			<ComponentInstance id="55" idComponent="1000021" idSideASurface="10101" />
+			<ComponentInstance id="56" idComponent="1000021" idSideASurface="10102" />
+			<ComponentInstance id="57" idComponent="1000025" idSideASurface="10103" />
+			<ComponentInstance id="58" idComponent="1000023" idSideASurface="10104" />
+			<ComponentInstance id="59" idComponent="1000028" idSideASurface="10109" idSideBSurface="10133" />
+			<ComponentInstance id="60" idComponent="1000029" idSideASurface="10110" />
+			<ComponentInstance id="61" idComponent="1000028" idSideASurface="10111" idSideBSurface="10135" />
+			<ComponentInstance id="62" idComponent="1000029" idSideASurface="10112" />
+			<ComponentInstance id="63" idComponent="1000028" idSideASurface="10113" idSideBSurface="10137" />
+			<ComponentInstance id="64" idComponent="1000029" idSideASurface="10114" />
+			<ComponentInstance id="65" idComponent="1000028" idSideASurface="10115" idSideBSurface="10154" />
+			<ComponentInstance id="66" idComponent="1000021" idSideASurface="10116" />
+			<ComponentInstance id="67" idComponent="1000021" idSideASurface="10117" />
+			<ComponentInstance id="68" idComponent="1000025" idSideASurface="10118" />
+			<ComponentInstance id="69" idComponent="1000023" idSideASurface="10119" />
+			<ComponentInstance id="70" idComponent="1000029" idSideASurface="10122" />
+			<ComponentInstance id="71" idComponent="1000028" idSideASurface="10123" idSideBSurface="10165" />
+			<ComponentInstance id="72" idComponent="1000028" idSideASurface="10124" idSideBSurface="10139" />
+			<ComponentInstance id="73" idComponent="1000021" idSideASurface="10125" />
+			<ComponentInstance id="74" idComponent="1000025" idSideASurface="10126" />
+			<ComponentInstance id="75" idComponent="1000025" idSideASurface="10127" />
+			<ComponentInstance id="76" idComponent="1000023" idSideASurface="10128" />
+			<ComponentInstance id="77" idComponent="1000029" idSideASurface="10132" />
+			<ComponentInstance id="78" idComponent="1000029" idSideASurface="10134" />
+			<ComponentInstance id="79" idComponent="1000029" idSideASurface="10136" />
+			<ComponentInstance id="80" idComponent="1000029" idSideASurface="10138" />
+			<ComponentInstance id="81" idComponent="1000029" idSideASurface="10140" />
+			<ComponentInstance id="82" idComponent="1000028" idSideASurface="10141" idSideBSurface="10167" />
+			<ComponentInstance id="83" idComponent="1000029" idSideASurface="10142" />
+			<ComponentInstance id="84" idComponent="1000028" idSideASurface="10143" idSideBSurface="10169" />
+			<ComponentInstance id="85" idComponent="1000029" idSideASurface="10144" />
+			<ComponentInstance id="86" idComponent="1000028" idSideASurface="10145" idSideBSurface="10156" />
+			<ComponentInstance id="87" idComponent="1000029" idSideASurface="10146" />
+			<ComponentInstance id="88" idComponent="1000028" idSideASurface="10147" idSideBSurface="10158" />
+			<ComponentInstance id="89" idComponent="1000021" idSideASurface="10148" />
+			<ComponentInstance id="90" idComponent="1000021" idSideASurface="10149" />
+			<ComponentInstance id="91" idComponent="1000025" idSideASurface="10150" />
+			<ComponentInstance id="92" idComponent="1000023" idSideASurface="10151" />
+			<ComponentInstance id="93" idComponent="1000029" idSideASurface="10155" />
+			<ComponentInstance id="94" idComponent="1000029" idSideASurface="10157" />
+			<ComponentInstance id="95" idComponent="1000028" idSideASurface="10159" idSideBSurface="10170" />
+			<ComponentInstance id="96" idComponent="1000021" idSideASurface="10160" />
+			<ComponentInstance id="97" idComponent="1000021" idSideASurface="10161" />
+			<ComponentInstance id="98" idComponent="1000025" idSideASurface="10162" />
+			<ComponentInstance id="99" idComponent="1000023" idSideASurface="10163" />
+			<ComponentInstance id="100" idComponent="1000029" idSideASurface="10166" />
+			<ComponentInstance id="101" idComponent="1000029" idSideASurface="10168" />
+		</ComponentInstances>
+		<SubSurfaceComponentInstances>
+			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="1040003" idSideASurface="10306" />
+			<SubSurfaceComponentInstance id="2" idSubSurfaceComponent="1040003" idSideASurface="10307" />
+			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="1040003" idSideASurface="10308" />
+			<SubSurfaceComponentInstance id="4" idSubSurfaceComponent="1040003" idSideASurface="10309" />
+			<SubSurfaceComponentInstance id="5" idSubSurfaceComponent="1040003" idSideASurface="10310" />
+			<SubSurfaceComponentInstance id="6" idSubSurfaceComponent="1040003" idSideASurface="10311" />
+			<SubSurfaceComponentInstance id="7" idSubSurfaceComponent="1040003" idSideASurface="10312" />
+			<SubSurfaceComponentInstance id="8" idSubSurfaceComponent="1040003" idSideASurface="10313" />
+			<SubSurfaceComponentInstance id="9" idSubSurfaceComponent="1040003" idSideASurface="10314" />
+			<SubSurfaceComponentInstance id="10" idSubSurfaceComponent="1040003" idSideASurface="10315" />
+			<SubSurfaceComponentInstance id="11" idSubSurfaceComponent="1040003" idSideASurface="10316" />
+			<SubSurfaceComponentInstance id="12" idSubSurfaceComponent="1040003" idSideASurface="10317" />
+			<SubSurfaceComponentInstance id="13" idSubSurfaceComponent="1040003" idSideASurface="10318" />
+			<SubSurfaceComponentInstance id="14" idSubSurfaceComponent="1040003" idSideASurface="10319" />
+			<SubSurfaceComponentInstance id="15" idSubSurfaceComponent="1040003" idSideASurface="10320" />
+			<SubSurfaceComponentInstance id="16" idSubSurfaceComponent="1040003" idSideASurface="10321" />
+			<SubSurfaceComponentInstance id="17" idSubSurfaceComponent="1040003" idSideASurface="10322" />
+			<SubSurfaceComponentInstance id="18" idSubSurfaceComponent="1040003" idSideASurface="10323" />
+		</SubSurfaceComponentInstances>
+		<PlainGeometry />
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="1010021" displayName="DE: Dämmstein" color="#0eff88">
+					<Category>Bricks</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">450</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.09</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010022" displayName="DE: Kalk-Zement-Grundputz" color="#2c1bff">
+					<Manufacturer>DE: weber Saint-Gobain</Manufacturer>
+					<DataSource>DE: https://www.ch.weber/de/wand/produkte-fuer-die-wand/weber-ip-18</DataSource>
+					<Category>Bricks</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1250</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.45</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010023" displayName="DE: Beton" color="#df9500">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2300</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.3</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010024" displayName="DE: Styrodur" color="#88b300">
+					<Manufacturer>DE: Isover Saint-Gobain</Manufacturer>
+					<DataSource>DE: https://www.isover.de/produkte/styrodurr-3000-cssq-hartschaum-platte-fuer-die-rundum-daemmung#techn-informationen</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.034</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010026" displayName="DE: Zementestrich" color="#27ffa6">
+					<Manufacturer>DE: weber.floor Saint-Gobain</Manufacturer>
+					<DataSource>DE: https://www.ch.weber/de/boden/bodenprodukte/weberfloor-4341</DataSource>
+					<Category>Bricks</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010027" displayName="DE: Gipskartonplatte" color="#d44000">
+					<Manufacturer>DE: Rigips Saint-Gobain</Manufacturer>
+					<DataSource>DE: https://produkte.rigips.de/downloads/produktdatenblatt_rigips_bauplatte_12_5.pdf</DataSource>
+					<Category>BuildingBoards</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">680</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.25</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+				<Material id="1010028" displayName="DE: Akustic TP 1-035" color="#7fff2b">
+					<Manufacturer>DE: Isover Saint-Gobain</Manufacturer>
+					<DataSource>DE: https://www.isover.de/produkte/akustic-tp-1-035-daemmung-fuer-den-innenausbau-leichte-trennwaende#techn-informationen</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">35</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.035</IBK:Parameter>
+					<EpdCategorySet />
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="1020010" displayName="DE: AW">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010022">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010021">
+							<IBK:Parameter name="Thickness" unit="m">0.365</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010022">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020011" displayName="DE: Geschossdecke 2">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010026">
+							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010024">
+							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010023">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020012" displayName="DE: IW leicht">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010027">
+							<IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010028">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010027">
+							<IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020013" displayName="DE: Sparrendach 2">
+					<UsageType>SlopedRoof</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>Wood</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010027">
+							<IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010028">
+							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1020016" displayName="DE: Bodenplatte">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="1010026">
+							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010024">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="1010023">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<Windows>
+				<Window id="1035003" displayName="DE: KS 2fach ISO Fenster AW" color="#ff192b" idGlazingSystem="1031003" methodFrame="None" methodDivider="None">
+					<IBK:Parameter name="FrameWidth" unit="m">0.06</IBK:Parameter>
+				</Window>
+			</Windows>
+			<WindowGlazingSystems>
+				<WindowGlazingSystem id="1031003" displayName="DE: 2-Scheiben ISO" color="#ffd911" modelType="Simple">
+					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.6</IBK:Parameter>
+					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+						<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
+					</LinearSplineParameter>
+				</WindowGlazingSystem>
+			</WindowGlazingSystems>
+			<BoundaryConditions>
+				<BoundaryCondition id="1030005" displayName="DE: Außen" color="#ffff00">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">25</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1030006" displayName="DE: Erdreich" color="#00f657">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Constant</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+						<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1030007" displayName="DE: Innen" color="#fb4b00">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1030008" displayName="DE: Innen mit lw" color="#13ffd3">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1000021" displayName="DE: AW Mauerwerk mit LW" color="#ffff7f">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1020010</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030005</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000023" displayName="DE: Geschossdecke 2 adiabat auf SeiteB mit LW" color="#0000ff">
+					<Type>Ceiling</Type>
+					<IdConstruction>1020011</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+				</Component>
+				<Component id="1000025" displayName="DE: Sparrendach 2 mit lw" color="#ff007f">
+					<Type>SlopedRoof</Type>
+					<IdConstruction>1020013</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030005</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000028" displayName="DE: Innenwand leicht mit lW" color="#55ff00">
+					<Type>InsideWall</Type>
+					<IdConstruction>1020012</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030008</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000029" displayName="DE: Innenwand leicht adiabat auf SeiteB mit LW" color="#339a00">
+					<Type>InsideWall</Type>
+					<IdConstruction>1020012</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+				</Component>
+				<Component id="1000030" displayName="DE: Geschossdecke 2 adiabat auf SeiteA mit LW" color="#1121b0">
+					<Type>Ceiling</Type>
+					<IdConstruction>1020011</IdConstruction>
+					<IdSideBBoundaryCondition>1030008</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1000031" displayName="DE: Geschossdecke 2 FBH mit LW" color="#0034e1">
+					<Type>Ceiling</Type>
+					<IdConstruction>1020011</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030008</IdSideBBoundaryCondition>
+					<ActiveLayerIndex>0</ActiveLayerIndex>
+				</Component>
+				<Component id="1000032" displayName="DE: Bodenplatte FBH mit LW" color="#aa5500">
+					<Type>FloorToGround</Type>
+					<IdConstruction>1020016</IdConstruction>
+					<IdSideABoundaryCondition>1030008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030006</IdSideBBoundaryCondition>
+					<ActiveLayerIndex>0</ActiveLayerIndex>
+				</Component>
+			</Components>
+			<SubSurfaceComponents>
+				<SubSurfaceComponent id="1040003" displayName="DE: Fenster AW" color="#6e2cff">
+					<Type>Window</Type>
+					<IdWindow>1035003</IdWindow>
+					<IdSideABoundaryCondition>1030007</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1030005</IdSideBBoundaryCondition>
+				</SubSurfaceComponent>
+			</SubSurfaceComponents>
+			<SurfaceHeatings>
+				<SurfaceHeating id="1050001" displayName="DE: Fußbodenheizung" color="#6fff29" type="PipeRegister">
+					<HeatingCoolingCurvePoints>Tout:-14,20,23,30;Tsupply:35,20,23,18;</HeatingCoolingCurvePoints>
+					<IdPipe>1100001</IdPipe>
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+					<IBK:Parameter name="PipeSpacing" unit="m">0.15</IBK:Parameter>
+					<IBK:Parameter name="MaxFluidVelocity" unit="m/s">0.2</IBK:Parameter>
+					<IBK:Parameter name="TemperatureDifferenceSupplyReturn" unit="K">7</IBK:Parameter>
+				</SurfaceHeating>
+			</SurfaceHeatings>
+			<Pipes>
+				<NetworkPipe id="1100001" displayName="PE 20 x 2" categoryName="DE: PE">
+					<IBK:Parameter name="DiameterOutside" unit="mm">20</IBK:Parameter>
+					<IBK:Parameter name="ThicknessWall" unit="mm">2</IBK:Parameter>
+					<IBK:Parameter name="RoughnessWall" unit="mm">0.007</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">0.42</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+					<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
+					<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">1</IBK:Parameter>
+				</NetworkPipe>
+			</Pipes>
+			<Schedules>
+				<Schedule id="1060001" displayName="DE: Heizsolltemperatur konst. 20 C">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>20</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="1060002" displayName="DE: On">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>1</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="1060003" displayName="DE: Heizsolltemperatur konst. 24 C">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>24</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="1060004" displayName="DE: Lüftung">
+					<UseLinearInterpolation>false</UseLinearInterpolation>
+					<HaveAnnualSchedule>false</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0,7,19</TimePoints>
+									<Values>0,1,0</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
+			<InternalLoads>
+				<InternalLoad id="1065006" displayName="DE: El. Lasten" color="#0448ff">
+					<Category>ElectricEquiment</Category>
+					<PowerMethod>PowerPerArea</PowerMethod>
+					<IdPowerManagementSchedule>1060002</IdPowerManagementSchedule>
+					<ActivateCO2Production>false</ActivateCO2Production>
+					<IBK:Parameter name="Power" unit="W">0</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">1.875</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+				</InternalLoad>
+			</InternalLoads>
+			<ZoneControlThermostats>
+				<ZoneControlThermostat id="1067502" displayName="DE: Wohnnutzung Bad" color="#ddb500">
+					<ControlValue>AirTemperature</ControlValue>
+					<ControllerType>Analog</ControllerType>
+					<IdHeatingSetpointSchedule>1060003</IdHeatingSetpointSchedule>
+					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+				</ZoneControlThermostat>
+				<ZoneControlThermostat id="1067504" displayName="DE: Wohnnutzung I" color="#66cf00">
+					<ControlValue>AirTemperature</ControlValue>
+					<ControllerType>Analog</ControllerType>
+					<IdHeatingSetpointSchedule>1060001</IdHeatingSetpointSchedule>
+					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+				</ZoneControlThermostat>
+			</ZoneControlThermostats>
+			<ZoneIdealHeatingCooling>
+				<ZoneIdealHeatingCooling id="1075003" displayName="DE: H/C Wohnungssnutzung I" color="#0be7ff">
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="CoolingLimit" unit="W/m2">0</IBK:Parameter>
+				</ZoneIdealHeatingCooling>
+			</ZoneIdealHeatingCooling>
+			<ZoneControlVentilationNatural>
+				<ZoneControlNaturalVentilation id="1072501" displayName="DE: Konditionierungslüftung" color="#00c3a3">
+					<IBK:Parameter name="MaximumAirChangeRateComfort" unit="1/h">2</IBK:Parameter>
+					<IBK:Parameter name="TemperatureAirMax" unit="C">24</IBK:Parameter>
+					<IBK:Parameter name="TemperatureAirMin" unit="C">20</IBK:Parameter>
+					<IBK:Parameter name="WindSpeedMax" unit="m/s">10</IBK:Parameter>
+				</ZoneControlNaturalVentilation>
+			</ZoneControlVentilationNatural>
+			<VentilationNatural>
+				<VentilationNatural id="1077501" displayName="DE: Lüftung" color="#6bfe00">
+					<IdSchedule>1060004</IdSchedule>
+					<IBK:Parameter name="AirChangeRate" unit="1/h">0.4</IBK:Parameter>
+				</VentilationNatural>
+			</VentilationNatural>
+			<Infiltration>
+				<Infiltration id="1080003" displayName="DE: Infiltration" color="#8000b3">
+					<AirChangeType>normal</AirChangeType>
+					<IBK:Parameter name="AirChangeRate" unit="1/h">0.1</IBK:Parameter>
+					<IBK:Parameter name="ShieldingCoefficient" unit="-">0.07</IBK:Parameter>
+				</Infiltration>
+			</Infiltration>
+			<ZoneTemplates>
+				<ZoneTemplate id="1082501" displayName="DE: Wohnnutzung" color="#00ff00">
+					<IntLoadEquipment>1065006</IntLoadEquipment>
+					<ControlThermostat>1067504</ControlThermostat>
+					<ControlVentilationNatural>1072501</ControlVentilationNatural>
+					<Infiltration>1080003</Infiltration>
+					<NaturalVentilation>1077501</NaturalVentilation>
+				</ZoneTemplate>
+				<ZoneTemplate id="1082504" displayName="DE: Wohnnutzung Bad" color="#b53600">
+					<ControlThermostat>1067502</ControlThermostat>
+					<ControlVentilationNatural>1072501</ControlVentilationNatural>
+					<Infiltration>1080003</Infiltration>
+					<NaturalVentilation>1077501</NaturalVentilation>
+				</ZoneTemplate>
+			</ZoneTemplates>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>

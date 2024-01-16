@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <VicusProject fileVersion="1.1">
 	<ProjectInfo>
+		<Comment>A large campus building that demonstrates the capability of simulating a building with more than 200 thermal zones with SIM-VICUS.</Comment>
 		<Created>Mi. Dez. 20 15:49:01 2023</Created>
-		<LastEdited>Di Jan 9 21:52:52 2024</LastEdited>
+		<LastEdited>Di Jan 16 15:37:03 2024</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -57,12 +58,12 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>-17.2419 -61.7843 22.1476</CameraTranslation>
+			<CameraTranslation>10.1375 -94.1592 33.359</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.764568</Wp>
-				<X>0.64185</X>
-				<Y>0.0343062</Y>
-				<Z>0.0408736</Z>
+				<Wp>0.79551</Wp>
+				<X>0.60122</X>
+				<Y>0.0429825</Y>
+				<Z>0.0568618</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 			<GridPlanes>
@@ -81,7 +82,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="41" displayName="ASB_EG_E16">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.19</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.56</IBK:Parameter>
 								<Surfaces>
@@ -132,7 +133,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="42" displayName="ASB_EG_E16A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -171,7 +172,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="43" displayName="ASB_EG_E15">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.55</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.64</IBK:Parameter>
 								<Surfaces>
@@ -210,7 +211,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="44" displayName="ASB_EG_E17A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">33.54</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">100.63</IBK:Parameter>
 								<Surfaces>
@@ -279,7 +280,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="45" displayName="ASB_EG_E17">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.24</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">60.71</IBK:Parameter>
 								<Surfaces>
@@ -336,7 +337,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="46" displayName="ASB_EG_E18">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.65</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">106.95</IBK:Parameter>
 								<Surfaces>
@@ -387,7 +388,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="47" displayName="ASB_EG_E19">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">56.09</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">168.28</IBK:Parameter>
 								<Surfaces>
@@ -450,7 +451,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="48" displayName="ASB_EG_E20">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.87</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.61</IBK:Parameter>
 								<Surfaces>
@@ -501,7 +502,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="49" displayName="ASB_EG_E21">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.68</IBK:Parameter>
 								<Surfaces>
@@ -540,7 +541,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="50" displayName="ASB_EG_E22">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -579,7 +580,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="51" displayName="ASB_EG_E23">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -618,7 +619,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="52" displayName="ASB_EG_E24">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -657,7 +658,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="53" displayName="ASB_EG_E25">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -708,7 +709,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="54" displayName="ASB_EG_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -736,7 +737,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="55" displayName="ASB_EG_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -761,7 +762,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="56" displayName="ASB_EG_E26">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.13</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">54.39</IBK:Parameter>
 								<Surfaces>
@@ -816,7 +817,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="57" displayName="ASB_EG_E14">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">37.44</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">112.33</IBK:Parameter>
 								<Surfaces>
@@ -867,7 +868,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="58" displayName="ASB_EG_E13">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -906,7 +907,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="59" displayName="ASB_EG_E12">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -945,7 +946,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="60" displayName="ASB_EG_E11">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -984,7 +985,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="61" displayName="ASB_EG_E10">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -1023,7 +1024,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="62" displayName="ASB_EG_E9">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -1062,7 +1063,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="63" displayName="ASB_EG_E8">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -1101,7 +1102,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="64" displayName="ASB_EG_E7">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -1140,7 +1141,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="65" displayName="ASB_EG_WC-B">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.62</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.87</IBK:Parameter>
 								<Surfaces>
@@ -1179,7 +1180,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="66" displayName="ASB_EG_WC-H">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -1218,7 +1219,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="67" displayName="ASB_EG_WC-D">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -1260,7 +1261,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="68" displayName="ASB_EG_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -1291,7 +1292,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="69" displayName="ASB_EG_E4">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.69</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">62.08</IBK:Parameter>
 								<Surfaces>
@@ -1324,7 +1325,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="70" displayName="ASB_EG_E4A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">21.2</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">63.59</IBK:Parameter>
 								<Surfaces>
@@ -1357,7 +1358,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="71" displayName="ASB_EG_E5">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">33.99</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">101.97</IBK:Parameter>
 								<Surfaces>
@@ -1393,7 +1394,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="72" displayName="ASB_EG_E3">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">79.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">237.81</IBK:Parameter>
 								<Surfaces>
@@ -1447,7 +1448,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="73" displayName="ASB_EG_E2">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">38.64</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">115.93</IBK:Parameter>
 								<Surfaces>
@@ -1516,7 +1517,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="74" displayName="ASB_EG_E27">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">11.44</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">34.32</IBK:Parameter>
 								<Surfaces>
@@ -1579,7 +1580,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="75" displayName="ASB_EG_E28A">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.61</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.83</IBK:Parameter>
 								<Surfaces>
@@ -1616,7 +1617,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="76" displayName="ASB_EG_Windfang">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">33.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">105.62</IBK:Parameter>
 								<Surfaces>
@@ -1691,7 +1692,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="77" displayName="ASB_EG_F02">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">202.68</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">608.04</IBK:Parameter>
 								<Surfaces>
@@ -1812,7 +1813,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="78" displayName="ASB_EG_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -2039,7 +2040,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="79" displayName="ASB_EG_E3_1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">40.07</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">80.15</IBK:Parameter>
 								<Surfaces>
@@ -2064,7 +2065,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="80" displayName="ASB_EG_E30">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.34</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">61.02</IBK:Parameter>
 								<Surfaces>
@@ -2109,7 +2110,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="81" displayName="ASB_EG_E29">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.1</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">60.29</IBK:Parameter>
 								<Surfaces>
@@ -2172,7 +2173,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="82" displayName="ASB_EG_F01">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">208.22</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">624.67</IBK:Parameter>
 								<Surfaces>
@@ -2309,7 +2310,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="83" displayName="ASB_EG_E28">
-								<IdZoneTemplate>1082502</IdZoneTemplate>
+								<IdZoneTemplate>1082503</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">212.47</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">678.87</IBK:Parameter>
 								<Surfaces>
@@ -2539,7 +2540,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="84" displayName="ASB_EG_E8B">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.13</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">24.39</IBK:Parameter>
 								<Surfaces>
@@ -2579,7 +2580,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="216" displayName="ASB_OG1_106">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.91</IBK:Parameter>
 								<Surfaces>
@@ -2636,7 +2637,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="217" displayName="ASB_OG1_107">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -2699,7 +2700,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="218" displayName="ASB_OG1_108">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">54.66</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">163.98</IBK:Parameter>
 								<Surfaces>
@@ -2780,7 +2781,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="219" displayName="ASB_OG1_109">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">56.12</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">168.37</IBK:Parameter>
 								<Surfaces>
@@ -2861,7 +2862,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="220" displayName="ASB_OG1_110">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.23</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.68</IBK:Parameter>
 								<Surfaces>
@@ -2924,7 +2925,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="221" displayName="ASB_OG1_111">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.19</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.56</IBK:Parameter>
 								<Surfaces>
@@ -2975,7 +2976,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="222" displayName="ASB_OG1_112">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.82</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.45</IBK:Parameter>
 								<Surfaces>
@@ -3014,7 +3015,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="223" displayName="ASB_OG1_113">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.82</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.46</IBK:Parameter>
 								<Surfaces>
@@ -3059,7 +3060,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="224" displayName="ASB_OG1_117">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -3098,7 +3099,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="225" displayName="ASB_OG1_118">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -3149,7 +3150,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="226" displayName="ASB_OG1_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -3177,7 +3178,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="227" displayName="ASB_OG1_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -3202,7 +3203,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="228" displayName="ASB_OG1_119">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.13</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">54.39</IBK:Parameter>
 								<Surfaces>
@@ -3254,7 +3255,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="229" displayName="ASB_OG1_WC-H">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -3293,7 +3294,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="230" displayName="ASB_OG1_WC-D">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -3335,7 +3336,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="231" displayName="ASB_OG1_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -3369,7 +3370,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="232" displayName="ASB_OG1_116">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.75</IBK:Parameter>
 								<Surfaces>
@@ -3432,7 +3433,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="233" displayName="ASB_OG1_115">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">111.99</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">336</IBK:Parameter>
 								<Surfaces>
@@ -3567,7 +3568,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="234" displayName="ASB_OG1_114">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">54.5</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">163.5</IBK:Parameter>
 								<Surfaces>
@@ -3642,7 +3643,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="235" displayName="ASB_OG1_Foyer">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">204.33</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">613</IBK:Parameter>
 								<Surfaces>
@@ -3805,7 +3806,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="236" displayName="ASB_OG1_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -3978,7 +3979,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="237" displayName="ASB_OG1_120C">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.61</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.83</IBK:Parameter>
 								<Surfaces>
@@ -4003,7 +4004,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="238" displayName="ASB_OG1_WC-D_1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.34</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">61.02</IBK:Parameter>
 								<Surfaces>
@@ -4048,7 +4049,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="239" displayName="ASB_OG1_WC-H_1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.1</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">60.29</IBK:Parameter>
 								<Surfaces>
@@ -4111,7 +4112,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="240" displayName="ASB_OG1_F01">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">165.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">495.13</IBK:Parameter>
 								<Surfaces>
@@ -4245,7 +4246,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="241" displayName="ASB_OG1_120">
-								<IdZoneTemplate>1082502</IdZoneTemplate>
+								<IdZoneTemplate>1082503</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">257.79</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">761.18</IBK:Parameter>
 								<Surfaces>
@@ -4483,7 +4484,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="242" displayName="ASB_OG1_E8B_1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.13</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">24.39</IBK:Parameter>
 								<Surfaces>
@@ -4517,7 +4518,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="85" displayName="ASB_OG2_WC-H">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -4556,7 +4557,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="86" displayName="ASB_OG2_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -4590,7 +4591,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="87" displayName="ASB_OG2_WC-D">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -4632,7 +4633,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="88" displayName="ASB_OG2_206">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -4671,7 +4672,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="89" displayName="ASB_OG2_207B">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -4710,7 +4711,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="90" displayName="ASB_OG2_207C">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -4749,7 +4750,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="91" displayName="ASB_OG2_225">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.13</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">54.39</IBK:Parameter>
 								<Surfaces>
@@ -4807,7 +4808,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="92" displayName="ASB_OG2_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -4835,7 +4836,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="93" displayName="ASB_OG2_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -4860,7 +4861,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="94" displayName="ASB_OG2_224">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -4911,7 +4912,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="95" displayName="ASB_OG2_223">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -4950,7 +4951,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="96" displayName="ASB_OG2_222">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -4989,7 +4990,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="97" displayName="ASB_OG2_221">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -5028,7 +5029,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="98" displayName="ASB_OG2_210">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.55</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.64</IBK:Parameter>
 								<Surfaces>
@@ -5067,7 +5068,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="99" displayName="ASB_OG2_211">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -5106,7 +5107,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="100" displayName="ASB_OG2_212">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.19</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.56</IBK:Parameter>
 								<Surfaces>
@@ -5157,7 +5158,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="101" displayName="ASB_OG2_206A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">54.99</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">164.96</IBK:Parameter>
 								<Surfaces>
@@ -5226,7 +5227,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="102" displayName="ASB_OG2_207A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -5277,7 +5278,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="103" displayName="ASB_OG2_213">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.33</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.98</IBK:Parameter>
 								<Surfaces>
@@ -5334,7 +5335,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="104" displayName="ASB_OG2_214">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.37</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">109.1</IBK:Parameter>
 								<Surfaces>
@@ -5385,7 +5386,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="105" displayName="ASB_OG2_218">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.32</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.96</IBK:Parameter>
 								<Surfaces>
@@ -5424,7 +5425,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="106" displayName="ASB_OG2_219">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.21</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.63</IBK:Parameter>
 								<Surfaces>
@@ -5463,7 +5464,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="107" displayName="ASB_OG2_220">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.93</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.59</IBK:Parameter>
 								<Surfaces>
@@ -5520,7 +5521,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="108" displayName="ASB_OG2_217">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -5559,7 +5560,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="109" displayName="ASB_OG2_216">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.24</IBK:Parameter>
 								<Surfaces>
@@ -5598,7 +5599,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="110" displayName="ASB_OG2_215">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">16.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">50.26</IBK:Parameter>
 								<Surfaces>
@@ -5637,7 +5638,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="111" displayName="ASB_OG2_208">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.35</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">55.05</IBK:Parameter>
 								<Surfaces>
@@ -5676,7 +5677,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="112" displayName="ASB_OG2_207">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -5715,7 +5716,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="113" displayName="ASB_OG2_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -5942,7 +5943,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="114" displayName="ASB_OG2_Foyer">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">204.33</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">612.84</IBK:Parameter>
 								<Surfaces>
@@ -6096,7 +6097,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="115" displayName="ASB_OG2_WC-D_2">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.34</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">61.02</IBK:Parameter>
 								<Surfaces>
@@ -6141,7 +6142,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="116" displayName="ASB_OG2_WC-H_2">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">20.1</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">60.29</IBK:Parameter>
 								<Surfaces>
@@ -6204,7 +6205,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="117" displayName="ASB_OG2_F01">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">122.41</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">367.22</IBK:Parameter>
 								<Surfaces>
@@ -6311,7 +6312,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="118" displayName="ASB_OG2_225B">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">26.58</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">79.71</IBK:Parameter>
 								<Surfaces>
@@ -6354,7 +6355,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="119" displayName="ASB_OG3_WC-H">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -6393,7 +6394,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="120" displayName="ASB_OG3_314">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.19</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.56</IBK:Parameter>
 								<Surfaces>
@@ -6444,7 +6445,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="121" displayName="ASB_OG3_313">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -6483,7 +6484,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="122" displayName="ASB_OG3_323">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -6522,7 +6523,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="123" displayName="ASB_OG3_325">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -6573,7 +6574,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="124" displayName="ASB_OG3_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -6598,7 +6599,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="125" displayName="ASB_OG3_WC-D">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -6640,7 +6641,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="126" displayName="ASB_OG3_307">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -6697,7 +6698,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="127" displayName="ASB_OG3_315">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.33</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.98</IBK:Parameter>
 								<Surfaces>
@@ -6754,7 +6755,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="128" displayName="ASB_OG3_316">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.37</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">109.1</IBK:Parameter>
 								<Surfaces>
@@ -6811,7 +6812,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="129" displayName="ASB_OG3_320">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.32</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.96</IBK:Parameter>
 								<Surfaces>
@@ -6850,7 +6851,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="130" displayName="ASB_OG3_319">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -6889,7 +6890,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="131" displayName="ASB_OG3_318">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.24</IBK:Parameter>
 								<Surfaces>
@@ -6928,7 +6929,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="132" displayName="ASB_OG3_317">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">16.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">50.26</IBK:Parameter>
 								<Surfaces>
@@ -6967,7 +6968,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="133" displayName="ASB_OG3_310">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.35</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">55.05</IBK:Parameter>
 								<Surfaces>
@@ -7006,7 +7007,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="134" displayName="ASB_OG3_309">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -7045,7 +7046,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="135" displayName="ASB_OG3_321">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.87</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.61</IBK:Parameter>
 								<Surfaces>
@@ -7102,7 +7103,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="136" displayName="ASB_OG3_322">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.68</IBK:Parameter>
 								<Surfaces>
@@ -7141,7 +7142,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="137" displayName="ASB_OG3_311">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.55</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.64</IBK:Parameter>
 								<Surfaces>
@@ -7180,7 +7181,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="138" displayName="ASB_OG3_324">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.75</IBK:Parameter>
 								<Surfaces>
@@ -7243,7 +7244,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="139" displayName="ASB_OG3_306">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">73.67</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">221</IBK:Parameter>
 								<Surfaces>
@@ -7342,7 +7343,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="140" displayName="ASB_OG3_308">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -7405,7 +7406,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="141" displayName="ASB_OG3_Foyer">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">89.69</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">269.07</IBK:Parameter>
 								<Surfaces>
@@ -7485,7 +7486,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="142" displayName="ASB_OG3_328">
-								<IdZoneTemplate>1082502</IdZoneTemplate>
+								<IdZoneTemplate>1082503</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">60.31</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">180.92</IBK:Parameter>
 								<Surfaces>
@@ -7572,7 +7573,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="143" displayName="ASB_OG3_327">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">25.48</IBK:Parameter>
 								<Surfaces>
@@ -7626,7 +7627,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="144" displayName="ASB_OG3_326">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">26.75</IBK:Parameter>
 								<Surfaces>
@@ -7671,7 +7672,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="145" displayName="ASB_OG3_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -7886,7 +7887,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="146" displayName="ASB_OG3_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -7917,7 +7918,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="147" displayName="ASB_OG3_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -7951,7 +7952,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="148" displayName="ASB_OG4_WC-H">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -7990,7 +7991,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="149" displayName="ASB_OG4_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -8021,7 +8022,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="150" displayName="ASB_OG4_415">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.19</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.56</IBK:Parameter>
 								<Surfaces>
@@ -8078,7 +8079,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="151" displayName="ASB_OG4_414">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -8117,7 +8118,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="152" displayName="ASB_OG4_413">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.55</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.64</IBK:Parameter>
 								<Surfaces>
@@ -8156,7 +8157,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="153" displayName="ASB_OG4_425">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -8207,7 +8208,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="154" displayName="ASB_OG4_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -8232,7 +8233,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="155" displayName="ASB_OG4_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -8260,7 +8261,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="156" displayName="ASB_OG4_WC-D">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -8302,7 +8303,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="157" displayName="ASB_OG4_422">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.32</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.96</IBK:Parameter>
 								<Surfaces>
@@ -8341,7 +8342,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="158" displayName="ASB_OG4_421">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -8380,7 +8381,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="159" displayName="ASB_OG4_420">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.24</IBK:Parameter>
 								<Surfaces>
@@ -8419,7 +8420,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="160" displayName="ASB_OG4_411A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.35</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">55.05</IBK:Parameter>
 								<Surfaces>
@@ -8458,7 +8459,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="161" displayName="ASB_OG4_419">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">16.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">50.26</IBK:Parameter>
 								<Surfaces>
@@ -8497,7 +8498,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="162" displayName="ASB_OG4_411">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -8536,7 +8537,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="163" displayName="ASB_OG4_423">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.87</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.61</IBK:Parameter>
 								<Surfaces>
@@ -8587,7 +8588,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="164" displayName="ASB_OG4_424A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.68</IBK:Parameter>
 								<Surfaces>
@@ -8626,7 +8627,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="165" displayName="ASB_OG4_Foyer">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">89.69</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">269.07</IBK:Parameter>
 								<Surfaces>
@@ -8709,7 +8710,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="166" displayName="ASB_OG4_427">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">25.48</IBK:Parameter>
 								<Surfaces>
@@ -8763,7 +8764,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="167" displayName="ASB_OG4_426">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">26.75</IBK:Parameter>
 								<Surfaces>
@@ -8808,7 +8809,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="168" displayName="ASB_OG4_408">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -8847,7 +8848,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="169" displayName="ASB_OG4_410A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -8886,7 +8887,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="170" displayName="ASB_OG4_410">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -8925,7 +8926,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="171" displayName="ASB_OG4_424C">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.8</IBK:Parameter>
 								<Surfaces>
@@ -8964,7 +8965,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="172" displayName="ASB_OG4_409">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -9003,7 +9004,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="173" displayName="ASB_OG4_409A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -9042,7 +9043,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="174" displayName="ASB_OG4_407">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -9081,7 +9082,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="175" displayName="ASB_OG4_406">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -9120,7 +9121,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="176" displayName="ASB_OG4_406A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.62</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.87</IBK:Parameter>
 								<Surfaces>
@@ -9159,7 +9160,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="177" displayName="ASB_OG4_416">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.82</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.45</IBK:Parameter>
 								<Surfaces>
@@ -9198,7 +9199,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="178" displayName="ASB_OG4_424B">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.75</IBK:Parameter>
 								<Surfaces>
@@ -9261,7 +9262,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="179" displayName="ASB_OG4_417">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.26</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.77</IBK:Parameter>
 								<Surfaces>
@@ -9318,7 +9319,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="180" displayName="ASB_OG4_418">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.52</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.55</IBK:Parameter>
 								<Surfaces>
@@ -9357,7 +9358,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="181" displayName="ASB_OG4_429">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">40.74</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">122.02</IBK:Parameter>
 								<Surfaces>
@@ -9417,7 +9418,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="182" displayName="ASB_OG4_428">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.81</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.44</IBK:Parameter>
 								<Surfaces>
@@ -9477,7 +9478,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="183" displayName="ASB_OG4_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -9734,7 +9735,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="184" displayName="ASB_OG5_505A">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.56</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.69</IBK:Parameter>
 								<Surfaces>
@@ -9773,7 +9774,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="185" displayName="ASB_OG5_AR1">
-								<IdZoneTemplate>1082505</IdZoneTemplate>
+								<IdZoneTemplate>1082506</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">7.48</IBK:Parameter>
 								<Surfaces>
@@ -9804,7 +9805,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="186" displayName="ASB_OG5_513">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -9843,7 +9844,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="187" displayName="ASB_OG5_512">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.55</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.64</IBK:Parameter>
 								<Surfaces>
@@ -9882,7 +9883,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="188" displayName="ASB_OG5_526">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.8</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.41</IBK:Parameter>
 								<Surfaces>
@@ -9933,7 +9934,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="189" displayName="ASB_OG5_Aufzug2">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">2.28</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">6.84</IBK:Parameter>
 								<Surfaces>
@@ -9958,7 +9959,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="190" displayName="ASB_OG5_Aufzug1">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">5.6</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">16.81</IBK:Parameter>
 								<Surfaces>
@@ -9986,7 +9987,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="191" displayName="ASB_OG5_504">
-								<IdZoneTemplate>1082503</IdZoneTemplate>
+								<IdZoneTemplate>1082505</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.27</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.81</IBK:Parameter>
 								<Surfaces>
@@ -10028,7 +10029,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="192" displayName="ASB_OG5_521">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.24</IBK:Parameter>
 								<Surfaces>
@@ -10067,7 +10068,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="193" displayName="ASB_OG5_520">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">16.75</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">50.26</IBK:Parameter>
 								<Surfaces>
@@ -10106,7 +10107,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="194" displayName="ASB_OG5_Foyer">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">89.69</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">269.07</IBK:Parameter>
 								<Surfaces>
@@ -10195,7 +10196,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="195" displayName="ASB_OG5_528">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.49</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">25.48</IBK:Parameter>
 								<Surfaces>
@@ -10249,7 +10250,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="196" displayName="ASB_OG5_527">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">8.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">26.75</IBK:Parameter>
 								<Surfaces>
@@ -10294,7 +10295,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="197" displayName="ASB_OG5_507">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -10333,7 +10334,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="198" displayName="ASB_OG5_506">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.62</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.87</IBK:Parameter>
 								<Surfaces>
@@ -10372,7 +10373,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="199" displayName="ASB_OG5_517">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.82</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">53.45</IBK:Parameter>
 								<Surfaces>
@@ -10411,7 +10412,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="200" displayName="ASB_OG5_518">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">36.26</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">108.77</IBK:Parameter>
 								<Surfaces>
@@ -10462,7 +10463,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="201" displayName="ASB_OG5_519">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.52</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.55</IBK:Parameter>
 								<Surfaces>
@@ -10501,7 +10502,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="202" displayName="ASB_OG5_508">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -10558,7 +10559,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="203" displayName="ASB_OG5_509">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -10615,7 +10616,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="204" displayName="ASB_OG5_511">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">37.44</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">112.33</IBK:Parameter>
 								<Surfaces>
@@ -10672,7 +10673,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="205" displayName="ASB_OG5_510">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.98</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.93</IBK:Parameter>
 								<Surfaces>
@@ -10729,7 +10730,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="206" displayName="ASB_OG5_523">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.87</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.61</IBK:Parameter>
 								<Surfaces>
@@ -10780,7 +10781,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="207" displayName="ASB_OG5_529">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">18.81</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">56.44</IBK:Parameter>
 								<Surfaces>
@@ -10837,7 +10838,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="208" displayName="ASB_OG5_525">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.75</IBK:Parameter>
 								<Surfaces>
@@ -10894,7 +10895,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="209" displayName="ASB_OG5_530">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">19.61</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">58.83</IBK:Parameter>
 								<Surfaces>
@@ -10933,7 +10934,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="210" displayName="ASB_OG5_529A">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">19.59</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">58.74</IBK:Parameter>
 								<Surfaces>
@@ -10972,7 +10973,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="211" displayName="ASB_OG5_524">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.92</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.62</IBK:Parameter>
 								<Surfaces>
@@ -11029,7 +11030,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="212" displayName="ASB_OG5_522">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">35.97</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">107.9</IBK:Parameter>
 								<Surfaces>
@@ -11086,7 +11087,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="213" displayName="ASB_OG5_516">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.5</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">52.51</IBK:Parameter>
 								<Surfaces>
@@ -11125,7 +11126,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="214" displayName="ASB_OG5_515">
-								<IdZoneTemplate>1082501</IdZoneTemplate>
+								<IdZoneTemplate>1082502</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">17.3</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">51.89</IBK:Parameter>
 								<Surfaces>
@@ -11164,7 +11165,7 @@
 								</Surfaces>
 							</Room>
 							<Room id="215" displayName="ASB_OG5_F03">
-								<IdZoneTemplate>1082506</IdZoneTemplate>
+								<IdZoneTemplate>1082507</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">261.04</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">783.12</IBK:Parameter>
 								<Surfaces>
@@ -13966,31 +13967,10 @@
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.5</IBK:Parameter>
 					<EpdCategorySet />
 				</Material>
-				<Material id="1010006" displayName="DE: Beton " color="#1efcff">
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
-					<EpdCategorySet />
-				</Material>
 				<Material id="1010007" displayName="DE: Mineralwolle1" color="#7300c3">
 					<Category>Insulations</Category>
 					<IBK:Parameter name="Density" unit="kg/m3">67</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
-					<EpdCategorySet />
-				</Material>
-				<Material id="1010008" displayName="DE: Ziegel" color="#ff0000">
-					<Category>Bricks</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-					<EpdCategorySet />
-				</Material>
-				<Material id="1010009" displayName="DE: Mineralwolle2" color="#fd0b00">
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">830</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 					<EpdCategorySet />
 				</Material>
@@ -14729,7 +14709,7 @@
 				</Infiltration>
 			</Infiltration>
 			<ZoneTemplates>
-				<ZoneTemplate id="1082501" displayName="DE: Büro" color="#f70013">
+				<ZoneTemplate id="1082502" displayName="DE: Büro" color="#f70013">
 					<IntLoadPerson>65010</IntLoadPerson>
 					<IntLoadEquipment>65011</IntLoadEquipment>
 					<IntLoadLighting>65012</IntLoadLighting>
@@ -14738,7 +14718,7 @@
 					<NaturalVentilation>1077501</NaturalVentilation>
 					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
-				<ZoneTemplate id="1082502" displayName="DE: Hörsaal" color="#8ac800">
+				<ZoneTemplate id="1082503" displayName="DE: Hörsaal" color="#8ac800">
 					<IntLoadPerson>65034</IntLoadPerson>
 					<IntLoadEquipment>65035</IntLoadEquipment>
 					<IntLoadLighting>65036</IntLoadLighting>
@@ -14747,20 +14727,20 @@
 					<NaturalVentilation>1077503</NaturalVentilation>
 					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
-				<ZoneTemplate id="1082503" displayName="DE: Sanitär" color="#2ee700">
+				<ZoneTemplate id="1082505" displayName="DE: Sanitär" color="#2ee700">
 					<IntLoadLighting>65057</IntLoadLighting>
 					<ControlThermostat>67515</ControlThermostat>
 					<Infiltration>1080001</Infiltration>
 					<NaturalVentilation>1077502</NaturalVentilation>
 					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
-				<ZoneTemplate id="1082505" displayName="DE: Lager" color="#0003fe">
+				<ZoneTemplate id="1082506" displayName="DE: Lager" color="#0003fe">
 					<IntLoadLighting>65069</IntLoadLighting>
 					<ControlThermostat>67519</ControlThermostat>
 					<Infiltration>1080001</Infiltration>
 					<IdealHeatingCooling>1075001</IdealHeatingCooling>
 				</ZoneTemplate>
-				<ZoneTemplate id="1082506" displayName="DE: Verkehrsfläche" color="#ae00e4">
+				<ZoneTemplate id="1082507" displayName="DE: Verkehrsfläche" color="#ae00e4">
 					<IntLoadLighting>65066</IntLoadLighting>
 					<ControlThermostat>67518</ControlThermostat>
 					<Infiltration>1080001</Infiltration>
