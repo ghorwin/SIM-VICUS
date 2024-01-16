@@ -60,6 +60,8 @@ QToolBar QToolButton:checked {
   background-color: #FFDFA0;
 }
 
-#ButtonBar ToolButton {
-  border: 1px solid gray;
+
+SVWelcomeScreen QToolButton {
+    border: 1px solid lightgray;
+	border-radius: 2px;
 }

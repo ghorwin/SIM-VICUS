@@ -115,5 +115,17 @@
         <file>icons/light/svg/copy_clipboard.svg</file>
         <file>icons/light/svg/network_size_pipes.svg</file>
         <file>icons/light/svg/paste_clipboard.svg</file>
+        <file>icons/dark/svg/dialog-error.svg</file>
+        <file>icons/dark/svg/dialog-information.svg</file>
+        <file>icons/dark/svg/dialog-password.svg</file>
+        <file>icons/dark/svg/dialog-positive.svg</file>
+        <file>icons/dark/svg/dialog-question.svg</file>
+        <file>icons/dark/svg/dialog-warning.svg</file>
+        <file>icons/light/svg/dialog-error.svg</file>
+        <file>icons/light/svg/dialog-information.svg</file>
+        <file>icons/light/svg/dialog-password.svg</file>
+        <file>icons/light/svg/dialog-positive.svg</file>
+        <file>icons/light/svg/dialog-question.svg</file>
+        <file>icons/light/svg/dialog-warning.svg</file>
     </qresource>
 </RCC>
