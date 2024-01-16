@@ -68,9 +68,6 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 
 	SVStyle::setHtmlColors(labelStyle);
 
-	QString infoText = QString("<a href=\"https://sim-vicus.de\"><span style=\"%1\">https://sim-vicus.de</span></a><br><br>").arg(labelStyle);
-	m_ui->labelInfoText->setText(infoText);
-	m_ui->labelInfoText->setOpenExternalLinks(true);
 
 	layout()->setMargin(0);
 	layout()->setSizeConstraint( QLayout::SetFixedSize );

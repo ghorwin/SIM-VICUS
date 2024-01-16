@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
+    <width>833</width>
     <height>800</height>
    </rect>
   </property>
@@ -28,14 +28,17 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="labelInfoText">
-     <property name="text">
-      <string>TextLabel</string>
+    <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>500</height>
+      </size>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="textBrowser"/>
    </item>
   </layout>
  </widget>

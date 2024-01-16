@@ -65,3 +65,7 @@ SVWelcomeScreen QToolButton {
     border: 1px solid lightgray;
 	border-radius: 2px;
 }
+
+SVWelcomeScreen QToolButton:hover {
+    border: 1px solid #EB992F;
+}
