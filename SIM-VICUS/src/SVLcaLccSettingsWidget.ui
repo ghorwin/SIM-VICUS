@@ -30,6 +30,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="currentIndex">
         <number>2</number>
        </property>
