@@ -5331,37 +5331,42 @@ p, li { white-space: pre-wrap; }
         <translation>Setzen Sie diesen Wert auf &quot;0&quot;, um das Clipping zu deaktivieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="96"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="23"/>
+        <source>Network Controller name</source>
+        <translation>Netzwerk Reglername</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="101"/>
         <source>Temperature Difference [K]</source>
         <translation>Temperaturdifferenz [K]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="101"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="106"/>
         <source>Mass Flux [kg/s]</source>
         <translation>Massenstrom [kg/s]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="106"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="111"/>
         <source>Heat Flux Threshold of Following Element [W]</source>
         <translation>Wärmestromschwelle des folgenden Elements [W]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="111"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="116"/>
         <source>Pressure Difference at worst point [Pa]</source>
         <translation>Druckdifferenz am schlechtesten Punkt [Pa]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="116"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="121"/>
         <source>Thermostat Value [-]</source>
         <translation>Thermostatwert [-]</translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="125"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="130"/>
         <source>Set point </source>
         <translation>Sollwert </translation>
     </message>
     <message>
-        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="128"/>
+        <location filename="../../src/SVDBNetworkControllerEditWidget.cpp" line="133"/>
         <source>Schedule </source>
         <translation>Zeitplan </translation>
     </message>
@@ -6117,7 +6122,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBSubNetworkEditWidget.ui" line="126"/>
         <source>Component</source>
-        <translation>Bauteil</translation>
+        <translation>Komponente</translation>
     </message>
     <message>
         <location filename="../../src/SVDBSubNetworkEditWidget.ui" line="112"/>
@@ -8127,7 +8132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="61"/>
         <source>Scaling factor: </source>
-        <translation>Skalierungsfaktor:</translation>
+        <translation>Skalierungsfaktor: </translation>
     </message>
     <message>
         <location filename="../../src/SVDrawingPropertiesDialog.ui" line="87"/>
@@ -10558,27 +10563,27 @@ p, li { white-space: pre-wrap; }
         <translation>Rohrnetz importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="123"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="101"/>
         <source>Import Pipeline</source>
         <translation>Rohrnetz importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="186"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="190"/>
         <source>Import Sub Stations</source>
         <translation>Übergabestationen importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="205"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="209"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="241"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="245"/>
         <source>For geojson files: Installed power can be imported with attribute &quot;MaxHeatingDemand&quot;</source>
         <translation>Für GeoJSON-Dateien: Installierte Leistung kann mit dem Attribut &quot;MaxHeatingDemand&quot; importiert werden</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="220"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="224"/>
         <source>For geojson files: Sub Station Name can be imported with attribute &quot;Name&quot;</source>
         <translation>Für GeoJSON-Dateien: Name der Übergabestation kann mit dem Attribut &quot;Name&quot; importiert werden</translation>
     </message>
@@ -10587,12 +10592,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Anschlussleistung [kW]</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="268"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="272"/>
         <source>This is the maximum power of this sub station, used for pipe dimensioning</source>
         <translation>Die Anschlussleistung wird für die stationäre Rohrdimensionierung verwendet</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="274"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="278"/>
         <source>5</source>
         <translation>5</translation>
     </message>
@@ -10601,27 +10606,27 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Name der Übergabestation</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="52"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="20"/>
         <source>Select network</source>
         <translation>Netzwerk auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="72"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="40"/>
         <source>unnamed</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="82"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="50"/>
         <source>Add to existing network</source>
         <translation>Zum bestehenden Netzwerk hinzufügen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="30"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="308"/>
         <source>convert to UTM when import geojson</source>
         <translation>konvertiere in UTM bei geoJSON Import</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="160"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="107"/>
         <source>Default pipe</source>
         <translation>Standard Rohr</translation>
     </message>
@@ -10630,7 +10635,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">für geojson Dateien wird die Rohrdicke über das Attribut &quot;da&quot; in &quot;properties&quot; angegeben</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="143"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="169"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -10639,47 +10644,47 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">UTM Daten für geojson Import</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="39"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="317"/>
         <source>UTM Zone</source>
         <translation>UTM Zone</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="175"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="135"/>
         <source>For geojson files: If the pipe diamater is specified with property attribute &quot;da&quot;, selected pipe properties from the database can be assigned automatically. If no pipe property with  appropriate outer diameter can be found, given default property is used.  </source>
         <translation>Für geojson Dateien: Wenn der Rohrdurchmesser mit dem Attribut &quot;da&quot; angegeben ist, können ausgewählte Rohreigenschaften aus der Datenbank automatisch zugewiesen werden. Wenn keine passenden Rohreigenschaften gefunden wurden, werden die default Standard Rohreigenschaften verwendet.  </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="150"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="114"/>
         <source>Select available pipes ...</source>
         <translation>Verfügbare Rohre auswählen ...</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="136"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="145"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="198"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="202"/>
         <source>Sub Station Name:</source>
         <translation>Name der Anlage:</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="258"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="262"/>
         <source>Installed power (maximum load):</source>
         <translation>Installierte Leistung (Maximallast):</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="251"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="255"/>
         <source>kW</source>
         <translation>kW</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="99"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="67"/>
         <source>Origin</source>
         <translation>Ursprungskoordinaten</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="192"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="196"/>
         <source>Sub station import</source>
         <translation>Übergabestation importieren</translation>
     </message>
@@ -10717,7 +10722,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Rohrnetz importieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="129"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="162"/>
         <source>No pipe selected</source>
         <translation>Kein Rohr ausgewählt</translation>
     </message>
@@ -10738,7 +10743,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Verfügbare Rohre auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.ui" line="106"/>
+        <location filename="../../src/SVNetworkImportDialog.ui" line="74"/>
         <source>New network</source>
         <translation>Neues Netzwerk</translation>
     </message>
@@ -15203,6 +15208,16 @@ Projekt zuletzt gespeichert am %2.
         <translation>45</translation>
     </message>
     <message>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="1149"/>
+        <source>Maximum Heating Demand:</source>
+        <translation>Anschlussleistung:</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="1163"/>
+        <source>kW</source>
+        <translation>kW</translation>
+    </message>
+    <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="655"/>
         <source>Roof component:</source>
         <translation>Dachbauteil:</translation>
@@ -15310,9 +15325,8 @@ Projekt zuletzt gespeichert am %2.
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="1149"/>
         <source>Maximum Heating Demand [W]</source>
-        <translation>Maximaler Heizbedarf [W]</translation>
+        <translation type="vanished">Maximaler Heizbedarf [W]</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.cpp" line="74"/>
@@ -15330,9 +15344,13 @@ Projekt zuletzt gespeichert am %2.
         <translation>Kniestockhöhe in [m].</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="79"/>
         <source>Maximum/Nominal heating demand [W].</source>
-        <translation>Maximaler/nominaler Heizbedarf [W].</translation>
+        <translation type="vanished">Maximaler/nominaler Heizbedarf [W].</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="79"/>
+        <source>Maximum/Nominal heating demand [kW].</source>
+        <translation>Maximaler Leistungsbedarf [kW].</translation>
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.cpp" line="154"/>
