@@ -615,7 +615,7 @@ void SVGeometryView::onStyleChanged() {
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
 		m_ui->geometryToolBar->setStyleSheet(m_ui->geometryToolBar->styleSheet() +
 											 "QWidget { background: #3A3B3F;}"
-											 "QToolButton { border: 1px solid #4B4B4B;}"
+											 "QToolButton { border: 1px solid #4D4D4D;}"
 											 "QToolButton:hover { border: 1px solid #b19834;}"
 											 "QToolBar QToolButton:checked { border: 1px solid #b19834; background-color: #4D3C18;}");
 		m_lineEditCoordinateInput->setStyleSheet("QLineEdit {background-color: #212124;}");

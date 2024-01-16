@@ -757,7 +757,7 @@ QToolBar QToolButton:hover {
 
 QToolBar QToolButton:checked {
   border: 1px solid #b19834;
-  background-color: #4D3C18;
+  background-color: #664D18;
 }
 
 QToolBar QToolButton:checked:hover {
@@ -1005,6 +1005,8 @@ QProgressBar::chunk:disabled {
 https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qpushbutton
 
 --------------------------------------------------------------------------- */
+
+SVWelcomeScreen QToolButton,
 QPushButton {
   background-color: #414446;
   border: 1px solid #3a3b3f;
@@ -1075,11 +1077,13 @@ QPushButton:focus {
   border: 1px solid #a08918;
 }
 
+
 /* QToolButton ------------------------------------------------------------
 
 https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qtoolbutton
 
 --------------------------------------------------------------------------- */
+
 QToolButton {
   background-color: transparent;
   border: 1px solid transparent;
