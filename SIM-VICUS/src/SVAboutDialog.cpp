@@ -31,6 +31,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include <QRandomGenerator>
+#include <QIcon>
 
 #include "SVStyle.h"
 #include "SVSettings.h"
@@ -43,34 +44,8 @@ SVAboutDialog::SVAboutDialog(QWidget *parent) :
 
 	setWindowTitle(QString("SIM-VICUS %1").arg(VICUS::LONG_VERSION));
 
-	int imageCount = 6;
-
-	QPixmap pixmap;
-
-#if QT_VERSION >= 0x050A00
-	int pixmapIdx = QRandomGenerator::global()->bounded(0,imageCount);
-#else
-
-	std::srand(std::time(nullptr));
-	int pixmapIdx = std::rand()*imageCount/RAND_MAX;
-#endif
-
-	pixmap.load(QString(":/gfx/splashscreen/SIMVICUS-Logo-Startscreen-%1.png").arg(pixmapIdx));
-
-	// is needed for high dpi screens to prevent bluring
-	pixmap.setDevicePixelRatio(SVSettings::instance().m_ratio);
-
-	// Load custom font
+	QPixmap pixmap = QIcon::fromTheme("simvicus_logo").pixmap(300);
 	m_ui->label->setPixmap(pixmap);
-	QString labelStyle(
-		"font-size:12pt; color: #3caed0; text-decoration:none"
-		);
-
-	SVStyle::setHtmlColors(labelStyle);
-
-
-	layout()->setMargin(0);
-	layout()->setSizeConstraint( QLayout::SetFixedSize );
 }
 
 
