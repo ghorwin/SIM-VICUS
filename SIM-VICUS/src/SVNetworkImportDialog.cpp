@@ -578,6 +578,11 @@ void SVNetworkImportDialog::importPoints(VICUS::Network & network, const QJsonAr
 	double val = properties["MaxHeatingDemand"].toDouble();
 	if (val>0)
 		heatingDemand = val * 1000; // expected in kW
+	else {
+		val = properties["Qmax"].toDouble();
+		if (val > 0)
+			heatingDemand = val * 1000; // expected in kW
+	}
 	QString name = properties["Name"].toString();
 	if (name.isEmpty())
 		name = defaultName;

@@ -94,7 +94,7 @@
    <item row="3" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabImportPipes">
       <attribute name="title">
@@ -242,7 +242,7 @@
              <string notr="true">color:rgb(119, 118, 123)</string>
             </property>
             <property name="text">
-             <string>For geojson files: Installed power can be imported with attribute &quot;MaxHeatingDemand&quot;</string>
+             <string>For geojson files: Installed power can be imported with attribute &quot;MaxHeatingDemand&quot; or &quot;Qmax&quot; in kW</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
