@@ -783,7 +783,6 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_geometryView);
 	m_geometryViewSplitter->setCollapsible(1, false);
 
-
 	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
 			m_geometryView, &SVGeometryView::onStyleChanged);
 
@@ -816,21 +815,12 @@ void SVMainWindow::setup() {
 	m_ui->menuEdit->addAction(m_undoAction);
 	m_ui->menuEdit->addAction(m_redoAction);
 
-	// TODO: Hauke re-arrange actions
-	// now move all the actions to bottom
-//	for (int i=0; i<acts.count(); ++i)
-//		m_ui->menuEdit->addAction(acts[i]);
-
 	QWidget* spacer = new QWidget();
 	spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	spacer->setFixedSize(QSize(10, 150));
 	m_ui->toolBar->addWidget(spacer);
 
-	// toolBar is a pointer to an existing toolbar
-	//m_ui->toolBar->addWidget(new QSpacerItem());
-
 	QList<QAction*> actions = m_ui->toolBar->actions();
-
 
 	m_ui->toolBar->insertAction(actions[3], m_undoAction);
 	m_ui->toolBar->insertAction(actions[3], m_redoAction);
@@ -898,9 +888,20 @@ void SVMainWindow::setup() {
 	show();
 #endif
 
+	// Set the width of geometryViewSplitter. We do that only once here.
+	// If the stored width of the navigationSplitter is within a reasonable range, we use it.
+	// If not, we reset it to the preferred width of the navigation tree.
+	QScreen *screen = windowHandle()->screen();
+	int storedNavSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
+	int preferredNavSplitterWidth = m_navigationTreeWidget->sizeHint().width();
+	if (storedNavSplitterWidth > preferredNavSplitterWidth && storedNavSplitterWidth < 1.5*preferredNavSplitterWidth)
+		preferredNavSplitterWidth = storedNavSplitterWidth;
+	QList<int> sizes;
+	sizes << preferredNavSplitterWidth << screen->size().width() - preferredNavSplitterWidth;
+	m_geometryViewSplitter->setSizes(sizes);
+
 	// *** Plugins ***
 	setupPlugins();
-
 
 	// *** Auto-Save Timer ***
 
@@ -1599,37 +1600,6 @@ void SVMainWindow::onUpdateActions() {
 		// select the current view, this also enables (in case of ConstructionView) the visibility of the dock widgets
 		m_logDockWidget->setVisible(m_dockWidgetVisibility[m_logDockWidget]);
 		m_logDockWidget->toggleViewAction()->setEnabled(true);
-
-		// restore navigation tree width on first call
-		qDebug() << "Navigation splitter size: "  << SVSettings::instance().m_navigationSplitterSize;
-
-
-		// guard against screen resolution changes, for example when SIM-VICUS was opened on an external
-		// 4K screen and splitter size was 1200 of 3800 and now the tool is opened again on laptop fullHD screen
-		// in Window mode where window is only about 1100 wide itself.
-		// If it's wider than a certain amount of its preferred width, we reset the width to the preferred one
-		int availableWidth = width();
-		int navSplitterWidth;
-		int preferredWidth;
-
-		QList<int> sizes;
-		if (SVSettings::instance().m_navigationSplitterSize != 0) {
-			navSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
-			preferredWidth = m_navigationTreeWidget->sizeHint().width();
-
-			// Prevent 4k / FullHD Size changes of screen pixels
-			if (navSplitterWidth > 1.5*preferredWidth)
-				navSplitterWidth = preferredWidth;
-		}
-		else {
-			navSplitterWidth = 0.25 / SVSettings::instance().m_ratio * availableWidth;
-		}
-
-		sizes << navSplitterWidth << availableWidth - navSplitterWidth;
-		m_geometryViewSplitter->setSizes(sizes);
-
-		SVSettings::instance().m_navigationSplitterSize = 0; // will be set again when the app is being closed
-
 
 		bool isVisible = true;
 		if (project().m_viewSettings.m_gridPlanes.size() > 0)
