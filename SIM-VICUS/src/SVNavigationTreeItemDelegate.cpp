@@ -39,6 +39,7 @@
 #include "SVDrawingPropertiesDialog.h"
 #include "SVMainWindow.h"
 #include "SVUndoModifyDrawingFile.h"
+#include "SVStyle.h"
 
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
@@ -83,7 +84,9 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	Q_ASSERT(treeView != nullptr);
 	bool isCurrent = (index == treeView->currentIndex());
 	if (isCurrent) {
-		painter->fillRect(targetRect, QColor(33, 174, 191));
+		QColor col(SVStyle::instance().m_DBSelectionColor.name());
+		col.setAlpha(100);
+		painter->fillRect(targetRect, col);
 	}
 
 	// find out if the element we are painting is visible or not
