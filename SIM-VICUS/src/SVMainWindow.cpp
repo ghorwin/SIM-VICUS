@@ -1640,8 +1640,9 @@ void SVMainWindow::updateMainView() {
 		} break;
 	}
 
-	// toggle visibility of floating transparent widgets (color legend, measurement)
+	// toggle visibility and update position of floating transparent widgets (color legend, measurement, snap options)
 	SVViewStateHandler::instance().toggleTransparentWidgetsVisibility(m_mainViewMode);
+	SVViewStateHandler::instance().m_geometryView->moveTransparentSceneWidgets();
 }
 
 
@@ -2169,6 +2170,9 @@ SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
 		connect(m_preferencesDialog->pageMisc(), &SVPreferencesPageMisc::autosaveSettingsChanged,
 				this, &SVMainWindow::onAutosaveSettingsChanged);
+
+		connect(preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				m_navigationTreeWidget, &SVNavigationTreeWidget::onStyleChanged);
 	}
 	return m_preferencesDialog;
 }

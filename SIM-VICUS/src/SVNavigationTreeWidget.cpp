@@ -42,6 +42,7 @@
 #include "SVSmartSelectDialog.h"
 #include "SVPropEditGeometry.h"
 
+
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVNavigationTreeWidget)
@@ -61,7 +62,6 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 	m_ui->actionSmartSelect->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_Period));
 	m_ui->actionInvertSelection->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_I));
-
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
@@ -422,6 +422,11 @@ void SVNavigationTreeWidget::scrollToObject(unsigned int uniqueID) {
 	m_ui->treeWidget->setCurrentItem(item);
 }
 
+
+void SVNavigationTreeWidget::onStyleChanged() {
+	m_navigationTreeItemDelegate->onStyleChanged();
+	update();
+}
 
 
 void SVNavigationTreeWidget::collapseTreeWidgetItem(QTreeWidgetItem * parent) {

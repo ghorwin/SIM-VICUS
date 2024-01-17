@@ -56,6 +56,9 @@ public slots:
 	/*! Expand node if not yet done and scroll to view. */
 	void scrollToObject(unsigned int uniqueID);
 
+	/*! Calls delegate to update icons. */
+	void onStyleChanged();
+
 signals:
 	void removeSelected();
 	void hideSelected();

@@ -59,6 +59,9 @@ public:
 	void updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 
+	/*! Updates icons */
+	void onStyleChanged();
+
 private:
 	QPixmap m_lightBulbOn;
 	QPixmap m_lightBulbOff;
