@@ -313,7 +313,7 @@ void SVSettings::readMainWindowSettings(QByteArray &geometry, QByteArray &state)
 	QtExt::Settings::readMainWindowSettings(geometry, state);
 
 	QSettings settings( m_organization, m_appName );
-	QString defaultDockWidgets = "Materials,Log";
+	QString defaultDockWidgets = "";
 	m_visibleDockWidgets = settings.value("VisibleDockWidgets", defaultDockWidgets).toString().split(",");
 }
 

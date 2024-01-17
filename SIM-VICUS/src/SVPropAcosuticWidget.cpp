@@ -119,16 +119,8 @@ void SVPropAcosuticWidget::onStyleChanged() {
 // *** PRIVATE FUNCTIONS ***
 
 void SVPropAcosuticWidget::updateUi() {
-	// TODO Andreas : this function currently updates all widgets in the stacked widget, regardless of which
-	//                is currently visible. This makes switching property modes very fast, but whenever the project
-	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,
-	//                modify the update logic.
-	// Note: It is not meaningful to update the widgets based on their visibility.
-	// It could be that project data changes and then the user switches to a different widget, which has then not be updated yet.
 	dynamic_cast<SVPropBuildingSoundProtectionTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticSoundProtectionTemplate))->updateUi();
 	dynamic_cast<SVPropBuildingAcousticTemplatesWidget*>(m_ui->toolBox->widget(AT_AcousticTemplate))->updateUi();
-
-	// SVPropFloorManagerWidget has its own onModified() slot, no need to handle that here
 }
 
 
