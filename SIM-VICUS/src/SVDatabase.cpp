@@ -736,12 +736,12 @@ void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::Dupli
 
 			// are we sufficiently similar
 			VICUS::AbstractDBElement::ComparisonResult compRes = it->second.equal(&it2->second);
-			if (compRes != VICUS::AbstractDBElement::Different) {
+			if (compRes == VICUS::AbstractDBElement::Equal) {
 				SVDatabase::DuplicateInfo info;
 				info.m_idFirst = it->first;
 				info.m_idSecond = it2->first;
-				// we compare if both elements are identical and also wether both are builtIn or not, this avoids replacing builtin elements
-				info.m_identical = (compRes == VICUS::AbstractDBElement::Equal) && (it->second.m_builtIn == it2->second.m_builtIn);
+				// we compare wether both are builtIn or not, this avoids replacing builtin elements
+				info.m_identical = it->second.m_builtIn == it2->second.m_builtIn;
 				dupInfos.push_back(info);
 				duplicateIDs.insert(it->first);
 				duplicateIDs.insert(it2->first);
