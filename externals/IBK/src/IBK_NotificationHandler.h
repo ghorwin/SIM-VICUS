@@ -100,6 +100,7 @@ public:
 		The default implementation calls notify().
 	*/
 	virtual void notify(double ) { notify(); }
+	virtual void notify(double, const char *) { notify(); }
 };
 
 } // namespace IBK

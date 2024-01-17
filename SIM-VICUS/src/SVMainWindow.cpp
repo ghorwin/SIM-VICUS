@@ -126,12 +126,13 @@ static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePa
 class ProgressNotifyer : public IBK::NotificationHandler {
 public:
 	void notify() override {}
-	void notify(double percentage) override;
+	void notify(double percentage, const char *txt) override;
 	QProgressDialog		*m_prgDlg = nullptr;
 };
 
-void ProgressNotifyer::notify(double percentage) {
+void ProgressNotifyer::notify(double percentage, const char *txt) {
 	m_prgDlg->setValue((int)(m_prgDlg->maximum() * percentage));
+	m_prgDlg->setLabelText(txt);
 	qApp->processEvents();
 }
 
@@ -961,7 +962,7 @@ void SVMainWindow::onImportPluginTriggered() {
 	notifyer->m_prgDlg = new QProgressDialog(QString(), QString(), 0, 100, this);
 	notifyer->m_prgDlg->setWindowTitle(tr("Import project"));
 	notifyer->m_prgDlg->setMinimumDuration(0);
-	notifyer->notify(0);
+	notifyer->notify(0, "");
 	try {
 		p.readImportedXML(projectText, dynamic_cast<IBK::NotificationHandler*>(notifyer));
 //		std::ofstream out("C:/test/VicusImport.xml");
@@ -997,7 +998,7 @@ void SVMainWindow::onImportPluginTriggered() {
 
 		}
 	}
-	notifyer->notify(1);
+	notifyer->notify(1, "Finished");
 }
 
 

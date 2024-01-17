@@ -319,7 +319,7 @@ void Project::readDrawingXML(const IBK::Path & filename) {
 void Project::readImportedXML(const QString & projectText, IBK::NotificationHandler *notifyer) {
 	FUNCID(Project::readXML);
 
-	notifyer->notify(0.1);
+	notifyer->notify(0.1, "Read imported project");
 	TiXmlDocument doc;
 	TiXmlElement * xmlElem = NANDRAD::openXMLText(projectText.toStdString(), "VicusProject", doc);
 	if (!xmlElem)
@@ -327,7 +327,7 @@ void Project::readImportedXML(const QString & projectText, IBK::NotificationHand
 
 	readXMLDocument(xmlElem);
 
-	notifyer->notify(0.3);
+	notifyer->notify(0.3, "Read imported project");
 
 	/*! Read the drawings from vicus project xml
 	   NOTE: This is only necessary here, during project import when the import contains a drawing.
@@ -358,15 +358,14 @@ void Project::readImportedXML(const QString & projectText, IBK::NotificationHand
 			Drawing draw;
 			draw.readXML(cdraw);
 			m_drawings.push_back(draw);
-			notifyer->notify(0.5);
+			notifyer->notify(0.5, "Update references");
 
 			// don't forget to update pointers
 			draw.updateParents();
-			notifyer->notify(0.7);
+			notifyer->notify(0.7, "Generate inserts");
 			// generate inserts, this should happen only once!
 			for (VICUS::Drawing &dr: m_drawings)
 				dr.generateInsertGeometries(nextUnusedID());
-			notifyer->notify(0.8);
 		}
 		catch (IBK::Exception &ex){
 			throw IBK::Exception(ex, IBK::FormatString("Error reading drawing from imported project."), FUNC_ID);
