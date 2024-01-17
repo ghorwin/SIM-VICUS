@@ -144,6 +144,9 @@ public slots:
 	/*! Triggered when style is changed in Preferences handled by SVSettings. */
 	void onStyleChanged();
 
+	/*! Triggered from main window */
+	void onScreenChanged(const QScreen * screen);
+
 private slots:
 	/*! Triggered when the user pressed enter while the line edit is active, or when the place vertex button
 		is pressed, or when the user pressed enter while vertex placement in the scene.

@@ -38,6 +38,7 @@
 #include <QLine>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QScreen>
 
 #include <IBK_StringUtils.h>
 
@@ -92,8 +93,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->sceneVBoxLayout->setMargin(0);
 	m_ui->sceneVBoxLayout->setSpacing(0);
 	m_ui->horizontalLayout->setSpacing(0);
-	m_ui->splitter->setCollapsible(0, true);
-	m_ui->splitter->setCollapsible(1, true);
+	m_ui->splitter->setCollapsible(0, false);
+	m_ui->splitter->setCollapsible(1, false);
 	m_ui->splitter->setStretchFactor(0,1);
 	m_ui->splitter->setStretchFactor(1,0);
 
@@ -114,7 +115,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 			this, &SVGeometryView::onViewStateChanged);
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVGeometryView::onModified);
-
+	connect(&SVMainWindow::instance(), &SVMainWindow::screenHasChanged,
+			this, &SVGeometryView::onScreenChanged);
 
 	onViewStateChanged();
 
@@ -627,6 +629,12 @@ void SVGeometryView::onStyleChanged() {
 		m_lineEditCoordinateInput->setStyleSheet("");
 	}
 	m_ui->modeSelectionToolBar->setStyleSheet("QToolBar {spacing: 5px; padding: 5px; }");
+}
+
+
+void SVGeometryView::onScreenChanged(const QScreen * screen) {
+	int minW = m_ui->propertyWidget->sizeHint().width();
+	m_ui->propertyWidget->setMinimumWidth((int)(0.9*minW)); // actual size hint is a bit to harsh here
 }
 
 

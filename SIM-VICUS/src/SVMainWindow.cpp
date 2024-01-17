@@ -775,7 +775,7 @@ void SVMainWindow::setup() {
 
 	m_navigationTreeWidget = new SVNavigationTreeWidget(this);
 	m_geometryViewSplitter->addWidget(m_navigationTreeWidget);
-	m_geometryViewSplitter->setCollapsible(0, true);
+	m_geometryViewSplitter->setCollapsible(0, false);
 
 	// *** Geometry view ***
 
@@ -833,13 +833,10 @@ void SVMainWindow::setup() {
 
 	m_ui->toolBar->insertSeparator(actions[3]);
 
-//	actions = m_ui->toolBar->actions();
-
 	m_ui->menuView->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
 	setupDockWidgets();
-
 
 	// *** restore state of UI ***
 	QByteArray geometry, state;
@@ -900,6 +897,10 @@ void SVMainWindow::setup() {
 	QList<int> sizes;
 	sizes << preferredNavSplitterWidth << screen->size().width() - preferredNavSplitterWidth;
 	m_geometryViewSplitter->setSizes(sizes);
+
+	// we want to limit the width, so buttons are always visible
+//	m_navigationTreeWidget->setMinimumWidth(preferredNavSplitterWidth);
+	onScreenChanged(screen);
 
 	// *** Plugins ***
 	setupPlugins();
@@ -1022,6 +1023,8 @@ void SVMainWindow::onConfigurePluginTriggered() {
 
 
 void SVMainWindow::onScreenChanged(QScreen *screen) {
+	// set minimum width of navigation tree, buttons shall be visible
+	m_navigationTreeWidget->setMinimumWidth(m_navigationTreeWidget->sizeHint().width());
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
 	SVSettings::instance().m_ratio = screen->devicePixelRatio();
 	// let others know (e.g. DB dialogs)
