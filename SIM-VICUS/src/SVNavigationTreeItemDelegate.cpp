@@ -90,8 +90,11 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	painter->setRenderHint(QPainter::Antialiasing);
 
 	const_cast<QPixmap*>(bulbImg)->setDevicePixelRatio(SVSettings::instance().m_ratio);
-	QRect iconRect(targetRect.x(), targetRect.y(), 14, 14);
-	painter->drawPixmap(iconRect, *bulbImg);
+
+	QRect iconSourceRect(0, 0, 256, 256); // Source png is 256 x 256;
+
+	QRect iconRect(targetRect.x(), targetRect.y() + 2, 14, 14);
+	painter->drawPixmap(iconRect, *bulbImg, iconSourceRect);
 
 	bool selected = index.data(SelectedFlag).toBool();
 	const QPixmap * selectedImg = nullptr;
@@ -99,12 +102,13 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 		selectedImg = &m_selectedOn;
 	else
 		selectedImg = &m_selectedOff;
-	iconRect.setX(iconRect.x()+18);
-	const_cast<QPixmap*>(bulbImg)->setDevicePixelRatio(SVSettings::instance().m_ratio);
-	painter->drawPixmap(iconRect, *selectedImg);
+
+	iconRect.moveLeft(iconRect.x() + 18);
+	const_cast<QPixmap*>(selectedImg)->setDevicePixelRatio(SVSettings::instance().m_ratio);
+	painter->drawPixmap(iconRect, *selectedImg, iconSourceRect);
 
 	// adjust text rectangle
-	targetRect.setX(targetRect.x()+36);
+	targetRect.setX(targetRect.x() + 40);
 
 	// check if item is selected/current
 	bool isSelected = option.state & QStyle::State_Selected;
