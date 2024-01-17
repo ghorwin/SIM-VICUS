@@ -44,10 +44,11 @@
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
 {
-	m_lightBulbOn = QPixmap(":/icons/other/bulb_on.png");
-	m_lightBulbOff = QPixmap(":/icons/other/bulb_off.png");
-	m_selectedOn = QPixmap(":/icons/other/checkbox_checked.png");
-	m_selectedOff = QPixmap(":/icons/other/checkbox_unchecked.png");
+//	QIcon bulbOn = QIcon::fromTheme("bulb_on");
+	m_lightBulbOn = QPixmap(QIcon::fromTheme("bulb_on").pixmap(24));
+	m_lightBulbOff = QPixmap(QIcon::fromTheme("bulb_off").pixmap(24));
+	m_selectedOn = QPixmap(QIcon::fromTheme("checkbox_checked").pixmap(24));
+	m_selectedOff = QPixmap(QIcon::fromTheme("checkbox_unchecked").pixmap(24));
 }
 
 

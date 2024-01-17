@@ -135,5 +135,13 @@
         <file>icons/other/bulb_on.png</file>
         <file>icons/other/checkbox_checked.png</file>
         <file>icons/other/checkbox_unchecked.png</file>
+        <file>icons/light/png/bulb_off.png</file>
+        <file>icons/light/png/bulb_on.png</file>
+        <file>icons/light/png/checkbox_checked.png</file>
+        <file>icons/light/png/checkbox_unchecked.png</file>
+        <file>icons/dark/png/bulb_off.png</file>
+        <file>icons/dark/png/bulb_on.png</file>
+        <file>icons/dark/png/checkbox_checked.png</file>
+        <file>icons/dark/png/checkbox_unchecked.png</file>
     </qresource>
 </RCC>
