@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <VentilationNatural>
-	<VentilationNatural id="15001" displayName="DE: SimQuality_TF05.2 |EN: SimQuality_TF05.2;" color="#5a6eff">
+	<VentilationNatural id="15001" displayName="de:SimQuality_TF05.2 |en:SimQuality_TF05.2;" color="#5a6eff">
 		<ScheduleId>6002</ScheduleId>
 		<IBK:Parameter name="AirChangeRate" unit="1/h">2</IBK:Parameter>
 	</VentilationNatural>
-	<VentilationNatural id="15002" displayName="DE: TF05.3 |EN: TF05.3;" color="#5a6eff">
+	<VentilationNatural id="15002" displayName="de:TF05.3 |en:TF05.3;" color="#5a6eff">
 		<ScheduleId>6003</ScheduleId>
 		<IBK:Parameter name="AirChangeRate" unit="1/h">2</IBK:Parameter>
 	</VentilationNatural>

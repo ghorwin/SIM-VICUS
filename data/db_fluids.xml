@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <NetworkFluids>
-	<NetworkFluid id="10010001" displayName="DE: Wasser |EN: Water" color="#ffa52c">
+	<NetworkFluid id="10010001" displayName="de:Wasser |en:Water" color="#ffa52c">
 		<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -9,7 +9,7 @@
 			<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
 		</LinearSplineParameter>
 	</NetworkFluid>
-	<NetworkFluid id="10010002" displayName="DE: Ethylenglykol 30 %, 0°C |EN: ethylene glycol 30 %, 0°C" color="#ffa52c">
+	<NetworkFluid id="10010002" displayName="de:Ethylenglykol 30 %, 0°C |en:ethylene glycol 30 %, 0°C" color="#ffa52c">
 		<IBK:Parameter name="Density" unit="kg/m3">1052</IBK:Parameter>
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">3780</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.448</IBK:Parameter>
@@ -18,7 +18,7 @@
 			<Y unit="m2/s">6.43e-06 4.45e-06 3.17e-06 2.33e-06 1.76e-06 1.37e-06 1.1e-06</Y>
 		</LinearSplineParameter>
 	</NetworkFluid>
-	<NetworkFluid id="10010003" displayName="DE: Propylenglykol 30 %, 0°C |EN: propylene glycol 30 %, 0°C" color="#ffa52c">
+	<NetworkFluid id="10010003" displayName="de:Propylenglykol 30 %, 0°C |en:propylene glycol 30 %, 0°C" color="#ffa52c">
 		<IBK:Parameter name="Density" unit="kg/m3">1036</IBK:Parameter>
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">3790</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.381</IBK:Parameter>

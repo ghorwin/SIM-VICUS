@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ZoneTemplates>
-	<ZoneTemplate id="8000" displayName="DE: SimQuality_TF05.2 |EN: SimQuality_TF05.2;" color="#5aff82">
+	<ZoneTemplate id="8000" displayName="de:SimQuality_TF05.2 |en:SimQuality_TF05.2;" color="#5aff82">
 		<NaturalVentilation>15001</NaturalVentilation>
 	</ZoneTemplate>
-	<ZoneTemplate id="8001" displayName="DE: SimQuality_TF08.1 |EN: SimQuality_TF08.1;" color="#5a6eff">
+	<ZoneTemplate id="8001" displayName="de:SimQuality_TF08.1 |en:SimQuality_TF08.1;" color="#5a6eff">
 		<IntLoadEquipment>7001</IntLoadEquipment>
 	</ZoneTemplate>
-	<ZoneTemplate id="8002" displayName="DE: SimQuality_TF05.3 |EN: SimQuality_TF05.3;" color="#5aff82">
+	<ZoneTemplate id="8002" displayName="de:SimQuality_TF05.3 |en:SimQuality_TF05.3;" color="#5aff82">
 		<NaturalVentilation>15002</NaturalVentilation>
 	</ZoneTemplate>
-	<ZoneTemplate id="8003" displayName="DE: SimQuality_TF08.3 |EN: SimQuality_TF08.3;" color="#f57900">
+	<ZoneTemplate id="8003" displayName="de:SimQuality_TF08.3 |en:SimQuality_TF08.3;" color="#f57900">
 		<IntLoadEquipment>7003</IntLoadEquipment>
 	</ZoneTemplate>
-	<ZoneTemplate id="8004" displayName="DE: SimQuality_TF08.2 |EN: SimQuality_TF08.2;" color="#e6ff5a">
+	<ZoneTemplate id="8004" displayName="de:SimQuality_TF08.2 |en:SimQuality_TF08.2;" color="#e6ff5a">
 		<IntLoadEquipment>7002</IntLoadEquipment>
 	</ZoneTemplate>
-	<ZoneTemplate id="8005" displayName="DE: SimQuality_TF08.4 |EN: SimQuality_TF08.4;" color="#a25aff">
+	<ZoneTemplate id="8005" displayName="de:SimQuality_TF08.4 |en:SimQuality_TF08.4;" color="#a25aff">
 		<IntLoadEquipment>70012</IntLoadEquipment>
 	</ZoneTemplate>
 </ZoneTemplates>

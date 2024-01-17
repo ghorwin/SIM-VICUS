@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <SubSurfaceComponents>
-	<SubSurfaceComponent id="40000" displayName="DE: Standard-Fenster |EN: Default-Window;" color="#f3ff99">
+	<SubSurfaceComponent id="40000" displayName="de:Standard-Fenster |en:Default-Window" color="#f3ff99">
 		<Type>Window</Type>
 		<IdWindow>35000</IdWindow>
 		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="40001" displayName="DE: FensterTF07.1 |EN: WindowTF07.1" color="#5affde">
+	<SubSurfaceComponent id="40001" displayName="de:FensterTF07.1 |en:WindowTF07.1" color="#5affde">
 		<Type>Window</Type>
 		<IdWindow>35001</IdWindow>
 		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="40002" displayName="DE: FensterTF07.2 |EN: WindowTF07.2;" color="#a25aff">
+	<SubSurfaceComponent id="40002" displayName="de:FensterTF07.2 |en:WindowTF07.2" color="#a25aff">
 		<Type>Window</Type>
 		<IdWindow>35002</IdWindow>
 		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>30000</IdSideBBoundaryCondition>
 	</SubSurfaceComponent>
-	<SubSurfaceComponent id="40003" displayName="DE: FensterTF07.3 |EN: WindowTF07.3;" color="#f3ff99">
+	<SubSurfaceComponent id="40003" displayName="de:FensterTF07.3 |en:WindowTF07.3" color="#f3ff99">
 		<Type>Window</Type>
 		<IdWindow>35003</IdWindow>
 		<IdSideABoundaryCondition>30001</IdSideABoundaryCondition>

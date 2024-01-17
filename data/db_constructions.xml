@@ -9,7 +9,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20001" displayName="de:Einzelne Dämmchicht (10cm) |en:Single insulation layer (10cm)">
+	<Construction id="20001" displayName="de:Einzelne Dämmschicht (10cm) |en:Single insulation layer (10cm)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -18,7 +18,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20002" displayName="de:Betonwand (20cm) mit Innendämmung (10cm) |en: Concrete wall (20cm) with inside insulation (10cm)">
+	<Construction id="20002" displayName="de:Betonwand (20cm) mit Innendämmung (10cm) |en:Concrete wall (20cm) with inside insulation (10cm)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -33,7 +33,7 @@
 			</MaterialLayer>	
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20003" displayName="de:Betonwand (20cm) mit Außendämmung (10cm)|en: Concrete wall (20cm) with outside insulation (10cm)">
+	<Construction id="20003" displayName="de:Betonwand (20cm) mit Außendämmung (10cm)|en:Concrete wall (20cm) with outside insulation (10cm)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>	
@@ -48,7 +48,7 @@
 			</MaterialLayer>	
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20004" displayName="de: Betonwand mit beheizbarer Schicht|en: Concrete wall with heatable layer">
+	<Construction id="20004" displayName="de:Betonwand mit beheizbarer Schicht|en:Concrete wall with heatable layer">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<InsulationKind>OutsideInsulation</InsulationKind>
@@ -71,7 +71,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20005" displayName="de: Betonwand (20cm) mit dicker Dämmschicht (30cm)|en: Concrete wall (20cm) with thick insulation layer (30cm)">
+	<Construction id="20005" displayName="de:Betonwand (20cm) mit dicker Dämmschicht (30cm)|en:Concrete wall (20cm) with thick insulation layer (30cm)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -83,7 +83,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20006" displayName="de: Fassadenelement) |en:Facade element">
+	<Construction id="20006" displayName="de:Fassadenelement) |en:Facade element">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -98,7 +98,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20007" displayName="de: Innenwand Gipskarton |en: Interior wall plasterboard">
+	<Construction id="20007" displayName="de:Innenwand Gipskarton |en:Interior wall plasterboard">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -119,7 +119,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20008" displayName="de: Deckenkonstuktion |en: Ceiling construction">
+	<Construction id="20008" displayName="de:Deckenkonstuktion |en:Ceiling construction">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -140,7 +140,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20009" displayName="DE: Betonwand (10cm, halbe Wanddicke) |en: Concrete wall (10cm, half thickness)">
+	<Construction id="20009" displayName="de:Betonwand (10cm, halbe Wanddicke) |en:Concrete wall (10cm, half thickness)">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>SimQuality</DataSource>
 		<MaterialLayers>
@@ -150,7 +150,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20100" displayName="Außenwandkonstruktion schwer bis 1948">
+	<Construction id="20100" displayName="de:Außenwandkonstruktion schwer bis 1948 |en:Outside wall construction heavy until 1948">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -159,7 +159,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20101" displayName="Außenwandkonstruktion schwer 1949 bis 1968">
+	<Construction id="20101" displayName="de:Außenwandkonstruktion schwer 1949 bis 1968 |en:Outside wall construction heavy 1949 to 1968">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -168,7 +168,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20102" displayName="Außenwandkonstruktion schwer 1969 bis 1978">
+	<Construction id="20102" displayName="de:Außenwandkonstruktion schwer 1969 bis 1978 |en:Outside wall construction heavy 1969 to 1978">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -177,7 +177,7 @@
 			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.08</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20103" displayName="Außenwandkonstruktion schwer 1979 bis 1983">
+	<Construction id="20103" displayName="de:Außenwandkonstruktion schwer 1979 bis 1983 |en:Outside wall construction heavy 1979 to 1983">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -186,7 +186,7 @@
 			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.08</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20104" displayName="Außenwandkonstruktion schwer 1984 bis 1994">
+	<Construction id="20104" displayName="de:Außenwandkonstruktion schwer 1984 bis 1994 |en:Outside wall construction heavy 1984 to 1994">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -195,7 +195,7 @@
 			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20105" displayName="Außenwandkonstruktion schwer 1995 bis 2015">
+	<Construction id="20105" displayName="de:Außenwandkonstruktion schwer 1995 bis 2015 |en:Outside wall construction heavy 1995 to 2015">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -204,7 +204,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20106" displayName="Außenwandkonstruktion leicht bis 1948">
+	<Construction id="20106" displayName="de:Außenwandkonstruktion leicht bis 1948 |en:Outside wall construction light until 1948">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -213,7 +213,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20107" displayName="Außenwandkonstruktion leicht 1949 bis 1968">
+	<Construction id="20107" displayName="de:Außenwandkonstruktion leicht 1949 bis 1968 |en:Outside wall construction light 1949 to 1968">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -222,7 +222,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20108" displayName="Außenwandkonstruktion leicht 1969 bis 1978">
+	<Construction id="20108" displayName="de:Außenwandkonstruktion leicht 1969 bis 1978 |en:Outside wall construction light 1969 to 1978">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -231,7 +231,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20109" displayName="Außenwandkonstruktion leicht 1979 bis 1983">
+	<Construction id="20109" displayName="de:Außenwandkonstruktion leicht 1979 bis 1983 |en:Outside wall construction light 1979 to 1983">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -240,7 +240,7 @@
 			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20110" displayName="Außenwandkonstruktion leicht 1984 bis 1994">
+	<Construction id="20110" displayName="de:Außenwandkonstruktion leicht 1984 bis 1994 |en:Outside wall construction light 1984 to1994">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -249,7 +249,7 @@
 			<MaterialLayer idMaterial="10139"><IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20111" displayName="Außenwandkonstruktion leicht 1995 bis 2005">
+	<Construction id="20111" displayName="de:Außenwandkonstruktion leicht 1995 bis 2005 |en:Outside wall construction light 1995 to 2005">
 		<UsageType>OutsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -260,7 +260,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20112" displayName="Dachkonstruktion schwer bis 1948">
+	<Construction id="20112" displayName="de:Dachkonstruktion schwer bis 1948 |en:Sloped roof construction heavy until 1948">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -268,7 +268,7 @@
 			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20113" displayName="Dachkonstruktion schwer 1949 bis 1968">
+	<Construction id="20113" displayName="de:Dachkonstruktion schwer 1949 bis 1968 |en:Sloped roof construction heavy 1949 to 1968">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -276,7 +276,7 @@
 			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20114" displayName="Dachkonstruktion schwer 1969 bis 1978">
+	<Construction id="20114" displayName="de:Dachkonstruktion schwer 1969 bis 1978 |en:Sloped roof construction heavy 1969 to 1978">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -285,7 +285,7 @@
 			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20115" displayName="Dachkonstruktion schwer 1979 bis 1983">
+	<Construction id="20115" displayName="de:Dachkonstruktion schwer 1979 bis 1983 |en:Sloped roof construction heavy 1979 to 1983">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -294,7 +294,7 @@
 			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20116" displayName="Dachkonstruktion schwer 1984 bis 1994">
+	<Construction id="20116" displayName="de:Dachkonstruktion schwer 1984 bis 1994 |en:Sloped roof construction heavy 1984 to 1994">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -303,7 +303,7 @@
 			<MaterialLayer idMaterial="10107"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20117" displayName="Dachkonstruktion schwer 1995 bis 2015">
+	<Construction id="20117" displayName="de:Dachkonstruktion schwer 1995 bis 2015 |en:Sloped roof construction heavy 1995 to 2015">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -313,7 +313,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20118" displayName="Dachkonstruktion leicht bis 1918">
+	<Construction id="20118" displayName="de:Dachkonstruktion leicht bis 1918 |en:Sloped roof construction light until 1918">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -321,7 +321,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20119" displayName="Dachkonstruktion leicht 1919 bis 1968">
+	<Construction id="20119" displayName="de:Dachkonstruktion leicht 1919 bis 1968 |en:Sloped roof construction light 1919 to 1968">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -330,7 +330,7 @@
 			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.025</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20120" displayName="Dachkonstruktion leicht 1969 bis 1978">
+	<Construction id="20120" displayName="de:Dachkonstruktion leicht 1969 bis 1978 |en:Sloped roof construction light 1969 to 1978">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -338,7 +338,7 @@
 			<MaterialLayer idMaterial="10145"><IBK:Parameter name="Thickness" unit="m">0.14</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20121" displayName="Dachkonstruktion leicht 1979 bis 1983">
+	<Construction id="20121" displayName="de:Dachkonstruktion leicht 1979 bis 1983 |en:Sloped roof construction light 1979 to 1983">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -346,7 +346,7 @@
 			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20122" displayName="Dachkonstruktion leicht 1984 bis 1994">
+	<Construction id="20122" displayName="de:Dachkonstruktion leicht 1984 bis 1994 |en:Sloped roof construction light 1984 to 194">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -355,7 +355,7 @@
 			<MaterialLayer idMaterial="10105"><IBK:Parameter name="Thickness" unit="m">0.14</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20123" displayName="Dachkonstruktion leicht 1995 bis 2015">
+	<Construction id="20123" displayName="de:Dachkonstruktion leicht 1995 bis 2015 |en:Sloped roof construction light 1995 to 2015">
 		<UsageType>SlopedRoof</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -365,7 +365,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20124" displayName="Bodenplatte schwer bis 1948">
+	<Construction id="20124" displayName="de:Bodenplatte schwer bis 1948 |en:Ground slab heavy until 1948">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -373,7 +373,7 @@
 			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20125" displayName="Bodenplatte schwer 1949 bis 1968">
+	<Construction id="20125" displayName="de:Bodenplatte schwer 1949 bis 1968 |en:Ground slab heavy 1949 to 1968">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -381,7 +381,7 @@
 			<MaterialLayer idMaterial="10115"><IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20126" displayName="Bodenplatte schwer 1969 bis 1978">
+	<Construction id="20126" displayName="de:Bodenplatte schwer 1969 bis 1978 |en:Ground slab heavy 1969 to 1978">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -390,7 +390,7 @@
 			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20127" displayName="Bodenplatte schwer 1979 bis 1983">
+	<Construction id="20127" displayName="de:Bodenplatte schwer 1979 bis 1983 |en:Ground slab heavy 1979 to 1983">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -399,7 +399,7 @@
 			<MaterialLayer idMaterial="10108"><IBK:Parameter name="Thickness" unit="m">0.15</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20128" displayName="Bodenplatte schwer 1984 bis 2015">
+	<Construction id="20128" displayName="de:Bodenplatte schwer 1984 bis 2015 |en:Ground slab heavy 1984 to 2015">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -409,7 +409,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20129" displayName="Bodenplatte leicht bis 1918">
+	<Construction id="20129" displayName="de:Bodenplatte leicht bis 1918 |en:Ground slab light until 1918">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -419,7 +419,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20130" displayName="Bodenplatte leicht 1919 bis 1968">
+	<Construction id="20130" displayName="de:Bodenplatte leicht 1919 bis 1968 |en:Ground slab light 1919 to 1968">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -429,7 +429,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20131" displayName="Bodenplatte leicht 1969 bis 1983">
+	<Construction id="20131" displayName="de:Bodenplatte leicht 1969 bis 1983 |en:Ground slab light 1969 to 1983">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -437,7 +437,7 @@
 			<MaterialLayer idMaterial="10109"><IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20132" displayName="Bodenplatte leicht 1984 bis 2015">
+	<Construction id="20132" displayName="de:Bodenplatte leicht 1984 bis 2015 |en:Ground slab light1984 to 2015">
 		<UsageType>FloorToGround</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -448,7 +448,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20133" displayName="Innenwand schwer bis 1948">
+	<Construction id="20133" displayName="de:Innenwand schwer bis 1948 |en:Inside wall heavy until 1948">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -457,7 +457,7 @@
 			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20134" displayName="Innenwand schwer 1949 bis 1968">
+	<Construction id="20134" displayName="de:Innenwand schwer 1949 bis 1968 |en:Inside wall heavy 1948 to 1968">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -466,7 +466,7 @@
 			<MaterialLayer idMaterial="10142"><IBK:Parameter name="Thickness" unit="m">0.015</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20135" displayName="Innenwand schwer 1969 bis 1978">
+	<Construction id="20135" displayName="de:Innenwand schwer 1969 bis 1978 |en:Inside wall heavy 1969 to 1978">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -475,7 +475,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20136" displayName="Innenwand schwer 1979 bis 2015">
+	<Construction id="20136" displayName="de:Innenwand schwer 1979 bis 2015 |en:Inside wall heavy 1979 to 2015">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -485,7 +485,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20137" displayName="Innenwand leicht bis 1948">
+	<Construction id="20137" displayName="de:Innenwand leicht bis 1948 |en:Inside wall light until 1948">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -505,7 +505,7 @@
 		</MaterialLayers>
 	</Construction>
 	-->
-	<Construction id="20138" displayName="Innenwand leicht 1969 bis 1978">
+	<Construction id="20138" displayName="de:Innenwand leicht 1969 bis 1978 |en:Inside wall light 1969 to 1978">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -515,7 +515,7 @@
 			<MaterialLayer idMaterial="10106"><IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20139" displayName="Innenwand leicht 1979 bis 2015">
+	<Construction id="20139" displayName="de:Innenwand leicht 1979 bis 2015 |en:Inside wall light 1079 to 2015">
 		<UsageType>InsideWall</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -525,7 +525,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20140" displayName="Geschossdecke schwer bis 1948">
+	<Construction id="20140" displayName="de:Geschossdecke schwer bis 1948 |en:Ceiling construction heavy until 1948">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -533,7 +533,7 @@
 			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20141" displayName="Geschossdecke schwer 1949 bis 1968">
+	<Construction id="20141" displayName="de:Geschossdecke schwer 1949 bis 1968 |en:Ceiling construction heavy 1949 to 1968">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -541,7 +541,7 @@
 			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20142" displayName="Geschossdecke schwer 1969 bis 1978">
+	<Construction id="20142" displayName="de:Geschossdecke schwer 1969 bis 1978 |en:Ceiling construction heavy 1969 to 1978">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -549,7 +549,7 @@
 			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20143" displayName="Geschossdecke schwer 1979 bis 1983">
+	<Construction id="20143" displayName="de:Geschossdecke schwer 1979 bis 1983 |en:Ceiling construction heavy 1979 to 1983">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -558,7 +558,7 @@
 			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20144" displayName="Geschossdecke schwer 1984 bis 1994">
+	<Construction id="20144" displayName="de:Geschossdecke schwer 1984 bis 1994 |en:Ceiling construction heavy1984 to 1994">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -567,7 +567,7 @@
 			<MaterialLayer idMaterial="10111"><IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20145" displayName="Geschossdecke schwer 1995 bis 2015">
+	<Construction id="20145" displayName="Geschossdecke schwer 1995 bis 2015 |en:Ceiling construction heavy 1995 to 2015">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -577,7 +577,7 @@
 		</MaterialLayers>
 	</Construction>
 	
-	<Construction id="20146" displayName="Geschossdecke leicht bis 1948">
+	<Construction id="20146" displayName="de:Geschossdecke leicht bis 1948 |en:Ceiling construction light until 1948">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -587,7 +587,7 @@
 			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20147" displayName="Geschossdecke leicht 1949 bis 1968">
+	<Construction id="20147" displayName="de:Geschossdecke leicht 1949 bis 1968 |en:Ceiling construction light 1949 to 1968">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -597,7 +597,7 @@
 			<MaterialLayer idMaterial="10136"><IBK:Parameter name="Thickness" unit="m">0.024</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20148" displayName="Geschossdecke leicht 1969 bis 1978">
+	<Construction id="20148" displayName="de:Geschossdecke leicht 1969 bis 1978 |en:Ceiling construction light 1969 to 1978">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -606,7 +606,7 @@
 			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20149" displayName="Geschossdecke leicht 1979 bis 1983">
+	<Construction id="20149" displayName="de:Geschossdecke leicht 1979 bis 1983 |en:Ceiling construction light 1979 to 1983">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
@@ -614,7 +614,7 @@
 			<MaterialLayer idMaterial="10134"><IBK:Parameter name="Thickness" unit="m">0.03</IBK:Parameter></MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="20150" displayName="Geschossdecke leicht 1984 bis 2015">
+	<Construction id="20150" displayName="de:Geschossdecke leicht 1984 bis 2015 |en:Ceiling construction light 1984 to 2015">
 		<UsageType>Ceiling</UsageType>
 		<DataSource>Teaser</DataSource>
 		<MaterialLayers>
