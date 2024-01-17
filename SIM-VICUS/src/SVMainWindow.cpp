@@ -1024,7 +1024,7 @@ void SVMainWindow::onConfigurePluginTriggered() {
 
 void SVMainWindow::onScreenChanged(QScreen *screen) {
 	// set minimum width of navigation tree, buttons shall be visible
-	m_navigationTreeWidget->setMinimumWidth(m_navigationTreeWidget->sizeHint().width());
+//	m_navigationTreeWidget->setMinimumWidth(m_navigationTreeWidget->sizeHint().width());
 	qDebug() << "Screen Changed: Device pixel ratio has been updated to: " << screen->devicePixelRatio();
 	SVSettings::instance().m_ratio = screen->devicePixelRatio();
 	// let others know (e.g. DB dialogs)

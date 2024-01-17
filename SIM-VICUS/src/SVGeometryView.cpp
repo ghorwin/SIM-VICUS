@@ -93,8 +93,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui->sceneVBoxLayout->setMargin(0);
 	m_ui->sceneVBoxLayout->setSpacing(0);
 	m_ui->horizontalLayout->setSpacing(0);
-	m_ui->splitter->setCollapsible(0, false);
-	m_ui->splitter->setCollapsible(1, false);
+	m_ui->splitter->setCollapsible(0, true);
+	m_ui->splitter->setCollapsible(1, true);
 	m_ui->splitter->setStretchFactor(0,1);
 	m_ui->splitter->setStretchFactor(1,0);
 
@@ -633,8 +633,8 @@ void SVGeometryView::onStyleChanged() {
 
 
 void SVGeometryView::onScreenChanged(const QScreen * screen) {
-	int minW = m_ui->propertyWidget->sizeHint().width();
-	m_ui->propertyWidget->setMinimumWidth((int)(0.9*minW)); // actual size hint is a bit to harsh here
+//	int minW = m_ui->propertyWidget->sizeHint().width();
+//	m_ui->propertyWidget->setMinimumWidth((int)(0.9*minW)); // actual size hint is a bit to harsh here
 }
 
 
