@@ -60,10 +60,10 @@ public:
 	QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 
 private:
-	QImage m_lightBulbOn;
-	QImage m_lightBulbOff;
-	QImage m_selectedOn;
-	QImage m_selectedOff;
+	QPixmap m_lightBulbOn;
+	QPixmap m_lightBulbOff;
+	QPixmap m_selectedOn;
+	QPixmap m_selectedOff;
 
 };
 

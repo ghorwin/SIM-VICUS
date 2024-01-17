@@ -127,5 +127,13 @@
         <file>icons/light/svg/dialog-positive.svg</file>
         <file>icons/light/svg/dialog-question.svg</file>
         <file>icons/light/svg/dialog-warning.svg</file>
+        <file>icons/other/bulb_off.svg</file>
+        <file>icons/other/bulb_on.svg</file>
+        <file>icons/other/checkbox_checked.svg</file>
+        <file>icons/other/checkbox_unchecked.svg</file>
+        <file>icons/other/bulb_off.png</file>
+        <file>icons/other/bulb_on.png</file>
+        <file>icons/other/checkbox_checked.png</file>
+        <file>icons/other/checkbox_unchecked.png</file>
     </qresource>
 </RCC>

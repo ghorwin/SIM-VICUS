@@ -44,10 +44,10 @@
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
 {
-	m_lightBulbOn = QImage(":/gfx/actions/16x16/help-hint.png");
-	m_lightBulbOff = QImage(":/gfx/actions/16x16/help-hint_gray.png");
-	m_selectedOn = QImage(":/gfx/actions/16x16/checkbox-full.png");
-	m_selectedOff = QImage(":/gfx/actions/16x16/checkbox-empty.png");
+	m_lightBulbOn = QPixmap(":/icons/other/bulb_on.png");
+	m_lightBulbOff = QPixmap(":/icons/other/bulb_off.png");
+	m_selectedOn = QPixmap(":/icons/other/checkbox_checked.png");
+	m_selectedOff = QPixmap(":/icons/other/checkbox_unchecked.png");
 }
 
 
@@ -81,23 +81,27 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	// find out if the element we are painting is visible or not
 	bool visible = index.data(VisibleFlag).toBool();
 
-	const QImage * bulbImg = nullptr;
+	const QPixmap * bulbImg = nullptr;
 	if (visible)
 		bulbImg = &m_lightBulbOn;
 	else
 		bulbImg = &m_lightBulbOff;
 
-	QRect iconRect(targetRect.x(), targetRect.y(), 16, 16);
-	painter->drawImage(iconRect, *bulbImg, QRect(0,0,16,16));
+	painter->setRenderHint(QPainter::Antialiasing);
+
+	const_cast<QPixmap*>(bulbImg)->setDevicePixelRatio(SVSettings::instance().m_ratio);
+	QRect iconRect(targetRect.x(), targetRect.y(), 14, 14);
+	painter->drawPixmap(iconRect, *bulbImg);
 
 	bool selected = index.data(SelectedFlag).toBool();
-	const QImage * selectedImg = nullptr;
+	const QPixmap * selectedImg = nullptr;
 	if (selected)
 		selectedImg = &m_selectedOn;
 	else
 		selectedImg = &m_selectedOff;
 	iconRect.setX(iconRect.x()+18);
-	painter->drawImage(iconRect, *selectedImg, QRect(0,0,16,16));
+	const_cast<QPixmap*>(bulbImg)->setDevicePixelRatio(SVSettings::instance().m_ratio);
+	painter->drawPixmap(iconRect, *selectedImg);
 
 	// adjust text rectangle
 	targetRect.setX(targetRect.x()+36);
