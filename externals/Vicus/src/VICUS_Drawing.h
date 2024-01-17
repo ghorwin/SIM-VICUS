@@ -550,7 +550,7 @@ public:
 	std::vector<Insert>														m_inserts;
 
 	/*! Factor to be multiplied with line weight of objects. */
-	double																	m_lineWeightScaling = 0.001;
+	double																	m_lineWeightScaling = 0.003;
 	/*! Offset added to line weight of objects. */
 	double																	m_lineWeightOffset = 0.001;
 
