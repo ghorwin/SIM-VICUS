@@ -238,8 +238,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_styleSheet = QLatin1String(styleDark.readAll());
 		qApp->setStyleSheet(m_styleSheet);
 		// set specific background/font colors
-		m_alternativeBackgroundBright				= "#112c1f";
-		m_alternativeBackgroundDark					= "#062318";
+		m_alternativeBackgroundBright				= "#3c422f";
+		m_alternativeBackgroundDark					= "#2d3624";
 		m_alternativeBackgroundText					= "#ffedce";
 
 		m_readOnlyEditFieldBackground				= "#5f7da0";
@@ -280,8 +280,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		qApp->setStyleSheet(m_styleSheet);
 
 		// set specific background/font colors
-		m_alternativeBackgroundBright				= "#d8f3dc";
-		m_alternativeBackgroundDark					= "#b7e4c7";
+		m_alternativeBackgroundBright				= "#e9f5db";
+		m_alternativeBackgroundDark					= "#cfe1b9";
 		m_alternativeBackgroundText					= "#760000";
 		m_readOnlyEditFieldBackground				= "#d6e9ff";
 		m_alternativeReadOnlyEditFieldBackground	= "#b5d8ff";

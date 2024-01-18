@@ -45,6 +45,7 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifyClimate.h"
 #include "SVMainWindow.h"
+#include "SVPreferencesDialog.h"
 
 #include <qwt_plot_curve.h>
 #include <qwt_series_data.h>
@@ -175,9 +176,6 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 
 
 void SVSimulationLocationOptions::updateUi(bool updatingPlotsRequired) {
-
-	bool haveDWDConv = QFileInfo(SVSettings::instance().m_DWDConverterExecutable).exists();
-	m_ui->pushButtonOpenDWDConverter->setVisible(haveDWDConv);
 
 	m_ui->tableViewClimateFiles->resizeRowsToContents();
 
@@ -866,14 +864,19 @@ void SVSimulationLocationOptions::on_radioButtonCustomFilePath_toggled(bool chec
 void SVSimulationLocationOptions::on_pushButtonOpenDWDConverter_clicked() {
 	QString dwdPath = SVSettings::instance().m_DWDConverterExecutable;
 	if (dwdPath.isEmpty() || !QFileInfo::exists(dwdPath)) {
-		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
-																	 "climate editor in the preferences dialog!"));
-		return;
+		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the DWD "
+																	 "weather downloader in the preferences dialog!"));
+		// spawn preferences dialog
+		SVMainWindow::instance().preferencesDialog()->edit(0);
+		// still not ccm editor selected?
+		dwdPath = SVSettings::instance().m_DWDConverterExecutable;
+		if (dwdPath.isEmpty() || !QFileInfo::exists(dwdPath))
+			return;
 	}
 	bool res = QProcess::startDetached(dwdPath, QStringList(), QString());
 	if (!res) {
-		QMessageBox::critical(this, tr("Error starting external application"), tr("Climate editor '%1' could not be started.")
-							  .arg(dwdPath));
+		QMessageBox::critical(this, tr("Error starting external application"), tr("DWD weather downloader '%1' could not be started.")
+																				   .arg(dwdPath));
 	}
 }
 

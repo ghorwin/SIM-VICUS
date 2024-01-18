@@ -305,7 +305,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(p.width()+20));
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(thumbNailSize+20));
 			}
 			else {
 				thumbPath = "&nbsp;";

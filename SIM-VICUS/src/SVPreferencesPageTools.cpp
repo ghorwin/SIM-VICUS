@@ -278,7 +278,7 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectDWD_clicked() {
 	SVSettings & s = SVSettings::instance();
 	QString toolPath;
 #ifdef Q_OS_WIN
-	const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+	const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files\\IBK\\DWDWeatherDataConverter\\DWDWeatherDataConverter.exe";
 	for (int i=9; i>=0; --i) {
 		QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
 		if (QFileInfo(dwdConvLoc).exists()) {
@@ -288,7 +288,7 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectDWD_clicked() {
 	}
 	if (toolPath.isEmpty()) {
 		// search for installed x86 version
-		const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files (x86)\\IBK\\DWDWeatherDataConverter 1.%1\\DWDWeatherDataConverter.exe";
+		const char * const DWD_CONVERTER_INSTALL_LOC = "c:\\Program Files (x86)\\IBK\\DWDWeatherDataConverter\\DWDWeatherDataConverter.exe";
 		for (int i=9; i>=0; --i) {
 			QString dwdConvLoc = QString(DWD_CONVERTER_INSTALL_LOC).arg(i);
 			if (QFileInfo(dwdConvLoc).exists()) {
