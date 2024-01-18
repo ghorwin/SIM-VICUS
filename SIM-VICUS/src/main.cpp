@@ -263,10 +263,14 @@ int main(int argc, char *argv[]) {
 		painter.setPen(Qt::NoPen);
 
 		QLinearGradient gradient(0,0,740,100);
-		gradient.setColorAt(0.0, QColor("#6bb9af"));
-		gradient.setColorAt(1.0, QColor("#1f6595"));
+		QColor gradientStart("#6bb9af");
+		QColor gradientEnd("#1f6595");
+		gradientStart.setAlpha(100);
+		gradientEnd.setAlpha(100);
+		gradient.setColorAt(1.0, gradientStart);
+		gradient.setColorAt(0.0, gradientEnd);
 
-		painter.fillRect(57.0/ratio, 587.0/ratio, 738.0/ratio, 2.0/ratio, gradient);
+		painter.fillRect(57.0/ratio, 587.0/ratio, 738.0/ratio, 6.0/ratio, gradient);
 		painter.end();
 
 		// show splash screen
