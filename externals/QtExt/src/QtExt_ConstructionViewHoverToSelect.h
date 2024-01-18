@@ -14,6 +14,8 @@ class ConstructionViewHoverToSelect: public ConstructionView
 public:
 	explicit ConstructionViewHoverToSelect(QWidget *parent = nullptr);
 
+	void setHoverProperties(const QPixmap & icon, QColor color);
+
 	/*! Draws edit icon if scene is empty. */
 	void updateEditIcon();
 
@@ -37,6 +39,7 @@ private:
 	bool					m_isReadOnly = false;
 	/*! Editing icon */
 	QPixmap					m_icon = QPixmap(":/gfx/master/editscene_green.png");
+	QColor					m_hoverColor = "#a08918";
 	/*! Pointer to QGraphicsItems. */
 	QGraphicsPixmapItem		*m_iconItem = nullptr;
 	QGraphicsRectItem		*m_transparentRect = nullptr;

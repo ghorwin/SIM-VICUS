@@ -126,7 +126,7 @@
         <file>icons/light/svg/dialog-password.svg</file>
         <file>icons/light/svg/dialog-positive.svg</file>
         <file>icons/light/svg/dialog-question.svg</file>
-        <file>icons/light/svg/dialog-warning.svg</file>        
+        <file>icons/light/svg/dialog-warning.svg</file>
         <file>icons/light/png/bulb_off.png</file>
         <file>icons/light/png/bulb_on.png</file>
         <file>icons/light/png/checkbox_checked.png</file>
@@ -135,5 +135,7 @@
         <file>icons/dark/png/bulb_on.png</file>
         <file>icons/dark/png/checkbox_checked.png</file>
         <file>icons/dark/png/checkbox_unchecked.png</file>
+        <file>icons/dark/png/edit.png</file>
+        <file>icons/light/png/edit.png</file>
     </qresource>
 </RCC>

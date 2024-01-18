@@ -11,6 +11,11 @@ ConstructionViewHoverToSelect::ConstructionViewHoverToSelect(QWidget *parent):
 	ConstructionView::setReadOnly(true);
 }
 
+void ConstructionViewHoverToSelect::setHoverProperties(const QPixmap & icon, QColor color) {
+	m_icon = icon;
+	m_hoverColor = color;
+}
+
 void ConstructionViewHoverToSelect::updateEditIcon() {
 
 	if (m_inputData.isEmpty() && m_diagramScene!=nullptr && isEnabled()) {
@@ -42,7 +47,7 @@ void ConstructionViewHoverToSelect::enterEvent(QEvent * event) {
 	if (m_isReadOnly)
 		col1 = QColor("#727571"); // grey
 	else
-		col1 = QColor("#4a8522"); // green
+		col1 = m_hoverColor;
 
 	// Create a gradient
 	QRectF sceneRect = m_diagramScene->sceneRect();

@@ -514,7 +514,6 @@ void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
 void SVDatabaseEditDialog::onStyleChanged() {
 	m_ui->frameBuildInDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_alternativeBackgroundBright.name()));
 	m_ui->frameUserDB->setStyleSheet(QString(".QFrame { background-color: %1; }").arg(SVStyle::instance().m_userDBBackgroundBright.name()));
-	m_ui->tableView->setStyleSheet(QString("QTableView {selection-background-color: %1;}").arg(SVStyle::instance().m_DBSelectionColor.name()));
 }
 
 

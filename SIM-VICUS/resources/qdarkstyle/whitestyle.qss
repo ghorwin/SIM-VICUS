@@ -1,35 +1,35 @@
 /*
 QTextEdit:hover,  QDockWidget:hover, QGroupBox:hover, QTextBrowser:hover,
- QRadioButton:hover, QSpinBox:hover, QToolButton:hover,
+QRadioButton:hover, QSpinBox:hover, QToolButton:hover,
 QTreeView:hover, QCheckBox:hover, QMenuBar:hover, QScrollBar:hover,
 QHeaderView:hover, QStatusBar:hover, QListView:hover, QPushButton:hover,  QComboBox:hover,
 QTableView:hover, QToolBox:hover {
-  border: 1px solid #ffaa00;
+border: 1px solid #ffaa00;
 }
 */
 
 QSplitter::handle {
-  spacing: 0px;
+spacing: 0px;
   padding: 1px;
   margin: 0px;
 }
 
 QSplitter::handle:hover {
-  background-color: #ffaa00;
+background-color: #ffaa00;
 }
 
 QSplitter::handle:horizontal {
-  width: 5px;
+width: 5px;
   image: url(":/qss_icons/rc/line_vertical.png");
 }
 
 QSplitter::handle:vertical {
-  height: 5px;
+height: 5px;
   image: url(":/qss_icons/rc/line_horizontal.png");
 }
 
 QToolButton {
-  background-color: transparent;
+background-color: transparent;
   border: 1px solid transparent;
   border-radius: 3px;
   margin: 0px;
@@ -40,39 +40,33 @@ QToolButton {
 }
 
 QToolBar {
-  border-bottom: 0px;
+border-bottom: 0px;
   padding: 2px;
   font-weight: bold;
   spacing: 2px;
 }
 
 QToolBar QToolButton {
-  padding: 2px;
+padding: 2px;
   border-radius: 2px;
 }
 
 QToolBar QToolButton:hover {
-  border: 1px solid #EB992F;
+border: 1px solid #EB992F;
 }
 
 QToolBar QToolButton:checked {
-  border: 1px solid #EB992F;
+border: 1px solid #EB992F;
   background-color: #FFDFA0;
 }
 
 
 SVWelcomeScreen QToolButton {
-    border: 1px solid lightgray;
+border: 1px solid lightgray;
 	border-radius: 2px;
 }
 
 SVWelcomeScreen QToolButton:hover {
-    border: 1px solid #EB992F;
+border: 1px solid #EB992F;
 }
 
-QTreeView::item:selected:active,
-QListView::item:selected:active,
-QTableView::item:selected:active,
-QColumnView::item:selected:active {
-  background-color: #088C54;
-}

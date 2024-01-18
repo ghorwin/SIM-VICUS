@@ -128,7 +128,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 	QString htmlPage = HTML_TEMPLATE;
 	SVStyle::setHtmlColors(htmlPage);
 
-	int size = (int)SVSettings::instance().m_thumbNailSize;
+	int thumbNailSize = (int)SVSettings::instance().m_thumbNailSize;
 
 	if (m_pageType == PT_RecentFiles) {
 		// compose recent project file list table
@@ -178,13 +178,13 @@ void SVWelcomeScreen::updateWelcomePage() {
 			QFileInfo thumbFileInfo(thumbPath);
 			// check if file exists
 			if (thumbFileInfo.exists())
-				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(thumbNailSize) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 			else
 				thumbPath = "&nbsp;";
 			thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 			// thumbnails generated from the software have all the same thumbnail size
-			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
+			projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(thumbNailSize+20));
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FILENAME}", finfo.fileName());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 			projectInfoBlock = projectInfoBlock.replace("${PROJECT_DESCRIPTION}", description);
@@ -246,7 +246,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 //			}
 //			else {
 //				thumbPath = "&nbsp;";
-//				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
+//				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(thumbNailSize+20));
 //			}
 
 //			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);
@@ -301,7 +301,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
 				/// \todo Andreas: fix warning about bad resource loading (related to image files)
-				thumbPath = "<a href=\"pexample:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(size) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
+				thumbPath = "<a href=\"pexample:${PROJECT_FULL_PATH}\"><img width=\"" + QString::number(thumbNailSize) + "\" src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
@@ -309,7 +309,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			}
 			else {
 				thumbPath = "&nbsp;";
-				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(SVSettings::instance().m_thumbNailSize+20));
+				projectInfoBlock = projectInfoBlock.replace("${THUMBNAILSIZE}", QString("%1").arg(thumbNailSize+20));
 			}
 
 			projectInfoBlock = projectInfoBlock.replace("${IMG_FILENAME}", thumbPath);

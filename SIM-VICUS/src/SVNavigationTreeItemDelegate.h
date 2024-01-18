@@ -63,10 +63,11 @@ public:
 	void onStyleChanged();
 
 private:
-	QPixmap m_lightBulbOn;
-	QPixmap m_lightBulbOff;
-	QPixmap m_selectedOn;
-	QPixmap m_selectedOff;
+	QPixmap		m_lightBulbOn;
+	QPixmap		m_lightBulbOff;
+	QPixmap		m_selectedOn;
+	QPixmap		m_selectedOff;
+	QColor		m_selectionColor;
 
 };
 

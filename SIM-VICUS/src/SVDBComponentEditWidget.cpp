@@ -32,6 +32,7 @@
 #include <QtExt_LanguageHandler.h>
 #include <SVConversions.h>
 #include <QtExt_ConstructionViewHoverToSelect.h>
+#include <QListWidget>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -39,6 +40,8 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
 
 SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -75,6 +78,8 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 
 	connect(m_ui->graphicsViewConstruction, &QtExt::ConstructionViewHoverToSelect::sceneClicked,
 			this, &SVDBComponentEditWidget::onConstrcutionsSceneClicked);
+	connect(SVMainWindow::instance().preferencesDialog()->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+			this, &SVDBComponentEditWidget::onStyleChanged);
 
 	m_ui->lineEditAirSoundRes->setReadOnly(true);
 	m_ui->lineEditImpactSound->setReadOnly(true);
@@ -83,6 +88,8 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->tabWidgetProperties->setTabEnabled(1, false);
 	m_ui->tabWidgetProperties->setTabEnabled(2, false);
 	m_ui->tabWidgetProperties->setTabEnabled(3, false);
+
+	onStyleChanged();
 
 	updateInput(-1);
 }
@@ -328,12 +335,20 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 }
 
+void SVDBComponentEditWidget::onStyleChanged() {
+	QIcon edit = QIcon::fromTheme("edit");
+	// there might be an easier way to get the current highlight color of table views etc.?
+	QColor color;
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		color = "#a08918";
+	else
+		color = "#0078d7";
+	m_ui->graphicsViewConstruction->setHoverProperties(edit.pixmap(64), color);
+}
+
 
 void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_current != nullptr);
-
-	qDebug() << "Editing finished.";
-
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();

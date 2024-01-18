@@ -62,6 +62,9 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id) override;
 
+public slots:
+
+	void onStyleChanged();
 
 private slots:
 	void on_lineEditName_editingFinished();
@@ -82,7 +85,7 @@ private slots:
 	void on_spinBoxActiveLayerIndex_valueChanged(int arg1);
 
 	void onConstrcutionsSceneClicked();
-	
+
 	void on_toolButtonSelectAcousticBoundaryConditionSideAName_clicked();
 	void on_toolButtonRemoveAcousticBoundaryConditionSideA_clicked();
 	void on_toolButtonSelectAcousticBoundaryConditionSideBName_clicked();

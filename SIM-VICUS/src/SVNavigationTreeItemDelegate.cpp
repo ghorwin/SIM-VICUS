@@ -57,6 +57,10 @@ void SVNavigationTreeItemDelegate::onStyleChanged() {
 	m_selectedOn = QPixmap(checked.pixmap(256));
 	QIcon unchecked = QIcon::fromTheme("checkbox_unchecked");
 	m_selectedOff = QPixmap(unchecked.pixmap(256));
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		m_selectionColor = "#a08918";
+	else
+		m_selectionColor = "#0078d7";
 }
 
 
@@ -84,8 +88,8 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	Q_ASSERT(treeView != nullptr);
 	bool isCurrent = (index == treeView->currentIndex());
 	if (isCurrent) {
-		QColor col(SVStyle::instance().m_DBSelectionColor.name());
-		col.setAlpha(100);
+		QColor col = m_selectionColor;
+		col.setAlpha(150);
 		painter->fillRect(targetRect, col);
 	}
 
