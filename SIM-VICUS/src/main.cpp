@@ -255,6 +255,18 @@ int main(int argc, char *argv[]) {
 		painter.setPen(QColor("#CE4A4A"));
 		if (VICUS::VERSION[0] == '0')
 			painter.drawText(615.0/ratio, 572.0/ratio, 180.0/ratio, 30.0/ratio, Qt::AlignRight, QString("BETA-VERSION"));
+
+		painter.setPen(QColor("#333333"));
+		painter.setBrush(QBrush("#333333"));
+		painter.drawRect(50.0/ratio, 570/ratio, 300.0/ratio, 20.0/ratio);
+
+		painter.setPen(Qt::NoPen);
+
+		QLinearGradient gradient(0,0,740,100);
+		gradient.setColorAt(0.0, QColor("#6bb9af"));
+		gradient.setColorAt(1.0, QColor("#1f6595"));
+
+		painter.fillRect(57.0/ratio, 587.0/ratio, 738.0/ratio, 2.0/ratio, gradient);
 		painter.end();
 
 		// show splash screen
