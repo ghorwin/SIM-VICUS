@@ -58,7 +58,10 @@ public:
 
 	/*! Set page type. */
 	void setPageType(PageType pType){
-		m_pageType = pType;
+		if (pType == PT_RecentFiles)
+			on_labelRecentClicked();
+		else if (pType == PT_DemoFiles)
+			on_labelExampleClicked();
 	}
 
 	void setLabelColors(QString color);
