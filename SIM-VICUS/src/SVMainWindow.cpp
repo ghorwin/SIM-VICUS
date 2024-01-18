@@ -1630,20 +1630,16 @@ void SVMainWindow::updateMainView() {
 		} break;
 		case MV_GeometryView: {
 			// We avoid unneccessary ui updates here!
-			if (m_welcomeScreen->isVisible())
-				m_welcomeScreen->setVisible(false);
-			if (m_simulationSettingsView->isVisible())
-				m_simulationSettingsView->setVisible(false);
+			m_welcomeScreen->setVisible(false);
+			m_simulationSettingsView->setVisible(false);
 			m_geometryViewSplitter->setVisible(true);
 			m_ui->actionGeometryView->setChecked(true);
 			m_geometryView->setFocus();
 		} break;
 		case MV_SimulationView: {
 			// We avoid unneccessary ui updates here!
-			if (m_welcomeScreen->isVisible())
-				m_welcomeScreen->setVisible(false);
-			if (m_geometryViewSplitter->isVisible())
-				m_geometryViewSplitter->setVisible(false);
+			m_welcomeScreen->setVisible(false);
+			m_geometryViewSplitter->setVisible(false);
 			m_simulationSettingsView->setVisible(true);
 			m_ui->actionSimulationSettings->setChecked(true);
 		} break;
