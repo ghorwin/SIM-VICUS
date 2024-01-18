@@ -619,7 +619,8 @@ void SceneView::initializeGL() {
 
 		m_mainScene.create(this, m_shaderPrograms);
 
-		int thumbnailWidth = (int)SVSettings::instance().m_thumbNailSize*SVSettings::instance().m_ratio;
+		// double the thumbnail size for higher resolution
+		int thumbnailWidth = (int) (2 * SVSettings::instance().m_thumbNailSize * SVSettings::instance().m_ratio);
 		int thumbnailHeight = (int)(thumbnailWidth*0.75);
 
 		// create a multisample-framebuffer, that's where we render into
