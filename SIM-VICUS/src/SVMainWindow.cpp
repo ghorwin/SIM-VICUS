@@ -1619,6 +1619,9 @@ void SVMainWindow::updateMainView() {
 	m_ui->actionGeometryView->setChecked(false);
 	m_ui->actionSimulationSettings->setChecked(false);
 
+	// Prevent updating the ui before we are finished with visibility changes
+	setUpdatesEnabled(false);
+
 	switch (m_mainViewMode) {
 		case MV_None: {
 			m_geometryViewSplitter->setVisible(false);
@@ -1626,15 +1629,21 @@ void SVMainWindow::updateMainView() {
 			m_welcomeScreen->setVisible(true);
 		} break;
 		case MV_GeometryView: {
-			m_welcomeScreen->setVisible(false);
-			m_simulationSettingsView->setVisible(false);
+			// We avoid unneccessary ui updates here!
+			if (m_welcomeScreen->isVisible())
+				m_welcomeScreen->setVisible(false);
+			if (m_simulationSettingsView->isVisible())
+				m_simulationSettingsView->setVisible(false);
 			m_geometryViewSplitter->setVisible(true);
 			m_ui->actionGeometryView->setChecked(true);
 			m_geometryView->setFocus();
 		} break;
 		case MV_SimulationView: {
-			m_welcomeScreen->setVisible(false);
-			m_geometryViewSplitter->setVisible(false);
+			// We avoid unneccessary ui updates here!
+			if (m_welcomeScreen->isVisible())
+				m_welcomeScreen->setVisible(false);
+			if (m_geometryViewSplitter->isVisible())
+				m_geometryViewSplitter->setVisible(false);
 			m_simulationSettingsView->setVisible(true);
 			m_ui->actionSimulationSettings->setChecked(true);
 		} break;
@@ -1643,6 +1652,8 @@ void SVMainWindow::updateMainView() {
 	// toggle visibility and update position of floating transparent widgets (color legend, measurement, snap options)
 	SVViewStateHandler::instance().toggleTransparentWidgetsVisibility(m_mainViewMode);
 	SVViewStateHandler::instance().m_geometryView->moveTransparentSceneWidgets();
+
+	setUpdatesEnabled(true);
 }
 
 
