@@ -99,7 +99,7 @@
 					</Intervals>
 				</OutputGrid>
 			</Grids>
-			<IBK:Flag name="CreateDefaultZoneOutputs">false</IBK:Flag>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
 			<CameraTranslation>-18.3419 17.598 15.8781</CameraTranslation>
