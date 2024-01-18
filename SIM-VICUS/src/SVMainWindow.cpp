@@ -891,7 +891,7 @@ void SVMainWindow::setup() {
 	// If not, we reset it to the preferred width of the navigation tree.
 	QScreen *screen = windowHandle()->screen();
 	int storedNavSplitterWidth = (int)(SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio);
-	int preferredNavSplitterWidth = m_navigationTreeWidget->sizeHint().width();
+	int preferredNavSplitterWidth = 1.05 * m_navigationTreeWidget->sizeHint().width();
 	if (storedNavSplitterWidth > preferredNavSplitterWidth && storedNavSplitterWidth < 1.5*preferredNavSplitterWidth)
 		preferredNavSplitterWidth = storedNavSplitterWidth;
 	QList<int> sizes;
