@@ -191,8 +191,7 @@ void SVPropEditGeometry::setModificationType(ModificationType modType) {
 	updateInputs(); // update all inputs
 	// adjust size
 	QSize preferredSize = m_ui->stackedWidget->currentWidget()->sizeHint();
-	preferredSize.setWidth(m_ui->stackedWidget->width()); // Maintain the current width
-	m_ui->stackedWidget->setFixedSize(preferredSize);
+	m_ui->stackedWidget->setFixedHeight(preferredSize.height());
 	// only adjust local coordinate system, if this widget is visible
 	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {
 		// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
