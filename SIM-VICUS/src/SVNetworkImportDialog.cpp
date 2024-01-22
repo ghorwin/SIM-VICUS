@@ -158,11 +158,22 @@ void SVNetworkImportDialog::importPipeline() {
 
 			m_network.m_availablePipes = m_availablePipes;
 
+			// in case there is one network already, we use the origin of that one
+			bool useExistingOrigin = !p.m_geometricNetworks.empty();
+			double xOrigin, yOrigin;
+			if (useExistingOrigin) {
+				xOrigin = p.m_geometricNetworks.front().m_origin.m_x;
+				yOrigin = p.m_geometricNetworks.front().m_origin.m_y;
+			}
+
 			readNetworkData(networkFile, m_network, p.nextUnusedID(), IT_Pipeline);
 
-			double xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
-			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
-			qInfo() << QString(tr("Local origin at: ") + "%L1, %L2").arg(xOrigin).arg(yOrigin);
+			// if there was no origin set yet, calculate it here
+			if (!useExistingOrigin) {
+				xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
+				yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
+			}
+
 			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
 
 			//convert to a std set
