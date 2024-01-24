@@ -467,7 +467,9 @@ bool SVSimulationStartOptions::generateNANDRAD(QString & resultPath) {
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();
-		QString fullText = errorStack.join("\n");
+		QString fullText;
+		fullText = errorStack.join("\n");
+		fullText += QString::fromStdString(ex.msgStack());
 
 		// create dialog
 		QDialog dialog(this);
