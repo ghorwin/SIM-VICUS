@@ -175,7 +175,6 @@ void SVSimulationOutputOptions::onModified(int modificationType, ModificationInf
 		// set delegate (if not yet happened)
 		SVSimulationOutputTableDelegate *delegate = dynamic_cast<SVSimulationOutputTableDelegate*>( m_ui->tableWidgetOutputDefinitions->itemDelegate() );
 		Q_ASSERT(delegate != nullptr);
-//		if (delegate->m_outputs == nullptr)
 		// Always update output grids
 		delegate->m_outputs = &project().m_outputs;
 
@@ -185,6 +184,11 @@ void SVSimulationOutputOptions::onModified(int modificationType, ModificationInf
 	case SVProjectHandler::OutputsModified: {
 		updateOutputDefinitionTable();
 		updateOutputGridTable();
+		// also update delegate here, could be needed if there was no grid initially
+		SVSimulationOutputTableDelegate *delegate = dynamic_cast<SVSimulationOutputTableDelegate*>( m_ui->tableWidgetOutputDefinitions->itemDelegate() );
+		Q_ASSERT(delegate != nullptr);
+		if (delegate->m_outputs == nullptr)
+			delegate->m_outputs = &project().m_outputs;
 	} break;
 
 	default:;

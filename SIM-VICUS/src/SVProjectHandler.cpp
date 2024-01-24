@@ -52,6 +52,8 @@
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>
 
+#include <NANDRAD_KeywordList.h>
+
 #include "SVSettings.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
@@ -109,6 +111,17 @@ bool SVProjectHandler::newProject(VICUS::Project * project) {
 		bl.m_displayName = tr("Ground floor");
 		b.m_buildingLevels.push_back(bl);
 		m_project->m_buildings.push_back(b);
+
+		// add hourly output grid as default
+		NANDRAD::OutputGrid g;
+		g.m_name = "Hourly values";
+		NANDRAD::Interval ival;
+		ival.m_para[NANDRAD::Interval::P_Start].set(
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_Start), 0, IBK::Unit("d"));
+		ival.m_para[NANDRAD::Interval::P_StepSize].set(
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_StepSize), 1, IBK::Unit("h"));
+		g.m_intervals.push_back(ival);
+		m_project->m_outputs.m_grids.push_back(g);
 	}
 
 	// update all internal pointers

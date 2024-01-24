@@ -21,8 +21,10 @@ QWidget * SVSimulationOutputTableDelegate::createEditor(QWidget * parent, const 
 
 		case 5 : {
 			QComboBox * combo = new QComboBox(parent);
-			for (unsigned int i = 0; i<m_outputs->m_grids.size(); ++i)
-				combo->addItem( QString::fromStdString(m_outputs->m_grids[i].m_name) );
+			if (m_outputs != nullptr) { // outputs can be nullptr if empty
+				for (unsigned int i = 0; i<m_outputs->m_grids.size(); ++i)
+					combo->addItem( QString::fromStdString(m_outputs->m_grids[i].m_name) );
+			}
 			return combo;
 		}
 	}
