@@ -759,13 +759,37 @@ void Project::updatePointers() {
 	for (VICUS::Surface & s : m_plainGeometry.m_surfaces)
 		addAndCheckForUniqueness(&s);
 
+	for (VICUS::Drawing &d : m_drawings) {
+		d.updateParents();
+		addAndCheckForUniqueness(&d);
+		for (VICUS::DrawingLayer &dl : d.m_drawingLayers) {
+			addAndCheckForUniqueness(&dl);
+		}
+	}
+
+	// structural units
+	// TODO Anton: assign own adress space
+	for(VICUS::StructuralUnit & u : m_structuralUnits){
+		addAndCheckForUniqueness(&u);
+		for (VICUS::Building & b : m_buildings)
+			for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+				for (VICUS::Room & r : bl.m_rooms)
+					if (u.m_roomIds.find(r.m_id) != u.m_roomIds.end())
+						r.m_structuralUnit = &u;
+	}
 
 	// *** networks ***
 
-	for (VICUS::Network & n : m_geometricNetworks) {
+	// first only network ids
+	for (VICUS::Network & n : m_geometricNetworks)
 		addAndCheckForUniqueness(&n);
+	// now only network node ids
+	for (VICUS::Network & n : m_geometricNetworks) {
 		for (VICUS::NetworkNode & nod : n.m_nodes)
 			addAndCheckForUniqueness(&nod);
+	}
+	// finally add edge ids
+	for (VICUS::Network & n : m_geometricNetworks) {
 
 		// create note-edge-pointer links
 		try {
@@ -788,25 +812,6 @@ void Project::updatePointers() {
 				e.m_id = nextUnusedID();
 			addAndCheckForUniqueness(&e);
 		}
-	}
-
-	for (VICUS::Drawing &d : m_drawings) {
-		d.updateParents();
-		addAndCheckForUniqueness(&d);
-		for (VICUS::DrawingLayer &dl : d.m_drawingLayers) {
-			addAndCheckForUniqueness(&dl);
-		}
-	}
-
-	// structural units
-	// TODO Anton: assign own adress space
-	for(VICUS::StructuralUnit & u : m_structuralUnits){
-		addAndCheckForUniqueness(&u);
-		for (VICUS::Building & b : m_buildings)
-			for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
-				for (VICUS::Room & r : bl.m_rooms)
-					if (u.m_roomIds.find(r.m_id) != u.m_roomIds.end())
-						r.m_structuralUnit = &u;
 	}
 
 }
