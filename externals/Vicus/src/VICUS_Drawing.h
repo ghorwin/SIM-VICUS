@@ -38,6 +38,7 @@ public:
 
 	Drawing();
 
+	/*! Updated parents. */
 	void updateParents() {
 		m_children.clear();
 		for (DrawingLayer & dl : m_drawingLayers) {
@@ -463,13 +464,14 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	void readXML(const TiXmlElement * element);
-
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	/*! Returns the drawing object based on the ID. */
 	const AbstractDrawingObject* objectByID(unsigned int id) const;
 
-	/*! Helper function to assign the correct block to an entity */
+	/*! Helper function to assign the correct block to an entity
+		\returns Pointer of object, when it was found or nullptr if no object has been found
+	*/
 	Block* findBlockPointer(const QString &name, const std::map<QString, Block*> &blockRefs);
 
 	/*! used to assign the correct layer to an entity */
@@ -485,6 +487,7 @@ public:
 	/*! Generates all inserting geometries. */
 	void generateInsertGeometries(unsigned int nextId);
 
+	/*! All drawing geometries are going to be updated. */
 	void updateAllGeometries();
 
 	/*! Returns 3D Pick points of drawing. */

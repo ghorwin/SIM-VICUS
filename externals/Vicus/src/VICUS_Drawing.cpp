@@ -71,7 +71,7 @@ void Drawing::Text::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -182,7 +182,7 @@ void Drawing::Solid::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -323,7 +323,7 @@ void Drawing::LinearDimension::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -600,7 +600,7 @@ void Drawing::Point::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -706,7 +706,7 @@ void Drawing::Line::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -864,7 +864,7 @@ void Drawing::Circle::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -1008,7 +1008,7 @@ void Drawing::PolyLine::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -1144,7 +1144,7 @@ void Drawing::Arc::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -1290,7 +1290,7 @@ void Drawing::Ellipse::readXMLPrivate(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -1392,40 +1392,45 @@ const std::vector<IBKMK::Vector2D> &Drawing::Ellipse::points2D() const {
 
 const std::vector<PlaneGeometry> &Drawing::Ellipse::planeGeometries() const {
 	FUNCID(Drawing::Ellipse::planeGeometries);
+	try {
+		if (m_dirtyTriangulation) {
+			m_planeGeometries.clear();
 
-	if (m_dirtyTriangulation) {
-		m_planeGeometries.clear();
+			const std::vector<IBKMK::Vector2D> &pickPoints = points2D();
+			const VICUS::Drawing *drawing = this->drawing();
 
-		const std::vector<IBKMK::Vector2D> &pickPoints = points2D();
-		const VICUS::Drawing *drawing = this->drawing();
+			std::vector<IBKMK::Vector3D> ellipsePoints;
+			for (unsigned int i = 0; i < SEGMENT_COUNT_ELLIPSE; i++) {
 
-		std::vector<IBKMK::Vector3D> ellipsePoints;
-		for (unsigned int i = 0; i < SEGMENT_COUNT_ELLIPSE; i++) {
+				IBKMK::Vector3D p = IBKMK::Vector3D(drawing->m_scalingFactor * pickPoints[i].m_x,
+													drawing->m_scalingFactor * pickPoints[i].m_y,
+													m_zPosition * Z_MULTIPLYER);
 
-			IBKMK::Vector3D p = IBKMK::Vector3D(drawing->m_scalingFactor * pickPoints[i].m_x,
-												drawing->m_scalingFactor * pickPoints[i].m_y,
-												m_zPosition * Z_MULTIPLYER);
+				QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
+				vec += IBKVector2QVector(drawing->m_origin);
 
-			QVector3D vec = drawing->m_rotationMatrix.toQuaternion() * IBKVector2QVector(p);
-			vec += IBKVector2QVector(drawing->m_origin);
+				ellipsePoints.push_back(QVector2IBKVector(vec));
+			}
 
-			ellipsePoints.push_back(QVector2IBKVector(vec));
+			Q_ASSERT(points2D().size() > 0);
+
+			bool connect = pickPoints[0] == pickPoints.back();
+			bool success = drawing->generatePlanesFromPolyline(ellipsePoints, connect,
+															   drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
+															   m_planeGeometries);
+
+			if (!success)
+				return m_planeGeometries;
+
+			m_dirtyTriangulation = false;
 		}
 
-		Q_ASSERT(points2D().size() > 0);
+		return m_planeGeometries;
 
-		bool connect = pickPoints[0] == pickPoints.back();
-		bool success = drawing->generatePlanesFromPolyline(ellipsePoints, connect,
-												  drawing->m_lineWeightOffset + lineWeight() * drawing->m_lineWeightScaling,
-												  m_planeGeometries);
-
-		if (!success)
-			return m_planeGeometries;
-
-		m_dirtyTriangulation = false;
 	}
-
-	return m_planeGeometries;
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Could not generate plane geometries of ellipses."), FUNC_ID);
+	}
 }
 
 
@@ -1537,7 +1542,7 @@ void Drawing::updatePointer(){
 	}
 	catch (std::exception &ex) {
 		throw IBK::Exception(IBK::FormatString("Error during initialization of DXF file. "
-											   "Might be du to invalid layer references.\n%1").arg(ex.what()), FUNC_ID);
+											   "Might be due to invalid layer references.\n%1").arg(ex.what()), FUNC_ID);
 	}
 }
 
@@ -2008,8 +2013,8 @@ void Drawing::generatePlanesFromText(const std::string &text, double textHeight,
 	QList<QPolygonF> polygons = rotatedPath.toSubpathPolygons();
 
 	double scalingFactorFonts = DEFAULT_FONT_SCALING * m_scalingFactor ;
-//	std::max(textHeight * DEFAULT_FONT_SCALING * m_scalingFactor,
-//										 DEFAULT_FONT_SIZE);
+	//	std::max(textHeight * DEFAULT_FONT_SCALING * m_scalingFactor,
+	//										 DEFAULT_FONT_SIZE);
 
 	qDebug() << "Text size: " << scalingFactorFonts;
 	qDebug() << "Rotation angle: " << rotationAngle;
@@ -2028,7 +2033,7 @@ void Drawing::generatePlanesFromText(const std::string &text, double textHeight,
 			const QPointF &point = polygon[i];
 			// double zCoordinate = obj->m_zPosition * Z_MULTIPLYER + d->m_origin.m_z;
 			poly[i] = IBKMK::Vector2D(  point.x() * scalingFactorFonts + basePoint.m_x,
-									   -point.y() * scalingFactorFonts + basePoint.m_y);
+										-point.y() * scalingFactorFonts + basePoint.m_y);
 		}
 
 		IBKMK::Polygon3D poly3D;
@@ -2096,14 +2101,14 @@ double Drawing::AbstractDrawingObject::lineWeight() const{
 		return dl->m_lineWeight;
 	else
 		return m_lineWeight;
-//	/*! if -3: default lineWeight is used
-//		if -2: lineWeight of block is used. Needs to be modified when blocks
-//		are implemented
-//	*/
-//	else if (m_lineWeight == -3 || m_lineWeight == -2)
-//		return 0;
-//	else
-//		return m_lineWeight;
+	//	/*! if -3: default lineWeight is used
+	//		if -2: lineWeight of block is used. Needs to be modified when blocks
+	//		are implemented
+	//	*/
+	//	else if (m_lineWeight == -3 || m_lineWeight == -2)
+	//		return 0;
+	//	else
+	//		return m_lineWeight;
 }
 
 
@@ -2151,7 +2156,7 @@ void Drawing::DimStyle::readXML(const TiXmlElement *element) {
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -2223,7 +2228,7 @@ void Drawing::Block::readXML(const TiXmlElement *element){
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -2254,7 +2259,7 @@ void Drawing::Block::readXML(const TiXmlElement *element){
 					m_basePoint = IBKMK::Vector2D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-												 .arg("Invalid vector data."), FUNC_ID);
+										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
 			else {
@@ -2327,7 +2332,7 @@ void Drawing::Insert::readXML(const TiXmlElement *element) {
 					m_insertionPoint = IBKMK::Vector2D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-												 .arg("Invalid vector data."), FUNC_ID);
+										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
 			else {
@@ -2353,7 +2358,7 @@ void Drawing::readXML(const TiXmlElement * element) {
 		// search for mandatory attributes
 		if (!TiXmlAttribute::attributeByName(element, "id")) {
 			IBK::IBK_Message( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-								 IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+								  IBK::FormatString("Missing required 'id' attribute.") ), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			return;
 		}
 
@@ -2382,7 +2387,7 @@ void Drawing::readXML(const TiXmlElement * element) {
 					m_origin = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
-												 .arg("Invalid vector data."), FUNC_ID);
+										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
 			else if (cName == "ScalingFactor")
