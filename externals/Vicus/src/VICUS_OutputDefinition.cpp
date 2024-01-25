@@ -37,7 +37,7 @@ bool OutputDefinition::operator!=(const OutputDefinition & other) const {
 		return true;
 	if (m_sourceObjectIds != other.m_sourceObjectIds)
 		return true;
-	if (m_vectorIds != other.m_vectorIds)
+	if (m_vectorIdMap != other.m_vectorIdMap)
 		return true;
 	if (m_gridName != other.m_gridName)
 		return true;

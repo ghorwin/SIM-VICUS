@@ -331,7 +331,7 @@ void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
 	QModelIndex proxyIndex = modList.first();
 	QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
 
-	std::set<unsigned int> vectorIDs = srcIndex.data(Qt::UserRole + 1).value<std::set<unsigned int> >();
+	std::vector<unsigned int> vectorIDs = srcIndex.data(Qt::UserRole + 1).value<std::vector<unsigned int> >();
 
 	if (vectorIDs.empty()) {
 		// do not show any vector IDs, since we have multi-selection in objects
@@ -415,11 +415,10 @@ void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
 	// create and append a new output definition with currently selected grid and default time type, which
 	// is based on the quantity type
 
-	VICUS::OutputDefinition def;
-
 	// get selected output definition from table
 	QModelIndex proxyIndex = m_ui->tableViewAvailableOutputs->currentIndex();
 
+	VICUS::OutputDefinition def;
 	def.m_sourceObjectType = proxyIndex.data(Qt::UserRole + 2).toString().toStdString();
 	def.m_quantity = proxyIndex.data(Qt::UserRole + 3).toString().toStdString(); // we append the index later, if needed
 	int currentGrid = m_ui->tableWidgetOutputGrids->currentRow();
@@ -437,10 +436,14 @@ void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
 	for (const QListWidgetItem * i : m_ui->listWidgetObjectIDs->selectedItems())
 		def.m_sourceObjectIds.push_back(i->data(Qt::UserRole).toUInt());
 
-	// any vector IDs selected?
+	// if we have a definition with multiple vector-based objects, we need this map
+	QMap<unsigned int, std::vector<unsigned int>> objectVectorIdMap = qvariant_cast<QMap<unsigned int, std::vector<unsigned int>>>( proxyIndex.data(Qt::UserRole + 5) );
+	def.m_vectorIdMap.m_values = objectVectorIdMap.toStdMap();
+
+	// any vector IDs selected ?
 	if (m_ui->listWidgetVectorIndexes->count() != 0) {
 		for (const QListWidgetItem * i : m_ui->listWidgetVectorIndexes->selectedItems())
-			def.m_vectorIds.push_back(i->data(Qt::UserRole).toUInt());
+			def.m_vectorIdMap.m_values[*def.m_sourceObjectIds.begin()].push_back(i->data(Qt::UserRole).toUInt());
 	}
 
 	VICUS::Outputs outputs = project().m_outputs;
@@ -609,14 +612,21 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
 
 		// create list of comma-separated IDs
-		ids = IBK::join_numbers(of.m_vectorIds, ',');
-		item = new QTableWidgetItem(QString::fromStdString(ids));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setForeground(badColor);
-			item->setFont(f);
+		if (!of.m_vectorIdMap.m_values.empty()) {
+			if (of.m_vectorIdMap.m_values.size() == 1) {
+				ids = IBK::join_numbers(of.m_vectorIdMap.m_values.begin()->second, ',');
+				item = new QTableWidgetItem(QString::fromStdString(ids));
+			}
+			else if (of.m_vectorIdMap.m_values.size() > 1) {
+				item = new QTableWidgetItem(tr("all"));
+			}
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			if (!correct) {
+				item->setForeground(badColor);
+				item->setFont(f);
+			}
+			m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
 		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
 
 		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
 		item = new QTableWidgetItem(ttypekw);

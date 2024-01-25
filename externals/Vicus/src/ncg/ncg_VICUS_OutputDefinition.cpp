@@ -74,8 +74,8 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "SourceObjectIds")
 				NANDRAD::readVector(c, "SourceObjectIds", m_sourceObjectIds);
-			else if (cName == "VectorIds")
-				NANDRAD::readVector(c, "VectorIds", m_vectorIds);
+			else if (cName == "VectorIdMap")
+				m_vectorIdMap.setEncodedString(c->GetText());
 			else if (cName == "GridName")
 				m_gridName = c->GetText();
 			else if (cName == "TimeType") {
@@ -113,7 +113,8 @@ TiXmlElement * OutputDefinition::writeXML(TiXmlElement * parent) const {
 	if (m_timeType != NUM_OTT)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeType", nullptr, std::string(), KeywordList::Keyword("OutputDefinition::timeType_t",  m_timeType));
 	NANDRAD::writeVector(e, "SourceObjectIds", m_sourceObjectIds);
-	NANDRAD::writeVector(e, "VectorIds", m_vectorIds);
+	if (!m_vectorIdMap.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "VectorIdMap", nullptr, std::string(), m_vectorIdMap.encodedString());
 	if (!m_gridName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "GridName", nullptr, std::string(), m_gridName);
 	return e;

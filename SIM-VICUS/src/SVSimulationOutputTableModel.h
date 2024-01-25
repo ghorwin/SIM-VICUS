@@ -73,7 +73,8 @@ private:
 		std::string m_description;
 		std::string m_unit;
 		std::set<unsigned int> m_objectIds;
-		std::set<unsigned int> m_vectorIds;
+		// stores object id -> vector ids
+		QMap<unsigned int, std::vector<unsigned int>> m_vectorIdMap;
 	};
 
 	/*! List of variables from output definitions file. */

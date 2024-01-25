@@ -1624,28 +1624,43 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		std::set<unsigned int> ids = std::set<unsigned int>(def.m_sourceObjectIds.begin(), def.m_sourceObjectIds.end());
 		std::pair<NANDRAD::ModelInputReference::referenceType_t, std::set<unsigned int>> key = std::pair<NANDRAD::ModelInputReference::referenceType_t, std::set<unsigned int>>(type, ids);
 
-		if(!def.m_vectorIds.empty()) {
-			for(unsigned int i=0; i<def.m_vectorIds.size(); ++i) {
-				NANDRAD::OutputDefinition newD = d;
-				newD.m_quantity += "[" + IBK::val2string(def.m_vectorIds[i]) + "]";
+		std::set<unsigned int> allVectorIdxs;
+		if (!def.m_vectorIdMap.m_values.empty()) {
+			for (auto it=def.m_vectorIdMap.m_values.begin(); it!=def.m_vectorIdMap.m_values.end(); ++it) {
 
-				// now generate an object list for this output - don't mind if we get duplicate object lists
-				std::string outputListName;
+				// We iterate over all vector ids for each object id. This is particularly necessary when the "vector ids" are actually model ids (e.g. IdealPipeRegisterModel)
+				std::vector<unsigned int> vecIds = it->second;
+				for (unsigned int vecId: vecIds) {
 
-				if(outputLists.find(key) != outputLists.end())
-					outputListName = outputLists.at(key);
-				else {
-					outputListName = "Outputs-" + IBK::val2string(objectListCount++);
-					outputLists[key] = outputListName;
+					// If we have created an output with this quantity name already, dont do that again
+					// all corresponding object ids should be in the object list already
+					if (allVectorIdxs.find(vecId) != allVectorIdxs.cend())
+						continue;
 
-					ol.m_referenceType = type;
-					ol.m_name = outputListName;
-					ol.m_filterID.m_ids = ids;
+					allVectorIdxs.insert(vecId);
 
-					p.m_objectLists.push_back(ol);
+					NANDRAD::OutputDefinition newD = d;
+					newD.m_quantity += "[" + IBK::val2string(vecId) + "]";
+
+					// now generate an object list for this output - don't mind if we get duplicate object lists
+					std::string outputListName;
+
+					if(outputLists.find(key) != outputLists.end()) {
+						outputListName = outputLists.at(key);
+					}
+					else {
+						outputListName = "Outputs-" + IBK::val2string(objectListCount++);
+						outputLists[key] = outputListName;
+
+						ol.m_referenceType = type;
+						ol.m_name = outputListName;
+						ol.m_filterID.m_ids = ids;
+
+						p.m_objectLists.push_back(ol);
+					}
+					newD.m_objectListName = outputListName;
+					p.m_outputs.m_definitions.push_back(newD);
 				}
-				newD.m_objectListName = outputListName;
-				p.m_outputs.m_definitions.push_back(newD);
 			}
 		}
 		else  {

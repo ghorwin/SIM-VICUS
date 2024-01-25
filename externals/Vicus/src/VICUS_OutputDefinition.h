@@ -29,8 +29,11 @@
 #include <string>
 #include <vector>
 
+#include <NANDRAD_IDVectorMap.h>
+
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+
 
 namespace VICUS {
 
@@ -91,11 +94,11 @@ public:
 	/*! Type of the source object (this is already a NANDRAD reference type and does not match VICUS object types). */
 	std::string										m_sourceObjectType;				// XML:A:required
 
-	/*! Vector of all vector source object id(s). If this vector has more than one ID, the m_vectorIds vector must be empty. */
+	/*! Vector of all vector source object id(s). If this vector has more than one ID, corresponding vectorIds will be stored in m_vectorIdMap. */
 	std::vector<unsigned int>						m_sourceObjectIds;				// XML:E:required
 
-	/*! Vector of all indexes/ids of vector-valued quantities (if this is not empty, the source objects ID vector contains exactly one ID).  */
-	std::vector<unsigned int>						m_vectorIds;					// XML:E
+	/*! Stores the vector ids for each source object id. */
+	NANDRAD::IDVectorMap<unsigned int>				m_vectorIdMap;					// XML:E
 
 	/*! Rerefence name of output grid (corresponds to OutputGrid::m_name). */
 	std::string										m_gridName;						// XML:E:required
