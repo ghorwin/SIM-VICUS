@@ -3,9 +3,7 @@ _NEXT LEVEL BUILDING AND DISTRICT ENERGY SIMULATION_
 
 SIM-VICUS is a 3D modeling environment for building and district networks and an innovative dynamic simulation engine (NANDRAD). https://sim-vicus.de hosts the official webpage with user-centered information. Development-related information is stored and handled on github.
 
-![SIM-VICUS_SAB](https://www.sim-vicus.de/wp-content/uploads/2023/03/grafik-2048x1169.png)
-
-
+![SIM-VICUS 1.1.0](https://github.com/ghorwin/SIM-VICUS/assets/58851829/22ccd189-15f3-4dbc-a7a6-ed2bef33d8ae)
 
 ## Quality Assurance
 
