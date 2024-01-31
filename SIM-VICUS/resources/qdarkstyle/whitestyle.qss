@@ -70,3 +70,18 @@ SVWelcomeScreen QToolButton:hover {
 border: 1px solid #EB992F;
 }
 
+QLineEdit {
+  border-radius: 3px;
+}
+
+QLineEdit#xAxis {
+    border: 1px solid #FF0000;
+}
+
+QLineEdit#yAxis {
+    border: 1px solid #00BF00;
+}
+
+QLineEdit#zAxis {
+    border: 1px solid #0000FF;
+}

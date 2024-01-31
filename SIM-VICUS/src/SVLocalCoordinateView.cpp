@@ -52,6 +52,14 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	m_ui->toolButtonMoveCoordinateSystem->setIcon(QIcon::fromTheme("local_coordinate_move"));
 	m_ui->toolButtonInformation->setIcon(QIcon::fromTheme("surface_info"));
 
+	m_ui->lineEditBoundingBoxDimensionX->setObjectName("xAxis");
+	m_ui->lineEditBoundingBoxDimensionY->setObjectName("yAxis");
+	m_ui->lineEditBoundingBoxDimensionZ->setObjectName("zAxis");
+
+	m_ui->lineEditXValue->setObjectName("xAxis");
+	m_ui->lineEditYValue->setObjectName("yAxis");
+	m_ui->lineEditZValue->setObjectName("zAxis");
+
 //	setStyleSheet("QToolButton {border: 1px solid lightgray}");
 }
 

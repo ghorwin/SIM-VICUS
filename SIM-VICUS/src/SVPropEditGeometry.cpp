@@ -153,6 +153,26 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditCopyY->setFormatter(new LineEditFormater);
 	m_ui->lineEditCopyZ->setFormatter(new LineEditFormater);
 
+	m_ui->lineEditCopyX->setObjectName("xAxis");
+	m_ui->lineEditCopyY->setObjectName("yAxis");
+	m_ui->lineEditCopyZ->setObjectName("zAxis");
+
+	m_ui->lineEditRotateX->setObjectName("xAxis");
+	m_ui->lineEditRotateY->setObjectName("yAxis");
+	m_ui->lineEditRotateZ->setObjectName("zAxis");
+
+	m_ui->lineEditScaleX->setObjectName("xAxis");
+	m_ui->lineEditScaleY->setObjectName("yAxis");
+	m_ui->lineEditScaleZ->setObjectName("zAxis");
+
+	m_ui->lineEditTranslateX->setObjectName("xAxis");
+	m_ui->lineEditTranslateY->setObjectName("yAxis");
+	m_ui->lineEditTranslateZ->setObjectName("zAxis");
+
+//	m_ui->lineEditCopyX->setObjectName("xAxis");
+//	m_ui->lineEditCopyY->setObjectName("yAxis");
+//	m_ui->lineEditCopyZ->setObjectName("zAxis");
+
 	connect(m_ui->lineEditCopyX, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditCopyY, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
 	connect(m_ui->lineEditCopyZ, &QLineEdit::textChanged, this, &SVPropEditGeometry::onLineEditTextEdited);
@@ -190,7 +210,7 @@ void SVPropEditGeometry::setModificationType(ModificationType modType) {
 	m_ui->stackedWidget->setCurrentIndex(modType);
 	updateInputs(); // update all inputs
 	// adjust size
-	QSize preferredSize = m_ui->stackedWidget->currentWidget()->sizeHint();
+	QSize preferredSize = 1.2*m_ui->stackedWidget->currentWidget()->sizeHint();
 	m_ui->stackedWidget->setFixedHeight(preferredSize.height());
 	// only adjust local coordinate system, if this widget is visible
 	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {

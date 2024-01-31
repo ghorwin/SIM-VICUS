@@ -1471,8 +1471,8 @@ void Drawing::updatePointer(){
 		blockRefs[b.m_name] = &b;
 	}
 
-	/* Note: Layer references must always be valid. Hence, when "layerRefs.at()" throws an exception, this is due to an invalid DXF.
-	 * Block references are optional, therefore we use the access function which returns a nullptr if there is no block ref
+	/*! Note: Layer references must always be valid. Hence, when "layerRefs.at()" throws an exception, this is due to an invalid DXF.
+		Block references are optional, therefore we use the access function which returns a nullptr if there is no block ref
 	*/
 	try {
 

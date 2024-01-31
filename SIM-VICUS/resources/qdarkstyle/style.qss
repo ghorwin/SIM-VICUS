@@ -1400,6 +1400,7 @@ border: 1px solid #a08918;
 https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qlineedit
 
 --------------------------------------------------------------------------- */
+
 QLineEdit {
 background-color: #212124;
   padding-top: 2px;
@@ -1436,6 +1437,18 @@ background-color: #a08918;
 QLineEdit[readOnly="true"] {
 color: #afafaf;
   border: 1px solid #3a3b3f;
+}
+
+QLineEdit#xAxis {
+    border: 1px solid #8F0000;
+}
+
+QLineEdit#yAxis {
+    border: 1px solid #008F00;
+}
+
+QLineEdit#zAxis {
+    border: 1px solid #00008F;
 }
 
 /* QTabWiget --------------------------------------------------------------
