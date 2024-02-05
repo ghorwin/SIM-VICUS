@@ -450,6 +450,9 @@ void SVPropResultsWidget::readResultsDir() {
 		for (unsigned int i=0; i<captions.size(); ++i) {
 			QString caption = QString::fromStdString(captions[i]);
 			QString unit = QString::fromStdString(units[i]);
+			// Pa will be converted to Bar
+			if (unit == "Pa")
+				unit = "Bar";
 			QString outputName;
 			for (auto it=m_objectName2Id.begin(); it!=m_objectName2Id.end(); ++it) {
 				if (caption.contains(it->first)){
@@ -698,11 +701,32 @@ void SVPropResultsWidget::readDataFile(const QString & filename) {
 
 		// and store in map with all outputs
 		if (m_resultFileType == FT_TSV) {
-			m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+			// convert Pa to Bar
+			if (units[i] == IBK::Unit("Pa")) {
+				std::vector<double> y = reader.colData(i);
+				for (double &v: y)
+					v /= 1e5;
+				units[i] = IBK::Unit("Bar");
+				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+																			  timeSeconds.m_data, y, IBK::Unit("s"), units[i]);
+			}
+			else
+				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
 																				   timeSeconds.m_data, reader.colData(i), IBK::Unit("s"), units[i]);
 		}
+
 		else if (m_resultFileType == FT_BTF) {
-			m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+			// convert Pa to Bar
+			if (units[i] == IBK::Unit("Pa")) {
+				std::vector<double> y = reader.colData(i);
+				for (double &v: y)
+					v /= 1e5;
+				units[i] = IBK::Unit("Bar");
+				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
+																			  timeSeconds.m_data, y, IBK::Unit("s"), units[i]);
+			}
+			else
+				m_allResults[outputName][id] = NANDRAD::LinearSplineParameter(captions[i], NANDRAD::LinearSplineParameter::I_LINEAR,
 																				   timeSeconds.m_data, dataColMajor[i], IBK::Unit("s"), units[i]);
 		}
 	} // for captions in file
