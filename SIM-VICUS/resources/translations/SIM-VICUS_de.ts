@@ -8148,12 +8148,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="833"/>
         <source>Sub Networks Database</source>
-        <translation>TGA Datenbank</translation>
+        <translation>Anlagen Datenbank</translation>
     </message>
     <message>
         <location filename="../../src/SVDatabaseEditDialog.cpp" line="833"/>
         <source>Sub Networks Properties</source>
-        <translation>Eigenschaften TGA</translation>
+        <translation>Anlageneigenschaften</translation>
     </message>
 </context>
 <context>
@@ -10845,8 +10845,8 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Anzahl Knoten:</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="175"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="239"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="186"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="250"/>
         <source>Added network</source>
         <translation>Netzwerk hinzugefügt</translation>
     </message>
@@ -10889,39 +10889,38 @@ p, li { white-space: pre-wrap; }
         <translation>GeoJson-Dateien (*.geojson);;CSV-Dateien (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="165"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="190"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="229"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="254"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="201"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="240"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="265"/>
         <source>Local origin at: </source>
         <translation>Lokaler Ursprung bei: </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="193"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="257"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="204"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="268"/>
         <source>Network visualization properties updated</source>
         <translation>Eigenschaften der Netzwerkvisualisierung aktualisiert</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="199"/>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="263"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="210"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="274"/>
         <source>Error reading GIS data file:
 %1</source>
         <translation>Fehler beim Lesen der GIS-Datendatei:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="336"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="347"/>
         <source>Number of edges: </source>
         <translation>Kantenanzahl: </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="337"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="348"/>
         <source>Number of nodes: </source>
         <translation>Knotenanzahl: </translation>
     </message>
     <message>
-        <location filename="../../src/SVNetworkImportDialog.cpp" line="338"/>
+        <location filename="../../src/SVNetworkImportDialog.cpp" line="349"/>
         <source>Coordinate range: </source>
         <translation>Koordinaten Umfang: </translation>
     </message>
@@ -11459,32 +11458,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVProjectHandler</name>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="106"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="108"/>
         <source>Building</source>
         <translation>Gebäude</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="109"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="111"/>
         <source>Ground floor</source>
         <translation>Erdgeschoss</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="158"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="171"/>
         <source>Save project before closing</source>
         <translation>Projekt vor dem Schließen speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="159"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="172"/>
         <source>Would you like to save the project before closing it?</source>
         <translation>Möchten Sie das Projekt speichern, bevor Sie es schließen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="217"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="230"/>
         <source>Load autosave backup?</source>
         <translation>Automatische Sicherung laden?</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="217"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="230"/>
         <source>There exists a backup file for the project.
 Backup file date %1,
 project last saved on %2.
@@ -11495,88 +11494,88 @@ Projekt zuletzt gespeichert am %2.
  Sicherungsdatei laden oder automatische Sicherung verwerfen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="254"/>
-        <location filename="../../src/SVProjectHandler.cpp" line="307"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="267"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="320"/>
         <source>Error loading project</source>
         <translation>Fehler beim Laden des Projekts</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="255"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="268"/>
         <source>Error loading project file &apos;%1&apos;, see error log file &apos;%2&apos; for details.</source>
         <translation>Fehler beim Laden der Projektdatei „%1“, Einzelheiten finden Sie in der Fehlerprotokolldatei „%2“.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="308"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="321"/>
         <source>Data in project was missing/invalid, see error log &apos;%1&apos; for details.</source>
         <translation>Daten im Projekt fehlten/ungültig, siehe Fehlerprotokoll „%1“ für Details.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="452"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="465"/>
         <source>Merged imported project</source>
         <translation>Importiertes Projekt zusammengeführt</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="465"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="478"/>
         <source>Specify SIM-VICUS project file</source>
         <translation>SIM-VICUS-Projektdatei angeben</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="467"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="480"/>
         <source>SIM-VICUS project files (*%1);;All files (*.*)</source>
         <translation>SIM-VICUS-Projektdateien (*%1);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="477"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="490"/>
         <source>Invalid file name</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="477"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="490"/>
         <source>Please enter a valid file name!</source>
         <translation>Bitte geben Sie einen gültigen Dateinamen ein!</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="530"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="543"/>
         <source>Saving failed</source>
         <translation>Speichern fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="531"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="544"/>
         <source>Error while saving project file, see error log file &apos;%1&apos; for details.</source>
         <translation>Fehler beim Speichern der Projektdatei, Einzelheiten finden Sie in der Fehlerprotokolldatei „%1“.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1125"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1138"/>
         <source>Broken link to drawing file</source>
         <translation>Fehlerhafter Link zur Zeichnung</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1125"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1138"/>
         <source>The referenced drawing file &apos;%1&apos; was not found.</source>
         <translation>Die referenzierte Zeichnung &apos;%1&apos; wurde nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1128"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1141"/>
         <source>Find file ...</source>
         <translation>Datei suchen ...</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1129"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1142"/>
         <source>Delete reference</source>
         <translation>Referenz löschen</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1130"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1143"/>
         <source>Ignore</source>
         <translation>Ignorieren</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1143"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1156"/>
         <source>Select drawing file</source>
         <translation>Zeichnung auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="1145"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="1158"/>
         <source>SIM-VICUS drawing files (*%1 );;All files (*.*)</source>
         <translation>SIM-VICUS Zeichnung(*%1 );;Alle Dateien (*.*)</translation>
     </message>
@@ -16337,12 +16336,17 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Ausgabegitter</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.cpp" line="684"/>
+        <location filename="../../src/SVSimulationOutputOptions.cpp" line="621"/>
+        <source>all</source>
+        <translation>alle</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationOutputOptions.cpp" line="698"/>
         <source>End of simulation</source>
         <translation>Ende der Simulation</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.cpp" line="477"/>
+        <location filename="../../src/SVSimulationOutputOptions.cpp" line="484"/>
         <source>New output grid</source>
         <translation>Neues Ausgaberaster</translation>
     </message>
@@ -16400,7 +16404,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
     <message>
         <location filename="../../src/SVSimulationPerformanceOptions.ui" line="97"/>
         <source>Maximum Method Order (1-5):</source>
-        <translation>Maximale Methodenreihenfolge (1-5):</translation>
+        <translation>Maximale Methodenordnung (1-5):</translation>
     </message>
     <message>
         <location filename="../../src/SVSimulationPerformanceOptions.ui" line="163"/>
@@ -17337,7 +17341,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation>Bei der Simulation oder Initialisierung ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="483"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="485"/>
         <source>An error occurred during NANDRAD project generation.</source>
         <translation>Bei der Generierung des NANDRAD-Projekts ist ein Fehler aufgetreten.</translation>
     </message>
@@ -17350,7 +17354,7 @@ der auf das Dach oder auf die Decke entfällt:</translation>
         <translation type="vanished">Fehler bei der NANDRAD-Projekterzeugung</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartOptions.cpp" line="565"/>
+        <location filename="../../src/SVSimulationStartOptions.cpp" line="567"/>
         <source>Could not run FMU Generator &apos;%1&apos;</source>
         <translation>Der FMU-Generator „%1“ konnte nicht ausgeführt werden</translation>
     </message>
