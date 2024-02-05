@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.16">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Andreas Nicolai &lt;https://github.com/ghorwin&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke">
 <title>NANDRAD Modell-Referenz</title>
 <style>
@@ -94,7 +94,7 @@ a.bare:visited {color: #204f83;}
 a:hover {color: #317ed4;}
 #toc.toc2 a:hover {color: #f1b464;}*/
 /* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
-code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+code,kbd,pre,samp{font-family:"Consolas","Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
 
 /* Table styles */
 th{background-color: var(--tertiarycolor);color:var(--black) !important;}
@@ -121,216 +121,115 @@ table {
 <style>
 pre.rouge table td { padding: 5px; }
 pre.rouge table pre { margin: 0; }
-pre.rouge .cm {
-  color: #999988;
-  font-style: italic;
+pre.rouge, pre.rouge .w {
+  color: #24292f;
+  background-color: #f6f8fa;
 }
-pre.rouge .cp {
-  color: #999999;
-  font-weight: bold;
-}
-pre.rouge .c1 {
-  color: #999988;
-  font-style: italic;
-}
-pre.rouge .cs {
-  color: #999999;
-  font-weight: bold;
-  font-style: italic;
-}
-pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
-  color: #999988;
-  font-style: italic;
-}
-pre.rouge .err {
-  color: #a61717;
-  background-color: #e3d2d2;
-}
-pre.rouge .gd {
-  color: #000000;
-  background-color: #ffdddd;
-}
-pre.rouge .ge {
-  color: #000000;
-  font-style: italic;
+pre.rouge .k, pre.rouge .kd, pre.rouge .kn, pre.rouge .kp, pre.rouge .kr, pre.rouge .kt, pre.rouge .kv {
+  color: #cf222e;
 }
 pre.rouge .gr {
-  color: #aa0000;
+  color: #f6f8fa;
 }
-pre.rouge .gh {
-  color: #999999;
+pre.rouge .gd {
+  color: #82071e;
+  background-color: #ffebe9;
+}
+pre.rouge .nb {
+  color: #953800;
+}
+pre.rouge .nc {
+  color: #953800;
+}
+pre.rouge .no {
+  color: #953800;
+}
+pre.rouge .nn {
+  color: #953800;
+}
+pre.rouge .sr {
+  color: #116329;
+}
+pre.rouge .na {
+  color: #116329;
+}
+pre.rouge .nt {
+  color: #116329;
 }
 pre.rouge .gi {
-  color: #000000;
-  background-color: #ddffdd;
+  color: #116329;
+  background-color: #dafbe1;
 }
-pre.rouge .go {
-  color: #888888;
+pre.rouge .kc {
+  color: #0550ae;
 }
-pre.rouge .gp {
-  color: #555555;
+pre.rouge .l, pre.rouge .ld, pre.rouge .m, pre.rouge .mb, pre.rouge .mf, pre.rouge .mh, pre.rouge .mi, pre.rouge .il, pre.rouge .mo, pre.rouge .mx {
+  color: #0550ae;
 }
-pre.rouge .gs {
+pre.rouge .sb {
+  color: #0550ae;
+}
+pre.rouge .bp {
+  color: #0550ae;
+}
+pre.rouge .ne {
+  color: #0550ae;
+}
+pre.rouge .nl {
+  color: #0550ae;
+}
+pre.rouge .py {
+  color: #0550ae;
+}
+pre.rouge .nv, pre.rouge .vc, pre.rouge .vg, pre.rouge .vi, pre.rouge .vm {
+  color: #0550ae;
+}
+pre.rouge .o, pre.rouge .ow {
+  color: #0550ae;
+}
+pre.rouge .gh {
+  color: #0550ae;
   font-weight: bold;
 }
 pre.rouge .gu {
-  color: #aaaaaa;
-}
-pre.rouge .gt {
-  color: #aa0000;
-}
-pre.rouge .kc {
-  color: #000000;
+  color: #0550ae;
   font-weight: bold;
 }
-pre.rouge .kd {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kn {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kp {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kr {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kt {
-  color: #445588;
-  font-weight: bold;
-}
-pre.rouge .k, pre.rouge .kv {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .mf {
-  color: #009999;
-}
-pre.rouge .mh {
-  color: #009999;
-}
-pre.rouge .il {
-  color: #009999;
-}
-pre.rouge .mi {
-  color: #009999;
-}
-pre.rouge .mo {
-  color: #009999;
-}
-pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
-  color: #009999;
-}
-pre.rouge .sa {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .sb {
-  color: #d14;
-}
-pre.rouge .sc {
-  color: #d14;
-}
-pre.rouge .sd {
-  color: #d14;
-}
-pre.rouge .s2 {
-  color: #d14;
-}
-pre.rouge .se {
-  color: #d14;
-}
-pre.rouge .sh {
-  color: #d14;
-}
-pre.rouge .si {
-  color: #d14;
-}
-pre.rouge .sx {
-  color: #d14;
-}
-pre.rouge .sr {
-  color: #009926;
-}
-pre.rouge .s1 {
-  color: #d14;
-}
-pre.rouge .ss {
-  color: #990073;
-}
-pre.rouge .s, pre.rouge .dl {
-  color: #d14;
-}
-pre.rouge .na {
-  color: #008080;
-}
-pre.rouge .bp {
-  color: #999999;
-}
-pre.rouge .nb {
-  color: #0086B3;
-}
-pre.rouge .nc {
-  color: #445588;
-  font-weight: bold;
-}
-pre.rouge .no {
-  color: #008080;
+pre.rouge .s, pre.rouge .sa, pre.rouge .sc, pre.rouge .dl, pre.rouge .sd, pre.rouge .s2, pre.rouge .se, pre.rouge .sh, pre.rouge .sx, pre.rouge .s1, pre.rouge .ss {
+  color: #0a3069;
 }
 pre.rouge .nd {
-  color: #3c5d5d;
-  font-weight: bold;
-}
-pre.rouge .ni {
-  color: #800080;
-}
-pre.rouge .ne {
-  color: #990000;
-  font-weight: bold;
+  color: #8250df;
 }
 pre.rouge .nf, pre.rouge .fm {
-  color: #990000;
+  color: #8250df;
+}
+pre.rouge .err {
+  color: #f6f8fa;
+  background-color: #82071e;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cm, pre.rouge .cp, pre.rouge .cpf, pre.rouge .c1, pre.rouge .cs {
+  color: #6e7781;
+}
+pre.rouge .gl {
+  color: #6e7781;
+}
+pre.rouge .gt {
+  color: #6e7781;
+}
+pre.rouge .ni {
+  color: #24292f;
+}
+pre.rouge .si {
+  color: #24292f;
+}
+pre.rouge .ge {
+  color: #24292f;
+  font-style: italic;
+}
+pre.rouge .gs {
+  color: #24292f;
   font-weight: bold;
-}
-pre.rouge .nl {
-  color: #990000;
-  font-weight: bold;
-}
-pre.rouge .nn {
-  color: #555555;
-}
-pre.rouge .nt {
-  color: #000080;
-}
-pre.rouge .vc {
-  color: #008080;
-}
-pre.rouge .vg {
-  color: #008080;
-}
-pre.rouge .vi {
-  color: #008080;
-}
-pre.rouge .nv, pre.rouge .vm {
-  color: #008080;
-}
-pre.rouge .ow {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .o {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .w {
-  color: #bbbbbb;
-}
-pre.rouge {
-  background-color: #f8f8f8;
 }
 </style>
 </head>
@@ -339,7 +238,7 @@ pre.rouge {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;https://github.com/ghorwin&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.7 (28.12.2022)</span>
+<span id="revnumber">version 0.7 (05.02.2024)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -504,40 +403,45 @@ pre.rouge {
 <li><a href="#_ausgaben">17.4.1. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_thermostats">17.5. Modell für Thermostate</a>
+<li><a href="#model_internal_moisture_loads">17.5. Modell für interne Feuchtelasten</a>
 <ul class="sectlevel3">
-<li><a href="#_temperaturetype">17.5.1. TemperatureType</a></li>
-<li><a href="#_controllertype">17.5.2. ControllerType</a></li>
-<li><a href="#_ausgaben_2">17.5.3. Ausgaben</a></li>
+<li><a href="#_ausgaben_2">17.5.1. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_HVAC_control">17.6. Anlagensystem-Modell</a></li>
-<li><a href="#model_ideal_heating_cooling">17.7. Modell für ideale thermische Konditionierung</a>
+<li><a href="#model_thermostats">17.6. Modell für Thermostate</a>
 <ul class="sectlevel3">
-<li><a href="#_heiz_und_kühlleistung">17.7.1. Heiz- und Kühlleistung</a></li>
-<li><a href="#_ausgaben_3">17.7.2. Ausgaben</a></li>
+<li><a href="#_temperaturetype">17.6.1. TemperatureType</a></li>
+<li><a href="#_controllertype">17.6.2. ControllerType</a></li>
+<li><a href="#_ausgaben_3">17.6.3. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_ideal_surface_heating_cooling">17.8. Modell für ideale Flächenheizungen</a>
+<li><a href="#model_HVAC_control">17.7. Anlagensystem-Modell</a></li>
+<li><a href="#model_ideal_heating_cooling">17.8. Modell für ideale thermische Konditionierung</a>
 <ul class="sectlevel3">
-<li><a href="#_heiz_und_kühlleistung_2">17.8.1. Heiz- und Kühlleistung</a></li>
+<li><a href="#_heiz_und_kühlleistung">17.8.1. Heiz- und Kühlleistung</a></li>
 <li><a href="#_ausgaben_4">17.8.2. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_ideal_pipe_register">17.9. Modell für idealisierte Rohrregister-Flächenheizungen</a>
+<li><a href="#model_ideal_surface_heating_cooling">17.9. Modell für ideale Flächenheizungen</a>
 <ul class="sectlevel3">
-<li><a href="#_heiz_und_kühlleistung_3">17.9.1. Heiz- und Kühlleistung</a></li>
+<li><a href="#_heiz_und_kühlleistung_2">17.9.1. Heiz- und Kühlleistung</a></li>
 <li><a href="#_ausgaben_5">17.9.2. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_heat_load_summation">17.10. Modell für die Summation von Heiz- und Kühlleistungen</a>
+<li><a href="#model_ideal_pipe_register">17.10. Modell für idealisierte Rohrregister-Flächenheizungen</a>
 <ul class="sectlevel3">
-<li><a href="#_ausgaben_6">17.10.1. Ausgaben</a></li>
+<li><a href="#_heiz_und_kühlleistung_3">17.10.1. Heiz- und Kühlleistung</a></li>
+<li><a href="#_ausgaben_6">17.10.2. Ausgaben</a></li>
 </ul>
 </li>
-<li><a href="#model_network_interface_adapter">17.11. Schnittstellen-Modell für die Anbindung externer Anlagennetze</a>
+<li><a href="#model_heat_load_summation">17.11. Modell für die Summation von Heiz- und Kühlleistungen</a>
 <ul class="sectlevel3">
 <li><a href="#_ausgaben_7">17.11.1. Ausgaben</a></li>
+</ul>
+</li>
+<li><a href="#model_network_interface_adapter">17.12. Schnittstellen-Modell für die Anbindung externer Anlagennetze</a>
+<ul class="sectlevel3">
+<li><a href="#_ausgaben_8">17.12.1. Ausgaben</a></li>
 </ul>
 </li>
 </ul>
@@ -593,7 +497,7 @@ pre.rouge {
 <li><a href="#_parameter_für_die_regler_logik">18.8.8. Parameter für die Regler-Logik</a></li>
 </ul>
 </li>
-<li><a href="#_ausgaben_8">18.9. Ausgaben</a>
+<li><a href="#_ausgaben_9">18.9. Ausgaben</a>
 <ul class="sectlevel3">
 <li><a href="#_verfügbare_ausgaben">18.9.1. Verfügbare Ausgaben</a></li>
 <li><a href="#_ausgaben_der_rein_hydraulischen_netzwerkberechnung">18.9.2. Ausgaben der rein hydraulischen Netzwerkberechnung</a></li>
@@ -847,7 +751,7 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IBK:LinearSpline</span> <span class="na">name=</span><span class="s">"ThermalLoad"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 6 8 10 17 18 19 20<span class="nt">&lt;/X&gt;</span>
-  <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 0,5 0,8 1,0 0,7 0,6 0,5 0<span class="nt">&lt;/Y&gt;</span>
+  <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>0 0.5 0.8 1.0 0.7 0.6 0.5 0<span class="nt">&lt;/Y&gt;</span>
 <span class="nt">&lt;/IBK:LinearSpline&gt;</span></code></pre>
 </div>
 </div>
@@ -866,7 +770,7 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"ThermalLoad"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"h"</span><span class="nt">&gt;</span>0 6 8 10 17 18 19 20<span class="nt">&lt;/X&gt;</span>
-  <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>0 0,5 0,8 1,0 0,7 0,6 0,5 0<span class="nt">&lt;/Y&gt;</span>
+  <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>0 0.5 0.8 1.0 0.7 0.6 0.5 0<span class="nt">&lt;/Y&gt;</span>
 <span class="nt">&lt;/LinearSplineParameter&gt;</span></code></pre>
 </div>
 </div>
@@ -1083,7 +987,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="sect2">
 <h3 id="materials">6.1. Materialien</h3>
 <div class="paragraph">
-<p>In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens <code>materials</code>.</p>
+<p>In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens <code>Materials</code>.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 10. Materialien mit Parametern</div>
@@ -1130,13 +1034,13 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eindeutige ID des Materials.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt; 0</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em> Informations-/Fehlermeldungen verwendet).</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>displayName</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">Name des Materials (wird für Informations-/Fehlermeldungen verwendet)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name des Materials (wird für Informations-/Fehlermeldungen verwendet)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -5962,8 +5866,12 @@ Start = 14*24 + 6 = 342 h</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kontrollmodell für dynamische Verschattung &#8594; <a href="#model_shading_control">Steuerungsmodell für Verschattung</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InternalLoadsModels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InternalLoadModels</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interne Lasten (Geräte, Personen, Beleuchtung) &#8594; <a href="#model_internal_loads">Modell für interne Lasten</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InternalMoistureLoadModels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interne Feuchtelasten (Personen) &#8594; <a href="#model_internal_moisture_loads">Modell für interne Feuchtelasten</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Thermostats</code></p></td>
@@ -6669,13 +6577,146 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_thermostats">17.5. Modell für Thermostate</h3>
+<h3 id="model_internal_moisture_loads">17.5. Modell für interne Feuchtelasten</h3>
+<div class="paragraph">
+<p>Das Modell beschreibt analog zum <em>Internal loads model</em> die inneren Feuchtelasten im Raum. Dabei findet die Feuchteproduktion durch Personen Berücksichtigung. Erweiterungen sind geplant.
+Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen Feuchtelasten berücksichtigt werden sollen. Alle Zonen dürfen durch maximal eine Feuchtelastenmodell referenziert werden.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 57. Definitionsblock für interne Feuchtelasten</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InternalMoistureLoadsModel</span> <span class="na">id=</span><span class="s">"300"</span> <span class="na">modelType=</span><span class="s">"Scheduled"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
+<span class="nt">&lt;/InternalMoistureLoadsModel&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Das <code>InternalMoistureLoadsModel</code> unterstützt folgende XML-Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Tabelle 30. Attribute</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribut</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Gibt an, wie die internen Lasten angesetzt werden sollen</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Constant</code> - Konstante Personenfeuchtelasten</p>
+</li>
+<li>
+<p><code>Scheduled</code> - Lasten werden über Zeitplanparameter bereitgestellt.</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">key</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Fließkommaparameter (siehe <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col style="width: 35%;">
+<col style="width: 20%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Vorgabeeinheit</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Wertebereich</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PersonHeatMoistureLoadPerArea</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">kg/m2s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Personenfeuchteproduktion pro Zonennutzfläche</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Konstantes Modell</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Der Modelltyp <code>Constant</code> übernimmt die internen Feuchtelasten aus den Parametern. Der Modelltyp <code>Scheduled</code> verwendet die Lasten aus dem Zeitplan:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PersonHeatMoistureLoadPerAreaSchedule [kg/m2s]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die Existenz dieses Zeitplanparameters ist zwingend erforderlich.</p>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_2">17.5.1. Ausgaben</h4>
+<div class="paragraph">
+<p>Das Modell stellt folgende Ausgangsgrößen zur Verfügung:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PersonMoistureLoad [W]</code></p>
+</li>
+<li>
+<p><code>PersonMoistureEnthalpyFlux [W]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die Ausgaben sind vektoriell und müssen mit Zonenspezifikation referenziert werden, z. B. mit: <code>PersonMoistureEnthalpyFlux[id=3]</code> für die Enthalpieströe in Verbindung mit Personenfeuchteproduktion in Zone #3.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="model_thermostats">17.6. Modell für Thermostate</h3>
 <div class="paragraph">
 <p>Das Thermostatmodell beschreibt, auf welche Raumsollwerte konditioniert werden soll. Angegeben werden können Heiz- und/oder Kühlsolltemperaturen für die Raumluft oder operative Raumluft.
 Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Wie auch beim Lüftungsmodell  darf nur ein Modell pro Zone existieren.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 57. Definitionsblock für Thermostate</div>
+<div class="title">Beispiel 58. Definitionsblock für Thermostate</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6701,7 +6742,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <p>Das <code>Thermostat</code>-Element unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 30. Attribute</caption>
+<caption class="title">Tabelle 31. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6831,12 +6872,12 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </table>
 </div>
 <div class="sect3">
-<h4 id="_temperaturetype">17.5.1. TemperatureType</h4>
+<h4 id="_temperaturetype">17.6.1. TemperatureType</h4>
 <div class="paragraph">
 <p>Das XML-Element <code>TemperatureType</code> enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (<code>AirTemperature</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 31. Verfügbare Temperatursensoren</caption>
+<caption class="title">Tabelle 32. Verfügbare Temperatursensoren</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6860,12 +6901,12 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </table>
 </div>
 <div class="sect3">
-<h4 id="_controllertype">17.5.2. ControllerType</h4>
+<h4 id="_controllertype">17.6.2. ControllerType</h4>
 <div class="paragraph">
 <p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl des gewünschten Signaltyps (<code>Analog</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 32. Verfügbare Schalt-/Regelsignale</caption>
+<caption class="title">Tabelle 33. Verfügbare Schalt-/Regelsignale</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6901,7 +6942,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_2">17.5.3. Ausgaben</h4>
+<h4 id="_ausgaben_3">17.6.3. Ausgaben</h4>
 <div class="paragraph">
 <p>Das Modell liefert vektorwertige Modellergebnisgrößen, wobei der Vektorindex die jeweilige Zonen-ID ist.</p>
 </div>
@@ -6938,7 +6979,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_HVAC_control">17.6. Anlagensystem-Modell</h3>
+<h3 id="model_HVAC_control">17.7. Anlagensystem-Modell</h3>
 <div class="paragraph">
 <p>!NOCH NICHT IMPLEMENTIERT!</p>
 </div>
@@ -6949,7 +6990,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <p>Ein Anlagensystem-Modell ist optional - ohne ein solches System kann ein Heizungssystem auch direkt die Kontrollgrößen eines Thermostats abgreifen.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 58. Anlagensystemmodell für die Umsetzung einer idealen Heizung</div>
+<div class="title">Beispiel 59. Anlagensystemmodell für die Umsetzung einer idealen Heizung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6966,12 +7007,12 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_ideal_heating_cooling">17.7. Modell für ideale thermische Konditionierung</h3>
+<h3 id="model_ideal_heating_cooling">17.8. Modell für ideale thermische Konditionierung</h3>
 <div class="paragraph">
 <p>Das Modell beschreibt eine ideale thermisches Raumluftkonditionierung. Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf  nur ein Modell pro Zone existieren (d.h. bei mehreren <code>IdealHeatingCoolingModel</code> Definitionen dürfen die Objektlisten nicht gleiche Zonen enthalten).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 59. Definitionsblock für ideale thermische Konditionierung</div>
+<div class="title">Beispiel 60. Definitionsblock für ideale thermische Konditionierung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6988,7 +7029,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <p>Das <code>IdealHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 33. Attribute</caption>
+<caption class="title">Tabelle 34. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7090,7 +7131,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_heiz_und_kühlleistung">17.7.1. Heiz- und Kühlleistung</h4>
+<h4 id="_heiz_und_kühlleistung">17.8.1. Heiz- und Kühlleistung</h4>
 <div class="paragraph">
 <p>Das Regelsignal <code>HeatingControlValue</code> bzw. <code>IdealHeatingControlValue</code> wird als Wert zwischen 0..1 interpretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
 </div>
@@ -7102,7 +7143,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_3">17.7.2. Ausgaben</h4>
+<h4 id="_ausgaben_4">17.8.2. Ausgaben</h4>
 <div class="paragraph">
 <p>Ergebnisgrößen des Modells sind:</p>
 </div>
@@ -7137,12 +7178,12 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_ideal_surface_heating_cooling">17.8. Modell für ideale Flächenheizungen</h3>
+<h3 id="model_ideal_surface_heating_cooling">17.9. Modell für ideale Flächenheizungen</h3>
 <div class="paragraph">
 <p>Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine Flächenheizung. Dies kann eine Fußbodenheizung sein, eine Kapillarrohrmatte, ein elektrisches Heizregister oder eine Betonkernaktivierung. Der Wärmeübertragungsmechanismus ist nicht abgebildet, es wird lediglich Wärme der beheizten/gekühlten Konstruktionsschicht zugefügt oder entfernt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 60. Definitionsblock für ideale Flächenheizungen</div>
+<div class="title">Beispiel 61. Definitionsblock für ideale Flächenheizungen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7161,7 +7202,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <p>Das <code>IdealSurfaceHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 34. Attribute</caption>
+<caption class="title">Tabelle 35. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7249,7 +7290,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <p>Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="sect3">
-<h4 id="_heiz_und_kühlleistung_2">17.8.1. Heiz- und Kühlleistung</h4>
+<h4 id="_heiz_und_kühlleistung_2">17.9.1. Heiz- und Kühlleistung</h4>
 <div class="paragraph">
 <p>Das Regelsignal <code>HeatingControlValue</code> wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des <code>MaxHeatingPowerPerArea</code>-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
 </div>
@@ -7258,7 +7299,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_4">17.8.2. Ausgaben</h4>
+<h4 id="_ausgaben_5">17.9.2. Ausgaben</h4>
 <div class="paragraph">
 <p>Ergebnisgrößen des Modells sind:</p>
 </div>
@@ -7290,7 +7331,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_ideal_pipe_register">17.9. Modell für idealisierte Rohrregister-Flächenheizungen</h3>
+<h3 id="model_ideal_pipe_register">17.10. Modell für idealisierte Rohrregister-Flächenheizungen</h3>
 <div class="paragraph">
 <p>Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Flächen verwendet werden kann. Dabei wird das Rohrnetzwerk im Gebäude nicht abgebildet, sondern eine Vorlauftemperatur als gegeben angenommen (daher <em>idealisiert</em>).
 Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären Bedingungen ausgeht, d.h. es wird von einem größtenteils konstant durchflossenem Rohr mit konstanten Rand- und Umgebungsbedingungen und konstanter Vorlauftemperatur ausgegangen. Entlang der Rohrschlange wird von konstanten Umgebungsbedingungen ausgegangen (es wird die Temperatur der aktiven Schicht verwendet).</p>
@@ -7310,7 +7351,7 @@ Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 61. Definitionsblock für Rohrregister-Heizungen</div>
+<div class="title">Beispiel 62. Definitionsblock für Rohrregister-Heizungen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7363,7 +7404,7 @@ Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären
 <p>Das <code>IdealPipeRegisterModel</code> unterstützt die folgenden XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 35. Attribute</caption>
+<caption class="title">Tabelle 36. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7506,7 +7547,7 @@ Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären
 </table>
 </div>
 <div class="sect3">
-<h4 id="_heiz_und_kühlleistung_3">17.9.1. Heiz- und Kühlleistung</h4>
+<h4 id="_heiz_und_kühlleistung_3">17.10.1. Heiz- und Kühlleistung</h4>
 <div class="paragraph">
 <p>Das Regelsignal <code>HeatingControlValue</code> wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 wird der maximale Massestrom für Heizung auf den Wert <code>MaxMassFlow</code> gesetzt. Bei 0 ist die Heizung aus (Massestrom = 0). Dazwischen wird linear interpoliert.</p>
 </div>
@@ -7532,7 +7573,7 @@ Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_5">17.9.2. Ausgaben</h4>
+<h4 id="_ausgaben_6">17.10.2. Ausgaben</h4>
 <div class="paragraph">
 <p>Ergebnisgrößen des Modells sind:</p>
 </div>
@@ -7567,12 +7608,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_heat_load_summation">17.10. Modell für die Summation von Heiz- und Kühlleistungen</h3>
+<h3 id="model_heat_load_summation">17.11. Modell für die Summation von Heiz- und Kühlleistungen</h3>
 <div class="paragraph">
 <p>Das Modell summiert die Heizleistungen der ausgewählten Objekte und liefert die Gesamtwärmeleistung (Heizung/Kühlung).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 62. Definitionsblock für ein Summationsmodell</div>
+<div class="title">Beispiel 63. Definitionsblock für ein Summationsmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7587,7 +7628,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Das <code>HeatLoadSummationModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 36. Attribute</caption>
+<caption class="title">Tabelle 37. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7644,7 +7685,7 @@ ist durch die Option <code>useZoneCoolingLoad</code> die passende Lastart (Heizu
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_6">17.10.1. Ausgaben</h4>
+<h4 id="_ausgaben_7">17.11.1. Ausgaben</h4>
 <div class="paragraph">
 <p>Das Modell liefert die Summe der thermischen Lasten in der Ergebnisgröße <code>TotalThermalLoad</code>.</p>
 </div>
@@ -7666,7 +7707,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </div>
 </div>
 <div class="sect2">
-<h3 id="model_network_interface_adapter">17.11. Schnittstellen-Modell für die Anbindung externer Anlagennetze</h3>
+<h3 id="model_network_interface_adapter">17.12. Schnittstellen-Modell für die Anbindung externer Anlagennetze</h3>
 <div class="paragraph">
 <p>Diese Modell ist für alleinstehende Simulationen unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das <code>NetworkInterfaceAdapterModel</code> berechnet die resultierende Rücklauftemperatur.</p>
 </div>
@@ -7687,7 +7728,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 63. Definitionsblock für ein solches Schnittstellenmodell</div>
+<div class="title">Beispiel 64. Definitionsblock für ein solches Schnittstellenmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7702,7 +7743,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Das <code>NetworkInterfaceAdapterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 37. Attribute</caption>
+<caption class="title">Tabelle 38. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7742,7 +7783,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Für die Berechnung ist die spezifische Wärmekapazität des strömenden Mediums notwendig, angegeben im IBK-Parameterelement <code>FluidHeatCapacity</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_ausgaben_7">17.11.1. Ausgaben</h4>
+<h4 id="_ausgaben_8">17.12.1. Ausgaben</h4>
 <div class="paragraph">
 <p>Das Modell hat eine einzige Ergebnisgröße:</p>
 </div>
@@ -7784,7 +7825,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag <code>HydraulicNetworks</code> abgelegt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 64. Hydraulische Netzwerke</div>
+<div class="title">Beispiel 65. Hydraulische Netzwerke</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7824,7 +7865,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 65. Typische Definition eines einzelnen Netzwerks</div>
+<div class="title">Beispiel 66. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7859,7 +7900,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Der XML-tag <code>HydraulicNetwork</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 38. Attributes</caption>
+<caption class="title">Tabelle 39. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 40%;">
@@ -7903,10 +7944,10 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </tbody>
 </table>
 <div class="paragraph">
-<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 39</a>).</p>
+<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 40</a>).</p>
 </div>
 <table id="tab_network_modelType" class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 39. Werte für Attribut <code>modelType</code></caption>
+<caption class="title">Tabelle 40. Werte für Attribut <code>modelType</code></caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 70%;">
@@ -8021,7 +8062,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 66. Definition eines Netzwerkfluids</div>
+<div class="title">Beispiel 67. Definition eines Netzwerkfluids</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8042,7 +8083,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Der XML-tag <code>HydraulicFluid</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 40. Attributes</caption>
+<caption class="title">Tabelle 41. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -8161,7 +8202,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden im XML-tag <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 67. Definition von Rohreigenschaften</div>
+<div class="title">Beispiel 68. Definition von Rohreigenschaften</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8183,7 +8224,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#NetworkElements">Abschnitt 18.5</a>) referenziert.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 41. Attribute</caption>
+<caption class="title">Tabelle 42. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -8271,7 +8312,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 68. Definition einer Komponente</div>
+<div class="title">Beispiel 69. Definition einer Komponente</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8288,7 +8329,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 42. Attribute</caption>
+<caption class="title">Tabelle 43. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -8649,7 +8690,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 <p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <a href="#NetworkControlElements">Abschnitt 18.8</a>).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 69. Definition einer ControlledPump</div>
+<div class="title">Beispiel 70. Definition einer ControlledPump</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9035,7 +9076,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </table>
 </div>
 <div id="ex_HeatPumpVariableIdealCarnotSourceSide" class="exampleblock">
-<div class="title">Beispiel 70. Definition einer HeatPumpVariableIdealCarnotSourceSide</div>
+<div class="title">Beispiel 71. Definition einer HeatPumpVariableIdealCarnotSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9076,7 +9117,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <h4 id="_modelltyp_heatpumpvariablesourceside">ModellTyp: HeatPumpVariableSourceSide</h4>
 <div class="paragraph">
 <p>Das Model <code>HeatPumpVariableSourceSide</code> ist eine ideale Wärmepumpe mit variable Heizleistung, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Abschnitt 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.
-Im Gegensatz zum Modell <code>HeatPumpVariableIdealCarnotSourceSide</code>, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung des COP in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpVariableSourceSide">Beispiel 71</a>).</p>
+Im Gegensatz zum Modell <code>HeatPumpVariableIdealCarnotSourceSide</code>, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung des COP in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpVariableSourceSide">Beispiel 72</a>).</p>
 </div>
 <div class="paragraph">
 <p>Weiterhin werden diese Parameter benötigt:</p>
@@ -9142,7 +9183,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </table>
 </div>
 <div id="ex_HeatPumpVariableSourceSide" class="exampleblock">
-<div class="title">Beispiel 71. Definition einer HeatPumpVariableSourceSide</div>
+<div class="title">Beispiel 72. Definition einer HeatPumpVariableSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9178,7 +9219,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert.</p>
 </div>
 <div class="paragraph">
-<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpOnOffSourceSide">Beispiel 72</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
+<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpOnOffSourceSide">Beispiel 73</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
 </div>
 <div class="paragraph">
 <p>Weitere benötigte Parameter sind:</p>
@@ -9225,7 +9266,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tbody>
 </table>
 <div id="ex_HeatPumpOnOffSourceSide" class="exampleblock">
-<div class="title">Beispiel 72. Definition einer HeatPumpOnOffSourceSide</div>
+<div class="title">Beispiel 73. Definition einer HeatPumpOnOffSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9270,7 +9311,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Dieses Modell ermöglicht das präzise Vorgeben einer Medientemperatur in einem Strömungselement und der Berechnung der für die Temperaturänderung benötigten Heiz-/Kühlenergie.</p>
 </div>
 <div id="ex_HydraulicElement_IdealHeaterCooler" class="exampleblock">
-<div class="title">Beispiel 73. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 74. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9315,7 +9356,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="paragraph">
-<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 73</a>).</p>
+<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 74</a>).</p>
 </div>
 </div>
 </div>
@@ -9328,7 +9369,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div id="xml_example_flow_element" class="exampleblock">
-<div class="title">Beispiel 74. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 75. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9348,7 +9389,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p><code>HydraulicNetworkElement</code>-tags haben die folgenden Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 43. Attribute</caption>
+<caption class="title">Tabelle 44. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -9432,10 +9473,10 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 75</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 76</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 75. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 76. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9478,7 +9519,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 76</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 77</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -9508,7 +9549,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 76. Definition eines Rohrelements</div>
+<div class="title">Beispiel 77. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9525,7 +9566,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 77. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 78. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9559,7 +9600,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelElements</code> kann man ein Element mit Druckverlust definieren, welches identische in parallelen Strängen verbaut ist, ohne dazu jeden identischen Strang separat modellieren zu müssen.</p>
 </div>
 <div id="ex_parallel_valve" class="exampleblock">
-<div class="title">Beispiel 78. Definition eines parallelen Ventils</div>
+<div class="title">Beispiel 79. Definition eines parallelen Ventils</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9593,7 +9634,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>In thermische Netzwerken kann für ein Strömungselement (<a href="#NetworkElements">Abschnitt 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 79. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
+<div class="title">Beispiel 80. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9818,11 +9859,11 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <div class="sect2">
 <h3 id="_regelung_von_strömungselementen">18.7. Regelung von Strömungselementen</h3>
 <div class="paragraph">
-<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 80</a> referenziert
+<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 81</a> referenziert
 das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkControlElement</code> im Attribut <code>controlElementId</code>.</p>
 </div>
 <div id="ex_controlled_heat_exchanger" class="exampleblock">
-<div class="title">Beispiel 80. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
+<div class="title">Beispiel 81. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9851,7 +9892,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 </div>
 <div class="paragraph">
-<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 80</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Abschnitt 18.8</a> beschrieben.</p>
+<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 81</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Abschnitt 18.8</a> beschrieben.</p>
 </div>
 </div>
 <div class="sect2">
@@ -9860,7 +9901,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 <p>Alle Reglerkomponenten werden in einer Liste <code>ControlElements</code> abgelegt, welche sich innerhalb des <code>HydraulicNetwork</code> Elements befindet.</p>
 </div>
 <div id="ex_controlElement" class="exampleblock">
-<div class="title">Beispiel 81. Definitionsliste von Massenstrom-Reglermodellen</div>
+<div class="title">Beispiel 82. Definitionsliste von Massenstrom-Reglermodellen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9954,7 +9995,7 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 <div class="paragraph">
 <p>Mit dem Regler <code>PressureDifferenceWorstpoint</code> kann eine Schlechtpunktregelung mit einer <code>ControlledPump</code> implementiert werden. Die Schlechtpunktregelung wählt automatisch ein <code>Strömungselement</code> bzw. eine Gruppe von <code>Strömungselementen</code> aus welche den niedrigsten Druckverlust haben. Dieser Druckverlust wird dann nach dem Sollwert <code>PressureDifferenceSetpoint</code> geregelt.
 Dabei werden alle <code>Strömungselementen</code> berücksichtigt welche in dem <code>DataTable</code> <code>ObservedPressureDiffElementIds</code> angegeben wurden. Dieser <code>DataTable</code> muss in der Definition des Strömungselements der Pumpe angegeben werden.
-Ein Beispiel einer Implementierung zeigt <a href="#ex_worstpoint_controller">Beispiel 82</a>.</p>
+Ein Beispiel einer Implementierung zeigt <a href="#ex_worstpoint_controller">Beispiel 83</a>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -9971,7 +10012,7 @@ Ein Beispiel einer Implementierung zeigt <a href="#ex_worstpoint_controller">Bei
 </table>
 </div>
 <div id="ex_worstpoint_controller" class="exampleblock">
-<div class="title">Beispiel 82. Beispiel einer Implementiertung eines Schlechtpunktreglers</div>
+<div class="title">Beispiel 83. Beispiel einer Implementiertung eines Schlechtpunktreglers</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10009,7 +10050,7 @@ Ein Beispiel einer Implementierung zeigt <a href="#ex_worstpoint_controller">Bei
 Dabei sind die ELEMENT_IDs ids der <code>Strömungselemente</code> und NODE_IDs sind frei wählbare IDs welche z.B. einen geometrischen Punkt definieren (z.B. eine VICUS NodeId).</p>
 </div>
 <div class="paragraph">
-<p>Im Beispiel <a href="#ex_worstpoint_controller">Beispiel 82</a> wird zu jedem Zeitpunkt der  Wärmetauscher (aus hx1, hx2, hx3) ausgewählt, welcher den niedrigsten Druckverlust hat. Dieser Druckverlust wird dann auf den Sollwert <code>PressureDifferenceSetpoint</code> geregelt.</p>
+<p>Im Beispiel <a href="#ex_worstpoint_controller">Beispiel 83</a> wird zu jedem Zeitpunkt der  Wärmetauscher (aus hx1, hx2, hx3) ausgewählt, welcher den niedrigsten Druckverlust hat. Dieser Druckverlust wird dann auf den Sollwert <code>PressureDifferenceSetpoint</code> geregelt.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -10109,12 +10150,12 @@ Dabei sind die ELEMENT_IDs ids der <code>Strömungselemente</code> und NODE_IDs 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ausgaben_8">18.9. Ausgaben</h3>
+<h3 id="_ausgaben_9">18.9. Ausgaben</h3>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 83</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 84</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 83. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 84. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10293,10 +10334,10 @@ Dabei sind die ELEMENT_IDs ids der <code>Strömungselemente</code> und NODE_IDs 
 </ul>
 </div>
 <div class="paragraph">
-<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 84</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
+<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 85</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 84. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 85. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10327,7 +10368,7 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 <p>Die Spezifikation der FMU Schnittstelle der zu generierenden NANDRAD-FMU wird im XML-Element <code>FMIDescription</code> definiert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 85. Definition einer FMU-Schnittstelle</div>
+<div class="title">Beispiel 86. Definition einer FMU-Schnittstelle</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10945,8 +10986,8 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.7 (28.12.2022)<br>
-Last updated 2022-12-28 20:48:55 +0100
+Version 0.7 (05.02.2024)<br>
+Last updated 2024-02-05 11:07:35 +0100
 </div>
 </div>
 </body>
