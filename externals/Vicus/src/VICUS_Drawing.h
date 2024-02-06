@@ -496,6 +496,11 @@ public:
 	/*! Generates 3D Points from 2D points by applying transformation from drawing. */
 	const std::vector<IBKMK::Vector3D> points3D(const std::vector<IBKMK::Vector2D> &verts, unsigned int zPosition) const;
 
+	/*! Generates 3D Points from 2D points by applying transformation from drawing. Z-coordinate is ignored
+		for picking purposes.
+	*/
+	const std::vector<IBKMK::Vector3D> points3D(const std::vector<IBKMK::Vector2D> &verts) const;
+
 	/*! Returns the normal vector of the drawing. */
 	const IBKMK::Vector3D normal() const;
 
@@ -513,6 +518,38 @@ public:
 				objects.erase( objects.begin() + idx );
 			else
 				++idx;
+		}
+	}
+
+	/*! Template that is invoked, when all plane geometries need to be updated and retriangulated.
+		All 3D points and pick points are recalculated and all triangulated planes are regenerated.
+		\param objects Vector with drawing elements
+	*/
+	template <typename T>
+	void updateGeometryForAll(std::vector<T>& objects) {
+		for (T& obj : objects) {
+			obj.updatePlaneGeometry();
+		}
+	}
+
+	/*! Adds pick points to the current drawing object. The drawing object contains a map, where key is the id of the object
+		where the pick points are part of - for faster access. The value is a vector containing all 3D points, where it is possible
+		to pick to,
+		\param objects vector with all drawing object, where pick points should be generated and added to verts
+		\param block
+	*/
+	template <typename t>
+	void addPickPoints(const std::vector<t> &objects) const {
+		for (const t& obj : objects) {
+			bool hasBlock = obj.m_block != nullptr;
+
+			// Skip objects, that are part of a block,
+			// they have already been generated
+			if (hasBlock)
+				continue;
+
+			// Add pick-points
+			m_pickPoints[obj.m_id] = points3D(obj.points2D());
 		}
 	}
 

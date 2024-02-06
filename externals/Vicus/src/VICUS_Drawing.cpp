@@ -1471,8 +1471,8 @@ void Drawing::updatePointer(){
 		blockRefs[b.m_name] = &b;
 	}
 
-	/*! Note: Layer references must always be valid. Hence, when "layerRefs.at()" throws an exception, this is due to an invalid DXF.
-		Block references are optional, therefore we use the access function which returns a nullptr if there is no block ref
+	/* Note: Layer references must always be valid. Hence, when "layerRefs.at()" throws an exception, this is due to an invalid DXF.
+	 * Block references are optional, therefore we use the access function which returns a nullptr if there is no block ref
 	*/
 	try {
 
@@ -1718,13 +1718,6 @@ void Drawing::generateInsertGeometries(unsigned int nextId) {
 }
 
 
-template <typename T>
-void updateGeometryForAll(std::vector<T>& objects) {
-	for (T& obj : objects) {
-		obj.updatePlaneGeometry();
-	}
-}
-
 void Drawing::updateAllGeometries() {
 	updateGeometryForAll(m_points);
 	updateGeometryForAll(m_lines);
@@ -1738,38 +1731,19 @@ void Drawing::updateAllGeometries() {
 }
 
 
-template <typename t>
-void addPickPoints(const std::vector<t> &objects, const VICUS::Drawing &d, std::map<unsigned int, std::vector<IBKMK::Vector3D>> &verts,
-				   const Drawing::Block *block = nullptr) {
-	for (const t& obj : objects) {
-		bool isBlockDefined = block != nullptr;
-		bool hasBlock = obj.m_block != nullptr;
-
-		if ((hasBlock && !isBlockDefined) || (isBlockDefined && !hasBlock))
-			continue;
-
-		if (isBlockDefined && hasBlock && block->m_name != obj.m_block->m_name)
-			continue;
-
-		const std::vector<IBKMK::Vector3D> &objVerts = d.points3D(obj.points2D(), obj.m_zPosition);
-		verts[obj.m_id] = objVerts;
-	}
-}
-
-
 const std::map<unsigned int, std::vector<IBKMK::Vector3D>> &Drawing::pickPoints() const {
 	FUNCID(Drawing::pickPoints);
 	try {
 		if (m_dirtyPickPoints) {
 			m_pickPoints.clear();
-			addPickPoints(m_points, *this, m_pickPoints);
-			addPickPoints(m_arcs, *this, m_pickPoints);
-			addPickPoints(m_circles, *this, m_pickPoints);
-			addPickPoints(m_ellipses, *this, m_pickPoints);
-			addPickPoints(m_linearDimensions, *this, m_pickPoints);
-			addPickPoints(m_lines, *this, m_pickPoints);
-			addPickPoints(m_polylines, *this, m_pickPoints);
-			addPickPoints(m_solids, *this, m_pickPoints);
+			addPickPoints(m_points);
+			addPickPoints(m_arcs);
+			addPickPoints(m_circles);
+			addPickPoints(m_ellipses);
+			addPickPoints(m_linearDimensions);
+			addPickPoints(m_lines);
+			addPickPoints(m_polylines);
+			addPickPoints(m_solids);
 
 			m_dirtyPickPoints = false;
 		}
@@ -1791,6 +1765,25 @@ const std::vector<IBKMK::Vector3D> Drawing::points3D(const std::vector<IBKMK::Ve
 		IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x * m_scalingFactor,
 											  v2D.m_y * m_scalingFactor,
 											  zCoordinate);
+
+		QVector3D qV3D = m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
+		qV3D += IBKVector2QVector(m_origin);
+		points3D[i] = QVector2IBKVector(qV3D);
+	}
+
+	return points3D;
+}
+
+
+const std::vector<IBKMK::Vector3D> Drawing::points3D(const std::vector<IBKMK::Vector2D> &verts) const {
+
+	std::vector<IBKMK::Vector3D> points3D(verts.size());
+
+	for (unsigned int i=0; i < verts.size(); ++i) {
+		const IBKMK::Vector2D &v2D = verts[i];
+		IBKMK::Vector3D v3D = IBKMK::Vector3D(v2D.m_x * m_scalingFactor,
+											  v2D.m_y * m_scalingFactor,
+											  0.0);
 
 		QVector3D qV3D = m_rotationMatrix.toQuaternion() * IBKVector2QVector(v3D);
 		qV3D += IBKVector2QVector(m_origin);
