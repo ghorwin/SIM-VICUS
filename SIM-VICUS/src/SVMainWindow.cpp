@@ -724,6 +724,15 @@ void SVMainWindow::moveEvent(QMoveEvent *event) {
 	SVViewStateHandler::instance().m_geometryView->moveTransparentSceneWidgets();
 }
 
+void SVMainWindow::leaveEvent(QEvent *event) {
+	// Special handling to prevent constant Key_Control press, when window is left
+	// during control-pressing
+	QKeyEvent* ke = new QKeyEvent(QEvent::KeyRelease, Qt::Key_Control, Qt::NoModifier);
+	QCoreApplication::postEvent(this, ke);
+
+	QMainWindow::leaveEvent(event);
+}
+
 
 void SVMainWindow::setup() {
 

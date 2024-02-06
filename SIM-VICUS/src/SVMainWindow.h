@@ -216,9 +216,10 @@ protected:
 	void closeEvent(QCloseEvent * event) override;
 	/*! Called when the window is moved. Repositions measurement widget. */
 	void moveEvent(QMoveEvent *event) override;
+	/*! Called to prevent constantly pressed CONTROL-KEY. */
+	void leaveEvent(QEvent *event) override;
 
 signals:
-
 	void screenHasChanged(const QScreen *screen);
 
 
