@@ -541,12 +541,9 @@ public:
 	template <typename t>
 	void addPickPoints(const std::vector<t> &objects) const {
 		for (const t& obj : objects) {
-			bool hasBlock = obj.m_block != nullptr;
-
 			// Skip objects, that are part of a block,
 			// they have already been generated
-			if (hasBlock)
-				continue;
+			if (obj.m_block != nullptr)	continue;
 
 			// Add pick-points
 			m_pickPoints[obj.m_id] = points3D(obj.points2D());
