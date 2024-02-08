@@ -22,7 +22,7 @@
 }
 
 CONFIG			+= silent
-CONFIG			+= c++11
+CONFIG			+= c++17
 
 CONFIG(release, debug|release) {
 #	message( "Setting NDEBUG define" )
