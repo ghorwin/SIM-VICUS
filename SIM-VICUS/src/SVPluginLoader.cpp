@@ -224,16 +224,18 @@ bool SVPluginLoader::PluginData::matchesVersion() const {
 	QStringList range = m_abiVersion.split("-");
 	unsigned int major1=0, minor1=0;
 	unsigned int major2=0, minor2=0;
+	if(range.empty())
+		return false;
+
+	if (!IBK::Version::extractMajorMinorVersionNumber(range[0].toStdString(), major1, minor1))
+		return false;
+
 	if (range.count() == 2) {
-		if (!IBK::Version::extractMajorMinorVersionNumber(range[0].toStdString(), major1, minor1) &&
-			!IBK::Version::extractMajorMinorVersionNumber(range[1].toStdString(), major2, minor2))
-		{
+		if (!IBK::Version::extractMajorMinorVersionNumber(range[1].toStdString(), major2, minor2)) {
 			return false;
 		}
 	}
 	else {
-		if (!IBK::Version::extractMajorMinorVersionNumber(range[0].toStdString(), major1, minor1))
-			return false;
 		major2 = major1;
 		minor2 = minor1;
 	}
@@ -242,5 +244,6 @@ bool SVPluginLoader::PluginData::matchesVersion() const {
 	IBK::Version second(major2, minor2);
 	IBK::Version vicusVer(VICUS::VERSION);
 	if (first > vicusVer || second < vicusVer) return false;
-	else return true;
+
+	return true;
 }
