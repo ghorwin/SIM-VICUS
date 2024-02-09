@@ -436,7 +436,7 @@ equals(TEMPLATE,lib) {
 	}
 	else {
 		# on Unix/MacOS we always build our libraries as dynamic libs
-		CONFIG += shared
+		CONFIG += shared_and_static build_all
 		QMAKE_CXXFLAGS += -std=c++11
 	}
 
