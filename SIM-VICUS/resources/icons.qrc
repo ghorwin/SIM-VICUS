@@ -137,5 +137,17 @@
         <file>icons/dark/png/checkbox_unchecked.png</file>
         <file>icons/dark/png/edit.png</file>
         <file>icons/light/png/edit.png</file>
+        <file>icons/dark/svg/assign_db_element.svg</file>
+        <file>icons/dark/svg/assign_table_element.svg</file>
+        <file>icons/dark/svg/exchange_table_element.svg</file>
+        <file>icons/dark/svg/misc_geometry_operations.svg</file>
+        <file>icons/dark/svg/select_in_scene.svg</file>
+        <file>icons/light/svg/assign_db_element.svg</file>
+        <file>icons/light/svg/assign_table_element.svg</file>
+        <file>icons/light/svg/exchange_table_element.svg</file>
+        <file>icons/light/svg/misc_geometry_operations.svg</file>
+        <file>icons/light/svg/select_in_scene.svg</file>
+        <file>icons/dark/svg/edit_table_element.svg</file>
+        <file>icons/light/svg/edit_table_element.svg</file>
     </qresource>
 </RCC>
