@@ -15,7 +15,7 @@ SVPropSupplySystemsWidget::SVPropSupplySystemsWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropSupplySystemsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->mainGridLayout->setMargin(0);
+	layout()->setMargin(0);
 
 	m_ui->tableWidgetSupplySystems->setColumnCount(2);
 	m_ui->tableWidgetSupplySystems->setHorizontalHeaderLabels(QStringList() << QString() << tr("Supply systems"));
@@ -24,6 +24,12 @@ SVPropSupplySystemsWidget::SVPropSupplySystemsWidget(QWidget *parent) :
 	m_ui->tableWidgetSupplySystems->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetSupplySystems->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetSupplySystems->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->pushButtonAssignSupplySystem->setIcon(QIcon::fromTheme("assign_db_element"));
+
+	m_ui->pushButtonEditSupplySystem->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonExchangeSupplySystem->setIcon(QIcon::fromTheme("exchange_table_element"));
+	m_ui->pushButtonSelectSupplySystem->setIcon(QIcon::fromTheme("select_in_scene"));
 }
 
 
