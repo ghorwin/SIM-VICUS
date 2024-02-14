@@ -17,7 +17,7 @@ SVPropBuildingBoundaryConditionsWidget::SVPropBuildingBoundaryConditionsWidget(Q
 	m_ui(new Ui::SVPropBuildingBoundaryConditionsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayout->setMargin(0);
+	layout()->setMargin(0);
 
 	m_ui->tableWidgetBoundaryConditions->setColumnCount(2);
 	m_ui->tableWidgetBoundaryConditions->setHorizontalHeaderLabels(QStringList() << QString() << tr("Boundary condition"));
