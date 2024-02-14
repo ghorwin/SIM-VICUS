@@ -28,6 +28,15 @@ SVPropBuildingZoneTemplatesWidget::SVPropBuildingZoneTemplatesWidget(QWidget *pa
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->pushButtonAssignZoneTemplate->setIcon(QIcon::fromTheme("assign_db_element"));
+	m_ui->pushButtonAssignSelectedZoneTemplate->setIcon(QIcon::fromTheme("assign_table_element"));
+
+	m_ui->pushButtonEditZoneTemplates->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonExchangeZoneTemplates->setIcon(QIcon::fromTheme("exchange_table_element"));
+	m_ui->pushButtonSelectObjectsWithZoneTemplate->setIcon(QIcon::fromTheme("select_in_scene"));
+
+	m_ui->tableWidgetZoneTemplates->layout()->setMargin(0);
 }
 
 
