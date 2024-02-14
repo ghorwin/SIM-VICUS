@@ -5,8 +5,14 @@
 #include "SVStyle.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVProjectHandler.h"
+#include "SVConstants.h"
+#include "SVConversions.h"
 
-#include <SVConversions.h>
+#include <QFileInfo>
+
+#include <QtExt_Directories.h>
+#include <QtExt_LanguageHandler.h>
 
 #include <VICUS_KeywordList.h>
 #include <VICUS_utilities.h>
@@ -25,6 +31,9 @@ SVDBSubNetworkEditWidget::SVDBSubNetworkEditWidget(QWidget *parent) :
 	m_ui->tableWidgetElements->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetElements->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetElements->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->lineEditSubNetworkName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditSubNetworkName->setDialog3Caption(tr("Sub network name"));
 }
 
 SVDBSubNetworkEditWidget::~SVDBSubNetworkEditWidget() {
