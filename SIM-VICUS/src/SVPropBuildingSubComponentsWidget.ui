@@ -6,82 +6,131 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
+    <width>1125</width>
     <height>737</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="4">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
     <widget class="QTableWidget" name="tableWidgetSubSurfaceComponents"/>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="pushButtonEditSubSurfaceComponents">
-     <property name="text">
-      <string>Edit...</string>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButtonEditSubSurfaceComponents">
+       <property name="text">
+        <string>Edit...</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonExchangeSubSurfaceComponents">
+       <property name="toolTip">
+        <string>Replaces the component association of all objects with the currently selected component.</string>
+       </property>
+       <property name="text">
+        <string>Exchange...</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>399</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonSelectObjectsWithSubSurfaceComponent">
+       <property name="toolTip">
+        <string>Selects all objects/surfaces which are associated with the selected component.</string>
+       </property>
+       <property name="text">
+        <string>Select</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="pushButtonExchangeSubSurfaceComponents">
-     <property name="toolTip">
-      <string>Replaces the component association of all objects with the currently selected component.</string>
-     </property>
-     <property name="text">
-      <string>Exchange...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="pushButtonSelectObjectsWithSubSurfaceComponent">
-     <property name="toolTip">
-      <string>Selects all objects/surfaces which are associated with the selected component.</string>
-     </property>
-     <property name="text">
-      <string>Select</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <spacer name="horizontalSpacer_7">
+   <item>
+    <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>399</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QGroupBox" name="groupBoxSelectedSubComponent">
-     <property name="title">
-      <string>Selected sub-surface components</string>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
      </property>
-     <layout class="QGridLayout" name="gridLayout_10">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Selected sub-surface component:</string>
-        </property>
-       </widget>
+     <property name="text">
+      <string>Selected sub-surface(s)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widgetSelectedSubComponent" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Selected sub-surface component:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelSelectedSubSurfaceComponents">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QPushButton" name="pushButtonAssignSubSurfaceComponent">
           <property name="text">
-           <string>Assign from DB...</string>
+           <string>DB...</string>
           </property>
           <property name="iconSize">
            <size>
@@ -93,8 +142,14 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonAssignInsideSubSurfaceComponent">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="text">
-           <string>Connect sub-surfaces...</string>
+           <string>Connect...</string>
           </property>
          </widget>
         </item>
@@ -119,25 +174,21 @@
           <property name="text">
            <string>Assign from table</string>
           </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelSelectedSubSurfaceComponents">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true"/>
    </item>
   </layout>
  </widget>

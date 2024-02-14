@@ -16,7 +16,7 @@ SVPropBuildingSubComponentsWidget::SVPropBuildingSubComponentsWidget(QWidget *pa
 	m_ui(new Ui::SVPropBuildingSubComponentsWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayout->setMargin(0);
+	layout()->setMargin(0);
 
 	m_ui->tableWidgetSubSurfaceComponents->setColumnCount(3);
 	m_ui->tableWidgetSubSurfaceComponents->setHorizontalHeaderLabels(QStringList() << QString() << tr("Type") << tr("Sub-Surface Component") );
@@ -25,6 +25,15 @@ SVPropBuildingSubComponentsWidget::SVPropBuildingSubComponentsWidget(QWidget *pa
 	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->pushButtonAssignSubSurfaceComponent->setIcon(QIcon::fromTheme("assign_db_element"));
+	m_ui->pushButtonAssignComponentFromTable->setIcon(QIcon::fromTheme("assign_table_element"));
+
+	m_ui->pushButtonEditSubSurfaceComponents->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonExchangeSubSurfaceComponents->setIcon(QIcon::fromTheme("exchange_table_element"));
+	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setIcon(QIcon::fromTheme("select_in_scene"));
+
+	m_ui->widgetSelectedSubComponent->layout()->setMargin(0);
 }
 
 
@@ -192,10 +201,10 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	// process all selected surfaces and determine which component they have assigned
 	if (m_selectedSurfaces.empty()) {
 		m_ui->labelSelectedSubSurfaceComponents->setText("");
-		m_ui->groupBoxSelectedSubComponent->setEnabled(false);
+		m_ui->widgetSelectedSubComponent->setEnabled(false);
 	}
 	else {
-		m_ui->groupBoxSelectedSubComponent->setEnabled(true);
+		m_ui->widgetSelectedSubComponent->setEnabled(true);
 	}
 	m_ui->pushButtonAssignInsideSubSurfaceComponent->setEnabled(m_selectedSurfaces.size() == 2);
 
