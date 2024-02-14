@@ -135,8 +135,6 @@
         <file>icons/dark/png/bulb_on.png</file>
         <file>icons/dark/png/checkbox_checked.png</file>
         <file>icons/dark/png/checkbox_unchecked.png</file>
-        <file>icons/dark/png/edit.png</file>
-        <file>icons/light/png/edit.png</file>
         <file>icons/dark/svg/assign_db_element.svg</file>
         <file>icons/dark/svg/assign_table_element.svg</file>
         <file>icons/dark/svg/exchange_table_element.svg</file>
@@ -149,5 +147,7 @@
         <file>icons/light/svg/select_in_scene.svg</file>
         <file>icons/dark/svg/edit_table_element.svg</file>
         <file>icons/light/svg/edit_table_element.svg</file>
+        <file>icons/dark/png/edit_db_element.png</file>
+        <file>icons/light/png/edit_db_element.png</file>
     </qresource>
 </RCC>
