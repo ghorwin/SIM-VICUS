@@ -27,6 +27,9 @@ SVPropBuildingBoundaryConditionsWidget::SVPropBuildingBoundaryConditionsWidget(Q
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setStretchLastSection(true);
 
+	m_ui->pushButtonEditBoundaryConditions->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonSelectBoundaryConditions->setIcon(QIcon::fromTheme("select_in_scene"));
+
 	m_ui->radioButtonFromInside->setChecked(true);
 }
 
