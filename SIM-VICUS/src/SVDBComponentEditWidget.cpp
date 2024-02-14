@@ -336,7 +336,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 }
 
 void SVDBComponentEditWidget::onStyleChanged() {
-	QIcon edit = QIcon::fromTheme("edit");
+	QIcon edit = QIcon::fromTheme("edit_db_element");
 	// there might be an easier way to get the current highlight color of table views etc.?
 	QColor color;
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
