@@ -19,7 +19,7 @@ SVPropBuildingZoneTemplatesWidget::SVPropBuildingZoneTemplatesWidget(QWidget *pa
 {
 	m_ui->setupUi(this);
 	//m_ui->verticalLayout_2->setContentsMargins(0,0,0,0);
-	m_ui->groupBoxSelectedRooms->setContentsMargins(9,9,9,9);
+	m_ui->widgetSelectedRooms->layout()->setMargin(0);
 
 	m_ui->tableWidgetZoneTemplates->setColumnCount(2);
 	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Zone template"));
@@ -100,10 +100,10 @@ void SVPropBuildingZoneTemplatesWidget::updateUi() {
 	project().selectedRooms(rooms);
 	if (rooms.empty()) {
 		m_ui->labelSelectedZoneTemplates->setText("");
-		m_ui->groupBoxSelectedRooms->setEnabled(false);
+		m_ui->widgetSelectedRooms->setEnabled(false);
 	}
 	else {
-		m_ui->groupBoxSelectedRooms->setEnabled(true);
+		m_ui->widgetSelectedRooms->setEnabled(true);
 	}
 
 	// update push button for selected zone assignement
