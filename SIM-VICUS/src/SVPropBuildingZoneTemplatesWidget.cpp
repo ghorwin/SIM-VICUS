@@ -36,7 +36,6 @@ SVPropBuildingZoneTemplatesWidget::SVPropBuildingZoneTemplatesWidget(QWidget *pa
 	m_ui->pushButtonExchangeZoneTemplates->setIcon(QIcon::fromTheme("exchange_table_element"));
 	m_ui->pushButtonSelectObjectsWithZoneTemplate->setIcon(QIcon::fromTheme("select_in_scene"));
 
-	m_ui->tableWidgetZoneTemplates->layout()->setMargin(0);
 }
 
 
