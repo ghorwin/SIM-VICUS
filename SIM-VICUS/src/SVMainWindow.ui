@@ -721,7 +721,7 @@
     <string>Positions camera to close to the currently selected geometry</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+F</string>
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionSimulationCO2Balance">

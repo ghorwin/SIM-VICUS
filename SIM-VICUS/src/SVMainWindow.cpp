@@ -183,7 +183,7 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// manually specify keyboard shortcut again, since on Windows this is a "standard shortcut" and get's removed
 	// when setting up UI
 	m_ui->actionFileClose->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_W));
-	m_ui->actionViewFindSelectedGeometry->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_F));
+	m_ui->actionViewFindSelectedGeometry->setShortcut(QKeySequence((int)Qt::CTRL + Qt::Key_G));
 
 	// connect "F9" with showing the start simulation page
 	QShortcut *shortCutStartSim = new QShortcut(QKeySequence((int)Qt::Key_F9), this);
