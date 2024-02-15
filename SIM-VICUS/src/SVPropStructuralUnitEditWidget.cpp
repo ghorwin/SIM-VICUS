@@ -49,10 +49,11 @@ SVPropStructuralUnitEditWidget::SVPropStructuralUnitEditWidget(QWidget *parent) 
 	onCurrentBuildingPropertyTypeChanged((BuildingPropertyType)m_ui->toolBox->currentIndex());
 }
 
-SVPropStructuralUnitEditWidget::~SVPropStructuralUnitEditWidget()
-{
+
+SVPropStructuralUnitEditWidget::~SVPropStructuralUnitEditWidget() {
 	delete m_ui;
 }
+
 
 void SVPropStructuralUnitEditWidget::setPropertyType(int structuralUnitPropertyType) {
 	m_ui->toolBox->setCurrentIndex((unsigned int)structuralUnitPropertyType);
