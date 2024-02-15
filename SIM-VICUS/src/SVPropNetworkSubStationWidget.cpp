@@ -29,6 +29,12 @@ SVPropNetworkSubStationWidget::SVPropNetworkSubStationWidget(QWidget *parent) :
 	m_ui->tableWidgetSubNetworks->horizontalHeader()->setStretchLastSection(true);
 
 	on_tableWidgetSubNetworks_itemSelectionChanged();
+
+	m_ui->pushButtonEditSubNetworks->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonExchangeSubNetwork->setIcon(QIcon::fromTheme("exchange_table_element"));
+	m_ui->pushButtonSelectNodesWithSubNetwork->setIcon(QIcon::fromTheme("select_in_scene"));
+
+	m_ui->pushButtonAssignSubNetwork->setIcon(QIcon::fromTheme("assign_db_element"));
 }
 
 
