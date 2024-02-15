@@ -30,6 +30,12 @@
        <string>Building objects</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayoutBuildings">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="labelFilterInfo">
          <property name="text">
@@ -104,6 +110,12 @@
        <string>Network objects</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayoutNetwork">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QComboBox" name="comboBoxNetwork"/>
        </item>
@@ -264,6 +276,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </widget>
    </item>
    <item>
