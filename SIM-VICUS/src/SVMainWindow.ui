@@ -31,6 +31,13 @@
      <addaction name="actionFileExportProjectPackage"/>
      <addaction name="actionExportNetworkAsGeoJSON"/>
     </widget>
+    <widget class="QMenu" name="menuImport_2">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <addaction name="actionFileImportEneryPlusIDF"/>
+     <addaction name="actionFileImportNetworkGISData"/>
+    </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
     <addaction name="separator"/>
@@ -41,6 +48,7 @@
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
+    <addaction name="menuImport_2"/>
     <addaction name="menuExport"/>
     <addaction name="actionFileOpenProjectDir"/>
     <addaction name="separator"/>
@@ -88,14 +96,17 @@
     <addaction name="actionViewFindSelectedGeometry"/>
     <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
+    <addaction name="separator"/>
     <addaction name="actionViewFromNorth"/>
     <addaction name="actionViewFromEast"/>
     <addaction name="actionViewFromSouth"/>
     <addaction name="actionViewFromWest"/>
+    <addaction name="separator"/>
     <addaction name="actionViewBirdsEyeViewNorthEast"/>
     <addaction name="actionViewBirdsEyeViewNorthWest"/>
     <addaction name="actionViewBirdsEyeViewSouthEast"/>
     <addaction name="actionViewBirdsEyeViewSouthWest"/>
+    <addaction name="separator"/>
     <addaction name="actionViewFromAbove"/>
     <addaction name="separator"/>
     <addaction name="actionViewShowGrid"/>
@@ -141,19 +152,20 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
-    <addaction name="actionEPDElements"/>
     <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
-    <addaction name="menuZoneControl"/>
     <addaction name="menuVentilationInfiltration"/>
-    <addaction name="actionDBSurfaceHeatingSystems"/>
+    <addaction name="menuZoneControl"/>
     <addaction name="actionDBZoneIdealHeatingCooling"/>
-    <addaction name="actionDBSupplySystems"/>
     <addaction name="actionDBZoneTemplates"/>
+    <addaction name="actionDBSurfaceHeatingSystems"/>
+    <addaction name="actionDBSupplySystems"/>
+    <addaction name="separator"/>
+    <addaction name="actionEPDElements"/>
     <addaction name="separator"/>
     <addaction name="actionDBAcousticBoundaryConditions"/>
     <addaction name="actionDBAcousticSoundAbsorptions"/>
@@ -456,6 +468,9 @@
    </property>
   </action>
   <action name="actionHelpCheckForUpdates">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Check for updates...</string>
    </property>
@@ -841,6 +856,9 @@
    </property>
   </action>
   <action name="actionEPDElements">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>EPD elements...</string>
    </property>
@@ -864,6 +882,9 @@
    </property>
   </action>
   <action name="actionDBAcousticBoundaryConditions">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Acoustic boundary conditions...</string>
    </property>
@@ -872,6 +893,9 @@
    </property>
   </action>
   <action name="actionDBAcousticSoundAbsorptions">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Acoustic sound absorptions...</string>
    </property>
@@ -892,8 +916,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../resources/icons.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
