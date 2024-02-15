@@ -39,8 +39,14 @@
          <string>Rect</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-rectangle-80.png</normaloff>:/gfx/icons8/icons8-rectangle-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -50,8 +56,14 @@
          <string>Polygon</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-polygon-80.png</normaloff>:/gfx/icons8/icons8-polygon-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -70,8 +82,14 @@
          <string>Window/Door</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-window-80.png</normaloff>:/gfx/icons8/icons8-window-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -94,8 +112,14 @@
          <string>Zone</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-3d-80.png</normaloff>:/gfx/icons8/icons8-3d-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -105,8 +129,14 @@
          <string>Roof</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-roof-80.png</normaloff>:/gfx/icons8/icons8-roof-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -125,8 +155,14 @@
          <string>Pipeline</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-pipeline-80.png</normaloff>:/gfx/icons8/icons8-pipeline-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -136,8 +172,14 @@
          <string>Sub Stations</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/icons.qrc">
+         <iconset>
           <normaloff>:/gfx/icons8/icons8-haus-80.png</normaloff>:/gfx/icons8/icons8-haus-80.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -172,8 +214,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resources/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
