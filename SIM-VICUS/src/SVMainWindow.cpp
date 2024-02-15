@@ -1757,7 +1757,7 @@ void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 	QFile::copy(filename, targetFile);
 
 	// now also copy the "DataFiles" directory needed for network examples, we don't ask permission for that
-	srcDir.cd("DataFiles");
+	srcDir.cd("../DataFiles");
 	targetDir.mkpath("DataFiles");
 	targetDir.cd("DataFiles");
 	if (srcDir.exists()) {
