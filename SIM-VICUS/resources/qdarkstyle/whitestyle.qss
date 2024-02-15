@@ -24,64 +24,62 @@ width: 5px;
 }
 
 QSplitter::handle:vertical {
-height: 5px;
-  image: url(":/qss_icons/rc/line_horizontal.png");
+    height: 5px;
+	image: url(":/qss_icons/rc/line_horizontal.png");
 }
 
 QToolButton {
-background-color: transparent;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  margin: 0px;
-  padding: 2px;
-  /* The subcontrols below are used only in the DelayedPopup mode */
-  /* The subcontrols below are used only in the MenuButtonPopup mode */
-  /* The subcontrol below is used only in the InstantPopup or DelayedPopup mode */
+    background-color: transparent;
+	  border: 1px solid transparent;
+	  border-radius: 3px;
+	  margin: 0px;
+	  padding: 2px;
 }
 
 QToolBar {
-border-bottom: 0px;
-  padding: 2px;
-  font-weight: bold;
-  spacing: 2px;
+    border-bottom: 0px;
+	padding: 2px;
+	font-weight: bold;
+	spacing: 2px;
 }
 
 QToolBar QToolButton {
-padding: 2px;
+    padding: 2px;
   border-radius: 2px;
 }
 
 QToolBar QToolButton:hover {
-border: 1px solid #EB992F;
+    border: 1px solid #EB992F;
 }
 
 QToolBar QToolButton:checked {
-border: 1px solid #EB992F;
+    border: 1px solid #EB992F;
   background-color: #FFDFA0;
 }
 
 
 SVWelcomeScreen QToolButton {
-border: 1px solid lightgray;
+    border: 1px solid lightgray;
 	border-radius: 2px;
 }
 
 SVWelcomeScreen QToolButton:hover {
-border: 1px solid #EB992F;
+    border: 1px solid #EB992F;
 }
 
-QLineEdit {
-  border-radius: 3px;
-}
+
 
 QLineEdit#xAxis {
+    border-radius: 2px;
     border: 1px solid #FF0000;
 }
 
 QLineEdit#yAxis {
-    border: 1px solid #00BF00;
+    border-radius: 2px;
+	border: 1px solid #00BF00;
 }
 
 QLineEdit#zAxis {
+    border-radius: 2px;
     border: 1px solid #0000FF;
 }
