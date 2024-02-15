@@ -1085,7 +1085,7 @@ https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qtoolbutton
 --------------------------------------------------------------------------- */
 
 QToolButton {
-background-color: transparent;
+  background-color: transparent;
   border: 1px solid transparent;
   border-radius: 3px;
   margin: 0px;
