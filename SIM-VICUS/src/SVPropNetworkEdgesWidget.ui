@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>561</width>
-    <height>555</height>
+    <width>797</width>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,9 +67,6 @@
       <string>Pipes used in current project</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0" colspan="4">
-       <widget class="QTableWidget" name="tableWidgetPipes"/>
-      </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="pushButtonExchangePipe">
         <property name="text">
@@ -84,17 +81,20 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QPushButton" name="pushButtonSelectEdgesWithPipe">
+        <property name="text">
+         <string>Select</string>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="iconSize">
          <size>
-          <width>280</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
-       </spacer>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="5">
+       <widget class="QTableWidget" name="tableWidgetPipes"/>
       </item>
       <item row="1" column="0">
        <widget class="QPushButton" name="pushButtonEditPipe">
@@ -110,17 +110,17 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QPushButton" name="pushButtonSelectEdgesWithPipe">
-        <property name="text">
-         <string>Select</string>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="iconSize">
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>24</width>
-          <height>24</height>
+          <width>280</width>
+          <height>20</height>
          </size>
         </property>
-       </widget>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -134,9 +134,16 @@
       <item row="1" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Assign pipe:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButtonAssignPipe">
           <property name="text">
-           <string>Assign pipe...</string>
+           <string>DB...</string>
           </property>
           <property name="iconSize">
            <size>

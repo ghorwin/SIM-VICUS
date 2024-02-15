@@ -33,6 +33,12 @@ SVPropNetworkEdgesWidget::SVPropNetworkEdgesWidget(QWidget *parent) :
 	m_ui->tableWidgetPipes->horizontalHeader()->setStretchLastSection(true);
 
 	on_tableWidgetPipes_itemSelectionChanged();
+
+	m_ui->pushButtonEditPipe->setIcon(QIcon::fromTheme("edit_table_element"));
+	m_ui->pushButtonExchangePipe->setIcon(QIcon::fromTheme("exchange_table_element"));
+	m_ui->pushButtonSelectEdgesWithPipe->setIcon(QIcon::fromTheme("select_in_scene"));
+
+	m_ui->pushButtonAssignPipe->setIcon(QIcon::fromTheme("assign_db_element"));
 }
 
 
