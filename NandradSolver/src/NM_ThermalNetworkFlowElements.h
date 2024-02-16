@@ -924,7 +924,7 @@ private:
 class TNIdealHeaterCooler : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid);
+	TNIdealHeaterCooler(const NANDRAD::HydraulicFluid & fluid, const NANDRAD::HydraulicNetworkElement &e);
 
 	// *** ThermalNetworkAbstractFlowElement interface
 
@@ -947,10 +947,12 @@ private:
 	unsigned int	m_id = NANDRAD::INVALID_ID;
 	const double	*m_supplyTemperatureScheduleRef = nullptr;
 
-	/*! Heat loss needed to provide the given supply temperature (If we add heat this is negative).
-		Is not part of the base class since we use ThermalNetworkAbstractFlowElement. */
-	double			m_heatLoss = 888;
-
+	/*! Heating power of element in W, can be positive (when heating) or negative (when cooling). */
+	double			m_heatingPower = 888;
+	/*! Maximum heating power in W, applied only if > 0. Limits actual heating power. */
+	double			m_maxHeatingPower = 0;
+	/*! Maximum cooling power in W, applied only if > 0. Limits actual cooling power. */
+	double			m_maxCoolingPower = 0;
 };
 
 

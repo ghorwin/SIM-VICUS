@@ -556,16 +556,17 @@ namespace VICUS {
 				case 12 : return "PipeMaxDiscretizationWidth";
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
-				case 15 : return "PressureLoss";
-				case 16 : return "MinimumOutletTemperature";
-				case 17 : return "HeatingPowerB0W35";
-				case 18 : return "HeatingBufferSupplyTemperature";
-				case 19 : return "HeatingBufferReturnTemperature";
-				case 20 : return "DHWBufferSupplyTemperature";
-				case 21 : return "DHWBufferReturnTemperature";
-				case 22 : return "HeatingBufferVolume";
-				case 23 : return "DHWBufferVolume";
-				case 24 : return "PipeLength";
+				case 15 : return "MaximumCoolingPower";
+				case 16 : return "PressureLoss";
+				case 17 : return "MinimumOutletTemperature";
+				case 18 : return "HeatingPowerB0W35";
+				case 19 : return "HeatingBufferSupplyTemperature";
+				case 20 : return "HeatingBufferReturnTemperature";
+				case 21 : return "DHWBufferSupplyTemperature";
+				case 22 : return "DHWBufferReturnTemperature";
+				case 23 : return "HeatingBufferVolume";
+				case 24 : return "DHWBufferVolume";
+				case 25 : return "PipeLength";
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -1245,16 +1246,17 @@ namespace VICUS {
 				case 12 : return "PipeMaxDiscretizationWidth";
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
-				case 15 : return "PressureLoss";
-				case 16 : return "MinimumOutletTemperature";
-				case 17 : return "HeatingPowerB0W35";
-				case 18 : return "HeatingBufferSupplyTemperature";
-				case 19 : return "HeatingBufferReturnTemperature";
-				case 20 : return "DHWBufferSupplyTemperature";
-				case 21 : return "DHWBufferReturnTemperature";
-				case 22 : return "HeatingBufferVolume";
-				case 23 : return "DHWBufferVolume";
-				case 24 : return "PipeLength";
+				case 15 : return "MaximumCoolingPower";
+				case 16 : return "PressureLoss";
+				case 17 : return "MinimumOutletTemperature";
+				case 18 : return "HeatingPowerB0W35";
+				case 19 : return "HeatingBufferSupplyTemperature";
+				case 20 : return "HeatingBufferReturnTemperature";
+				case 21 : return "DHWBufferSupplyTemperature";
+				case 22 : return "DHWBufferReturnTemperature";
+				case 23 : return "HeatingBufferVolume";
+				case 24 : return "DHWBufferVolume";
+				case 25 : return "PipeLength";
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -1935,16 +1937,17 @@ namespace VICUS {
 				case 12 : return "Maximum width/length of discretized volumes in pipe";
 				case 13 : return "Carnot efficiency eta";
 				case 14 : return "Maximum heating power";
-				case 15 : return "Pressure loss for valve";
-				case 16 : return "Minimum outlet temperature of heat exchanger, used for clipping of heat extraction";
-				case 17 : if (no_description != nullptr) *no_description = true; return "HeatingPowerB0W35";
-				case 18 : return "Heat pump supply temperature for heating buffer storage";
-				case 19 : return "Heat pump return temperature for heating buffer storage";
-				case 20 : return "Heat pump supply temperature for DHW buffer storage";
-				case 21 : return "Heat pump return temperature for DHW buffer storage";
-				case 22 : return "Heat pump heating buffer storage volume";
-				case 23 : if (no_description != nullptr) *no_description = true; return "DHWBufferVolume";
-				case 24 : return "Length of pipe";
+				case 15 : return "Maximum cooling power";
+				case 16 : return "Pressure loss for valve";
+				case 17 : return "Minimum outlet temperature of heat exchanger, used for clipping of heat extraction";
+				case 18 : if (no_description != nullptr) *no_description = true; return "HeatingPowerB0W35";
+				case 19 : return "Heat pump supply temperature for heating buffer storage";
+				case 20 : return "Heat pump return temperature for heating buffer storage";
+				case 21 : return "Heat pump supply temperature for DHW buffer storage";
+				case 22 : return "Heat pump return temperature for DHW buffer storage";
+				case 23 : return "Heat pump heating buffer storage volume";
+				case 24 : if (no_description != nullptr) *no_description = true; return "DHWBufferVolume";
+				case 25 : return "Length of pipe";
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -2624,16 +2627,17 @@ namespace VICUS {
 				case 12 : return "m";
 				case 13 : return "---";
 				case 14 : return "W";
-				case 15 : return "Bar";
-				case 16 : return "C";
-				case 17 : return "W";
-				case 18 : return "C";
+				case 15 : return "W";
+				case 16 : return "Bar";
+				case 17 : return "C";
+				case 18 : return "W";
 				case 19 : return "C";
 				case 20 : return "C";
 				case 21 : return "C";
-				case 22 : return "m3";
+				case 22 : return "C";
 				case 23 : return "m3";
-				case 24 : return "m";
+				case 24 : return "m3";
+				case 25 : return "m";
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -3323,6 +3327,7 @@ namespace VICUS {
 				case 22 : return "#FFFFFF";
 				case 23 : return "#FFFFFF";
 				case 24 : return "#FFFFFF";
+				case 25 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -4012,6 +4017,7 @@ namespace VICUS {
 				case 22 : return std::numeric_limits<double>::quiet_NaN();
 				case 23 : return std::numeric_limits<double>::quiet_NaN();
 				case 24 : return std::numeric_limits<double>::quiet_NaN();
+				case 25 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::intPara_t
 			case 47 :
@@ -4360,7 +4366,7 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 45 : return 15;
 			// NetworkComponent::para_t
-			case 46 : return 25;
+			case 46 : return 26;
 			// NetworkComponent::intPara_t
 			case 47 : return 2;
 			// NetworkController::ModelType
@@ -4530,7 +4536,7 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 45 : return 14;
 			// NetworkComponent::para_t
-			case 46 : return 24;
+			case 46 : return 25;
 			// NetworkComponent::intPara_t
 			case 47 : return 1;
 			// NetworkController::ModelType

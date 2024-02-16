@@ -305,7 +305,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler: {
-					TNIdealHeaterCooler * element = new TNIdealHeaterCooler(e.m_id, m_network->m_fluid);
+					TNIdealHeaterCooler * element = new TNIdealHeaterCooler(m_network->m_fluid, e);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // add nullptr
 				} break;

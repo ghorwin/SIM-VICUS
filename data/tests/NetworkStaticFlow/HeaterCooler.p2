@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.4.0">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="0">0_climate</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">HydraulicNetwork</SubDir>
+			<SubDir Color="#ff007f" Checked="0">HydraulicNetwork.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">HydraulicNetwork.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="0">HydraulicNetworkBackFlow</SubDir>
+			<SubDir Color="#45ad45" Checked="0">HydraulicNetworkBackFlow.VC2019_win64</SubDir>
+			<SubDir Color="#ffee00" Checked="0">HydraulicNetworkBackFlow.gcc_linux</SubDir>
+			<SubDir Color="#55aaff" Checked="0">HydraulicNetworkConstPressurePumpLimited</SubDir>
+			<SubDir Color="#55aaff" Checked="0">HydraulicNetworkConstPressurePumpLimited.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">HydraulicNetworkConstPressurePumpLimited.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">HydraulicNetworkConstPressurePumpLimitedPolynom</SubDir>
+			<SubDir Color="#c66300" Checked="0">HydraulicNetworkConstPressurePumpLimitedPolynom.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">HydraulicNetworkInvertedPump</SubDir>
+			<SubDir Color="#c66300" Checked="0">HydraulicNetworkInvertedPump.VC2019_win64</SubDir>
+			<SubDir Color="#aa0000" Checked="0">HydraulicNetworkInvertedPump.gcc_linux</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">HydraulicNetworkPipeRegister</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">HydraulicNetworkPipeRegister.VC2019_win64</SubDir>
+			<SubDir Color="#ffee00" Checked="0">HydraulicNetworkPipeRegister.gcc_linux</SubDir>
+			<SubDir Color="#416fce" Checked="0">HydraulicNetworkPressureLossElement</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">HydraulicNetworkPressureLossElement.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">HydraulicNetworkPressureLossElement.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">HydraulicNetworkPressureLossValve</SubDir>
+			<SubDir Color="#ffee00" Checked="0">HydraulicNetworkPressureLossValve.VC2019_win64</SubDir>
+			<SubDir Color="#45ad45" Checked="0">HydraulicNetworkPressureLossValve.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">HydraulicNetworkSplitter</SubDir>
+			<SubDir Color="#55aaff" Checked="0">HydraulicNetworkSplitter.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">HydraulicNetworkSplitter.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">HydraulicNetworkZeroPump</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">HydraulicNetworkZeroPump.VC2019_win64</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">HydraulicNetworkZeroPump.gcc_linux</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkConstantHeatloss_Dense</SubDir>
+			<SubDir Color="#ff5500" Checked="0">ThermoHydraulicNetworkConstantHeatloss_Dense.VC2019_win64</SubDir>
+			<SubDir Color="#ff5500" Checked="0">ThermoHydraulicNetworkConstantHeatloss_Dense.gcc_linux</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkConstantHeatloss_KLU</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep.VC2019_win64</SubDir>
+			<SubDir Color="#550000" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep.gcc_linux</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatHeatPulse</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatHeatPulse.VC2019_win64</SubDir>
+			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkDynamicPipeAdiabatHeatPulse.gcc_linux</SubDir>
+			<SubDir Color="#005500" Checked="0">ThermoHydraulicNetworkDynamicPipeFluxStep</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkDynamicPipeFluxStep.VC2019_win64</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">ThermoHydraulicNetworkDynamicPipeFluxStep.gcc_linux</SubDir>
+			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkFloorHeatingExchange</SubDir>
+			<SubDir Color="#ffee00" Checked="0">ThermoHydraulicNetworkFloorHeatingExchange.VC2019_win64</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkFloorHeatingExchange.gcc_linux</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxConst</SubDir>
+			<SubDir Color="#aa0000" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxConst.VC2019_win64</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxConst.gcc_linux</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile</SubDir>
+			<SubDir Color="#005500" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSource</SubDir>
+			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSource.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSource.gcc_linux</SubDir>
+			<SubDir Color="#55aaff" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSupply</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSupply.VC2019_win64</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSupply.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">ThermoHydraulicNetworkHeatPumpOnOffSource</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkHeatPumpOnOffSource.VC2019_win64</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermoHydraulicNetworkHeatPumpOnOffSource.gcc_linux</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">ThermoHydraulicNetworkHeatPumpVariableSource</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkHeatPumpVariableSource.VC2019_win64</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkHeatPumpVariableSource.gcc_linux</SubDir>
+			<SubDir Color="#416fce" Checked="1">ThermoHydraulicNetworkIdealHeaterCoolerLimited</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermoHydraulicNetworkParallelPipes</SubDir>
+			<SubDir Color="#7141d1" Checked="0">ThermoHydraulicNetworkParallelPipes.VC2019_win64</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkParallelPipes.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">ThermoHydraulicNetworkParallelPipesMixer</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkParallelPipesMixer.VC2019_win64</SubDir>
+			<SubDir Color="#7141d1" Checked="0">ThermoHydraulicNetworkParallelPipesMixer.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">ThermoHydraulicNetworkParallelPipesZoneExchange</SubDir>
+			<SubDir Color="#55aaff" Checked="0">ThermoHydraulicNetworkParallelPipesZoneExchange.VC2019_win64</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkParallelPipesZoneExchange.gcc_linux</SubDir>
+			<SubDir Color="#550000" Checked="0">ThermoHydraulicNetworkPumpWithLosses</SubDir>
+			<SubDir Color="#550000" Checked="0">ThermoHydraulicNetworkPumpWithLosses.VC2019_win64</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkPumpWithLosses.gcc_linux</SubDir>
+			<SubDir Color="#ff5500" Checked="0">ThermoHydraulicNetworkPumpWithLossesAndFraction</SubDir>
+			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkPumpWithLossesAndFraction.VC2019_win64</SubDir>
+			<SubDir Color="#005500" Checked="0">ThermoHydraulicNetworkPumpWithLossesAndFraction.gcc_linux</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkPumpWithLossesScheduled</SubDir>
+			<SubDir Color="#aa55ff" Checked="0">ThermoHydraulicNetworkPumpWithLossesScheduled.VC2019_win64</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkPumpWithLossesScheduled.gcc_linux</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkSerialPipes</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkSerialPipes.VC2019_win64</SubDir>
+			<SubDir Color="#55aaff" Checked="0">ThermoHydraulicNetworkSerialPipes.gcc_linux</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkSerialPipesSingleZoneExchange</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkSerialPipesSingleZoneExchange.VC2019_win64</SubDir>
+			<SubDir Color="#550000" Checked="0">ThermoHydraulicNetworkSerialPipesSingleZoneExchange.gcc_linux</SubDir>
+			<SubDir Color="#005500" Checked="0">ThermoHydraulicNetworkSimplePipeAdiabat</SubDir>
+			<SubDir Color="#7141d1" Checked="0">ThermoHydraulicNetworkSimplePipeAdiabat.VC2019_win64</SubDir>
+			<SubDir Color="#550000" Checked="0">ThermoHydraulicNetworkSimplePipeAdiabat.gcc_linux</SubDir>
+			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkSimplePipeTemperatureDataFile</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ThermoHydraulicNetworkSimplePipeTemperatureDataFile.VC2019_win64</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkSimplePipeTemperatureDataFile.gcc_linux</SubDir>
+			<SubDir Color="#aaaa00" Checked="0">ThermoHydraulicNetworkSingleZoneExchange</SubDir>
+			<SubDir Color="#55aaff" Checked="0">ThermoHydraulicNetworkSingleZoneExchange.VC2019_win64</SubDir>
+			<SubDir Color="#ff5500" Checked="0">ThermoHydraulicNetworkSingleZoneExchange.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Quantity translation map.-->
+	<QuantityTranslations>
+		<Entry org="Network(id=1)">static network</Entry>
+		<Entry org="NetworkElement(id=1001)">pump</Entry>
+		<Entry org="NetworkElement(id=1002)">pipe</Entry>
+		<Entry org="NetworkElement(id=1003)">heatpump</Entry>
+	</QuantityTranslations>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?C</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>pump.OutletNodeTemperature</ColumnLabel>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?C</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>pipe.OutletNodeTemperature</ColumnLabel>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?C</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>ideal heater.OutletNodeTemperature</ColumnLabel>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<PenColor>#e41a1c</PenColor>
+						<MarkerColor>#e41a1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<PenColor>#377eb8</PenColor>
+						<MarkerColor>#377eb8</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?W</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>ideal heater.HeatingPower</ColumnLabel>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

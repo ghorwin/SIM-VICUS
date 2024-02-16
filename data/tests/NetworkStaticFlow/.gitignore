@@ -34,3 +34,4 @@
 /ThermoHydraulicNetworkHeatPumpOnOffSource/
 /ThermoHydraulicNetworkHeatPumpVariableSource/
 /HydraulicNetworkConstPressurePumpLimitedPolynom/
+/ThermoHydraulicNetworkIdealHeaterCoolerLimited/

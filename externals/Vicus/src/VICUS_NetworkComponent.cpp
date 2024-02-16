@@ -231,6 +231,8 @@ std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkCompo
 			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
 		case MT_HeatExchanger:
 			return {P_MinimumOutletTemperature};
+		case MT_IdealHeaterCooler:
+			return {P_MaximumHeatingPower, P_MaximumCoolingPower};
 		default:;
 	}
 	return {};

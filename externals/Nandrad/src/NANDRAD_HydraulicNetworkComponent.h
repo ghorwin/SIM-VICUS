@@ -74,6 +74,7 @@ public:
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width/length of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
+		P_MaximumCoolingPower,					// Keyword: MaximumCoolingPower					[W]		'Maximum cooling power'
 		P_PressureLoss,							// Keyword: PressureLoss						[Bar]	'Pressure loss for valve'
 		P_MinimumOutletTemperature,				// Keyword: MinimumOutletTemperature			[C]		'Minimum outlet temperature of heat exchanger, used for clipping of heat extraction'
 		P_HeatingPowerB0W35,					// Keyword: HeatingPowerB0W35					[W]		'Heat pump heating power at B0/W35

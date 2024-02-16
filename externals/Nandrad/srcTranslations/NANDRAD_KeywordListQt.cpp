@@ -74,6 +74,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width/length of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
+	tr("Maximum cooling power");
 	tr("Pressure loss for valve");
 	tr("Minimum outlet temperature of heat exchanger, used for clipping of heat extraction");
 	tr("HeatingPowerB0W35");
