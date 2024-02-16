@@ -66,6 +66,7 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 
 
 void HNPipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("PressureDifferencePerLength","Pa/m", "The pressure difference per m pipe length", false));
 	if(m_controlElement == nullptr)
 		return;
 	// calculate zetaControlled value for valve
@@ -74,10 +75,10 @@ void HNPipeElement::modelQuantities(std::vector<QuantityDescription> & quantitie
 
 
 void HNPipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
-	if(m_controlElement == nullptr)
-		return;
+	valRefs.push_back(&m_pressureLossPerLength);
 	// calculate zetaControlled value for valve
-	valRefs.push_back(&m_zetaControlled);
+	if(m_controlElement != nullptr)
+		valRefs.push_back(&m_zetaControlled);
 }
 
 
@@ -236,7 +237,8 @@ double HNPipeElement::zetaControlled() const {
 }
 
 
-void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/) {
+void HNPipeElement::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
+	m_pressureLossPerLength = pressureLossFriction(mdot/m_nParallelPipes) / m_length;
 	// calculate zetaControlled value for valve
 	if (m_controlElement != nullptr) {
 		m_zetaControlled = zetaControlled();

@@ -105,6 +105,9 @@ private:
 	/*! Number of parallel pipes (=1 per default).*/
 	unsigned int					m_nParallelPipes;
 
+	/*! Pressure loss of pipe per length, used as output quantity only.*/
+	double							m_pressureLossPerLength = -999;
+
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
