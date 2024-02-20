@@ -110,10 +110,14 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			m_para[P_HydraulicDiameter].value=1;
 			m_para[P_PressureLossCoefficient].value=0;
 			// if max heating / cooling power given: check them
-			if (!m_para[P_MaximumHeatingPower].name.empty())
+			if (!m_para[P_MaximumHeatingPower].name.empty()) {
 				checkModelParameter(m_para[P_MaximumHeatingPower], P_MaximumHeatingPower);
-			if (!m_para[P_MaximumCoolingPower].name.empty())
+				checkModelParameter(m_para[P_Volume], P_Volume);
+			}
+			if (!m_para[P_MaximumCoolingPower].name.empty()) {
 				checkModelParameter(m_para[P_MaximumCoolingPower], P_MaximumCoolingPower);
+				checkModelParameter(m_para[P_Volume], P_Volume);
+			}
 		}
 
 		// for MT_ConstantPressurePump and MT_VariablePressurePump, we enforce existance of complete parameter set (pump efficiency,

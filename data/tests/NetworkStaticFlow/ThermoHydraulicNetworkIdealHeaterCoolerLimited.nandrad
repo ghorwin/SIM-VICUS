@@ -58,8 +58,9 @@
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="4" modelType="IdealHeaterCooler">
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="MaximumHeatingPower" unit="W">2000</IBK:Parameter>
-						<IBK:Parameter name="MaximumCoolingPower" unit="W">3000</IBK:Parameter>
+						<IBK:Parameter name="MaximumCoolingPower" unit="W">2000</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>

@@ -232,7 +232,7 @@ std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkCompo
 		case MT_HeatExchanger:
 			return {P_MinimumOutletTemperature};
 		case MT_IdealHeaterCooler:
-			return {P_MaximumHeatingPower, P_MaximumCoolingPower};
+			return {P_Volume, P_MaximumHeatingPower, P_MaximumCoolingPower};
 		default:;
 	}
 	return {};

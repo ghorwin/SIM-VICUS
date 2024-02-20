@@ -305,9 +305,20 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler: {
-					TNIdealHeaterCooler * element = new TNIdealHeaterCooler(m_network->m_fluid, e);
-					m_p->m_flowElements.push_back(element); // transfer ownership
-					m_p->m_heatLossElements.push_back(nullptr); // add nullptr
+					// limited heater / cooler is a HeatLoss element with 1 state
+					if ( !e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].name.empty()
+						|| !e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumCoolingPower].name.empty())
+					{
+						TNIdealHeaterCoolerLimited * element = new TNIdealHeaterCoolerLimited(m_network->m_fluid, e);
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(nullptr); // add nullptr
+					}
+					// without limitation it is a simple temperature adapter
+					else {
+						TNIdealHeaterCooler * element = new TNIdealHeaterCooler(e.m_id, m_network->m_fluid);
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(nullptr); // add nullptr
+					}
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:

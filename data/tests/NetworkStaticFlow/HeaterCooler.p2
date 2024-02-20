@@ -169,9 +169,11 @@
 						<TitleText>Zeit [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="false">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>55</Maximum>
+						<Minimum>5</Minimum>
 					</Axis>
 					<Axis index="2" enabled="false">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -190,7 +192,7 @@
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnLabel>ideal heater.HeatingPower</ColumnLabel>
+					<ColumnLabel>ideal heater.FlowElementHeatLoss</ColumnLabel>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
@@ -220,13 +222,64 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?W</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>ideal heater.FlowElementHeatLoss</ColumnLabel>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkIdealHeaterCoolerLimited/results/network_elements.tsv?C</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnLabel>ideal heater.OutletNodeTemperature</ColumnLabel>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series leftAxis="false">
+						<TitleText>$quantity</TitleText>
+						<PenWidth>1</PenWidth>
+						<PenColor>#e41a1c</PenColor>
+						<MarkerColor>#e41a1c</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="false">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
