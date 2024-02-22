@@ -69,3 +69,5 @@ moc_*
 /release/
 /build-*/
 /SIM-VICUS/projects/build-*/
+/externals/QtExt/projects/Qt/shared/
+/externals/QtExt/projects/Qt/static/
