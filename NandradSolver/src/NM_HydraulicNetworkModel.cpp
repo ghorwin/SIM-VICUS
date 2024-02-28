@@ -153,10 +153,15 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
+				unsigned int numberParallelElements = 1;
+				if (!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].empty())
+					numberParallelElements = (unsigned int)e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].value;
+
 				// create pump model
 				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component,
 																				  m_hydraulicNetwork->m_fluid,
-																				  e.m_controlElement);
+																				  e.m_controlElement,
+																				  numberParallelElements);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pumpElement, e);
 				// add to flow elements
@@ -178,8 +183,13 @@ void HydraulicNetworkModel::setup() {
 				if (e.m_controlElement == nullptr)
 					throw IBK::Exception("Flow element component of type 'ControlledPump' requires mass flow controller.", FUNC_ID);
 
+				unsigned int numberParallelElements = 1;
+				if (!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].empty())
+					numberParallelElements = (unsigned int)e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].value;
+
 				// create pump model
-				HNControlledPump * pumpElement = new HNControlledPump(e, m_hydraulicNetwork->m_fluid, &m_elementIds, &m_p->m_pressureDifferences);
+				HNControlledPump * pumpElement = new HNControlledPump(e, m_hydraulicNetwork->m_fluid, &m_elementIds,
+																	 &m_p->m_pressureDifferences, numberParallelElements);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pumpElement, e);
 
@@ -190,8 +200,13 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump:
 			{
+				unsigned int numberParallelElements = 1;
+				if (!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].empty())
+					numberParallelElements = (unsigned int)e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].value;
+
 				HNVariablePressureHeadPump * pumpElement = new HNVariablePressureHeadPump(e.m_id, *e.m_component,
-																						  m_hydraulicNetwork->m_fluid);
+																						  m_hydraulicNetwork->m_fluid,
+																						  numberParallelElements);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 				m_pumpElements.push_back(pumpElement);

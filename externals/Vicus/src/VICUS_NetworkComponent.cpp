@@ -245,6 +245,9 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_DynamicPipe:
 			return {IP_NumberParallelPipes};
 		case MT_PressureLossElement:
+		case MT_ConstantPressurePump:
+		case MT_ControlledPump:
+		case MT_VariablePressurePump:
 			return {IP_NumberParallelElements};
 		default: break;
 	}

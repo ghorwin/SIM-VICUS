@@ -3421,8 +3421,8 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supplySyst
 												   comp->m_para[VICUS::NetworkComponent::P_PipeLength].value);
 				nandradElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelPipes];
 			}
-			// for PressureLossElement
-			if (comp->m_modelType == VICUS::NetworkComponent::MT_PressureLossElement){
+			// some components can be multiple in parallel
+			if (!comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements].empty()){
 				nandradElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
 						comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements];
 			}
@@ -4493,8 +4493,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				}
 			}
 
-			// PressureLossElement
-			if (comp->m_modelType == VICUS::NetworkComponent::MT_PressureLossElement){
+			// some components can be multiple in parallel
+			if (!comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements].empty()){
 				nandradElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
 						comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements];
 			}

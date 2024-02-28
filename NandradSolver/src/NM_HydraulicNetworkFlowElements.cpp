@@ -640,8 +640,10 @@ void HNConstantPressureLossValve::setInputValueRefs(std::vector<const double *>:
 
 // *** HNAbstractPowerLimitedPumpModel ***
 
-HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & density, const NANDRAD::HydraulicNetworkComponent & component) :
-	m_density(density)
+HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & density, const NANDRAD::HydraulicNetworkComponent & component,
+																 unsigned int numberParallelPumps) :
+	m_density(density),
+	m_numberParallelPumps(numberParallelPumps)
 {
 	if (component.m_polynomCoefficients.m_values.find("MaximumPressureHead") != component.m_polynomCoefficients.m_values.end() &&
 		component.m_polynomCoefficients.m_values.find("MaximumElectricalPower") != component.m_polynomCoefficients.m_values.end()) {
@@ -661,7 +663,8 @@ HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & 
 }
 
 
-double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot) const {
+double HNAbstractPowerLimitedPumpModel::maximumPressureHead(double mdot) const {
+	mdot = mdot / m_numberParallelPumps;
 
 	if (!m_isPowerLimited)
 		return std::numeric_limits<double>::max();
@@ -689,7 +692,8 @@ double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot)
 }
 
 
-double HNAbstractPowerLimitedPumpModel::efficiency(const double & mdot, const double & dp) const {
+double HNAbstractPowerLimitedPumpModel::efficiency(double mdot, double dp) const {
+	mdot = mdot / m_numberParallelPumps;
 
 	// 0. if no power limitation is used, the efficiency is constant
 	if (!m_isPowerLimited)
@@ -729,7 +733,9 @@ double HNAbstractPowerLimitedPumpModel::efficiency(const double & mdot, const do
 }
 
 
-double HNAbstractPowerLimitedPumpModel::electricalPower(const double & mdot, const double & dp, const double & eta) const{
+double HNAbstractPowerLimitedPumpModel::electricalPower(double mdot, double dp, double eta) const{
+	mdot = mdot / m_numberParallelPumps;
+
 	double Pel = 0;
 	if (eta > 0)
 		Pel = mdot/m_density * dp / eta;
@@ -738,9 +744,9 @@ double HNAbstractPowerLimitedPumpModel::electricalPower(const double & mdot, con
 		Pel=0;
 	// for simple linear model: cut maximum power
 	if (m_isPowerLimited && m_coefficientsPelMax.empty() && Pel > m_maxElectricalPower)
-		return m_maxElectricalPower;
+		return m_numberParallelPumps * m_maxElectricalPower;
 	else
-		return Pel;
+		return m_numberParallelPumps * Pel;
 }
 
 
@@ -750,8 +756,9 @@ double HNAbstractPowerLimitedPumpModel::electricalPower(const double & mdot, con
 
 HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
 											   const NANDRAD::HydraulicFluid & fluid,
-											   const NANDRAD::HydraulicNetworkControlElement * ctr) :
-	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, component),
+											   const NANDRAD::HydraulicNetworkControlElement * ctr,
+											   unsigned int numberParallelPumps) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, component, numberParallelPumps),
 	m_id(id),
 	m_controlElement(ctr)
 {
@@ -764,6 +771,7 @@ double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, doubl
 	double pressureHead = *m_pressureHeadRef;
 	// if pump is turned off, it should cause a large pressure drop
 	if (!m_pumpIsOn) {
+		mdot = mdot / m_numberParallelPumps;
 		return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
 	}
 	// if pump is on (or no controller is used): we apply the normal pressure head
@@ -923,8 +931,8 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 
 HNControlledPump::HNControlledPump(const NANDRAD::HydraulicNetworkElement & e,
 								   const NANDRAD::HydraulicFluid & fluid, const std::vector<unsigned int> * networkElementIds,
-								   const std::vector<double> * networkPressureDifferences) :
-	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, *e.m_component),
+								   const std::vector<double> * networkPressureDifferences, unsigned int numberParallelPumps) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, *e.m_component, numberParallelPumps),
 	m_controlElement(e.m_controlElement),
 	m_id(e.m_id),
 	m_observedPressureDiffElementIdMap(e.m_observedPressureDiffElementIds.m_values),
@@ -1164,7 +1172,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 			// anti-windup of PI-controller: if we get very small mass fluxes, this means the heat loss of the
 			// following element is very small. We dont want to sum up that error, so we set the integral to 0.
-			if (mdot < 1e-5)
+			if (mdot / m_numberParallelPumps < 1e-5)
 				m_controller->resetErrorIntegral();
 		} break;
 
@@ -1175,7 +1183,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			if (mdotSetpoint == 0.0)
 				return 0.0;
 			// compute controller error
-			e = mdotSetpoint - mdot;
+			e = mdotSetpoint - mdot / m_numberParallelPumps;
 			// if e is > 0 if our mass flux is below the limit (we need to increase mass flux by increasing pressure head)
 		} break;
 
@@ -1314,8 +1322,8 @@ void HNControlledPump::deserialize(void *& dataPtr) {
 // *** HNVariablePressureHeadPump ***
 
 HNVariablePressureHeadPump::HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
-													   const NANDRAD::HydraulicFluid & fluid) :
-	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, component),
+													   const NANDRAD::HydraulicFluid & fluid, unsigned int numberParallelPumps) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value, component, numberParallelPumps),
 	m_id(id)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
@@ -1371,11 +1379,11 @@ double HNVariablePressureHeadPump::pressureHead(double mdot) const {
 	// If our mass flux falls below the threshold mdot_cut, we return a constant pressure head.
 	// However, we cannot return the pressure head p(mdot=0) = minimumPressureHead, because our mdot > 0
 	// Hence, we just return the linearly interpolated pressure head p(mdot=mdot_cut)
-	if (mdot < mdot_cut)
+	if (mdot / m_numberParallelPumps < mdot_cut)
 		return m_minimumPressureHead + slope * mdot_cut; // = m_minimumPressureHead + (m_designPressureHead - m_minimumPressureHead) * 0.1;
 
 	// linear dp-v curve
-	pressureHead = m_minimumPressureHead + slope * mdot;
+	pressureHead = m_minimumPressureHead + slope * mdot / m_numberParallelPumps;
 
 	// clipping
 	double pressHeadMax  = maximumPressureHead(mdot);
