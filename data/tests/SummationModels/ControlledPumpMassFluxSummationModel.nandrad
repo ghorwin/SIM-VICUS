@@ -406,6 +406,19 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
+				<OutputDefinition>
+					<Quantity>HeatingPower</Quantity>
+					<ObjectListName>IdealHeater</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>HeatingPower</Quantity>
+					<ObjectListName>IdealHeater</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Integral</TimeType>
+				</OutputDefinition>
+
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -443,7 +456,7 @@
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Summation Models">
-				<FilterID>801,802,803</FilterID>
+				<FilterID>802,803</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
