@@ -131,6 +131,11 @@ public:
 	*/
 	void writeXML(const IBK::Path & filename) const;
 
+	/*! Writes the project file to an XML file.
+		\param filename  The full path to the project file.
+	*/
+	QString writeXMLText() const;
+
 	void writeDrawingXML(const IBK::Path & filename) const;
 
 	/*! Reads the placeholder section into m_placeholders map. */
@@ -326,8 +331,8 @@ public:
 
 	std::vector<Building>								m_buildings;	 			// XML:E
 
-    /*! Store structural units */
-    std::vector<StructuralUnit>							m_structuralUnits;			// XML:E
+	/*! Store structural units */
+	std::vector<StructuralUnit>							m_structuralUnits;			// XML:E
 
 	/*! All components actually placed in the geometry.
 		This vector is outside buildings, so that two building parts can be connected with

@@ -466,6 +466,30 @@ void Project::writeXML(const IBK::Path & filename) const {
 	doc.SaveFile( filename.c_str() );
 }
 
+QString Project::writeXMLText() const {
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusProject" );
+	doc.LinkEndChild(root);
+
+	root->SetAttribute("fileVersion", VERSION);
+
+	if (m_projectInfo != NANDRAD::ProjectInfo())
+		m_projectInfo.writeXML(root);
+	writeDirectoryPlaceholdersXML(root);
+
+	writeXML(root);
+
+	TiXmlPrinter printer;
+	printer.SetIndent( "    " );
+
+	doc.Accept( &printer );
+	std::string xmltext = printer.CStr();
+	return QString::fromStdString(xmltext);
+}
+
 
 void Project::writeDrawingXML(const IBK::Path & filename) const {
 
