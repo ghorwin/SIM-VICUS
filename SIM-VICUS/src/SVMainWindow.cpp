@@ -118,6 +118,7 @@
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
+#include "plugins/SVExportPluginInterface.h"
 
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
@@ -1011,6 +1012,24 @@ void SVMainWindow::onImportPluginTriggered() {
 	notifyer->notify(1, "Finished");
 }
 
+void SVMainWindow::onExportPluginTriggered() {
+	FUNCID(SVMainWindow::onExportPluginTriggered);
+
+	QAction * a = qobject_cast<QAction *>(sender());
+	if (a == nullptr) {
+		IBK::IBK_Message("Invalid call to onExportPluginTriggered()", IBK::MSG_ERROR);
+		return;
+	}
+	// retrieve plugin
+	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
+	Q_ASSERT(plugin != nullptr);
+	SVExportPluginInterface * exportPlugin = dynamic_cast<SVExportPluginInterface *>(plugin);
+	Q_ASSERT(exportPlugin != nullptr);
+
+	QString projectText = m_projectHandler.project().writeXMLText();
+	exportPlugin->getProject(this, projectText);
+}
+
 
 void SVMainWindow::onConfigurePluginTriggered() {
 	QAction * a = qobject_cast<QAction *>(sender());
@@ -1546,6 +1565,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionFileClose->setEnabled(have_project);
 	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
 	m_ui->actionExportNetworkAsGeoJSON->setEnabled(have_project);
+	m_ui->menuExport_Plugins->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
@@ -1918,6 +1938,7 @@ void SVMainWindow::setupPlugins() {
 void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 	FUNCID(SVMainWindow::setupPluginMenuEntries);
 	// depending on the implemented interface, do different stuff
+
 	SVImportPluginInterface* importPlugin = dynamic_cast<SVImportPluginInterface*>(plugin);
 	if (importPlugin != nullptr) {
 		IBK::IBK_Message(IBK::FormatString("  Adding importer plugin '%1'\n").arg(importPlugin->title().toStdString()),
@@ -1936,6 +1957,31 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 			QAction * a = new QAction(tr("Configure %1").arg(importPlugin->title()), this);
 			QVariant v;
 			v.setValue<SVCommonPluginInterface*>(importPlugin);
+			a->setData(v);
+			connect(a, &QAction::triggered,
+					this, &SVMainWindow::onConfigurePluginTriggered);
+			m_ui->menuPlugins->addAction(a); // transfers ownership
+		}
+	}
+
+	SVExportPluginInterface* exportPlugin = dynamic_cast<SVExportPluginInterface*>(plugin);
+	if (exportPlugin != nullptr) {
+		IBK::IBK_Message(IBK::FormatString("  Adding exporter plugin '%1'\n").arg(exportPlugin->title().toStdString()),
+						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+		// add a menu action into the import menu
+		QAction * a = new QAction(exportPlugin->exportMenuCaption(), this);
+		connect(a, &QAction::triggered,
+				this, &SVMainWindow::onExportPluginTriggered);
+		QVariant v;
+		v.setValue<SVCommonPluginInterface*>(exportPlugin);
+		a->setData(v);
+		m_ui->menuExport_Plugins->addAction(a); // transfers ownership
+		// if plugin publishes settings action, also add plugin configuration action
+		if (exportPlugin->hasSettingsDialog()) {
+			QAction * a = new QAction(tr("Configure %1").arg(exportPlugin->title()), this);
+			QVariant v;
+			v.setValue<SVCommonPluginInterface*>(exportPlugin);
 			a->setData(v);
 			connect(a, &QAction::triggered,
 					this, &SVMainWindow::onConfigurePluginTriggered);

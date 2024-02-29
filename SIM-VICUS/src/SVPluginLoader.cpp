@@ -20,6 +20,7 @@
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
+#include "plugins/SVExportPluginInterface.h"
 
 SVPluginLoader::SVPluginLoader()
 {
@@ -159,6 +160,8 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 
 		// Mind: use qobject_cast here!
 		SVDatabasePluginInterface * dbIface = qobject_cast<SVDatabasePluginInterface*>(plugin);
+		SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
+		SVExportPluginInterface * eface = qobject_cast<SVExportPluginInterface*>(plugin);
 		if (dbIface != nullptr) {
 			pd.m_interfaceType = IT_Database;
 			dbIface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
@@ -166,20 +169,23 @@ void SVPluginLoader::loadPlugin(const QString & pluginPath, PluginData & pd) {
 			IBK::IBK_Message(IBK::FormatString("%1, Version %2, Database interface\n").arg(dbIface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
 			m_plugins[pluginFile] = pd;
 		}
+		else if (iface != nullptr) {
+			pd.m_interfaceType = IT_Import;
+			iface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
+			IBK::MessageIndentor ident;
+			IBK::IBK_Message(IBK::FormatString("%1, Version %2, Import interface\n").arg(iface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
+			m_plugins[pluginFile] = pd;
+		}
+		else if (eface != nullptr) {
+			pd.m_interfaceType = IT_Export;
+			eface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
+			IBK::MessageIndentor ident;
+			IBK::IBK_Message(IBK::FormatString("%1, Version %2, Export interface\n").arg(eface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
+			m_plugins[pluginFile] = pd;
+		}
 		else {
-			// Mind: use qobject_cast here!
-			SVImportPluginInterface * iface = qobject_cast<SVImportPluginInterface*>(plugin);
-			if (iface != nullptr) {
-				pd.m_interfaceType = IT_Import;
-				iface->setLanguage(QtExt::LanguageHandler::langId(), QtExt::Directories::appname);
-				IBK::MessageIndentor ident;
-				IBK::IBK_Message(IBK::FormatString("%1, Version %2, Import interface\n").arg(iface->title().toStdString()).arg(pd.m_pluginVersion.toStdString()) );
-				m_plugins[pluginFile] = pd;
-			}
-			else {
-				// not one of our interfaces
-				IBK::IBK_Message("Not a recognized interface, ignored.\n", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD );
-			}
+			// not one of our interfaces
+			IBK::IBK_Message("Not a recognized interface, ignored.\n", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD );
 		}
 	}
 }

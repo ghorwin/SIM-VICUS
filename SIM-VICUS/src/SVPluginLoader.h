@@ -16,6 +16,7 @@ public:
 	enum InterfaceType {
 		IT_Import,
 		IT_Database,
+		IT_Export,
 		NUM_IT
 	};
 

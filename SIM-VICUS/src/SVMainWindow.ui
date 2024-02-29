@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -28,8 +28,14 @@
      <property name="title">
       <string>Export</string>
      </property>
+     <widget class="QMenu" name="menuExport_Plugins">
+      <property name="title">
+       <string>Export Plugins</string>
+      </property>
+     </widget>
      <addaction name="actionFileExportProjectPackage"/>
      <addaction name="actionExportNetworkAsGeoJSON"/>
+     <addaction name="menuExport_Plugins"/>
     </widget>
     <widget class="QMenu" name="menuImport_2">
      <property name="title">
@@ -53,6 +59,7 @@
     <addaction name="actionFileOpenProjectDir"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -911,6 +918,26 @@
   <action name="actionEneryPlus_IDF">
    <property name="text">
     <string>EneryPlus IDF...</string>
+   </property>
+  </action>
+  <action name="actionExport_plugins">
+   <property name="text">
+    <string>Export plugins</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>Test</string>
+   </property>
+  </action>
+  <action name="actionPlugins">
+   <property name="text">
+    <string>Plugins</string>
+   </property>
+  </action>
+  <action name="actionTest_2">
+   <property name="text">
+    <string>Test</string>
    </property>
   </action>
  </widget>

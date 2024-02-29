@@ -283,6 +283,8 @@ private slots:
 
 	/*! Triggered, when an import plugin menu action was triggered. */
 	void onImportPluginTriggered();
+	/*! Triggered, when an import plugin menu action was triggered. */
+	void onExportPluginTriggered();
 	/*! Triggered, when the menu action for configuring a plugin was triggered. */
 	void onConfigurePluginTriggered();
 
