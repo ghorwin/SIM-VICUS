@@ -69,6 +69,9 @@ public:
 	/*! Adds a value to the daily cycle. */
 	DailyCycle add(double val) const;
 
+	/*! Calculate min and max values of daily cycle. */
+	void calculateMinMax(double &min, double &max) const;
+
 	/*! Multiply operator. */
 	DailyCycle operator *(const DailyCycle &other) const {return multiply(other);}
 

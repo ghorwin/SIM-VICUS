@@ -24,7 +24,9 @@
 */
 
 #include "VICUS_Schedule.h"
-#include "IBK_messages.h"
+
+#include <IBK_math.h>
+
 #include <algorithm>
 
 namespace VICUS {
@@ -202,14 +204,9 @@ bool Schedule::isSimilar(const Schedule & other) const {
 	FUNCID(Schedule::isSimilar(Schedule));
 
 	// do not allow comparison of annual schedules
-	if(m_haveAnnualSchedule || other.m_haveAnnualSchedule) {
-//		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have annual schedules."
-//												" These are not comparable.").arg(m_id).arg(other.m_id), FUNC_ID);
-
-		IBK::IBK_Message(IBK::FormatString("Schedule with id %1 and %2 have annual schedules."
-										   " These are not comparable.").arg(m_id).arg(other.m_id), IBK::MSG_WARNING, FUNC_ID);
-		return false;
-	}
+	if(m_haveAnnualSchedule || other.m_haveAnnualSchedule)
+		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have annual schedules."
+												" These are not comparable.").arg(m_id).arg(other.m_id), FUNC_ID);
 
 	// check if values are equal
 	Schedule sched = other;
@@ -776,6 +773,24 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 	}
 	else
 		insertIntoNandradSchedulegroup(varName, scheduleGroup);
+}
+
+void Schedule::calculateMinMax(double &min, double &max) const{
+
+	min = std::numeric_limits<double>::max();
+	max = std::numeric_limits<double>::min();
+
+	if(m_haveAnnualSchedule)
+		IBK::min_max_values(m_annualSchedule.m_values.y(), min, max);
+	else{
+		for(unsigned int i=0; i<m_periods.size(); ++i) {
+			double minVal;
+			double maxVal;
+			m_periods[i].calculateMinMax(minVal, maxVal);
+			min = std::min<double>(min, minVal);
+			max = std::max<double>(max, maxVal);
+		}
+	}
 }
 
 

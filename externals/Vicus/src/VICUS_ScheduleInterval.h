@@ -76,6 +76,9 @@ public:
 	*/
 	void createWeekDataVector(std::vector<double> &timepoints, std::vector<double> &data) const;
 
+	/*! Calculate min and max values of schedule interval. */
+	void calculateMinMax(double &min, double &max) const;
+
 	/*! Comparsion operator. */
 	bool operator!=(const ScheduleInterval &other) const;
 

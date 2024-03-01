@@ -26,6 +26,9 @@
 #include "VICUS_DailyCycle.h"
 
 #include <NANDRAD_Schedule.h>
+
+#include <IBK_math.h>
+
 namespace VICUS {
 
 bool DailyCycle::isValid() const {
@@ -264,6 +267,12 @@ DailyCycle DailyCycle::add(double val) const{
 		dc.m_values[i] += val;
 
 	return dc;
+}
+
+void DailyCycle::calculateMinMax(double &min, double &max) const {
+	min = std::numeric_limits<double>::max();
+	max = std::numeric_limits<double>::min();
+	IBK::min_max_values(m_values, min, max);
 }
 
 

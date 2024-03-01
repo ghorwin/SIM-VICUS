@@ -101,6 +101,8 @@ public:
 										std::vector<NANDRAD::LinearSplineParameter> &splines,
 										const std::map<std::string, IBK::Path> &placeholders = std::map<std::string, IBK::Path>()) const;
 
+	/*! Calculate min and max values of schedule. */
+	void calculateMinMax(double &min, double &max) const;
 
 	/*! Converts vector of VICUS day types into a NANDRAD schedule day types
 		(also merges weekdays to NANDRAD::Schedule::ST_WEEKDAY, etc.).

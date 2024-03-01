@@ -317,6 +317,18 @@ void ScheduleInterval::createWeekDataVector(std::vector<double> &timepoints, std
 	// now the data vector contains all data for a week starting at monday
 }
 
+void ScheduleInterval::calculateMinMax(double &min, double &max) const {
+	min = std::numeric_limits<double>::max();
+	max = std::numeric_limits<double>::min();
+	for(unsigned int i=0; i<m_dailyCycles.size(); ++i) {
+		double minVal;
+		double maxVal;
+		m_dailyCycles[i].calculateMinMax(minVal, maxVal);
+		min = std::min<double>(min, minVal);
+		max = std::max<double>(max, maxVal);
+	}
+}
+
 
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
 	if(m_displayName != other.m_displayName ||
