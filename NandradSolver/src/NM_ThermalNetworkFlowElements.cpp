@@ -1122,6 +1122,9 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 			IBK_ASSERT(m_heatExchangeCondensorHeatLossRef != nullptr);
 			m_condenserHeatFlux = *m_heatExchangeCondensorHeatLossRef;
 
+			// only for output
+			m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
+
 			// Passive cooling mode:
 			// in case of a negative condenser heat flux, we interpet this as passive cooling, so the heat pump is off
 			// and just acts as a usual heat exchanger by adding the condenser heat flux directly to the fluid
@@ -1145,7 +1148,6 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
 					m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
 					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
-					m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
 				}
 			}
 		} break; // HP_SourceSide

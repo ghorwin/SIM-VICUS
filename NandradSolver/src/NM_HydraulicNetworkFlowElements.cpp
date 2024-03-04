@@ -475,14 +475,16 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 				IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
 				// compute current temperature for given heat loss and mass flux
 				// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
-				temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+				// the temperature difference should always be positive, regardless wether heat is being extracted or added
+				temperatureDifference = std::abs(*m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity));
 			}
 			// -> CP_TemperatureDifferenceOfFollowingElement
 			else {
 				// compute temperature difference of the following element. We already know that the node between this
 				// and the following element is not connected to any other flow element
 				IBK_ASSERT(m_followingFlowElementFluidTemperatureRef != nullptr);
-				temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
+				// the temperature difference should always be positive, regardless wether heat is being extracted (e.g. heat pump heating) or added (e.g. heat pump cooling)
+				temperatureDifference = std::abs(*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 			}
 			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
