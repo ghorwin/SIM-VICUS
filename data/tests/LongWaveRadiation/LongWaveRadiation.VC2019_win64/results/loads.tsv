@@ -1,4 +1,4 @@
-Time [h]	Location.Temperature [C]	Location.LWSkyRadiation [W/m2]
+Time [h]	Location.Temperature [C]	Location.LongWaveSkyRadiation [W/m2]
 0	-0.8	277
 1	-2.6	251
 2	-3.9	275
