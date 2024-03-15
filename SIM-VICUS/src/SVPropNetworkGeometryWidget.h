@@ -27,11 +27,8 @@ public:
 	/*! Updates all Ui elements and enable/disable states */
 	void updateUi();
 
-	/*! Updates network names in combobox */
-	void updateComboBoxNetworks();
-
 	/*! Sets the according combobox entry and changes the current network */
-	void setCurrentNetwork(unsigned int networkId);
+	void updateCurrentNetwork();
 
 private slots:
 	void on_pushButtonSelectFluid_clicked();
@@ -45,8 +42,6 @@ private slots:
 	void on_pushButtonReduceDeadEnds_clicked();
 
 	void on_pushButtonRemoveSmallEdge_clicked();
-
-	void on_comboBoxCurrentNetwork_currentIndexChanged(int);
 
 	void on_horizontalSliderScaleNodes_valueChanged(int value);
 
@@ -68,7 +63,7 @@ private:
 	Ui::SVPropEditNetwork		* m_ui;
 
 	/*! Network that is currently selected for modification */
-	const VICUS::Network		* m_currentNetwork = nullptr;
+	const VICUS::Network		* m_currentlyActiveNetwork = nullptr;
 
 	/*! Icons for connected/disconnected network */
 	QPixmap						m_iconConnected;

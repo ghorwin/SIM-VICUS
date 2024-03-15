@@ -44,13 +44,6 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="pushButtonRecalculateLength">
-        <property name="text">
-         <string>recalculate length</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="checkBoxSupplyPipe">
         <property name="text">

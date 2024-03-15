@@ -10,12 +10,13 @@
 #include "SVPropNetworkHeatExchangeWidget.h"
 #include "SVPropNetworkSubStationWidget.h"
 #include "SVProjectHandler.h"
-#include "SVUndoModifyNetwork.h"
+#include "SVUndoModifyActiveNetworkId.h"
 #include "SVViewStateHandler.h"
 #include "SVConstants.h"
 #include "SVMainWindow.h"
 #include "SVPreferencesDialog.h"
 #include "SVPreferencesPageStyle.h"
+#include "SVUndoDeleteSelected.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -62,11 +63,13 @@ void SVPropNetworkEditWidget::onModified(int modificationType) {
 	SVProjectHandler::ModificationTypes modType = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (modType) {
 
-		case SVProjectHandler::NodeStateModified:
 		case SVProjectHandler::AllModified:
+		case SVProjectHandler::NodeStateModified:
 		case SVProjectHandler::NetworkGeometryChanged: {
 
 			findSelectedObjects();
+			m_ui->pushButtonAssignToCurrent->setVisible( !m_activeNetworkSelected
+														&& (!m_currentEdges.empty() || !m_currentNodes.empty()) );
 
 			// now update UI
 			m_nodesWidget->setWidgetsEnabled(false);
@@ -88,10 +91,9 @@ void SVPropNetworkEditWidget::onModified(int modificationType) {
 			m_subStationWidget->updateUi();
 			m_edgesWidget->updateUi();
 
+			updateComboBoxNetworks();
 			// update network geometry widget
-			m_geometryWidget->updateComboBoxNetworks();
-			if (m_currentNetwork != nullptr)
-				m_geometryWidget->setCurrentNetwork(m_currentNetwork->m_id);
+			m_geometryWidget->updateCurrentNetwork();
 			m_geometryWidget->updateUi();
 
 		} break;
@@ -132,7 +134,6 @@ void SVPropNetworkEditWidget::findSelectedObjects() {
 
 	m_currentEdges.clear();
 	m_currentNodes.clear();
-	m_currentNetwork = nullptr;
 
 	// get all selected objects of type network, objects must be visible
 	std::set<const VICUS::Object *> objs;
@@ -162,23 +163,89 @@ void SVPropNetworkEditWidget::findSelectedObjects() {
 		}
 	}
 
-	// We check if the selected nodes, edges belong to different networks,
-	// if so: we clear everything. We don't allow editing of different networks at the same time
-	std::vector<unsigned int> networkIds;
+	// collect all networks involved in the selection
+	std::set<unsigned int> networkIds;
 	for (const VICUS::NetworkEdge *e: m_currentEdges)
-		networkIds.push_back(e->m_parent->m_id);
+		networkIds.insert(e->m_parent->m_id);
 	for (const VICUS::NetworkNode *n: m_currentNodes)
-		networkIds.push_back(n->m_parent->m_id);
+		networkIds.insert(n->m_parent->m_id);
 
-	if (networkIds.size()>0)
-		m_currentNetwork = dynamic_cast<const VICUS::Network*>(project().objectById(networkIds[0]));
+	// is the currently selected network identical to the active network?
+	if (networkIds.size() == 1 && *networkIds.begin() == project().m_activeNetworkId )
+		m_activeNetworkSelected = true;
+	else
+		m_activeNetworkSelected = false;
 
+	// if there are nodes / edge selected that belong to different networks, we don't allow editing these
 	for (unsigned int id: networkIds){
-		if (id != networkIds[0]) {
+		if (id != *networkIds.begin()) {
 			m_currentEdges.clear();
 			m_currentNodes.clear();
-			m_currentNetwork = nullptr;
 		}
 	}
+}
+
+
+void SVPropNetworkEditWidget::updateComboBoxNetworks() {
+	// fill combobox
+	m_ui->comboBoxCurrentNetwork->blockSignals(true);
+	m_ui->comboBoxCurrentNetwork->clear();
+	const VICUS::Project &p = project();
+	for (const VICUS::Network &n : p.m_geometricNetworks)
+		m_ui->comboBoxCurrentNetwork->addItem(n.m_displayName, n.m_id);
+	// reselect index
+	int idx = m_ui->comboBoxCurrentNetwork->findData(p.m_activeNetworkId);
+	if (idx != -1)
+		m_ui->comboBoxCurrentNetwork->setCurrentIndex(idx);
+	m_ui->comboBoxCurrentNetwork->blockSignals(false);
+}
+
+
+void SVPropNetworkEditWidget::on_comboBoxCurrentNetwork_activated(int /*index*/) {
+	unsigned int id = m_ui->comboBoxCurrentNetwork->currentData().toUInt();
+	if (id == project().m_activeNetworkId)
+		return;
+	SVUndoModifyActiveNetworkId *undo = new SVUndoModifyActiveNetworkId(id);
+	undo->push();
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonAssignToCurrent_clicked()
+{
+	// add edges and nodes to active network
+	const VICUS::Project &p = project();
+	Q_ASSERT(VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId) != nullptr);
+	VICUS::Network activeNet = *VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId);
+	unsigned int nextId = p.nextUnusedID();
+	std::set<unsigned int> idsNotDelete;
+	for (const VICUS::NetworkNode *n: m_currentNodes) {
+		if (n->m_type == VICUS::NetworkNode::NT_Mixer)
+			idsNotDelete.insert(n->m_id); // dont delete mixers, this would delete the connected edges as well
+		unsigned int id = activeNet.addNode(++nextId, n->m_position, n->m_type, true);
+		activeNet.nodeById(id)->m_maxHeatingDemand = n->m_maxHeatingDemand;
+		activeNet.nodeById(id)->m_idSubNetwork = n->m_idSubNetwork;
+		activeNet.nodeById(id)->m_heatExchange = n->m_heatExchange;
+	}
+	for (const VICUS::NetworkEdge *e: m_currentEdges) {
+		unsigned int id1 = activeNet.addNode(++nextId, e->m_node1->m_position, e->m_node1->m_type, true);
+		unsigned int id2 = activeNet.addNode(++nextId, e->m_node2->m_position, e->m_node2->m_type, true);
+		activeNet.addEdge(++nextId, id1, id2, e->m_supply, e->m_idPipe);
+		activeNet.edge(id1, id2)->m_heatExchange = e->m_heatExchange;
+	}
+
+	// delete original objects
+	std::set<const VICUS::Object *> selectedObjects;
+	project().selectObjects(selectedObjects, VICUS::Project::SG_Network, true, true);
+	std::set<const VICUS::Object *> objectsToDelete;
+	for (const VICUS::Object *o: selectedObjects) {
+		if (idsNotDelete.find(o->m_id) == idsNotDelete.end())
+			objectsToDelete.insert(o);
+	}
+	SVUndoDeleteSelected *undoDel = new SVUndoDeleteSelected("", objectsToDelete);
+	undoDel->push();
+
+	// undo active network
+	SVUndoModifyNetwork *undo = new SVUndoModifyNetwork("added edges", activeNet);
+	undo->push();
 }
 

@@ -1751,7 +1751,8 @@ void SVPropVertexListWidget::on_pushButtonCreatePipeline_clicked() {
 
 	Vic3D::NewGeometryObject * geomObj = SVViewStateHandler::instance().m_newGeometryObject;
 
-	SVUndoNetworkAddPipeline *undo = new SVUndoNetworkAddPipeline(geomObj->polyLineGeometry().vertexes(), pipeId, netId);
+	SVUndoNetworkAddPipeline *undo = new SVUndoNetworkAddPipeline(geomObj->polyLineGeometry().vertexes(), pipeId, netId,
+																	m_ui->checkBoxAddIntersections->isChecked());
 	undo->push();
 
 }

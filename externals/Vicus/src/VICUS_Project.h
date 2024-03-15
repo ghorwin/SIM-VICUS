@@ -327,6 +327,8 @@ public:
 
 	LccSettings											m_lccSettings;				// XML:E
 
+	unsigned int										m_activeNetworkId = INVALID_ID;	// XML:E
+
 	std::vector<Network>								m_geometricNetworks;		// XML:E
 
 	std::vector<Building>								m_buildings;	 			// XML:E

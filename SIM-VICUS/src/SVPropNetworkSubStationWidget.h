@@ -41,9 +41,9 @@ private slots:
 	void on_tableWidgetSubNetworks_itemDoubleClicked(QTableWidgetItem */*item*/);
 
 private:
-	Ui::SVPropNetworkSubStationWidget *m_ui;
+	Ui::SVPropNetworkSubStationWidget	*m_ui;
 
-	SVPropNetworkEditWidget	*m_pa;
+	SVPropNetworkEditWidget				*m_pa;
 };
 
 #endif // SVPROPNETWORKSUBSTATIONWIDGET_H

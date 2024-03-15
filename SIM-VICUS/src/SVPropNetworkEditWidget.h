@@ -43,10 +43,10 @@ public:
 	 * Encapsulates the process of retrieving the according node and conducting the undo */
 	template<typename TNodeProp, typename Tval>
 	void modifyNodeProperty(TNodeProp property, const Tval &value) {
-		if (m_currentNetwork == nullptr || m_currentNodes.empty())
-			return;
 		VICUS::Project p = project();
-		VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
+		if (p.m_activeNetworkId == VICUS::INVALID_ID || m_currentNodes.empty())
+			return;
+		VICUS::Network *network = VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId);
 		Q_ASSERT(network!=nullptr);
 
 		for (const VICUS::NetworkNode * nodeConst: m_currentNodes)
@@ -60,10 +60,10 @@ public:
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */
 	template <typename TEdgeProp, typename Tval>
 	void modifyEdgeProperty(TEdgeProp property, const Tval & value) {
-		if (m_currentNetwork == nullptr || m_currentEdges.empty())
-			return;
 		VICUS::Project p = project();
-		VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_currentNetwork->m_id);
+		if (p.m_activeNetworkId == VICUS::INVALID_ID || m_currentEdges.empty())
+			return;
+		VICUS::Network *network = VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId);
 		Q_ASSERT(network!=nullptr);
 
 		for (const VICUS::NetworkEdge * edgeConst: m_currentEdges)
@@ -93,14 +93,14 @@ public:
 	/*! Switches property type to selected mode */
 	void setPropertyType(int propertyType);
 
-	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
-	const VICUS::Network					*m_currentNetwork = nullptr;
-
 	/*! The currently selected edges */
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
 	/*! The currently selected nodes */
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
+
+	/*! True if the current selection belongs to the active network (which shall be edited). If so editing shall be possible.*/
+	bool									m_activeNetworkSelected = false;
 
 public slots:
 	void onModified(int modificationType);
@@ -110,10 +110,18 @@ public slots:
 
 	void onStyleChanged();
 
+private slots:
+	void on_comboBoxCurrentNetwork_activated(int);
+
+	void on_pushButtonAssignToCurrent_clicked();
+
 private:
 
 	/*! Filters network objects from currently selected objects and stores their pointers. */
 	void findSelectedObjects();
+
+	/*! Populates the combobox with all available networks */
+	void updateComboBoxNetworks();
 
 	Ui::SVPropNetworkEditWidget		*m_ui;
 

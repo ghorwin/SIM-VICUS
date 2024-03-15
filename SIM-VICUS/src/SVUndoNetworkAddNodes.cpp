@@ -21,8 +21,7 @@ void SVUndoNetworkAddNodes::undo() {
 
 	net->updateNodeEdgeConnectionPointers();
 
-	// color and pointer update
-	net->setDefaultColors();
+	// pointer update
 	theProject().updatePointers();
 
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);
@@ -44,8 +43,7 @@ void SVUndoNetworkAddNodes::redo() {
 		m_addedNodeIds.push_back(nodeId);
 	}
 
-	// color and pointer update
-	net->setDefaultColors();
+	// pointer update
 	theProject().updatePointers();
 
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);

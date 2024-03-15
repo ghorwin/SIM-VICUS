@@ -44,9 +44,9 @@ void SVPropNetworkNodesWidget::updateUi() {
 
 	// enable / disable widgets
 	bool uniformNodeType = m_pa->uniformProperty(m_pa->m_currentNodes, &VICUS::NetworkNode::m_type);
-	m_ui->groupBoxEditNode->setEnabled(uniformNodeType && m_pa->m_currentEdges.empty());
+	m_ui->groupBoxEditNode->setEnabled(uniformNodeType && m_pa->m_currentEdges.empty() && m_pa->m_activeNetworkSelected);
 
-	m_ui->groupBoxPosition->setEnabled(m_pa->m_currentNodes.size() == 1 && m_pa->m_currentEdges.empty());
+	m_ui->groupBoxPosition->setEnabled(m_pa->m_currentNodes.size() == 1 && m_pa->m_currentEdges.empty() && m_pa->m_activeNetworkSelected);
 
 	m_ui->lineEditNodeId->clear();
 	m_ui->lineEditNodeName->clear();

@@ -52,8 +52,8 @@ void SVPropNetworkEdgesWidget::updateUi() {
 
 	// enable / disable wiudgets
 	bool uniformEdge = m_pa->uniformProperty(m_pa->m_currentEdges, &VICUS::NetworkEdge::m_idPipe) && m_pa->m_currentNodes.empty();
-	m_ui->groupBoxEdge->setEnabled(uniformEdge);
-	m_ui->groupBoxSelectedPipe->setEnabled(uniformEdge);
+	m_ui->groupBoxEdge->setEnabled(uniformEdge && m_pa->m_activeNetworkSelected);
+	m_ui->groupBoxSelectedPipe->setEnabled(uniformEdge && m_pa->m_activeNetworkSelected);
 
 	// update edge length and display name
 	if (m_pa->m_currentEdges.size() == 1){
@@ -176,7 +176,7 @@ void SVPropNetworkEdgesWidget::on_pushButtonEditPipe_clicked()
 
 void SVPropNetworkEdgesWidget::on_pushButtonRecalculateLength_clicked() {
 	VICUS::Project p = project();
-	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, m_pa->m_currentNetwork->m_id);
+	VICUS::Network *network = VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId);
 	Q_ASSERT(network!=nullptr);
 
 	network->updateNodeEdgeConnectionPointers();
@@ -270,4 +270,3 @@ void SVPropNetworkEdgesWidget::on_tableWidgetPipes_itemDoubleClicked(QTableWidge
 {
 	on_pushButtonEditPipe_clicked();
 }
-

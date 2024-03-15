@@ -39,7 +39,7 @@ private slots:
 private:
 	Ui::SVPropNetworkNodesWidget	*m_ui;
 
-	SVPropNetworkEditWidget	*m_pa;
+	SVPropNetworkEditWidget			*m_pa;
 };
 
 #endif // SVPROPNETWORKNODESWIDGETH

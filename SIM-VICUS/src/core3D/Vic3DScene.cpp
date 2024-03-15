@@ -36,6 +36,7 @@
 #include <VICUS_Project.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
+#include <VICUS_utilities.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -2413,16 +2414,34 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	case SVViewState::OCM_NetworkEdge:
 	case SVViewState::OCM_NetworkHeatExchange:
 	case SVViewState::OCM_NetworkSubNetworks: {
-		for (const VICUS::Network & net: p.m_geometricNetworks){
-
+		// default color only for active network, others are just grey
+		for (const VICUS::Network & net: p.m_geometricNetworks) {
+			if (net.m_id == p.m_activeNetworkId)
+				const_cast<VICUS::Network&>(net).setDefaultColors();
+			else {
+				QColor inactiveColor;
+				// currently the inactive color is the same for both themes
+				if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+					inactiveColor = QColor(64,64,64,255);
+				else
+					inactiveColor = QColor(64,64,64,255);
+				for (const VICUS::NetworkEdge & edge: net.m_edges)
+					edge.m_color = inactiveColor;
+				for (const VICUS::NetworkNode & node: net.m_nodes)
+					node.m_color = inactiveColor;
+			}
+		}
+		// now specific color mode for active network
+		const VICUS::Network *net = VICUS::element(p.m_geometricNetworks, p.m_activeNetworkId);
+		if (net != nullptr) {
 			switch (ocm) {
 			case SVViewState::OCM_NetworkNode:
-				net.setDefaultColors();
+				net->setDefaultColors();
 				break;
 			case SVViewState::OCM_NetworkEdge: {
-				for (const VICUS::NetworkNode & node: net.m_nodes)
+				for (const VICUS::NetworkNode & node: net->m_nodes)
 					node.m_color = Qt::lightGray;
-				for (const VICUS::NetworkEdge & edge: net.m_edges){
+				for (const VICUS::NetworkEdge & edge: net->m_edges){
 					edge.m_color = Qt::lightGray;
 					unsigned int id = edge.m_idPipe;
 					if (db.m_pipes[id] != nullptr)
@@ -2430,13 +2449,13 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				}
 			} break;
 			case SVViewState::OCM_NetworkHeatExchange: {
-				for (const VICUS::NetworkEdge & edge: net.m_edges)
+				for (const VICUS::NetworkEdge & edge: net->m_edges)
 					edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
-				for (const VICUS::NetworkNode & node: net.m_nodes)
+				for (const VICUS::NetworkNode & node: net->m_nodes)
 					node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
 			} break;
 			case SVViewState::OCM_NetworkSubNetworks: {
-				for (const VICUS::NetworkNode & node: net.m_nodes){
+				for (const VICUS::NetworkNode & node: net->m_nodes){
 					node.m_color = Qt::lightGray;
 					unsigned int id = node.m_idSubNetwork;
 					if (db.m_subNetworks[id] != nullptr)
@@ -2447,8 +2466,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			default:
 				break;
 			} // switch
-		} // for
-	} break;
+		} break;
+	}
 
 	case SVViewState::OCM_ResultColorView:
 		break;

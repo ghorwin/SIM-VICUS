@@ -42,7 +42,11 @@ SVSimulationNetworkOptions::~SVSimulationNetworkOptions() {
 
 void SVSimulationNetworkOptions::updateUi() {
 
-	unsigned int currentId = m_ui->comboBoxNetwork->currentData().toUInt();
+	unsigned int currentId;
+	if (m_ui->comboBoxNetwork->count() == 0)
+		currentId = project().m_activeNetworkId;
+	else
+		currentId = m_ui->comboBoxNetwork->currentData().toUInt();
 
 	// populate networks combobox
 	const std::vector<VICUS::Network> &networks = project().m_geometricNetworks;
@@ -77,7 +81,7 @@ void SVSimulationNetworkOptions::updateNetworkParameters() {
 
 	// none available?
 	bool haveNetwork = network != nullptr;
-	m_ui->comboBoxNetwork->setEnabled(false);
+	m_ui->comboBoxNetwork->setEnabled(haveNetwork);
 	m_ui->lineEditDefaultFluidTemperature->setEnabled(haveNetwork);
 	m_ui->lineEditReferencePressure->setEnabled(haveNetwork);
 	m_ui->lineEditMaxPipeDiscretization->setEnabled(haveNetwork);

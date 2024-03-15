@@ -116,8 +116,8 @@ public:
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
 	unsigned int addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
-	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
-	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & addedNodes, std::vector<unsigned int> & addedEdges);
+	/*! Generate all intersections between edges in the network. If filterEdges is not empty, only these are considered. */
+	void generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> & filterEdges);
 
 	/*! Should be called whenever m_nodes or m_edges has been modified.
 		Checks for correct node/edge IDs and throws IBK::Exceptions, if invalid IDs are found.

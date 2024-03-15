@@ -97,7 +97,7 @@ unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v,
 	if (consistentCoordinates){
 		for (NetworkNode &n: m_nodes){
 			if (n.m_position.distanceTo(v) < NetworkGeometricResolution){
-				if(n.m_type != type){
+				if (n.m_type != type){
 					n.m_type = type;
 				}
 				return n.m_id;
@@ -351,14 +351,18 @@ bool Network::checkConnectedGraph() const {
 
 
 
-void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> &addedNodes, std::vector<unsigned int> &addedEdges){
-
+void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsigned int> &filterEdges){
 	bool foundIntersection = true;
 
 	while (foundIntersection) {
 		foundIntersection = false;
 		for (unsigned i1=0; i1<m_edges.size(); ++i1) {
 			for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
+
+				if (!filterEdges.empty() &&
+					( std::find(filterEdges.begin(), filterEdges.end(), m_edges[i1].m_id) == filterEdges.end()
+					&& std::find(filterEdges.begin(), filterEdges.end(), m_edges[i2].m_id) == filterEdges.end()) )
+					continue;
 
 				// calculate intersection
 				NetworkLine l1 = NetworkLine(m_edges[i1]);
@@ -369,11 +373,8 @@ void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsig
 				// if it is within both lines: add node and edges, adapt exisiting nodes
 				if (l1.containsPoint(ps) && l2.containsPoint(ps)){
 					unsigned nInter = addNode(++nextUnusedId, ps, NetworkNode::NT_Mixer);
-					addedNodes.push_back(nInter);
 					addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true, m_edges[i1].m_idPipe);
-					addedEdges.push_back(nextUnusedId);
 					addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true, m_edges[i2].m_idPipe);
-					addedEdges.push_back(nextUnusedId);
 					m_edges[i1].changeNode1(nodeById(nInter));
 					m_edges[i2].changeNode1(nodeById(nInter));
 					updateNodeEdgeConnectionPointers();

@@ -13,7 +13,7 @@ class SVUndoNetworkAddPipeline: public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoNetworkAddPipeline)
 
 public:
-	SVUndoNetworkAddPipeline(const std::vector<IBKMK::Vector3D> &polyLine, unsigned int pipeId, unsigned int networkId);
+	SVUndoNetworkAddPipeline(const std::vector<IBKMK::Vector3D> &polyLine, unsigned int pipeId, unsigned int networkId, bool findIntersections);
 
 	virtual void undo() override;
 	virtual void redo() override;
@@ -27,7 +27,8 @@ private:
 	unsigned int					m_networkId = VICUS::INVALID_ID;
 	/*! The original network before modification. */
 	VICUS::Network					m_previousNetwork;
-
+	/*! Automatically insert intersections?.*/
+	bool							m_findIntersections;
 };
 
 #endif // SVUNDOADDPIPELINEH

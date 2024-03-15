@@ -44,7 +44,8 @@ SVPropNetworkSubStationWidget::~SVPropNetworkSubStationWidget(){
 
 
 void SVPropNetworkSubStationWidget::updateUi() {
-	m_ui->groupBoxSelectedSubNetwork->setEnabled(!m_pa->m_currentNodes.empty() && m_pa->m_currentEdges.empty());
+	m_ui->groupBoxSelectedSubNetwork->setEnabled(!m_pa->m_currentNodes.empty() && m_pa->m_currentEdges.empty()
+												 && m_pa->m_activeNetworkSelected);
 	// current sub network name
 	m_ui->labelSelectedSubNetwork->clear();
 	const SVDatabase & db = SVSettings::instance().m_db;

@@ -200,7 +200,7 @@
           <item row="5" column="3">
            <widget class="QToolButton" name="toolButtonAddBuildingLevel">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -228,7 +228,7 @@
           <item row="4" column="3">
            <widget class="QToolButton" name="toolButtonAddBuilding">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -310,7 +310,7 @@
           <item row="6" column="3">
            <widget class="QToolButton" name="toolButtonAddZone">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -441,7 +441,7 @@
           <item row="3" column="2">
            <widget class="QToolButton" name="toolButtonAddBuildingLevel2">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -456,7 +456,7 @@
           <item row="2" column="2">
            <widget class="QToolButton" name="toolButtonAddBuilding2">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -743,7 +743,7 @@
           <item row="3" column="2">
            <widget class="QToolButton" name="toolButtonAddBuildingLevel3">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -917,7 +917,7 @@
           <item row="2" column="2">
            <widget class="QToolButton" name="toolButtonAddBuilding3">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -981,12 +981,18 @@
      </widget>
      <widget class="QWidget" name="pagePipeLine">
       <layout class="QGridLayout" name="gridLayout_11">
-       <item row="1" column="2">
-        <widget class="QPushButton" name="pushButtonCancelPipeline">
-         <property name="text">
-          <string>Cancel</string>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_15">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item row="0" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBox">
@@ -1010,7 +1016,7 @@
           <item row="0" column="2">
            <widget class="QToolButton" name="toolButtonAddNetwork">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -1032,14 +1038,21 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="2">
+        <widget class="QPushButton" name="pushButtonCancelPipeline">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
         <widget class="QPushButton" name="pushButtonCreatePipeline">
          <property name="text">
           <string>Create Pipeline</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="2" column="1">
         <spacer name="horizontalSpacer_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1052,24 +1065,21 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0">
-        <spacer name="verticalSpacer_15">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBoxAddIntersections">
+         <property name="text">
+          <string>automatically add intersections</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
+         <property name="checked">
+          <bool>true</bool>
          </property>
-        </spacer>
+        </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="pageSubStations">
       <layout class="QGridLayout" name="gridLayout_9">
-       <item row="4" column="0">
+       <item row="3" column="0">
         <spacer name="verticalSpacer_14">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1082,7 +1092,14 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="2">
+       <item row="2" column="3">
+        <widget class="QPushButton" name="pushButtonCancelSubStation">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
         <spacer name="horizontalSpacer_7">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1094,20 +1111,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="pushButtonCreateSubStation">
-         <property name="text">
-          <string>Create Sub Stations</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QPushButton" name="pushButtonCancelSubStation">
-         <property name="text">
-          <string>Cancel</string>
-         </property>
-        </widget>
        </item>
        <item row="0" column="0" colspan="4">
         <widget class="QGroupBox" name="groupBox_2">
@@ -1138,7 +1141,7 @@
           <item row="0" column="2">
            <widget class="QToolButton" name="toolButtonAddNetwork_2">
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
@@ -1165,6 +1168,13 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="pushButtonCreateSubStation">
+         <property name="text">
+          <string>Create Sub Stations</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -1233,6 +1243,8 @@
   <tabstop>pushButtonCreateRoof</tabstop>
   <tabstop>pushButtonCancel4</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

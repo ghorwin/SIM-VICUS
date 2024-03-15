@@ -439,6 +439,10 @@ void Project::readXMLDocument(TiXmlElement * rootElement) {
 			// the m_color property of edges and nodes is mutable
 			net.setDefaultColors();
 		}
+
+		// in case there is no active id set, but networks exist, choose the first network as active
+		if (m_activeNetworkId == INVALID_ID && !m_geometricNetworks.empty())
+			m_activeNetworkId = m_geometricNetworks[0].m_id;
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project from text."), FUNC_ID);
