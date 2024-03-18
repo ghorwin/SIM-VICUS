@@ -393,6 +393,10 @@ void SVPropNetworkHeatExchangeWidget::on_toolButtonHeatExchangeSpline_clicked() 
 	SVTimeSeriesPreviewDialog *diag = new SVTimeSeriesPreviewDialog(this);
 	diag->select(spl);
 
+	// if canceled, there might be no file
+	if (!spl.m_tsvFile.isValid())
+		return;
+
 	// naming needs to be always like this
 	if (splType == NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature)
 		spl.m_name = "Temperature";

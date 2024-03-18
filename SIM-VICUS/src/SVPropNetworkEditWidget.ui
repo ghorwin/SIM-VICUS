@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
+    <width>659</width>
     <height>894</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <widget class="QComboBox" name="comboBoxCurrentNetwork">
        <property name="minimumSize">
         <size>
-         <width>150</width>
+         <width>200</width>
          <height>30</height>
         </size>
        </property>
@@ -60,6 +60,16 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxShowAllNetworks">
+       <property name="text">
+        <string>show all networks</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

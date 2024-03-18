@@ -135,6 +135,10 @@ void SVNetworkImportDialog::updateUi() {
 	}
 	m_ui->comboBoxNetworkSelectionBox->blockSignals(false);
 
+	// set active network id
+	if (p.m_activeNetworkId != VICUS::INVALID_ID)
+		m_ui->comboBoxNetworkSelectionBox->setCurrentIndex(m_ui->comboBoxNetworkSelectionBox->findData(p.m_activeNetworkId));
+
 	on_comboBoxNetworkSelectionBox_currentIndexChanged(m_ui->comboBoxNetworkSelectionBox->count()-1);
 }
 

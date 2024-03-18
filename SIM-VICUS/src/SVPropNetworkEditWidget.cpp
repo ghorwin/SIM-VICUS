@@ -71,6 +71,9 @@ void SVPropNetworkEditWidget::onModified(int modificationType) {
 			m_ui->pushButtonAssignToCurrent->setVisible( !m_activeNetworkSelected
 														&& (!m_currentEdges.empty() || !m_currentNodes.empty()) );
 
+			// we need the option to show only active network only in case we have multiple networks
+			m_ui->checkBoxShowAllNetworks->setVisible(project().m_geometricNetworks.size() > 1);
+
 			// now update UI
 			m_nodesWidget->setWidgetsEnabled(false);
 			m_edgesWidget->setWidgetsEnabled(false);
@@ -247,5 +250,13 @@ void SVPropNetworkEditWidget::on_pushButtonAssignToCurrent_clicked()
 	// undo active network
 	SVUndoModifyNetwork *undo = new SVUndoModifyNetwork("added edges", activeNet);
 	undo->push();
+}
+
+
+void SVPropNetworkEditWidget::on_checkBoxShowAllNetworks_clicked()
+{
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_showActiveNetworkOnly = !m_ui->checkBoxShowAllNetworks->isChecked();
+	SVViewStateHandler::instance().setViewState(vs);
 }
 

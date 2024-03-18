@@ -30,7 +30,7 @@
 SVUndoAddNetwork::SVUndoAddNetwork(const QString & label, const VICUS::Network & addedNetwork, bool networkGeometryModified, bool modifyFarDist) :
 	m_addedNetwork(addedNetwork),
 	m_networkGeometryModified(networkGeometryModified),
-	m_modifyFarDist(modifyFarDist)
+	m_modifyGridDist(modifyFarDist)
 {
 	setText( label );
 	m_gridWidth = 1.2 * std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
@@ -55,8 +55,9 @@ void SVUndoAddNetwork::undo() {
 		const SVDatabase & db = SVSettings::instance().m_db;
 		theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
 	}
+	theProject().m_activeNetworkId = m_previouslyActiveNetworkId;
 
-	if (m_modifyFarDist) {
+	if (m_modifyGridDist) {
 		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 		if (theProject().m_viewSettings.m_gridPlanes.size() > 0) {
 			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_width, m_gridWidth);
@@ -79,8 +80,11 @@ void SVUndoAddNetwork::redo() {
 
 	theProject().m_geometricNetworks.push_back(m_addedNetwork);
 	theProject().updatePointers();
+	// set the added network as active
+	m_previouslyActiveNetworkId = theProject().m_activeNetworkId;
+	theProject().m_activeNetworkId = theProject().m_geometricNetworks.back().m_id;
 
-	if (m_modifyFarDist) {
+	if (m_modifyGridDist) {
 		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 		if (theProject().m_viewSettings.m_gridPlanes.size() > 0) {
 			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_width, m_gridWidth);

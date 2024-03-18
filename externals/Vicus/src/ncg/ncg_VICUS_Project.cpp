@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
@@ -40,7 +41,9 @@ void Project::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "GeometricNetworks") {
+			if (cName == "ActiveNetworkId")
+				m_activeNetworkId = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "GeometricNetworks") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -156,6 +159,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	m_lcaSettings.writeXML(e);
 
 	m_lccSettings.writeXML(e);
+	if (m_activeNetworkId != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ActiveNetworkId", nullptr, std::string(), IBK::val2string<unsigned int>(m_activeNetworkId));
 
 	if (!m_geometricNetworks.empty()) {
 		TiXmlElement * child = new TiXmlElement("GeometricNetworks");

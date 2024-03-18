@@ -115,6 +115,8 @@ private slots:
 
 	void on_pushButtonAssignToCurrent_clicked();
 
+	void on_checkBoxShowAllNetworks_clicked();
+
 private:
 
 	/*! Filters network objects from currently selected objects and stores their pointers. */

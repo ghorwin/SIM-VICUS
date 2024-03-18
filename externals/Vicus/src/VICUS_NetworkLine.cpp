@@ -32,7 +32,7 @@
 
 namespace VICUS {
 
-extern const double	NetworkGeometricResolution = 0.01; // in m
+extern const double	NetworkGeometricResolution = 0.1; // in m
 
 void NetworkLine::intersection(const NetworkLine &line, IBKMK::Vector3D &pInter) const {
 	double l1, l2;

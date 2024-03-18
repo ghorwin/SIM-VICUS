@@ -29,11 +29,21 @@
 
 #include <VICUS_utilities.h>
 
-SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, const VICUS::Network & modNetwork) :
-	m_network(modNetwork)
+SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, const VICUS::Network & modNetwork, bool modifyGrid) :
+	m_network(modNetwork),
+	m_modifyGridDist(modifyGrid)
 {
 	setText( label );
 	m_networkIndex = VICUS::elementIndex(theProject().m_geometricNetworks, m_network.m_id);
+
+	m_gridWidth = 1.2 * std::max(modNetwork.m_extends.width(), modNetwork.m_extends.height());
+	if (m_gridWidth > 9999)
+		m_gridSpacing = 1000;
+	else if (m_gridWidth > 999)
+		m_gridSpacing = 100;
+	else
+		m_gridSpacing = 10;
+	m_farDistance = std::max(1000.0, 2*m_gridWidth);
 }
 
 
@@ -44,6 +54,15 @@ void SVUndoModifyNetwork::undo() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 	theProject().m_geometricNetworks[m_networkIndex].updateVisualizationRadius(db.m_pipes);
 	theProject().updatePointers();
+
+	if (m_modifyGridDist) {
+		std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
+		if (theProject().m_viewSettings.m_gridPlanes.size() > 0) {
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_width, m_gridWidth);
+			std::swap(theProject().m_viewSettings.m_gridPlanes[0].m_spacing, m_gridSpacing);
+		}
+		SVProjectHandler::instance().setModified( SVProjectHandler::GridModified);
+	}
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkGeometryChanged);

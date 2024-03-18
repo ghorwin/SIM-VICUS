@@ -381,6 +381,9 @@ private:
 	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
 	/*! INVALID_ID means no color filter. */
 	unsigned int					m_lastColorObjectID = VICUS::INVALID_ID;
+
+	/*! Last state of showNetworkOnly.*/
+	bool					m_lastShowActiveNetworkOnly = false;
 };
 
 } // namespace Vic3D

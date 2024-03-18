@@ -1382,7 +1382,7 @@ void Scene::setViewState(const SVViewState & vs) {
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
-				m_lastColorObjectID != vs.m_colorModePropertyID)
+			m_lastColorObjectID != vs.m_colorModePropertyID)
 		{
 			colorUpdateNeeded = true;
 		}
@@ -1393,6 +1393,9 @@ void Scene::setViewState(const SVViewState & vs) {
 			colorUpdateNeeded = true;
 		}
 	}
+
+	if (vs.m_showActiveNetworkOnly != m_lastShowActiveNetworkOnly)
+		colorUpdateNeeded = true;
 
 	// for results color view we need to update the color buffers _always_ as the colors have been
 	// changed directly in the results property widget in SVPropResultsWidget::updateColors()
@@ -1439,6 +1442,7 @@ void Scene::setViewState(const SVViewState & vs) {
 
 		m_lastColorMode = vs.m_objectColorMode;
 		m_lastColorObjectID = vs.m_colorModePropertyID;
+		m_lastShowActiveNetworkOnly = vs.m_showActiveNetworkOnly;
 	}
 }
 
@@ -1846,6 +1850,10 @@ void Scene::generateNetworkGeometry() {
 
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
+
+		if (SVViewStateHandler::instance().viewState().m_showActiveNetworkOnly &&
+			p.m_activeNetworkId != network.m_id)
+			continue;
 
 		// update pointers of network elements, they are only runtime and not part of the project data
 		// so they can be modified with const_cast

@@ -49,7 +49,9 @@ private:
 	double			m_gridSpacing;
 
 	bool			m_networkGeometryModified;
-	bool			m_modifyFarDist;
+	bool			m_modifyGridDist;
+
+	bool			m_previouslyActiveNetworkId;
 };
 
 

@@ -33,7 +33,7 @@
 class SVUndoModifyNetwork : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyNetwork)
 public:
-	SVUndoModifyNetwork(const QString & label, const VICUS::Network & modNetwork);
+	SVUndoModifyNetwork(const QString & label, const VICUS::Network & modNetwork, bool modifyGrid = false);
 
 	virtual void undo();
 	virtual void redo();
@@ -44,6 +44,11 @@ private:
 	unsigned int m_networkIndex;
 	/*! Cache for added network. */
 	VICUS::Network	m_network;
+
+	bool			m_modifyGridDist;
+	double			m_farDistance;
+	double			m_gridWidth;
+	double			m_gridSpacing;
 };
 
 #endif // SVUndoModifyNetworkH

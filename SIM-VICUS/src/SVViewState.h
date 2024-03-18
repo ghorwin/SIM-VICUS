@@ -122,8 +122,8 @@ public:
 		PM_BuildingProperties,
 		/*! Shows the widget with building acoustic properties. */
 		PM_BuildingAcousticProperties,
-        /*! Shows the widget with building structural unit properties. */
-        PM_BuildingStructuralUnitProperties,
+		/*! Shows the widget with building structural unit properties. */
+		PM_BuildingStructuralUnitProperties,
 		/*! Shows the widget with network properties. */
 		PM_NetworkProperties,
 		/*! Shows the widget with results visualisation. */
@@ -195,7 +195,7 @@ public:
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,
-        OCM_NetworkHeatExchange,
+		OCM_NetworkHeatExchange,
 		OCM_NetworkSubNetworks,
 		/*! This mode is selected, when user has the results property widget open.
 			Then, the colors of all objects are set by the results property widget (and updateColors() won't be called.
@@ -246,6 +246,8 @@ public:
 	float					m_snapDistance			= 1.0;
 	/*! Coordinate system movement locks. */
 	Locks					m_locks					= NUM_L;
+
+	bool					m_showActiveNetworkOnly = false;
 };
 
 #endif // SVViewStateH

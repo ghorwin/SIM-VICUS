@@ -359,6 +359,7 @@ void Network::generateIntersections(unsigned int nextUnusedId, std::vector<unsig
 		for (unsigned i1=0; i1<m_edges.size(); ++i1) {
 			for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
+				// if we have a filter and none of both edges is in the filter then dont consider this intersection
 				if (!filterEdges.empty() &&
 					( std::find(filterEdges.begin(), filterEdges.end(), m_edges[i1].m_id) == filterEdges.end()
 					&& std::find(filterEdges.begin(), filterEdges.end(), m_edges[i2].m_id) == filterEdges.end()) )
