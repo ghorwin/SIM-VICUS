@@ -432,14 +432,24 @@ void Network::connectBuildings(unsigned int nextUnusedId, const bool extendSuppl
 			double dist1 = (pBranch - a1).magnitude();
 			double dist2 = (pBranch - a2).magnitude();
 			idBranch = (dist1 < dist2) ? m_edges[idxEdgeMin].nodeId1() : m_edges[idxEdgeMin].nodeId2();
-			// special case: the selected end point is not a mixer. We create a branch node 1 m away from this point
+			// special case: the selected end point is not a mixer. We create a branch node 2 m away from this point
 			if (nodeById(idBranch)->m_type != NetworkNode::NT_Mixer) {
-				if (dist1 < dist2)
-					pBranch = a1 + b * (1.0/b.magnitude());
-				else
-					pBranch = a2 - b * (1.0/b.magnitude());
-				idBranch = addNode(++nextUnusedId, pBranch, NetworkNode::NT_Mixer);
-				addEdge(++nextUnusedId, m_edges[idxEdgeMin].nodeId1(), idBranch, true, m_edges[idxEdgeMin].m_idPipe);
+				// first check if the edge is at least 4 m long, so that we can go 2 m away from closest node
+				if (b.magnitude() > 4.0) {
+					if (dist1 < dist2)
+						pBranch = a1 + b * (2.0/b.magnitude());
+					else
+						pBranch = a2 - b * (2.0/b.magnitude());
+					idBranch = addNode(++nextUnusedId, pBranch, NetworkNode::NT_Mixer);
+					addEdge(++nextUnusedId, m_edges[idxEdgeMin].nodeId1(), idBranch, true, m_edges[idxEdgeMin].m_idPipe);
+					m_edges[idxEdgeMin].changeNode1(nodeById(idBranch));
+					updateNodeEdgeConnectionPointers();
+				}
+				// if this was not the case, just take the other node, which should not be a mixer normally
+				else {
+					idBranch = m_edges[idxEdgeMin].neighbourNode(idBranch);
+				}
+
 				m_edges[idxEdgeMin].changeNode1(nodeById(idBranch));
 				updateNodeEdgeConnectionPointers();
 			}

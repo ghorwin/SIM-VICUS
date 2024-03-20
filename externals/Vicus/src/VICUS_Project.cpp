@@ -1311,6 +1311,16 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Drawing *> & drawings,
 }
 
 
+void Project::networkExtends(std::vector<const Network*> &networks, double maxX, double maxY) {
+	for (const VICUS::Network *net: networks) {
+		for (const VICUS::NetworkNode & node : net->m_nodes) {
+			maxX = std::max(std::abs(maxX), node.m_position.m_x);
+			maxY = std::max(std::abs(maxY), node.m_position.m_y);
+		}
+	}
+}
+
+
 bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<const Surface *> & selectedSurfaces,
 							  std::vector<ComponentInstance> & newComponentInstances)
 {

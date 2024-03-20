@@ -294,6 +294,9 @@ public:
 									   const IBKMK::Vector3D &yAxis = IBKMK::Vector3D(0,1,0),
 									   const IBKMK::Vector3D &zAxis = IBKMK::Vector3D(0,0,1));
 
+	/*! Computes the maximum absolute x and y coordinates of given networks.*/
+	static void networkExtends(std::vector<const Network *> & networks, double maxX, double maxY);
+
 	/*! Attempts to create new surface-surface connections based on the current selection.
 		Newly created component instances are stored in vector newComponentInstances alongside
 		original component instances.

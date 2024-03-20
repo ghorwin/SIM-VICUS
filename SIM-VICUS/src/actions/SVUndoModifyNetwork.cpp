@@ -36,14 +36,20 @@ SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, const VICUS::Netw
 	setText( label );
 	m_networkIndex = VICUS::elementIndex(theProject().m_geometricNetworks, m_network.m_id);
 
-	m_gridWidth = 1.2 * std::max(modNetwork.m_extends.width(), modNetwork.m_extends.height());
+	std::vector<const VICUS::Network*> networks;
+	for (const VICUS::Network &net: theProject().m_geometricNetworks)
+		networks.push_back(&net);
+	networks.push_back(&modNetwork);
+	double x = 500;
+	double y = 500;
+	VICUS::Project::networkExtends(networks, x, y);
+
+	m_gridWidth = 1.1 * std::max(x, y);
 	if (m_gridWidth > 9999)
 		m_gridSpacing = 1000;
-	else if (m_gridWidth > 999)
-		m_gridSpacing = 100;
 	else
-		m_gridSpacing = 10;
-	m_farDistance = std::max(1000.0, 2*m_gridWidth);
+		m_gridSpacing = 100;
+	m_farDistance = std::max(2000.0, 4*m_gridWidth);
 }
 
 

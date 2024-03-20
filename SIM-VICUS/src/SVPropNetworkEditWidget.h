@@ -113,7 +113,7 @@ public slots:
 private slots:
 	void on_comboBoxCurrentNetwork_activated(int);
 
-	void on_pushButtonAssignToCurrent_clicked();
+	void on_toolButtonAssignToCurrent_clicked();
 
 	void on_checkBoxShowAllNetworks_clicked();
 

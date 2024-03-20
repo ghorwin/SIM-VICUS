@@ -68,7 +68,7 @@ void SVPropNetworkEditWidget::onModified(int modificationType) {
 		case SVProjectHandler::NetworkGeometryChanged: {
 
 			findSelectedObjects();
-			m_ui->pushButtonAssignToCurrent->setVisible( !m_activeNetworkSelected
+			m_ui->toolButtonAssignToCurrent->setVisible( !m_activeNetworkSelected
 														&& (!m_currentEdges.empty() || !m_currentNodes.empty()) );
 
 			// we need the option to show only active network only in case we have multiple networks
@@ -213,7 +213,7 @@ void SVPropNetworkEditWidget::on_comboBoxCurrentNetwork_activated(int /*index*/)
 }
 
 
-void SVPropNetworkEditWidget::on_pushButtonAssignToCurrent_clicked()
+void SVPropNetworkEditWidget::on_toolButtonAssignToCurrent_clicked()
 {
 	// add edges and nodes to active network
 	const VICUS::Project &p = project();
