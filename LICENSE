@@ -23,10 +23,10 @@ specific use of copyrighted technology and is considered equal to
 using the NANDRAD data model library for transfer of simulation
 data to the solver. 
 
-Because of this, programs/libraries calling the solver have to
-placed under a compatibly open-source license, also. This extends to
+Because of this, programs/libraries calling the solver have to be
+placed under a compatible open-source license, also. This extends to
 cascading program execution. Hence, you may not write a 
-propriatory/close-source program that calls an open source program 
+propriatory/closed-source program that calls an open source program 
 that in turn calls the NANDRAD solver (or any other sequence of 
 programs/libraries calling each other).
 
